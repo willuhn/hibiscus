@@ -40,8 +40,11 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
@@ -57,6 +60,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   protected final static I18N i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   
+  private KontoInput konto       = null;
   private Input from             = null;
   private Input to               = null;
   private Input text             = null;
@@ -105,6 +109,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.from = new DateFromInput();
     this.from.setName(i18n.tr("Anzeige von"));
     this.from.setComment(null);
+    this.from.addListener(this.listener);
     return this.from;
   }
   
@@ -123,6 +128,24 @@ public abstract class AbstractFromToList extends TablePart implements Part
   }
   
   /**
+   * Liefert ein Auswahlfeld fuer das Konto.
+   * @return Auswahlfeld fuer das Konto.
+   * @throws RemoteException
+   */
+  public KontoInput getKonto() throws RemoteException
+  {
+    if (this.konto != null)
+      return this.konto;
+    
+    this.konto = new KontoInput(null,KontoFilter.ALL);
+    this.konto.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    this.konto.setComment(null);
+    this.konto.setRememberSelection("auftraege");
+    this.konto.addListener(this.listener);
+    return this.konto;
+  }
+  
+  /**
    * Liefert das Eingabe-Datum fuer das End-Datum.
    * @return Eingabe-Feld.
    */
@@ -134,6 +157,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.to = new DateToInput();
     this.to.setName(i18n.tr("Anzeige bis"));
     this.to.setComment(null);
+    this.to.addListener(this.listener);
     return this.to;
   }
 
@@ -147,26 +171,23 @@ public abstract class AbstractFromToList extends TablePart implements Part
     folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
-    ColumnLayout cols = new ColumnLayout(tab.getComposite(),4);
+    ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
     
     {
-      Container c = new SimpleContainer(cols.getComposite());
+      Container left = new SimpleContainer(cols.getComposite());
+      left.addInput(this.getKonto());
       
       Input t = this.getText();
-      c.addInput(t);
+      left.addInput(t);
       
       // Duerfen wir erst nach dem Zeichnen
       t.getControl().addKeyListener(new DelayedAdapter());
     }
     
     {
-      Container c = new SimpleContainer(cols.getComposite());
-      c.addInput(this.getFrom());
-    }
-    
-    {
-      Container c = new SimpleContainer(cols.getComposite());
-      c.addInput(this.getTo());
+      Container right = new SimpleContainer(cols.getComposite());
+      right.addInput(this.getFrom());
+      right.addInput(this.getTo());
     }
 
     this.buttons.addButton(i18n.tr("Aktualisieren"), new Action()
@@ -179,7 +200,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.buttons.paint(parent);
    
     // Erstbefuellung
-    GenericIterator items = getList((Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
+    GenericIterator items = getList((Konto)getKonto().getValue(),(Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
     if (items != null)
     {
       items.begin();
@@ -201,13 +222,14 @@ public abstract class AbstractFromToList extends TablePart implements Part
   
   /**
    * Liefert die Liste der fuer diesen Zeitraum geltenden Daten.
+   * @param das Konto. Kann null sein.
    * @param from Start-Datum. Kann null sein.
    * @param to End-Datum. Kann null sein.
    * @param text Suchbegriff
    * @return Liste der Daten dieses Zeitraumes.
    * @throws RemoteException
    */
-  protected abstract DBIterator getList(Date from, Date to, String text) throws RemoteException;
+  protected abstract DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException;
   
   /**
    * Aktualisiert die Tabelle der angezeigten Daten.
@@ -218,65 +240,74 @@ public abstract class AbstractFromToList extends TablePart implements Part
    */
   private synchronized void handleReload(boolean force)
   {
-    final Date dfrom  = (Date) getFrom().getValue();
-    final Date dto    = (Date) getTo().getValue();
-    final String text = (String) getText().getValue();
-    
-    if (!force)
+    try
     {
-      // Wenn es kein forcierter Reload ist, pruefen wir,
-      // ob sich etwas geaendert hat oder Eingabe-Fehler
-      // vorliegen
-      if (!hasChanged())
-        return;
-
-      if (dfrom != null && dto != null && dfrom.after(dto))
+      final Konto konto = (Konto) getKonto().getValue();
+      final Date dfrom  = (Date) getFrom().getValue();
+      final Date dto    = (Date) getTo().getValue();
+      final String text = (String) getText().getValue();
+      
+      if (!force)
       {
-        GUI.getView().setErrorText(i18n.tr("End-Datum muss sich nach dem Start-Datum befinden"));
-        return;
+        // Wenn es kein forcierter Reload ist, pruefen wir,
+        // ob sich etwas geaendert hat oder Eingabe-Fehler
+        // vorliegen
+        if (!hasChanged())
+          return;
+
+        if (dfrom != null && dto != null && dfrom.after(dto))
+        {
+          GUI.getView().setErrorText(i18n.tr("End-Datum muss sich nach dem Start-Datum befinden"));
+          return;
+        }
       }
+
+      // Fehlertext "End-Datum muss ..." ggf. wieder entfernen
+      GUI.getView().setErrorText("");
+
+      GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
+      GUI.startSync(new Runnable() //Sanduhr anzeigen
+      {
+        public void run()
+        {
+          try
+          {
+            // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
+            // erstmal alles entfernen.
+            removeAll();
+
+            // Liste neu laden
+            GenericIterator items = getList(konto,dfrom,dto,text);
+            if (items == null)
+              return;
+            
+            items.begin();
+            while (items.hasNext())
+              addItem(items.next());
+            
+            // Sortierung wiederherstellen
+            sort();
+            
+            // Speichern der Werte aus den Filter-Feldern.
+            settings.setAttribute("transferlist.filter.text",text);
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while reloading table",e);
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
+          }
+          finally
+          {
+            GUI.getView().setLogoText("");
+          }
+        }
+      });
     }
-
-    // Fehlertext "End-Datum muss ..." ggf. wieder entfernen
-    GUI.getView().setErrorText("");
-
-    GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
-    GUI.startSync(new Runnable() //Sanduhr anzeigen
+    catch (Exception e)
     {
-      public void run()
-      {
-        try
-        {
-          // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
-          // erstmal alles entfernen.
-          removeAll();
-
-          // Liste neu laden
-          GenericIterator items = getList(dfrom,dto,text);
-          if (items == null)
-            return;
-          
-          items.begin();
-          while (items.hasNext())
-            addItem(items.next());
-          
-          // Sortierung wiederherstellen
-          sort();
-          
-          // Speichern der Werte aus den Filter-Feldern.
-          settings.setAttribute("transferlist.filter.text",text);
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while reloading table",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
-        }
-        finally
-        {
-          GUI.getView().setLogoText("");
-        }
-      }
-    });
+      Logger.error("error while reloading data",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
+    }
   }
   
   /**
@@ -288,7 +319,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     try
     {
-      return (from != null && from.hasChanged()) ||
+      return (konto != null && konto.hasChanged()) ||
+             (from != null && from.hasChanged()) ||
              (to != null && to.hasChanged()) ||
              (text != null && text.hasChanged());
     }

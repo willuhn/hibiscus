@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.messaging.Message;
@@ -129,9 +130,9 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.util.Date, java.util.Date, java.lang.String)
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
    */
-  protected DBIterator getList(Date from, Date to, String text) throws RemoteException
+  protected DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
@@ -142,6 +143,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     {
       list.addFilter("LOWER(bezeichnung) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
     }
+    
+    if (konto != null)
+      list.addFilter("konto_id = " + konto.getID());
+    
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
   }

@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0205 Anzeige der Kontoauswahl in allen Auftragslisten
   * BUG: 0204 InvalidArgumentException von DTAUS fangen
   * NEW: 0203 BUGZILLA 811 Geprueft/Ungeprueft Status in Umsatzliste via Tastatur aendern
   * NEW: 0202 BUGZILLA 1269 Support fuer Reminder mit Ende-Datum (experimentell)

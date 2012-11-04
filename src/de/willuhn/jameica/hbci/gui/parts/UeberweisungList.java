@@ -18,6 +18,7 @@ import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 
 /**
@@ -37,9 +38,9 @@ public class UeberweisungList extends AbstractTransferList
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getList(java.util.Date, java.util.Date, java.lang.String)
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
    */
-  protected DBIterator getList(Date from, Date to, String text) throws RemoteException
+  protected DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException
   {
     DBIterator list = super.getList(from, to, text);
     if (text != null && text.length() > 0)
@@ -47,6 +48,10 @@ public class UeberweisungList extends AbstractTransferList
       String s = "%" + text.toLowerCase() + "%";
       list.addFilter("(LOWER(empfaenger_konto) like ? or LOWER(empfaenger_name) like ? or LOWER(zweck) like ? or LOWER(zweck2) like ? or LOWER(zweck3) like ?)", new Object[]{s,s,s,s,s});
     }
+    
+    if (konto != null)
+      list.addFilter("konto_id = " + konto.getID());
+    
     return list;
   }
 
