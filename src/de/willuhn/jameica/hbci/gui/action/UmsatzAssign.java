@@ -15,7 +15,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypListDialog;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -70,7 +70,7 @@ public class UmsatzAssign implements Action
         if (ut == null && umsaetze[0].getBetrag() != 0)
           typ = (umsaetze[0].getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE);
       }
-      UmsatzTypAuswahlDialog d = new UmsatzTypAuswahlDialog(UmsatzTypAuswahlDialog.POSITION_CENTER,ut,typ);
+      UmsatzTypListDialog d = new UmsatzTypListDialog(UmsatzTypListDialog.POSITION_CENTER,ut,typ);
       ut = (UmsatzTyp) d.open();
     }
     catch (OperationCanceledException oce)

@@ -96,7 +96,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     
     // BUGZILLA 512 / 1115
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new UmsatzBookedItem(i18n.tr("Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png"));
+    addItem(new UmsatzBookedItem(i18n.tr("Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png","ALT+K"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew(),"document-open.png")
     {
       public boolean isEnabledFor(Object o)
@@ -209,17 +209,6 @@ public class UmsatzList extends ContextMenu implements Extendable
    */
   private class UmsatzBookedItem extends UmsatzItem
   {
-    /**
-     * ct.
-     * @param text Label.
-     * @param action Action.
-     * @param icon optionales Icon.
-     */
-    public UmsatzBookedItem(String text, Action action, String icon)
-    {
-      this(text,action,icon,null);
-    }
-
     /**
      * ct.
      * @param text Label.

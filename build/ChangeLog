@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0207 BUGZILLA 756 Auswahl der Umsatzkategorien via Shortcut und neuem
+              Auswahl-Dialog - Bedienung komplett mit Tastatur moeglich
   * NEW: 0206 Nicht-standard-konforme reqSigs (98,99) der Fortisbank tolerieren.
               Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=14583
   * NEW: 0205 Anzeige der Kontoauswahl in allen Auftragslisten
