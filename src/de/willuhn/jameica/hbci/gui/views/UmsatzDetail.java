@@ -51,7 +51,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
         checked.setEnabled(false); // nur einmal moeglich
       }
     },u,false,"emblem-default.png");
-    checked.setEnabled((u.getFlags() & Umsatz.FLAG_CHECKED) != Umsatz.FLAG_CHECKED);
+    checked.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED) && !u.hasFlag(Umsatz.FLAG_CHECKED));
     buttons.addButton(checked);
     
     Button ab = null;
