@@ -1,4 +1,4 @@
-Kontonummer;BLZ;Konto;Gegenkonto;BLZ Gegenkonto;Zahlungspflichtiger;Betrag;Termin;Verwendungszweck;Verwendungszweck 2;Weitere Verwendungszwecke;Ausgeführt
+"Kontonummer";"BLZ";"Konto";"Gegenkonto";"BLZ Gegenkonto";"Zahlungspflichtiger";"Betrag";"Termin";"Verwendungszweck";"Verwendungszweck 2";"Weitere Verwendungszwecke";"Ausgeführt"
 #foreach($t in $objects)
 #set($konto = $t.Konto)
 "$!{konto.Kontonummer}";"$!{konto.BLZ}";"$!{konto.Bezeichnung}";"$!{t.GegenkontoNummer}";"$!{t.GegenkontoBLZ}";"$!{t.GegenkontoName}";"$!{decimalformat.format(${t.Betrag})}";"$!{dateformat.format(${t.Termin})}";"$!{t.Zweck}";"$!{t.Zweck2}";"#foreach($ewz in $t.WeitereVerwendungszwecke)$!{ewz} #end";;"#if($t.ausfuehrungsdatum)$!longdateformat.format($t.ausfuehrungsdatum)#elseif($t.ausgefuehrt())Ja#{else}Nein#{end}"
