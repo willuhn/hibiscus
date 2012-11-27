@@ -527,7 +527,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.skipLines == null)
     {
-      this.skipLines = new SpinnerInput(0,4,this.getProfile().getSkipLines());
+      this.skipLines = new SpinnerInput(0,10,this.getProfile().getSkipLines());
       this.skipLines.setName(i18n.tr("Zeilen überspringen"));
       this.skipLines.setComment(i18n.tr("Zu überspringende Zeilen am Datei-Anfang"));
       this.skipLines.setMandatory(false);
