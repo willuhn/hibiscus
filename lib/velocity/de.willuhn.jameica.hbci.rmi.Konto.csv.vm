@@ -1,4 +1,4 @@
-Kontonummer;BLZ;Inhaber;Unterkontonummer;Bezeichnung;Kundennummer;Saldo;Saldodatum
+"Kontonummer";"BLZ";"Inhaber";"Unterkontonummer";"Bezeichnung";"Kundennummer";"Saldo";"Saldodatum"
 #foreach($konto in $objects)
 "$!{konto.Kontonummer}";"$!{konto.BLZ}";"$!{konto.Name}";"$!{konto.Unterkonto}";"$!{konto.Bezeichnung}";"$!{konto.Kundennummer}";"$!{decimalformat.format(${konto.Saldo})}";"#if($konto.SaldoDatum)$!{dateformat.format(${konto.SaldoDatum})}#end"
 #end
