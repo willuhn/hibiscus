@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
@@ -713,6 +714,38 @@ public class UmsatzList extends TablePart implements Extendable
    */
   public class UmsatzChangedMessageConsumer implements MessageConsumer
   {
+    private List<Umsatz> bulk = new LinkedList<Umsatz>();
+    private DelayedListener delay = new DelayedListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          // wir machen das Update in einer Bulk-Operation
+          for (Umsatz u:bulk)
+          {
+            int index = removeItem(u);
+            if (index == -1)
+              return; // Objekt war nicht in der Tabelle
+            
+            // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
+           addItem(u,index);
+          }
+          
+          // Und alle wieder markieren
+          select(bulk.toArray(new Umsatz[bulk.size()]));
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to add object to list",e);
+        }
+        finally
+        {
+          bulk.clear();
+        }
+      }
+    });
+    
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -735,28 +768,9 @@ public class UmsatzList extends TablePart implements Extendable
 
       if (o == null || !(o instanceof Umsatz))
         return;
-
-      GUI.getDisplay().syncExec(new Runnable() {
-        public void run()
-        {
-          try
-          {
-            int index = removeItem(o);
-            if (index == -1)
-              return; // Objekt war nicht in der Tabelle
-            
-            // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
-           addItem(o,index);
-           
-           // Wir markieren es noch in der Tabelle
-           select(o);
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to add object to list",e);
-          }
-        }
-      });
+      
+      this.bulk.add((Umsatz)o);
+      this.delay.handleEvent(null);
     }
 
     /**
