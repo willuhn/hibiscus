@@ -121,6 +121,14 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         if (data == null || !(data instanceof String))
           throw new ApplicationException(i18n.tr("HBCI-Version nicht ermittelbar"));
         hbciVersion = (String) msg.getData();
+        
+        // Wir merken uns die Auswahl damit wir den User nicht immer wieder fragen muessen
+        // Siehe auch http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=14883
+        if (hbciVersion != null)
+        {
+          Logger.info("storing hbci [" + hbciVersion + "] version for key " + filename);
+          activeKey.setHBCIVersion(hbciVersion);
+        }
       }
 
       hbciPassport = activeKey.load();
