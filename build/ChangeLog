@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0209 BUGZILLA 1287 - Changeset 0208 nochmal ueberarbeitet. 
   * NEW: 0208 Updates in der Umsatz-Tabelle als Bulk-Operation. Damit geht z.Bsp. die
               Geprueft-Markierung vieler Umsaetze erheblich schneller
   * NEW: 0207 BUGZILLA 756 Auswahl der Umsatzkategorien via Shortcut und neuem

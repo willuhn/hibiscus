@@ -157,7 +157,7 @@ public class UmsatzList extends TablePart implements Extendable
         try {
           item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           
-          if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+          if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
           {
             item.setForeground(Color.COMMENT.getSWTColor());
           }
@@ -172,8 +172,10 @@ public class UmsatzList extends TablePart implements Extendable
           }
 
           item.setText(1,""); // Kein Text in den Flags - wir wollen nur das Bild
-          if ((u.getFlags() & Umsatz.FLAG_CHECKED) != 0)
+          if (u.hasFlag(Umsatz.FLAG_CHECKED))
             item.setImage(1,SWTUtil.getImage("emblem-default.png"));
+          else
+            item.setImage(1,null); // Image wieder entfernen. Noetig, weil wir auch bei Updates aufgerufen werden
         
         }
         catch (RemoteException e)
@@ -721,19 +723,14 @@ public class UmsatzList extends TablePart implements Extendable
       {
         try
         {
-          // wir machen das Update in einer Bulk-Operation
           for (Umsatz u:bulk)
           {
-            int index = removeItem(u);
-            if (index == -1)
-              return; // Objekt war nicht in der Tabelle
-            
-            // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
-           addItem(u,index);
+            // Das geht, weil die Objekt-Referenz die selbe ist.
+            // Nur die Properties haben sich geaendert. Und die sollen ja neu gezeichnet werden.
+            updateItem(u,u);
           }
-          
-          // Und alle wieder markieren
-          select(bulk.toArray(new Umsatz[bulk.size()]));
+          // Summen-Zeile einmalig aktualisieren
+          refreshSummary();
         }
         catch (Exception e)
         {
@@ -769,6 +766,8 @@ public class UmsatzList extends TablePart implements Extendable
       if (o == null || !(o instanceof Umsatz))
         return;
       
+      // wir machen das Update in einer Bulk-Operation, damit die Summen-Zeile nicht
+      // 100 mal aktualisiert werden muss, wenn 100 Umsaetze angefasst wurden
       this.bulk.add((Umsatz)o);
       this.delay.handleEvent(null);
     }
