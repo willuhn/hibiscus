@@ -163,7 +163,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
@@ -222,7 +222,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   
   /**
    * Liefert die Liste der fuer diesen Zeitraum geltenden Daten.
-   * @param das Konto. Kann null sein.
+   * @param konto das Konto. Kann null sein.
    * @param from Start-Datum. Kann null sein.
    * @param to End-Datum. Kann null sein.
    * @param text Suchbegriff
