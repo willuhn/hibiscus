@@ -18,6 +18,7 @@ import java.util.Map;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
 
@@ -26,17 +27,33 @@ import de.willuhn.util.ClassFinder;
  */
 public class RewriterRegistry
 {
+  private final static Settings settings = new Settings(RewriterRegistry.class);
   private static Map<String,Class<UmsatzRewriter>> umsatzRewriters = null;
   
   /**
    * Liefert den Rewriter fuer die BLZ oder NULL wenn keiner existiert.
    * @param blz die BLZ.
+   * @param konto optionale Angabe des Konto, damit es selektiv geblacklistet werden kann.
    * @return der Rewriter oder NULL.
    */
-  public static synchronized UmsatzRewriter getRewriter(String blz)
+  public static synchronized UmsatzRewriter getRewriter(String blz, String konto)
   {
     if (blz == null)
       return null;
+    
+    // checken, ob die BLZ auf der Blacklist steht
+    if (settings.getBoolean("blacklist.blz." + blz,false))
+    {
+      Logger.info("BLZ blacklisted for rewriters, skip rewriting");
+      return null;
+    }
+    
+    // checken, ob das Konto auf der Blacklist steht 
+    if (konto != null && settings.getBoolean("blacklist.konto." + konto,false))
+    {
+      Logger.info("Konto blacklisted for rewriters, skip rewriting");
+      return null;
+    }
     
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
 

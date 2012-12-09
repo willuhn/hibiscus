@@ -202,7 +202,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       int skipped = 0;
       Logger.info("applying booked entries");
       
-      UmsatzRewriter rewriter = RewriterRegistry.getRewriter(konto.getBLZ());
+      UmsatzRewriter rewriter = RewriterRegistry.getRewriter(konto.getBLZ(),konto.getKontonummer());
       
       for (int i=0;i<lines.size();++i)
       {
