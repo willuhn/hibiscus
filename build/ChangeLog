@@ -1,5 +1,9 @@
 HEAD
 
+  * NEW: 0210 Support fuer Blacklisting einzelner BLZ und/oder Konten vom Umsatz-Rewriting
+
+2012-12-02 Version 2.4.0
+
   * NEW: 0209 BUGZILLA 1287 - Changeset 0208 nochmal ueberarbeitet. 
   * NEW: 0208 Updates in der Umsatz-Tabelle als Bulk-Operation. Damit geht z.Bsp. die
               Geprueft-Markierung vieler Umsaetze erheblich schneller
