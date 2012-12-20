@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0212 BUGZILLA 1299 - Konto beim Oeffnen neu Laden, um sicherzustellen, dass der Saldo aktuell ist
+  * NEW: 0211 BUGZILLA 887 - 70090500 hinzugefuegt
   * NEW: 0210 Support fuer Blacklisting einzelner BLZ und/oder Konten vom Umsatz-Rewriting
 
 2012-12-02 Version 2.4.0

@@ -113,10 +113,17 @@ public class KontoControl extends AbstractControl {
 		if (konto != null)
 			return konto;
 		
-		try {
+		try
+		{
 			konto = (Konto) getCurrentObject();
 			if (konto != null)
-				return konto;
+			{
+			  // BUGZILLA 1299 reload Konto
+			  if (!konto.isNewObject())
+         konto = (Konto) Settings.getDBService().createObject(Konto.class,konto.getID());
+			  
+        return konto;
+			}
 		}
 		catch (ClassCastException e)
 		{

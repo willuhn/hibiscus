@@ -45,7 +45,7 @@ public class UmsatzDetailEdit implements Action
       try
       {
         Konto k = (Konto) context;
-        if ((k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
+        if (!k.hasFlag(Konto.FLAG_OFFLINE))
           return; // ist kein Offline-Konto
         
         Umsatz u = (Umsatz) Settings.getDBService().createObject(Umsatz.class,null);
@@ -66,23 +66,4 @@ public class UmsatzDetailEdit implements Action
       return;
 		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzDetailEdit.class,context);
   }
-
 }
-
-
-/**********************************************************************
- * $Log: UmsatzDetailEdit.java,v $
- * Revision 1.3  2011/05/02 09:44:32  willuhn
- * @N BUGZILLA 1035
- *
- * Revision 1.2  2010/04/22 16:40:57  willuhn
- * @N Manuelles Anlegen neuer Umsaetze fuer Offline-Konten moeglich
- *
- * Revision 1.1  2009/01/04 14:47:53  willuhn
- * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
- *
- * Revision 1.1  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- **********************************************************************/

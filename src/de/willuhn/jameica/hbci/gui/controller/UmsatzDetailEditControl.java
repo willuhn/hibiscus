@@ -297,7 +297,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       String[] lines = VerwendungszweckUtil.split(z);
       VerwendungszweckUtil.apply(u,lines);
       
-      getUmsatz().store();
+      u.store();
 
       if (getEmpfaengerBLZ().hasChanged() ||
           getEmpfaengerKonto().hasChanged() ||
@@ -319,11 +319,11 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
           u.getGegenkontoBLZ(),
           HBCI.DATEFORMAT.format(u.getDatum()),
           u.getZweck(),
-          u.getKonto().getWaehrung() + " " + HBCI.DECIMALFORMAT.format(u.getBetrag())
+          k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(u.getBetrag())
         };
 
         String msg = i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Datum {3}, Zweck: {4}] {5} geändert",fields);
-        getUmsatz().getKonto().addToProtokoll(msg,Protokoll.TYP_SUCCESS);
+        k.addToProtokoll(msg,Protokoll.TYP_SUCCESS);
       }
 
       u.transactionCommit();
