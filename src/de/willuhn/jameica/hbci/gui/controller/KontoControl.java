@@ -61,46 +61,48 @@ import de.willuhn.util.I18N;
 /**
  * Controller der fuer den Dialog "Bankverbindungen" zustaendig ist.
  */
-public class KontoControl extends AbstractControl {
+public class KontoControl extends AbstractControl
+{
 
-	// Fachobjekte
-	private Konto konto 			 		= null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+
+  // Fachobjekte
+	private Konto konto 			 		        = null;
 	
 	// Eingabe-Felder
-	private TextInput kontonummer  		= null;
-  private TextInput unterkonto      = null;
-	private TextInput blz          		= null;
-	private Input name				 		    = null;
-	private Input bezeichnung	 		    = null;
-	private Input passportAuswahl     = null;
-  private Input kundennummer 		    = null;
-  private Input kommentar           = null;
+	private TextInput kontonummer  		    = null;
+  private TextInput unterkonto          = null;
+	private TextInput blz          		    = null;
+	private Input name				 		        = null;
+	private Input bezeichnung	 		        = null;
+	private Input passportAuswahl         = null;
+  private Input kundennummer 		        = null;
+  private Input kommentar               = null;
   
-  private TextInput bic             = null;
-  private TextInput iban            = null;
+  private TextInput bic                 = null;
+  private TextInput iban                = null;
   
   private DecimalInput saldo			      = null;
   private DecimalInput avail            = null;
   private SaldoMessageConsumer consumer = null;
   
-  private Button synchronizeOptions = null;
+  private Button synchronizeOptions     = null;
 
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
   private UmsatzList umsatzList         = null;
-  private SaldoChart saldoChart       = null;
+  private SaldoChart saldoChart         = null;
   
   private CheckboxInput offline         = null;
-
-	private I18N i18n;
 
   /**
    * ct.
    * @param view
    */
-  public KontoControl(AbstractView view) {
+  public KontoControl(AbstractView view)
+  {
     super(view);
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
 	/**
