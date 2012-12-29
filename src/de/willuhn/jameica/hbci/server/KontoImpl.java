@@ -99,7 +99,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       HBCIProperties.checkLength(getUnterkonto(), HBCIProperties.HBCI_ID_MAXLENGTH);
 
       if (getKundennummer() == null || getKundennummer().length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie Ihre Kundennummer ein."));
+        throw new ApplicationException(i18n.tr("Bitte geben Sie Ihre Kundenkennung ein."));
 
       // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
       if (getWaehrung() == null || getWaehrung().length() != 3)

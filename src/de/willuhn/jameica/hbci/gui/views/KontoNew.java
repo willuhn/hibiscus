@@ -129,7 +129,7 @@ public class KontoNew extends AbstractView
 
     left.addHeadline(i18n.tr("HBCI-Konfiguration"));
     left.addLabelPair(i18n.tr("Verfahren"),                control.getPassportAuswahl());
-    left.addLabelPair(i18n.tr("Kundennummer"),             control.getKundennummer());
+    left.addLabelPair(i18n.tr("Kundenkennung"),            control.getKundennummer());
 		left.addLabelPair(i18n.tr("Kontonummer"),              control.getKontonummer());
 		left.addLabelPair(i18n.tr("Unterkontonummer"),         control.getUnterkonto());
 		left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());

@@ -170,7 +170,7 @@
         <th>Inhaber</th>
         <th>Unterkonto</th>
         <th>Bezeichnung</th>
-        <th>Kundennummer</th>
+        <th>Kundenkennung</th>
         <th style="text-align:right">Saldo</th>
         <th>Saldo-Datum</th>
       </tr>

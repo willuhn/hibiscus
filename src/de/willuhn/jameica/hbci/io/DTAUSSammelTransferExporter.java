@@ -80,7 +80,7 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
         }
         catch (Exception e)
         {
-          monitor.log(i18n.tr("Ignoriere Kundennummer {0}: ungültig",s));
+          monitor.log(i18n.tr("Ignoriere Kundenkennung {0}: ungültig",s));
         }
 
         long blz = 0;
