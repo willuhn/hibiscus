@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0215 Bei Kategorie-Zuordnung anhand Suchbegriff auch in "Art" (Textschlüssel) suchen
+              http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=14993
   * NEW: 0214 BUGZILLA 887 - 76090500 hinzugefuegt
   * CHG: 0213 BUGZILLA 1303 - Bezeichnung "Kundennummer" einheitlich gehen "Kundenkennung" ersetzt
   * NEW: 0212 BUGZILLA 1299 - Konto beim Oeffnen neu Laden, um sicherzustellen, dass der Saldo aktuell ist

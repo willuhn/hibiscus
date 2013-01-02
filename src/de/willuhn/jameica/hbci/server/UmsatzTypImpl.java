@@ -265,10 +265,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String name  = umsatz.getGegenkontoName();
     String kto   = umsatz.getGegenkontoNummer();
     String kom   = umsatz.getKommentar();
+    String art   = umsatz.getArt();
     
     if (name == null) name = "";
     if (kto  == null) kto = "";
     if (kom  == null) kom = "";
+    if (art  == null) art = "";
 
     if (!isRegex())
     {
@@ -276,6 +278,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       name  = name.toLowerCase();
       kto   = kto.toLowerCase();
       kom   = kom.toLowerCase();
+      art   = art.toLowerCase();
 
       String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 
@@ -285,7 +288,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         if (zweck.indexOf(test) != -1 ||
             name.indexOf(test) != -1 ||
             kto.indexOf(test)  != -1 ||
-            kom.indexOf(test) != -1)
+            kom.indexOf(test) != -1 ||
+            art.indexOf(test) != -1)
         {
           return true;
         }
@@ -308,12 +312,14 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mName = pattern.matcher(name);
       Matcher mKto = pattern.matcher(kto);
       Matcher mKom = pattern.matcher(kom);
-      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom);
+      Matcher mArt = pattern.matcher(kom);
+      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art);
 
       return (mZweck.matches() ||
               mName.matches() ||
               mKto.matches()  ||
               mKom.matches()  ||
+              mArt.matches()  ||
               mAll.matches()
              );
     }
