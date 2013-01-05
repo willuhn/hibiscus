@@ -1,5 +1,6 @@
 HEAD
 
+  * BUG: 0217 BUGZILLA 1309 CSV-Export Umsatzliste - doppeltes Semikolon vor letzter Spalte
   * CHG: 0216 Konto-Filter in AbstractTransferList verschoben (war redundant)
   * NEW: 0215 Bei Kategorie-Zuordnung anhand Suchbegriff auch in "Art" (Textschlüssel) suchen
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=14993
