@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0220 BUGZILLA 1315 Auswahldialog fuer Kategorie-Zuordnung etwas hoeher
   * NEW: 0219 BUGZILLA 1311 Breiteres Eingabefeld für Suchbegriff der Kategorie
   * NEW: 0218 BUGZILLA 1313 Selektierte Kategorie merken
   * BUG: 0217 BUGZILLA 1309 CSV-Export Umsatzliste - doppeltes Semikolon vor letzter Spalte

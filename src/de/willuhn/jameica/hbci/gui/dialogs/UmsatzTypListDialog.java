@@ -86,7 +86,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     this.typ = typ;
 
     this.setTitle(i18n.tr("Auswahl der Kategorie"));
-    this.setSize(370,400);
+    this.setSize(370,500);
   }
 
   /**
