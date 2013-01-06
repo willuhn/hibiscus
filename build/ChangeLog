@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0218 BUGZILLA 1313 Selektierte Kategorie merken
   * BUG: 0217 BUGZILLA 1309 CSV-Export Umsatzliste - doppeltes Semikolon vor letzter Spalte
   * CHG: 0216 Konto-Filter in AbstractTransferList verschoben (war redundant)
   * NEW: 0215 Bei Kategorie-Zuordnung anhand Suchbegriff auch in "Art" (Textschlüssel) suchen

@@ -48,7 +48,7 @@ import de.willuhn.util.I18N;
 public class UmsatzTypTree extends TreePart
 {
 
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
@@ -70,7 +70,6 @@ public class UmsatzTypTree extends TreePart
   public UmsatzTypTree(Action action) throws RemoteException
   {
     super(init(), action);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     addColumn(i18n.tr("Bezeichnung"),"name");
     addColumn(i18n.tr("Reihenfolge"),"nummer"); // BUGZILLA 554/988
     addColumn(i18n.tr("Suchbegriff"),"pattern"); // BUGZILLA 756
@@ -122,6 +121,7 @@ public class UmsatzTypTree extends TreePart
     this.setMulti(true);
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
+    this.setRememberState(true);
     this.setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzTypList());
   }
   
