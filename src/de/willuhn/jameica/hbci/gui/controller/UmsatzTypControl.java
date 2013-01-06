@@ -115,7 +115,7 @@ public class UmsatzTypControl extends AbstractControl
     if (this.nummer == null)
     {
       this.nummer = new TextInput(getUmsatzTyp().getNummer(),5);
-      this.nummer.setComment(i18n.tr("Wird für die Sortierung verwendet"));
+      this.nummer.setHint(i18n.tr("Wird für die Sortierung verwendet"));
       this.nummer.setMandatory(false);
     }
     return this.nummer;
@@ -131,7 +131,7 @@ public class UmsatzTypControl extends AbstractControl
     if (this.pattern == null)
     {
       this.pattern = new TextInput(getUmsatzTyp().getPattern(),UmsatzTyp.MAXLENGTH_PATTERN);
-      this.pattern.setComment(i18n.tr("Für automatische Zuordnung anhand von Suchbegriffen"));
+      this.pattern.setHint(i18n.tr("Für automatische Zuordnung anhand von Suchbegriffen"));
       this.pattern.addListener(new Listener()
       {
       
