@@ -1,4 +1,4 @@
-"Kontonummer";"BLZ";"Konto";"Gegenkonto";"Gegenkonto BLZ";"Gegenkonto Inhaber";"Betrag";"Valuta";"Datum";"Verwendungszweck";"Verwendungszweck 2";"Zwischensumme";"Primanota";"Kundenreferenz";"Kategorie";"Kommentar";"Weitere Verwendungszwecke";"Art"
+"Kontonummer";"BLZ";"Konto";"Gegenkonto";"Gegenkonto BLZ";"Gegenkonto Inhaber";"Betrag";"Valuta";"Datum";"Verwendungszweck";"Verwendungszweck 2";"Zwischensumme";"Primanota";"Kundenreferenz";"Kategorie";"Notiz";"Weitere Verwendungszwecke";"Art"
 #foreach($umsatz in $objects)
 #set($konto = $umsatz.Konto)
 #set($kat = "")

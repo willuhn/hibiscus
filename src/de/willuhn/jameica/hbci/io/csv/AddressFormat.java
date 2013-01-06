@@ -53,7 +53,7 @@ public class AddressFormat implements Format<HibiscusAddress>
       list.add(new Column("blz",i18n.tr("Bankleitzahl"),i++,s));
       list.add(new Column("iban",i18n.tr("IBAN"),i++,s));
       list.add(new Column("bic",i18n.tr("BIC"),i++,s));
-      list.add(new Column("kommentar",i18n.tr("Kommentar"),i++,s));
+      list.add(new Column("kommentar",i18n.tr("Notiz"),i++,s));
     }
     return this.profile;
   }

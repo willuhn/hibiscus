@@ -119,8 +119,8 @@ public class EmpfaengerList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("IBAN"),"iban");
-    addColumn(i18n.tr("Kategorie"),"kategorie");
-    addColumn(i18n.tr("Kommentar"),"kommentar",new Formatter()
+    addColumn(i18n.tr("Gruppe"),"kategorie");
+    addColumn(i18n.tr("Notiz"),"kommentar",new Formatter()
     {
       public String format(Object o)
       {
@@ -374,104 +374,3 @@ public class EmpfaengerList extends TablePart implements Part
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: EmpfaengerList.java,v $
- * Revision 1.27  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.26  2010-04-15 10:26:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.25  2010/04/14 17:44:10  willuhn
- * @N BUGZILLA 83
- *
- * Revision 1.24  2010/04/11 21:57:08  willuhn
- * @N Anzeige der eigenen Konten im Adressbuch als "virtuelle" Adressen. Basierend auf Ralfs Patch.
- *
- * Revision 1.23  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.22  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- * Revision 1.21  2009/02/19 23:42:01  willuhn
- * @N Filter fuer Adressbuch zum Ausblenden von Adressen (z.Bsp. bei Auslandsueberweisungen alle ausblenden, die keine IBAN haben)
- *
- * Revision 1.20  2007/04/26 23:08:13  willuhn
- * @C Umstellung auf DelayedListener
- *
- * Revision 1.19  2007/04/26 15:02:36  willuhn
- * @N Optisches Feedback beim Neuladen der Daten
- *
- * Revision 1.18  2007/04/25 12:40:12  willuhn
- * @N Besseres Warteverhalten nach Texteingabe in Umsatzliste und Adressbuch
- *
- * Revision 1.17  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.16  2007/04/20 14:55:31  willuhn
- * @C s/findAddress/findAddresses/
- *
- * Revision 1.15  2007/04/20 14:49:05  willuhn
- * @N Support fuer externe Adressbuecher
- * @N Action "EmpfaengerAdd" "aufgebohrt"
- *
- * Revision 1.14  2007/03/21 18:47:36  willuhn
- * @N Neue Spalte in Kategorie-Tree
- * @N Sortierung des Kontoauszuges wie in Tabelle angezeigt
- * @C Code cleanup
- *
- * Revision 1.13  2007/03/16 14:40:02  willuhn
- * @C Redesign ImportMessage
- * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
- *
- * Revision 1.12  2006/11/20 23:07:54  willuhn
- * @N new package "messaging"
- * @C moved ImportMessage into new package
- *
- * Revision 1.11  2006/10/17 23:50:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2006/10/05 16:42:28  willuhn
- * @N CSV-Import/Export fuer Adressen
- *
- * Revision 1.9  2006/08/05 20:44:39  willuhn
- * @B Bug 256
- *
- * Revision 1.8  2006/05/11 16:53:09  willuhn
- * @B bug 233
- *
- * Revision 1.7  2006/03/30 22:22:32  willuhn
- * @B bug 217
- *
- * Revision 1.6  2006/02/20 22:57:22  willuhn
- * @N Suchfeld in Adress-Liste
- *
- * Revision 1.5  2006/02/06 15:31:00  willuhn
- * @N Anzeige des Banknamens in Adressbuch-Liste
- *
- * Revision 1.4  2005/08/16 21:33:13  willuhn
- * @N Kommentar-Feld in Adressen
- * @N Neuer Adress-Auswahl-Dialog
- * @B Checkbox "in Adressbuch speichern" in Ueberweisungen
- *
- * Revision 1.3  2005/06/27 15:35:27  web0
- * @B bug 84
- *
- * Revision 1.2  2005/05/09 12:24:20  web0
- * @N Changelog
- * @N Support fuer Mehrfachmarkierungen
- * @N Mehere Adressen en bloc aus Umsatzliste uebernehmen
- *
- * Revision 1.1  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- *
- **********************************************************************/

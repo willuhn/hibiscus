@@ -73,7 +73,7 @@ public class UmsatzFormat implements Format<Umsatz>
       list.add(new Column("primanota",i18n.tr("Primanota"),i++,ts));
       list.add(new Column("customerRef",i18n.tr("Kundenreferenz"),i++,ts));
       list.add(new Column("umsatzTyp",i18n.tr("Kategorie"),i++,new UmsatzTypSerializer()));
-      list.add(new Column("kommentar",i18n.tr("Kommentar"),i++,ts));
+      list.add(new Column("kommentar",i18n.tr("Notiz"),i++,ts));
       list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,new ExtendedUsageSerializer()));
 
       // wird von Hibiscus nicht mit im CSV exportiert, kann aber importiert werden

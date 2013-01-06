@@ -61,9 +61,9 @@ public class EmpfaengerNew extends AbstractView
     left.addLabelPair(i18n.tr("Name des Kredit-Instituts"), control.getBank());
 
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
-    right.addHeadline(i18n.tr("Notizen"));
+    right.addHeadline(i18n.tr("Notiz"));
     right.addPart(control.getKommentar());
-    right.addLabelPair(i18n.tr("Kategorie"),control.getKategorie());
+    right.addLabelPair(i18n.tr("Gruppe"),control.getKategorie());
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea();

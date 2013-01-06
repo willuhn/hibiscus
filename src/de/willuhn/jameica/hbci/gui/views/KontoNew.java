@@ -139,7 +139,7 @@ public class KontoNew extends AbstractView
     right.addLabelPair(i18n.tr("IBAN"),                    control.getIban());
     right.addLabelPair(i18n.tr("BIC"),                     control.getBic());
 
-    right.addHeadline(i18n.tr("Notizen"));
+    right.addHeadline(i18n.tr("Notiz"));
     right.addPart(control.getKommentar());
     right.addInput(control.getOffline());
 

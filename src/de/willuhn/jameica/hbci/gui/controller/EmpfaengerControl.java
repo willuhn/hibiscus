@@ -242,6 +242,7 @@ public class EmpfaengerControl extends AbstractControl {
     });
 
     this.kategorie = new SelectInput(list,this.getAddress().getKategorie());
+    this.kategorie.setName(i18n.tr("Gruppe"));
     this.kategorie.setEditable(true);
     this.kategorie.setEnabled(isHibiscusAdresse());
     return this.kategorie;

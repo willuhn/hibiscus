@@ -108,7 +108,7 @@ public class KontoList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-    addColumn(i18n.tr("Kommentar"),"kommentar");
+    addColumn(i18n.tr("Notiz"),"kommentar");
     addColumn(i18n.tr("HBCI-Medium"),"passport_class", new Formatter() {
       public String format(Object o)
       {
