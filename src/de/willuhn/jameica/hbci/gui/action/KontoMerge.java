@@ -55,8 +55,9 @@ public class KontoMerge implements Action
       
       DBIterator existing = Settings.getDBService().createList(Konto.class);
 
-      int created = 0;
-      int skipped = 0;
+      int created   = 0;
+      int skipped   = 0;
+      int nosupport = 0;
       for (Konto konto:konten)
       {
         Logger.info("merging konto " + konto.getKontonummer());
@@ -112,6 +113,11 @@ public class KontoMerge implements Action
             created++;
             Logger.info("konto saved successfully");
           }
+          catch (ApplicationException ae)
+          {
+            Logger.warn("konto not supported: " + ae.getMessage());
+            nosupport++;
+          }
           catch (Exception e)
           {
             // Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
@@ -121,8 +127,8 @@ public class KontoMerge implements Action
         }
       }
 
-      String[] values = new String[] {Integer.toString(created),Integer.toString(skipped)};
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Konten erfolgreich abgeglichen. Angelegt: {0}, Übersprungen: {1}",values),StatusBarMessage.TYPE_SUCCESS));
+      String[] values = new String[] {Integer.toString(created),Integer.toString(skipped), Integer.toString(nosupport)};
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Konten abgeglichen. Angelegt: {0}, Übersprungen: {1}, nicht unterstützt: {2}",values),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
     {
