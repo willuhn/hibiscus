@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0223 BUGZILLA 1322 Unterstuetzung fuer ueberlanges HIVISS Segment in GAD BPD
   * NEW: 0222 BUGZILLA 1321 Beim Anlegen der Konten die nicht unterstuetzten explizit ausweisen
   * NEW: 0221 BUGZILLA 1312 Bezeichnung "Kommentar" einheitlich gegen "Notiz" ersetzt
   * NEW: 0220 BUGZILLA 1315 Auswahldialog fuer Kategorie-Zuordnung etwas hoeher
