@@ -72,7 +72,11 @@
   <target depends="compile" name="tag" description="tags the source in the scm">
 
     <exec executable="git" failonerror="true" dir="${basedir}">
-      <arg line="tag -s ${tag}" />
+      <arg line="tag -m ${tag}" />
+    </exec>
+    
+    <exec executable="git" failonerror="true" dir="${basedir}">
+      <arg line="push origin ${tag}" />
     </exec>
 
   </target>
