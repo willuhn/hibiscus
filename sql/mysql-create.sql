@@ -290,4 +290,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',38);
+INSERT INTO version (name,version) values ('db',39);
