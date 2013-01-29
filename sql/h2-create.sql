@@ -240,7 +240,7 @@ CREATE TABLE version (
 CREATE TABLE property (
   id IDENTITY(1),
   name varchar(1000) NOT NULL,
-  content varchar(1000) NULL,
+  content varchar(10000) NULL,
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
@@ -288,6 +288,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',38);
+INSERT INTO version (name,version) values ('db',39);
   
 COMMIT;
