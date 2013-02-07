@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.willuhn.datasource.GenericIterator;
@@ -126,7 +127,15 @@ public class UmsatzTypTreeControl extends AbstractControl
     tree.setEnd((Date) getEnd().getValue());
     tree.setStart((Date) getStart().getValue());
     tree.setKonto((Konto) getKontoAuswahl().getValue());
-    tree.setUmsatzTree(getTree().getItems());
+    
+    Object o = getTree().getSelection();
+    List<UmsatzTreeNode> selection = new LinkedList<UmsatzTreeNode>(); 
+    if (o instanceof UmsatzTreeNode)
+      selection.add((UmsatzTreeNode)o);
+    else if (o instanceof UmsatzTreeNode[])
+      selection.addAll(Arrays.asList((UmsatzTreeNode[])o));
+    
+    tree.setUmsatzTree(selection.size() > 0 ? selection : getTree().getItems());
     return tree;
   }
 

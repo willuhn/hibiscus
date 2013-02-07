@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0224 Beim Klick auf "Exportieren" in Auswertungen->Umsätze nach Kategorien
+              nur die markierten Kategorien exportieren, insofern welche markiert sind
   * NEW: 0223 BUGZILLA 1322 Unterstuetzung fuer ueberlanges HIVISS Segment in GAD BPD
   * NEW: 0222 BUGZILLA 1321 Beim Anlegen der Konten die nicht unterstuetzten explizit ausweisen
   * NEW: 0221 BUGZILLA 1312 Bezeichnung "Kommentar" einheitlich gegen "Notiz" ersetzt
