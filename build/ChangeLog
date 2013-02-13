@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0225 Bezeichner "Ausländische Bankverbindung" in "Europäische Bankverbindung (SEPA)" geändert
   * NEW: 0224 Beim Klick auf "Exportieren" in Auswertungen->Umsätze nach Kategorien
               nur die markierten Kategorien exportieren, insofern welche markiert sind
   * NEW: 0223 BUGZILLA 1322 Unterstuetzung fuer ueberlanges HIVISS Segment in GAD BPD

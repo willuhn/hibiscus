@@ -51,11 +51,11 @@ public class EmpfaengerNew extends AbstractView
     ColumnLayout columns = new ColumnLayout(getParent(),2);
 
     SimpleContainer left = new SimpleContainer(columns.getComposite());
-    left.addHeadline(i18n.tr("Eigenschaften"));
+    left.addHeadline(i18n.tr("Nationale Bankverbindung"));
     left.addLabelPair(i18n.tr("Kontoinhaber"),              control.getName());
 		left.addLabelPair(i18n.tr("Kontonummer"),               control.getKontonummer());
 		left.addLabelPair(i18n.tr("Bankleitzahl"),              control.getBlz());
-    left.addHeadline(i18n.tr("Ausländische Bankverbindung"));
+    left.addHeadline(i18n.tr("Europäische Bankverbindung (SEPA)"));
     left.addLabelPair(i18n.tr("IBAN"),                      control.getIban());
     left.addLabelPair(i18n.tr("BIC"),                       control.getBic());
     left.addLabelPair(i18n.tr("Name des Kredit-Instituts"), control.getBank());
