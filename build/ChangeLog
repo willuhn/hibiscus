@@ -1,3 +1,7 @@
+2013-02-14 Version 2.4.2
+
+  * NEW: 0223 BUGZILLA 1322 BPD-Parameter nochmal vergrößert auf 16k
+
 2013-01-30 Version 2.4.1
 
   * NEW: 0223 BUGZILLA 1322 Unterstuetzung fuer ueberlanges HIVISS Segment in GAD BPD
