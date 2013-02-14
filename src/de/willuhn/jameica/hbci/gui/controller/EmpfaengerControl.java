@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -136,9 +138,20 @@ public class EmpfaengerControl extends AbstractControl {
     if (this.umsatzList != null)
       return this.umsatzList;
 
+    Address a = this.getAddress();
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
-    list.addFilter("empfaenger_konto like ?",new Object[]{"%" + getAddress().getKontonummer()});
-    list.addFilter("empfaenger_blz = ?",  new Object[]{getAddress().getBlz()});
+    // BUGZILLA 1328 https://www.willuhn.de/bugzilla/show_bug.cgi?id=1328
+    // wenn wir eine IBAN haben, muessen wir auch nach der suchen.
+    String iban = a.getIban();
+    if (StringUtils.isNotEmpty(iban))
+    {
+      list.addFilter("((empfaenger_konto like ? and empfaenger_blz = ?) or lower(empfaenger_konto) = ?)","%" + a.getKontonummer(), a.getBlz(), iban.toLowerCase());
+    }
+    else
+    {
+      list.addFilter("empfaenger_konto like ?","%" + a.getKontonummer());
+      list.addFilter("empfaenger_blz = ?",a.getBlz());
+    }
 
     this.umsatzList = new UmsatzList(list,new UmsatzDetail());
     ((UmsatzList)this.umsatzList).setFilterVisible(false);

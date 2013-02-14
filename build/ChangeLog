@@ -1,5 +1,8 @@
 HEAD
 
+  * NEW: 0226 BUGZILLA 1328 Im Adressbuch unter "Buchungen von/an diese Adresse" wurden
+              Umsätze nicht gefunden, wenn sie die IBAN statt der nationalen Kontonummer
+              verwenden.
   * NEW: 0225 Bezeichner "Ausländische Bankverbindung" in "Europäische Bankverbindung (SEPA)" geändert
   * NEW: 0224 Beim Klick auf "Exportieren" in Auswertungen->Umsätze nach Kategorien
               nur die markierten Kategorien exportieren, insofern welche markiert sind
