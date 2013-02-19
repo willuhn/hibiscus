@@ -38,7 +38,7 @@ public class update0039 implements Update
     statements.put(DBSupportH2Impl.class.getName(),"ALTER TABLE property ALTER COLUMN content varchar(10000) NULL;\n");
 
     // Update fuer PostGreSQL
-    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE property ALTER COLUMN content TYPE varchar(10000) NULL;\n");
+    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE property ALTER COLUMN content TYPE varchar(10000);\n");
     
     // Update fuer MySQL nicht noetig
   }

@@ -48,7 +48,7 @@ public class update0038 implements Update
     statements.put(DBSupportMySqlImpl.class.getName(),"ALTER TABLE umsatztyp CHANGE pattern pattern TEXT NULL;\n");
 
     // Update fuer PostGreSQL
-    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE umsatztyp ALTER COLUMN pattern TYPE varchar(1000) NULL;\n");
+    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE umsatztyp ALTER COLUMN pattern TYPE varchar(1000);\n");
   }
 
   /**

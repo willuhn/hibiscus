@@ -48,7 +48,7 @@ public class update0033 implements Update
     statements.put(DBSupportMySqlImpl.class.getName(),"ALTER TABLE konto CHANGE unterkonto unterkonto varchar(30) NULL;\n");
 
     // Update fuer PostGreSQL
-    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE konto ALTER COLUMN unterkonto TYPE varchar(30) NULL;\n");
+    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE konto ALTER COLUMN unterkonto TYPE varchar(30);\n");
   }
 
   /**
