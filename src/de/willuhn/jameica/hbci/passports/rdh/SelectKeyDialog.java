@@ -15,20 +15,24 @@ package de.willuhn.jameica.hbci.passports.rdh;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.Button;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.system.Application;
@@ -44,9 +48,10 @@ import de.willuhn.util.I18N;
  */
 public class SelectKeyDialog extends AbstractDialog
 {
-  private RDHKey selected = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private I18N i18n       = null;
+  private TablePart table = null;
+  private RDHKey selected = null;
 
   /**
    * @param position
@@ -54,8 +59,7 @@ public class SelectKeyDialog extends AbstractDialog
   public SelectKeyDialog(int position)
   {
     super(position);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    setTitle(i18n.tr("Schlüsselauswahl"));
+    this.setTitle(i18n.tr("Schlüsselauswahl"));
   }
 
   /**
@@ -63,35 +67,29 @@ public class SelectKeyDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Schlüsseldatei"));
-    group.addText(i18n.tr("Bitte wählen Sie den zu verwendenden Schlüssel aus"),true);
-    
-    GenericIterator list = RDHKeyFactory.getKeys();
-    RDHKey current = null;
-    ArrayList l = new ArrayList();
-    while (list.hasNext())
-    {
-      current = (RDHKey) list.next();
-      l.add(new KeyObject(current));
-    }
-    list = PseudoIterator.fromArray((KeyObject[]) l.toArray(new KeyObject[l.size()]));
-    final TablePart table = new TablePart(list, new Action() {
+    Container container = new SimpleContainer(parent);
+    container.addText(i18n.tr("Bitte wählen Sie den zu verwendenden Schlüssel aus"),true);
+
+    final Button apply = new Button(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        if (context == null || !(context instanceof KeyObject))
-          return;
-        KeyObject o = (KeyObject) context;
-        try
-        {
-          if (!o.key.isEnabled())
-            return;
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while checking if key is enabled",e);
-        }
-        selected = o.key;
-        close();
+        new Apply().handleAction(table.getSelection());
+      }
+    },null,true,"ok.png");
+    apply.setEnabled(false); // initial deaktivieren
+    
+    GenericIterator list = RDHKeyFactory.getKeys();
+    List<KeyObject> l = new ArrayList<KeyObject>();
+    while (list.hasNext())
+    {
+      RDHKey key = (RDHKey) list.next();
+      l.add(new KeyObject(key));
+    }
+    
+    this.table = new TablePart(l, new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new Apply().handleAction(context);
       }
     });
     table.setFormatter(new TableFormatter() {
@@ -111,40 +109,63 @@ public class SelectKeyDialog extends AbstractDialog
         }
       }
     });
+    
+    table.addSelectionListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        apply.setEnabled(table.getSelection() != null);
+      }
+    });
+
     table.addColumn(i18n.tr("Dateiname"),"filename");
     table.addColumn(i18n.tr("Alias-Name"),"alias");
     table.setMulti(false);
     table.setSummary(false);
     table.paint(parent);
     
-    ButtonArea buttons = new ButtonArea(parent,2);
-    buttons.addButton(i18n.tr("Übernehmen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        Object o = table.getSelection();
-        if (o == null || !(o instanceof KeyObject))
-          return;
-
-        KeyObject key = (KeyObject) o;
-        try
-        {
-          if (!key.key.isEnabled())
-            return;
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while checking if key is enabled",e);
-        }
-        selected = key.key;
-        close();
-      }
-    },null,true);
+    ButtonArea buttons = new ButtonArea();
+    buttons.addButton(apply);
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+    buttons.paint(parent);
+  }
+  
+  /**
+   * Die Action zum Uebernehmen der Auswahl.
+   */
+  private class Apply implements Action
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      if (context == null || !(context instanceof KeyObject))
+      {
+        Logger.warn("no key choosen");
+        return;
+      }
+
+      KeyObject key = (KeyObject) context;
+      try
+      {
+        if (!key.key.isEnabled())
+        {
+          Logger.warn("choosen key not enabled");
+          return;
+        }
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("error while checking if key is enabled",e);
+      }
+      selected = key.key;
+      close();
+    }
   }
 
   /**
@@ -213,37 +234,3 @@ public class SelectKeyDialog extends AbstractDialog
     
   }
 }
-
-
-/*********************************************************************
- * $Log: SelectKeyDialog.java,v $
- * Revision 1.2  2010/10/11 20:58:52  willuhn
- * @N BUGZILLA 927
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.6  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- * Revision 1.5  2005/11/14 12:33:52  willuhn
- * @B bug 148
- *
- * Revision 1.4  2005/11/14 12:22:31  willuhn
- * @B bug 148
- *
- * Revision 1.3  2005/08/01 22:15:34  web0
- * *** empty log message ***
- *
- * Revision 1.2  2005/06/27 15:30:47  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/06/21 21:45:06  web0
- * @B bug 80
- *
- **********************************************************************/
