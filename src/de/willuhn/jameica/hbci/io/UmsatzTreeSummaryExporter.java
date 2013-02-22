@@ -21,23 +21,17 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPCell;
 
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
  * Exporter fuer einen Tree von Umsaetzen im PDF-Format.
  * Hierbei werden nur die Summen der einzelnen Kategorien exportiert.
  */
-public class UmsatzTreeSummaryExporter implements Exporter
+public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -52,16 +46,11 @@ public class UmsatzTreeSummaryExporter implements Exporter
 
     UmsatzTree tree = t[0];
     List list = tree.getUmsatzTree();
-    Konto k = tree.getKonto();
     
-    String subTitle = i18n.tr("Zeitraum {0} - {1}, {2}", new String[] {
-        HBCI.DATEFORMAT.format(tree.getStart()), HBCI.DATEFORMAT.format(tree.getEnd()),
-        k == null ? i18n.tr("alle Konten") : k.getBezeichnung() });
-
     Reporter reporter = null;
     try
     {
-      reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), subTitle, list.size());
+      reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), this.getSubTitle(tree), list.size());
 
       reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130,BaseColor.LIGHT_GRAY);
       reporter.addHeaderColumn(i18n.tr("Betrag"), Element.ALIGN_CENTER, 30,BaseColor.LIGHT_GRAY);
@@ -103,34 +92,6 @@ public class UmsatzTreeSummaryExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
-  public IOFormat[] getIOFormats(Class objectType)
-  {
-    // Wir unterstuetzen nur Umsatz-Trees
-    if (!UmsatzTree.class.equals(objectType))
-      return null;
-
-    IOFormat myFormat = new IOFormat() {
-    
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-       */
-      public String getName()
-      {
-        return UmsatzTreeSummaryExporter.this.getName();
-      }
-    
-      public String[] getFileExtensions()
-      {
-        return new String[]{"pdf"};
-      }
-    
-    };
-    return new IOFormat[]{myFormat};
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
   public String getName()
@@ -138,23 +99,3 @@ public class UmsatzTreeSummaryExporter implements Exporter
     return i18n.tr("PDF-Format: Summen der Hauptkategorien");
   }
 }
-
-/*******************************************************************************
- * $Log: UmsatzTreeSummaryExporter.java,v $
- * Revision 1.4  2010/12/12 23:16:16  willuhn
- * @N Alex' Patch mit der Auswertung "Summen aller Kategorien mit Einnahmen und Ausgaben"
- *
- * Revision 1.3  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- * Revision 1.2  2007/05/02 12:40:18  willuhn
- * @C UmsatzTree*-Exporter nur fuer Objekte des Typs "UmsatzTree" anbieten
- * @C Start- und End-Datum in Kontoauszug speichern und an PDF-Export via Session uebergeben
- *
- * Revision 1.1  2007/05/02 11:18:04  willuhn
- * @C PDF-Export von Umsatz-Trees in IO-API gepresst ;)
- *
- * Revision 1.1  2007/04/29 10:22:11  jost
- * Neu: PDF-Ausgabe der Umsätze nach Kategorien
- *
- ******************************************************************************/
