@@ -1,5 +1,6 @@
 HEAD
 
+  * NEW: 0229 47-blz-updates.patch
   * NEW: 0228 BUGZILLA 1334 Summen- und Trend-Linie im Salden-Chart nicht mehr füllen - für bessere Übersichtlichkeit
   * BUG: 0227 BUGZILLA 1333 NPE beim Export der Umsatzkategorien, wenn kein Datumsbereich angegeben ist
   * NEW: 0226 BUGZILLA 1328 Im Adressbuch unter "Buchungen von/an diese Adresse" wurden
