@@ -500,6 +500,15 @@ public class SparQuote implements Part
     {
       return null;
     }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
+     */
+    @Override
+    public boolean isFilled() throws RemoteException
+    {
+      return true;
+    }
   }
 
   /**
@@ -531,56 +540,4 @@ public class SparQuote implements Part
       return true;
     }
   }
-
 }
-
-
-/*********************************************************************
- * $Log: SparQuote.java,v $
- * Revision 1.38  2012/05/06 14:26:04  willuhn
- * @N BUGZILLA 1233
- *
- * Revision 1.37  2012/04/23 21:03:41  willuhn
- * @N BUGZILLA 1227
- *
- * Revision 1.36  2012/04/05 21:29:06  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.35  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.34  2011/10/27 11:03:40  willuhn
- * @C Auswahl des Stichtages in Spar-Quote als Spinner-Input
- *
- * Revision 1.33  2011-07-27 09:25:50  willuhn
- * @B Zeitraum und Stichtag war initial nicht gesetzt und wurde erst nach Klick auf "Aktualisieren" korrekt berechnet
- *
- * Revision 1.32  2011-06-28 15:28:37  willuhn
- * @N Zeitraum jetzt auch ueber neuen Schiebe-Regler
- *
- * Revision 1.31  2011-05-19 08:41:53  willuhn
- * @N BUGZILLA 1038 - generische Loesung
- *
- * Revision 1.30  2011-05-03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.29  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.28  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.27  2010-11-29 22:44:30  willuhn
- * @B getCurve() wurde falsch rum interpretiert ;)
- *
- * Revision 1.26  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- * Revision 1.25  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.24  2010-08-11 14:53:19  willuhn
- * @B Kleiner Darstellungsfehler (unnoetig breiter rechter Rand wegen zweispaltigem Part)
- **********************************************************************/

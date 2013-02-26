@@ -72,22 +72,13 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
   {
     return i18n.tr("Summe");
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isFilled()
+   */
+  public boolean isFilled() throws RemoteException
+  {
+    return false;
+  }
 }
 
-
-/*********************************************************************
- * $Log: ChartDataSaldoSumme.java,v $
- * Revision 1.4  2011/10/27 17:09:29  willuhn
- * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
- * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
- *
- * Revision 1.3  2011-05-16 08:46:46  willuhn
- * @N BUGZILLA 1044
- *
- * Revision 1.2  2011-05-16 08:44:08  willuhn
- * @B BUGZILLA 1044
- *
- * Revision 1.1  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- **********************************************************************/

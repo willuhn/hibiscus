@@ -57,20 +57,12 @@ public abstract class AbstractChartDataSaldo implements LineChartData
   {
     return null;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
+   */
+  public boolean isFilled() throws RemoteException
+  {
+    return true;
+  }
 }
-
-
-/*********************************************************************
- * $Log: AbstractChartDataSaldo.java,v $
- * Revision 1.3  2011/10/27 17:09:29  willuhn
- * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
- * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
- *
- * Revision 1.2  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- * Revision 1.1  2010-08-12 17:12:31  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- **********************************************************************/

@@ -34,13 +34,11 @@ public interface LineChartData extends ChartData
    * @throws RemoteException
    */
   public int[] getColor() throws RemoteException;
+  
+  /**
+   * Legt fest, ob die Flaeche unter der Linie gefüllt ist oder nicht.
+   * @return true falls gefuellt.
+   * @throws RemoteException
+   */
+  public boolean isFilled() throws RemoteException;
 }
-
-
-/*********************************************************************
- * $Log: LineChartData.java,v $
- * Revision 1.5  2010/11/24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- **********************************************************************/

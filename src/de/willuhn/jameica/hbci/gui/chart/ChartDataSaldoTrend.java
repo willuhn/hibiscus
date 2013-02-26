@@ -119,25 +119,13 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
     item.setValue(item.getValue() / found);
     return item;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isFilled()
+   */
+  public boolean isFilled() throws RemoteException
+  {
+    return false;
+  }
+
 }
-
-
-/*********************************************************************
- * $Log: ChartDataSaldoTrend.java,v $
- * Revision 1.5  2011/10/27 17:09:29  willuhn
- * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
- * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
- *
- * Revision 1.4  2011-05-03 10:15:56  willuhn
- * @B NPE
- *
- * Revision 1.3  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.2  2010-08-11 16:06:04  willuhn
- * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
- *
- * Revision 1.1  2009/08/27 13:37:28  willuhn
- * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich eine Trendkurve an
- *
- **********************************************************************/

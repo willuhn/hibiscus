@@ -248,6 +248,14 @@ public class UmsatzTypVerlauf implements Part
       
       return ut.getColor();
     }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
+     */
+    public boolean isFilled() throws RemoteException
+    {
+      return true;
+    }
   }
   
   /**

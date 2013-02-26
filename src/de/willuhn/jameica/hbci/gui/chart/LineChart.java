@@ -126,6 +126,7 @@ public class LineChart extends AbstractChart<LineChartData>
       if (cValues == null)
         cValues = ColorGenerator.create(ColorGenerator.PALETTE_OFFICE + i);
       lineSeries.setLineColor(getColor(new RGB(cValues[0],cValues[1],cValues[2])));
+      lineSeries.enableArea(cd.isFilled());
       //
       //////////////////////////////////////////////////////////////////////////
     }
