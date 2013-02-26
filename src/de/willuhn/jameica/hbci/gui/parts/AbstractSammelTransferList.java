@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
@@ -61,6 +62,7 @@ import de.willuhn.logging.Logger;
 public abstract class AbstractSammelTransferList extends AbstractFromToList
 {
   private MessageConsumer mc = null;
+  private CheckboxInput pending = null;
 
   /**
    * ct.
@@ -130,6 +132,37 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   }
   
   /**
+   * Liefert eine Checkbox mit der festgelegt werden kann, ob nur offene Auftraege angezeigt werden sollen.
+   * @return Checkbox.
+   */
+  protected CheckboxInput getPending()
+  {
+    if (this.pending != null)
+      return this.pending;
+    
+    this.pending = new CheckboxInput(settings.getBoolean("transferlist.filter.pending",false));
+    this.pending.setName(i18n.tr("Nur offene Aufträge anzeigen"));
+    this.pending.addListener(this.listener);
+    return this.pending;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#hasChanged()
+   */
+  protected boolean hasChanged()
+  {
+    try
+    {
+      return (super.hasChanged() && pending != null && pending.hasChanged());
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to check change status",e);
+      return true;
+    }
+  }
+
+  /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
    */
   protected DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException
@@ -146,7 +179,11 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     
     if (konto != null)
       list.addFilter("konto_id = " + konto.getID());
-    
+
+    boolean pending = ((Boolean) this.getPending().getValue()).booleanValue();
+    if (pending)
+      list.addFilter("ausgefuehrt = 0");
+
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
   }
@@ -169,6 +206,8 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
       }
     });
     super.paint(parent);
+    
+    this.getLeft().addInput(this.getPending());
   }
   
   /**

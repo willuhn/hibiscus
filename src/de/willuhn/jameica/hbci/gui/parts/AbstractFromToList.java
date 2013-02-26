@@ -57,13 +57,14 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractFromToList extends TablePart implements Part
 {
-  protected final static I18N i18n       = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+  protected final static I18N i18n         = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  protected final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   
   private KontoInput konto       = null;
   private Input from             = null;
   private Input to               = null;
   private Input text             = null;
+  private Container left         = null;
 
   protected Listener listener    = null;
   
@@ -174,14 +175,15 @@ public abstract class AbstractFromToList extends TablePart implements Part
     ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
     
     {
-      Container left = new SimpleContainer(cols.getComposite());
-      left.addInput(this.getKonto());
+      this.left = new SimpleContainer(cols.getComposite());
       
       Input t = this.getText();
-      left.addInput(t);
+      this.left.addInput(t);
       
       // Duerfen wir erst nach dem Zeichnen
       t.getControl().addKeyListener(new DelayedAdapter());
+      
+      this.left.addInput(this.getKonto());
     }
     
     {
@@ -212,8 +214,17 @@ public abstract class AbstractFromToList extends TablePart implements Part
   }
   
   /**
+   * Liefert den linken Container im Filter-Bereich.
+   * @return der linke Container.
+   */
+  protected Container getLeft()
+  {
+    return this.left;
+  }
+  
+  /**
    * Liefert die Button-Area der Komponente.
-   * @return this Buttons.
+   * @return die Buttons.
    */
   public ButtonArea getButtons()
   {

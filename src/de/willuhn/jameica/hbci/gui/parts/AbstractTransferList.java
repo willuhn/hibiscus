@@ -19,6 +19,8 @@ import java.util.Date;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericObject;
@@ -27,6 +29,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
@@ -61,6 +64,7 @@ import de.willuhn.logging.Logger;
 public abstract class AbstractTransferList extends AbstractFromToList
 {
   private MessageConsumer mc = null;
+  private CheckboxInput pending = null;
 
   /**
    * ct.
@@ -144,6 +148,42 @@ public abstract class AbstractTransferList extends AbstractFromToList
     addColumn(new AusgefuehrtColumn());
   }
 
+  /**
+   * Liefert eine Checkbox mit der festgelegt werden kann, ob nur offene Auftraege angezeigt werden sollen.
+   * @return Checkbox.
+   */
+  protected CheckboxInput getPending()
+  {
+    if (this.pending != null)
+      return this.pending;
+    
+    this.pending = new CheckboxInput(settings.getBoolean("transferlist.filter.pending",false));
+    this.pending.setName(i18n.tr("Nur offene Aufträge anzeigen"));
+    this.pending.addListener(this.listener);
+    this.pending.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("transferlist.filter.pending",((Boolean)pending.getValue()).booleanValue());
+      }
+    });
+    return this.pending;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#hasChanged()
+   */
+  protected boolean hasChanged()
+  {
+    try
+    {
+      return (super.hasChanged() || (pending != null && pending.hasChanged()));
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to check change status",e);
+      return true;
+    }
+  }
   
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#paint(org.eclipse.swt.widgets.Composite)
@@ -158,6 +198,8 @@ public abstract class AbstractTransferList extends AbstractFromToList
       }
     });
     super.paint(parent);
+    
+    this.getLeft().addInput(this.getPending());
   }
 
   /**
@@ -173,6 +215,10 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
     if (konto != null)
       list.addFilter("konto_id = " + konto.getID());
+    
+    boolean pending = ((Boolean) this.getPending().getValue()).booleanValue();
+    if (pending)
+      list.addFilter("ausgefuehrt = 0");
 
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
