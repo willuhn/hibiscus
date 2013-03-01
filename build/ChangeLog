@@ -1,5 +1,7 @@
 HEAD
 
+  * NEW: 0231 BUGZILLA 1336 Escaping von Double-Quotes und Entfernen von Zeilenumbrüchen
+              beim CSV-Export
   * NEW: 0230 neue Checkbox "Nur offene Aufträge anzeigen" in den Auftragslisten
   * NEW: 0229 47-blz-updates.patch
   * NEW: 0228 BUGZILLA 1334 Summen- und Trend-Linie im Salden-Chart nicht mehr füllen - für bessere Übersichtlichkeit

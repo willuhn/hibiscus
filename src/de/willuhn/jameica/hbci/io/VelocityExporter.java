@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -72,6 +73,7 @@ public class VelocityExporter implements Exporter
     context.put("longdateformat",HBCI.LONGDATEFORMAT);
     context.put("decimalformat", HBCI.DECIMALFORMAT);
     context.put("objects",       objects);
+    context.put("filter",        new Filter());
     
     BufferedWriter writer = null;
     try
@@ -231,18 +233,32 @@ public class VelocityExporter implements Exporter
       return this.template;
     }
   }
+  
+  /**
+   * Hilfsklasse zum Escapen von Strings in der CSV-Datei.
+   */
+  public class Filter
+  {
+    /**
+     * Escaped den angegebenen String fuer CSV.
+     * @param s der zu escapende String.
+     * @return der escapte String.
+     */
+    public String escape(String s)
+    {
+      if (StringUtils.isEmpty(s))
+        return s;
+
+      // Double-Quote mit Double-Quote escapen
+      // Siehe https://tools.ietf.org/html/rfc4180#section-2, Absatz 7
+      // BUGZILLA 1336
+      s = s.replace("\"","\"\"");
+      
+      // Zeilenumbrueche gegen Leerzeichen ersetzen
+      s = s.replaceAll("[\n\r]"," ");
+      
+      return s;
+    }
+  }
 
 }
-
-
-/**********************************************************************
- * $Log: VelocityExporter.java,v $
- * Revision 1.20  2011/05/05 09:06:47  willuhn
- * @N Neues Ausfuehrungsdatum auch mit in HTML und CSV exportieren
- *
- * Revision 1.19  2011-03-13 23:44:39  willuhn
- * @N Support fuer mehrere Velocity-Formate pro Typ ("Variant") - siehe Mail von Flo vom 13.03.2011
- *
- * Revision 1.18  2010-11-02 23:01:04  willuhn
- * @R auskommentierte Methode entfernt
- **********************************************************************/
