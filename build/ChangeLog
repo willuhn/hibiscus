@@ -1,5 +1,9 @@
 HEAD
 
+  * BUG: 0232 Beim Löschen eines Sammelauftrages in der Detailansicht wurden die
+              enthaltendenen Buchungen auch dann aus der Tabelle entfernt (nicht gelöscht,
+              nur in der Anzeige entfernt), wenn man in der Sicherheitsabfrage mit Nein
+              geantwortet hat.
   * NEW: 0231 BUGZILLA 1336 Escaping von Double-Quotes und Entfernen von Zeilenumbrüchen
               beim CSV-Export
   * NEW: 0230 neue Checkbox "Nur offene Aufträge anzeigen" in den Auftragslisten

@@ -30,7 +30,6 @@ import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -66,24 +65,23 @@ public class SammelLastschriftNew extends AbstractView
 		group.addSeparator();
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
 
-		final SammelLastschrift l = (SammelLastschrift) control.getTransfer();
-
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Löschen"),new Action() {
+    buttons.addButton(i18n.tr("Sammelauftrag löschen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new DBObjectDelete().handleAction(context);
         try
         {
-          // Buchungen aus der Liste entfernen
-          control.getBuchungen().removeAll();
+          // Buchungen aus der Liste entfernen, wenn der Auftrag geloescht wurde
+          if (transfer.getID() == null)
+            control.getBuchungen().removeAll();
         }
         catch (RemoteException re)
         {
           Logger.error("unable to remove bookings",re);
         }
       }
-    },control.getTransfer(),false,"user-trash-full.png");
+    },transfer,false,"user-trash-full.png");
     buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -95,7 +93,7 @@ public class SammelLastschriftNew extends AbstractView
     Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
-          new SammelLastBuchungNew().handleAction(l);
+          new SammelLastBuchungNew().handleAction(transfer);
       }
     },null,false,"text-x-generic.png");
     add.setEnabled(!transfer.ausgefuehrt());
@@ -103,7 +101,7 @@ public class SammelLastschriftNew extends AbstractView
 		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
 			public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
-  				new SammelLastschriftExecute().handleAction(l);
+  				new SammelLastschriftExecute().handleAction(transfer);
 			}
 		},null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
@@ -125,26 +123,3 @@ public class SammelLastschriftNew extends AbstractView
     control.getBuchungen().paint(getParent());
   }
 }
-
-
-/**********************************************************************
- * $Log: SammelLastschriftNew.java,v $
- * Revision 1.25  2012/01/27 22:43:22  willuhn
- * @N BUGZILLA 1181
- *
- * Revision 1.24  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.23  2011-06-24 07:55:41  willuhn
- * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
- *
- * Revision 1.22  2011-04-11 16:48:33  willuhn
- * @N Drucken von Sammel- und Dauerauftraegen
- *
- * Revision 1.21  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.20  2010-12-13 11:01:08  willuhn
- * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
- **********************************************************************/
