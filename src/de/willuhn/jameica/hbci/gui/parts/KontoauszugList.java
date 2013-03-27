@@ -192,7 +192,7 @@ public class KontoauszugList extends UmsatzList
         handleReset();
       }
     },null,false,"edit-undo.png");
-    buttons.addButton(i18n.tr("Aktualisieren"), new Action()
+    buttons.addButton(i18n.tr("&Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
