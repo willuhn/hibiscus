@@ -38,7 +38,7 @@ public class SammelUeberweisungExecute extends AbstractSammelTransferExecute
   void execute(final SammelTransfer transfer) throws ApplicationException, RemoteException
   {
     Konto konto = transfer.getKonto();
-    Class type = SynchronizeJobSammelUeberweisung.class;
+    Class<SynchronizeJobSammelUeberweisung> type = SynchronizeJobSammelUeberweisung.class;
 
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

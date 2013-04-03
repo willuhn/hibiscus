@@ -80,7 +80,7 @@ public class AuslandsUeberweisungExecute implements Action
 			}
 
 	    Konto konto = u.getKonto();
-	    Class type = SynchronizeJobSepaUeberweisung.class;
+	    Class<SynchronizeJobSepaUeberweisung> type = SynchronizeJobSepaUeberweisung.class;
 
 	    BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
 	    SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

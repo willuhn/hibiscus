@@ -78,7 +78,7 @@ public class LastschriftExecute implements Action
 			}
 
       Konto konto = u.getKonto();
-      Class type = SynchronizeJobLastschrift.class;
+      Class<SynchronizeJobLastschrift> type = SynchronizeJobLastschrift.class;
 
       BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

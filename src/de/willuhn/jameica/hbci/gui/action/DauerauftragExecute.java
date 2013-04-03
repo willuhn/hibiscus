@@ -73,7 +73,7 @@ public class DauerauftragExecute implements Action
 			}
 
       Konto konto = d.getKonto();
-      Class type = SynchronizeJobDauerauftragStore.class;
+      Class<SynchronizeJobDauerauftragStore> type = SynchronizeJobDauerauftragStore.class;
 
       BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

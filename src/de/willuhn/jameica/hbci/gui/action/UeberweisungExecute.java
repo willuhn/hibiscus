@@ -95,7 +95,7 @@ public class UeberweisungExecute implements Action
 			}
 
       Konto konto = u.getKonto();
-      Class type = SynchronizeJobUeberweisung.class;
+      Class<SynchronizeJobUeberweisung> type = SynchronizeJobUeberweisung.class;
 
       BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

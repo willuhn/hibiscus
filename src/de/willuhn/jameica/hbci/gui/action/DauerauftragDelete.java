@@ -106,7 +106,7 @@ public class DauerauftragDelete implements Action
 	      Date date = (Date) d2.open();
 	      
 	      Konto konto = da.getKonto();
-	      Class type = SynchronizeJobDauerauftragDelete.class;
+	      Class<SynchronizeJobDauerauftragDelete> type = SynchronizeJobDauerauftragDelete.class;
 
 	      BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
 	      SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

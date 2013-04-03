@@ -53,7 +53,7 @@ public class KontoFetchUmsaetze implements Action
 			if (konto.isNewObject())
 				konto.store();
 
-      Class type = SynchronizeJobKontoauszug.class;
+      Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
 
       BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

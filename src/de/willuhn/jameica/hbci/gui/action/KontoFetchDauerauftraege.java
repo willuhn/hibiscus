@@ -70,7 +70,7 @@ public class KontoFetchDauerauftraege implements Action
 			throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
 
 		final Konto konto = (Konto) context;
-    Class type = SynchronizeJobDauerauftragList.class;
+    Class<SynchronizeJobDauerauftragList> type = SynchronizeJobDauerauftragList.class;
 
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);

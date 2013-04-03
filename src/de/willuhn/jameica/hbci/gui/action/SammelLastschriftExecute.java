@@ -38,7 +38,7 @@ public class SammelLastschriftExecute extends AbstractSammelTransferExecute
   void execute(final SammelTransfer transfer) throws ApplicationException, RemoteException
   {
     Konto konto = transfer.getKonto();
-    Class type = SynchronizeJobSammelLastschrift.class;
+    Class<SynchronizeJobSammelLastschrift> type = SynchronizeJobSammelLastschrift.class;
 
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
