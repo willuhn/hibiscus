@@ -290,26 +290,6 @@ public class Settings
   }
   
   /**
-   * BUGZILLA 227
-   * Prueft, ob die HBCI-Synchronisierung im Fehlerfall abgebrochen werden soll.
-   * @return true, wenn die Synchronisierung im Fehlerfall abbrechen soll.
-   */
-  public static boolean getCancelSyncOnError()
-  {
-    return settings.getBoolean("sync.cancelonerror",true);
-  }
-
-  /**
-   * Prueft, ob die HBCI-Synchronisierung im Fehlerfall abgebrochen werden soll.
-   * @param cancel true wenn die Synchronisierung im Fehlerfall abbrechen soll.
-   */
-  public static void setCancelSyncOnError(boolean cancel)
-  {
-    settings.setAttribute("sync.cancelonerror",cancel);
-  }
-
-
-  /**
 	 * Liefert das Limit bei Ueberweisungen.
 	 * Soll den Benutzer davor schuetzen, versehentlich zu grosse Betraege bei
 	 * einer Ueberweisung einzugeben.

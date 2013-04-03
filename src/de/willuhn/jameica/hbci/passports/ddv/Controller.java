@@ -36,12 +36,12 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
@@ -532,7 +532,7 @@ public class Controller extends AbstractControl
         }
         catch (Exception e)
         {
-          if (HBCIFactory.getCause(e,OperationCanceledException.class) != null)
+          if (HBCIProperties.getCause(e,OperationCanceledException.class) != null)
           {
             Logger.info("operation cancelled");
             Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorgang abgebrochen"),StatusBarMessage.TYPE_ERROR));

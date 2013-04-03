@@ -23,10 +23,10 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.rdh.server.RDHKeyImpl;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -99,11 +99,11 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
     }
     catch (Exception e)
     {
-      OperationCanceledException oce = (OperationCanceledException) HBCIFactory.getCause(e,OperationCanceledException.class);
+      OperationCanceledException oce = (OperationCanceledException) HBCIProperties.getCause(e,OperationCanceledException.class);
       if (oce != null)
         throw oce;
         
-      ApplicationException ae = (ApplicationException) HBCIFactory.getCause(e,ApplicationException.class);
+      ApplicationException ae = (ApplicationException) HBCIProperties.getCause(e,ApplicationException.class);
       if (ae != null)
         throw ae;
 

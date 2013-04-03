@@ -19,6 +19,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import org.kapott.hbci.GV.HBCIJob;
+
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -49,8 +51,6 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 	
 	private Konto konto = null;
 	
-	private boolean markExecutedBefore = false;
-
   /**
 	 * ct.
    * @param ueberweisung die auszufuehrende Ueberweisung.
@@ -105,26 +105,6 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 			setJobParam("dst",Converter.Address2HBCIKonto(empfaenger));
 			setJobParam("name",empfaenger.getName());
 			setJobParamUsage(ueberweisung);
-
-      if (isTermin)
-      {
-        Date d = this.ueberweisung.getTermin();
-        setJobParam("date",d);
-
-        Properties p = HBCIFactory.getInstance().getJobRestrictions(this.konto,this);
-        Enumeration keys = p.keys();
-        while (keys.hasMoreElements())
-        {
-          String s = (String) keys.nextElement();
-          Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
-        }
-        new PreTimeRestriction(d,p).test();
-      }
-
-      de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-      markExecutedBefore = settings.getBoolean("transfer.markexecuted.before",false);
-      if (markExecutedBefore)
-        ueberweisung.setAusgefuehrt(true);
 		}
 		catch (RemoteException e)
 		{
@@ -141,6 +121,28 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
 		}
 	}
 
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
+   */
+  public void setJob(HBCIJob job) throws RemoteException, ApplicationException
+  {
+    if (this.isTermin)
+    {
+      Date date = this.ueberweisung.getTermin();
+      Properties p = job.getJobRestrictions();
+      Enumeration keys = p.keys();
+      while (keys.hasMoreElements())
+      {
+        String s = (String) keys.nextElement();
+        Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
+      }
+      new PreTimeRestriction(date,p).test();
+      this.setJobParam("date",date);
+    }
+
+    super.setJob(job);
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJobParamUsage(de.willuhn.jameica.hbci.rmi.Transfer)
    */
@@ -194,7 +196,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  String getIdentifier()
+  public String getIdentifier()
   {
     if (isTermin)
       return "TermUeb";
@@ -224,9 +226,7 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
-    // Wenn der Auftrag nicht vorher als ausgefuehrt markiert wurde, machen wir das jetzt
-    if (!markExecutedBefore)
-      ueberweisung.setAusgefuehrt(true);
+    ueberweisung.setAusgefuehrt(true);
     
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung)); // BUGZILLA 501
     konto.addToProtokoll(i18n.tr("Überweisung ausgeführt an: {0}",ueberweisung.getGegenkontoName()),Protokoll.TYP_SUCCESS);
@@ -238,11 +238,6 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
    */
   String markFailed(String error) throws ApplicationException, RemoteException
   {
-    // Wenn der Auftrag fehlerhaft war und schon als ausgefuehrt markiert wurde, machen
-    // wir das jetzt wieder rurckgaengig
-    if (markExecutedBefore)
-      ueberweisung.setAusgefuehrt(false);
-    
     String msg = i18n.tr("Fehler beim Ausführen der Überweisung an {0}: {1}",new String[]{ueberweisung.getGegenkontoName(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
@@ -253,33 +248,9 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
    */
   void markCancelled() throws RemoteException, ApplicationException
   {
-    // Wenn der Auftrag abgebrochen wurde und schon als ausgefuehrt markiert wurde, machen
-    // wir das jetzt wieder rurckgaengig
-    if (markExecutedBefore)
-      ueberweisung.setAusgefuehrt(false);
-    
     String msg = i18n.tr("Ausführung der Überweisung an {0} abgebrochen",ueberweisung.getGegenkontoName());
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
   }
   
   
 }
-
-
-/**********************************************************************
- * $Log: HBCIUeberweisungJob.java,v $
- * Revision 1.51  2012/03/01 22:19:15  willuhn
- * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
- *
- * Revision 1.50  2011-06-07 10:07:50  willuhn
- * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
- *
- * Revision 1.49  2011-05-12 08:08:27  willuhn
- * @N BUGZILLA 591
- *
- * Revision 1.48  2011-05-11 16:23:56  willuhn
- * @N BUGZILLA 591
- *
- * Revision 1.47  2011-05-10 12:18:11  willuhn
- * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
- **********************************************************************/

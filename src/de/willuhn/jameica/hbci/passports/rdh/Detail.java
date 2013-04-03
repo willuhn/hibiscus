@@ -21,7 +21,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -132,8 +132,8 @@ public class Detail extends AbstractView
     }
     catch (Exception e)
     {
-      Throwable oce = HBCIFactory.getCause(e,OperationCanceledException.class);
-      Throwable ae  = HBCIFactory.getCause(e,ApplicationException.class);
+      Throwable oce = HBCIProperties.getCause(e,OperationCanceledException.class);
+      Throwable ae  = HBCIProperties.getCause(e,ApplicationException.class);
 
       if (oce != null)
       {

@@ -33,6 +33,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class KontoSyncViaScripting implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
@@ -42,15 +43,13 @@ public class KontoSyncViaScripting implements Action
   {
     if (!Application.getPluginLoader().isInstalled("de.willuhn.jameica.scripting.Plugin"))
       return;
-    
-		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		if (context == null || !(context instanceof Konto))
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
     final Konto k = (Konto) context;
 		try {
-	    if ((k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
+	    if (!k.hasFlag(Konto.FLAG_OFFLINE))
 	      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Offline-Konto aus"));
 
 			if (k.isNewObject())

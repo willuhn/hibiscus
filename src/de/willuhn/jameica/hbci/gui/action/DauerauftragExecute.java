@@ -13,15 +13,20 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.DauerauftragDialog;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragStoreJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobDauerauftragStore;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -33,6 +38,8 @@ import de.willuhn.util.I18N;
  */
 public class DauerauftragExecute implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
 
   /**
    * Erwartet einen Dauerauftrag als Context.
@@ -40,10 +47,7 @@ public class DauerauftragExecute implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-
-		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-		if (context == null)
+		if (! (context instanceof Dauerauftrag))
 			throw new ApplicationException(i18n.tr("Kein Dauerauftrag angegeben"));
 
 		try
@@ -64,21 +68,21 @@ public class DauerauftragExecute implements Action
 			catch (Exception e)
 			{
 				Logger.error("error while showing confirm dialog",e);
-				GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen des Dauerauftrages"));
+				Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen des Dauerauftrages"),StatusBarMessage.TYPE_ERROR));
 				return;
 			}
 
-			if (d.isNewObject())
-				d.store(); // wir speichern bei Bedarf selbst.
+      Konto konto = d.getKonto();
+      Class type = SynchronizeJobDauerauftragStore.class;
 
-      HBCIFactory factory = HBCIFactory.getInstance();
-      // BUGZILLA #15 http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
-      HBCIDauerauftragListJob job = new HBCIDauerauftragListJob(d.getKonto());
-      job.setExclusive(true);
-      factory.addJob(job);
-      factory.addJob(new HBCIDauerauftragStoreJob(d));
-      factory.executeJobs(d.getKonto(),null); 
-
+      BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
+      SynchronizeBackend backend = engine.getBackend(type,konto);
+      SynchronizeJob job         = backend.create(type,konto);
+      
+      job.setContext(SynchronizeJob.CTX_ENTITY,d);
+      
+      backend.execute(Arrays.asList(job));
 		}
 		catch (RemoteException e)
 		{
@@ -87,44 +91,3 @@ public class DauerauftragExecute implements Action
 		}
   }
 }
-
-
-/**********************************************************************
- * $Log: DauerauftragExecute.java,v $
- * Revision 1.12  2011/05/11 10:05:32  willuhn
- * @N OCE fangen
- *
- * Revision 1.11  2007/02/21 10:02:27  willuhn
- * @C Code zum Ausfuehren exklusiver Jobs redesigned
- *
- * Revision 1.10  2005/07/26 23:57:18  web0
- * @N Restliche HBCI-Jobs umgestellt
- *
- * Revision 1.9  2005/05/10 22:26:15  web0
- * @B bug 71
- *
- * Revision 1.8  2005/02/28 23:59:57  web0
- * @B http://www.willuhn.de/bugzilla/show_bug.cgi?id=15
- *
- * Revision 1.7  2005/02/28 15:30:47  web0
- * @B Bugzilla #15
- *
- * Revision 1.6  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/10/29 16:16:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/10/29 00:32:32  willuhn
- * @N HBCI job restrictions
- *
- * Revision 1.3  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.1  2004/10/24 17:19:02  willuhn
- * *** empty log message ***
- *
- **********************************************************************/

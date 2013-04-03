@@ -173,27 +173,26 @@ public class KontoNew extends AbstractView
 
     Button fetch = null;
 
-    int flags = control.getKonto().getFlags();
-    if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+    Konto konto = control.getKonto();
+    if (konto.hasFlag(Konto.FLAG_OFFLINE))
     {
-      fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),control.getKonto(),false,"emblem-documents.png");
+      fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),konto,false,"emblem-documents.png");
       
       if (scripting)
       {
-        Button sync = new Button(i18n.tr("via Scripting synchronisieren"), new KontoSyncViaScripting(),control.getKonto(),false,"mail-send-receive.png");
-        sync.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+        Button sync = new Button(i18n.tr("via Scripting synchronisieren"), new KontoSyncViaScripting(),konto,false,"mail-send-receive.png");
+        sync.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));
         buttons.addButton(sync);
       }
     }
     else
     {
-      fetch = new Button(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),control.getKonto(),false,"mail-send-receive.png");
+      fetch = new Button(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),konto,false,"mail-send-receive.png");
     }
-    
-    fetch.setEnabled((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+    fetch.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));
     buttons.addButton(fetch);
     
-    buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),     new UmsatzList(),control.getKonto(),false,"text-x-generic.png");
+    buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),new UmsatzList(),konto,false,"text-x-generic.png");
     buttons.paint(getParent());
   }
   
@@ -215,41 +214,3 @@ public class KontoNew extends AbstractView
   }
 
 }
-
-
-/**********************************************************************
- * $Log: KontoNew.java,v $
- * Revision 1.39  2012/05/18 13:25:44  willuhn
- * @N Quick-Select des Kontos in Konto-Details um schneller zwischen den Konten wechseln zu können
- *
- * Revision 1.38  2011/05/03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.37  2011-04-29 11:38:57  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.36  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.35  2010-11-19 18:37:20  willuhn
- * @N Erste Version der Termin-View mit Appointment-Providern
- *
- * Revision 1.34  2010-08-11 16:06:05  willuhn
- * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
- *
- * Revision 1.33  2010-07-25 23:11:59  willuhn
- * @N Erster Code fuer Scripting-Integration
- *
- * Revision 1.32  2010/06/17 12:32:56  willuhn
- * @N BUGZILLA 530
- *
- * Revision 1.31  2010/04/22 16:40:57  willuhn
- * @N Manuelles Anlegen neuer Umsaetze fuer Offline-Konten moeglich
- *
- * Revision 1.30  2010/04/22 16:21:27  willuhn
- * @N HBCI-relevante Buttons und Aktionen fuer Offline-Konten sperren
- *
- * Revision 1.29  2010/04/22 12:42:03  willuhn
- * @N Erste Version des Supports fuer Offline-Konten
- **********************************************************************/

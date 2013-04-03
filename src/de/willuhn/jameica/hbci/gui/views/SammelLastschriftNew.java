@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -30,7 +31,10 @@ import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -42,6 +46,9 @@ import de.willuhn.util.I18N;
 public class SammelLastschriftNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  private MessageConsumer mc = new MyMessageConsumer();
+  private SammelTransfer transfer = null;
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -50,7 +57,7 @@ public class SammelLastschriftNew extends AbstractView
   {
 
 		final SammelLastschriftControl control = new SammelLastschriftControl(this);
-    final SammelTransfer transfer = control.getTransfer();
+    this.transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("Sammel-Lastschrift bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSammelLastschrift(transfer)));
@@ -121,5 +128,58 @@ public class SammelLastschriftNew extends AbstractView
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
+    
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    super.unbind();
+    this.transfer = null;
+    Application.getMessagingFactory().unRegisterMessageConsumer(this.mc);
+  }
+
+  /**
+   * Wird beanchrichtigt, wenn der Auftrag ausgefuehrt wurde und laedt die
+   * View dann neu.
+   */
+  private class MyMessageConsumer implements MessageConsumer
+  {
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ObjectChangedMessage.class};
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (transfer == null)
+        return;
+  
+      GenericObject o = ((ObjectChangedMessage) message).getObject();
+      if (o == null)
+        return;
+      
+      // View neu laden
+      if (transfer.equals(o))
+        GUI.startView(SammelLastschriftNew.this,transfer);
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
   }
 }

@@ -13,17 +13,16 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
-import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.hbci.gui.views.SammelLastschriftNew;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
-import de.willuhn.jameica.hbci.server.hbci.HBCISammelLastschriftJob;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSammelLastschrift;
+import de.willuhn.jameica.services.BeanService;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -38,53 +37,17 @@ public class SammelLastschriftExecute extends AbstractSammelTransferExecute
    */
   void execute(final SammelTransfer transfer) throws ApplicationException, RemoteException
   {
-    // Wir merken uns die aktuelle Seite und aktualisieren sie nur,
-    // wenn sie sich nicht geaendert hat.
-    final AbstractView oldView = GUI.getCurrentView();
+    Konto konto = transfer.getKonto();
+    Class type = SynchronizeJobSammelLastschrift.class;
 
-    HBCIFactory factory = HBCIFactory.getInstance();
-    factory.addJob(new HBCISammelLastschriftJob((SammelLastschrift)transfer));
-    factory.executeJobs(transfer.getKonto(), new Listener() {
-      public void handleEvent(Event event)
-      {
-        final AbstractView newView = GUI.getCurrentView();
-        if (oldView == newView && transfer == newView.getCurrentObject())
-          GUI.startView(SammelLastschriftNew.class,transfer);
-      }
-    });
+    BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
+    SynchronizeBackend backend = engine.getBackend(type,konto);
+    SynchronizeJob job         = backend.create(type,konto);
+    
+    job.setContext(SynchronizeJob.CTX_ENTITY,transfer);
+    
+    backend.execute(Arrays.asList(job));
   }
 
 }
-
-
-/**********************************************************************
- * $Log: SammelLastschriftExecute.java,v $
- * Revision 1.9  2007/07/04 09:16:23  willuhn
- * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
- *
- * Revision 1.8  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.7  2005/07/26 23:57:18  web0
- * @N Restliche HBCI-Jobs umgestellt
- *
- * Revision 1.6  2005/05/10 22:26:15  web0
- * @B bug 71
- *
- * Revision 1.5  2005/03/30 23:28:13  web0
- * @B bug 31
- *
- * Revision 1.4  2005/03/30 23:26:28  web0
- * @B bug 29
- * @B bug 30
- *
- * Revision 1.3  2005/03/05 19:19:48  web0
- * *** empty log message ***
- *
- * Revision 1.2  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.1  2005/03/02 00:22:05  web0
- * @N first code for "Sammellastschrift"
- *
- **********************************************************************/

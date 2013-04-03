@@ -18,6 +18,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRDauerEdit;
 import org.kapott.hbci.GV_Result.GVRDauerNew;
 import org.kapott.hbci.GV_Result.HBCIJobResult;
@@ -117,19 +118,6 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
 			setJobParam("timeunit",turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
 			setJobParam("turnus",turnus.getIntervall());
 			setJobParam("execday",turnus.getTag());
-
-
-			// Jetzt noch die Tests fuer die Job-Restriktionen
-			Properties p = HBCIFactory.getInstance().getJobRestrictions(this.konto,this);
-			Enumeration keys = p.keys();
-			while (keys.hasMoreElements())
-			{
-				String s = (String) keys.nextElement();
-				Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
-			}
-			new TurnusRestriction(turnus,p).test();
-			if (!active) // nur pruefen bei neuen Dauerauftraegen
-				new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
 		}
 		catch (RemoteException e)
 		{
@@ -145,11 +133,33 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
+   */
+  public void setJob(HBCIJob job) throws RemoteException, ApplicationException
+  {
+    // Tests fuer die Job-Restriktionen
+    Properties p = job.getJobRestrictions();
+    Enumeration keys = p.keys();
+    while (keys.hasMoreElements())
+    {
+      String s = (String) keys.nextElement();
+      Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
+    }
+
+    Turnus turnus = dauerauftrag.getTurnus();
+    new TurnusRestriction(turnus,p).test();
+    if (!active) // nur pruefen bei neuen Dauerauftraegen
+      new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
+    
+    super.setJob(job);
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  String getIdentifier() {
+  public String getIdentifier() {
 		if (active)
 			return "DauerEdit";
   	return "DauerNew";

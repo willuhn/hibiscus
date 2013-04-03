@@ -18,6 +18,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.kapott.hbci.GV.HBCIJob;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -38,6 +39,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 {
 	private Dauerauftrag dauerauftrag = null;
 	private Konto konto 							= null;
+	private Date date                 = null;
 
   /**
 	 * ct.
@@ -62,6 +64,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
 			this.dauerauftrag = auftrag;
 			this.konto        = auftrag.getKonto();
+			this.date         = date;
 
       String orderID = this.dauerauftrag.getOrderID();
       if (StringUtils.trimToEmpty(orderID).equals(Dauerauftrag.ORDERID_PLACEHOLDER))
@@ -102,24 +105,6 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
       setJobParam("timeunit",turnus.getZeiteinheit() == Turnus.ZEITEINHEIT_MONATLICH ? "M" : "W");
       setJobParam("turnus",turnus.getIntervall());
       setJobParam("execday",turnus.getTag());
-      
-			if (date != null)
-			{
-				Properties p = HBCIFactory.getInstance().getJobRestrictions(this.konto,this);
-				Enumeration keys = p.keys();
-				while (keys.hasMoreElements())
-				{
-					String s = (String) keys.nextElement();
-					Logger.debug("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
-				}
-
-				Logger.info("target date for DauerDel: " + date.toString());
-				new CanTermDelRestriction(p).test(); // Test nur, wenn Datum angegeben
-				setJobParam("date",date);
-			}
-
-			// Den brauchen wir, damit das Loeschen funktioniert.
-			HBCIFactory.getInstance().addJob(new HBCIDauerauftragListJob(this.konto));
 		}
 		catch (RemoteException e)
 		{
@@ -137,9 +122,33 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 	}
 
   /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
+   */
+  public void setJob(HBCIJob job) throws RemoteException, ApplicationException
+  {
+    // Job-Restrictions checken, wenn ein Zieldatum angegeben ist.
+    if (this.date != null)
+    {
+      Properties p = job.getJobRestrictions();
+      Enumeration keys = p.keys();
+      while (keys.hasMoreElements())
+      {
+        String s = (String) keys.nextElement();
+        Logger.debug("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
+      }
+
+      Logger.info("target date for DauerDel: " + this.date.toString());
+      new CanTermDelRestriction(p).test(); // Test nur, wenn Datum angegeben
+      this.setJobParam("date",this.date);
+    }
+    
+    super.setJob(job);
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  String getIdentifier() {
+  public String getIdentifier() {
     return "DauerDel";
   }
 
@@ -157,7 +166,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
   void markExecuted() throws RemoteException, ApplicationException
   {
     dauerauftrag.delete();
-    konto.addToProtokoll(i18n.tr("Dauerauftrag gelöscht an {0}",dauerauftrag.getGegenkontoName()),Protokoll.TYP_SUCCESS);
+    konto.addToProtokoll(i18n.tr("Dauerauftrag an {0} gelöscht",dauerauftrag.getGegenkontoName()),Protokoll.TYP_SUCCESS);
     Logger.info("dauerauftrag deleted successfully");
   }
 
@@ -171,34 +180,3 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
     return msg;
   }
 }
-
-
-/**********************************************************************
- * $Log: HBCIDauerauftragDeleteJob.java,v $
- * Revision 1.22  2012/03/01 22:19:15  willuhn
- * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
- *
- * Revision 1.21  2011-09-12 11:53:25  willuhn
- * @N Support fuer Banken (wie die deutsche Bank), die keine Order-IDs vergeben - BUGZILLA 1129
- *
- * Revision 1.20  2008-11-17 23:30:00  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.19  2008/09/23 11:24:27  willuhn
- * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
- *
- * Revision 1.18  2007/12/13 14:20:00  willuhn
- * @B Bug 517
- *
- * Revision 1.17  2007/12/06 23:53:56  willuhn
- * @B Bug 490
- *
- * Revision 1.16  2007/12/06 14:25:32  willuhn
- * @B Bug 494
- *
- * Revision 1.15  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- **********************************************************************/

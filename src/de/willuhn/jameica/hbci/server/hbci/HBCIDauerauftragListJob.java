@@ -22,10 +22,12 @@ import org.kapott.hbci.GV_Result.GVRDauerList.Dauer;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -73,7 +75,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  String getIdentifier()
+  public String getIdentifier()
   {
     return "DauerList";
   }
@@ -164,6 +166,7 @@ public class HBCIDauerauftragListJob extends AbstractHBCIJob
       local.delete();
     }
 
+    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(konto));
     konto.addToProtokoll(i18n.tr("Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
     Logger.info("dauerauftrag list fetched successfully");
   }

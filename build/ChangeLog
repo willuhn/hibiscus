@@ -1,4 +1,8 @@
-HEAD
+HEAD 2.5.1 (nightly)
+
+  * NEW: BUGZILLA 1346 Umbau des HBCI-Backends auf ein generisches Synchronize-Backend
+
+2013-04-02 Version 2.5.0 (nightly)
 
   * BUG: 0232 Beim Löschen eines Sammelauftrages in der Detailansicht wurden die
               enthaltendenen Buchungen auch dann aus der Tabelle entfernt (nicht gelöscht,

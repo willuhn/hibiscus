@@ -51,7 +51,7 @@ public class HBCISammelUeberweisungJob extends AbstractHBCISammelTransferJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  String getIdentifier() {
+  public String getIdentifier() {
     return "MultiUeb";
   }
 

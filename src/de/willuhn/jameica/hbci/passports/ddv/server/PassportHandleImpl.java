@@ -31,9 +31,11 @@ import de.willuhn.jameica.hbci.passports.ddv.DDVConfigFactory;
 import de.willuhn.jameica.hbci.passports.ddv.SelectConfigDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
+import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -283,9 +285,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
    */
   private boolean handleCallback(String text, boolean displayKonto, boolean wait) throws Exception
   {
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+
     if (displayKonto)
     {
-      Konto konto = HBCIFactory.getInstance().getCurrentKonto();
+      Konto konto = session != null ? session.getKonto() : null;
+      
       if (konto != null)
         text += ". " + konto.getLongName();
     }
@@ -296,7 +302,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     }
     else
     {
-      HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
+      if (session != null)
+        session.getProgressMonitor().setStatusText(text);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
     }
     return true;

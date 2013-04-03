@@ -69,26 +69,3 @@ public interface Terminable
   public void setAusgefuehrt(boolean b) throws RemoteException, ApplicationException;
 
 }
-
-
-/**********************************************************************
- * $Log: Terminable.java,v $
- * Revision 1.5  2011/04/29 15:33:28  willuhn
- * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
- *
- * Revision 1.4  2009/02/18 10:48:42  willuhn
- * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
- *
- * Revision 1.3  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.2  2005/03/02 17:59:30  web0
- * @N some refactoring
- *
- * Revision 1.1  2005/02/19 16:49:32  willuhn
- * @B bugs 3,8,10
- *
- * Revision 1.1  2005/02/04 18:27:54  willuhn
- * @C Refactoring zwischen Lastschrift und Ueberweisung
- *
- **********************************************************************/

@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -27,7 +28,10 @@ import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.LastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.LastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportLastschrift;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -38,6 +42,9 @@ import de.willuhn.util.I18N;
 public class LastschriftNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  private MessageConsumer mc = new MyMessageConsumer();
+  private Lastschrift transfer = null;
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -45,7 +52,7 @@ public class LastschriftNew extends AbstractView
   public void bind() throws Exception {
 
 		final LastschriftControl control = new LastschriftControl(this);
-    final Lastschrift transfer = (Lastschrift) control.getTransfer();
+    this.transfer = (Lastschrift) control.getTransfer();
 
 
 		GUI.getView().setTitle(i18n.tr("Lastschrift bearbeiten"));
@@ -112,36 +119,55 @@ public class LastschriftNew extends AbstractView
     
     buttonArea.paint(getParent());
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    super.unbind();
+    this.transfer = null;
+    Application.getMessagingFactory().unRegisterMessageConsumer(this.mc);
+  }
+
+  /**
+   * Wird beanchrichtigt, wenn der Auftrag ausgefuehrt wurde und laedt die
+   * View dann neu.
+   */
+  private class MyMessageConsumer implements MessageConsumer
+  {
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ObjectChangedMessage.class};
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (transfer == null)
+        return;
+  
+      GenericObject o = ((ObjectChangedMessage) message).getObject();
+      if (o == null)
+        return;
+      
+      // View neu laden
+      if (transfer.equals(o))
+        GUI.startView(LastschriftNew.this,transfer);
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
 }
-
-
-/**********************************************************************
- * $Log: LastschriftNew.java,v $
- * Revision 1.25  2012/01/27 22:43:22  willuhn
- * @N BUGZILLA 1181
- *
- * Revision 1.24  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.23  2011-04-11 14:36:37  willuhn
- * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
- *
- * Revision 1.22  2011-04-08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.21  2010-08-17 11:41:45  willuhn
- * @N Duplizieren-Button auch in der Detail-Ansicht
- *
- * Revision 1.20  2010-08-17 11:32:11  willuhn
- * @C Code-Cleanup
- *
- * Revision 1.19  2009/05/06 23:11:23  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.18  2009/02/24 23:51:01  willuhn
- * @N Auswahl der Empfaenger/Zahlungspflichtigen jetzt ueber Auto-Suggest-Felder
- *
- * Revision 1.17  2009/01/20 10:51:45  willuhn
- * @N Mehr Icons - fuer Buttons
- **********************************************************************/

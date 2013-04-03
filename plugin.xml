@@ -3,7 +3,7 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.2.xsd"
-        name="hibiscus" version="2.5.0-nightly" class="de.willuhn.jameica.hbci.HBCI">
+        name="hibiscus" version="2.5.1-nightly" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
   <url>https://www.willuhn.de/products/hibiscus/releases/nightly/hibiscus-2.5.0-nightly.zip</url>
@@ -81,6 +81,7 @@
     <consumer queue="hibiscus.passport.rdh.hbciversion"    class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer" />
     <consumer queue="hibiscus.infopoint"                   class="de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer" />
     <consumer queue="hibiscus.reminder.order"              class="de.willuhn.jameica.hbci.messaging.OrderReminderMessageConsumer" />
+    <consumer queue="hibiscus.sync.error"                  class="de.willuhn.jameica.hbci.messaging.SynchronizeErrorMessageConsumer" />
 
     <consumer queue="hibiscus.ueberweisung.delete"         class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
     <consumer queue="hibiscus.aueberweisung.delete"        class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />

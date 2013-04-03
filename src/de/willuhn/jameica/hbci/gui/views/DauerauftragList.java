@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
@@ -24,7 +25,12 @@ import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
 import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportDauerauftrag;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -33,6 +39,8 @@ import de.willuhn.util.I18N;
 public class DauerauftragList extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  private MessageConsumer mc = new MyMessageConsumer();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -61,24 +69,51 @@ public class DauerauftragList extends AbstractView
     table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
   }
+
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    super.unbind();
+    Application.getMessagingFactory().unRegisterMessageConsumer(this.mc);
+  }
+
+  /**
+   * Nach dem erfolgreichen Abruf der Dauerauftraege wird eine ObjectChangedNachricht
+   * fuer das betreffende Konto ausgeloest. Wir laden in dem Fall die View neu.
+   */
+  private class MyMessageConsumer implements MessageConsumer
+  {
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ObjectChangedMessage.class};
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      GenericObject o = ((ObjectChangedMessage) message).getObject();
+      if (o == null)
+        return;
+      
+      // View neu laden
+      if (o instanceof Konto)
+        GUI.startView(DauerauftragList.this,null);
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
 }
-
-
-/**********************************************************************
- * $Log: DauerauftragList.java,v $
- * Revision 1.12  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.11  2011-09-12 15:28:00  willuhn
- * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
- *
- * Revision 1.10  2011-04-11 16:48:33  willuhn
- * @N Drucken von Sammel- und Dauerauftraegen
- *
- * Revision 1.9  2011-04-08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.8  2011-03-07 10:33:53  willuhn
- * @N BUGZILLA 999
- **********************************************************************/

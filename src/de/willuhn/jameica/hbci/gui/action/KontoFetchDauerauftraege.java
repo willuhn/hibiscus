@@ -12,20 +12,18 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
+import java.util.Arrays;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
-import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
-import de.willuhn.jameica.hbci.gui.views.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobDauerauftragList;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -38,6 +36,8 @@ import de.willuhn.util.I18N;
  */
 public class KontoFetchDauerauftraege implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
 
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
@@ -46,9 +46,7 @@ public class KontoFetchDauerauftraege implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-		if (context == null || !(context instanceof Konto))
+		if (!(context instanceof Konto))
 		{
 			// 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
 			KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
@@ -64,92 +62,24 @@ public class KontoFetchDauerauftraege implements Action
 			catch (Exception e)
 			{
 				Logger.error("error while choosing konto",e);
-				GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Kontos."));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Auswahl des Kontos"),StatusBarMessage.TYPE_ERROR));
 			}
 		}
 
-		if (context == null || !(context instanceof Konto))
+		if (!(context instanceof Konto))
 			throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
 
-		final Konto k = (Konto) context;
+		final Konto konto = (Konto) context;
+    Class type = SynchronizeJobDauerauftragList.class;
 
-    try
-    {
-      // Wir merken uns die aktuelle Seite und aktualisieren sie nur,
-      // wenn sie sich nicht geaendert hat.
-      final AbstractView oldView = GUI.getCurrentView();
-
-      HBCIFactory factory = HBCIFactory.getInstance();
-      factory.addJob(new HBCIDauerauftragListJob(k));
-      factory.executeJobs(k, new Listener() {
-        public void handleEvent(Event event)
-        {
-          final AbstractView newView = GUI.getCurrentView();
-          if (oldView == newView)
-            GUI.startView(DauerauftragList.class,null);
-        }
-      });
-
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while fetching dauerauftrag",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Abrufen der Daueraufträge"));
-    }
+    BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
+    SynchronizeBackend backend = engine.getBackend(type,konto);
+    SynchronizeJob job         = backend.create(type,konto);
+    
+    job.setContext(SynchronizeJob.CTX_ENTITY,konto);
+    
+    backend.execute(Arrays.asList(job));
   }
 
 }
-
-
-/**********************************************************************
- * $Log: KontoFetchDauerauftraege.java,v $
- * Revision 1.12  2011/03/07 10:33:53  willuhn
- * @N BUGZILLA 999
- *
- * Revision 1.11  2007/07/04 09:16:23  willuhn
- * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
- *
- * Revision 1.10  2005/07/26 23:57:18  web0
- * @N Restliche HBCI-Jobs umgestellt
- *
- * Revision 1.9  2005/05/10 22:26:15  web0
- * @B bug 71
- *
- * Revision 1.8  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.7  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/10/29 16:16:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/10/25 23:12:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/10/24 17:19:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/10/23 18:13:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/10/20 12:08:18  willuhn
- * @C MVC-Refactoring (new Controllers)
- *
- * Revision 1.1  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.3  2004/07/25 17:15:05  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.2  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- **********************************************************************/

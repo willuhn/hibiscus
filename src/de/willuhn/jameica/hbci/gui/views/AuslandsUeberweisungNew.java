@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -27,7 +28,10 @@ import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.controller.AuslandsUeberweisungControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisung;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -38,6 +42,9 @@ import de.willuhn.util.I18N;
 public class AuslandsUeberweisungNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  private MessageConsumer mc = new MyMessageConsumer();
+  private AuslandsUeberweisung transfer = null;
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -45,7 +52,7 @@ public class AuslandsUeberweisungNew extends AbstractView
   public void bind() throws Exception
   {
 		final AuslandsUeberweisungControl control = new AuslandsUeberweisungControl(this);
-    final AuslandsUeberweisung transfer = control.getTransfer();
+    this.transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportAuslandsUeberweisung(transfer)));
@@ -108,42 +115,59 @@ public class AuslandsUeberweisungNew extends AbstractView
     buttonArea.addButton(store);
     
     buttonArea.paint(getParent());
+    
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    super.unbind();
+    this.transfer = null;
+    Application.getMessagingFactory().unRegisterMessageConsumer(this.mc);
+  }
+
+  /**
+   * Wird beanchrichtigt, wenn der Auftrag ausgefuehrt wurde und laedt die
+   * View dann neu.
+   */
+  private class MyMessageConsumer implements MessageConsumer
+  {
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ObjectChangedMessage.class};
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      if (transfer == null)
+        return;
+  
+      GenericObject o = ((ObjectChangedMessage) message).getObject();
+      if (o == null)
+        return;
+      
+      // View neu laden
+      if (transfer.equals(o))
+        GUI.startView(AuslandsUeberweisungNew.this,transfer);
+    }
+  
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
 }
-
-
-/**********************************************************************
- * $Log: AuslandsUeberweisungNew.java,v $
- * Revision 1.10  2012/01/27 22:43:22  willuhn
- * @N BUGZILLA 1181
- *
- * Revision 1.9  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.8  2011-06-24 07:55:41  willuhn
- * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
- *
- * Revision 1.7  2011-04-11 14:36:37  willuhn
- * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
- *
- * Revision 1.6  2011-04-08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.5  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.4  2009/05/07 15:13:37  willuhn
- * @N BIC in Auslandsueberweisung
- *
- * Revision 1.3  2009/05/06 23:11:23  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.2  2009/03/17 23:50:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- **********************************************************************/

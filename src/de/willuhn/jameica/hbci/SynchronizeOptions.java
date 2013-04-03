@@ -15,10 +15,14 @@ package de.willuhn.jameica.hbci;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
 
 /**
  * Container fuer die Synchronisierungsoptionen eines Kontos.
@@ -31,15 +35,46 @@ public class SynchronizeOptions implements Serializable
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
   /**
+   * Liefert die Liste der zu synchronisierenden Konten.
+   * @return Liste der zu synchronisierenden Konten.
+   */
+  public static List<Konto> getSynchronizeKonten()
+  {
+    List<Konto> l = new LinkedList<Konto>();
+    
+    try
+    {
+      DBIterator konten = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
+      // Konten-Sortierung immer gleich. Wir verwenden diese Sortierung, damit Konten,
+      // die potentiell ueber das gleiche Sicherheitsmedium abgewickelt werden, direkt
+      // aufeinander folgen. Das ermoeglicht eine spaetere Gruppierung in einem HBCI-Dialog
+      konten.setOrder("order by blz,bic,passport_class");
+      
+      while (konten.hasNext())
+      {
+        Konto k = (Konto) konten.next();
+        SynchronizeOptions o = new SynchronizeOptions(k);
+        if (o.getSynchronize())
+          l.add(k);
+      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to load konto list",re);
+    }
+
+    return l;
+  }
+
+  /**
    * ct.
    * @param k das Konto.
    * @throws RemoteException
    */
   public SynchronizeOptions(Konto k) throws RemoteException
   {
-    int flags = k.getFlags();
-    this.offline  = ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE);
-    this.disabled = ((flags & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED);
+    this.offline  = k.hasFlag(Konto.FLAG_OFFLINE);
+    this.disabled = k.hasFlag(Konto.FLAG_DISABLED);
     this.id = k.getID();
   }
   
@@ -204,38 +239,3 @@ public class SynchronizeOptions implements Serializable
     settings.setAttribute("sync.konto." + id + ".offline",b);
   }
 }
-
-
-/*********************************************************************
- * $Log: SynchronizeOptions.java,v $
- * Revision 1.10  2010/09/02 12:25:13  willuhn
- * @N BUGZILLA 900
- *
- * Revision 1.9  2010/04/22 12:42:03  willuhn
- * @N Erste Version des Supports fuer Offline-Konten
- *
- * Revision 1.8  2010/02/26 15:42:23  willuhn
- * @N Alle Synchronisierungsoptionen auf einmal aktivieren/deaktivieren
- *
- * Revision 1.7  2009/09/15 00:23:35  willuhn
- * @N BUGZILLA 745
- *
- * Revision 1.6  2009/03/17 23:44:15  willuhn
- * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
- *
- * Revision 1.5  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- * Revision 1.4  2009/01/26 23:17:46  willuhn
- * @R Feld "synchronize" aus Konto-Tabelle entfernt. Aufgrund der Synchronize-Optionen pro Konto ist die Information redundant und ergibt sich implizit, wenn fuer ein Konto irgendeine der Synchronisations-Optionen aktiviert ist
- *
- * Revision 1.3  2007/03/23 00:11:51  willuhn
- * @N Bug 346
- *
- * Revision 1.2  2006/10/09 21:43:26  willuhn
- * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
- *
- * Revision 1.1  2006/04/18 22:38:16  willuhn
- * @N bug 227
- *
- **********************************************************************/

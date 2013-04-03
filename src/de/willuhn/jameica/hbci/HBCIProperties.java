@@ -376,6 +376,59 @@ public class HBCIProperties
   }
   
   /**
+   * Laeuft den Stack der Exceptions bis zur urspruenglichen hoch und liefert sie zurueck.
+   * HBCI4Java verpackt Exceptions oft tief ineinander. Sie werden gefangen, in eine
+   * neue gepackt und wieder geworfen. Um nun die eigentliche Fehlermeldung zu kriegen,
+   * suchen wir hier nach der ersten. 
+   * BUGZILLA 249
+   * @param t die Exception.
+   * @return die urspruengliche.
+   */
+  public static Throwable getCause(Throwable t)
+  {
+    return getCause(t,null);
+  }
+  
+  /**
+   * Laeuft den Stack der Exceptions bis zur urspruenglichen hoch und liefert sie zurueck.
+   * HBCI4Java verpackt Exceptions oft tief ineinander. Sie werden gefangen, in eine
+   * neue gepackt und wieder geworfen. Um nun die eigentliche Fehlermeldung zu kriegen,
+   * suchen wir hier nach der ersten. 
+   * BUGZILLA 249
+   * @param t die Exception.
+   * @param c optionale Angabe der gesuchten Exception.
+   * Wird sie nicht angegeben, liefert die Funktion die erste geworfene Exception
+   * im Stacktrace. Wird sie angegeben, liefert die Funktion die erste gefundene
+   * Exception dieser Klasse - insofern sie gefunden wird. Wird sie nicht gefunden,
+   * liefert die Funktion NULL.
+   * @return die urspruengliche.
+   */
+  public static Throwable getCause(Throwable t, Class<? extends Throwable> c)
+  {
+    Throwable cause = t;
+    
+    for (int i=0;i<20;++i) // maximal 20 Schritte nach oben
+    {
+      if (c != null && c.equals(cause.getClass()))
+        return cause;
+      
+      Throwable current = cause.getCause();
+
+      if (current == null)
+        break; // Ende, hier kommt nichts mehr
+      
+      if (current == cause) // Wir wiederholen uns
+        break;
+      
+      cause = current;
+    }
+    
+    // Wenn eine gesuchte Exception angegeben wurde, haben wir sie hier nicht gefunden
+    return c != null ? null : cause;
+  }
+
+  
+  /**
    * Resettet die Uhrzeit eines Datums.
    * @param date das Datum.
    * @return das neue Datum.
@@ -404,65 +457,3 @@ public class HBCIProperties
 
 }
 
-
-/**********************************************************************
- * $Log: HBCIProperties.java,v $
- * Revision 1.46  2011/05/27 11:33:23  willuhn
- * @N BUGZILLA 1056
- *
- * Revision 1.45  2011-05-12 08:08:27  willuhn
- * @N BUGZILLA 591
- *
- * Revision 1.44  2011-05-11 16:23:57  willuhn
- * @N BUGZILLA 591
- *
- * Revision 1.43  2011-05-10 11:51:15  willuhn
- * @R Marker entfernt
- *
- * Revision 1.42  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.41  2010/06/14 23:00:59  willuhn
- * @C Dialog-Groesse angepasst
- * @N Datei-Auswahldialog mit nativem Ueberschreib-Hinweis
- *
- * Revision 1.40  2010/03/31 11:19:40  willuhn
- * @N Automatisches Entfernen nicht-zulaessiger Zeichen
- *
- * Revision 1.39  2009/10/26 15:58:54  willuhn
- * @C Account CRC check nur, wenn der Alg. bekannt ist
- *
- * Revision 1.38  2009/03/18 22:09:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.37  2009/02/18 00:35:54  willuhn
- * @N Auslaendische Bankverbindungen im Adressbuch
- *
- * Revision 1.36  2009/02/17 00:00:02  willuhn
- * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
- *
- * Revision 1.35  2009/02/12 23:55:57  willuhn
- * @N Erster Code fuer Unterstuetzung von Auslandsueberweisungen: In Tabelle "umsatz" die Spalte "empfaenger_konto" auf 40 Stellen erweitert und Eingabefeld bis max. 34 Stellen, damit IBANs gespeichert werden koennen
- *
- * Revision 1.34  2008/12/14 23:18:35  willuhn
- * @N BUGZILLA 188 - REFACTORING
- *
- * Revision 1.33  2008/11/30 22:33:56  willuhn
- * @N BUGZILLA 659 - Maximale PIN-Laenge nun 20 Zeichen
- *
- * Revision 1.32  2008/11/24 00:12:08  willuhn
- * @R Spezial-Umsatzparser entfernt - wird kuenftig direkt in HBCI4Java gemacht
- *
- * Revision 1.31  2008/11/04 11:55:16  willuhn
- * @N Update auf HBCI4Java 2.5.9
- *
- * Revision 1.30  2008/05/30 12:02:08  willuhn
- * @N Erster Code fuer erweiterte Verwendungszwecke - NOCH NICHT FREIGESCHALTET!
- *
- * Revision 1.29  2008/05/20 22:47:06  willuhn
- * @B "ß" wird bei Umwandlung in Grossbuchstaben zu "SS" und muss bei der Laengenpruefung daher doppelt gezaehlt werden
- *
- * Revision 1.28  2008/05/19 22:35:53  willuhn
- * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
- * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
- **********************************************************************/

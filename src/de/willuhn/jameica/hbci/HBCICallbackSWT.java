@@ -26,16 +26,17 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
 
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
+import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.security.Wallet;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -67,8 +68,12 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
    */
   public void log(String msg, int level, Date date, StackTraceElement trace)
   {
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+
     boolean log = true;
     String type = null;
+    
   	switch (level)
   	{
   	  case HBCIUtils.LOG_INTERN:
@@ -103,22 +108,29 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 				break;
 
   		case HBCIUtils.LOG_ERR:
-        type = "error";
-				Logger.error(msg + " " + trace.toString());
-				break;
+  		  if (session != null && session.getStatus() == ProgressMonitor.STATUS_CANCEL)
+  		  {
+  		    log = false;
+  		    break;
+  		  }
+  		  else
+  		  {
+          type = "error";
+          Logger.error(msg + " " + trace.toString());
+          break;
+  		  }
 
 			default:
 				Logger.warn(msg);
   	}
     
-    if (log && HBCIFactory.getInstance().inProgress())
+    if (log && session != null)
     {
-      ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
+      ProgressMonitor monitor = session.getProgressMonitor();
       if (type != null)
         monitor.log("[" + type + "] " + msg);
       else
         monitor.log(msg);
-      monitor.addPercentComplete(1);
     }
   }
 
@@ -129,7 +141,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     
     cacheData(passport);
 
-		try {
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+
+    try {
       
       if (currentHandle != null && currentHandle.callback(passport,reason,msg,datatype,retData))
       {
@@ -251,8 +266,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
             n.store();
             String text = i18n.tr("Neue Institutsnachricht empfangen");
             Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
-            GUI.getStatusBar().setSuccessText(text);
-            HBCIFactory.getInstance().getProgressMonitor().setStatusText(text);
+            session.getProgressMonitor().setStatusText(text);
           }
           catch (Exception e)
           {
@@ -290,7 +304,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 		{
 			// Die wird bei HAVE_NEW_MY_KEYS geworfen.
 			// Wir brechen ohne Anzeigen eines Fehlers ab.
-			HBCIFactory.getInstance().markCancelled();
+		  session.cancel();
 		}
 		catch (OperationCanceledException oce)
 		{
@@ -302,24 +316,24 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 			// wiederzufinden. Das ist mir zu aufwaendig. Deswegen
 			// teile ich der Factory gleich selbst mit, dass der
 			// User die Aktion selbst abgebrochen hat.
-			HBCIFactory.getInstance().markCancelled();
+      session.cancel();
 			throw oce;
 		}
 		catch (Throwable t)
 		{
-			// Siehe oben. Wir wollen sichergehen, dass die OperationCanceledException
-			// nicht nochmal verpackt ist.
-			Throwable th = t.getCause();
-			
-			if (t instanceof SWTException)
+      if (t instanceof SWTException) // von SWT verpackt
+        t = ((SWTException) t).throwable;
+
+      // Siehe oben. Wir wollen sichergehen, dass die OperationCanceledException
+      // nicht nochmal verpackt ist.
+		  Throwable th = HBCIProperties.getCause(t,OperationCanceledException.class);
+			if (th != null)
 			{
-				th = ((SWTException) t).throwable;
-			}
-			if (th != null && th instanceof OperationCanceledException)
-			{
-				HBCIFactory.getInstance().markCancelled();
+	      session.cancel();
 				throw (OperationCanceledException) th;
 			}
+			
+			// Ansonsten durchwerfen
 			if (t instanceof RuntimeException)
 				throw (RuntimeException) t;
 			throw new HBCI_Exception(t);
@@ -333,12 +347,12 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   private void status(String text)
 	{
     Logger.info(text);
-    if (HBCIFactory.getInstance().inProgress())
-    {
-      ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
-      monitor.log(text + "\n");
-      monitor.addPercentComplete(1);
-    }
+    
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+
+    ProgressMonitor monitor = session.getProgressMonitor();
+    monitor.log(text + "\n");
 	}
 	
 	/**

@@ -27,6 +27,9 @@ import org.kapott.hbci.structures.Value;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
+import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -55,7 +58,7 @@ public abstract class AbstractHBCIJob
 	 * gewuenschten Job.
 	 * @return Job-Identifier.
 	 */
-  abstract String getIdentifier();
+  public abstract String getIdentifier();
   
   /**
    * Liefert einen sprechenden Namen fuer diesen Job.
@@ -105,13 +108,15 @@ public abstract class AbstractHBCIJob
   void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
   {
   }
-
+  
 	/**
-	 * Diese Funktion wird von der HBCIFactory intern aufgerufen.
+	 * Diese Funktion wird vom HBCISynchronizeBackend intern aufgerufen.
 	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
 	 * @param job der erzeugte Job.
+   * @throws RemoteException
+   * @throws ApplicationException
 	 */
-  final void setJob(org.kapott.hbci.GV.HBCIJob job)
+  public void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException, ApplicationException
   {
   	this.job = job;
   	Enumeration e = params.keys();
@@ -149,7 +154,7 @@ public abstract class AbstractHBCIJob
    * @throws RemoteException
    * @throws ApplicationException
    */
-  final void handleResult() throws ApplicationException, RemoteException
+  public final void handleResult() throws ApplicationException, RemoteException
   {
     HBCIJobResult result    = getJobResult();
     HBCIStatus status       = result.getJobStatus();
@@ -179,7 +184,10 @@ public abstract class AbstractHBCIJob
       }
     }
 
-    if ((tanNeeded || status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN) && HBCIFactory.getInstance().isCancelled()) // BUGZILLA 690
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+    
+    if ((tanNeeded || status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN) && session.getStatus() == ProgressMonitor.STATUS_CANCEL) // BUGZILLA 690
     {
       Logger.warn("hbci session cancelled by user, mark job as cancelled");
       markCancelled();
@@ -192,7 +200,7 @@ public abstract class AbstractHBCIJob
     if (warnings != null && warnings.length > 0)
     {
       // Loggen
-      ProgressMonitor monitor = HBCIFactory.getInstance().getProgressMonitor();
+      ProgressMonitor monitor = session.getProgressMonitor();
       monitor.log(" ");
       for (HBCIRetVal val:warnings)
         monitor.log("  " + val.code + ": " + val.text);
@@ -421,133 +429,3 @@ public abstract class AbstractHBCIJob
     this.exclusive = exclusive;
   }
 }
-
-
-/**********************************************************************
- * $Log: AbstractHBCIJob.java,v $
- * Revision 1.41  2012/03/01 22:19:15  willuhn
- * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
- *
- * Revision 1.40  2011-07-28 09:01:07  willuhn
- * @B BUGZILLA 1109
- *
- * Revision 1.39  2011-07-28 08:45:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.38  2011-06-07 10:07:51  willuhn
- * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
- *
- * Revision 1.37  2011-05-11 16:23:57  willuhn
- * @N BUGZILLA 591
- *
- * Revision 1.36  2011-05-10 12:18:11  willuhn
- * @C Code zum Setzen der usage-Parameter in gemeinsamer Basisklasse AbstractHBCIJob - der Code war 3x identisch vorhanden
- *
- * Revision 1.35  2010-12-27 23:03:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.34  2010-12-27 22:51:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.33  2010-12-27 22:47:52  willuhn
- * @N BUGZILLA 964
- *
- * Revision 1.32  2010-09-02 12:25:13  willuhn
- * @N BUGZILLA 900
- *
- * Revision 1.31  2010-09-02 10:21:06  willuhn
- * @N BUGZILLA 899
- *
- * Revision 1.30  2009/01/16 22:50:00  willuhn
- * @N bugzilla token
- *
- * Revision 1.29  2009/01/16 22:44:22  willuhn
- * @B Wenn eine HBCI-Session vom User abgebrochen wurde, liefert das JobResult#isOK() u.U. trotzdem true, was dazu fuehrt, dass eine Ueberweisung versehentlich als ausgefuehrt markiert wurde. Neue Funktion "markCancelled()" eingefuehrt.
- *
- * Revision 1.28  2008/09/23 11:28:30  willuhn
- * @N Statuscode auch bei Erfolg mit loggen
- *
- * Revision 1.27  2008/09/23 11:24:27  willuhn
- * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
- *
- * Revision 1.26  2007/12/06 23:53:56  willuhn
- * @B Bug 490
- *
- * Revision 1.25  2007/02/21 10:02:27  willuhn
- * @C Code zum Ausfuehren exklusiver Jobs redesigned
- *
- * Revision 1.24  2006/11/15 00:13:07  willuhn
- * @B Bug 327
- *
- * Revision 1.23  2006/03/17 00:51:24  willuhn
- * @N bug 209 Neues Synchronisierungs-Subsystem
- *
- * Revision 1.22  2006/03/15 18:01:30  willuhn
- * @N AbstractHBCIJob#getName
- *
- * Revision 1.21  2006/03/15 17:34:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2006/03/15 17:28:41  willuhn
- * @C Refactoring der Anzeige der HBCI-Fehlermeldungen
- *
- * Revision 1.19  2006/01/23 12:16:57  willuhn
- * @N Update auf HBCI4Java 2.5.0-rc5
- *
- * Revision 1.18  2005/08/01 23:27:42  web0
- * *** empty log message ***
- *
- * Revision 1.17  2005/06/21 20:11:10  web0
- * @C cvs merge
- *
- * Revision 1.16  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.15  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.14  2004/11/14 19:21:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.12  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/10/26 23:47:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/10/25 22:39:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- * Revision 1.8  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- * Revision 1.6  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- * Revision 1.5  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/05/25 23:23:18  willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- *
- * Revision 1.3  2004/04/24 19:04:51  willuhn
- * @N Ueberweisung.execute works!! ;)
- *
- * Revision 1.2  2004/04/22 23:46:50  willuhn
- * @N UeberweisungJob
- *
- * Revision 1.1  2004/04/19 22:05:51  willuhn
- * @C HBCIJobs refactored
- *
- **********************************************************************/

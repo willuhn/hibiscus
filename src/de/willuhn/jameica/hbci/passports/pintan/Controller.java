@@ -32,6 +32,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -39,7 +40,6 @@ import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.passports.pintan.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -441,7 +441,7 @@ public class Controller extends AbstractControl
     catch (Throwable t)
     {
       // Fehlertext nur anzeigen, wenn der Vorgang nicht durch den User abgebrochen wurde
-      if (HBCIFactory.getCause(t,OperationCanceledException.class) == null)
+      if (HBCIProperties.getCause(t,OperationCanceledException.class) == null)
       {
         Logger.error("error while creating config",t);
         GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Erstellen der Konfiguration"));

@@ -34,7 +34,6 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 
 	private AuslandsUeberweisung ueberweisung = null;
 	private Konto konto                       = null;
-	private boolean markExecutedBefore        = false;
 
   /**
 	 * ct.
@@ -80,10 +79,6 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       if (zweck != null && zweck.trim().length() > 0)
 			  setJobParam("usage",zweck);
 			
-      de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-      markExecutedBefore = settings.getBoolean("transfer.markexecuted.before",false);
-      if (markExecutedBefore)
-        ueberweisung.setAusgefuehrt(true);
 		}
 		catch (RemoteException e)
 		{
@@ -103,7 +98,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  String getIdentifier()
+  public String getIdentifier()
   {
     return "UebSEPA";
   }
@@ -121,9 +116,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
-    // Wenn der Auftrag nicht vorher als ausgefuehrt markiert wurde, machen wir das jetzt
-    if (!markExecutedBefore)
-      ueberweisung.setAusgefuehrt(true);
+    ueberweisung.setAusgefuehrt(true);
     
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung));
     konto.addToProtokoll(i18n.tr("Auftrag ausgeführt an: {0}",ueberweisung.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);
@@ -135,11 +128,6 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   String markFailed(String error) throws ApplicationException, RemoteException
   {
-    // Wenn der Auftrag fehlerhaft war und schon als ausgefuehrt markiert wurde, machen
-    // wir das jetzt wieder rurckgaengig
-    if (markExecutedBefore)
-      ueberweisung.setAusgefuehrt(false);
-    
     String msg = i18n.tr("Fehler beim Ausführen des Auftrages an {0}: {1}",new String[]{ueberweisung.getGegenkontoName(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
@@ -150,40 +138,8 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   void markCancelled() throws RemoteException, ApplicationException
   {
-    // Wenn der Auftrag abgebrochen wurde und schon als ausgefuehrt markiert wurde, machen
-    // wir das jetzt wieder rurckgaengig
-    if (markExecutedBefore)
-      ueberweisung.setAusgefuehrt(false);
-    
     String msg = i18n.tr("Ausführung des Auftrages an {0} abgebrochen",ueberweisung.getGegenkontoName());
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
   }
 
 }
-
-
-/**********************************************************************
- * $Log: HBCIAuslandsUeberweisungJob.java,v $
- * Revision 1.7  2012/03/01 22:19:15  willuhn
- * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
- *
- * Revision 1.6  2010-02-23 11:20:45  willuhn
- * @C Verwendungszweck ignorieren, wenn er nur aus Whitespaces besteht
- *
- * Revision 1.5  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.4  2009/06/29 09:00:23  willuhn
- * @B wenn das Feature "transfer.markexecuted.before" aktiv ist, wurden Auftraege auch dann als ausgefuehrt markiert, wenn sie abgebrochen wurden - die Methode markCancelled() war nicht ueberschrieben worden
- *
- * Revision 1.3  2009/05/07 15:13:37  willuhn
- * @N BIC in Auslandsueberweisung
- *
- * Revision 1.2  2009/03/30 13:46:21  willuhn
- * @B "src.name" fehlte
- *
- * Revision 1.1  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- **********************************************************************/

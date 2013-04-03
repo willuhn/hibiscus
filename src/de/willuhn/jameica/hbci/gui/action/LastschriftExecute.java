@@ -13,19 +13,19 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
-import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.LastschriftDialog;
-import de.willuhn.jameica.hbci.gui.views.LastschriftNew;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
-import de.willuhn.jameica.hbci.server.hbci.HBCILastschriftJob;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobLastschrift;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -38,6 +38,7 @@ import de.willuhn.util.I18N;
  */
 public class LastschriftExecute implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
 	 * Erwartet ein Objekt vom Typ <code>Lastschrift</code> als Context.
@@ -45,8 +46,6 @@ public class LastschriftExecute implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		if (context == null || !(context instanceof Lastschrift))
 			throw new ApplicationException(i18n.tr("Keine Lastschrift angegeben"));
 
@@ -74,62 +73,27 @@ public class LastschriftExecute implements Action
 			catch (Exception e)
 			{
 				Logger.error("error while showing confirm dialog",e);
-				GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Lastschrift"));
+				Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen der Lastschrift"),StatusBarMessage.TYPE_ERROR));
 				return;
 			}
 
-      // Wir merken uns die aktuelle Seite und aktualisieren sie nur,
-      // wenn sie sich nicht geaendert hat.
-      final AbstractView oldView = GUI.getCurrentView();
+      Konto konto = u.getKonto();
+      Class type = SynchronizeJobLastschrift.class;
 
-      HBCIFactory factory = HBCIFactory.getInstance();
-      factory.addJob(new HBCILastschriftJob(u));
-      factory.executeJobs(u.getKonto(), new Listener() {
-        public void handleEvent(Event event)
-        {
-          final AbstractView newView = GUI.getCurrentView();
-          if (oldView == newView && u == newView.getCurrentObject())
-            GUI.startView(LastschriftNew.class,u);
-        }
-      }); 
-
-
+      BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
+      SynchronizeBackend backend = engine.getBackend(type,konto);
+      SynchronizeJob job         = backend.create(type,konto);
+      
+      job.setContext(SynchronizeJob.CTX_ENTITY,u);
+      
+      backend.execute(Arrays.asList(job));
 		}
 		catch (RemoteException e)
 		{
 			Logger.error("error while executing lastschrift",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen der Lastschrift"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen der Lastschrift: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
 		}
   }
 
 }
-
-
-/**********************************************************************
- * $Log: LastschriftExecute.java,v $
- * Revision 1.8  2011/05/11 10:05:32  willuhn
- * @N OCE fangen
- *
- * Revision 1.7  2007/07/04 09:16:24  willuhn
- * @B Aktuelle View nach Ausfuehrung eines HBCI-Jobs nur noch dann aktualisieren, wenn sie sich zwischenzeitlich nicht geaendert hat
- *
- * Revision 1.6  2005/07/26 23:57:18  web0
- * @N Restliche HBCI-Jobs umgestellt
- *
- * Revision 1.5  2005/05/10 22:26:15  web0
- * @B bug 71
- *
- * Revision 1.4  2005/03/30 23:28:13  web0
- * @B bug 31
- *
- * Revision 1.3  2005/03/30 23:26:28  web0
- * @B bug 29
- * @B bug 30
- *
- * Revision 1.2  2005/03/02 00:22:05  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.1  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
- *
- **********************************************************************/

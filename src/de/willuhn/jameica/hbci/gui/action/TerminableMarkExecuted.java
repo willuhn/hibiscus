@@ -95,23 +95,3 @@ public class TerminableMarkExecuted implements Action
   }
 
 }
-
-
-/**********************************************************************
- * $Log: TerminableMarkExecuted.java,v $
- * Revision 1.4  2009/02/18 10:48:42  willuhn
- * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
- *
- * Revision 1.3  2007/10/25 15:47:21  willuhn
- * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
- *
- * Revision 1.2  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.1  2006/03/30 22:56:46  willuhn
- * @B bug 216
- *
- **********************************************************************/

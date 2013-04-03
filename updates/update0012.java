@@ -296,27 +296,3 @@ public class update0012 implements Update
   }
 
 }
-
-
-/*********************************************************************
- * $Log: update0012.java,v $
- * Revision 1.6  2011/10/24 14:24:22  willuhn
- * @B Parameter "database.driver" darf inzwischen NULL sein - in dem Fall H2 als Default verwenden
- *
- * Revision 1.5  2010-11-02 12:02:20  willuhn
- * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
- *
- * Revision 1.4  2010/04/27 11:02:32  willuhn
- * @R Veralteten Verwendungszweck-Code entfernt
- *
- * Revision 1.3  2009/02/18 10:48:42  willuhn
- * @N Neuer Schalter "transfer.markexecuted.before", um festlegen zu koennen, wann ein Auftrag als ausgefuehrt gilt (wenn die Quittung von der Bank vorliegt oder wenn der Auftrag erzeugt wurde)
- *
- * Revision 1.2  2008/12/15 10:46:04  willuhn
- * @B Verwendungszwecke ueberspringen, wenn die zugehoerigen Objekte nicht mehr gefunden wurden
- * @N rollback des Updates im Fehlerfall durch Entfernen der Spalte "zweck3"
- *
- * Revision 1.1  2008/12/14 23:18:35  willuhn
- * @N BUGZILLA 188 - REFACTORING
- *
- **********************************************************************/

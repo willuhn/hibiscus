@@ -161,8 +161,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
       return name;
     name = new TextInput(getTransfer().getBezeichnung());
     name.setMandatory(true);
-    if (getTransfer().ausgefuehrt())
-      name.disable();
+    name.setEnabled(!getTransfer().ausgefuehrt());
     return name;
   }
 
@@ -219,7 +218,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     }
     return false;
   }
-
+  
   /**
    * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
    * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
@@ -340,38 +339,4 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
       return false;
     }
   }
-
-
-
 }
-
-/*****************************************************************************
- * $Log: AbstractSammelTransferControl.java,v $
- * Revision 1.15  2012/02/26 13:00:39  willuhn
- * @B BUGZILLA 1197
- *
- * Revision 1.14  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.13  2011-08-10 12:47:28  willuhn
- * @N BUGZILLA 1118
- *
- * Revision 1.12  2011-05-20 16:22:31  willuhn
- * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
- *
- * Revision 1.11  2010-12-13 11:01:08  willuhn
- * @B Wenn man einen Sammelauftrag in der Detailansicht loeschte, konnte man anschliessend noch doppelt auf die zugeordneten Buchungen klicken und eine ObjectNotFoundException ausloesen
- *
- * Revision 1.10  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.9  2009/10/07 23:08:56  willuhn
- * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
- *
- * Revision 1.8  2009/03/11 23:40:45  willuhn
- * @B Kleineres Bugfixing in Sammeltransfer-Control
- *
- * Revision 1.7  2009/01/04 16:18:22  willuhn
- * @N BUGZILLA 404 - Kontoauswahl via SelectBox
-*****************************************************************************/

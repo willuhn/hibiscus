@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
@@ -19,7 +20,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -28,16 +28,18 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.DauerauftragDeleteDialog;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragDeleteJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIDauerauftragListJob;
-import de.willuhn.jameica.hbci.server.hbci.HBCIFactory;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobDauerauftragDelete;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.ProgressMonitor;
 
 /**
  * Action fuer Loeschen eines Dauerauftrages.
@@ -102,35 +104,20 @@ public class DauerauftragDelete implements Action
 
 	      DauerauftragDeleteDialog d2 = new DauerauftragDeleteDialog(DauerauftragDeleteDialog.POSITION_CENTER);
 	      Date date = (Date) d2.open();
+	      
+	      Konto konto = da.getKonto();
+	      Class type = SynchronizeJobDauerauftragDelete.class;
 
-	      HBCIFactory factory = HBCIFactory.getInstance();
-	      HBCIDauerauftragListJob job = new HBCIDauerauftragListJob(da.getKonto());
-	      job.setExclusive(true);
-	      factory.addJob(job);
-	      factory.addJob(new HBCIDauerauftragDeleteJob(da,date));
-	      factory.executeJobs(da.getKonto(), new Listener() {
-	        public void handleEvent(Event event)
-	        {
-	          if (event.type == ProgressMonitor.STATUS_DONE)
-	          {
-	            try
-	            {
-	              da.delete(); // anschliessend lokal in der Datenbank loeschen
-                Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Dauerauftrag gelöscht."),StatusBarMessage.TYPE_SUCCESS));
-	            }
-	            catch (ApplicationException e)
-	            {
-	              Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
-	              GUI.getStatusBar().setErrorText(e.getMessage());
-	            }
-	            catch (Exception e)
-	            {
-	              Logger.error("unable to delete local copy",e);
-                Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Lokale Kopie des Auftrages konnte nicht gelöscht werden: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
-	            }
-	          }
-	        }
-	      }); 
+	      BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+	      SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
+	      SynchronizeBackend backend = engine.getBackend(type,konto);
+	      SynchronizeJob job         = backend.create(type,konto);
+	      
+	      job.setContext(SynchronizeJob.CTX_ENTITY,da);
+	      job.setContext(SynchronizeJobDauerauftragDelete.CTX_DATE,date);
+	      
+        // Das Loeschen der Entity uebernimmt der HBCIDauerauftragDeleteJob selbst in "markExecuted"
+	      backend.execute(Arrays.asList(job));
 	    }
 	    else
 	    {
@@ -155,14 +142,3 @@ public class DauerauftragDelete implements Action
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: DauerauftragDelete.java,v $
- * Revision 1.19  2011/03/07 10:40:48  willuhn
- * @N BUGZILLA 999 - zusaetzlicher Hinweis, wenn nur lokal geloescht wird
- *
- * Revision 1.18  2011-03-07 10:33:54  willuhn
- * @N BUGZILLA 999
- *
- **********************************************************************/

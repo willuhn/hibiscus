@@ -51,7 +51,6 @@ public class SettingsControl extends AbstractControl
 
 	// Eingabe-Felder
 	private CheckboxInput onlineMode     		= null;
-  private CheckboxInput cancelSyncOnError = null;
   private CheckboxInput cachePin          = null;
   private CheckboxInput storePin          = null;
   private CheckboxInput decimalGrouping   = null;
@@ -108,17 +107,6 @@ public class SettingsControl extends AbstractControl
       onlineMode = new CheckboxInput(Settings.getOnlineMode());
 		return onlineMode;
 	}
-
-  /**
-   * Checkbox zur Auswahl das Abbruches der Synchronisierung bei Fehler.
-   * @return Checkbox.
-   */
-  public CheckboxInput getCancelSyncOnError()
-  {
-    if (cancelSyncOnError == null)
-      cancelSyncOnError = new CheckboxInput(Settings.getCancelSyncOnError());
-    return cancelSyncOnError;
-  }
 
   /**
    * Checkbox zur Auswahl von Dezimal-Trennzeichen in Betraegen.
@@ -295,7 +283,6 @@ public class SettingsControl extends AbstractControl
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
     Settings.setKontoCheckExcludeAddressbook(((Boolean)getKontoCheckExcludeAddressbook().getValue()).booleanValue());
-    Settings.setCancelSyncOnError(((Boolean)getCancelSyncOnError().getValue()).booleanValue());
 
     boolean storeEnabled = ((Boolean)getStorePin().getValue()).booleanValue();
     boolean cacheEnabled = ((Boolean)getCachePin().getValue()).booleanValue();
@@ -314,24 +301,3 @@ public class SettingsControl extends AbstractControl
   }
 }
 
-
-/**********************************************************************
- * $Log: SettingsControl.java,v $
- * Revision 1.61  2011/06/30 16:29:41  willuhn
- * @N Unterstuetzung fuer neues UnreadCount-Feature
- *
- * Revision 1.60  2011-05-25 10:05:49  willuhn
- * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
- *
- * Revision 1.59  2011-05-25 08:53:31  willuhn
- * @N Cache und Store leeren, wenn die Features deaktiviert wurden
- *
- * Revision 1.58  2011-05-23 12:57:37  willuhn
- * @N optionales Speichern der PINs im Wallet. Ich announce das aber nicht. Ich hab das nur eingebaut, weil mir das Gejammer der User auf den Nerv ging und ich nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
- *
- * Revision 1.57  2011-04-28 07:33:23  willuhn
- * @C Code-Cleanup
- *
- * Revision 1.56  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- **********************************************************************/

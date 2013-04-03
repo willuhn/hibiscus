@@ -122,7 +122,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  String getIdentifier() {
+  public String getIdentifier() {
     return "KUmsAll";
   }
 

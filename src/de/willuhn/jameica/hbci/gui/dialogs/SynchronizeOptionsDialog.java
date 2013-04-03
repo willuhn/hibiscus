@@ -58,7 +58,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     super(position);
     this.setTitle(i18n.tr("Synchronisierungsoptionen"));
     this.options = new SynchronizeOptions(konto);
-    this.offline = (konto.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE;
+    this.offline = konto.hasFlag(Konto.FLAG_OFFLINE);
   }
 
   /**
@@ -220,44 +220,4 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     return null;
   }
-
 }
-
-
-/*********************************************************************
- * $Log: SynchronizeOptionsDialog.java,v $
- * Revision 1.11  2011/05/20 16:22:31  willuhn
- * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
- *
- * Revision 1.10  2011-04-29 12:13:57  willuhn
- * @N GUI-Polish
- *
- * Revision 1.9  2010-09-02 12:25:13  willuhn
- * @N BUGZILLA 900
- *
- * Revision 1.8  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.7  2009/07/17 11:06:45  willuhn
- * @R Auslandsueberweisungen nochmal ausgeblendet - funktionieren ja eh noch nicht
- *
- * Revision 1.6  2009/03/17 23:44:15  willuhn
- * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
- *
- * Revision 1.5  2007/03/23 00:11:51  willuhn
- * @N Bug 346
- *
- * Revision 1.4  2006/10/09 21:43:26  willuhn
- * @N Zusammenfassung der Geschaeftsvorfaelle "Umsaetze abrufen" und "Saldo abrufen" zu "Kontoauszuege abrufen" bei der Konto-Synchronisation
- *
- * Revision 1.3  2006/04/18 22:38:16  willuhn
- * @N bug 227
- *
- * Revision 1.2  2006/03/27 21:34:16  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2006/03/21 00:43:14  willuhn
- * @B bug 209
- *
- **********************************************************************/
