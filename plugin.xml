@@ -6,7 +6,7 @@
         name="hibiscus" version="2.5.1-nightly" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
-  <url>https://www.willuhn.de/products/hibiscus/releases/nightly/hibiscus-2.5.0-nightly.zip</url>
+  <url>https://www.willuhn.de/products/hibiscus/releases/nightly/hibiscus-2.5.1-nightly.zip</url>
   <homepage>http://www.willuhn.de/products/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
   <icon>hibiscus-icon-64x64.png</icon>
