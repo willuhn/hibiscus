@@ -583,19 +583,21 @@ public class HBCISynchronizeBackend implements SynchronizeBackend
             Logger.warn("found errors or synchronization cancelled, clear PIN cache");
             DialogFactory.clearPINCache(this.handler != null ? this.handler.getPassport() : null);
           }
-            
-          // Fehler nur werfen, wenn wir nicht abgebrochen wurden - in dem Fall
-          // werfen die handleResult-Funktionen naemlich ohnehin Fehler. Die
-          // interessieren beim Abbruch aber nicht.
-          // Der Abbruch-Check kommt unten drunter
-          if (haveError && !inCatch && !HBCISynchronizeBackend.this.worker.isInterrupted())
-            throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
-          //
-          // //////////////////////////////////////////////////////////////////////
-
-          // Jetzt noch die OperationCancelledException werfen, falls zwischenzeitlich abgebrochen wurde
+          
           if (!inCatch)
+          {
+            // Fehler nur werfen, wenn wir nicht abgebrochen wurden - in dem Fall
+            // werfen die handleResult-Funktionen naemlich ohnehin Fehler. Die
+            // interessieren beim Abbruch aber nicht.
+            // Der Abbruch-Check kommt unten drunter
+            if (haveError && !HBCISynchronizeBackend.this.worker.isInterrupted())
+              throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
+            //
+            // //////////////////////////////////////////////////////////////////////
+
+            // Jetzt noch die OperationCancelledException werfen, falls zwischenzeitlich abgebrochen wurde
             this.checkInterrupted();
+          }
         }
         finally
         {
