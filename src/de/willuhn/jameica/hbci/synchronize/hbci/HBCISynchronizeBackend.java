@@ -549,33 +549,39 @@ public class HBCISynchronizeBackend implements SynchronizeBackend
               Logger.info("executing check for job " + hbciJob.getIdentifier());
               hbciJob.handleResult();
             }
-            catch (ApplicationException ae)
-            {
-              if (!HBCISynchronizeBackend.this.worker.isInterrupted())
-              {
-                monitor.setStatusText(ae.getMessage());
-                haveError = true;
-              }
-            }
             catch (Throwable t)
             {
+              haveError = true;
+              
+              // Nur loggen, wenn wir nicht abgebrochen wurden. Waeren sonst nur Folgefehler
               if (!HBCISynchronizeBackend.this.worker.isInterrupted())
               {
-                monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
-                Logger.error("error while processing job result",t);
-                monitor.log(t.getMessage());
-                haveError = true;
+                if (t instanceof ApplicationException)
+                {
+                  monitor.setStatusText(t.getMessage());
+                }
+                else
+                {
+                  monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
+                  Logger.error("error while processing job result",t);
+                  monitor.log(t.getMessage());
+                }
               }
             }
           }
           
-          if (haveError)
+          if (haveError || HBCISynchronizeBackend.this.worker.isInterrupted())
           {
-            Logger.info("clear PIN cache");
+            Logger.warn("found errors or synchronization cancelled, clear PIN cache");
             DialogFactory.clearPINCache(this.handler != null ? this.handler.getPassport() : null);
-            
-            throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
           }
+            
+          // Fehler nur werfen, wenn wir nicht abgebrochen wurden - in dem Fall
+          // werfen die handleResult-Funktionen naemlich ohnehin Fehler. Die
+          // interessieren beim Abbruch aber nicht.
+          // Der Abbruch-Check kommt unten drunter
+          if (haveError && !HBCISynchronizeBackend.this.worker.isInterrupted())
+            throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
           //
           // //////////////////////////////////////////////////////////////////////
 
