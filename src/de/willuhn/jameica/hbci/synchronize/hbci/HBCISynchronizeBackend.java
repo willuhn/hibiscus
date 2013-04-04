@@ -480,6 +480,9 @@ public class HBCISynchronizeBackend implements SynchronizeBackend
       String kn               = this.konto.getLongName();
       ////////////////////////////////////////////////////////////////////
 
+      boolean haveError = false;
+      boolean inCatch   = false;
+
       try
       {
         this.checkInterrupted();
@@ -526,6 +529,12 @@ public class HBCISynchronizeBackend implements SynchronizeBackend
         //
         ////////////////////////////////////////////////////////////////////////
       }
+      catch (Exception e)
+      {
+        haveError = true;
+        inCatch = true;
+        throw e;
+      }
       finally
       {
         try
@@ -539,7 +548,6 @@ public class HBCISynchronizeBackend implements SynchronizeBackend
           // Job-Ergebnisse auswerten.
           // checkInterrupted wird hier nicht aufgerufen, um sicherzustellen, dass
           // dieser Vorgang nicht abgebrochen wird.
-          boolean haveError = false;
           for (AbstractHBCIJob hbciJob:this.hbciJobs)
           {
             try
@@ -580,13 +588,14 @@ public class HBCISynchronizeBackend implements SynchronizeBackend
           // werfen die handleResult-Funktionen naemlich ohnehin Fehler. Die
           // interessieren beim Abbruch aber nicht.
           // Der Abbruch-Check kommt unten drunter
-          if (haveError && !HBCISynchronizeBackend.this.worker.isInterrupted())
+          if (haveError && !inCatch && !HBCISynchronizeBackend.this.worker.isInterrupted())
             throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
           //
           // //////////////////////////////////////////////////////////////////////
 
           // Jetzt noch die OperationCancelledException werfen, falls zwischenzeitlich abgebrochen wurde
-          this.checkInterrupted();
+          if (!inCatch)
+            this.checkInterrupted();
         }
         finally
         {
