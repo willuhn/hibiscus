@@ -22,7 +22,7 @@ import de.willuhn.util.ApplicationException;
 public interface SynchronizeJob
 {
   /**
-   * Der Default-Context-Name fuer das Fachobjekt.
+   * Der Context-Name fuer das Fachobjekt.
    */
   public final static String CTX_ENTITY = "ctx.entity";
   

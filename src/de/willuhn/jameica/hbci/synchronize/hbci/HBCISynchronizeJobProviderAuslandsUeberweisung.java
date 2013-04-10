@@ -1,18 +1,13 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/HBCISynchronizeJobProviderAuslandsUeberweisung.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/17 23:44:15 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.synchronize.hbci;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,19 +27,24 @@ import de.willuhn.logging.Logger;
  * Implementierung eines Job-Providers fuer Auslandsueberweisungen.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCISynchronizeJobProvider
+public class HBCISynchronizeJobProviderAuslandsUeberweisung implements HBCISynchronizeJobProvider
 {
   @Resource
   private HBCISynchronizeBackend backend = null;
-  
+
+  private final static List<Class<? extends SynchronizeJob>> JOBS = new ArrayList<Class<? extends SynchronizeJob>>()
+  {{
+    add(HBCISynchronizeJobSepaUeberweisung.class);
+  }};
+
   /**
-   * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
     
-    for (Konto kt:this.getKonten(k))
+    for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
       {
@@ -73,6 +73,14 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCI
     }
 
     return jobs;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getJobTypes()
+   */
+  public List<Class<? extends SynchronizeJob>> getJobTypes()
+  {
+    return JOBS;
   }
 
   /**

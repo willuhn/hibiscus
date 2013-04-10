@@ -1,6 +1,7 @@
 HEAD 2.5.1 (nightly)
 
-  * NEW: BUGZILLA 1346 Umbau des HBCI-Backends auf ein generisches Synchronize-Backend
+  * NEW: 0234 BUGZILLA 1018 Neues Synchronize-Backend fuer Scripting
+  * NEW: 0233 BUGZILLA 1346 Umbau des HBCI-Backends auf ein generisches Synchronize-Backend
 
 2013-04-02 Version 2.5.0 (nightly)
 

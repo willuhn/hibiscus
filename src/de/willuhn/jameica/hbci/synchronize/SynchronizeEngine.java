@@ -13,7 +13,8 @@
 
 package de.willuhn.jameica.hbci.synchronize;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
@@ -66,6 +68,18 @@ public class SynchronizeEngine
           Logger.error("unable to load synchronize backend " + c.getName() + ", skipping",e);
         }
       }
+      
+      // Wir sortieren die Backends so, dass HBCI immer Vorrang hat
+      Collections.sort(this.backends,new Comparator<SynchronizeBackend>() {
+        public int compare(SynchronizeBackend o1, SynchronizeBackend o2)
+        {
+          if (o1 instanceof HBCISynchronizeBackend)
+            return -1;
+          if (o2 instanceof HBCISynchronizeBackend)
+            return 1;
+          return 0;
+        }
+      });
     }
     catch (ClassNotFoundException e)
     {
@@ -80,6 +94,7 @@ public class SynchronizeEngine
   
   /**
    * Liefert ein passendes Backend fuer den angegebenen Job.
+   * Das erste gefundene wird verwendet.
    * @param type der Job-Typ.
    * @param konto das Konto, fuer das der Job erzeugt werden soll.
    * @return die Instanz des Backend.
@@ -87,23 +102,31 @@ public class SynchronizeEngine
    */
   public SynchronizeBackend getBackend(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
   {
-    List<SynchronizeBackend> found = new ArrayList<SynchronizeBackend>();
-    
     for (SynchronizeBackend backend:this.getBackends())
     {
       if (backend.supports(type,konto))
-        found.add(backend);
+        return backend;
     }
     
-    int size = found.size();
-
-    if (size == 0)
-      throw new ApplicationException(i18n.tr("Dieser Geschäftsvorfall wird für das angegebene Konto nicht unterstützt"));
-    
-    if (size > 1)
-      Logger.warn("found " + size + " possible backends for " + type.getSimpleName());
-
-    // wir nehmen das erste gefundene
-    return found.get(0);
+    throw new ApplicationException(i18n.tr("Dieser Geschäftsvorfall wird für das angegebene Konto nicht unterstützt"));
+  }
+  
+  /**
+   * Liefert true, wenn ein Backend den angegebenen Job-Typ fuer das angegebene Konto unterstuetzt.
+   * @param type der zu pruefende Job-Typ.
+   * @param konto das Konto.
+   * @return true, wenn es ihn unterstuetzt, sonst false.
+   */
+  public boolean supports(Class<? extends SynchronizeJob> type, Konto konto)
+  {
+    try
+    {
+      this.getBackend(type,konto);
+      return true;
+    }
+    catch (ApplicationException ae)
+    {
+      return false;
+    }
   }
 }

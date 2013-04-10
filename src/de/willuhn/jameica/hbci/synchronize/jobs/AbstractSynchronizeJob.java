@@ -1,17 +1,11 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/AbstractHBCISynchronizeJob.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/06/30 15:23:22 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.synchronize.hbci;
+package de.willuhn.jameica.hbci.synchronize.jobs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +21,7 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Implementierung aller SynchronizeJobs,
  */
-public abstract class AbstractHBCISynchronizeJob implements HBCISynchronizeJob
+public abstract class AbstractSynchronizeJob implements SynchronizeJob
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private Konto konto = null;

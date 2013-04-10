@@ -16,16 +16,24 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -38,6 +46,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private boolean offline            = false;
+  private boolean syncAvail          = false;
   private SynchronizeOptions options = null;
   private CheckboxInput syncOffline  = null;
   private CheckboxInput syncSaldo    = null;
@@ -46,6 +55,8 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private CheckboxInput syncLast     = null;
   private CheckboxInput syncDauer    = null;
   private CheckboxInput syncAueb     = null;
+  private LabelInput error           = null;
+  private Button apply               = null;
 
   /**
    * ct.
@@ -59,6 +70,13 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     this.setTitle(i18n.tr("Synchronisierungsoptionen"));
     this.options = new SynchronizeOptions(konto);
     this.offline = konto.hasFlag(Konto.FLAG_OFFLINE);
+    
+    if (this.offline)
+    {
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeEngine engine = service.get(SynchronizeEngine.class);
+      this.syncAvail = engine.supports(SynchronizeJobKontoauszug.class,konto);
+    }
   }
 
   /**
@@ -68,34 +86,24 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     Container group = new SimpleContainer(parent);
 
-    if (offline)
-    {
-      group.addText(i18n.tr("Bitte wählen Sie die Synchronisierungsoptionen für das Offline-Konto."),false);
-      group.addInput(getSyncOffline());
-    }
-    else
-    {
-      group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
-      group.addInput(getSyncSaldo());
-      group.addInput(getSyncUmsatz());
-      group.addInput(getSyncUeb());
-      group.addInput(getSyncAueb());
-      group.addInput(getSyncLast());
-      group.addInput(getSyncDauer());
-    }
+    group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
 
-    ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Übernehmen"),new Action() {
+    this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
+        
+        if (!offline || syncAvail) // Entweder bei Online-Konten oder bei welchen mit neuem Scripting-Support
+        {
+          options.setSyncSaldo(((Boolean)getSyncSaldo().getValue()).booleanValue());
+          options.setSyncKontoauszuege(((Boolean)getSyncUmsatz().getValue()).booleanValue());
+        }
+
         if (offline)
         {
           options.setSyncOffline(((Boolean)getSyncOffline().getValue()).booleanValue());
         }
         else
         {
-          options.setSyncSaldo(((Boolean)getSyncSaldo().getValue()).booleanValue());
-          options.setSyncKontoauszuege(((Boolean)getSyncUmsatz().getValue()).booleanValue());
           options.setSyncUeberweisungen(((Boolean)getSyncUeb().getValue()).booleanValue());
           options.setSyncLastschriften(((Boolean)getSyncLast().getValue()).booleanValue());
           options.setSyncDauerauftraege(((Boolean)getSyncDauer().getValue()).booleanValue());
@@ -104,6 +112,30 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         close();
       }
     },null,true,"ok.png");
+    
+    
+    if (!offline || syncAvail)
+    {
+      group.addInput(getSyncSaldo());
+      group.addInput(getSyncUmsatz());
+    }
+
+    if (offline)
+    {
+      group.addInput(getSyncOffline());
+    }
+    else
+    {
+      group.addInput(getSyncUeb());
+      group.addInput(getSyncAueb());
+      group.addInput(getSyncLast());
+      group.addInput(getSyncDauer());
+    }
+    
+    group.addInput(getErrorLabel());
+
+    ButtonArea buttons = new ButtonArea();
+    buttons.addButton(this.apply);
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -138,6 +170,8 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     {
       this.syncUmsatz = new CheckboxInput(options.getSyncKontoauszuege());
       this.syncUmsatz.setName(i18n.tr("Kontoauszüge (Umsätze) abrufen"));
+      if (this.offline)
+        this.syncUmsatz.addListener(new OfflineListener());
     }
     return this.syncUmsatz;
   }
@@ -209,9 +243,25 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     {
       this.syncOffline = new CheckboxInput(this.options.getSyncOffline());
       this.syncOffline.setName(i18n.tr("Passende Gegenbuchungen automatisch anlegen"));
+      this.syncOffline.addListener(new OfflineListener());
     }
     return this.syncOffline;
   }
+
+  /**
+   * Liefert ein Label fuer Fehlermeldungen.
+   * @return Label.
+   */
+  private LabelInput getErrorLabel()
+  {
+    if (this.error == null)
+    {
+      this.error = new LabelInput("\n");
+      this.error.setColor(Color.ERROR);
+    }
+    return this.error;
+  }
+
 
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
@@ -219,5 +269,30 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   protected Object getData() throws Exception
   {
     return null;
+  }
+  
+  /**
+   * Offline und Umsatz-Abruf schliessen sich gegenseitig aus.
+   */
+  private class OfflineListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      if (offline && syncAvail)
+      {
+        // Wir checken, ob beides aktiv ist und bringen einen Warnhinweis
+        boolean a = ((Boolean)getSyncOffline().getValue()).booleanValue();
+        boolean b = ((Boolean)getSyncUmsatz().getValue()).booleanValue();
+        if (a && b)
+          getErrorLabel().setValue(i18n.tr("Kontoauszüge und Anlegen von Gegenbuchungen\nkönnen nicht zusammen aktiviert werden."));
+        else
+          getErrorLabel().setValue("\n");
+        
+        apply.setEnabled(!(a && b));
+      }
+    }
   }
 }

@@ -53,6 +53,8 @@ public class SynchronizeOptions implements Serializable
       while (konten.hasNext())
       {
         Konto k = (Konto) konten.next();
+        if (k.hasFlag(Konto.FLAG_DISABLED)) // deaktivierte Konten nicht beruecksichtigen
+          continue;
         SynchronizeOptions o = new SynchronizeOptions(k);
         if (o.getSynchronize())
           l.add(k);
@@ -117,7 +119,7 @@ public class SynchronizeOptions implements Serializable
     // war, nehmen wir als Default-Wert auch den von dort.
     // Damit wird beim ersten mal der Vorwert uebernommen.
     // (Sanfte Migration)
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
   }
 
   /**
@@ -126,7 +128,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncKontoauszuege()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
   }
   
   /**

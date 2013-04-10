@@ -5,7 +5,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.synchronize.hbci;
+package de.willuhn.jameica.hbci.synchronize.scripting;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,27 +25,35 @@ import de.willuhn.logging.Logger;
  * Implementierung eines Job-Providers fuer das Abrufen von Saldo und/oder Kontoauszug.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderKontoauszug implements HBCISynchronizeJobProvider
+public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSynchronizeJobProvider
 {
   @Resource
-  private HBCISynchronizeBackend backend = null;
-
+  private ScriptingSynchronizeBackend backend = null;
+  
   private final static List<Class<? extends SynchronizeJob>> JOBS = new ArrayList<Class<? extends SynchronizeJob>>()
   {{
-    add(HBCISynchronizeJobKontoauszug.class);
+    add(SynchronizeJobKontoauszug.class);
   }};
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
-    List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
+    Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
     
+    List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
     for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
       {
+        // Nur Offline-Konten. Die anderen haben eine HBCI-Anbindung
+        if (!kt.hasFlag(Konto.FLAG_OFFLINE) || kt.hasFlag(Konto.FLAG_DISABLED))
+          continue;
+        
+        if (!backend.supports(type,k))
+          continue;
+
         final SynchronizeOptions options = new SynchronizeOptions(kt);
 
         // Weder Saldo- noch Kontoauszug aktiv.
@@ -53,7 +61,7 @@ public class HBCISynchronizeJobProviderKontoauszug implements HBCISynchronizeJob
         if (!options.getSyncKontoauszuege() && !options.getSyncSaldo())
           continue;
         
-        SynchronizeJobKontoauszug job = backend.create(SynchronizeJobKontoauszug.class,kt);
+        SynchronizeJobKontoauszug job = backend.create(type,kt);
         job.setContext(SynchronizeJob.CTX_ENTITY,kt);
         jobs.add(job);
       }
@@ -65,7 +73,7 @@ public class HBCISynchronizeJobProviderKontoauszug implements HBCISynchronizeJob
 
     return jobs;
   }
-
+  
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getJobTypes()
    */
@@ -73,7 +81,7 @@ public class HBCISynchronizeJobProviderKontoauszug implements HBCISynchronizeJob
   {
     return JOBS;
   }
-
+  
   /**
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */

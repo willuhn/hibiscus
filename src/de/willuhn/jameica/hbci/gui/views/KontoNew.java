@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
+import javax.annotation.Resource;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Event;
@@ -41,6 +43,8 @@ import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -56,6 +60,9 @@ public class KontoNew extends AbstractView
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private KontoControl control = null;
+  
+  @Resource
+  private SynchronizeEngine synchronizeEngine = null;
   
   /**
    * ct,
@@ -167,8 +174,6 @@ public class KontoNew extends AbstractView
     TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"),false,1);
     control.getSaldoChart().paint(tab2.getComposite());
 
-    boolean scripting = Application.getPluginLoader().isInstalled("de.willuhn.jameica.scripting.Plugin");
-
     ButtonArea buttons = new ButtonArea();
 
     Button fetch = null;
@@ -177,8 +182,15 @@ public class KontoNew extends AbstractView
     if (konto.hasFlag(Konto.FLAG_OFFLINE))
     {
       fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),konto,false,"emblem-documents.png");
-      
-      if (scripting)
+
+      // Checken, ob wir fuer das Konto den neuen Synchronize-Support haben
+      if (synchronizeEngine.supports(SynchronizeJobKontoauszug.class,konto))
+      {
+        Button sync = new Button(i18n.tr("Saldo und Umsätze abrufen"), new KontoFetchUmsaetze(),konto,false,"mail-send-receive.png");
+        sync.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));
+        buttons.addButton(sync);
+      }
+      else if (Application.getPluginLoader().isInstalled("de.willuhn.jameica.scripting.Plugin")) // Fallback auf das alte Verfahren
       {
         Button sync = new Button(i18n.tr("via Scripting synchronisieren"), new KontoSyncViaScripting(),konto,false,"mail-send-receive.png");
         sync.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));

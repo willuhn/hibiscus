@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/HBCISynchronizeJobKontoauszug.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/06/30 15:23:22 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -23,13 +17,12 @@ import de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCISaldoJob;
 import de.willuhn.jameica.hbci.server.hbci.HBCIUmsatzJob;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Ein Synchronize-Job fuer das Abrufen der Umsaetze und des Saldos eines Kontos.
  */
-public class HBCISynchronizeJobKontoauszug extends AbstractHBCISynchronizeJob implements SynchronizeJobKontoauszug
+public class HBCISynchronizeJobKontoauszug extends SynchronizeJobKontoauszug implements HBCISynchronizeJob
 {
   /**
    * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJob#createHBCIJobs()
@@ -52,41 +45,4 @@ public class HBCISynchronizeJobKontoauszug extends AbstractHBCISynchronizeJob im
     return jobs.toArray(new AbstractHBCIJob[jobs.size()]);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getName()
-   */
-  public String getName() throws ApplicationException
-  {
-    try
-    {
-      Konto k = (Konto) this.getContext(CTX_ENTITY);
-      SynchronizeOptions o = new SynchronizeOptions(k);
-      
-      String s = "{0}: ";
-      
-      if (o.getSyncKontoauszuege())
-        s += "Kontoauszüge";
-      if (o.getSyncSaldo())
-      {
-        if (o.getSyncKontoauszuege())
-          s += "/";
-        s += "Salden";
-      }
-      s += " abrufen";
-      return i18n.tr(s,k.getLongName());
-    }
-    catch (RemoteException re)
-    {
-      Logger.error("unable to determine job name",re);
-      throw new ApplicationException(i18n.tr("Auftragsbezeichnung nicht ermittelbar: {0}",re.getMessage()));
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#isRecurring()
-   */
-  public boolean isRecurring()
-  {
-    return true;
-  }
 }

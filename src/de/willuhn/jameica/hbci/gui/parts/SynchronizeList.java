@@ -114,10 +114,13 @@ public class SynchronizeList extends TablePart
       Synchronization sync = new Synchronization();
       sync.setBackend(backend);
       List<SynchronizeJob> jobs = backend.getSynchronizeJobs(null); // fuer alle Konten
-      for (SynchronizeJob job:jobs)
+      if (jobs != null)
       {
-        this.addItem(job,true); // per Default angeklickt
-        sync.getJobs().add(job);
+        for (SynchronizeJob job:jobs)
+        {
+          this.addItem(job,true); // per Default angeklickt
+          sync.getJobs().add(job);
+        }
       }
       this.syncList.add(sync);
     }

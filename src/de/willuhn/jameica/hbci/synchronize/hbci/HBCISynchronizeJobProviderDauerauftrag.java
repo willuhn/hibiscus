@@ -1,18 +1,13 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/synchronize/HBCISynchronizeJobProviderDauerauftrag.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/05/16 11:32:30 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.synchronize.hbci;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,19 +28,25 @@ import de.willuhn.logging.Logger;
  * Implementierung eines Job-Providers zum Abrufen und Ausfuehren von Dauerauftraegen.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderDauerauftrag extends AbstractHBCISynchronizeJobProvider
+public class HBCISynchronizeJobProviderDauerauftrag implements HBCISynchronizeJobProvider
 {
   @Resource
   private HBCISynchronizeBackend backend = null;
-  
+
+  private final static List<Class<? extends SynchronizeJob>> JOBS = new ArrayList<Class<? extends SynchronizeJob>>()
+  {{
+    add(HBCISynchronizeJobDauerauftragStore.class);
+    add(HBCISynchronizeJobDauerauftragList.class);
+  }};
+
   /**
-   * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
     
-    for (Konto kt:this.getKonten(k))
+    for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
       {
@@ -79,6 +80,14 @@ public class HBCISynchronizeJobProviderDauerauftrag extends AbstractHBCISynchron
     }
 
     return jobs;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getJobTypes()
+   */
+  public List<Class<? extends SynchronizeJob>> getJobTypes()
+  {
+    return JOBS;
   }
 
   /**

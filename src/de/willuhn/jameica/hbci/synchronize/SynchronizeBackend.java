@@ -57,6 +57,7 @@ public interface SynchronizeBackend
    * @param k das Konto.
    * Wenn kein Konto angegeben ist, werden die Jobs aller Konten zurueckgeliefert.
    * @return Liste der auszufuehrenden Jobs.
+   * Die Funktion darf auch NULL liefern.
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k);
 
