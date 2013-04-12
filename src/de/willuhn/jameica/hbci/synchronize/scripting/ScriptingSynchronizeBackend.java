@@ -177,6 +177,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
       
       // 2. Checken, ob wir ein passendes Script haben
       // Das Javascript liefert den Namen der auszufuehrenden JS-Funktion zurueck
+      // FIXME: Result cachen und via Messaging ueber Script-Reloads informieren lassen
       QueryMessage msg = new QueryMessage("hibiscus.sync.function",new Object[]{konto,type});
       Application.getMessagingFactory().getMessagingQueue("jameica.scripting").sendSyncMessage(msg);
       Object data = msg.getData();
