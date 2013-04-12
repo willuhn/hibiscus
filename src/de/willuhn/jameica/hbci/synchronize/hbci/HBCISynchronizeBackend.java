@@ -111,7 +111,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       throw new ApplicationException(i18n.tr("Der Geschäftsvorfall konnte nicht erstellt werden: {0}",re.getMessage()));
     }
 
-    return super.create(type,konto);
+    // aufgrund eines Bugs im SUN compiler muessen wir hier explizit casten.
+    // Siehe https://bugs.eclipse.org/bugs/show_bug.cgi?id=98379
+    // Ab Java 1.6.0_25 ist das gefixt. Aber es soll ja auch in aelteren Java-Versionen compilieren    
+    return(T) super.create(type,konto);
   }
   
   /**
