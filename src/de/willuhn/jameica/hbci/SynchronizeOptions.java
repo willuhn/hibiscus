@@ -48,7 +48,8 @@ public class SynchronizeOptions implements Serializable
       // Konten-Sortierung immer gleich. Wir verwenden diese Sortierung, damit Konten,
       // die potentiell ueber das gleiche Sicherheitsmedium abgewickelt werden, direkt
       // aufeinander folgen. Das ermoeglicht eine spaetere Gruppierung in einem HBCI-Dialog
-      konten.setOrder("order by blz,bic,passport_class");
+      // Anschliessend noch Bezeichnung wegen BUGZILLA 1346, Kommentar 12
+      konten.setOrder("order by blz,bic,passport_class,bezeichnung");
       
       while (konten.hasNext())
       {
