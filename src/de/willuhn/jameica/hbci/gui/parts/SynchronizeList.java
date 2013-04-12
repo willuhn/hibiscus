@@ -179,10 +179,7 @@ public class SynchronizeList extends TablePart
     {
       try
       {
-        // Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=15106
-        // Nicht nur die zu synchronisierenden Konten anbieten. Sonst kann man ein Konto nicht
-        // wieder aktivieren, wenn man einmal alle Sync-Einstellungen abgestellt hat.
-        KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.ACTIVE,KontoAuswahlDialog.POSITION_CENTER);
+        KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.SYNCED,KontoAuswahlDialog.POSITION_CENTER);
         d1.setText(i18n.tr("Bitte wählen Sie das Konto, für welches Sie die " +
                            "Synchronisierungsoptionen ändern möchten."));
         Konto k = (Konto) d1.open();

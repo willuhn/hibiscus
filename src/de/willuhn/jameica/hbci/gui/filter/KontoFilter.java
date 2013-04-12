@@ -16,8 +16,11 @@ package de.willuhn.jameica.hbci.gui.filter;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
+import de.willuhn.jameica.services.BeanService;
+import de.willuhn.jameica.system.Application;
 
 /**
  * Mit diesem Filter koennen einzelne Konten bei der Suche
@@ -88,7 +91,8 @@ public interface KontoFilter extends Filter<Konto>
   };
   
   /**
-   * Filter, der nur Konten zulaesst, fuer die Synchronisierungsoptionen aktiviert sind.
+   * Filter, der nur Konten zulaesst, fuer die Synchronisierungsoptionen aktiviert sind oder die prinzipiell
+   * synchronisierbar sind.
    */
   public final static KontoFilter SYNCED = new KontoFilter()
   {
@@ -97,11 +101,18 @@ public interface KontoFilter extends Filter<Konto>
      */
     public boolean accept(Konto konto) throws RemoteException
     {
-      if (konto == null)
+      if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
         return false;
 
-      SynchronizeOptions o = new SynchronizeOptions(konto);
-      return o.getSynchronize();
+      // Wenn es ein Online-Konto ist, kann es prinzipiell gesynct werden
+      if (!konto.hasFlag(Konto.FLAG_OFFLINE))
+        return true;
+      
+      // Ist zwar ein Offline-Konto. Aber wir schauen mal, ob es
+      // synchronisiert werden kann.
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeEngine engine = service.get(SynchronizeEngine.class);
+      return engine.supports(SynchronizeJobKontoauszug.class,konto);
     }
   }; 
 
