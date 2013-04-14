@@ -351,8 +351,11 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
 
-    ProgressMonitor monitor = session.getProgressMonitor();
-    monitor.log(text + "\n");
+    if (session != null)
+    {
+      ProgressMonitor monitor = session.getProgressMonitor();
+      monitor.log(text + "\n");
+    }
 	}
 	
 	/**
