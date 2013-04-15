@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/filter/KontoFilter.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/06 12:35:48 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -50,6 +44,25 @@ public interface KontoFilter extends Filter<Konto>
   };
   
   /**
+   * Filter, der nur HBCI-Konten zulaesst.
+   */
+  public final static KontoFilter ONLINE = new KontoFilter()
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
+     */
+    public boolean accept(Konto konto) throws RemoteException
+    {
+      // Es muss auf jeden Fall erstmal ein aktives Konto sein
+      if (!ACTIVE.accept(konto))
+        return false;
+
+      // Es darf kein Offline-Konto sein.
+      return !konto.hasFlag(Konto.FLAG_OFFLINE);
+    }
+  };
+
+  /**
    * Filter, der nur aktive Konten zulaesst.
    */
   public final static KontoFilter ACTIVE = new KontoFilter()
@@ -62,9 +75,7 @@ public interface KontoFilter extends Filter<Konto>
       if (konto == null)
         return false;
       
-      int flags = konto.getFlags();
-      return ((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED) &&
-             ((flags & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
+      return !konto.hasFlag(Konto.FLAG_DISABLED);
     }
   };
 
@@ -78,15 +89,13 @@ public interface KontoFilter extends Filter<Konto>
      */
     public boolean accept(Konto konto) throws RemoteException
     {
-      if (konto == null)
+      // Muss auf jeden Fall erstmal ein Online-Konto sein.
+      if (!ONLINE.accept(konto))
         return false;
-      
-      String iban = konto.getIban();
 
-      int flags = konto.getFlags();
-      return ((flags & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED) &&
-             ((flags & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE) &&
-             (iban != null && iban.length() > 0 && iban.length() <= HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      // Jetzt noch checken, ob wir eine IBAN haben
+      String iban = konto.getIban();
+      return (iban != null && iban.length() > 0 && iban.length() <= HBCIProperties.HBCI_IBAN_MAXLENGTH);
     }
   };
   
@@ -117,25 +126,3 @@ public interface KontoFilter extends Filter<Konto>
   }; 
 
 }
-
-
-/**********************************************************************
- * $Log: KontoFilter.java,v $
- * Revision 1.4  2011/05/06 12:35:48  willuhn
- * @N Neuer Konto-Auswahldialog mit Combobox statt Tabelle. Ist ergonomischer.
- *
- * Revision 1.3  2010/06/08 15:54:45  willuhn
- * @B BUGZILLA 871 - nicht nur pruefen, ob die IBAN lang genug ist sondern auch, ob sie laenger als 0 Zeichen ist
- *
- * Revision 1.2  2010/04/22 15:43:06  willuhn
- * @B Debugging
- * @N Kontoliste aktualisieren
- *
- * Revision 1.1  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.1  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- **********************************************************************/

@@ -256,7 +256,7 @@ public class TransferMergeDialog extends AbstractDialog
   {
     if (this.konto == null)
     {
-      this.konto = new KontoInput(this.transfer.getKonto(),KontoFilter.ACTIVE);
+      this.konto = new KontoInput(this.transfer.getKonto(),KontoFilter.ONLINE);
       this.konto.setMandatory(true);
     }
     return this.konto;

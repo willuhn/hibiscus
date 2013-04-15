@@ -97,7 +97,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     
     Konto k = getTransfer().getKonto();
     KontoListener kl = new KontoListener();
-    this.kontoAuswahl = new KontoInput(k,KontoFilter.ACTIVE);
+    this.kontoAuswahl = new KontoInput(k,KontoFilter.ONLINE);
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());

@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/Overview.java,v $
- * $Revision: 1.20 $
- * $Date: 2012/04/23 21:03:41 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -17,11 +11,14 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.input.DateInput;
@@ -36,8 +33,11 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -65,6 +65,8 @@ public class Overview extends AbstractBox implements Box
   private DateInput start          = null;
   private DateInput end            = null;
   
+  private MessageConsumer mc = new SaldoMessageConsumer();
+  
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
@@ -88,6 +90,14 @@ public class Overview extends AbstractBox implements Box
     group.addSeparator();
     group.addLabelPair(i18n.tr("Bilanz") + ":", getBilanz());
     refresh();
+    
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
   }
 
   /**
@@ -317,74 +327,40 @@ public class Overview extends AbstractBox implements Box
   {
     return super.isActive() && !Settings.isFirstStart();
   }
+  
+  /**
+   * Wird ueber Saldo-Aenderungen benachrichtigt.
+   */
+  private class SaldoMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{SaldoMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          refresh();
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
 
 }
-
-
-/*********************************************************************
- * $Log: Overview.java,v $
- * Revision 1.20  2012/04/23 21:03:41  willuhn
- * @N BUGZILLA 1227
- *
- * Revision 1.19  2011-09-08 08:05:18  willuhn
- * @C Wenn alle Konten ausgewaehlt sind, dann gar kein Datum hinterm Saldo anzeigen
- *
- * Revision 1.18  2011-09-08 08:02:37  willuhn
- * @B Saldo-Datum in Box "Finanz-Übersicht" nicht ganz korrekt
- *
- * Revision 1.17  2011-02-21 09:00:20  willuhn
- * @N BUGZILLA 993
- *
- * Revision 1.16  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.15  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.14  2010/06/07 22:41:13  willuhn
- * @N BUGZILLA 844/852
- *
- * Revision 1.13  2010/03/21 22:43:21  willuhn
- * @B Wenn ein Konto (als Default-Konto) vorausgewaehlt war, wurden die Werte erst nach Neuauswahl auf den korrekten Stand gebracht
- *
- * Revision 1.12  2010/03/15 00:18:07  willuhn
- * @N Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=65782#65782 (Punkt 2)
- *
- * Revision 1.11  2008/04/23 13:20:54  willuhn
- * @B Bug 588
- *
- * Revision 1.10  2007/12/18 17:10:22  willuhn
- * @N Neues ExpandPart
- * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
- *
- * Revision 1.9  2007/05/25 14:16:47  willuhn
- * @B Bug 405
- *
- * Revision 1.8  2007/02/21 11:58:52  willuhn
- * @N Bug 315
- *
- * Revision 1.7  2006/12/29 14:28:47  willuhn
- * @B Bug 345
- * @B jede Menge Bugfixes bei SQL-Statements mit Valuta
- *
- * Revision 1.6  2006/12/27 17:56:49  willuhn
- * @B Bug 341
- *
- * Revision 1.5  2006/06/29 23:10:33  willuhn
- * @R Box-System aus Hibiscus in Jameica-Source verschoben
- * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
- *
- * Revision 1.4  2006/04/03 20:37:51  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2006/03/30 20:56:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/03/20 16:59:01  willuhn
- * @N Overview ueber alle Konten
- *
- * Revision 1.1  2005/11/09 01:13:53  willuhn
- * @N chipcard modul fuer AMD64 vergessen
- * @N Startseite jetzt frei konfigurierbar
- *
- **********************************************************************/

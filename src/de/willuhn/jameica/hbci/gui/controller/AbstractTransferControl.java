@@ -114,7 +114,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 		
     Konto k = getKonto();
     KontoListener kl = new KontoListener();
-		this.kontoAuswahl = new KontoInput(k,KontoFilter.ACTIVE);
+		this.kontoAuswahl = new KontoInput(k,KontoFilter.ONLINE);
 		this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
 		this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);

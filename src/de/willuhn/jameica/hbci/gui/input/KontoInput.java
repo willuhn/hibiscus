@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/KontoInput.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/08/30 12:09:40 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -25,13 +19,18 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.willuhn.datasource.BeanUtil;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -46,6 +45,8 @@ public class KontoInput extends SelectInput
   private KontoListener listener = null;
   private String token = null;
   private Control control = null;
+
+  private MessageConsumer mc = new SaldoMessageConsumer();
   
   /**
    * ct.
@@ -124,15 +125,16 @@ public class KontoInput extends SelectInput
       return this.control;
     
     this.control = super.getControl();
-    if (this.token != null)
-    {
-      this.control.addDisposeListener(new DisposeListener() {
-        public void widgetDisposed(DisposeEvent e)
-        {
+    
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+    this.control.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+        if (token != null)
           storeSelection();
-        }
-      });
-    }
+      }
+    });
     return this.control;
   }
   
@@ -276,40 +278,82 @@ public class KontoInput extends SelectInput
     }
   }
 
+  /**
+   * Wird ueber Saldo-Aenderungen benachrichtigt.
+   */
+  private class SaldoMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{SaldoMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      SaldoMessage msg = (SaldoMessage) message;
+      GenericObject o = msg.getObject();
+      if (!(o instanceof Konto))
+        return;
+      
+      final Konto konto = (Konto) o;
+      
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          // Checken, ob wir das Konto in der Liste haben. Wenn ja, aktualisieren
+          // wir dessen Saldo
+          List list = null;
+          
+          try
+          {
+            list = getList();
+            
+            if (list == null)
+              return;
+
+            for (int i=0;i<list.size();++i)
+            {
+              Konto k = (Konto) list.get(i);
+              if (BeanUtil.equals(konto,k))
+              {
+                k.setSaldo(konto.getSaldo());
+                break;
+              }
+            }
+            
+            // Liste neu zeichnen lassen. Das aktualisiert die Kommentare
+            // und den Text in der Kombo-Box
+            setValue(getValue());
+            setList(list);
+            if (listener != null)
+              listener.handleEvent(null);
+          }
+          catch (NoSuchMethodError e)
+          {
+            // TODO "getList" hab ich erst am 15.04. eingebaut. Das catch kann hier also mal irgendwann weg
+            Logger.warn(e.getMessage() + " - update your jameica installation");
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to refresh konto",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
 }
-
-
-/**********************************************************************
- * $Log: KontoInput.java,v $
- * Revision 1.10  2011/08/30 12:09:40  willuhn
- * @N BUGZILLA 1125
- *
- * Revision 1.9  2011-05-20 16:22:31  willuhn
- * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
- *
- * Revision 1.8  2011-05-19 08:41:53  willuhn
- * @N BUGZILLA 1038 - generische Loesung
- *
- * Revision 1.7  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.6  2009-10-20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.5  2009/10/07 23:08:56  willuhn
- * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
- *
- * Revision 1.4  2009/09/15 00:23:35  willuhn
- * @N BUGZILLA 745
- *
- * Revision 1.3  2009/01/12 00:46:50  willuhn
- * @N Vereinheitlichtes KontoInput in den Auswertungen
- *
- * Revision 1.2  2009/01/04 16:38:55  willuhn
- * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
- *
- * Revision 1.1  2009/01/04 16:18:22  willuhn
- * @N BUGZILLA 404 - Kontoauswahl via SelectBox
- *
- **********************************************************************/
