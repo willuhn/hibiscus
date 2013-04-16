@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupport.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/05/10 11:56:59 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -90,6 +86,8 @@ public abstract class AbstractPrintSupport implements PrintSupport
     PageNumberPageDecoration footer = new PageNumberPageDecoration(SWT.RIGHT);
     footer.setFontData(fontTiny);
     page.setFooter(footer);
+    
+    this.customize(page);
   
     PrintJob job = new PrintJob(i18n.tr("Hibiscus {0}",HBCI.LONGDATEFORMAT.format(new Date())),page);
     
@@ -115,6 +113,15 @@ public abstract class AbstractPrintSupport implements PrintSupport
    * @return die Ueberschrift.
    */
   abstract String getTitle() throws ApplicationException;
+  
+  /**
+   * Kann ueberschrieben werden, um noch Anpassungen vorzunehmen, direkt bevor der Druck-Job erstellt wird.
+   * @param page die zu druckende Seite.
+   * @throws ApplicationException
+   */
+  void customize(PagePrint page) throws ApplicationException
+  {
+  }
 
   /**
    * Liefert den Wert oder "-" wenn er NULL/leer ist.
@@ -133,24 +140,3 @@ public abstract class AbstractPrintSupport implements PrintSupport
     return (s != null && s.trim().length() > 0) ? s : empty;
   }
 }
-
-
-
-/**********************************************************************
- * $Log: AbstractPrintSupport.java,v $
- * Revision 1.5  2011/05/10 11:56:59  willuhn
- * @N Linker und rechter Rand kann ueber Properties-Datei angepasst werden
- *
- * Revision 1.4  2011-04-13 17:35:46  willuhn
- * @N Druck-Support fuer Kontoauszuege fehlte noch
- *
- * Revision 1.3  2011-04-11 11:28:08  willuhn
- * @N Drucken aus dem Contextmenu heraus
- *
- * Revision 1.2  2011-04-08 17:41:44  willuhn
- * @N Erster Druck-Support fuer Ueberweisungslisten
- *
- * Revision 1.1  2011-04-08 13:38:43  willuhn
- * @N Druck-Support fuer Einzel-Ueberweisungen. Weitere werden folgen.
- *
- **********************************************************************/

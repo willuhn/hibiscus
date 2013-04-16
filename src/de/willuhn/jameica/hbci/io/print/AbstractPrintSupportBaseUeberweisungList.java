@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupportBaseUeberweisungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/11 09:12:07 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -17,6 +13,7 @@ import java.util.Date;
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.LineBorder;
+import net.sf.paperclips.PagePrint;
 import net.sf.paperclips.Print;
 import net.sf.paperclips.TextPrint;
 import net.sf.paperclips.TextStyle;
@@ -27,6 +24,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -117,31 +115,20 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#customize(net.sf.paperclips.PagePrint)
+   */
+  void customize(PagePrint page) throws ApplicationException
+  {
+    Object ctx = this.getContext();
+
+    // Sind wir in der Tabelle?
+    if (ctx instanceof TablePart)
+      ctx = ((TablePart)ctx).getSelection();
+
+    // Ist nur ein Einzel-Auftrag. Dann drucken wir keine Seiten-Nummern.
+    if (ctx instanceof Transfer)
+      page.setFooter(null);
+  }
 }
-
-
-
-/**********************************************************************
- * $Log: AbstractPrintSupportBaseUeberweisungList.java,v $
- * Revision 1.4  2011/05/11 09:12:07  willuhn
- * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
- *
- * Revision 1.3  2011-05-02 11:16:44  willuhn
- * @N Ausfuehrungsdatum mit drucken
- *
- * Revision 1.2  2011-04-11 16:48:33  willuhn
- * @N Drucken von Sammel- und Dauerauftraegen
- *
- * Revision 1.1  2011-04-11 14:36:37  willuhn
- * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
- *
- * Revision 1.3  2011-04-11 11:28:08  willuhn
- * @N Drucken aus dem Contextmenu heraus
- *
- * Revision 1.2  2011-04-08 17:41:45  willuhn
- * @N Erster Druck-Support fuer Ueberweisungslisten
- *
- * Revision 1.1  2011-04-08 13:38:43  willuhn
- * @N Druck-Support fuer Einzel-Ueberweisungen. Weitere werden folgen.
- *
- **********************************************************************/

@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0236 Ausdruck von Einzelaufträgen etwas platzsparender und ohne Seitennummer unten rechts
   * NEW: 0235 BUGZILLA 1346 Sync-faehige Offline-Konten in Kontoauswahl der Sync-Optionen anbieten
   * NEW: 0234 BUGZILLA 1018 Neues Synchronize-Backend fuer Scripting
   * NEW: 0233 BUGZILLA 1346 Umbau des HBCI-Backends auf ein generisches Synchronize-Backend
