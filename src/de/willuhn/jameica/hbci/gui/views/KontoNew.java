@@ -33,10 +33,8 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoSyncViaScripting;
-import de.willuhn.jameica.hbci.gui.action.ProtokollList;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
@@ -153,8 +151,9 @@ public class KontoNew extends AbstractView
     // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(control.getSynchronizeOptions());
-    buttonArea.addButton(i18n.tr("Protokoll des Kontos"),new ProtokollList(),control.getKonto(),false,"dialog-information.png");
-		buttonArea.addButton(i18n.tr("Konto löschen"),new KontoDelete(),control.getKonto(),false,"user-trash-full.png");
+    
+    buttonArea.addButton(control.getProtoButton());
+		buttonArea.addButton(control.getDelButton());
 		buttonArea.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException

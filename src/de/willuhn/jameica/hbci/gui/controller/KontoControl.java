@@ -35,6 +35,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
@@ -88,6 +89,8 @@ public class KontoControl extends AbstractControl
   private SaldoMessageConsumer consumer = null;
   
   private Button synchronizeOptions     = null;
+  private Button protoButton            = null;
+  private Button delButton              = null;
 
 	private TablePart kontoList						= null;
 	private TablePart protokoll						= null;
@@ -209,7 +212,7 @@ public class KontoControl extends AbstractControl
     if (this.offline != null)
       return this.offline;
     
-    this.offline = new CheckboxInput((this.getKonto().getFlags() & Konto.FLAG_OFFLINE) != 0);
+    this.offline = new CheckboxInput(this.getKonto().hasFlag(Konto.FLAG_OFFLINE));
     this.offline.setName(i18n.tr("Offline-Konto"));
     
     Listener l = new Listener() {
@@ -291,8 +294,38 @@ public class KontoControl extends AbstractControl
         
       }
     },getKonto(),false,"document-properties.png");
-    this.synchronizeOptions.setEnabled((getKonto().getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED);
+    this.synchronizeOptions.setEnabled(!this.getKonto().isNewObject() && !getKonto().hasFlag(Konto.FLAG_DISABLED));
     return this.synchronizeOptions;
+  }
+  
+  /**
+   * Liefert den Button fuer die Protokolle.
+   * @return der Button fuer die Protokolle.
+   * @throws RemoteException
+   */
+  public Button getProtoButton() throws RemoteException
+  {
+    if (this.protoButton != null)
+      return this.protoButton;
+    
+    this.protoButton = new Button(i18n.tr("Protokoll des Kontos"),new de.willuhn.jameica.hbci.gui.action.ProtokollList(),this.getKonto(),false,"dialog-information.png");
+    this.protoButton.setEnabled(!this.getKonto().isNewObject());
+    return this.protoButton;
+  }
+  
+  /**
+   * Liefert den Loesch-Button.
+   * @return der Loesch-Button.
+   * @throws RemoteException
+   */
+  public Button getDelButton() throws RemoteException
+  {
+    if (this.delButton != null)
+      return this.delButton;
+    
+    this.delButton = new Button(i18n.tr("Konto löschen"),new KontoDelete(),this.getKonto(),false,"user-trash-full.png");
+    this.delButton.setEnabled(!this.getKonto().isNewObject());
+    return this.delButton;
   }
   
   /**
@@ -387,7 +420,7 @@ public class KontoControl extends AbstractControl
 
 		saldo = new DecimalInput(this.getKonto().getSaldo(),HBCI.DECIMALFORMAT);
     saldo.setComment(""); // Platz fuer Kommentar reservieren
-    saldo.setEnabled((this.getKonto().getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
+    saldo.setEnabled(this.getKonto().hasFlag(Konto.FLAG_OFFLINE));
     // Einmal ausloesen, damit das Feld mit Inhalt gefuellt wird.
     this.consumer = new SaldoMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.consumer);
@@ -413,7 +446,7 @@ public class KontoControl extends AbstractControl
       return avail;
 
     // Bei Offline-Konten gibts keinen verfuegbaren Betrag
-    if ((this.getKonto().getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+    if (this.getKonto().hasFlag(Konto.FLAG_OFFLINE))
       return null;
     
     // Wenn wir noch keinen verfuegbaren Betrag haben, zeigen wir auch nichts an
@@ -546,6 +579,11 @@ public class KontoControl extends AbstractControl
       
       // und jetzt speichern wir.
 			getKonto().store();
+			
+			// die beiden Buttons aktivieren
+			this.getProtoButton().setEnabled(true);
+			this.getDelButton().setEnabled(true);
+			this.getSynchronizeOptions().setEnabled(!getKonto().hasFlag(Konto.FLAG_DISABLED));
 			GUI.getStatusBar().setSuccessText(i18n.tr("Konto gespeichert."));
       GUI.getView().setSuccessText("");
 		}
@@ -568,7 +606,7 @@ public class KontoControl extends AbstractControl
   private void applyOfflineState(boolean offline) throws RemoteException
   {
     int flags = getKonto().getFlags();
-    boolean have = (flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE;
+    boolean have = getKonto().hasFlag(Konto.FLAG_OFFLINE);
     if (offline && !have)
       getKonto().setFlags(flags | Konto.FLAG_OFFLINE);
     else if (!offline && have)
