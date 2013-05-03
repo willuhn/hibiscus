@@ -29,10 +29,13 @@
       <item id="hibiscus.menu.ext"                   name="Er&amp;weitert">
         <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup &amp;erstellen"                     icon="document-save.png"               action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
         <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup &amp;importieren"                   icon="document-open.png"               action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
+        <item name="-" />
+        <item id="hibiscus.menu.ext.iban.calculator" name="IBAN-Rechner"                                       icon="accessories-calculator.png"      action="de.willuhn.jameica.hbci.gui.action.IbanCalc" />
       </item>
       <item name="-" />
       <item id="hibiscus.menu.handbuch"              name="&amp;Handbuch"                                      icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
       <item id="hibiscus.menu.support"               name="&amp;Support"                                       icon="internet-web-browser.png"        action="de.willuhn.jameica.hbci.gui.action.SupportAction"/>
+      <item name="-" />
       <item id="hibiscus.menu.license"               name="&amp;Lizenzinformationen"                           icon="text-x-generic.png"              action="de.willuhn.jameica.hbci.gui.action.License" />
       <item id="hibiscus.menu.about"                 name="&amp;Über"                                          icon="gtk-info.png"                    action="de.willuhn.jameica.hbci.gui.action.About" />
     </item>
