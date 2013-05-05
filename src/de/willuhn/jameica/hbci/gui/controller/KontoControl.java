@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
@@ -29,6 +31,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
@@ -50,6 +53,7 @@ import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -98,6 +102,8 @@ public class KontoControl extends AbstractControl
   private SaldoChart saldoChart         = null;
   
   private CheckboxInput offline         = null;
+
+  private SelectInput kategorie         = null;
   
   private IbanListener ibanListener     = new IbanListener();
   
@@ -513,6 +519,26 @@ public class KontoControl extends AbstractControl
     }
     return this.bic;
   }
+  
+  /**
+   * Liefert ein editierbares Auswahlfeld mit der Kategorie.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public SelectInput getKategorie() throws RemoteException
+  {
+    if (this.kategorie != null)
+      return this.kategorie;
+    
+    List<String> groups = new LinkedList<String>();
+    groups.add(""); // <Keine Kategorie>
+    groups.addAll(KontoUtil.getGroups());
+
+    this.kategorie = new SelectInput(groups,this.getKonto().getKategorie());
+    this.kategorie.setName(i18n.tr("Gruppe"));
+    this.kategorie.setEditable(true);
+    return this.kategorie;
+  }
 
   /**
    * Liefert einen Saldo-MessageConsumer.
@@ -621,6 +647,7 @@ public class KontoControl extends AbstractControl
       getKonto().setKommentar((String) getKommentar().getValue());
       getKonto().setIban((String)getIban().getValue());
       getKonto().setBic((String)getBic().getValue());
+      getKonto().setKategorie((String)getKategorie().getValue());
       
       // und jetzt speichern wir.
 			getKonto().store();

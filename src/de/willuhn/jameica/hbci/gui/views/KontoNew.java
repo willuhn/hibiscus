@@ -146,6 +146,7 @@ public class KontoNew extends AbstractView
 
     right.addHeadline(i18n.tr("Notiz"));
     right.addPart(control.getKommentar());
+    right.addLabelPair(i18n.tr("Gruppe"),control.getKategorie());
     right.addInput(control.getOffline());
 
     // und noch die Abschicken-Knoepfe

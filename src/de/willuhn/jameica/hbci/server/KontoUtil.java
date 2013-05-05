@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
@@ -201,6 +202,28 @@ public class KontoUtil
   {
     return getSumme(konto, from, to, false);
   }
+  
+  /**
+   * Liefert eine Liste der verfuegbaren Konto-Kategorien.
+   * @return Liste der verfuegbaren Konto-Kategorien. Niemals NULL sondern hoechstens eine leere Liste.
+   * @throws RemoteException
+   */
+  public static List<String> getGroups() throws RemoteException
+  {
+    return (List<String>) Settings.getDBService().execute("select kategorie from konto where kategorie is not null and kategorie != '' group by kategorie order by LOWER(kategorie)",null,new ResultSetExtractor()
+    {
+      /**
+       * @see de.willuhn.datasource.rmi.ResultSetExtractor#extract(java.sql.ResultSet)
+       */
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        List<String> list = new ArrayList<String>();
+        while (rs.next())
+          list.add(rs.getString(1));
+        return list;
+      }
+    });
+  }
 
   /**
    * Hilfsfunktion fuer Berechnung der Einnahmen und Ausgaben.
@@ -245,24 +268,4 @@ public class KontoUtil
     return d == null ? 0.0d : Math.abs(d.doubleValue());
   }
 
-
 }
-
-
-
-/**********************************************************************
- * $Log: KontoUtil.java,v $
- * Revision 1.4  2011/01/20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.3  2010-09-02 12:25:13  willuhn
- * @N BUGZILLA 900
- *
- * Revision 1.2  2010/06/07 22:41:14  willuhn
- * @N BUGZILLA 844/852
- *
- * Revision 1.1  2010/03/16 13:43:56  willuhn
- * @N CSV-Import von Ueberweisungen und Lastschriften
- * @N Versionierbarkeit von serialisierten CSV-Profilen
- *
- **********************************************************************/

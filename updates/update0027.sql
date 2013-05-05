@@ -2,7 +2,7 @@
 -- Erweitert die Tabelle "empfaenger" um eine Spalte "kategorie"
 -- ----------------------------------------------------------------------
 
-alter table empfaenger add kategorie VARCHAR(40) NULL;
+alter table empfaenger add kategorie VARCHAR(255) NULL;
 
 -- ----------------------------------------------------------------------
 -- $Log: update0027.sql,v $

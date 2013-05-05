@@ -14,7 +14,8 @@ CREATE TABLE konto (
   iban varchar(40) NULL,
   bic varchar(15) NULL,
   flags integer NULL,
-  saldo_available float
+  saldo_available float,
+  kategorie varchar(255) NULL
 );
 
 CREATE TABLE empfaenger (

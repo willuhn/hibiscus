@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
@@ -29,6 +30,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -42,6 +44,9 @@ public class KontoInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoInput.class);
+  
+  private static List<String> groups = null;
+  
   private KontoListener listener = null;
   private String token = null;
   private Control control = null;
@@ -161,18 +166,53 @@ public class KontoInput extends SelectInput
    * @return Liste der Konten.
    * @throws RemoteException
    */
-  private static List<Konto> init(KontoFilter filter) throws RemoteException
+  private static List init(KontoFilter filter) throws RemoteException
   {
+    groups = KontoUtil.getGroups(); // Gruppen neu laden
+    boolean haveGroups = groups.size() > 0;
+    
     DBIterator it = Settings.getDBService().createList(Konto.class);
-    it.setOrder("ORDER BY blz, kontonummer");
-    List<Konto> l = new ArrayList<Konto>();
+    it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer");
+    List l = new ArrayList();
+    
+    String current = null;
+    
     while (it.hasNext())
     {
       Konto k = (Konto) it.next();
+      
       if (filter == null || filter.accept(k))
+      {
+        if (haveGroups)
+        {
+          String kat = StringUtils.trimToNull(k.getKategorie());
+          if (kat != null) // haben wir eine Kategorie?
+          {
+            if (current == null || !kat.equals(current)) // Neue Kategorie?
+            {
+              l.add(kat);
+              current = kat;
+            }
+          }
+        }
         l.add(k);
+      }
     }
     return l;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
+   */
+  public Object getValue()
+  {
+    Object o = super.getValue();
+    if (o instanceof String) // Kategorie
+    {
+      GUI.getView().setErrorText(i18n.tr("Auswahl von Konto-Gruppen wird noch nicht unterstützt"));
+      return null;
+    }
+    return o;
   }
 
   /**
@@ -194,9 +234,11 @@ public class KontoInput extends SelectInput
       boolean isDefault = (kd != null && kd.equals(k));
 
 
-      boolean disabled = (k.getFlags() & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED;
+      boolean disabled = k.hasFlag(Konto.FLAG_DISABLED);
 
       StringBuffer sb = new StringBuffer();
+      if (groups.size() > 0)
+        sb.append("   "); // Wir haben Gruppen - also einruecken
       if (isDefault)
         sb.append("> ");
       if (disabled)
