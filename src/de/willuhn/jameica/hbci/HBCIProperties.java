@@ -190,7 +190,7 @@ public class HBCIProperties
     char[] chars = text.toCharArray();
     for (char c:chars)
     {
-      if (HBCI_DTAUS_VALIDCHARS.contains(Character.toString(c)))
+      if (validChars.contains(Character.toString(c)))
         sb.append(c);
     }
     return sb.toString();
