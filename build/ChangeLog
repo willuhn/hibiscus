@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0239 IBAN/BIC im Adressbuch und bei Konten automatisch vervollständigen, wenn Kto/BLZ vorhanden
   * NEW: 0238 Kleiner IBAN-Rechner im Menu unter "Erweitert"
   * NEW: 0237 neue HBCI4Java Version mit kleinem IBAN-Rechner
   * NEW: 0236 Ausdruck von Einzelaufträgen etwas platzsparender und ohne Seitennummer unten rechts

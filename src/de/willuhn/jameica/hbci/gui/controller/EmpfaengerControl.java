@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
@@ -53,9 +56,11 @@ import de.willuhn.util.I18N;
 /**
  * Controller fuer die Empfaenger-Adressen.
  */
-public class EmpfaengerControl extends AbstractControl {
+public class EmpfaengerControl extends AbstractControl
+{
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-	// Fach-Objekte
+  // Fach-Objekte
 	private Address address         = null;
 	// Eingabe-Felder
 	private TextInput kontonummer   = null;
@@ -75,12 +80,13 @@ public class EmpfaengerControl extends AbstractControl {
   private Part sammelList2        = null;
   private Part umsatzList         = null;
   
-	private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
+  private IbanListener ibanListener = new IbanListener();
+  
   /**
    * @param view
    */
-  public EmpfaengerControl(AbstractView view) {
+  public EmpfaengerControl(AbstractView view)
+  {
     super(view);
   }
 
@@ -211,7 +217,12 @@ public class EmpfaengerControl extends AbstractControl {
 		kontonummer = new TextInput(getAddress().getKontonummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
     // BUGZILLA 280
     kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
-    kontonummer.setEnabled(isHibiscusAdresse());
+    
+    boolean b = this.isHibiscusAdresse();
+    kontonummer.setEnabled(b);
+    if (b)
+      kontonummer.addListener(this.ibanListener);
+    
     return kontonummer;
 	}
 
@@ -271,7 +282,12 @@ public class EmpfaengerControl extends AbstractControl {
 		if (blz != null)
 			return blz;
 		blz = new BLZInput(getAddress().getBlz());
-    blz.setEnabled(isHibiscusAdresse());
+    
+    boolean b = this.isHibiscusAdresse();
+    blz.setEnabled(b);
+    if (b)
+      blz.addListener(this.ibanListener);
+    
 		return blz;
 	}
 	
@@ -340,6 +356,40 @@ public class EmpfaengerControl extends AbstractControl {
     name.setMandatory(true);
 		return name;
 	}
+	
+	/**
+	 * Vervollstaendigt IBAN/BIC.
+	 */
+	private class IbanListener implements Listener
+	{
+	  /**
+	   * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+	   */
+	  public void handleEvent(Event event)
+	  {
+	    try
+	    {
+        String blz  = StringUtils.trimToNull((String) getBlz().getValue());
+        String bic  = StringUtils.trimToNull((String) getBic().getValue());
+        
+        String kto  = StringUtils.trimToNull((String) getKontonummer().getValue());
+        String iban = StringUtils.trimToNull((String) getIban().getValue());
+
+	      if (blz != null && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
+	      {
+	        if (bic == null)
+	          getBic().setValue(HBCIUtils.getBICForBLZ(blz));
+
+	        if (kto != null && iban == null)
+	          getIban().setValue(HBCIUtils.getIBANForKonto(blz,kto));
+	      }
+	    }
+	    catch (Exception e)
+	    {
+	      Logger.error("unable to auto-complete IBAN/BIC",e);
+	    }
+	  }
+	}
 
   /**
    * Speichert den Empfaenger.
@@ -376,175 +426,3 @@ public class EmpfaengerControl extends AbstractControl {
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: EmpfaengerControl.java,v $
- * Revision 1.51  2010/04/15 10:30:07  willuhn
- * @B case-insensitive Sortierung
- *
- * Revision 1.50  2010/04/14 22:54:23  willuhn
- * @B Anzeige der IBAN/BIC auch bei "Konto-Adressen"
- *
- * Revision 1.49  2010/04/14 17:44:10  willuhn
- * @N BUGZILLA 83
- *
- * Revision 1.48  2009/03/17 23:44:14  willuhn
- * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
- *
- * Revision 1.47  2009/02/18 00:35:54  willuhn
- * @N Auslaendische Bankverbindungen im Adressbuch
- *
- * Revision 1.46  2008/11/17 23:29:59  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.45  2008/05/19 22:35:53  willuhn
- * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
- * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
- *
- * Revision 1.44  2007/08/07 23:54:15  willuhn
- * @B Bug 394 - Erster Versuch. An einigen Stellen (z.Bsp. konto.getAnfangsSaldo) war ich mir noch nicht sicher. Heiner?
- *
- * Revision 1.43  2007/04/23 21:03:48  willuhn
- * @R "getTransfers" aus Address entfernt - hat im Adressbuch eigentlich nichts zu suchen
- *
- * Revision 1.42  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.41  2007/04/09 22:45:12  willuhn
- * @N Bug 380
- *
- * Revision 1.40  2006/12/28 15:38:43  willuhn
- * @N Farbige Pflichtfelder
- *
- * Revision 1.39  2006/10/06 16:00:42  willuhn
- * @B Bug 280
- *
- * Revision 1.38  2006/08/17 21:46:16  willuhn
- * *** empty log message ***
- *
- * Revision 1.37  2006/08/05 20:44:39  willuhn
- * @B Bug 256
- *
- * Revision 1.36  2005/10/03 16:17:57  willuhn
- * *** empty log message ***
- *
- * Revision 1.35  2005/09/30 00:08:51  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.34  2005/08/22 12:23:18  willuhn
- * @N bug 107
- *
- * Revision 1.33  2005/08/16 21:33:13  willuhn
- * @N Kommentar-Feld in Adressen
- * @N Neuer Adress-Auswahl-Dialog
- * @B Checkbox "in Adressbuch speichern" in Ueberweisungen
- *
- * Revision 1.32  2005/05/08 17:48:51  web0
- * @N Bug 56
- *
- * Revision 1.31  2005/05/08 15:12:20  web0
- * @B wrong action in EmpfaengerList
- *
- * Revision 1.30  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- *
- * Revision 1.29  2005/04/05 21:51:54  web0
- * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
- *
- * Revision 1.28  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.27  2005/03/01 18:51:04  web0
- * @N Dialoge fuer Sammel-Lastschriften
- *
- * Revision 1.26  2005/02/27 17:11:49  web0
- * @N first code for "Sammellastschrift"
- * @C "Empfaenger" renamed into "HibiscusAddress"
- *
- * Revision 1.25  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.24  2004/11/12 18:25:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.23  2004/11/02 18:48:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2004/10/20 12:08:18  willuhn
- * @C MVC-Refactoring (new Controllers)
- *
- * Revision 1.21  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2004/10/15 20:09:43  willuhn
- * @B Laengen-Pruefung bei Empfaengername
- *
- * Revision 1.19  2004/10/08 13:37:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/07/25 17:15:05  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.17  2004/07/23 15:51:43  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.16  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/07/20 21:48:00  willuhn
- * @N ContextMenus
- *
- * Revision 1.14  2004/07/09 00:04:40  willuhn
- * @C Redesign
- *
- * Revision 1.13  2004/06/30 20:58:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2004/06/08 22:28:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/06/03 00:23:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/05/26 23:23:10  willuhn
- * @N neue Sicherheitsabfrage vor Ueberweisung
- * @C Check des Ueberweisungslimit
- * @N Timeout fuer Messages in Statusbars
- *
- * Revision 1.9  2004/04/13 23:14:23  willuhn
- * @N datadir
- *
- * Revision 1.8  2004/04/12 19:15:31  willuhn
- * @C refactoring
- *
- * Revision 1.7  2004/03/30 22:07:50  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/03/11 08:55:42  willuhn
- * @N UmsatzDetails
- *
- * Revision 1.5  2004/03/06 18:25:10  willuhn
- * @D javadoc
- * @C removed empfaenger_id from umsatz
- *
- * Revision 1.4  2004/03/03 22:26:40  willuhn
- * @N help texts
- * @C refactoring
- *
- * Revision 1.3  2004/02/24 22:47:04  willuhn
- * @N GUI refactoring
- *
- * Revision 1.2  2004/02/22 20:04:53  willuhn
- * @N Ueberweisung
- * @N Empfaenger
- *
- * Revision 1.1  2004/02/17 01:09:45  willuhn
- * *** empty log message ***
- *
- **********************************************************************/

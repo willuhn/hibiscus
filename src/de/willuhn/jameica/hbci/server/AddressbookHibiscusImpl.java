@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
@@ -94,7 +94,14 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
                      " LOWER(kommentar) LIKE ?)",new Object[]{s,s,s,s,s});
       }
       list.setOrder("ORDER by LOWER(name)");
-      result.addAll(PseudoIterator.asList(list));
+      
+      // Iterieren ueber die Adressen um BIC/IBAN zu vervollstaendigen
+      while (list.hasNext())
+      {
+        HibiscusAddress a = (HibiscusAddress) list.next();
+        HBCIProperties.completeIBAN(a);
+        result.add(a);
+      }
     }
 
     // 2) In den eigenen Konten suchen
@@ -221,43 +228,3 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
   }
 
 }
-
-
-/*********************************************************************
- * $Log: AddressbookHibiscusImpl.java,v $
- * Revision 1.8  2010/04/14 17:44:10  willuhn
- * @N BUGZILLA 83
- *
- * Revision 1.7  2010/04/11 21:57:08  willuhn
- * @N Anzeige der eigenen Konten im Adressbuch als "virtuelle" Adressen. Basierend auf Ralfs Patch.
- *
- * Revision 1.6  2009/05/06 16:23:24  willuhn
- * @B NPE
- *
- * Revision 1.5  2008/11/17 23:30:00  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.4  2008/04/27 22:22:56  willuhn
- * @C I18N-Referenzen statisch
- *
- * Revision 1.3  2007/04/24 17:52:17  willuhn
- * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
- * @C Gross-Kleinschreibung in Adressbuch-Suche
- *
- * Revision 1.2  2007/04/23 18:17:12  willuhn
- * @B Falsche Standardreihenfolge
- *
- * Revision 1.1  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.2  2007/04/20 14:55:31  willuhn
- * @C s/findAddress/findAddresses/
- *
- * Revision 1.1  2007/04/20 14:49:05  willuhn
- * @N Support fuer externe Adressbuecher
- * @N Action "EmpfaengerAdd" "aufgebohrt"
- *
- **********************************************************************/

@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -54,7 +55,6 @@ import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -98,6 +98,9 @@ public class KontoControl extends AbstractControl
   private SaldoChart saldoChart         = null;
   
   private CheckboxInput offline         = null;
+  
+  private IbanListener ibanListener     = new IbanListener();
+  
 
   /**
    * ct.
@@ -199,6 +202,11 @@ public class KontoControl extends AbstractControl
     // BUGZILLA 280
     kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     kontonummer.setMandatory(true);
+    kontonummer.addListener(this.ibanListener);
+    
+    // einmal manuell ausloesen
+    this.ibanListener.handleEvent(null);
+    
 		return kontonummer;
 	}
   
@@ -339,16 +347,7 @@ public class KontoControl extends AbstractControl
 			return blz;
 		blz = new BLZInput(getKonto().getBLZ());
     blz.setMandatory(true);
-    blz.addListener(new Listener()
-    {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
-      public void handleEvent(Event event)
-      {
-        completeBic();
-      }
-    });
+    blz.addListener(this.ibanListener);
 		return blz;
 	}
 
@@ -511,7 +510,6 @@ public class KontoControl extends AbstractControl
     {
       this.bic = new TextInput(getKonto().getBic(),HBCIProperties.HBCI_BIC_MAXLENGTH);
       this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
-      this.completeBic();
     }
     return this.bic;
   }
@@ -540,6 +538,53 @@ public class KontoControl extends AbstractControl
     kontoList.addColumn(i18n.tr("Umsätze"),"numumsaetze");
 		return kontoList;
 	}
+  
+  /**
+   * Vervollstaendigt IBAN/BIC.
+   */
+  private class IbanListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        String blz  = StringUtils.trimToNull((String) getBlz().getValue());
+        String bic  = StringUtils.trimToNull((String) getBic().getValue());
+        
+        String kto  = StringUtils.trimToNull((String) getKontonummer().getValue());
+        String iban = StringUtils.trimToNull((String) getIban().getValue());
+
+        boolean changed = false;
+        
+        if (blz != null && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
+        {
+          if (bic == null)
+          {
+            getBic().setValue(HBCIUtils.getBICForBLZ(blz));
+            changed = true;
+          }
+
+          if (kto != null && iban == null)
+          {
+            getIban().setValue(HBCIUtils.getIBANForKonto(blz,kto));
+            changed = true;
+          }
+        }
+        
+        if (changed)
+          GUI.getView().setSuccessText(i18n.tr("IBAN/BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken."));
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to auto-complete IBAN/BIC",e);
+      }
+    }
+  }
+
+
 
   /**
    * Speichert das Konto.
@@ -684,31 +729,6 @@ public class KontoControl extends AbstractControl
     });
   }
   
-  /**
-   * Auto-vervollstaendigt die BIC, falls sie noch nicht eingegeben wurde aber die BLZ bekannt ist.
-   */
-  private void completeBic()
-  {
-    try
-    {
-      String bic = (String) getBic().getValue();
-      if (bic != null && bic.length() > 0)
-        return; // schon eingegeben
-      
-      String blz = (String) getBlz().getValue();
-      if (blz == null || blz.length() == 0)
-        return; // keine BLZ bekannt
-      
-      bic = HBCIUtils.getBICForBLZ(blz);
-      if (bic != null && bic.length() > 0)
-        getBic().setValue(bic);
-    }
-    catch (Exception e)
-    {
-      Logger.write(Level.WARN,"unable to autocomplete BIC",e);
-    }
-  }
-
   /**
    * Wird beim Eintreffen neuer Salden benachrichtigt und aktualisiert ggf die Anzeige.
    */
