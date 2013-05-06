@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.structures.Konto;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
@@ -381,7 +382,9 @@ public class EmpfaengerControl extends AbstractControl
 	          getBic().setValue(HBCIUtils.getBICForBLZ(blz));
 
 	        if (kto != null && iban == null)
-	          getIban().setValue(HBCIUtils.getIBANForKonto(blz,kto));
+	        {
+            getIban().setValue(HBCIUtils.getIBANForKonto(new Konto(blz,kto)));
+	        }
 	      }
 	    }
 	    catch (Exception e)

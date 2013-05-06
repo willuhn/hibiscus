@@ -18,16 +18,20 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.kapott.hbci.manager.HBCIUtils;
+
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -99,7 +103,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       while (list.hasNext())
       {
         HibiscusAddress a = (HibiscusAddress) list.next();
-        HBCIProperties.completeIBAN(a);
+        this.completeIBAN(a);
         result.add(a);
       }
     }
@@ -150,6 +154,55 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     
     return it.hasNext() ? it.next() : null;
   }
+  
+  /**
+   * Vervollstaendigt IBAN und BIC bei der Adresse, falls noch nicht hinterlegt und speichert die Adresse ab.
+   * @param address die Adresse.
+   */
+  private void completeIBAN(HibiscusAddress address)
+  {
+    if (address == null)
+      return;
+    
+    try
+    {
+      String blz   = StringUtils.trimToNull(address.getBlz());
+      String konto = StringUtils.trimToNull(address.getKontonummer());
+      
+      if (blz == null || konto == null)
+        return;
+
+      boolean haveChanged = false;
+      
+      if (StringUtils.trimToNull(address.getIban()) == null)
+      {
+        address.setIban(HBCIUtils.getIBANForKonto(new org.kapott.hbci.structures.Konto(blz,konto)));
+        haveChanged = true;
+      }
+      
+      if (StringUtils.trimToNull(address.getBic()) == null)
+      {
+        address.setBic(HBCIUtils.getBICForBLZ(blz));
+        haveChanged = true;
+      }
+
+      if (haveChanged)
+      {
+        address.store();
+        Logger.debug("auto-completed IBAN/BIC for address");
+      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to complete IBAN/BIC for address",re);
+    }
+    catch (ApplicationException ae)
+    {
+      Logger.warn("unable to complete IBAN/BIC for address: " + ae.getMessage());
+    }
+  }
+  
+  
 
   /**
    * Hilfsklasse, um ein Konto in ein Address-Interface zu packen

@@ -595,7 +595,9 @@ public class KontoControl extends AbstractControl
 
           if (kto != null && iban == null)
           {
-            getIban().setValue(HBCIUtils.getIBANForKonto(blz,kto));
+            org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto(blz,kto);
+            k.subnumber = (String) getUnterkonto().getValue();
+            getIban().setValue(HBCIUtils.getIBANForKonto(k));
             changed = true;
           }
         }

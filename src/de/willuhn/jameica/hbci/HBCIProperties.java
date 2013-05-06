@@ -12,10 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
-import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBService;
@@ -374,53 +372,6 @@ public class HBCIProperties
         Logger.error("unable to verify iban crc number",e2);
         return true;
       }
-    }
-  }
-  
-  /**
-   * Vervollstaendigt IBAN und BIC bei der Adresse, falls noch nicht hinterlegt und speichert die Adresse ab.
-   * @param address die Adresse.
-   */
-  public final static void completeIBAN(HibiscusAddress address)
-  {
-    if (address == null)
-      return;
-    
-    try
-    {
-      String blz   = StringUtils.trimToNull(address.getBlz());
-      String konto = StringUtils.trimToNull(address.getKontonummer());
-      
-      if (blz == null || konto == null)
-        return;
-
-      boolean haveChanged = false;
-      
-      if (StringUtils.trimToNull(address.getIban()) == null)
-      {
-        address.setIban(HBCIUtils.getIBANForKonto(blz,konto));
-        haveChanged = true;
-      }
-      
-      if (StringUtils.trimToNull(address.getBic()) == null)
-      {
-        address.setBic(HBCIUtils.getBICForBLZ(blz));
-        haveChanged = true;
-      }
-
-      if (haveChanged)
-      {
-        address.store();
-        Logger.debug("auto-completed IBAN/BIC for address");
-      }
-    }
-    catch (RemoteException re)
-    {
-      Logger.error("unable to complete IBAN/BIC for address",re);
-    }
-    catch (ApplicationException ae)
-    {
-      Logger.warn("unable to complete IBAN/BIC for address: " + ae.getMessage());
     }
   }
   

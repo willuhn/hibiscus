@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.structures.Konto;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -35,10 +36,11 @@ public class IbanCalcDialog extends AbstractDialog
   private final static int WINDOW_WIDTH = 400;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private TextInput konto = null;
-  private TextInput blz   = null;
-  private TextInput iban  = null;
-  private TextInput bic   = null;
+  private TextInput konto      = null;
+  private TextInput unterkonto = null;
+  private TextInput blz        = null;
+  private TextInput iban       = null;
+  private TextInput bic        = null;
   
   /**
    * ct
@@ -69,6 +71,7 @@ public class IbanCalcDialog extends AbstractDialog
     container.addHeadline(i18n.tr("Nationale Bankverbindung"));
     container.addInput(this.getBlz());
     container.addInput(this.getKonto());
+    container.addInput(this.getUnterkonto());
     container.addHeadline(i18n.tr("Zugehörige SEPA-Bankverbindung"));
     container.addInput(this.getBic());
     container.addInput(this.getIban());
@@ -125,6 +128,28 @@ public class IbanCalcDialog extends AbstractDialog
     return this.konto;
   }
   
+  /**
+   * Liefert das Eingabe-Feld fuer die Unterkontonummer.
+   * @return das Eingabe-Feld fuer die Unterkontonummer.
+   */
+  private TextInput getUnterkonto()
+  {
+    if (this.unterkonto != null)
+      return this.unterkonto;
+    
+    this.unterkonto = new TextInput("",5);
+    this.unterkonto.setName(i18n.tr("Unterkonto"));
+    this.unterkonto.setComment("falls vorhanden");
+    this.unterkonto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    this.unterkonto.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        calc();
+      }
+    });
+    return this.unterkonto;
+  }
+
   /**
    * Liefert das Eingabe-Feld fuer die BLZ.
    * @return Eingabe-Feld.
@@ -197,7 +222,9 @@ public class IbanCalcDialog extends AbstractDialog
       
       if (ok)
       {
-        iban = HBCIUtils.getIBANForKonto(blz,kto);
+        Konto k = new Konto(blz,kto);
+        k.subnumber = (String)getUnterkonto().getValue();
+        iban = HBCIUtils.getIBANForKonto(k);
         bic = HBCIUtils.getBICForBLZ(blz);
       }
     }
