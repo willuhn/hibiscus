@@ -137,12 +137,13 @@ public class KontoList extends TablePart implements Part
       public void format(TableItem item)
       {
         Konto k = (Konto) item.getData();
+        final int saldocolumn = 6; 
         try {
           double saldo = k.getSaldo();
           if ((saldo == 0 && k.getSaldoDatum() == null) || Double.isNaN(saldo))
-            item.setText(5,"");
+            item.setText(saldocolumn,"");
           else
-            item.setText(5,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
+            item.setText(saldocolumn,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
 
           // Checken, ob Konto deaktiviert ist
           int flags = k.getFlags();
@@ -159,7 +160,7 @@ public class KontoList extends TablePart implements Part
           else
             item.setForeground(Color.WIDGET_FG.getSWTColor());
 
-          item.setForeground(5,ColorUtil.getForeground(k.getSaldo()));
+          item.setForeground(saldocolumn,ColorUtil.getForeground(k.getSaldo()));
           
           Konto kd = Settings.getDefaultKonto();
           if (kd != null && kd.equals(k))
@@ -376,86 +377,3 @@ public class KontoList extends TablePart implements Part
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: KontoList.java,v $
- * Revision 1.25  2012/04/23 21:03:41  willuhn
- * @N BUGZILLA 1227
- *
- * Revision 1.24  2011-09-25 11:53:57  willuhn
- * @C Kontonummer und Saldo rechtsbuendig forcieren - siehe Mail von Hermann vom 20.09.2011
- *
- * Revision 1.23  2011-06-29 07:36:42  willuhn
- * @N BUGZILLA 1088
- *
- * Revision 1.22  2011-01-02 23:18:51  willuhn
- * @B Verfuegbarer Betrag wurde nicht korrekt als Waehrung formatiert
- *
- * Revision 1.21  2010-11-08 10:24:03  willuhn
- * @B korrekte farbige Hervorhebung auch bei Cent-Bruchteilen
- *
- * Revision 1.20  2010-07-29 21:43:22  willuhn
- * @N BUGZILLA 886
- *
- * Revision 1.19  2010/06/17 12:49:51  willuhn
- * @N BUGZILLA 530 - auch in der Liste die Spalte des verfuegbaren Betrages nur dann anzeigen, wenn wenigstens ein Konto einen solchen besitzt
- *
- * Revision 1.18  2010/06/17 12:16:52  willuhn
- * @N BUGZILLA 530
- *
- * Revision 1.17  2010/06/17 11:37:17  willuhn
- * @N Farben der Konten etwas uebersichtlicher gestaltet
- *
- * Revision 1.16  2010/04/22 15:43:06  willuhn
- * @B Debugging
- * @N Kontoliste aktualisieren
- *
- * Revision 1.15  2009/09/15 00:23:35  willuhn
- * @N BUGZILLA 745
- *
- * Revision 1.14  2009/07/09 17:08:03  willuhn
- * @N BUGZILLA #740
- *
- * Revision 1.13  2009/01/05 10:13:46  willuhn
- * @B In der Spalte "HBCI-Medium" wurd versehentlich der Saldo angezeigt
- *
- * Revision 1.12  2009/01/04 17:43:29  willuhn
- * @N BUGZILLA 532
- *
- * Revision 1.11  2009/01/04 16:38:55  willuhn
- * @N BUGZILLA 523 - ein Konto kann jetzt als Default markiert werden. Das wird bei Auftraegen vorausgewaehlt und ist fett markiert
- *
- * Revision 1.10  2007/08/29 10:04:42  willuhn
- * @N Bug 476
- *
- * Revision 1.9  2006/05/11 16:53:09  willuhn
- * @B bug 233
- *
- * Revision 1.8  2006/04/25 23:25:12  willuhn
- * @N bug 81
- *
- * Revision 1.7  2005/08/01 16:10:41  web0
- * @N synchronize
- *
- * Revision 1.6  2005/06/27 15:35:27  web0
- * @B bug 84
- *
- * Revision 1.5  2005/06/23 22:02:53  web0
- * *** empty log message ***
- *
- * Revision 1.4  2005/06/23 22:01:04  web0
- * @N added hbci media to account list
- *
- * Revision 1.3  2005/06/21 20:11:10  web0
- * @C cvs merge
- *
- * Revision 1.2  2005/05/08 17:48:51  web0
- * @N Bug 56
- *
- * Revision 1.1  2005/05/02 23:56:45  web0
- * @B bug 66, 67
- * @C umsatzliste nach vorn verschoben
- * @C protokoll nach hinten verschoben
- *
- **********************************************************************/
