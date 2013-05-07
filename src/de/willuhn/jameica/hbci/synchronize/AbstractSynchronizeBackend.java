@@ -388,7 +388,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
             }
             else
             {
-              this.updateStatus(ProgressMonitor.STATUS_ERROR,i18n.tr("Synchronisierung via {0} mit Fehlern beendet",getName()));
+              this.updateStatus(ProgressMonitor.STATUS_ERROR,i18n.tr("Synchronisierung fehlgeschlagen: {0}",e.getMessage()));
               break;
             }
           }
