@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * BUG: 0241 BUGZILLA 1355 - StringIndexOutOfBoundsException beim Ermitteln der IBAN
   * NEW: 0240 Erster Code für Konto-Gruppen. Dienen erstmal nur der Übersicht in der Liste, werden
               in Auswertungen noch nicht unterstützt
   * NEW: 0239 IBAN/BIC im Adressbuch und bei Konten automatisch vervollständigen, wenn Kto/BLZ vorhanden

@@ -192,13 +192,13 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
         Logger.debug("auto-completed IBAN/BIC for address");
       }
     }
-    catch (RemoteException re)
-    {
-      Logger.error("unable to complete IBAN/BIC for address",re);
-    }
     catch (ApplicationException ae)
     {
       Logger.warn("unable to complete IBAN/BIC for address: " + ae.getMessage());
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to complete IBAN/BIC for address",e);
     }
   }
   
