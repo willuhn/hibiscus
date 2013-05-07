@@ -364,7 +364,7 @@ public class KontoInput extends SelectInput
               Konto k = (Konto) list.get(i);
               if (BeanUtil.equals(konto,k))
               {
-                k.setSaldo(konto.getSaldo());
+                list.set(i,konto);
                 break;
               }
             }
