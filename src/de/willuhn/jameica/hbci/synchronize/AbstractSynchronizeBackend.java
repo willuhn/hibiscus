@@ -370,8 +370,6 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
           }
           catch (Exception e)
           {
-            this.monitor.log(e.getMessage());
-            
             // Wir muessen den User nur fragen, wenn auch wirklich noch weitere Job-Gruppen vorhanden sind
             boolean resume = false;
             if (i+1 < this.sync.groups.size())
@@ -384,11 +382,15 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
             if (resume)
             {
               Logger.warn("continue synchronization after error");
+              this.monitor.log(i18n.tr("Fehler: {0}",e.getMessage()));
               this.monitor.log(i18n.tr("Synchronisierung via {0} wird nach Fehler fortgesetzt",getName()));
             }
             else
             {
-              this.updateStatus(ProgressMonitor.STATUS_ERROR,i18n.tr("Synchronisierung fehlgeschlagen: {0}",e.getMessage()));
+              if (e instanceof ApplicationException)
+                this.updateStatus(ProgressMonitor.STATUS_ERROR,e.getMessage());
+              else
+                this.updateStatus(ProgressMonitor.STATUS_ERROR,i18n.tr("Synchronisierung fehlgeschlagen: {0}",e.getMessage()));
               break;
             }
           }
