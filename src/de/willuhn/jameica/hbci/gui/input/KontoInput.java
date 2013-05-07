@@ -172,7 +172,7 @@ public class KontoInput extends SelectInput
     boolean haveGroups = groups.size() > 0;
     
     DBIterator it = Settings.getDBService().createList(Konto.class);
-    it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer");
+    it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
     List l = new ArrayList();
     
     String current = null;
