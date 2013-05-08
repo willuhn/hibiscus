@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.messaging;
 
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.Message;
@@ -67,7 +68,14 @@ public class OfflineSaldoMessageConsumer implements MessageConsumer
       return;
     
     // Offline-Konto?
-    if ((k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE)
+    if (!k.hasFlag(Konto.FLAG_OFFLINE))
+      return;
+
+    // Wenn fuer das Offline-Konto das Synchronisieren des Saldos
+    // aktiv ist, halten wir uns raus
+    // Siehe Mail von Sebastian vom 08.05.2013
+    SynchronizeOptions options = new SynchronizeOptions(k);
+    if (options.getSyncSaldo())
       return;
 
     // Betrag der Buchung
