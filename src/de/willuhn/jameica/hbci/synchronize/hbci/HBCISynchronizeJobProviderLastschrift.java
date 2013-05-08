@@ -106,7 +106,7 @@ public class HBCISynchronizeJobProviderLastschrift implements HBCISynchronizeJob
    */
   public int compareTo(Object o)
   {
-    // Reihenfolge egal.
-    return 0;
+    // Nach Moeglichkeit zuerst
+    return -1;
   }
 }

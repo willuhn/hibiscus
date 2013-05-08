@@ -95,8 +95,8 @@ public class HBCISynchronizeJobProviderDauerauftrag implements HBCISynchronizeJo
    */
   public int compareTo(Object o)
   {
-    // Reihenfolge egal.
-    return 0;
+    // Nach Moeglichkeit zuerst
+    return -1;
   }
 
 }

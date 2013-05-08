@@ -122,7 +122,17 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
       
       // Sortieren der Jobs
       Logger.info("  found " + this.providers.size() + " provider(s)");
+      Logger.debug("provider order before sorting:");
+      for (SynchronizeJobProvider p:this.providers)
+      {
+        Logger.debug("  " + p.getClass().getSimpleName());
+      }
       Collections.sort(this.providers);
+      Logger.debug("provider order after sorting:");
+      for (SynchronizeJobProvider p:this.providers)
+      {
+        Logger.debug("  " + p.getClass().getSimpleName());
+      }
     }
     catch (ClassNotFoundException e)
     {
