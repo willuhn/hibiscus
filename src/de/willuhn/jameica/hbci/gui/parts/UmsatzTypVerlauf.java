@@ -17,11 +17,11 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.hbci.HBCI;
@@ -133,63 +133,54 @@ public class UmsatzTypVerlauf implements Part
     private List<Entry> entries  = new ArrayList<Entry>();
     private boolean hasData      = false;
     
+    private List<Umsatz> getRecursiveUmsaetze(UmsatzTreeNode group) {
+      List<Umsatz> result = new ArrayList<Umsatz>();
+      result.addAll(group.getUmsaetze());
+      for (UmsatzTreeNode unterkategorie: group.getSubGroups()) {
+        result.addAll(getRecursiveUmsaetze(unterkategorie));
+      }
+      return result;
+    }
+    
     /**
-     * ct
+     * Erzeugt eine Liste mit den aggregierten Daten für eine Linie des Charts 
      * @param group
      * @throws RemoteException
      */
     private ChartDataUmsatz(UmsatzTreeNode group) throws RemoteException
     {
+      HashMap<Date,Double> verteilung = new HashMap<Date, Double>();
+      Calendar calendar = Calendar.getInstance();
       this.group = group;
       this.entries.clear();
-      
-      GenericIterator umsaetze = this.group.getChildren();
-      Calendar cal             = Calendar.getInstance();
 
-      // 1. des aktuellen Monats
-      Date currentStart = DateUtil.startOfDay(start);
-      
-      // 1. des Folge-Monats
-      cal.setTime(start);
-      cal.add(Calendar.MONTH,1);
-      cal.set(Calendar.DAY_OF_MONTH,1);
-      Date currentStop  = DateUtil.startOfDay(cal.getTime());
-
-      // Wir iterieren monatsweise ueber das gesamte Zeitfenster
-      // und fuellen die Monate mit den Zahlungen auf.
-      while (currentStart.before(stop))
-      {
-        Entry current = new Entry();
-        current.monat = currentStart;
-        umsaetze.begin();
-        while (umsaetze.hasNext())
-        {
-          Object o = umsaetze.next();
-          if (!(o instanceof Umsatz))
-            continue;
-          Umsatz u = (Umsatz) o;
-          Date date = u.getDatum();
-          if (date == null)
-          {
-            Logger.warn("no date found for umsatz, skipping record");
-            continue;
-          }
-          
-          // checken, ob sich der Umsatz im aktuellen Monat befindet
-          if (date.equals(currentStart) || (date.after(currentStart) && date.before(currentStop)))
-          {
-            current.betrag += u.getBetrag();
-            this.hasData = true;
-          }
+      for (Umsatz umsatz: getRecursiveUmsaetze(group)) {
+        if (umsatz.getDatum() == null) {
+          Logger.warn("no date found for umsatz, skipping record");
+          continue;
         }
-        this.entries.add(current);
+        this.hasData = true;
+        calendar.setTime(umsatz.getDatum());
+        calendar.set(Calendar.DAY_OF_MONTH,1);
+        double aggMonatsWert = verteilung.containsKey(calendar.getTime())?verteilung.get(calendar.getTime()):0;
+        verteilung.put(calendar.getTime(), umsatz.getBetrag() + aggMonatsWert);
+      }
 
-        // einen Monat weiterruecken
-        currentStart = currentStop;
-        cal.setTime(currentStart);
-        cal.add(Calendar.MONTH,1);
-        cal.set(Calendar.DAY_OF_MONTH,1);
-        currentStop = DateUtil.startOfDay(cal.getTime());
+      calendar.setTime(DateUtil.startOfDay(start));
+      calendar.set(Calendar.DAY_OF_MONTH, 1);
+      Date monat = calendar.getTime();
+
+      while(monat.before(stop)) {
+        Entry aktuellerMonatswert = new Entry();
+        aktuellerMonatswert.monat = monat;
+        if (verteilung.containsKey(monat)) {
+          aktuellerMonatswert.betrag = verteilung.get(monat);
+        }
+        entries.add(aktuellerMonatswert);
+
+        calendar.setTime(monat);
+        calendar.add(Calendar.MONTH, 1);
+        monat = calendar.getTime();
       }
     }
 
