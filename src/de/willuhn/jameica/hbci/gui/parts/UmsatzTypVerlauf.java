@@ -160,7 +160,7 @@ public class UmsatzTypVerlauf implements Part
           continue;
         }
         this.hasData = true;
-        calendar.setTime(umsatz.getDatum());
+        calendar.setTime(DateUtil.startOfDay(umsatz.getDatum()));
         calendar.set(Calendar.DAY_OF_MONTH,1);
         double aggMonatsWert = verteilung.containsKey(calendar.getTime())?verteilung.get(calendar.getTime()):0;
         verteilung.put(calendar.getTime(), umsatz.getBetrag() + aggMonatsWert);
