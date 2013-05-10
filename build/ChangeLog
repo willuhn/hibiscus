@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0243 BUGZILLA 1138 - Unterkategorien in Chartverlauf beruecksichtigen, Patch von Felix
   * NEW: 0242 BUGZILLA 1356 - Combobox mit Konten auch aktualisieren, wenn z.Bsp. der Name geaendert wird
   * BUG: 0241 BUGZILLA 1355 - StringIndexOutOfBoundsException beim Ermitteln der IBAN
   * NEW: 0240 Erster Code für Konto-Gruppen. Dienen erstmal nur der Übersicht in der Liste, werden
