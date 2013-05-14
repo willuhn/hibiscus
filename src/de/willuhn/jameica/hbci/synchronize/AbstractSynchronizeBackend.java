@@ -380,6 +380,9 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
           }
           catch (Exception e)
           {
+            if (!(e instanceof ApplicationException))
+              Logger.error("error while synchronizing",e);
+            
             // Wir muessen den User nur fragen, wenn auch wirklich noch weitere Job-Gruppen vorhanden sind
             boolean resume = false;
             if (i+1 < this.sync.groups.size())
