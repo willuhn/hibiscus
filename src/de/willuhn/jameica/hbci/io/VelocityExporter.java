@@ -32,6 +32,7 @@ import de.willuhn.io.FileFinder;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -42,6 +43,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class VelocityExporter implements Exporter
 {
+  private final static Settings settings = new Settings(VelocityExporter.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private Map<Class,IOFormat[]> formats  = new HashMap<Class,IOFormat[]>();
   
@@ -67,8 +69,11 @@ public class VelocityExporter implements Exporter
     Logger.debug("preparing velocity context");
     VelocityContext context = new VelocityContext();
 
+    String encoding = settings.getString("file.encoding",System.getProperty("file.encoding")); // BUGZILLA 1358
+    Logger.info("used encoding: " + encoding);
+    
     context.put("datum",         new Date());
-    context.put("charset",       System.getProperty("file.encoding")); // BUGZILLA 328
+    context.put("charset",       encoding); // BUGZILLA 328
     context.put("dateformat",    HBCI.DATEFORMAT);
     context.put("longdateformat",HBCI.LONGDATEFORMAT);
     context.put("decimalformat", HBCI.DECIMALFORMAT);
@@ -83,7 +88,7 @@ public class VelocityExporter implements Exporter
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
         monitor.addPercentComplete(4);
       }
-      writer = new BufferedWriter(new OutputStreamWriter(os));
+      writer = new BufferedWriter(new OutputStreamWriter(os,encoding));
 
       VelocityService service = (VelocityService) Application.getBootLoader().getBootable(VelocityService.class);
       VelocityEngine engine = service.getEngine(HBCI.class.getName());
