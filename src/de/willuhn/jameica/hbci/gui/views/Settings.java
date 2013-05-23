@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -36,7 +37,7 @@ import de.willuhn.util.I18N;
 /**
  * Einstellungs-Dialog.
  */
-public class Settings extends AbstractView
+public class Settings extends AbstractView implements Extendable
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -142,39 +143,12 @@ public class Settings extends AbstractView
     lastActiveTab = new Integer(getTabFolder().getSelectionIndex());
   }
 
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
+  }
+
 }
-
-
-/**********************************************************************
- * $Log: Settings.java,v $
- * Revision 1.57  2011/06/30 16:29:42  willuhn
- * @N Unterstuetzung fuer neues UnreadCount-Feature
- *
- * Revision 1.56  2011-06-06 12:24:21  willuhn
- * *** empty log message ***
- *
- * Revision 1.55  2011-05-24 09:06:11  willuhn
- * @C Refactoring und Vereinfachung von HBCI-Callbacks
- *
- * Revision 1.54  2011-05-23 14:48:04  willuhn
- * @R wieder deaktiviert - wegen diesem arroganten Schnoesel hier: http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=75512#75512
- *
- * Revision 1.53  2011-05-23 12:57:37  willuhn
- * @N optionales Speichern der PINs im Wallet. Ich announce das aber nicht. Ich hab das nur eingebaut, weil mir das Gejammer der User auf den Nerv ging und ich nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
- *
- * Revision 1.52  2011-05-20 16:22:31  willuhn
- * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
- *
- * Revision 1.51  2011-05-03 16:43:36  willuhn
- * @C Bezeichner geaendert
- *
- * Revision 1.50  2011-05-03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.49  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.48  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- **********************************************************************/
