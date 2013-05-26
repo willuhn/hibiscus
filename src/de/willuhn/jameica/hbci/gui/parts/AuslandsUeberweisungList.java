@@ -26,7 +26,6 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
-import de.willuhn.jameica.hbci.rmi.Konto;
 
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste mit Auslandsueberweisungen.
@@ -69,7 +68,7 @@ public class AuslandsUeberweisungList extends AbstractTransferList
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
    */
-  protected DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException
+  protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     DBIterator list = super.getList(konto, from, to, text);
     if (text != null && text.length() > 0)

@@ -18,7 +18,6 @@ import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 
 /**
@@ -48,7 +47,7 @@ public class LastschriftList extends AbstractTransferList
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
    */
-  protected DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException
+  protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     DBIterator list = super.getList(konto, from, to, text);
     if (text != null && text.length() > 0)

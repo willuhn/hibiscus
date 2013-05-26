@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -263,9 +264,9 @@ public class DauerauftragControl extends AbstractTransferControl {
    * Ueberschreiben wir, um die Auswahl des Kontos zu verbieten, wenn der Dauerauftrag schon aktiv ist.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public KontoInput getKontoAuswahl() throws RemoteException
   {
-    Input i = super.getKontoAuswahl();
+    KontoInput i = super.getKontoAuswahl();
     i.setEnabled(!((Dauerauftrag)getTransfer()).isActive());
     return i;
   }

@@ -1,5 +1,9 @@
 HEAD 2.5.1 (nightly)
 
+  * BUG: 0246 BUGZILLA 1362 - Standard-Konto kam nicht mehr zu Anwendung, wenn in KontoInput
+              "setRememberSelection" verwendet wurde. Ausserdem: In Auftragserstellung Konto aus
+              vorheriger Liste vorauswaehlen
+  * NEW: 0245 Svens Patch (vom 12.05.2013) für die Auswertung der Konto-Gruppen in Auswertungen und Listen 
   * NEW: 0244 BUGZILLA 1358 - Encoding beim CSV/HTML-Export konfigurierbar
   * NEW: 0243 BUGZILLA 1138 - Unterkategorien in Chartverlauf beruecksichtigen, Patch von Felix
   * NEW: 0242 BUGZILLA 1356 - Combobox mit Konten auch aktualisieren, wenn z.Bsp. der Name geaendert wird

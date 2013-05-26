@@ -17,15 +17,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import de.willuhn.jameica.hbci.rmi.Konto;
-
 /**
  * Container fuer einen Umsatztree samt Meta-Daten.
  */
 public class UmsatzTree implements Serializable
 {
   private List tree     = null;
-  private Konto konto   = null;
+  private String title  = null;
   private Date start    = null;
   private Date end      = null;
 
@@ -48,21 +46,21 @@ public class UmsatzTree implements Serializable
   }
   
   /**
-   * Liefert das Konto.
-   * @return das Konto.
+   * Liefert den Titel.
+   * @return den Titel.
    */
-  public Konto getKonto()
+  public String getTitle()
   {
-    return this.konto;
+    return this.title;
   }
   
   /**
-   * Speichert das Konto.
-   * @param konto das Konto.
+   * Speichert den Titel.
+   * @param title den Titel.
    */
-  public void setKonto(Konto konto)
+  public void setTitle(String title)
   {
-    this.konto = konto;
+    this.title = title;
   }
 
   /**

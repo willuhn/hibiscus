@@ -58,7 +58,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private Konto konto											   = null;
 	
 	// Eingabe-Felder
-	private Input kontoAuswahl			           = null;
+	private KontoInput kontoAuswahl			       = null;
 	private Input betrag										   = null;
 	private TextInput zweck									   = null;
 	private DialogInput zweck2							   = null;
@@ -107,7 +107,7 @@ public abstract class AbstractTransferControl extends AbstractControl
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public KontoInput getKontoAuswahl() throws RemoteException
 	{
 		if (this.kontoAuswahl != null)
 		  return this.kontoAuswahl;
@@ -115,6 +115,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     Konto k = getKonto();
     KontoListener kl = new KontoListener();
 		this.kontoAuswahl = new KontoInput(k,KontoFilter.ONLINE);
+    this.kontoAuswahl.setRememberSelection("auftraege"); // BUGZILLA 1362 - zuletzt ausgewaehltes Konto gleich uebernehmen
 		this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
 		this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);

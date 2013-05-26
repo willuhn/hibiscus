@@ -115,6 +115,7 @@ public class SaldoChart implements Part
 
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoauswahl.setRememberSelection("auswertungen.saldochart");
+    this.kontoauswahl.setSupportGroups(true);
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     if (tiny)
       this.kontoauswahl.setComment(null); // Keinen Kommentar anzeigen
@@ -224,7 +225,7 @@ public class SaldoChart implements Part
    */
   private class ReloadListener implements Listener
   {
-    private Konto kPrev = null;
+    private Object oPrev = null;
     private int startPrev = 0;
     
     /**
@@ -239,11 +240,11 @@ public class SaldoChart implements Part
       {
         int start = ((Integer)getRange().getValue()).intValue();
 
-        Konto k = konto;
-        if (k == null) // Das ist der Fall, wenn das Kontoauswahlfeld verfuegbar ist
-          k = (Konto) getKontoAuswahl().getValue();
+        Object o = konto;
+        if (o == null) // Das ist der Fall, wenn das Kontoauswahlfeld verfuegbar ist
+          o = getKontoAuswahl().getValue();
         
-        if (start == startPrev && k == kPrev)
+        if (start == startPrev && o == oPrev)
           return; // Auswahl nicht geaendert
           
         chart.removeAllData();
@@ -257,11 +258,17 @@ public class SaldoChart implements Part
         {
           // Keine Anzahl von Tagen angegeben. Dann nehmen wir den
           // aeltesten gefundenen Umsatz als Beginn
-          String query = "select min(datum) from umsatz";
-          if (k != null)
-            query += " where konto_id = " + k.getID();
+          String   query  = "select min(datum) from umsatz";
+          Object[] params = null;
+          if (o != null && (o instanceof Konto))
+            query += " where konto_id = " + ((Konto) o).getID();
+          else if (o != null && (o instanceof String))
+          {
+            query += " where konto_id in (select id from konto where kategorie = ?)";
+            params = new String[]{(String) o};
+          }
           
-          date = (Date) Settings.getDBService().execute(query,null,new ResultSetExtractor() {
+          date = (Date) Settings.getDBService().execute(query,params,new ResultSetExtractor() {
             public Object extract(ResultSet rs) throws RemoteException, SQLException
             {
               if (!rs.next())
@@ -303,9 +310,10 @@ public class SaldoChart implements Part
 //          forecast.addData(f);
 //        }
         
-        if (k == null) // wir zeichnen einen Stacked-Graph ueber alle Konten 
+        if (o == null || !(o instanceof Konto)) // wir zeichnen einen Stacked-Graph ueber alle Konten 
         {
           DBIterator it = Settings.getDBService().createList(Konto.class);
+          if (o != null && (o instanceof String)) it.addFilter("kategorie = ?", (String) o);
           ChartDataSaldoSumme s = new ChartDataSaldoSumme();
           while (it.hasNext())
           {
@@ -321,7 +329,7 @@ public class SaldoChart implements Part
         }
         else // Ansonsten nur fuer eine
         {
-          ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf(k,date);
+          ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o,date);
           ChartDataSaldoTrend   t = new ChartDataSaldoTrend();
           t.add(s.getData());
           chart.addData(s);
@@ -337,7 +345,7 @@ public class SaldoChart implements Part
 //            forecast.redraw();
         }
         
-        kPrev = k;
+        oPrev = o;
         startPrev = start;
       }
       catch (Exception e)

@@ -50,6 +50,7 @@ public class KontoInput extends SelectInput
   private KontoListener listener = null;
   private String token = null;
   private Control control = null;
+  private boolean supportGroups = false;
 
   private MessageConsumer mc = new SaldoMessageConsumer();
   
@@ -80,6 +81,19 @@ public class KontoInput extends SelectInput
   }
   
   /**
+   * Legt fest, ob die Kontoauswahl das Zurueckliefern von Gruppen unterstuetzen soll.
+   * @param b true, wenn es unterstuetzt werden soll.
+   * In dem Fall liefert das Input einen String mit der ausgewaehlten Kategorie.
+   * Andernfalls wird in diesem Fall NULL zurueckgeliefert. Per Default ist dieses
+   * Feature (aus Gruenden der Abwaertskompatibilitaet) deaktiviert - muss also explizit
+   * an den Stellen aktiviert werden, wo es verwendet wird.
+   */
+  public void setSupportGroups(boolean b)
+  {
+    this.supportGroups = b;
+  }
+  
+  /**
    * Die Kontoauswahl kann sich das zuletzt ausgewaehlte Konto merken.
    * Damit dann aber nicht auf allen Dialogen das gleiche Konto vorausgewaehlt ist,
    * kann man hier einen individuellen Freitext-Token uebergeben, der als Key fuer
@@ -95,6 +109,10 @@ public class KontoInput extends SelectInput
     if (s == null || s.length() == 0)
       return;
     
+    // BUGZILLA 1362 Wenn wir ein Standard-Konto haben, hat immer das Vorrang
+    if (Settings.getDefaultKonto() != null)
+      return;
+    
     this.token = s;
 
     String id = settings.getString(this.token,null);
@@ -107,8 +125,12 @@ public class KontoInput extends SelectInput
       }
       catch (Exception e)
       {
-        // Konto konnte nicht geladen werden. Vorauswahl loeschen
-        settings.setAttribute(this.token,(String) null);
+        // wir koennen leider nicht checken, ob "id" =~ /[0-9]{1,9}/ ist, weil der Gruppen-Name ja auch nur aus Zahlen bestehen kann
+        // daher halt direkt im catch der ObjectNotFoundException
+        if (this.supportGroups)
+          this.setPreselected(id); // Koennte eine Kategorie sein
+        else
+          settings.setAttribute(this.token,(String) null); // Konto konnte nicht geladen werden. Vorauswahl loeschen
       }
     }
     
@@ -150,8 +172,17 @@ public class KontoInput extends SelectInput
   {
     try
     {
-      Konto k = (Konto) getValue();
-      settings.setAttribute(token,(String) (k != null ? k.getID() : null));
+      Object o = getValue();
+      String value = null;
+      
+      if (o != null)
+      {
+        if (o instanceof Konto)
+          value = ((Konto)o).getID();
+        else
+          value = o.toString();
+      }
+      settings.setAttribute(token,value);
     }
     catch (Exception e)
     {
@@ -207,9 +238,10 @@ public class KontoInput extends SelectInput
   public Object getValue()
   {
     Object o = super.getValue();
-    if (o instanceof String) // Kategorie
+    
+    if ((o instanceof String) && !this.supportGroups) // Kategorie
     {
-      GUI.getView().setErrorText(i18n.tr("Auswahl von Konto-Gruppen wird noch nicht unterstützt"));
+      GUI.getView().setErrorText(i18n.tr("Die Auswahl einer Konto-Gruppen ist hier nicht möglich"));
       return null;
     }
     return o;

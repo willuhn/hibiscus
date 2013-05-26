@@ -49,7 +49,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private Input kontoAuswahl				     = null;
+  private KontoInput kontoAuswahl	       = null;
   private Input name                     = null;
   private TerminInput termin             = null;
   private ReminderIntervalInput interval = null;
@@ -90,7 +90,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public KontoInput getKontoAuswahl() throws RemoteException
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
@@ -98,6 +98,7 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     Konto k = getTransfer().getKonto();
     KontoListener kl = new KontoListener();
     this.kontoAuswahl = new KontoInput(k,KontoFilter.ONLINE);
+    this.kontoAuswahl.setRememberSelection("auftraege"); // BUGZILLA 1362 - zuletzt ausgewaehltes Konto gleich uebernehmen
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());

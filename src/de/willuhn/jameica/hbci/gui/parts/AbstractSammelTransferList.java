@@ -165,7 +165,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
    */
-  protected DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException
+  protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
@@ -177,8 +177,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
       list.addFilter("LOWER(bezeichnung) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
     }
     
-    if (konto != null)
-      list.addFilter("konto_id = " + konto.getID());
+    if (konto != null && (konto instanceof Konto))
+      list.addFilter("konto_id = " + ((Konto) konto).getID());
+    else if (konto != null && (konto instanceof String))
+      list.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) konto);
 
     boolean pending = ((Boolean) this.getPending().getValue()).booleanValue();
     if (pending)

@@ -52,7 +52,7 @@ public class Overview extends AbstractBox implements Box
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   // BUGZILLA 993
-  private static Konto konto       = null;
+  private static Object konto      = null;
   private static Date startDate    = null;
   private static Date endDate      = null;
 
@@ -125,8 +125,9 @@ public class Overview extends AbstractBox implements Box
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
-    this.kontoAuswahl = new KontoInput(konto != null && konto.getID() != null ? konto : null,KontoFilter.ACTIVE);
+
+    this.kontoAuswahl = new KontoInput(konto != null && (konto instanceof Konto) && ((Konto) konto).getID() != null ? ((Konto) konto) : null,KontoFilter.ACTIVE);
+    this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
     this.kontoAuswahl.addListener(new Listener() {
       public void handleEvent(Event event)
@@ -211,7 +212,7 @@ public class Overview extends AbstractBox implements Box
   {
     try
     {
-      konto     = (Konto) this.getKontoAuswahl().getValue();
+      konto     = this.getKontoAuswahl().getValue();
       startDate = (Date) getStart().getValue();
       endDate   = (Date) getEnd().getValue();
       Date saldoDate = null;
@@ -219,9 +220,11 @@ public class Overview extends AbstractBox implements Box
       ////////////////////////////////////////////////////////////////////////////
       // Saldo ausrechnen
       double d = 0d;
-      if (konto == null)
+      if (konto == null || !(konto instanceof Konto))
       {
         DBIterator konten = Settings.getDBService().createList(Konto.class);
+        if (konto != null && (konto instanceof String))
+          konten.addFilter("kategorie = ?", (String) konto);
         while (konten.hasNext())
         {
           Konto k = (Konto) konten.next();
@@ -230,8 +233,8 @@ public class Overview extends AbstractBox implements Box
       }
       else
       {
-        d = konto.getSaldo();
-        saldoDate = konto.getSaldoDatum();
+        d = ((Konto) konto).getSaldo();
+        saldoDate = ((Konto) konto).getSaldoDatum();
       }
       
       LabelInput saldo = (LabelInput) this.getSaldo();
@@ -249,9 +252,11 @@ public class Overview extends AbstractBox implements Box
 
       double in = 0d;
       double out = 0d;
-      if (konto == null)
+      if (konto == null || !(konto instanceof Konto))
       {
         DBIterator i = Settings.getDBService().createList(Konto.class);
+        if (konto != null && (konto instanceof String))
+          i.addFilter("kategorie = ?", (String) konto);
         while (i.hasNext())
         {
           Konto k = (Konto) i.next();
@@ -261,8 +266,8 @@ public class Overview extends AbstractBox implements Box
       }
       else
       {
-        in  = KontoUtil.getEinnahmen(konto,startDate,endDate);
-        out = KontoUtil.getAusgaben(konto,startDate,endDate);
+        in  = KontoUtil.getEinnahmen((Konto) konto,startDate,endDate);
+        out = KontoUtil.getAusgaben((Konto) konto,startDate,endDate);
       }
       out = Math.abs(out); // BUGZILLA 405
       getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));

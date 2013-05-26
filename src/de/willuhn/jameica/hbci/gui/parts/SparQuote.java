@@ -151,6 +151,7 @@ public class SparQuote implements Part
 
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    this.kontoauswahl.setSupportGroups(true);
     this.kontoauswahl.setRememberSelection("auswertungen.spartquote");
     this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
     return this.kontoauswahl;
@@ -309,9 +310,11 @@ public class SparQuote implements Part
     calculateRange();
 
     DBIterator umsaetze = UmsatzUtil.getUmsaetze();
-    Konto konto = (Konto) getKontoAuswahl().getValue();
-    if (konto != null)
-      umsaetze.addFilter("konto_id = " + konto.getID());
+    Object o = getKontoAuswahl().getValue();
+    if (o != null && (o instanceof Konto))
+      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
+    else if (o != null && (o instanceof String))
+      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
 
     if (start != null)
       umsaetze.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
@@ -465,8 +468,12 @@ public class SparQuote implements Part
      */
     public String getLabel() throws RemoteException
     {
-      Konto konto = (Konto) getKontoAuswahl().getValue();
-      return konto == null ? i18n.tr("Alle Konten") : konto.getBezeichnung();
+      Object o = getKontoAuswahl().getValue();
+      if (o != null && (o instanceof String))
+        return (String) o;
+      else if (o != null && (o instanceof Konto))
+        return ((Konto) o).getBezeichnung();
+      return i18n.tr("Alle Konten");
     }
 
     /**

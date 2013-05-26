@@ -12,7 +12,6 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -60,19 +59,19 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
    */
   protected String getSubTitle(UmsatzTree tree) throws RemoteException
   {
-    Konto k       = tree.getKonto();
+    String titel  = tree.getTitle();
     Date start    = tree.getStart();
     Date end      = tree.getEnd();
     DateFormat df = HBCI.DATEFORMAT;
     
-    String kt = k != null ? k.getBezeichnung() : i18n.tr("alle Konten");
+    String tt = titel != null ? titel : i18n.tr("alle Konten");
     String st = start != null ? df.format(start) : null;
     String et = end != null ? df.format(end) : null;
 
-    if (st == null && end == null) return i18n.tr("gesamter Zeitraum, {0}",kt);
-    if (start == null)             return i18n.tr("Zeitraum: bis {0}, {1}",et,kt);
-    if (end == null)               return i18n.tr("Zeitraum: ab {0}, {1}",st,kt);
-    return i18n.tr("Zeitraum: {0} - {1}, {2}",st,et,kt);
+    if (st == null && end == null) return i18n.tr("gesamter Zeitraum, {0}",tt);
+    if (start == null)             return i18n.tr("Zeitraum: bis {0}, {1}",et,tt);
+    if (end == null)               return i18n.tr("Zeitraum: ab {0}, {1}",st,tt);
+    return i18n.tr("Zeitraum: {0} - {1}, {2}",st,et,tt);
   }
 }
 

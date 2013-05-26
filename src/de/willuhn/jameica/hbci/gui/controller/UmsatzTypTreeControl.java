@@ -82,6 +82,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoAuswahl.setRememberSelection("auswertungen.umsatztree");
+    this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     return this.kontoAuswahl;
   }
@@ -126,7 +127,11 @@ public class UmsatzTypTreeControl extends AbstractControl
     de.willuhn.jameica.hbci.io.UmsatzTree tree = new de.willuhn.jameica.hbci.io.UmsatzTree();
     tree.setEnd((Date) getEnd().getValue());
     tree.setStart((Date) getStart().getValue());
-    tree.setKonto((Konto) getKontoAuswahl().getValue());
+    Object konto = getKontoAuswahl().getValue();
+    if (konto != null && (konto instanceof Konto))
+      tree.setTitle(((Konto) konto).getBezeichnung());
+    else if (konto != null && (konto instanceof String))
+      tree.setTitle((String) konto);
     
     Object o = getTree().getSelection();
     List<UmsatzTreeNode> selection = new LinkedList<UmsatzTreeNode>(); 
@@ -162,14 +167,16 @@ public class UmsatzTypTreeControl extends AbstractControl
    */
   private DBIterator getUmsaetze() throws RemoteException
   {
-    Konto konto = (Konto) (Konto) getKontoAuswahl().getValue();
+    Object o    = getKontoAuswahl().getValue();
 
     Date von = (Date) getStart().getValue();
     Date bis = (Date) getEnd().getValue();
 
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
-    if (konto != null)
-      umsaetze.addFilter("konto_id = " + konto.getID());
+    if (o != null && (o instanceof Konto))
+      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
+    else if (o != null && (o instanceof String))
+      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
     if (von != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(von).getTime())});
     if (bis != null) umsaetze.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(bis).getTime())});
     

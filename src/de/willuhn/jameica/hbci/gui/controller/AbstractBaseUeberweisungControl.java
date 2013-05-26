@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.reminder.ReminderUtil;
@@ -193,9 +194,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public KontoInput getKontoAuswahl() throws RemoteException
   {
-		Input i = super.getKontoAuswahl();
+    KontoInput i = super.getKontoAuswahl();
 		i.setEnabled(!((Terminable)getTransfer()).ausgefuehrt());
 		return i;
   }

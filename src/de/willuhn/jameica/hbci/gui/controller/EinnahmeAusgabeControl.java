@@ -29,7 +29,6 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
@@ -54,7 +53,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private SelectInput kontoAuswahl = null;
+  private KontoInput kontoAuswahl  = null;
   private DateInput start          = null;
   private DateInput end            = null;
 
@@ -80,6 +79,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
       return this.kontoAuswahl;
 
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
+    this.kontoAuswahl.setRememberSelection("auswertungen.einnahmeausgabe");
+    this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(new Listener()
     {
@@ -190,18 +191,18 @@ public class EinnahmeAusgabeControl extends AbstractControl
   {
     List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
 
-    Konto konto = (Konto) getKontoAuswahl().getValue();
     Date start  = (Date) this.getStart().getValue();
     Date end    = (Date) this.getEnd().getValue();
-    
+    Object o    = getKontoAuswahl().getValue();
+
     // Uhrzeit zuruecksetzen, falls vorhanden
     if (start != null) start = DateUtil.startOfDay(start);
     if (end != null) end = DateUtil.startOfDay(end);
 
     // Wird nur ein Konto ausgewertet?
-    if (konto != null)
+    if (o != null && (o instanceof Konto))
     {
-      list.add(new EinnahmeAusgabe(konto,start,end));
+      list.add(new EinnahmeAusgabe((Konto) o,start,end));
       return list;
     }
     
@@ -212,6 +213,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
     double summeEndsaldo     = 0.0d;
     
     DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
+    // Einschraenken auf gewaehlte Kontogruppe
+    if (o != null && (o instanceof String))
+      it.addFilter("kategorie = ?", (String) o);
     it.setOrder("ORDER BY blz, kontonummer");
     while (it.hasNext())
     {

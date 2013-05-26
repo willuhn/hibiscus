@@ -44,7 +44,6 @@ import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
@@ -140,6 +139,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     
     this.konto = new KontoInput(null,KontoFilter.ALL);
     this.konto.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    this.konto.setSupportGroups(true);
     this.konto.setComment(null);
     this.konto.setRememberSelection("auftraege");
     this.konto.addListener(this.listener);
@@ -202,7 +202,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.buttons.paint(parent);
    
     // Erstbefuellung
-    GenericIterator items = getList((Konto)getKonto().getValue(),(Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
+    GenericIterator items = getList(getKonto().getValue(),(Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
     if (items != null)
     {
       items.begin();
@@ -233,14 +233,14 @@ public abstract class AbstractFromToList extends TablePart implements Part
   
   /**
    * Liefert die Liste der fuer diesen Zeitraum geltenden Daten.
-   * @param konto das Konto. Kann null sein.
+   * @param konto das Konto oder die Gruppe. Kann null sein.
    * @param from Start-Datum. Kann null sein.
    * @param to End-Datum. Kann null sein.
    * @param text Suchbegriff
    * @return Liste der Daten dieses Zeitraumes.
    * @throws RemoteException
    */
-  protected abstract DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException;
+  protected abstract DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException;
   
   /**
    * Aktualisiert die Tabelle der angezeigten Daten.
@@ -253,10 +253,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     try
     {
-      final Konto konto = (Konto) getKonto().getValue();
-      final Date dfrom  = (Date) getFrom().getValue();
-      final Date dto    = (Date) getTo().getValue();
-      final String text = (String) getText().getValue();
+      final Object konto = getKonto().getValue();
+      final Date dfrom   = (Date) getFrom().getValue();
+      final Date dto     = (Date) getTo().getValue();
+      final String text  = (String) getText().getValue();
       
       if (!force)
       {

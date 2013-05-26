@@ -229,6 +229,7 @@ public class KontoauszugList extends UmsatzList
 
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoAuswahl.setRememberSelection("auswertungen.kontoauszug");
+    this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setComment(null);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(this.listener);
@@ -462,7 +463,7 @@ public class KontoauszugList extends UmsatzList
    */
   private synchronized List<Umsatz> getUmsaetze() throws RemoteException
   {
-    Konto k           = (Konto) getKontoAuswahl().getValue();
+    Object o          = getKontoAuswahl().getValue();
     Date start        = (Date) getStart().getValue();
     Date end          = (Date) getEnd().getValue();
     String gkName     = (String) getGegenkontoName().getValue();
@@ -505,8 +506,11 @@ public class KontoauszugList extends UmsatzList
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
-    // Konto
-    if (k != null) umsaetze.addFilter("konto_id = " + k.getID());
+    // Konto oder Kontogruppe
+    if (o != null && (o instanceof Konto))
+      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
+    else if (o != null && (o instanceof String))
+      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////

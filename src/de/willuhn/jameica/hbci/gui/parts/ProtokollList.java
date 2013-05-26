@@ -97,9 +97,12 @@ public class ProtokollList extends AbstractFromToList
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
    */
-  protected DBIterator getList(Konto konto, Date from, Date to, String text) throws RemoteException
+  protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
-    DBIterator list = konto.getProtokolle();
+    if (konto == null || !(konto instanceof Konto))
+        return null;
+
+    DBIterator list = ((Konto) konto).getProtokolle();
     if (from != null) list.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
     if (to   != null) list.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
     if (text != null && text.length() > 0)
