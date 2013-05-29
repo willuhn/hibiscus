@@ -49,6 +49,7 @@ public class KontoInput extends SelectInput
   
   private KontoListener listener = null;
   private String token = null;
+  private boolean store = true;
   private Control control = null;
   private boolean supportGroups = false;
 
@@ -103,8 +104,9 @@ public class KontoInput extends SelectInput
    * auf allen Dialogen der Auswertungen verwendet wird, wird dort dann auch ueberall
    * das gleiche Konto vorausgewaehlt sein.
    * @param s der Restore-Token.
+   * @param store wenn die hier getroffene Auswahl auch gespeichert werden soll.
    */
-  public void setRememberSelection(String s)
+  public void setRememberSelection(String s, boolean store)
   {
     if (s == null || s.length() == 0)
       return;
@@ -114,6 +116,7 @@ public class KontoInput extends SelectInput
       return;
     
     this.token = s;
+    this.store = store;
 
     String id = settings.getString(this.token,null);
     if (id != null && id.length() > 0)
@@ -135,12 +138,31 @@ public class KontoInput extends SelectInput
     }
     
     // Listener hinzufuegen
-    this.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        storeSelection();
-      }
-    });
+    if (store)
+    {
+      this.addListener(new Listener() {
+        public void handleEvent(Event event)
+        {
+          storeSelection();
+        }
+      });
+    }
+  }
+
+  /**
+   * Die Kontoauswahl kann sich das zuletzt ausgewaehlte Konto merken.
+   * Damit dann aber nicht auf allen Dialogen das gleiche Konto vorausgewaehlt ist,
+   * kann man hier einen individuellen Freitext-Token uebergeben, der als Key fuer
+   * das Speichern des zuletzt ausgewaehlten Kontos verwendet wird. Ueberall dort,
+   * wo also der gleiche Token verwendet wird, wird auch das gleiche Konto
+   * vorausgewaehlt. Der Konto kann z.Bsp. "auswertungen" heissen. Wenn dieser
+   * auf allen Dialogen der Auswertungen verwendet wird, wird dort dann auch ueberall
+   * das gleiche Konto vorausgewaehlt sein.
+   * @param s der Restore-Token.
+   */
+  public void setRememberSelection(String s)
+  {
+    this.setRememberSelection(s,true);
   }
   
   /**
@@ -158,7 +180,7 @@ public class KontoInput extends SelectInput
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
-        if (token != null)
+        if (store)
           storeSelection();
       }
     });
@@ -170,6 +192,9 @@ public class KontoInput extends SelectInput
    */
   private void storeSelection()
   {
+    if (!this.store)
+      return;
+    
     try
     {
       Object o = getValue();

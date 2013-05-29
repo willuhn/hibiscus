@@ -97,8 +97,8 @@ public abstract class AbstractSammelTransferControl extends AbstractControl
     
     Konto k = getTransfer().getKonto();
     KontoListener kl = new KontoListener();
-    this.kontoAuswahl = new KontoInput(k,KontoFilter.ONLINE);
-    this.kontoAuswahl.setRememberSelection("auftraege"); // BUGZILLA 1362 - zuletzt ausgewaehltes Konto gleich uebernehmen
+    this.kontoAuswahl = new KontoInput(k,getTransfer().isNewObject() ? KontoFilter.ONLINE : KontoFilter.ALL); // Falls nachtraeglich das Konto deaktiviert wurde
+    this.kontoAuswahl.setRememberSelection("auftraege",false); // BUGZILLA 1362 - zuletzt ausgewaehltes Konto gleich uebernehmen
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
