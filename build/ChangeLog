@@ -1,5 +1,7 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0247 Neue obantoo-Version 2.0.3
+
   * BUG: 0246 BUGZILLA 1362 - Standard-Konto kam nicht mehr zu Anwendung, wenn in KontoInput
               "setRememberSelection" verwendet wurde. Ausserdem: In Auftragserstellung Konto aus
               vorheriger Liste vorauswaehlen
