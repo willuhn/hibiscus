@@ -174,7 +174,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
 
       boolean haveChanged = false;
       
-      if (StringUtils.trimToNull(address.getIban()) == null)
+      if (HBCI.COMPLETE_IBAN && StringUtils.trimToNull(address.getIban()) == null)
       {
         address.setIban(HBCIUtils.getIBANForKonto(new org.kapott.hbci.structures.Konto(blz,konto)));
         haveChanged = true;

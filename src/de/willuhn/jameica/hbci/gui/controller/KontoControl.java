@@ -593,7 +593,7 @@ public class KontoControl extends AbstractControl
             changed = true;
           }
 
-          if (kto != null && iban == null)
+          if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
           {
             org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto(blz,kto);
             k.subnumber = (String) getUnterkonto().getValue();

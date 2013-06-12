@@ -381,7 +381,7 @@ public class EmpfaengerControl extends AbstractControl
 	        if (bic == null)
 	          getBic().setValue(HBCIUtils.getBICForBLZ(blz));
 
-	        if (kto != null && iban == null)
+	        if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
 	        {
             getIban().setValue(HBCIUtils.getIBANForKonto(new Konto(blz,kto)));
 	        }

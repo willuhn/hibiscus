@@ -17,6 +17,7 @@ import org.kapott.hbci.structures.Konto;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.input.LinkInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -67,14 +68,22 @@ public class IbanCalcDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    Container container = new SimpleContainer(parent);
-    container.addHeadline(i18n.tr("Nationale Bankverbindung"));
-    container.addInput(this.getBlz());
-    container.addInput(this.getKonto());
-    container.addInput(this.getUnterkonto());
-    container.addHeadline(i18n.tr("Zugehörige SEPA-Bankverbindung"));
-    container.addInput(this.getBic());
-    container.addInput(this.getIban());
+    Container container1 = new SimpleContainer(parent);
+    container1.addHeadline(i18n.tr("Wichtiger Hinweis"));
+    container1.addText(i18n.tr("Für einige Banken gelten Sonder-Regeln für die IBAN-Berechnung, die von\n" +
+    		                      "Hibiscus noch nicht unterstützt werden. Bis dahin gilt:\n\n" +
+    		                      "Bitte verifizieren Sie die errechneten IBANs vor der Verwendung und\n" +
+    		                      "benutzen Sie diese nicht ungeprüft.\n\nSiehe auch:\n"),true);
+    container1.addLabelPair("",new LinkInput("http://www.willuhn.de/blog/index.php?/archives/644-Hibiscus-Integrierter-IBAN-Rechner.html"));
+
+    Container container2 = new SimpleContainer(parent);
+    container2.addHeadline(i18n.tr("Nationale Bankverbindung"));
+    container2.addInput(this.getBlz());
+    container2.addInput(this.getKonto());
+    container2.addInput(this.getUnterkonto());
+    container2.addHeadline(i18n.tr("Zugehörige SEPA-Bankverbindung"));
+    container2.addInput(this.getBic());
+    container2.addInput(this.getIban());
 
     ButtonArea buttons = new ButtonArea();
     
@@ -92,7 +101,7 @@ public class IbanCalcDialog extends AbstractDialog
         close();
       }
     },null,false,"window-close.png");
-    container.addButtonArea(buttons);
+    container2.addButtonArea(buttons);
     
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }

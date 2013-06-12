@@ -47,6 +47,11 @@ import de.willuhn.util.I18N;
 public class HBCI extends AbstractPlugin
 {
   /**
+   * Flag, mit dem das automatische Berechnen der IBAN aktiviert werden kann.
+   */
+  public final static boolean COMPLETE_IBAN = Boolean.FALSE.booleanValue(); // hab ich nur so umstaendlich geschrieben, damit die if's von Eclipse nicht als "dead code" erkannt werden
+  
+  /**
    * Datums-Format dd.MM.yyyy HH:mm.
    */
   public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm");
