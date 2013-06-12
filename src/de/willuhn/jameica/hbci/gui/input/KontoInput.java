@@ -136,17 +136,6 @@ public class KontoInput extends SelectInput
           settings.setAttribute(this.token,(String) null); // Konto konnte nicht geladen werden. Vorauswahl loeschen
       }
     }
-    
-    // Listener hinzufuegen
-    if (store)
-    {
-      this.addListener(new Listener() {
-        public void handleEvent(Event event)
-        {
-          storeSelection();
-        }
-      });
-    }
   }
 
   /**
@@ -180,8 +169,7 @@ public class KontoInput extends SelectInput
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
-        if (store)
-          storeSelection();
+        storeSelection();
       }
     });
     return this.control;
@@ -192,7 +180,7 @@ public class KontoInput extends SelectInput
    */
   private void storeSelection()
   {
-    if (!this.store)
+    if (!this.store || this.token == null)
       return;
     
     try
