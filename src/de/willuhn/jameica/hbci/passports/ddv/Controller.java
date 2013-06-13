@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.passports.ddv;
 import java.io.File;
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.callback.HBCICallback;
@@ -63,6 +64,7 @@ public class Controller extends AbstractControl
   private TablePart kontoList       = null;
 
   // Eingabe-Felder
+  private TextInput pcscName        = null;
   private TextInput bezeichnung     = null;
   private SelectInput port          = null;
   private Input ctNumber            = null;
@@ -189,7 +191,17 @@ public class Controller extends AbstractControl
     this.readerPresets.addListener(new PresetListener());
     return this.readerPresets;
   }
-
+  
+  /**
+   * Liefert true, wenn das aktuelle Preset ein PCSC-Kartenleser ist.
+   * @return true, wenn das aktuelle Preset ein PCSC-Kartenleser ist.
+   */
+  private boolean isPCSC()
+  {
+    Reader r = (Reader) getReaderPresets().getValue();
+    return r.isPCSCReader();
+  }
+  
   /**
    * Liefert eine Datei-Auswahl fuer den CTAPI-Treiber.
    * @return Auswahl-Feld.
@@ -200,7 +212,8 @@ public class Controller extends AbstractControl
       return this.ctapi;
     this.ctapi = new FileInput(getConfig().getCTAPIDriver());
     this.ctapi.setName(i18n.tr("CTAPI Treiber-Datei"));
-    this.ctapi.setMandatory(true);
+    this.ctapi.setEnabled(!isPCSC());
+    this.ctapi.setMandatory(!isPCSC());
     return this.ctapi;
   }
 
@@ -214,6 +227,7 @@ public class Controller extends AbstractControl
       return this.port;
 
     this.port = new SelectInput(DDVConfig.PORTS, getConfig().getPort());
+    this.port.setEnabled(!isPCSC());
     this.port.setComment(i18n.tr("meist COM/USB"));
     this.port.setName(i18n.tr("Port des Lesers"));
     return this.port;
@@ -229,6 +243,7 @@ public class Controller extends AbstractControl
       return this.ctNumber;
 
     this.ctNumber = new TextInput(Integer.toString(getConfig().getCTNumber()));
+    this.ctNumber.setEnabled(!isPCSC());
     this.ctNumber.setName(i18n.tr("Index des Lesers"));
     this.ctNumber.setComment(i18n.tr("meist 0"));
     return this.ctNumber;
@@ -246,6 +261,21 @@ public class Controller extends AbstractControl
     this.bezeichnung.setComment(i18n.tr("Angabe optional"));
     this.bezeichnung.setName(i18n.tr("Alias-Name"));
     return this.bezeichnung;
+  }
+
+  /**
+   * Liefert ein Eingabe-Feld fuer den Namen des Kartenlesers bei PCSC.
+   * @return Bezeichnung.
+   */
+  public Input getPCSCName()
+  {
+    if (this.pcscName != null)
+      return this.pcscName;
+    this.pcscName = new TextInput(getConfig().getPCSCName());
+    this.pcscName.setComment(i18n.tr("Nur bei PC/SC-Kartenleser nötig"));
+    this.pcscName.setEnabled(isPCSC());
+    this.pcscName.setName(i18n.tr("Name des PC/SC-Kartenlesers"));
+    return this.pcscName;
   }
 
   /**
@@ -273,6 +303,7 @@ public class Controller extends AbstractControl
       return this.useSoftPin;
 
     this.useSoftPin = new CheckboxInput(getConfig().useSoftPin());
+    this.useSoftPin.setEnabled(!isPCSC());
     this.useSoftPin.setName(i18n.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
     return this.useSoftPin;
   }
@@ -327,6 +358,7 @@ public class Controller extends AbstractControl
               getReaderPresets().setValue(reader);
   
               getBezeichnung().setValue(config.getName());
+              getPCSCName().setValue(config.getPCSCName());
               getCTAPI().setValue(config.getCTAPIDriver());
               getPort().setValue(config.getPort());
               getCTNumber().setValue(config.getCTNumber());
@@ -415,31 +447,47 @@ public class Controller extends AbstractControl
   {
     try
     {
-      try
+      Reader r = (Reader) getReaderPresets().getValue();
+      
+      if (!r.isPCSCReader())
       {
-        getConfig().setCTNumber(Integer.parseInt((String) getCTNumber().getValue()));
-      }
-      catch (Exception e)
-      {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des Lesers\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
-        return false;
-      }
+        try
+        {
+          getConfig().setCTNumber(Integer.parseInt((String) getCTNumber().getValue()));
+        }
+        catch (Exception e)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des Lesers\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
+          return false;
+        }
 
-      try
-      {
-        getConfig().setEntryIndex(Integer.parseInt((String) getEntryIndex().getValue()));
+        try
+        {
+          getConfig().setEntryIndex(Integer.parseInt((String) getEntryIndex().getValue()));
+        }
+        catch (Exception e)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
+          return false;
+        }
+        
+        getConfig().setPort((String) getPort().getValue());
+        getConfig().setSoftPin((Boolean) getSoftPin().getValue());
+        getConfig().setCTAPIDriver((String) getCTAPI().getValue());
       }
-      catch (Exception e)
+      else
       {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
-        return false;
+        String pcsc = (String) getPCSCName().getValue();
+        if (StringUtils.trimToNull(pcsc) == null)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie den Namen des PC/SC-Kartenlesers ein."),StatusBarMessage.TYPE_ERROR));
+          return false;
+        }
+        getConfig().setPCSCName(pcsc);
       }
 
       getConfig().setKonten(getKontoAuswahl().getItems());
-      getConfig().setReaderPreset((Reader) getReaderPresets().getValue());
-      getConfig().setPort((String) getPort().getValue());
-      getConfig().setSoftPin((Boolean) getSoftPin().getValue());
-      getConfig().setCTAPIDriver((String) getCTAPI().getValue());
+      getConfig().setReaderPreset(r);
       getConfig().setHBCIVersion((String) getHBCIVersion().getValue());
       getConfig().setName((String) getBezeichnung().getValue());
       DDVConfigFactory.store(getConfig());
@@ -587,25 +635,35 @@ public class Controller extends AbstractControl
           GUI.getView().setErrorText(i18n.tr("Der ausgewählte Kartenleser wird von Hibiscus nicht unterstützt"));
           return;
         }
+        
+        boolean pcsc = r.isPCSCReader();
+        getCTAPI().setEnabled(!pcsc);
+        getCTNumber().setEnabled(!pcsc);
+        getPort().setEnabled(!pcsc);
+        getSoftPin().setEnabled(!pcsc);
+        getPCSCName().setEnabled(pcsc);
 
-        String s = r.getCTAPIDriver();
-        if (s != null && s.length() > 0)
+        if (!pcsc)
         {
-          File f = new File(s);
-          if (!f.exists())
-            GUI.getView().setErrorText(i18n.tr("CTAPI-Treiber nicht gefunden. Bitte Treiber installieren."));
-        }
-        
-        String port = r.getPort();
-        if (port != null)
-          getPort().setPreselected(port);
-        
-        int ctNumber = r.getCTNumber();
-        if (ctNumber != -1)
-          getCTNumber().setValue(new Integer(ctNumber));
+          String s = r.getCTAPIDriver();
+          if (s != null && s.length() > 0)
+          {
+            File f = new File(s);
+            if (!f.exists())
+              GUI.getView().setErrorText(i18n.tr("CTAPI-Treiber nicht gefunden. Bitte Treiber installieren."));
+          }
+          
+          String port = r.getPort();
+          if (port != null)
+            getPort().setPreselected(port);
+          
+          int ctNumber = r.getCTNumber();
+          if (ctNumber != -1)
+            getCTNumber().setValue(new Integer(ctNumber));
 
-     		getCTAPI().setValue(s);
-     		getSoftPin().setValue(new Boolean(r.useSoftPin()));
+          getCTAPI().setValue(s);
+          getSoftPin().setValue(new Boolean(r.useSoftPin()));
+        }
     	}
     	catch (Exception e)
     	{
@@ -615,47 +673,3 @@ public class Controller extends AbstractControl
     }
   }
 }
-
-/*******************************************************************************
- * $Log: Controller.java,v $
- * Revision 1.16  2011/09/01 12:16:08  willuhn
- * @N Kartenleser-Suche kann jetzt abgebrochen werden
- * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
- *
- * Revision 1.15  2011-09-01 09:40:53  willuhn
- * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
- *
- * Revision 1.14  2011-06-17 08:49:19  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.13  2011-05-03 16:44:08  willuhn
- * @C Auswahl des Presets ueber Combo-Box statt DialogInput
- *
- * Revision 1.12  2011-04-29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.11  2011-04-28 07:34:43  willuhn
- * @R Summen-Zeile nicht mehr anzeigen - unnuetz
- *
- * Revision 1.10  2010-10-20 14:28:47  willuhn
- * @B Neue Kartenleser-Config wurde nicht in Factory registriert - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=70575#70575
- *
- * Revision 1.9  2010-10-17 21:58:56  willuhn
- * @C Aendern der Bankdaten auf der Karte auch dann moeglich, wenn auf dem Slot ungueltige Daten stehen
- *
- * Revision 1.8  2010-09-07 15:28:06  willuhn
- * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
- *
- * Revision 1.7  2010-07-22 22:36:24  willuhn
- * @N Code-Cleanup
- *
- * Revision 1.6  2010-07-13 11:36:52  willuhn
- * @C Fehlerhandling
- *
- * Revision 1.5  2010-07-13 10:55:29  willuhn
- * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
- *
- * Revision 1.4  2010/06/17 11:45:49  willuhn
- * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- ******************************************************************************/

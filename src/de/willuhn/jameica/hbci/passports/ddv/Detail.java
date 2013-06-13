@@ -49,6 +49,7 @@ public class Detail extends AbstractView
       container.addHeadline(i18n.tr("Einstellungen des Kartenlesers"));
       container.addInput(control.getReaderPresets());
       container.addInput(control.getCTAPI());
+      container.addInput(control.getPCSCName());
       container.addInput(control.getPort());
       container.addInput(control.getCTNumber());
     }

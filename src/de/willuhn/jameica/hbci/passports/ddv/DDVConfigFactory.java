@@ -14,6 +14,8 @@ package de.willuhn.jameica.hbci.passports.ddv;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -102,6 +104,14 @@ public class DDVConfigFactory
       // Dann nehmen wir wenigstens den "Benutzerdefinierten Leser" in die Liste
       presets.add(new CustomReader());
     }
+
+    // Alphabetisch sortieren
+    Collections.sort(presets,new Comparator<Reader>() {
+      public int compare(Reader r1, Reader r2)
+      {
+        return r1.getName().compareTo(r2.getName());
+      }
+    });
     return presets;
   }
 

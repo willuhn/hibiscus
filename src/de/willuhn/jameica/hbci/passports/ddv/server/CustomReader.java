@@ -25,7 +25,7 @@ public class CustomReader extends AbstractReader implements Reader
    */
   public String getName()
   {
-    return "Benutzerdefinierter Leser";
+    return "Benutzerdefinierter CTAPI-Leser";
   }
 
   /**
