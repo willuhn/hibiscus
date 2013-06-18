@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.passports.ddv;
 import java.io.File;
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.callback.HBCICallback;
@@ -272,7 +271,7 @@ public class Controller extends AbstractControl
     if (this.pcscName != null)
       return this.pcscName;
     this.pcscName = new TextInput(getConfig().getPCSCName());
-    this.pcscName.setComment(i18n.tr("Nur bei PC/SC-Kartenleser nötig"));
+    this.pcscName.setComment(i18n.tr("optional (nur bei PC/SC-Kartenleser)"));
     this.pcscName.setEnabled(isPCSC());
     this.pcscName.setName(i18n.tr("Name des PC/SC-Kartenlesers"));
     return this.pcscName;
@@ -477,13 +476,7 @@ public class Controller extends AbstractControl
       }
       else
       {
-        String pcsc = (String) getPCSCName().getValue();
-        if (StringUtils.trimToNull(pcsc) == null)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie den Namen des PC/SC-Kartenlesers ein."),StatusBarMessage.TYPE_ERROR));
-          return false;
-        }
-        getConfig().setPCSCName(pcsc);
+        getConfig().setPCSCName((String) getPCSCName().getValue());
       }
 
       getConfig().setKonten(getKontoAuswahl().getItems());
