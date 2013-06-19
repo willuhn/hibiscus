@@ -49,7 +49,7 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
   {
     DBIterator list = this.getService().createList(SammelUeberweisungBuchung.class);
     list.addFilter("sueberweisung_id = " + this.getID());
-    list.setOrder("order by gegenkonto_name");
+    list.setOrder("order by gegenkonto_name,id");
     return list;
   }
 

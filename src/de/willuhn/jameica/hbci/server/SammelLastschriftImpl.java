@@ -49,7 +49,7 @@ public class SammelLastschriftImpl extends AbstractSammelTransferImpl
   {
     DBIterator list = this.getService().createList(SammelLastBuchung.class);
     list.addFilter("slastschrift_id = " + this.getID());
-    list.setOrder("order by gegenkonto_name");
+    list.setOrder("order by gegenkonto_name,id");
     return list;
   }
 
