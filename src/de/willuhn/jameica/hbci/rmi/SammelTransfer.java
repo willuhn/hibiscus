@@ -81,25 +81,19 @@ public interface SammelTransfer extends HibiscusDBObject, Terminable, Duplicatab
    * @throws ApplicationException
    */
   public SammelTransferBuchung createBuchung() throws RemoteException, ApplicationException;
+  
+  /**
+   * Prueft, ob bei der Ausfuehrung des Auftrages Warnungen auftraten.
+   * @return true, wenn Warnungen auftraten.
+   * @throws RemoteException
+   */
+  public boolean hasWarnings() throws RemoteException;
+  
+  /**
+   * Legt fest, ob bei der Ausfuehrung Warnungen auftraten.
+   * @param b true, wenn Warnungen auftraten.
+   * @throws RemoteException
+   */
+  public void setWarning(boolean b) throws RemoteException;
+
 }
-
-
-/**********************************************************************
- * $Log: SammelTransfer.java,v $
- * Revision 1.5  2011/10/18 09:28:14  willuhn
- * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
- *
- * Revision 1.4  2008/12/17 22:48:17  willuhn
- * @R t o d o  tag entfernt
- *
- * Revision 1.3  2006/08/17 10:06:32  willuhn
- * @B Fehler in HTML-Export von Sammeltransfers
- *
- * Revision 1.2  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- **********************************************************************/

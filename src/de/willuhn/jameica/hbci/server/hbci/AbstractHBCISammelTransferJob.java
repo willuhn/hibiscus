@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -140,6 +141,8 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
     // BUGZILLA 899
     // Wir checken, ob eventuell eine der enthaltenen Buchungen nicht ausgefuehrt wurde
     boolean haveWarnings = false;
+    
+    SammelTransferBuchung[] buchungen = null;
     for (HBCIRetVal val:warnings)
     {
       String code = val.code;
@@ -147,17 +150,45 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
         continue; // Hu?
       if (code.equals("3210") || code.equals("3220") || code.equals("3260") || code.equals("3290"))
       {
+        if (buchungen == null) // on-demand laden
+          buchungen = this.transfer.getBuchungenAsArray();
+        
         // Jepp, wir haben offensichtlich eine fehlgeschlagene Buchung
         haveWarnings = true;
         // BUGZILLA 899 Wir schreiben die Warnungn auch noch ins Konto-Protokoll und ins Log
         Logger.warn(val.toString());
         konto.addToProtokoll(i18n.tr("Einzelne Buchung eines Sammelauftrages nicht ausgeführt: {0}",val.toString()),Protokoll.TYP_ERROR);
+        
+        // Checken, ob wir die Nummer der Position haben
+        String[] params = val.params;
+        if (params != null && params.length > 0)
+        {
+          for (String param:params)
+          {
+            try
+            {
+              if (param != null && param.matches("[0-9]{1,4}"))
+              {
+                int i = Integer.parseInt(param);
+                SammelTransferBuchung b = buchungen[i-1]; // die von der Bank gemeldete Position ist 1-basiert
+                b.setWarnung(val.text);
+                b.store();
+              }
+            }
+            catch (Exception e)
+            {
+              Logger.write(Level.DEBUG,"unable to parse parameter \"" + param + "\" as position or no valid position in array",e);
+            }
+          }
+        }
       }
     }
 
     // Ins Monitor-Fenster schreiben
     if (haveWarnings)
     {
+      this.transfer.setWarning(true);
+      this.transfer.store();
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
       session.getProgressMonitor().log("    ** " + i18n.tr("Eine oder mehrere Buchungen des Sammelauftrages wurde nicht ausgeführt!"));

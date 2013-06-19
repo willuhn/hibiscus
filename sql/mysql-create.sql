@@ -79,6 +79,7 @@ CREATE TABLE sueberweisung (
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
+     , warnungen int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -104,6 +105,7 @@ CREATE TABLE slastschrift (
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
+     , warnungen int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -129,6 +131,7 @@ CREATE TABLE slastbuchung (
      , zweck2 VARCHAR(27)
      , zweck3 TEXT
      , typ VARCHAR(2)
+     , warnung VARCHAR(255)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -144,6 +147,7 @@ CREATE TABLE sueberweisungbuchung (
      , zweck2 VARCHAR(27)
      , zweck3 TEXT
      , typ VARCHAR(2)
+     , warnung VARCHAR(255)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -291,4 +295,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',41);
+INSERT INTO version (name,version) values ('db',42);

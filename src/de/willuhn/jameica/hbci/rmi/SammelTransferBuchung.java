@@ -95,31 +95,18 @@ public interface SammelTransferBuchung extends Transfer, HibiscusDBObject
    * @throws RemoteException
    */
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException;
+  
+  /**
+   * Liefert eine ggf aufgetretene Warnung bei der Ausfuehrung.
+   * @return eine ggf aufgetretene Warnung bei der Ausfuehrung.
+   * @throws RemoteException
+   */
+  public String getWarnung() throws RemoteException;
+  
+  /**
+   * Speichert eine ggf aufgetretene Warnung bei der Ausfuehrung.
+   * @param warnung eine ggf aufgetretene Warnung bei der Ausfuehrung.
+   * @throws RemoteException
+   */
+  public void setWarnung(String warnung) throws RemoteException;
 }
-
-
-/**********************************************************************
- * $Log: SammelTransferBuchung.java,v $
- * Revision 1.6  2011/10/18 09:28:14  willuhn
- * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
- *
- * Revision 1.5  2008/12/01 23:54:42  willuhn
- * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
- *
- * Revision 1.4  2007/10/14 23:26:59  willuhn
- * @N Textschluessel in Sammelauftraegen - wird noch nicht persistiert
- *
- * Revision 1.3  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.2  2007/04/20 14:49:05  willuhn
- * @N Support fuer externe Adressbuecher
- * @N Action "EmpfaengerAdd" "aufgebohrt"
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- **********************************************************************/

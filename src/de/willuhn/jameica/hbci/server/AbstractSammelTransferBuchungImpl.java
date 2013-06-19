@@ -268,104 +268,20 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
   {
     setAttribute("zweck3",VerwendungszweckUtil.merge(list));
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getWarnung()
+   */
+  public String getWarnung() throws RemoteException
+  {
+    return (String) getAttribute("warnung");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setWarnung(java.lang.String)
+   */
+  public void setWarnung(String warnung) throws RemoteException
+  {
+    setAttribute("warnung",warnung);
+  }
 }
-
-/*****************************************************************************
- * $Log: AbstractSammelTransferBuchungImpl.java,v $
- * Revision 1.22  2011/10/18 09:28:14  willuhn
- * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
- *
- * Revision 1.21  2011-08-10 10:46:50  willuhn
- * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
- * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
- * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
- *
- * Revision 1.20  2011-07-11 08:14:13  willuhn
- * @B Laengen-Pruefung der BLZ fehlte
- *
- * Revision 1.19  2010/03/04 09:39:40  willuhn
- * @B BUGZILLA 829
- *
- * Revision 1.18  2008/12/14 23:18:35  willuhn
- * @N BUGZILLA 188 - REFACTORING
- *
- * Revision 1.17  2008/12/02 10:52:23  willuhn
- * @B DecimalInput kann NULL liefern
- * @B Double.NaN beruecksichtigen
- *
- * Revision 1.16  2008/12/01 23:54:42  willuhn
- * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
- *
- * Revision 1.15  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.14  2008/05/19 22:35:53  willuhn
- * @N Maximale Laenge von Kontonummern konfigurierbar (Soft- und Hardlimit)
- * @N Laengenpruefungen der Kontonummer in Dialogen und Fachobjekten
- *
- * Revision 1.13  2008/04/27 22:22:56  willuhn
- * @C I18N-Referenzen statisch
- *
- * Revision 1.12  2008/02/15 17:39:10  willuhn
- * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
- * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
- *
- * Revision 1.11  2007/10/14 23:26:59  willuhn
- * @N Textschluessel in Sammelauftraegen - wird noch nicht persistiert
- *
- * Revision 1.10  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.9  2007/04/20 14:49:05  willuhn
- * @N Support fuer externe Adressbuecher
- * @N Action "EmpfaengerAdd" "aufgebohrt"
- *
- * Revision 1.8  2006/12/01 00:02:34  willuhn
- * @C made unserializable members transient
- *
- * Revision 1.7  2006/10/06 16:00:42  willuhn
- * @B Bug 280
- *
- * Revision 1.6  2006/08/23 09:45:13  willuhn
- * @N Restliche DBIteratoren auf PreparedStatements umgestellt
- *
- * Revision 1.5  2006/06/26 13:25:20  willuhn
- * @N Franks eBay-Parser
- *
- * Revision 1.4  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.3  2006/05/11 10:57:35  willuhn
- * @C merged Bug 232 into HEAD
- *
- * Revision 1.2.2.1  2006/05/11 10:44:43  willuhn
- * @B bug 232
- *
- * Revision 1.2  2006/02/06 16:03:50  willuhn
- * @B bug 163
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- * Revision 1.5  2005/08/22 12:23:18  willuhn
- * @N bug 107
- *
- * Revision 1.4  2005/05/30 22:55:27  web0
- * *** empty log message ***
- *
- * Revision 1.3  2005/05/19 23:31:07  web0
- * @B RMI over SSL support
- * @N added handbook
- *
- * Revision 1.2  2005/03/05 19:11:25  web0
- * @N SammelLastschrift-Code complete
- *
- * Revision 1.1  2005/02/28 16:28:24  web0
- * @N first code for "Sammellastschrift"
- *
-*****************************************************************************/

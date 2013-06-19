@@ -390,5 +390,22 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     return (SammelTransferBuchung[]) buchungen.toArray(new SammelTransferBuchung[buchungen.size()]);
   }
 
-
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#hasWarnings()
+   */
+  public boolean hasWarnings() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("warnungen");
+    if (i == null)
+      return false;
+    return i.intValue() == 1;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setWarning(boolean)
+   */
+  public void setWarning(boolean b) throws RemoteException
+  {
+    setAttribute("warnungen",new Integer(b ? 1 : 0));
+  }
 }

@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -106,15 +107,16 @@ public class SammelTransferBuchungList extends TablePart
         }
       }
     });
+    addColumn(i18n.tr("Warnungen"),"warnung");
 
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         try {
           SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
-          if (b.getSammelTransfer().ausgefuehrt())
-          {
+          if (StringUtils.trimToNull(b.getWarnung()) != null)
+            item.setForeground(Color.ERROR.getSWTColor());
+          else if (b.getSammelTransfer().ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
-          }
         }
         catch (RemoteException e) {
           Logger.error("unable to read sammeltransfer",e);
@@ -156,14 +158,16 @@ public class SammelTransferBuchungList extends TablePart
     Konto k = a.getKonto();
     String curr = k != null ? k.getWaehrung() : "";
     addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(curr,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Warnungen"),"warnung");
 
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         try {
-          if (a.ausgefuehrt())
-          {
+          SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
+          if (StringUtils.trimToNull(b.getWarnung()) != null)
+            item.setForeground(Color.ERROR.getSWTColor());
+          else if (a.ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
-          }
         }
         catch (RemoteException e) { /*ignore */}
       }
@@ -252,47 +256,3 @@ public class SammelTransferBuchungList extends TablePart
   }
 
 }
-
-
-/*********************************************************************
- * $Log: SammelTransferBuchungList.java,v $
- * Revision 1.10  2011/08/10 12:47:28  willuhn
- * @N BUGZILLA 1118
- *
- * Revision 1.9  2011-04-29 15:33:28  willuhn
- * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
- *
- * Revision 1.8  2008/10/12 22:10:20  willuhn
- * @B Typo in den Updates
- * @B Spalten-Sortierung und -breite fuer in den Positionen von Sammelauftraegen nicht gespeichert
- *
- * Revision 1.7  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.6  2007/03/16 14:40:02  willuhn
- * @C Redesign ImportMessage
- * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
- *
- * Revision 1.5  2006/11/20 23:07:54  willuhn
- * @N new package "messaging"
- * @C moved ImportMessage into new package
- *
- * Revision 1.4  2006/11/06 23:12:38  willuhn
- * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
- *
- * Revision 1.3  2006/10/17 00:04:31  willuhn
- * @N new Formatters in Transfer-Listen
- * @N merged UeberweisungList + LastschriftList into AbstractTransferList
- *
- * Revision 1.2  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- **********************************************************************/

@@ -87,7 +87,9 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
           Date termin = l.getTermin();
           boolean faellig = (termin.before(new Date()) && !l.ausgefuehrt());
           item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
-          if (l.ausgefuehrt())
+          if (l.hasWarnings())
+            item.setForeground(Color.ERROR.getSWTColor());
+          else if (l.ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
 
           // Checken, ob der Auftrag einen Reminder hat oder ob es ein geclonter Auftrag ist
@@ -272,63 +274,3 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: AbstractSammelTransferList.java,v $
- * Revision 1.17  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.16  2011-06-30 16:29:41  willuhn
- * @N Unterstuetzung fuer neues UnreadCount-Feature
- *
- * Revision 1.15  2011-04-29 15:33:28  willuhn
- * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
- *
- * Revision 1.14  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.13  2010-11-01 23:00:32  willuhn
- * @N Ausgefuehrte Sammel-Auftraege in grau anzeigen
- *
- * Revision 1.12  2010-08-16 11:13:52  willuhn
- * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
- *
- * Revision 1.11  2010/03/24 14:06:45  willuhn
- * @B Uhrzeit in Termin-Spalte nicht anzeigen
- *
- * Revision 1.10  2009/03/01 22:26:19  willuhn
- * @B BUGZILLA 705
- *
- * Revision 1.9  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- * Revision 1.8  2008/06/30 13:04:10  willuhn
- * @N Von-Bis-Filter auch in Sammel-Auftraegen
- *
- * Revision 1.7  2008/02/04 18:56:45  willuhn
- * @B Bug 545
- *
- * Revision 1.6  2007/03/16 14:40:02  willuhn
- * @C Redesign ImportMessage
- * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
- *
- * Revision 1.5  2006/11/20 23:07:54  willuhn
- * @N new package "messaging"
- * @C moved ImportMessage into new package
- *
- * Revision 1.4  2006/11/06 23:12:38  willuhn
- * @B Fehler bei Aktualisierung der Elemente nach Insert, Delete, Sort
- *
- * Revision 1.3  2006/10/17 00:04:31  willuhn
- * @N new Formatters in Transfer-Listen
- * @N merged UeberweisungList + LastschriftList into AbstractTransferList
- *
- * Revision 1.2  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- **********************************************************************/

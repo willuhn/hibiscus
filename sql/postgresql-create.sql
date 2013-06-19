@@ -155,7 +155,8 @@ CREATE TABLE slastschrift (
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
   ausgefuehrt integer NOT NULL,
-  ausgefuehrt_am timestamp
+  ausgefuehrt_am timestamp,
+  warnungen integer NULL
 );
 
 CREATE TABLE slastbuchung (
@@ -168,7 +169,8 @@ CREATE TABLE slastbuchung (
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
   zweck3 varchar(1000),
-  typ varchar(2) NULL
+  typ varchar(2) NULL,
+  warnung varchar(255)
 );
 
 CREATE TABLE sueberweisung (
@@ -177,7 +179,8 @@ CREATE TABLE sueberweisung (
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
   ausgefuehrt integer NOT NULL,
-  ausgefuehrt_am timestamp
+  ausgefuehrt_am timestamp,
+  warnungen integer NULL
 );
 
 CREATE TABLE sueberweisungbuchung (
@@ -190,7 +193,8 @@ CREATE TABLE sueberweisungbuchung (
   zweck varchar(27) NOT NULL,
   zweck2 varchar(27),
   zweck3 varchar(1000),
-  typ varchar(2) NULL
+  typ varchar(2) NULL,
+  warnung varchar(255)
 );
 
 
@@ -251,4 +255,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',40);
+INSERT INTO version (name,version) values ('db',42);
