@@ -589,8 +589,12 @@ public class KontoControl extends AbstractControl
         {
           if (bic == null)
           {
-            getBic().setValue(HBCIUtils.getBICForBLZ(blz));
-            changed = true;
+            bic = HBCIUtils.getBICForBLZ(blz);
+            if (StringUtils.trimToNull(bic) != null)
+            {
+              getBic().setValue(bic);
+              changed = true;
+            }
           }
 
           if (HBCI.COMPLETE_IBAN && kto != null && iban == null)

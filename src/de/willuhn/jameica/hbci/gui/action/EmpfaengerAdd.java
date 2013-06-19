@@ -15,6 +15,9 @@ package de.willuhn.jameica.hbci.gui.action;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -61,7 +64,7 @@ public class EmpfaengerAdd implements Action
         !(context instanceof Umsatz[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie ein oder mehrere Aufträge aus"));
 
-    ArrayList items = new ArrayList();
+    List<HibiscusAddress> items = new ArrayList<HibiscusAddress>();
 		try {
 
       ///////////////////////////////////////////////////////////////
@@ -84,7 +87,7 @@ public class EmpfaengerAdd implements Action
       // Hibiscus-Adressen
       else if (context instanceof HibiscusAddress)
       {
-        items.add(context);
+        items.add((HibiscusAddress)context);
       }
       else if (context instanceof HibiscusAddress[])
       {
@@ -120,21 +123,23 @@ public class EmpfaengerAdd implements Action
       HashMap seen = new HashMap();
       AddressbookService book = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
 
-      String question = i18n.tr("Eine Adresse mit dem Namen {0} (Kto. {1}, BLZ {2}) existiert bereits im Adressbuch.\n" +
-                        "Möchten Sie die Adresse dennoch hinzufügen?");
+      String q1 = i18n.tr("Eine Adresse mit dem Namen {0} (Kto. {1}, BLZ {2}) existiert bereits im Adressbuch.\n" +
+                          "Möchten Sie die Adresse dennoch hinzufügen?");
+      String q2 = i18n.tr("Eine Adresse mit dem Namen {0} (IBAN {1}) existiert bereits im Adressbuch.\n" +
+                          "Möchten Sie die Adresse dennoch hinzufügen?");
 
       int count = 0;
       for (int i=0;i<items.size();++i)
       {
         // wir checken erstmal, ob wir den schon haben.
-        HibiscusAddress e = (HibiscusAddress) items.get(i);
+        HibiscusAddress e = items.get(i);
 
         if (e.getName() == null || e.getName().length() == 0)
         {
           Logger.warn("address [kto. " + e.getKontonummer() + ", blz " + e.getBlz() + " has no name, skipping");
           continue;
         }
-        String key = e.getName() + "-" + e.getKontonummer() + "-" + e.getBlz();
+        String key = e.getName() + "-" + e.getKontonummer() + "-" + e.getBlz() + "-" + e.getIban();
         if (seen.get(key) != null)
           continue; // den hatten wir schonmal. Und wir wollen den User doch nicht immer wieder fragen
 
@@ -142,8 +147,16 @@ public class EmpfaengerAdd implements Action
 
         if (book.contains(e) != null)
         {
-          if (!Application.getCallback().askUser(question,new String[]{e.getName(),e.getKontonummer(),e.getBlz()}))
-            continue;
+          if (StringUtils.trimToNull(e.getKontonummer()) != null)
+          {
+            if (!Application.getCallback().askUser(q1,new String[]{e.getName(),e.getKontonummer(),e.getBlz()}))
+              continue;
+          }
+          else
+          {
+            if (!Application.getCallback().askUser(q2,new String[]{e.getName(),e.getIban()}))
+              continue;
+          }
         }
         
         // OK, speichern
@@ -176,7 +189,7 @@ public class EmpfaengerAdd implements Action
   {
     HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     e.setName(strip(name));
-    if (kontonummer != null && kontonummer.matches("[a-zA-Z]{2}[0-9]*"))
+    if (kontonummer != null && kontonummer.matches("[a-zA-Z]{2}.*")) // italienische IBANs haben z.Bsp. mittendrin auch noch Buchstaben
       e.setIban(kontonummer);
     else
       e.setKontonummer(kontonummer);

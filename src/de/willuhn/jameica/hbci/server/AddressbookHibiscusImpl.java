@@ -92,10 +92,11 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
         // Gross-Kleinschreibung ignorieren wir
         String s = "%" + text.toLowerCase() + "%";
         list.addFilter("(kontonummer LIKE ? OR " +
-                     " blz LIKE ? OR " +
-                     " LOWER(kategorie) LIKE ? OR " +
-                     " LOWER(name) LIKE ? OR " +
-                     " LOWER(kommentar) LIKE ?)",new Object[]{s,s,s,s,s});
+                       " LOWER(iban) LIKE ? OR " +
+                       " blz LIKE ? OR " +
+                       " LOWER(kategorie) LIKE ? OR " +
+                       " LOWER(name) LIKE ? OR " +
+                       " LOWER(kommentar) LIKE ?)",s,s,s,s,s,s);
       }
       list.setOrder("ORDER by LOWER(name)");
       
@@ -145,12 +146,22 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
    */
   private GenericObject contains(DBIterator it, Address a) throws RemoteException
   {
-    it.addFilter("kontonummer like ?", new Object[] {"%" + a.getKontonummer()});
-    it.addFilter("blz=?",              new Object[] {a.getBlz()});
+    String kto  = StringUtils.trimToNull(a.getKontonummer());
+    String iban = StringUtils.trimToNull(a.getIban());
+    String name = StringUtils.trimToNull(a.getName());
+    
+    if (iban != null)
+    {
+      it.addFilter("LOWER(iban)=?",iban.toLowerCase());
+    }
+    else
+    {
+      it.addFilter("kontonummer like ?", "%" + kto);
+      it.addFilter("blz=?",              a.getBlz());
+    }
 
-    String name = a.getName();
     if (name != null)
-      it.addFilter("LOWER(name)=?", new Object[] {name.toLowerCase()});
+      it.addFilter("LOWER(name)=?",name.toLowerCase());
     
     return it.hasNext() ? it.next() : null;
   }
@@ -182,8 +193,12 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       
       if (StringUtils.trimToNull(address.getBic()) == null)
       {
-        address.setBic(HBCIUtils.getBICForBLZ(blz));
-        haveChanged = true;
+        String bic = HBCIUtils.getBICForBLZ(blz);
+        if (StringUtils.trimToNull(bic) != null)
+        {
+          address.setBic(bic);
+          haveChanged = true;
+        }
       }
 
       if (haveChanged)
