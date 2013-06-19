@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.logging.Message;
 import de.willuhn.logging.targets.Target;
@@ -118,6 +119,7 @@ public class PassportTest implements Action
         }
         catch (Exception e)
         {
+          Logger.write(Level.DEBUG,"error while testing passport",e);
           // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
