@@ -63,7 +63,8 @@ public class PCSCReader implements Reader
     return os == Platform.OS_WINDOWS ||
            os == Platform.OS_WINDOWS_64 ||
            os == Platform.OS_LINUX ||
-           os == Platform.OS_LINUX_64;
+           os == Platform.OS_LINUX_64 ||
+           os == Platform.OS_MAC;
   }
 
   /**
