@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.hbci.passports.ddv.server.CustomReader;
+import de.willuhn.jameica.hbci.passports.ddv.server.PCSCReader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -472,13 +473,14 @@ public class DDVConfigFactory
     if (config == null)
       throw new ApplicationException(i18n.tr("Keine Konfiguration ausgewählt"));
 
-    String pcscName = config.getPCSCName();
-    boolean isPCSC = StringUtils.trimToNull(pcscName) != null;
+    boolean isPCSC = config.getReaderPreset().isPCSCReader();
     
     if (isPCSC)
     {
+      String pcscName = config.getPCSCName();
       Logger.info("  pcsc name: " + pcscName);
-      HBCIUtils.setParam(Passport.NAME,pcscName);
+      if (StringUtils.trimToNull(pcscName) != null)
+        HBCIUtils.setParam(Passport.NAME,pcscName);
     }
     else
     {
@@ -516,12 +518,15 @@ public class DDVConfigFactory
     //////////////////////////////////////////////////////////////////////////
 
 
-    String port = Integer.toString(DDVConfig.getPortForName(config.getPort()));
-    Logger.info("  port: " + config.getPort() + " [ID: " + port + "]");
-    HBCIUtils.setParam(Passport.PORT,port);
+    if (!isPCSC)
+    {
+      String port = Integer.toString(DDVConfig.getPortForName(config.getPort()));
+      Logger.info("  port: " + config.getPort() + " [ID: " + port + "]");
+      HBCIUtils.setParam(Passport.PORT,port);
 
-    Logger.info("  ctnumber: " + config.getCTNumber());
-    HBCIUtils.setParam(Passport.CTNUMBER,Integer.toString(config.getCTNumber()));
+      Logger.info("  ctnumber: " + config.getCTNumber());
+      HBCIUtils.setParam(Passport.CTNUMBER,Integer.toString(config.getCTNumber()));
+    }
 
     Logger.info("  soft pin: " + config.useSoftPin());
     HBCIUtils.setParam(Passport.SOFTPIN,  config.useSoftPin() ? "1" : "0");
@@ -529,7 +534,9 @@ public class DDVConfigFactory
     Logger.info("  entry index: " + config.getEntryIndex());
     HBCIUtils.setParam(Passport.ENTRYIDX,Integer.toString(config.getEntryIndex()));
 
-    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(isPCSC ? "DDVPCSC" : "DDV");
+    String type = isPCSC ? "DDVPCSC" : "DDV";
+    Logger.info("  passport type: " + type);
+    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(type);
   }
 
   
