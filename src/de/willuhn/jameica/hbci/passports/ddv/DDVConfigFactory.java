@@ -33,7 +33,6 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.hbci.passports.ddv.server.CustomReader;
-import de.willuhn.jameica.hbci.passports.ddv.server.PCSCReader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
