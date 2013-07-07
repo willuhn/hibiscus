@@ -29,7 +29,7 @@ public class CherrySmartboardReader extends AbstractReader implements Reader
    */
   public String getName()
   {
-    return "Cherry Smartboard";
+    return "CTAPI: Cherry Smartboard";
   }
 
   /**

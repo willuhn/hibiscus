@@ -25,7 +25,7 @@ public class KaanStandardPlusReader extends AbstractKaanReader implements Reader
    */
   public String getName()
   {
-    return "Kaan Standard Plus USB (Kobil)";
+    return "CTAPI: Kaan Standard Plus USB (Kobil)";
   }
 }
 

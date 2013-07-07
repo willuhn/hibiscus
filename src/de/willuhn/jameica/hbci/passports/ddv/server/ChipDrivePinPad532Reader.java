@@ -29,7 +29,7 @@ public class ChipDrivePinPad532Reader extends AbstractReader implements Reader
    */
   public String getName()
   {
-    return "Chipdrive Pinpad / SCM SPR 332";
+    return "CTAPI: Chipdrive Pinpad / SCM SPR 332";
   }
 
   /**

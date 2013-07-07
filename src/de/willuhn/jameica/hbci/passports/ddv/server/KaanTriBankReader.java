@@ -25,7 +25,7 @@ public class KaanTriBankReader extends AbstractKaanReader implements Reader
    */
   public String getName()
   {
-    return "Kaan TriB@nk";
+    return "CTAPI: Kaan TriB@nk";
   }
 }
 

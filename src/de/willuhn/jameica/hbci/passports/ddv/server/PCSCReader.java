@@ -26,7 +26,7 @@ public class PCSCReader implements Reader
    */
   public String getName()
   {
-    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("PC/SC-Kartenleser");
+    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("PC/SC-Kartenleser (Kobil, ReinerSCT und andere)");
   }
 
   /**

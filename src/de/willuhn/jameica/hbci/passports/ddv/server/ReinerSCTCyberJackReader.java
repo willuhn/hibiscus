@@ -29,7 +29,7 @@ public class ReinerSCTCyberJackReader extends AbstractReader implements Reader
    */
   public String getName()
   {
-    return "ReinerSCT cyberjack";
+    return "CTAPI: ReinerSCT cyberjack";
   }
 
   /**

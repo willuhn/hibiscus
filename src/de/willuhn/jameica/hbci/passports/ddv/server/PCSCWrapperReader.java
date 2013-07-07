@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Platform;
@@ -57,7 +58,7 @@ public class PCSCWrapperReader extends AbstractReader implements Reader
    */
   public String getName()
   {
-    return "PC/SC-Kartenleser via pcsc-ctapi-wrapper";
+    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("CTAPI: PC/SC-Kartenleser via pcsc-ctapi-wrapper");
   }
 
   /**

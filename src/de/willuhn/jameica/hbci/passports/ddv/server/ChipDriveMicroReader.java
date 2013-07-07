@@ -29,7 +29,7 @@ public class ChipDriveMicroReader extends AbstractReader implements Reader
    */
   public String getName()
   {
-    return "Chipdrive Micro / Towitoko Kartenzwerg";
+    return "CTAPI: Chipdrive Micro / Towitoko Kartenzwerg";
   }
 
   /**

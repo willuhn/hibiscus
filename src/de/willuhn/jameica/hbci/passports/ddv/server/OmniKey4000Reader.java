@@ -30,7 +30,7 @@ public class OmniKey4000Reader extends AbstractReader implements Reader
    */
   public String getName()
   {
-    return "Omnikey 4000 (PC-Card)";
+    return "CTAPI: Omnikey 4000 (PC-Card)";
   }
 
   /**
