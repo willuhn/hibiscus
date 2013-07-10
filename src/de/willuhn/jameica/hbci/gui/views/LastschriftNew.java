@@ -118,6 +118,8 @@ public class LastschriftNew extends AbstractView
     buttonArea.addButton(store);
     
     buttonArea.paint(getParent());
+    
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
   
   /**

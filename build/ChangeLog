@@ -1,5 +1,7 @@
 HEAD 2.5.1 (nightly)
 
+  * BUG: 0250 BUGZILLA 879 - Eingabefelder in Lastschrift+Überweisung wurden nach
+              Ausführung nicht unmittelbar auf readonly gesetzt 
   * NEW: 0249 Übernehmen der Warnungen von nicht ausgeführten Auftägen in einem Sammler
   * NEW: 0248 Erster Test-Code fuer PCSC-Kartenleser. Sehr wahrscheinlich noch nicht in einem
               funktionierenden Zustand. Plus: Kartenleser-Preset fuer pcsc-ctapi-wrapper basierende
