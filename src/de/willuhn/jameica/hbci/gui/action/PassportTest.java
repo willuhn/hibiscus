@@ -17,6 +17,7 @@ import org.kapott.hbci.manager.HBCIHandler;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
@@ -119,7 +120,14 @@ public class PassportTest implements Action
         }
         catch (Exception e)
         {
+          Throwable cause = HBCIProperties.getCause(e);
+          if (cause == null) cause = e; // NPE proof - man weiss ja nie ;)
+          Logger.info("test of passport failed: " + cause.getClass() + ": " + cause.getMessage());
+          
+          // Den kompletten Stacktrace loggen wir nur auf DEBUG, weil der beim Testen bzw. Suchen nach
+          // einem Kartenleser durchaus auftreten kann.
           Logger.write(Level.DEBUG,"error while testing passport",e);
+          
           // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
@@ -130,7 +138,7 @@ public class PassportTest implements Action
           removeTarget(target);
 
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-          String errorText = i18n.tr("Fehler beim Testen des Sicherheits-Mediums.");
+          String errorText = i18n.tr("Fehler beim Testen des Sicherheits-Mediums: {0}",cause.getMessage());
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(errorText, StatusBarMessage.TYPE_ERROR));
           monitor.setStatusText(errorText);
 
