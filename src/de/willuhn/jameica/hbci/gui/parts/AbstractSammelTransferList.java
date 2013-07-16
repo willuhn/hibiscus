@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.TableItem;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -258,6 +259,24 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
       if (!(o instanceof SammelTransfer) && !(o instanceof SammelTransferBuchung))
         return;
 
+      if (message instanceof ObjectChangedMessage)
+      {
+        GUI.startSync(new Runnable() {
+          public void run()
+          {
+            try
+            {
+              updateItem(o,o);
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to update item",e);
+            }
+          }
+        });
+        return;
+      }
+      
       // Wir forcieren das Reload. Da in den Eingabefeldern
       // nichts geaendert wurde, wuerde das Reload sonst nicht
       // stattfinden.

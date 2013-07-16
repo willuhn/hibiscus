@@ -110,7 +110,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
     transfer.setAusgefuehrt(true);
 
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(transfer)); // BUGZILLA 545
-    konto.addToProtokoll(i18n.tr("Sammel-Auftrag {0} ausgeführt",transfer.getBezeichnung()),Protokoll.TYP_SUCCESS);
+    konto.addToProtokoll(i18n.tr("Sammel-Auftrag [Bezeichnung: {0}] ausgeführt",transfer.getBezeichnung()),Protokoll.TYP_SUCCESS);
     Logger.info("sammellastschrift submitted successfully");
   }
 
@@ -119,7 +119,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   String markFailed(String error) throws RemoteException, ApplicationException
   {
-    String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages {0}: {1}",new String[]{transfer.getBezeichnung(),error});
+    String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages [Bezeichnung: {0}]: {1}",new String[]{transfer.getBezeichnung(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }
@@ -129,7 +129,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
    */
   void markCancelled() throws RemoteException, ApplicationException
   {
-    String msg = i18n.tr("Ausführung des Sammel-Auftrages {0} abgebrochen",transfer.getBezeichnung());
+    String msg = i18n.tr("Ausführung des Sammel-Auftrages [Bezeichnung: {0}] abgebrochen",transfer.getBezeichnung());
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
   }
 

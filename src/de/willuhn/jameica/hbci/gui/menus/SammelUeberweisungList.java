@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.menus;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Print;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
@@ -44,15 +43,13 @@ import de.willuhn.util.I18N;
  */
 public class SammelUeberweisungList extends ContextMenu
 {
-	private I18N i18n	= null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	/**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Sammel-Ueberweisungen.
 	 */
 	public SammelUeberweisungList()
 	{
-		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		addItem(new SingleItem(i18n.tr("Öffnen"), new SammelUeberweisungNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
@@ -60,38 +57,7 @@ public class SammelUeberweisungList extends ContextMenu
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
 		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute(),"emblem-important.png"));
-    addItem(new ContextMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        new TerminableMarkExecuted().handleAction(context);
-        GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
-      }
-    },"emblem-default.png"){
-      public boolean isEnabledFor(Object o)
-      {
-        if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))
-          return false;
-        try
-        {
-          if (o instanceof Terminable)
-            return !((Terminable)o).ausgefuehrt();
-
-          Terminable[] t = (Terminable[]) o;
-          for (int i=0;i<t.length;++i)
-          {
-            if (t[i].ausgefuehrt())
-              return false;
-          }
-          return true;
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to check if terminable is allready executed",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
-          return false;
-        }
-      }
-    });
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Drucken..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -181,41 +147,52 @@ public class SammelUeberweisungList extends ContextMenu
     	return false;
     }
 	}
+
+  /**
+   * Liefert nur dann true, wenn alle uebergebenen Auftraege noch nicht
+   * ausgefuehrt wurden.
+   */
+  private class NotActiveMultiMenuItem extends CheckedContextMenuItem
+  {
+    
+    /**
+     * ct.
+     * @param text anzuzeigender Text.
+     * @param a auszufuehrende Action.
+     * @param icon optionales Icon.
+     */
+    public NotActiveMultiMenuItem(String text, Action a, String icon)
+    {
+      super(text, a, icon);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))
+        return false;
+      try
+      {
+        if (o instanceof Terminable)
+          return !((Terminable)o).ausgefuehrt();
+
+        Terminable[] t = (Terminable[]) o;
+        for (int i=0;i<t.length;++i)
+        {
+          if (t[i].ausgefuehrt())
+            return false;
+        }
+        return true;
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to check if terminable is already executed",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
+      }
+      return false;
+    }
+  }
+
 }
-
-
-/**********************************************************************
- * $Log: SammelUeberweisungList.java,v $
- * Revision 1.10  2012/01/27 22:43:22  willuhn
- * @N BUGZILLA 1181
- *
- * Revision 1.9  2011-04-11 16:48:33  willuhn
- * @N Drucken von Sammel- und Dauerauftraegen
- *
- * Revision 1.8  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- * Revision 1.7  2008/12/19 12:16:05  willuhn
- * @N Mehr Icons
- * @C Reihenfolge der Contextmenu-Eintraege vereinheitlicht
- *
- * Revision 1.6  2007/12/06 23:53:35  willuhn
- * @C Menu-Eintraege uebersichtlicher angeordnet
- *
- * Revision 1.5  2006/10/05 16:42:28  willuhn
- * @N CSV-Import/Export fuer Adressen
- *
- * Revision 1.4  2006/08/07 14:45:18  willuhn
- * @B typos
- *
- * Revision 1.3  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.2  2006/03/30 22:56:46  willuhn
- * @B bug 216
- *
- * Revision 1.1  2005/09/30 00:08:51  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- **********************************************************************/

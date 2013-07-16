@@ -192,7 +192,7 @@ public class UeberweisungList extends ContextMenu
       }
       catch (RemoteException e)
       {
-        Logger.error("unable to check if terminable is allready executed",e);
+        Logger.error("unable to check if terminable is already executed",e);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
       }
       return false;
@@ -200,28 +200,3 @@ public class UeberweisungList extends ContextMenu
   }
 
 }
-
-
-/**********************************************************************
- * $Log: UeberweisungList.java,v $
- * Revision 1.21  2012/01/27 22:43:22  willuhn
- * @N BUGZILLA 1181
- *
- * Revision 1.20  2011-04-11 11:28:08  willuhn
- * @N Drucken aus dem Contextmenu heraus
- *
- * Revision 1.19  2009/11/26 12:00:21  willuhn
- * @N Buchungen aus Sammelauftraegen in Einzelauftraege duplizieren
- *
- * Revision 1.18  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- * Revision 1.17  2008/12/19 01:12:09  willuhn
- * @N Icons in Contextmenus
- *
- * Revision 1.16  2007/12/06 23:53:35  willuhn
- * @C Menu-Eintraege uebersichtlicher angeordnet
- *
- * Revision 1.15  2007/10/25 15:47:21  willuhn
- * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
- **********************************************************************/

@@ -18,6 +18,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -70,6 +71,14 @@ public class TerminableMarkExecuted implements Action
           Konto k = tr.getKonto();
           if (k != null)
             k.addToProtokoll(i18n.tr("Auftrag \"{0}\" [Gegenkonto {1}, BLZ {2}] manuell als \"ausgeführt\" markiert",new String[]{tr.getZweck(),tr.getGegenkontoName(),tr.getGegenkontoBLZ()}),Protokoll.TYP_SUCCESS);
+          Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(tr));
+        }
+        else if (t[i] instanceof SammelTransfer)
+        {
+          SammelTransfer tr = (SammelTransfer) t[i];
+          Konto k = tr.getKonto();
+          if (k != null)
+            k.addToProtokoll(i18n.tr("Sammel-Auftrag [Bezeichnung: {0}] manuell als \"ausgeführt\" markiert",tr.getBezeichnung()),Protokoll.TYP_SUCCESS);
           Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(tr));
         }
       }
