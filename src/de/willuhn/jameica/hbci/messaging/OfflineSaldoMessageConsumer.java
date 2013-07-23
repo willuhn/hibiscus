@@ -17,8 +17,11 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 
 /**
@@ -74,9 +77,21 @@ public class OfflineSaldoMessageConsumer implements MessageConsumer
     // Wenn fuer das Offline-Konto das Synchronisieren des Saldos
     // aktiv ist, halten wir uns raus
     // Siehe Mail von Sebastian vom 08.05.2013
-    SynchronizeOptions options = new SynchronizeOptions(k);
-    if (options.getSyncSaldo())
-      return;
+    
+    // Update 2013-07-23: Das macht aber nur Sinn, wenn Scripting fuer
+    // das Konto verfuegbar ist.
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeEngine engine = service.get(SynchronizeEngine.class);
+    
+    // Also wir haben prinzipiell Scripting fuer das Konto. Also checken,
+    // ob das Abrufen des Saldos dort schon aktiviert ist
+    if (engine.supports(SynchronizeJobKontoauszug.class,k))
+    {
+      SynchronizeOptions options = new SynchronizeOptions(k);
+      if (options.getSyncSaldo())
+        return;
+      
+    }
 
     // Betrag der Buchung
     double betrag = u.getBetrag();
