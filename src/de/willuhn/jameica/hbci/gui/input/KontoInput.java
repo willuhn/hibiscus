@@ -406,7 +406,11 @@ public class KontoInput extends SelectInput
 
             for (int i=0;i<list.size();++i)
             {
-              Konto k = (Konto) list.get(i);
+              Object item = list.get(i);
+              if (!(item instanceof Konto))
+                continue; // Ist eine Konto-Gruppe
+              
+              Konto k = (Konto) item;
               if (BeanUtil.equals(konto,k))
               {
                 list.set(i,konto);

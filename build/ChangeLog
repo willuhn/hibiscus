@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * BUG: 0251 ClassCastException (hatte keine weiteren Folgen - wurde nur geloggt)
   * BUG: 0250 BUGZILLA 879 - Eingabefelder in Lastschrift+Überweisung wurden nach
               Ausführung nicht unmittelbar auf readonly gesetzt 
   * NEW: 0249 Übernehmen der Warnungen von nicht ausgeführten Auftägen in einem Sammler
