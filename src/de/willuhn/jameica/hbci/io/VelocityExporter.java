@@ -79,6 +79,7 @@ public class VelocityExporter implements Exporter
     context.put("decimalformat", HBCI.DECIMALFORMAT);
     context.put("objects",       objects);
     context.put("filter",        new Filter());
+    context.put("session",       Exporter.SESSION);
     
     BufferedWriter writer = null;
     try

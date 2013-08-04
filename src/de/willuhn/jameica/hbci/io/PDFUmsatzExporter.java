@@ -26,6 +26,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
@@ -94,7 +95,9 @@ public class PDFUmsatzExporter implements Exporter
     if (d != null) startDate = d;
     d = (Date) Exporter.SESSION.get("pdf.end");
     if (d != null) endDate = d;
-    Boolean filter = (Boolean) Exporter.SESSION.get("filtered");
+    Boolean filter    = (Boolean) Exporter.SESSION.get("filtered");
+    Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
+    boolean showSaldo = (b == null || !b.booleanValue());
     
     Reporter reporter = null;
     
@@ -108,7 +111,8 @@ public class PDFUmsatzExporter implements Exporter
       reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER,100, BaseColor.LIGHT_GRAY);
       reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER,120, BaseColor.LIGHT_GRAY);
       reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER, 30, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Saldo"),                  Element.ALIGN_CENTER, 30, BaseColor.LIGHT_GRAY);
+      if (showSaldo)
+        reporter.addHeaderColumn(i18n.tr("Saldo"),                  Element.ALIGN_CENTER, 30, BaseColor.LIGHT_GRAY);
       reporter.createHeader();
 
       
@@ -120,7 +124,7 @@ public class PDFUmsatzExporter implements Exporter
         Konto konto = (Konto) Settings.getDBService().createObject(Konto.class,id);
         
         PdfPCell cell = reporter.getDetailCell(konto.getLongName(), Element.ALIGN_CENTER,BaseColor.LIGHT_GRAY);
-        cell.setColspan(5);
+        cell.setColspan(showSaldo ? 5 : 4);
         reporter.addColumn(cell);
 
         ArrayList list = (ArrayList) umsaetze.get(id);
@@ -144,7 +148,8 @@ public class PDFUmsatzExporter implements Exporter
 
           reporter.addColumn(reporter.getDetailCell(VerwendungszweckUtil.toString(u,"\n"), Element.ALIGN_LEFT));
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
-          reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
+          if (showSaldo)
+            reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
           reporter.setNextRecord();
         }
       }

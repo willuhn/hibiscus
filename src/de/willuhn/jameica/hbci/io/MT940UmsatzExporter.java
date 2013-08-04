@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
@@ -79,6 +80,9 @@ public class MT940UmsatzExporter implements Exporter
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
 
+      Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
+      boolean showSaldo = (b == null || !b.booleanValue());
+      
       for (int i=0;i<objects.length;++i)
       {
         if (monitor != null)  
@@ -99,16 +103,18 @@ public class MT940UmsatzExporter implements Exporter
         out.write(NL + ":20:Hibiscus" + NL);
     		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + curr + NL);
     		
-    		//(Schlusssaldo - Umsatzbetrag) > 0 -> Soll-Haben-Kennung für den Anfangssaldo = C
-    		//(Credit), sonst D (Debit)
-    		double anfangsSaldo = u.getSaldo() - u.getBetrag();
-    		
-    		//Anfangssaldo aus dem Schlusssaldo ermitteln sowie Soll-Haben-Kennung
-    		//Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
-        out.write(":60F:");
-    		out.write(anfangsSaldo >= 0.0d ? "C" : "D");
-    		out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(anfangsSaldo).replace("-","") + NL);
-
+    		if (showSaldo)
+    		{
+          //(Schlusssaldo - Umsatzbetrag) > 0 -> Soll-Haben-Kennung für den Anfangssaldo = C
+          //(Credit), sonst D (Debit)
+          double anfangsSaldo = u.getSaldo() - u.getBetrag();
+          
+          //Anfangssaldo aus dem Schlusssaldo ermitteln sowie Soll-Haben-Kennung
+          //Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
+          out.write(":60F:");
+          out.write(anfangsSaldo >= 0.0d ? "C" : "D");
+          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(anfangsSaldo).replace("-","") + NL);
+    		}
 
         out.write(":61:" + DF_YYMMDD.format(u.getValuta()) + DF_MMDD.format(u.getDatum()));
 
@@ -153,13 +159,16 @@ public class MT940UmsatzExporter implements Exporter
         out.write(NL);
     		
 
-        out.write(":62F:");
-        //Soll-Haben-Kennung für den Schlusssaldo ermitteln
-    		double schlussSaldo = u.getSaldo();
-    		out.write(schlussSaldo >= 0.0d ? "C" : "D");
-    		out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(schlussSaldo).replace("-",""));
+        if (showSaldo)
+        {
+          out.write(":62F:");
+          //Soll-Haben-Kennung für den Schlusssaldo ermitteln
+          double schlussSaldo = u.getSaldo();
+          out.write(schlussSaldo >= 0.0d ? "C" : "D");
+          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(schlussSaldo).replace("-","") + NL);
+        }
     		
-    		out.write(NL + "-" + NL);
+    		out.write("-" + NL);
       }
     }
     catch (IOException e)

@@ -32,6 +32,8 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -57,7 +59,7 @@ import de.willuhn.util.ProgressMonitor;
 /**
  * Dialog, ueber den Daten exportiert werden koennen.
  */
-public class ExportDialog extends AbstractDialog
+public class ExportDialog extends AbstractDialog implements Extendable
 {
   private final static int WINDOW_WIDTH = 420;
 
@@ -71,6 +73,9 @@ public class ExportDialog extends AbstractDialog
   private Class type              = null;
 
   private Settings  settings      = null;
+  
+  private boolean exportEnabled   = true;
+  private Container group         = null;
 
   /**
    * ct.
@@ -95,16 +100,20 @@ public class ExportDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-		Container group = new SimpleContainer(parent);
-		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
+		this.group = new SimpleContainer(parent);
+		this.group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
 
     Input formats = getExporterList();
-		group.addLabelPair(i18n.tr("Verfügbare Formate:"),formats);
+    this.group.addInput(formats);
     
-    boolean exportEnabled = !(formats instanceof LabelInput);
+    this.exportEnabled = !(formats instanceof LabelInput);
     
-    if (exportEnabled)
-      group.addCheckbox(getOpenFile(),i18n.tr("Datei nach dem Export öffnen"));
+    CheckboxInput open = this.getOpenFile();
+    open.setEnabled(this.exportEnabled);
+    this.group.addInput(open);
+
+    // BUGZILLA 789
+    ExtensionRegistry.extend(this);
 
 		ButtonArea buttons = new ButtonArea();
 		Button button = new Button(i18n.tr("Export starten"),new Action()
@@ -123,7 +132,7 @@ public class ExportDialog extends AbstractDialog
 				close();
 			}
 		},null,false,"process-stop.png");
-		group.addButtonArea(buttons);
+		this.group.addButtonArea(buttons);
 		
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
@@ -249,7 +258,10 @@ public class ExportDialog extends AbstractDialog
   private CheckboxInput getOpenFile()
   {
     if (this.openFile == null)
+    {
       this.openFile = new CheckboxInput(settings.getBoolean("open",true));
+      this.openFile.setName(i18n.tr("Datei nach dem Export öffnen"));
+    }
     return this.openFile;
   }
   
@@ -260,8 +272,8 @@ public class ExportDialog extends AbstractDialog
    */
   private Input getExporterList() throws Exception
 	{
-		if (exporterListe != null)
-			return exporterListe;
+		if (this.exporterListe != null)
+			return this.exporterListe;
 
     Exporter[] exporters = IORegistry.getExporters();
 
@@ -295,14 +307,16 @@ public class ExportDialog extends AbstractDialog
 
 		if (size == 0)
 		{
-			exporterListe = new LabelInput(i18n.tr("Keine Export-Filter verfügbar"));
-			return exporterListe;
+		  this.exporterListe = new LabelInput(i18n.tr("Keine Export-Filter verfügbar"));
 		}
-
-    Collections.sort(l);
-		Exp[] exp = (Exp[]) l.toArray(new Exp[size]);
-		exporterListe = new SelectInput(PseudoIterator.fromArray(exp),selected);
-		return exporterListe;
+		else
+		{
+	    Collections.sort(l);
+	    Exp[] exp = (Exp[]) l.toArray(new Exp[size]);
+	    this.exporterListe = new SelectInput(PseudoIterator.fromArray(exp),selected);
+		}
+		this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
+		return this.exporterListe;
 	}
 
   /**
@@ -312,7 +326,33 @@ public class ExportDialog extends AbstractDialog
   {
     return null;
   }
-
+  
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
+  }
+  
+  /**
+   * Liefert den Formular-Container zur Erweiterung durch Extensions.
+   * @return der Formular-Container zur Erweiterung durch Extensions.
+   */
+  public Container getContainer()
+  {
+    return this.group;
+  }
+  
+  /**
+   * Liefert den zu exportierenden Objekt-Typ.
+   * @return der zu exportierenden Objekt-Typ.
+   */
+  public Class getType()
+  {
+    return this.type;
+  }
+  
 	/**
 	 * Hilfsklasse zur Anzeige der Exporter.
    */
@@ -388,99 +428,3 @@ public class ExportDialog extends AbstractDialog
     }
 	}
 }
-
-
-/**********************************************************************
- * $Log: ExportDialog.java,v $
- * Revision 1.22  2011/05/03 16:44:23  willuhn
- * @C GUI cleanup
- *
- * Revision 1.21  2010-08-27 10:39:54  willuhn
- * @C Export-Dialog in gleicher Groesse und Position wie Import-Dialog
- *
- * Revision 1.20  2010/06/08 11:26:05  willuhn
- * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
- *
- * Revision 1.19  2010/03/16 00:44:17  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- * Revision 1.18  2009/07/09 17:08:03  willuhn
- * @N BUGZILLA #740
- *
- * Revision 1.17  2008/07/11 12:28:02  willuhn
- * @N BUGZILLA 609
- *
- * Revision 1.16  2008/02/13 23:22:24  willuhn
- * @B http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=8175 (Nachtrag)
- *
- * Revision 1.15  2008/02/13 23:15:29  willuhn
- * @B http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=8175
- *
- * Revision 1.14  2007/04/23 18:40:44  jost
- * Javadoc Tippfehler
- *
- * Revision 1.13  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.12  2007/03/21 15:37:46  willuhn
- * @N Vorschau der Umsaetze in Auswertung "Kontoauszug"
- *
- * Revision 1.11  2006/10/09 10:10:27  willuhn
- * @C s/dessen/abbrechen/
- *
- * Revision 1.10  2006/08/07 21:51:43  willuhn
- * @N Erste Version des DTAUS-Exporters
- *
- * Revision 1.9  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.8  2006/07/03 23:04:32  willuhn
- * @N PDF-Reportwriter in IO-API gepresst, damit er auch an anderen Stellen (z.Bsp. in der Umsatzliste) mitverwendet werden kann.
- *
- * Revision 1.7  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.6  2006/01/25 09:22:05  willuhn
- * @B compile error
- *
- * Revision 1.5  2006/01/23 00:36:29  willuhn
- * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
- *
- * Revision 1.4  2006/01/18 00:51:01  willuhn
- * @B bug 65
- *
- * Revision 1.3  2006/01/17 00:22:37  willuhn
- * @N erster Code fuer Swift MT940-Import
- *
- * Revision 1.2  2006/01/02 17:38:12  willuhn
- * @N moved Velocity to Jameica
- *
- * Revision 1.1  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.4  2005/06/30 23:52:42  web0
- * @N export via velocity
- *
- * Revision 1.3  2005/06/08 16:49:00  web0
- * @N new Import/Export-System
- *
- * Revision 1.2  2005/06/06 10:37:07  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/06/02 22:57:34  web0
- * @N Export von Konto-Umsaetzen
- *
- **********************************************************************/

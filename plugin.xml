@@ -92,6 +92,10 @@
     <consumer queue="hibiscus.lastschrift.delete"          class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
     <consumer queue="hibiscus.slastschrift.delete"         class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
   </messaging>
+  
+  <extensions>
+    <extension extends="de.willuhn.jameica.hbci.gui.dialogs.ExportDialog" class="de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension"/>
+  </extensions>
 
 </plugin>
 

@@ -157,6 +157,9 @@
 
   </style>
   
+#set($hs        = $session.get("saldo.hide"))
+#set($hideSaldo = $!hs.booleanValue())
+  
   <body>
     <h1>Konto-Umsätze</h1>
     <h2>$!dateformat.format($datum)</h2>
@@ -172,7 +175,9 @@
         <th>Valuta</th>
         <th>Datum</th>
         <th>Verwendungszweck</th>
+#if(!$hideSaldo)
         <th style="text-align:right">Saldo</th>
+#end
         <th>Primanota</th>
         <th>Referenz</th>
       </tr>
@@ -197,7 +202,9 @@
             #end
             $!t.kommentar
           </td>
+#if(!$hideSaldo)
           <td style="text-align:right">$!decimalformat.format($t.saldo) $!t.konto.waehrung</td>
+#end
           <td>$!t.primanota</td>
           <td>$!t.customerRef</td>
         </tr>

@@ -183,7 +183,7 @@
           <th>Konto</th>
           <th>Bezeichnung</th>
           <th style="text-align:right">Summe</th>
-          <th>Ausgeführt</th>
+          <th>Ausgef&uuml;hrt</th>
         </tr>
         <tr class="ausgefuehrt_$t.ausgefuehrt()">
           <td>$!dateformat.format($t.termin)</td>
