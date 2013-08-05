@@ -45,7 +45,8 @@ public class SammelUeberweisungBuchungImpl extends AbstractSammelTransferBuchung
   {
     if ("sueberweisung_id".equals(arg0))
       return SammelUeberweisung.class;
-    return null;
+
+    return super.getForeignObject(arg0);
   }
 
   /**
@@ -64,17 +65,3 @@ public class SammelUeberweisungBuchungImpl extends AbstractSammelTransferBuchung
     setAttribute("sueberweisung_id",s);
   }
 }
-
-/*****************************************************************************
- * $Log: SammelUeberweisungBuchungImpl.java,v $
- * Revision 1.3  2010/04/27 11:02:32  willuhn
- * @R Veralteten Verwendungszweck-Code entfernt
- *
- * Revision 1.2  2008/02/15 17:39:10  willuhn
- * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
- * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
-*****************************************************************************/
