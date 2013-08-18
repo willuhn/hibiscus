@@ -23,6 +23,7 @@ import java.util.Map;
 import org.kapott.hbci.GV_Result.GVRKUms;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
@@ -169,7 +170,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
     // In HBCI gibts fuer Umsaetze ja keine eindeutigen IDs. Daher muessen
     // wir anhand der Eigenschaften vergleichen, ob wir den Umsatz schon
-    // haben oder nicht. Zwei Umsaetze mit gleichen Eigenschaften werden
+    // haben oder nicht. Mehrere Umsaetze mit gleichen Eigenschaften werden
     // von Hibiscus daher als "der selbe" erkannt und nicht erneut in der Datenbank
     // angelegt. In 99% der Faelle ist das auch korrekt. Unter Umstaenden kann
     // eine Buchung jedoch tatsaechlich identisch aussehen und trotzdem nicht
@@ -177,20 +178,11 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     // verweigern die meisten das Einreichen von mehreren identischen Auftraegen
     // innerhalb eines Tages. Allerdings machen das nicht alle Banken. Und manche
     // tolerieren es auch, wenn man den Auftrag nach Erhalt des Doppel-Einreichungs-
-    // Fehlers nochmal einreicht. Beim Abruf der Umsaetze ist auch das meist kein
-    // Problem. Denn wir vergleichen hier nur gegen die bereits in der Datenbank
-    // vorhandenen Umsaetze. Kommen zwei identisch aussehende innerhalb eines
-    // Umsatz-Abrufs von der Bank, dann werden beide angelegt, weil keiner von
-    // beiden bereits in der Datenbank ist. Kommen sie jedoch durch zwei getrennte
-    // Abrufe, dann wuerde der zweite Umsatz nicht mehr angelegt werden, weil
-    // Hibiscus der Meinung ist, diesen Umsatz bereits in der DB zu haben.
-    // Genau hierfuer ist diese Map da. Wenn ein Umsatz bereits in der Datenbank
-    // gefunden wurde, wird er nicht erneut angelegt, zusaetzlich jedoch in dieser
-    // Map gespeichert. Kommt dann innerhalb des selben Abrufes nochmal ein
-    // Umsatz, der bereits in der Datenbank ist, zusaetzlich aber auch bereits
-    // in dieser Map hier steht, dann kann es nicht der selbe sein sondern muss
-    // tatsaechlich ein neuer - identisch aussehender - sein.
-    Map<Umsatz,Umsatz> duplicates = new HashMap<Umsatz,Umsatz>();
+    // Fehlers nochmal einreicht. Wir haben hierzu eine Map, die fuer mehrfach
+    // vorhandene Umsaetze zaehlt, wie oft sie bereits lokal in der DB vorliegen.
+    // Schickt die Bank mehr, als wir in der DB haben, muessen wir die verbleibenden
+    // noch anlegen.
+    Map<Umsatz,Integer> duplicates = new HashMap<Umsatz,Integer>();
     
     
     ////////////////////////////////////////////////////////////////////////////
@@ -220,18 +212,35 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           }
         }
 
-        Umsatz fromDB = (Umsatz) existing.contains(umsatz);
+        Umsatz fromDB = null;
+        // Anzahl der vorhandenen Umsaetze in der DB zaehlen
+        int counter = 0;
+        existing.begin();
+        for (int j = 0; j<existing.size(); j++)
+        {
+          GenericObject dbObject = existing.next();
+          if (dbObject.equals(umsatz)) {
+            counter++;
+            fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
+          }
+        }
+        
         if (fromDB != null)
         {
-          // Wir duerfen den Umsatz nur dann ueberspringen, wenn wir ihn noch
-          // nicht in der duplicates Map haben. Andernfalls sieht er zwar anders
-          // aus, ist aber wirklich ein neuer
-          if (duplicates.get(fromDB) == null)
+          // Wir duerfen den Umsatz nur dann ueberspringen, wenn er bereits 
+          // OFT GENUG in der Datenbank ist. Andernfalls ist er tatsaechlich 
+          // neu. Dazu zaehlen wir mit, wie oft wir gerade einen "gleichen" 
+          // Umsatz empfangen haben. 
+          Integer countInCurrentJobResult = duplicates.get(fromDB);
+          if (countInCurrentJobResult == null) {
+            duplicates.put(fromDB, 1);
+            skipped++;
+            continue;
+          }
+          else if (countInCurrentJobResult <= counter)  
           {
-            // In die duplicates-Map tun. Wenn dann noch einer kommt,
-            // der genauso aussieht, wird der nicht mehr uebersprungen,
-            // weil er wirklich neu ist
-            duplicates.put(fromDB,umsatz);
+            // In der Datenbank sind mehr als bislang abgerufen -> Ueberspringen
+            duplicates.put(fromDB, countInCurrentJobResult+1);
             skipped++;
             continue;
           }
@@ -282,23 +291,40 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           umsatz.setKonto(konto);
           fetched.add(umsatz);
 
-          Umsatz fromDB = (Umsatz) existing.contains(umsatz);
+          Umsatz fromDB = null;
+          // Anzahl der vorhandenen Umsaetze in der DB zaehlen
+          int counter = 0;
+          existing.begin();
+          for (int j = 0; j<existing.size(); j++)
+          {
+            GenericObject dbObject = existing.next();
+            if (dbObject.equals(umsatz)) {
+              counter++;
+              fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
+            }
+          }
+          
           if (fromDB != null)
           {
-            // Wir duerfen den Umsatz nur dann ueberspringen, wenn wir ihn noch
-            // nicht in der duplicates Map haben. Andernfalls sieht er zwar anders
-            // aus, ist aber wirklich ein neuer
-            if (duplicates.get(fromDB) == null)
+            // Wir duerfen den Umsatz nur dann ueberspringen, wenn er bereits 
+            // OFT GENUG in der Datenbank ist. Andernfalls ist er tatsaechlich 
+            // neu. Dazu zaehlen wir mit, wie oft wir gerade einen "gleichen" 
+            // Umsatz empfangen haben. 
+            Integer countInCurrentJobResult = duplicates.get(fromDB);
+            if (countInCurrentJobResult == null) {
+              duplicates.put(fromDB, 1);
+              skipped++;
+              continue;
+            }
+            else if (countInCurrentJobResult <= counter)  
             {
-              // In die duplicates-Map tun. Wenn dann noch einer kommt,
-              // der genauso aussieht, wird der nicht mehr uebersprungen,
-              // weil er wirklich neu ist
-              duplicates.put(fromDB,umsatz);
+              // In der Datenbank sind mehr als bislang abgerufen -> Ueberspringen
+              duplicates.put(fromDB, countInCurrentJobResult+1);
               skipped++;
               continue;
             }
           }
-
+          
           // Vormerkposten neu anlegen
           try
           {
@@ -394,102 +420,3 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     return msg;
   }
 }
-
-
-/**********************************************************************
- * $Log: HBCIUmsatzJob.java,v $
- * Revision 1.57  2012/03/01 22:19:15  willuhn
- * @N i18n statisch und expliziten Super-Konstruktor entfernt - unnoetig
- *
- * Revision 1.56  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.55  2010-10-11 21:25:42  willuhn
- * @B Da das Notbooked-Flag jetzt Bestandteil der Checksumme ist, muss das Flag vor dem contains() gemacht werden
- *
- * Revision 1.54  2010-10-07 21:02:36  willuhn
- * @B BUGZILLA 917
- *
- * Revision 1.53  2010-08-27 11:36:48  willuhn
- * @R unnoetiges if
- *
- * Revision 1.52  2010/04/25 23:09:04  willuhn
- * @N BUGZILLA 244
- *
- * Revision 1.51  2009/03/13 17:58:07  willuhn
- * @N Loeschen der Vormerkbuchungen (die aelter als heute sind) auch dann, wenn keine neuen von der Bank gekommen sind
- *
- * Revision 1.50  2009/03/12 10:56:01  willuhn
- * @B Double.NaN geht nicht
- *
- * Revision 1.49  2009/03/11 17:53:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.48  2009/03/11 17:51:14  willuhn
- * @B Saldo wurde an der falschen Stelle zurueckgesetzt
- *
- * Revision 1.47  2009/03/11 16:21:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.46  2009/03/11 11:03:38  willuhn
- * @C Nur noch jene Vormerkposten loeschen, die nicht mehr von der Bank uebertragen wurden
- *
- * Revision 1.45  2009/03/10 17:14:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.44  2009/03/10 17:11:09  willuhn
- * @N Mehr Log-Ausgaben
- *
- * Revision 1.43  2009/03/10 14:45:20  willuhn
- * @B Wenn keine neuen Umsaetze vorliegen, wurden auch keine Vormerkbuchungen abgerufen
- *
- * Revision 1.42  2009/02/25 10:37:08  willuhn
- * @C notbooked umsaetze nur aus dem angegebenen Zeitraum loeschen
- *
- * Revision 1.41  2009/02/25 10:29:59  willuhn
- * @B Pruefung des Flags nicht mehr im SQL-Statement - kann H2 nicht
- *
- * Revision 1.40  2009/02/23 17:01:58  willuhn
- * @C Kein Abgleichen mehr bei vorgemerkten Buchungen sondern stattdessen vorgemerkte loeschen und neu abrufen
- *
- * Revision 1.39  2009/02/18 10:54:45  willuhn
- * @N Abruf der vorgemerkten Umsaetze konfigurierbar
- *
- * Revision 1.38  2009/02/13 09:30:35  willuhn
- * @C Erkennung von Vormerkposten nochmal leicht ueberarbeitet
- *
- * Revision 1.37  2009/02/12 18:37:18  willuhn
- * @N Erster Code fuer vorgemerkte Umsaetze
- *
- * Revision 1.36  2009/02/12 16:14:34  willuhn
- * @N HBCI4Java-Version mit Unterstuetzung fuer vorgemerkte Umsaetze
- *
- * Revision 1.35  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- * Revision 1.34  2008/12/15 11:01:52  willuhn
- * @C Merge komplett weglassen, wenn gar keine Umsaetze empfangen wurden
- *
- * Revision 1.33  2008/12/15 10:57:44  willuhn
- * @N Beim Synchronisieren mit den vorhandenen Umsaetzen nicht mehr mit allen Umsaetzen des Kontos vergleichen sondern nur noch mite den relevanten Daten aus dem "Merge-Window". Das umfasst den Bereich ab ${startdatum} - 30 Tage
- *
- * Revision 1.32  2008/11/25 00:52:38  willuhn
- * @N Wenn Auslandsueberweisungen nicht gespeichert werden konnten, dann wenigstens einen Hinweis melden
- *
- * Revision 1.31  2008/09/23 11:24:27  willuhn
- * @C Auswertung der Job-Results umgestellt. Die Entscheidung, ob Fehler oder Erfolg findet nun nur noch an einer Stelle (in AbstractHBCIJob) statt. Ausserdem wird ein Job auch dann als erfolgreich erledigt markiert, wenn der globale Job-Status zwar fehlerhaft war, aber fuer den einzelnen Auftrag nicht zweifelsfrei ermittelt werden konnte, ob er erfolgreich war oder nicht. Es koennte unter Umstaenden sein, eine Ueberweisung faelschlicherweise als ausgefuehrt markiert (wenn globaler Status OK, aber Job-Status != ERROR). Das ist aber allemal besser, als sie doppelt auszufuehren.
- *
- * Revision 1.30  2008/02/18 15:17:28  willuhn
- * @N offset in startdate bei Umsatzabruf konfigurierbar (via "umsatz.startdate.offset")
- *
- * Revision 1.29  2007/12/11 13:46:48  willuhn
- * @N Waehrung auch bei Saldo-Abfrage - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=43618#43618
- *
- * Revision 1.28  2007/12/11 13:17:26  willuhn
- * @N Waehrung bei Umsatzabfrage - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=43618#43618
- *
- * Revision 1.27  2007/03/16 14:40:02  willuhn
- * @C Redesign ImportMessage
- * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
- **********************************************************************/

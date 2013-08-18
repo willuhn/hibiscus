@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * BUG: 0253 BUGZILLA 1381 - Umsatz-Doppler wenn lokal und bei Bank je MEHRERE identische Umsaetze vorliegen
   * NEW: 0252 BUGZILLA 789 - Saldo beim Export von Umsaetzen ausblendbar
   * BUG: 0251 ClassCastException (hatte keine weiteren Folgen - wurde nur geloggt)
   * BUG: 0250 BUGZILLA 879 - Eingabefelder in Lastschrift+Überweisung wurden nach
