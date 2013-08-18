@@ -134,6 +134,7 @@ public class UmsatzTree extends TreePart
     this.addColumn(i18n.tr("Verwendungszweck"), "mergedzweck");
     this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    this.addColumn(i18n.tr("Notiz"),            "kommentar");
 
     this.setContextMenu(new UmsatzList());
   }
