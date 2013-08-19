@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.gui.menus;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -22,6 +23,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
@@ -137,7 +139,36 @@ public class KontoList extends ContextMenu implements Extendable
     {
       this.setText(i18n.tr("Erweitert"));
       this.setImage(SWTUtil.getImage("emblem-symbolic-link.png"));
-      addItem(new CheckedSingleContextMenuItem(i18n.tr("Als Standardkonto festlegen"),new KontoMarkDefault(),"emblem-default.png"));
+      addItem(new CheckedSingleContextMenuItem(i18n.tr("Als Standardkonto festlegen"),new KontoMarkDefault(),"emblem-default.png")
+      {
+        public boolean isEnabledFor(Object o)
+        {
+          // Label aendern, falls es bereits das Standardkonto ist
+          boolean set = false;
+          try
+          {
+            if (o instanceof Konto)
+            {
+              Konto kc = (Konto) o;
+              Konto kd = Settings.getDefaultKonto();
+              if (kd != null && BeanUtil.equals(kc,kd))
+              {
+                setText(i18n.tr("Nicht mehr als Standardkonto verwenden"));
+                set = true;
+              }
+            }
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to switch label",e);
+          }
+          
+          if (!set)
+            setText(i18n.tr("Als Standardkonto festlegen"));
+          return super.isEnabledFor(o);
+        };
+      }
+      );
       addItem(ContextMenuItem.SEPARATOR);
       addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo und Datum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto deaktivieren..."), new KontoDisable(),"network-offline.png",false));
