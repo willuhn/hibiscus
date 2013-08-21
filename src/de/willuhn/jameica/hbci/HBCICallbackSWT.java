@@ -316,7 +316,8 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 			// wiederzufinden. Das ist mir zu aufwaendig. Deswegen
 			// teile ich der Factory gleich selbst mit, dass der
 			// User die Aktion selbst abgebrochen hat.
-      session.cancel();
+		  if (session != null) // kann er u.U. abbrechen, bevor die Session existierte
+		    session.cancel();
 			throw oce;
 		}
 		catch (Throwable t)
