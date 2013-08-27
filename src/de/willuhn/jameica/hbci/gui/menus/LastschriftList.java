@@ -69,7 +69,7 @@ public class LastschriftList extends ContextMenu
     },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new LastschriftExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new LastschriftImport(),"document-open.png"));
-		
+
 	}
 
   /**
@@ -111,15 +111,15 @@ public class LastschriftList extends ContextMenu
     {
     	super.handleAction(null);
     }
-	} 
-	
+	}
+
 	/**
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
 	 * Lastschrift noch nicht ausgefuehrt wurde.
    */
   private class NotActiveSingleMenuItem extends ContextMenuItem
 	{
-		
+
     /**
      * ct.
      * @param text anzuzeigender Text.
@@ -153,14 +153,14 @@ public class LastschriftList extends ContextMenu
     	return false;
     }
 	}
-  
+
   /**
    * Liefert nur dann true, wenn alle uebergebenen Lastschriften noch nicht
    * ausgefuehrt wurden.
    */
   private class NotActiveMultiMenuItem extends CheckedContextMenuItem
   {
-    
+
     /**
      * ct.
      * @param text anzuzeigender Text.
@@ -194,7 +194,7 @@ public class LastschriftList extends ContextMenu
       }
       catch (RemoteException e)
       {
-        Logger.error("unable to check if terminable is allready executed",e);
+        Logger.error("unable to check if terminable is already executed",e);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
       }
       return false;

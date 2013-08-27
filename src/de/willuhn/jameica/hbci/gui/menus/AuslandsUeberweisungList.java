@@ -105,15 +105,15 @@ public class AuslandsUeberweisungList extends ContextMenu
     {
     	super.handleAction(null);
     }
-	} 
-	
+	}
+
 	/**
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
 	 * Ueberweisung noch nicht ausgefuehrt wurde.
    */
   private class NotActiveSingleMenuItem extends CheckedContextMenuItem
 	{
-		
+
     /**
      * ct.
      * @param text anzuzeigender Text.
@@ -155,7 +155,7 @@ public class AuslandsUeberweisungList extends ContextMenu
    */
   private class NotActiveMultiMenuItem extends CheckedContextMenuItem
   {
-    
+
     /**
      * ct.
      * @param text anzuzeigender Text.
@@ -189,7 +189,7 @@ public class AuslandsUeberweisungList extends ContextMenu
       }
       catch (RemoteException e)
       {
-        Logger.error("unable to check if terminable is allready executed",e);
+        Logger.error("unable to check if terminable is already executed",e);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
       }
       return false;

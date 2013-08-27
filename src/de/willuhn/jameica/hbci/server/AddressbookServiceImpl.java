@@ -100,11 +100,11 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
         Logger.info("loading addressbooks");
         Class[] found = Application.getClassLoader().getClassFinder().findImplementors(Addressbook.class);
         ArrayList list = new ArrayList();
-        
+
         // Uns selbst tun wir immer zuerst rein.
         // Damit stehen wir immer oben in der Liste
         list.add(this);
-        
+
         for(int i=0;i<found.length;++i)
         {
           if (found[i].equals(this.getClass()))
@@ -126,7 +126,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
       {
         Logger.error("no addressbooks found, suspekt!");
       }
-      
+
       // Sollte eigentlich nie passieren. Daher nur zur Sicherheit
       if (this.books == null || this.books.length == 0)
       {
@@ -146,7 +146,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     // Adressbuch 1 sind wir selbst
     // Adressbuch 2 ist das Hibiscus-Adressbuch
     // --> Diese beiden existieren immer in Hibiscus
-    // Existiert noch mindestens eins mehr, dann haben wir externe 
+    // Existiert noch mindestens eins mehr, dann haben wir externe
     Addressbook[] books = getAddressbooks();
     return books != null && books.length > 2;
   }
@@ -182,7 +182,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
   {
     if (isStarted())
     {
-      Logger.warn("service allready started, skipping request");
+      Logger.warn("service already started, skipping request");
       return;
     }
     this.started = true;

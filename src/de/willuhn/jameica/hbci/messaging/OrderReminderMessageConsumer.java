@@ -50,10 +50,10 @@ public class OrderReminderMessageConsumer implements MessageConsumer
     ReminderMessage msg           = (ReminderMessage) message;
     Map<String,Serializable> data = (Map<String,Serializable>) msg.getData();
     Date termin                   = msg.getDate();
-    
+
     MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
     DBService service          = Settings.getDBService();
-    
+
     // 1. der zu duplizierende Auftrag
     Class type = loader.load((String) data.get("order.class"));
     String id  = (String) data.get("order.id");
@@ -75,32 +75,32 @@ public class OrderReminderMessageConsumer implements MessageConsumer
       String from = t.getMeta("reminder.template",null);
       if (from != null && from.equals(id))
       {
-        Logger.debug("allready cloned by " + t.getMeta("reminder.creator","unknown"));
+        Logger.debug("already cloned by " + t.getMeta("reminder.creator","unknown"));
         return;
       }
     }
-    
+
     // 3. Auftrag laden
     Duplicatable template = (Duplicatable) service.createObject(type,id);
-    
+
     // 4. Auftrag clonen und speichern
     HibiscusDBObject order = (HibiscusDBObject) template.duplicate();
     String hostname        = Application.getCallback().getHostname();
-    
+
     try
     {
       order.transactionBegin();
-      
+
       ((Terminable)order).setTermin(termin);      // Ziel-Datum uebernehmen
       order.store();                              // speichern, noetig, weil wir die ID brauchen
-      
+
       // Meta-Daten speichern
       order.setMeta("reminder.creator",hostname);
       order.setMeta("reminder.template",id);
 
       order.transactionCommit();
       Application.getMessagingFactory().sendSyncMessage(new ImportMessage(order)); //synchron senden, weil wir schon im Messaging-Thread sind
-      
+
       Logger.info("order " + type.getSimpleName() + ":" + id + " cloned by " + hostname + ", id: " + order.getID() + ", date: " + termin);
     }
     catch (Exception e)

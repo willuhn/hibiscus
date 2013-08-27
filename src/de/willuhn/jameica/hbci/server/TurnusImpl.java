@@ -186,7 +186,7 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
    */
   public long getChecksum() throws RemoteException
   {
-		String s = ("" + getIntervall()) + 
+		String s = ("" + getIntervall()) +
 		           ("" + getTag()) +
 		           ("" + getZeiteinheit());
 		CRC32 crc = new CRC32();
@@ -219,7 +219,7 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 		existing.addFilter("tag = " + this.getTag());
 		if (existing.hasNext())
 		{
-			Logger.info("turnus \"" + TurnusHelper.createBezeichnung(this) + "\" allready exists, skipping insert");
+			Logger.info("turnus \"" + TurnusHelper.createBezeichnung(this) + "\" already exists, skipping insert");
 			return;
 		}
     super.insert();

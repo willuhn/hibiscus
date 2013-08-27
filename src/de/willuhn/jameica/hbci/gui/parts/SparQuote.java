@@ -68,19 +68,19 @@ public class SparQuote implements Part
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
-  
+
   private TablePart table              = null;
   private LineChart chart              = null;
   private KontoInput kontoauswahl      = null;
   private UmsatzDaysInput startAuswahl = null;
   private SpinnerInput tagAuswahl      = null;
   private SpinnerInput monatAuswahl    = null;
-  
+
   private List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
   private List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
-  
+
   private Listener listener            = null; // BUGZILLA 575
-  
+
   private Date start                   = null;
   private int stichtag                 = 1;
   private int monate                   = 1;
@@ -106,12 +106,12 @@ public class SparQuote implements Part
           // ignorieren wir. Durch den Delayed-Listener kann dieses
           // Event auch aufgerufen werden, wenn der Dialog schon verlassen wurde
           // Daher nur zu Debugging-Zwecken.
-          Logger.write(Level.DEBUG,"unable to redraw data, it seems, the view was allready closed",e);
+          Logger.write(Level.DEBUG,"unable to redraw data, it seems, the view was already closed",e);
         }
       }
     };
   }
-  
+
   /**
    * Berechnet Start-Datum und Stichtag.
    * @throws RemoteException
@@ -121,7 +121,7 @@ public class SparQuote implements Part
     // Stichtag
     Integer value = (Integer) getTagAuswahl().getValue();
     stichtag = value == null ? 1 : value.intValue();
-    
+
     //Monate
     value = (Integer) getMonatAuswahl().getValue();
     monate = value == null ? 1 : value.intValue();
@@ -138,7 +138,7 @@ public class SparQuote implements Part
       start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
     }
   }
-  
+
   /**
    * Liefert die Konto-Auwahl.
    * @return die Konto-Auswahl.
@@ -156,7 +156,7 @@ public class SparQuote implements Part
     this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
     return this.kontoauswahl;
   }
-  
+
   /**
    * Liefert ein Eingabefeld fuer den Stichtag.
    * @return Eingabe-Feld.
@@ -206,7 +206,7 @@ public class SparQuote implements Part
     this.startAuswahl.addListener(new DelayedListener(500,this.listener));
     return this.startAuswahl;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -218,7 +218,7 @@ public class SparQuote implements Part
       final TabFolder folder = new TabFolder(parent, SWT.NONE);
       folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
-      
+
       tab.addInput(getKontoAuswahl());
       tab.addInput(getStartAuswahl());
       tab.addInput(getTagAuswahl());
@@ -227,14 +227,14 @@ public class SparQuote implements Part
 
     ButtonArea topButtons = new ButtonArea();
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
-      
+
       public void handleAction(Object context) throws ApplicationException
       {
         listener.handleEvent(null);
       }
     },null,true,"view-refresh.png");
     topButtons.paint(parent);
-    
+
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data,null);
     this.table.addColumn(i18n.tr("Monat"), "monat", new Formatter() {
@@ -259,7 +259,7 @@ public class SparQuote implements Part
         item.setForeground(ColorUtil.getForeground(ue.einnahmen - ue.ausgaben));
       }
     });
-    
+
     TabFolder folder = new TabFolder(parent, SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -291,7 +291,7 @@ public class SparQuote implements Part
   {
     if (this.data == null)
       return;
-    
+
     this.table.removeAll();
 
     for (UmsatzEntry e:this.data)
@@ -344,7 +344,7 @@ public class SparQuote implements Part
         // Neues Limit definieren
         cal.setTime(date);
         cal.add(Calendar.MONTH,this.monate);
-        
+
         // BUGZILLA 691
         if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
           cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -353,23 +353,23 @@ public class SparQuote implements Part
 
         currentLimit = DateUtil.startOfDay(cal.getTime());
       }
-      
+
       double betrag = u.getBetrag();
       if (betrag > 0)
         currentEntry.einnahmen += betrag;
       else
         currentEntry.ausgaben -= betrag;
     }
-    
+
     // Trend ermitteln
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Glättungsverfahren
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Trend_und_Saisonkomponente
-    
+
     this.trend.clear();
     for (int i=0;i<this.data.size();++i)
       this.trend.add(getDurchschnitt(this.data,i));
   }
-  
+
   /**
    * Liefert einen synthetischen Umsatz-Entry basierend auf den
    * Daten der 4 links und rechts daneben liegenden Monaten als Durchschnitt.
@@ -399,7 +399,7 @@ public class SparQuote implements Part
     }
     ue.einnahmen /= found;
     ue.ausgaben /= found;
-    
+
     return ue;
   }
 
@@ -420,7 +420,7 @@ public class SparQuote implements Part
     {
       return this.einnahmen;
     }
-    
+
     /**
      * Liefert die Ausgaben.
      * @return die Ausgaben.
@@ -429,7 +429,7 @@ public class SparQuote implements Part
     {
       return this.ausgaben;
     }
-    
+
     /**
      * Liefert den Monat.
      * @return der Monat.
@@ -438,7 +438,7 @@ public class SparQuote implements Part
     {
       return this.monat;
     }
-    
+
     /**
      * Liefert die Sparquote.
      * @return die Sparquote.
@@ -448,8 +448,8 @@ public class SparQuote implements Part
       return einnahmen - ausgaben;
     }
   }
-  
-  
+
+
   /**
    * Implementierung eines Datensatzes fuer die Darstellung der Sparquote.
    */
@@ -507,7 +507,7 @@ public class SparQuote implements Part
     {
       return null;
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
      */
@@ -538,7 +538,7 @@ public class SparQuote implements Part
     {
       return i18n.tr("Trend");
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
      */
