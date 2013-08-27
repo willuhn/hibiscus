@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -141,13 +140,6 @@ public class HBCIDauerauftragStoreJob extends AbstractHBCIJob
   {
     // Tests fuer die Job-Restriktionen
     Properties p = job.getJobRestrictions();
-    Enumeration keys = p.keys();
-    while (keys.hasMoreElements())
-    {
-      String s = (String) keys.nextElement();
-      Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
-    }
-
     Turnus turnus = dauerauftrag.getTurnus();
     new TurnusRestriction(turnus,p).test();
     if (!active) // nur pruefen bei neuen Dauerauftraegen

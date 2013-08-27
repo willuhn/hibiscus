@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.server.hbci;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -130,12 +129,6 @@ public class HBCIUeberweisungJob extends AbstractHBCIJob
     {
       Date date = this.ueberweisung.getTermin();
       Properties p = job.getJobRestrictions();
-      Enumeration keys = p.keys();
-      while (keys.hasMoreElements())
-      {
-        String s = (String) keys.nextElement();
-        Logger.info("[hbci job restriction] name: " + s + ", value: " + p.getProperty(s));
-      }
       new PreTimeRestriction(date,p).test();
       this.setJobParam("date",date);
     }
