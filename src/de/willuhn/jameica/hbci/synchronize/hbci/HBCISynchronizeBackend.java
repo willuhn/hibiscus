@@ -11,6 +11,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -33,6 +34,7 @@ import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Level;
@@ -53,7 +55,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
   {
     return "HBCI";
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#createJobGroup(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -61,7 +63,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
   {
     return new HBCIJobGroup(k);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getJobProviderInterface()
    */
@@ -69,7 +71,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
   {
     return HBCISynchronizeJobProvider.class;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getSynchronizeKonten(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -77,7 +79,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
   {
     List<Konto> list = super.getSynchronizeKonten(k);
     List<Konto> result = new ArrayList<Konto>();
-    
+
     // Wir wollen nur die Online-Konten haben
     for (Konto konto:list)
     {
@@ -91,10 +93,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         Logger.error("unable to determine flags of konto",re);
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#create(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -113,10 +115,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
 
     // aufgrund eines Bugs im SUN compiler muessen wir hier explizit casten.
     // Siehe https://bugs.eclipse.org/bugs/show_bug.cgi?id=98379
-    // Ab Java 1.6.0_25 ist das gefixt. Aber es soll ja auch in aelteren Java-Versionen compilieren    
+    // Ab Java 1.6.0_25 ist das gefixt. Aber es soll ja auch in aelteren Java-Versionen compilieren
     return(T) super.create(type,konto);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -132,10 +134,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       Logger.error("unable to determine support for job type " + type,re);
       return false;
     }
-    
+
     return super.supports(type,konto);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#execute(java.util.List)
    */
@@ -158,17 +160,17 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
 
     return super.execute(jobs);
   }
-  
-  
+
+
   /**
-   * Hilfsklasse, um die Jobs nach Konten zu gruppieren. 
+   * Hilfsklasse, um die Jobs nach Konten zu gruppieren.
    */
   protected class HBCIJobGroup extends JobGroup implements Closeable
   {
     private List<AbstractHBCIJob> hbciJobs = new ArrayList<AbstractHBCIJob>();
     private PassportHandle handle = null;
     private HBCIHandler handler   = null;
-    
+
     /**
      * ct.
      * @param k das Konto der Job-Gruppe.
@@ -177,7 +179,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
     {
       super(k);
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend.JobGroup#sync()
      */
@@ -186,7 +188,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       ////////////////////////////////////////////////////////////////////
       // lokale Variablen
       ProgressMonitor monitor = HBCISynchronizeBackend.this.worker.getMonitor();
-      
+
       // Wir ermitteln anhand der Gesamt-Anzahl von Jobs, wieviel Fortschritt
       // pro Job gemacht wird, addieren das fuer unsere Gruppe, ziehen noch
       // einen Teil fuer Passport-Initialisierung ab (3%) sowie 3% fuer die Job-Auswertung
@@ -209,7 +211,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         Passport passport     = new TaskPassportInit().execute();
         this.handle           = new TaskHandleInit(passport).execute();
         this.handler          = new TaskHandleOpen(handle).execute();
-  
+        new TaskSepaInfo(handler).execute();
+
         Logger.info("processing jobs");
         for (SynchronizeJob job:this.jobs)
         {
@@ -218,10 +221,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
           for (AbstractHBCIJob hbciJob:list)
           {
             this.checkInterrupted();
-            
+
             monitor.setStatusText(i18n.tr("Aktiviere HBCI-Job: \"{0}\"",job.getName()));
             Logger.info("adding job " + hbciJob.getIdentifier() + " to queue");
-            
+
             HBCIJob j = handler.newJob(hbciJob.getIdentifier());
             this.dumpJob(j);
             hbciJob.setJob(j);
@@ -256,7 +259,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         try
         {
           String name = null;
-          
+
           // Waehrend der Ergebnis-Auswertung findet KEIN "checkInterrupted" Check statt,
           // da sonst Job-Ergebnisse verloren gehen wuerden.
 
@@ -276,7 +279,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
             catch (Throwable t)
             {
               haveError = true;
-              
+
               // Nur loggen, wenn wir nicht abgebrochen wurden. Waeren sonst nur Folgefehler
               if (!HBCISynchronizeBackend.this.worker.isInterrupted())
               {
@@ -293,7 +296,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
               }
             }
           }
-          
+
           monitor.addPercentComplete(3);
 
           if (haveError || HBCISynchronizeBackend.this.worker.isInterrupted())
@@ -301,7 +304,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
             Logger.warn("found errors or synchronization cancelled, clear PIN cache");
             DialogFactory.clearPINCache(this.handler != null ? this.handler.getPassport() : null);
           }
-          
+
           if (!inCatch)
           {
             // Fehler nur werfen, wenn wir nicht abgebrochen wurden - in dem Fall
@@ -339,7 +342,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         Logger.debug("  " + key + ": " + p.getProperty(key));
       }
     }
-    
+
     /**
      * Schliesst die waehrend der Ausfuehrung geoeffneten Ressourcen.
      * @see java.io.Closeable#close()
@@ -359,7 +362,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         }
       }
     }
-    
+
     /**
      * Task fuer die Initialisierung des Passport.
      */
@@ -371,7 +374,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       public Passport internalExecute() throws Throwable
       {
         checkInterrupted();
-        
+
         ////////////////////////////////////////////////////////////////////
         // lokale Variablen
         ProgressMonitor monitor = HBCISynchronizeBackend.this.worker.getMonitor();
@@ -383,11 +386,11 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
           Passport passport = PassportRegistry.findByClass(konto.getPassportClass());
           if (passport == null)
             throw new ApplicationException(i18n.tr("Kein HBCI-Sicherheitsmedium für das Konto gefunden"));
-          
+
           monitor.setStatusText(i18n.tr("Initialisiere HBCI-Sicherheitsmedium"));
           passport.init(konto);
           monitor.addPercentComplete(1);
-          
+
           return passport;
         }
         catch (Exception e)
@@ -396,14 +399,14 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         }
       }
     }
-    
+
     /**
      * Task fuer die Initialisierung des Handle.
      */
     private class TaskHandleInit extends AbstractTaskWrapper<PassportHandle>
     {
       private Passport passport = null;
-      
+
       /**
        * ct.
        * @param passport
@@ -412,14 +415,14 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       {
         this.passport = passport;
       }
-      
+
       /**
        * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend.HBCIJobGroup.AbstractTaskWrapper#internalExecute()
        */
       public PassportHandle internalExecute() throws Throwable
       {
         checkInterrupted();
-        
+
         ////////////////////////////////////////////////////////////////////
         // lokale Variablen
         ProgressMonitor monitor = HBCISynchronizeBackend.this.worker.getMonitor();
@@ -427,10 +430,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
 
         monitor.setStatusText(i18n.tr("Erzeuge HBCI-Handle"));
         PassportHandle handle = this.passport.getHandle();
-        
+
         if (handle == null)
           throw new ApplicationException(i18n.tr("Fehler beim Erzeugen der HBCI-Verbindung"));
-        
+
         monitor.addPercentComplete(1);
         return handle;
       }
@@ -442,7 +445,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
     private class TaskHandleOpen extends AbstractTaskWrapper<HBCIHandler>
     {
       private PassportHandle handle = null;
-      
+
       /**
        * ct.
        * @param handle
@@ -451,14 +454,14 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       {
         this.handle = handle;
       }
-      
+
       /**
        * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend.HBCIJobGroup.AbstractTaskWrapper#internalExecute()
        */
       public HBCIHandler internalExecute() throws Throwable
       {
         checkInterrupted();
-        
+
         ////////////////////////////////////////////////////////////////////
         // lokale Variablen
         ProgressMonitor monitor = HBCISynchronizeBackend.this.worker.getMonitor();
@@ -468,10 +471,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         {
           monitor.setStatusText(i18n.tr("Öffne HBCI-Verbindung"));
           HBCIHandler handler = this.handle.open();
-          
+
           if (handler == null)
             throw new ApplicationException(i18n.tr("Fehler beim Öffnen der HBCI-Verbindung"));
-          
+
           monitor.addPercentComplete(1);
           return handler;
         }
@@ -481,7 +484,61 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
         }
       }
     }
-    
+
+    /**
+     * Task fuer das Ermitteln der SEPA-Infos.
+     */
+    private class TaskSepaInfo extends AbstractTaskWrapper<Void>
+    {
+      private HBCIHandler handler = null;
+
+      /**
+       * ct.
+       * @param handler
+       */
+      private TaskSepaInfo(HBCIHandler handler)
+      {
+        this.handler = handler;
+      }
+
+      /**
+       * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend.HBCIJobGroup.AbstractTaskWrapper#internalExecute()
+       */
+      public Void internalExecute() throws Throwable
+      {
+        if (this.handler.getSupportedLowlevelJobs().getProperty("SEPAInfo") == null)
+        {
+          Logger.info("Fetching of SEPA infos not supported");
+          return null;
+        }
+
+        checkInterrupted();
+
+        try
+        {
+          Properties p = this.handler.getLowlevelJobRestrictions("SEPAInfo");
+          Enumeration keys = p.keys();
+          Logger.debug("sepa infos:");
+          while (keys.hasMoreElements())
+          {
+            String s = (String) keys.nextElement();
+            Logger.debug("  " + s + ", value: " + p.getProperty(s));
+          }
+          p.put("konto.id",getKonto().getID()); // Damit klar ist, zu welchem Konto das gehoert
+
+          // Wir verschicken das per Messaging - dann koennen wir das an anderer Stelle verarbeiten, falls benoetigt
+          Application.getMessagingFactory().getMessagingQueue("hibiscus.sepainfo").sendMessage(new QueryMessage(p));
+        }
+        catch (Exception e)
+        {
+          // Nur Loggen, nicht weiterwerfen
+          Logger.error("unable to fetch SEPA info",e);
+        }
+        return null;
+      }
+    }
+
+
     /**
      * Wrappt einen Task als Runnable, damit es je nach Laufzeit-Umgebung direkt oder im GUI-Thread ausgefuehrt werden kann.
      */
@@ -489,7 +546,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
     {
       private Exception exception = null;
       private T result            = null;
-      
+
       /**
        * Fuehrt den Task je nach Laufzeit-Umgebung passend aus.
        * @return der Rueckgabewert des Tasks.
@@ -501,20 +558,20 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
           this.run();
         else
           GUI.getDisplay().syncExec(this);
-        
+
         if (this.exception != null)
           throw this.exception;
-        
+
         return this.result;
       }
-      
+
       /**
        * Fuehrt den Task aus.
        * @return T der Rueckgabewert des Tasks.
        * @throws Throwable
        */
       protected abstract T internalExecute() throws Throwable;
-      
+
       /**
        * @see java.lang.Runnable#run()
        */
