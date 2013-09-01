@@ -1,5 +1,10 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0257 Feature "Standardkonto" entfernt. Seit sich das Kontoauswahlfeld das zuletzt ausgewählte
+              Konto merken kann, kollidiert das regelmäßig mit dem Standardkonto. Siehe auch
+              BUGZILLA 1362 sowie http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=93624#93624 
+  * BUG: 0256 Dauerauftrag - nächste Zahlung: Als Valuta nicht das aktuelle Datum nehmen sondern den ersten
+              Ausführungstermin. Beim Anlegen von neuen Daueraufträgen weit in der Zukunft ist der nächste Termin sonst zu früh
   * NEW: 0255 Deutsche Bank Ludwigshafen (BLZ 54570024) zu Deutsche-Bank-Rewriter hinzugefügt
   * NEW: 0254 Spalte "Notiz" auch in "Umsätze nach Kategorien" anzeigen
   * BUG: 0253 BUGZILLA 1381 - Umsatz-Doppler wenn lokal und bei Bank je MEHRERE identische Umsaetze vorliegen

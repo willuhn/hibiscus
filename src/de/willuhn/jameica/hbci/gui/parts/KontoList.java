@@ -38,7 +38,6 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
@@ -60,7 +59,7 @@ import de.willuhn.util.I18N;
  */
 public class KontoList extends TablePart implements Part
 {
-  
+
   // BUGZILLA 476
   private MessageConsumer mc = null;
 
@@ -83,7 +82,7 @@ public class KontoList extends TablePart implements Part
   public KontoList(GenericIterator konten, Action action)
   {
     super(konten,action);
-    
+
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer",null,false,Column.ALIGN_RIGHT);
@@ -137,7 +136,7 @@ public class KontoList extends TablePart implements Part
       public void format(TableItem item)
       {
         Konto k = (Konto) item.getData();
-        final int saldocolumn = 6; 
+        final int saldocolumn = 6;
         try {
           double saldo = k.getSaldo();
           if ((saldo == 0 && k.getSaldoDatum() == null) || Double.isNaN(saldo))
@@ -147,11 +146,11 @@ public class KontoList extends TablePart implements Part
 
           // Checken, ob Konto deaktiviert ist
           int flags = k.getFlags();
-          
+
           // Deaktivierte Konten grau
           if ((flags & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED)
             item.setForeground(Color.COMMENT.getSWTColor());
-          
+
           // Offline-Konten blau
           else if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
             item.setForeground(Color.LINK.getSWTColor());
@@ -161,13 +160,6 @@ public class KontoList extends TablePart implements Part
             item.setForeground(Color.WIDGET_FG.getSWTColor());
 
           item.setForeground(saldocolumn,ColorUtil.getForeground(k.getSaldo()));
-          
-          Konto kd = Settings.getDefaultKonto();
-          if (kd != null && kd.equals(k))
-            item.setFont(Font.BOLD.getSWTFont());
-          else
-            item.setFont(Font.DEFAULT.getSWTFont());
-          
         }
         catch (RemoteException e)
         {
@@ -183,12 +175,12 @@ public class KontoList extends TablePart implements Part
     setRememberColWidths(true);
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoList());
-    
+
     this.setMulti(true);
-    
+
     this.mc = new SaldoMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
-    
+
     this.addSelectionListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -197,7 +189,7 @@ public class KontoList extends TablePart implements Part
       }
     });
   }
-  
+
   /**
    * Fuegt die Spalte "verfuegbarer Betrag" hinzu, wenn wenigstens ein Konto
    * aus der Liste einen solchen besitzt.
@@ -238,7 +230,7 @@ public class KontoList extends TablePart implements Part
       }
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -264,7 +256,7 @@ public class KontoList extends TablePart implements Part
     i.setOrder("ORDER BY blz, bezeichnung");
     return i;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
    */
@@ -284,13 +276,13 @@ public class KontoList extends TablePart implements Part
         items = Arrays.asList((Konto[])o);
       else
         items = this.getItems();
-        
+
       double sum = 0.0d;
       for (Konto k:items)
       {
         sum += k.getSaldo();
       }
-      
+
       if (selected)
         return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}",new String[]{Integer.toString(items.size()),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
 
@@ -302,7 +294,7 @@ public class KontoList extends TablePart implements Part
     }
     return super.getSummary();
   }
-  
+
   /**
    * Hilfsklasse damit wir ueber neue Salden informiert werden.
    */
@@ -334,7 +326,7 @@ public class KontoList extends TablePart implements Part
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
 
       if (o == null || !(o instanceof Konto))
@@ -348,15 +340,15 @@ public class KontoList extends TablePart implements Part
             int index = removeItem(o);
             if (index == -1)
               return; // Objekt war nicht in der Tabelle
-            
+
             // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
            addItem(o,index);
-           
+
            // Wir markieren es noch in der Tabelle
            Object prev = getSelection();
            if (prev != null && prev == o)
              select(o);
-           
+
            // Summen-Zeile aktualisieren
            refreshSummary();
           }

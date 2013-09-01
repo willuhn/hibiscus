@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -42,7 +41,7 @@ public class KontoDisable implements Action
       return;
 
     Konto k = (Konto) context;
-    
+
     try
     {
       // Ist schon deaktiviert
@@ -55,18 +54,15 @@ public class KontoDisable implements Action
 
       if (!Application.getCallback().askUser(s))
         return;
-      
+
       // Konto zuruecksetzen
       k.transactionBegin();
       k.reset();
       k.setFlags(k.getFlags() | Konto.FLAG_DISABLED);
       k.store();
-      
-      Konto kd = Settings.getDefaultKonto();
-      if (kd != null && kd.equals(k))
-        Settings.setDefaultKonto(null);
+
       Logger.info("disabled account id: " + k.getID());
-      
+
       // Dauerauftraege, die noch bei der Bank liegen als offline markieren
       DBIterator dalist = k.getDauerauftraege();
       while (dalist.hasNext())
@@ -79,7 +75,7 @@ public class KontoDisable implements Action
           da.store();
         }
       }
-      
+
       k.transactionCommit();
       Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(k));
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Konto deaktiviert"), StatusBarMessage.TYPE_SUCCESS));

@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.gui.menus;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -23,7 +22,6 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
@@ -32,7 +30,6 @@ import de.willuhn.jameica.hbci.gui.action.KontoDisable;
 import de.willuhn.jameica.hbci.gui.action.KontoExport;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoImport;
-import de.willuhn.jameica.hbci.gui.action.KontoMarkDefault;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.KontoResetAuszugsdatum;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
@@ -78,7 +75,7 @@ public class KontoList extends ContextMenu implements Extendable
         {
           if (o == null || !(o instanceof Konto))
             return false;
-          
+
           Konto k = (Konto)o;
           return super.isEnabledFor(o) && ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED) && ((k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
         }
@@ -88,7 +85,7 @@ public class KontoList extends ContextMenu implements Extendable
           return false;
         }
       }
-      
+
     }); // BUGZILLA 473
     addItem(ContextMenuItem.SEPARATOR);
 
@@ -126,63 +123,32 @@ public class KontoList extends ContextMenu implements Extendable
   {
     return this.getClass().getName();
   }
-  
+
   /**
    * Das "Erweitert..."-Menu.
    */
   private class ExtendedMenu extends ContextMenu
   {
     /**
-     * 
+     *
      */
     private ExtendedMenu()
     {
       this.setText(i18n.tr("Erweitert"));
       this.setImage(SWTUtil.getImage("emblem-symbolic-link.png"));
-      addItem(new CheckedSingleContextMenuItem(i18n.tr("Als Standardkonto festlegen"),new KontoMarkDefault(),"emblem-default.png")
-      {
-        public boolean isEnabledFor(Object o)
-        {
-          // Label aendern, falls es bereits das Standardkonto ist
-          boolean set = false;
-          try
-          {
-            if (o instanceof Konto)
-            {
-              Konto kc = (Konto) o;
-              Konto kd = Settings.getDefaultKonto();
-              if (kd != null && BeanUtil.equals(kc,kd))
-              {
-                setText(i18n.tr("Nicht mehr als Standardkonto verwenden"));
-                set = true;
-              }
-            }
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to switch label",e);
-          }
-          
-          if (!set)
-            setText(i18n.tr("Als Standardkonto festlegen"));
-          return super.isEnabledFor(o);
-        };
-      }
-      );
-      addItem(ContextMenuItem.SEPARATOR);
       addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo und Datum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto deaktivieren..."), new KontoDisable(),"network-offline.png",false));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto aktivieren..."), new FlaggableChange(Konto.FLAG_DISABLED,false),"network-transmit-receive.png",true));
     }
   }
-  
+
   /**
    * Kontextmenu zum Setzen von Flags fuer das Konto.
    */
   private class ChangeFlagsMenuItem extends CheckedSingleContextMenuItem
   {
     boolean f1 = false;
-    
+
     /**
      * ct.
      * @param title
@@ -195,7 +161,7 @@ public class KontoList extends ContextMenu implements Extendable
       super(title,action,icon);
       this.f1 = f1;
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -203,11 +169,11 @@ public class KontoList extends ContextMenu implements Extendable
     {
       if (o == null || !(o instanceof Flaggable))
         return false;
-      
+
       try
       {
         boolean f2 = (((Flaggable)o).getFlags() & Konto.FLAG_DISABLED) != 0;
-        
+
         // Fall 1) Konto ist aktiv und soll deaktiviert werden. f1 = false, f2 = false
         // Fall 2) Konto ist inaktiv und soll aktiviert werden. f1 = true, f1 = true
         // ---> umgekehrtes XOR (XNOR)
@@ -265,36 +231,36 @@ public class KontoList extends ContextMenu implements Extendable
  * Bug #284
  * Revision 1.11 2005/08/01 23:27:42 web0 *** empty log
  * message ***
- * 
+ *
  * Revision 1.10 2005/06/03 17:14:20 web0
- * 
+ *
  * @B NPE
- * 
+ *
  * Revision 1.9 2005/01/19 00:16:04 willuhn
  * @N Lastschriften
- * 
+ *
  * Revision 1.8 2004/11/13 17:02:04 willuhn
  * @N Bearbeiten des Zahlungsturnus
- * 
+ *
  * Revision 1.7 2004/10/25 17:58:56 willuhn
  * @N Haufen Dauerauftrags-Code
- * 
+ *
  * Revision 1.6 2004/10/20 12:08:18 willuhn
  * @C MVC-Refactoring (new Controllers)
- * 
+ *
  * Revision 1.5 2004/10/18 23:38:17 willuhn
  * @C Refactoring
  * @C Aufloesung der Listener und Ersatz gegen Actions
- * 
+ *
  * Revision 1.4 2004/08/18 23:13:51 willuhn
  * @D Javadoc
- * 
+ *
  * Revision 1.3 2004/07/25 17:15:06 willuhn
  * @C PluginLoader is no longer static
- * 
+ *
  * Revision 1.2 2004/07/21 23:54:31 willuhn *** empty log message ***
- * 
+ *
  * Revision 1.1 2004/07/20 21:48:00 willuhn
  * @N ContextMenus
- * 
+ *
  ******************************************************************************/

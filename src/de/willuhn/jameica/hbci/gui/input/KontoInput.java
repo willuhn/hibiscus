@@ -44,9 +44,9 @@ public class KontoInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoInput.class);
-  
+
   private static List<String> groups = null;
-  
+
   private KontoListener listener = null;
   private String token = null;
   private boolean store = true;
@@ -54,7 +54,7 @@ public class KontoInput extends SelectInput
   private boolean supportGroups = false;
 
   private MessageConsumer mc = new SaldoMessageConsumer();
-  
+
   /**
    * ct.
    * @param konto ausgewaehltes Konto.
@@ -67,20 +67,14 @@ public class KontoInput extends SelectInput
     setName(i18n.tr("Konto"));
     setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setComment("");
-    
-    if (konto == null)
-    {
-      konto = Settings.getDefaultKonto();
-      if (konto != null)
-        setPreselected(konto);
-    }
+
     this.listener = new KontoListener();
     this.addListener(this.listener);
 
     // einmal ausloesen
     this.listener.handleEvent(null);
   }
-  
+
   /**
    * Legt fest, ob die Kontoauswahl das Zurueckliefern von Gruppen unterstuetzen soll.
    * @param b true, wenn es unterstuetzt werden soll.
@@ -93,7 +87,7 @@ public class KontoInput extends SelectInput
   {
     this.supportGroups = b;
   }
-  
+
   /**
    * Die Kontoauswahl kann sich das zuletzt ausgewaehlte Konto merken.
    * Damit dann aber nicht auf allen Dialogen das gleiche Konto vorausgewaehlt ist,
@@ -110,11 +104,7 @@ public class KontoInput extends SelectInput
   {
     if (s == null || s.length() == 0)
       return;
-    
-    // BUGZILLA 1362 Wenn wir ein Standard-Konto haben, hat immer das Vorrang
-    if (Settings.getDefaultKonto() != null)
-      return;
-    
+
     this.token = s;
     this.store = store;
 
@@ -153,7 +143,7 @@ public class KontoInput extends SelectInput
   {
     this.setRememberSelection(s,true);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.SelectInput#getControl()
    */
@@ -161,9 +151,9 @@ public class KontoInput extends SelectInput
   {
     if (this.control != null)
       return this.control;
-    
+
     this.control = super.getControl();
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
     this.control.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -174,7 +164,7 @@ public class KontoInput extends SelectInput
     });
     return this.control;
   }
-  
+
   /**
    * Speichert die aktuelle Auswahl.
    */
@@ -182,12 +172,12 @@ public class KontoInput extends SelectInput
   {
     if (!this.store || this.token == null)
       return;
-    
+
     try
     {
       Object o = getValue();
       String value = null;
-      
+
       if (o != null)
       {
         if (o instanceof Konto)
@@ -214,17 +204,17 @@ public class KontoInput extends SelectInput
   {
     groups = KontoUtil.getGroups(); // Gruppen neu laden
     boolean haveGroups = groups.size() > 0;
-    
+
     DBIterator it = Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
     List l = new ArrayList();
-    
+
     String current = null;
-    
+
     while (it.hasNext())
     {
       Konto k = (Konto) it.next();
-      
+
       if (filter == null || filter.accept(k))
       {
         if (haveGroups)
@@ -244,14 +234,14 @@ public class KontoInput extends SelectInput
     }
     return l;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
    */
   public Object getValue()
   {
     Object o = super.getValue();
-    
+
     if ((o instanceof String) && !this.supportGroups) // Kategorie
     {
       GUI.getView().setErrorText(i18n.tr("Die Auswahl einer Konto-Gruppen ist hier nicht möglich"));
@@ -267,30 +257,24 @@ public class KontoInput extends SelectInput
   {
     if (bean == null)
       return null;
-    
+
     if (!(bean instanceof Konto))
       return bean.toString();
-    
+
     try
     {
       Konto k = (Konto) bean;
-      
-      Konto kd = Settings.getDefaultKonto();
-      boolean isDefault = (kd != null && kd.equals(k));
-
 
       boolean disabled = k.hasFlag(Konto.FLAG_DISABLED);
 
       StringBuffer sb = new StringBuffer();
       if (groups.size() > 0)
         sb.append("   "); // Wir haben Gruppen - also einruecken
-      if (isDefault)
-        sb.append("> ");
       if (disabled)
         sb.append("[");
-      
+
       sb.append(i18n.tr("Kto. {0}",k.getKontonummer()));
-      
+
       String blz = k.getBLZ();
       sb.append(" [");
       String bankName = HBCIUtils.getNameForBLZ(blz);
@@ -312,13 +296,13 @@ public class KontoInput extends SelectInput
         sb.append(" - ");
         sb.append(bez);
       }
-      
+
       if (k.getSaldoDatum() != null)
       {
         sb.append(", ");
         sb.append(i18n.tr("Saldo: {0} {1}", new String[]{HBCI.DECIMALFORMAT.format(k.getSaldo()),k.getWaehrung()}));
       }
-      
+
       if (disabled)
         sb.append("]");
       return sb.toString();
@@ -387,20 +371,20 @@ public class KontoInput extends SelectInput
       GenericObject o = msg.getObject();
       if (!(o instanceof Konto))
         return;
-      
+
       final Konto konto = (Konto) o;
-      
+
       GUI.getDisplay().syncExec(new Runnable() {
         public void run()
         {
           // Checken, ob wir das Konto in der Liste haben. Wenn ja, aktualisieren
           // wir dessen Saldo
           List list = null;
-          
+
           try
           {
             list = getList();
-            
+
             if (list == null)
               return;
 
@@ -409,7 +393,7 @@ public class KontoInput extends SelectInput
               Object item = list.get(i);
               if (!(item instanceof Konto))
                 continue; // Ist eine Konto-Gruppe
-              
+
               Konto k = (Konto) item;
               if (BeanUtil.equals(konto,k))
               {
@@ -417,7 +401,7 @@ public class KontoInput extends SelectInput
                 break;
               }
             }
-            
+
             // Liste neu zeichnen lassen. Das aktualisiert die Kommentare
             // und den Text in der Kombo-Box
             setValue(getValue());
