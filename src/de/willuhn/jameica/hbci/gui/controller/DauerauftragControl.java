@@ -38,6 +38,7 @@ import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -384,10 +385,13 @@ public class DauerauftragControl extends AbstractTransferControl {
     {
       try
       {
-        final Dauerauftrag t = (Dauerauftrag) getTransfer();
-        Date ez = (Date) ersteZahlung.getValue();
-        t.setErsteZahlung(ez);
-        Date next = t.getNaechsteZahlung();
+        Date first = (Date) getErsteZahlung().getValue();
+        Date last  = (Date) getLetzteZahlung().getValue();
+        Turnus t   = (Turnus) getTurnus().getValue();
+        if (first == null || t == null)
+          return;
+
+        Date next = TurnusHelper.getNaechsteZahlung(first,last,t,first);
         if (next != null)
           ersteZahlung.setComment(i18n.tr("Nächste: {0}", HBCI.DATEFORMAT.format(next)));
         else
