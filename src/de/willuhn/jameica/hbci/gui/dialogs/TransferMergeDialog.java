@@ -27,7 +27,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -61,13 +61,13 @@ public class TransferMergeDialog extends AbstractDialog
 	private final static I18N i18n    = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	private SammelTransfer transfer   = null;
   private Boolean delete            = Boolean.FALSE;
-  
+
   private CheckboxInput useExisting = null;
   private SelectInput existing      = null;
-  
+
   private KontoInput konto          = null;
   private TextInput bezeichnung     = null;
-  
+
   /**
    * ct.
    * @param t der zugehoerige Sammel-Auftrag.
@@ -98,7 +98,7 @@ public class TransferMergeDialog extends AbstractDialog
       throw new ApplicationException(i18n.tr("Der Auftrag wurde bereits ausgeführt"));
 
     SimpleContainer container = new SimpleContainer(parent);
-    
+
     container.addInput(this.getUseExisting());
     container.addInput(this.getExistingList());
     container.addSeparator();
@@ -107,12 +107,12 @@ public class TransferMergeDialog extends AbstractDialog
 
     final CheckboxInput delBox = new CheckboxInput(this.delete.booleanValue());
     container.addCheckbox(delBox,i18n.tr("Einzelaufträge nach Übernahme in den Sammel-Auftrag löschen"));
-    
+
     final LabelInput comment = new LabelInput("");
     comment.setColor(Color.ERROR);
     container.addLabelPair("",comment);
 
-    ButtonArea b = container.createButtonArea(2);
+    ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -143,7 +143,7 @@ public class TransferMergeDialog extends AbstractDialog
               return;
             }
             transfer.setKonto(konto);
-            
+
             // Checken, ob Bezeichnung eingegeben wurde
             String text = (String) getBezeichnung().getValue();
             if (text == null || text.length() == 0)
@@ -162,17 +162,19 @@ public class TransferMergeDialog extends AbstractDialog
         }
 				close();
       }
-    });
+    },null,false,"ok.png");
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
 				throw new OperationCanceledException();
       }
-    });
+    },null,false,"process-stop.png");
+
+		container.addButtonArea(b);
 		getShell().setMinimumSize(getShell().computeSize(550,SWT.DEFAULT));
   }
-  
+
   /**
    * Liefert true, wenn der urspruengliche Auftrag nach der Uebernahme geloescht werden soll.
    * @return true, wenn der urspruengliche Auftrag nach der Uebernahme geloescht werden soll.
@@ -181,7 +183,7 @@ public class TransferMergeDialog extends AbstractDialog
   {
     return this.delete.booleanValue();
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der zwischen "Neuer Sammel-Auftrag" und "Existierenden benutzen" umgeschaltet werden kann.
    * @return Checkbox.
@@ -191,7 +193,7 @@ public class TransferMergeDialog extends AbstractDialog
   {
     if (this.useExisting != null)
       return this.useExisting;
-    
+
     this.useExisting = new CheckboxInput(false);
     this.useExisting.setName(i18n.tr("Einem existierenden Sammel-Auftrag zuordnen"));
     this.useExisting.addListener(new Listener()
@@ -217,7 +219,7 @@ public class TransferMergeDialog extends AbstractDialog
 
     return this.useExisting;
   }
-  
+
   /**
    * Liefert eine Selectbox mit den bereits existierenden Sammel-Auftraegen, die noch nicht ausgefuehrt wurden.
    * @return Selectbox.
@@ -227,7 +229,7 @@ public class TransferMergeDialog extends AbstractDialog
   {
     if (this.existing != null)
       return this.existing;
-    
+
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator list = this.transfer.getList();
     list.addFilter("ausgefuehrt = 0");
@@ -246,7 +248,7 @@ public class TransferMergeDialog extends AbstractDialog
 
     return this.existing;
   }
-  
+
   /**
    * Liefert eine Selectbox fuer das Konto bei Neuanlage des Sammelauftrages.
    * @return Selectbox.
@@ -261,7 +263,7 @@ public class TransferMergeDialog extends AbstractDialog
     }
     return this.konto;
   }
-  
+
   /**
    * Liefert ein Textfeld fuer die Eingabe der Bezeichnung bei Neuanlage des Sammelauftrages.
    * @return Textfeld.
@@ -283,17 +285,3 @@ public class TransferMergeDialog extends AbstractDialog
   }
 
 }
-
-
-/**********************************************************************
- * $Log: TransferMergeDialog.java,v $
- * Revision 1.3  2011/10/24 14:13:50  willuhn
- * @B Beim Erstellen einer neuen Sammel-Lastschrift das aktuelle Datum verwenden, damit sie gespeichert werden kann
- *
- * Revision 1.2  2009/11/26 13:25:30  willuhn
- * @N Einzel-Auftraege in existierende Sammel-Auftraege uebernehmen
- *
- * Revision 1.1  2007/10/25 15:47:21  willuhn
- * @N Einzelauftraege zu Sammel-Auftraegen zusammenfassen (BUGZILLA 402)
- *
- **********************************************************************/
