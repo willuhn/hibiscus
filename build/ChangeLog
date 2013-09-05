@@ -1,5 +1,7 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0258 BUGZILLA 1368 - Support fuer die pain-Versionen 001.001.02, 001.002.02, 001.002.03, 001.003.03
+              Vielen Dank an der Stelle an Jan von evenos-consulting, der das implementiert hat
   * NEW: 0257 Feature "Standardkonto" entfernt. Seit sich das Kontoauswahlfeld das zuletzt ausgew‰hlte
               Konto merken kann, kollidiert das regelm‰ﬂig mit dem Standardkonto. Siehe auch
               BUGZILLA 1362 sowie http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=93624#93624 
