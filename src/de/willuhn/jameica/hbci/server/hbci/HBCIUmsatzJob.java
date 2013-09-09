@@ -70,7 +70,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 				konto.store();
 
 			this.konto = konto;
-
+			
+      String curr = konto.getWaehrung();
+      if (curr == null || curr.length() == 0)
+        konto.setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
       
       this.saldoDatum = konto.getSaldoDatum();
@@ -99,11 +102,6 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         Logger.info("startdate: " + HBCI.LONGDATEFORMAT.format(this.saldoDatum));
         setJobParam("startdate", this.saldoDatum);
       }
-
-      String curr = konto.getWaehrung();
-      if (curr == null || curr.length() == 0)
-        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-      setJobParam("my.curr",curr);
     }
 		catch (RemoteException e)
 		{

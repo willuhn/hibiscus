@@ -53,12 +53,11 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 
 			this.konto = konto;
 
-			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
-        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-      setJobParam("my.curr",curr);
+        konto.setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
+			
+			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
     }
 		catch (RemoteException e)
 		{
