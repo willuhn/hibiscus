@@ -149,14 +149,20 @@ public class EmpfaengerControl extends AbstractControl
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     // BUGZILLA 1328 https://www.willuhn.de/bugzilla/show_bug.cgi?id=1328
     // wenn wir eine IBAN haben, muessen wir auch nach der suchen.
+    // BUGZILLA 1395 wenn der Adressbuch-Eintrag nur IBAN hat und keine Kontonummer/BLZ, dann nur nach IBAN suchen
     String iban = a.getIban();
-    if (StringUtils.isNotEmpty(iban))
+    String konto = a.getKontonummer();
+    
+    if (StringUtils.isNotEmpty(iban)) // haben wir eine IBAN?
     {
-      list.addFilter("((empfaenger_konto like ? and empfaenger_blz = ?) or lower(empfaenger_konto) = ?)","%" + a.getKontonummer(), a.getBlz(), iban.toLowerCase());
+      if (StringUtils.isNotEmpty(konto)) // haben wir ausserdem Konto/BLZ?
+        list.addFilter("((empfaenger_konto like ? and empfaenger_blz = ?) or lower(empfaenger_konto) = ?)","%" + konto, a.getBlz(), iban.toLowerCase());
+      else // nur IBAN // BUGZILLA 1395
+        list.addFilter("lower(empfaenger_konto) = ?",iban.toLowerCase());
     }
     else
     {
-      list.addFilter("empfaenger_konto like ?","%" + a.getKontonummer());
+      list.addFilter("empfaenger_konto like ?","%" + konto);
       list.addFilter("empfaenger_blz = ?",a.getBlz());
     }
 
