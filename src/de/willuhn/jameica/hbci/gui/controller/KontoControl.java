@@ -583,7 +583,7 @@ public class KontoControl extends AbstractControl
         String kto  = StringUtils.trimToNull((String) getKontonummer().getValue());
         String iban = StringUtils.trimToNull((String) getIban().getValue());
 
-        boolean changed = false;
+        String txt = null;
         
         if (blz != null && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
         {
@@ -593,7 +593,7 @@ public class KontoControl extends AbstractControl
             if (StringUtils.trimToNull(bic) != null)
             {
               getBic().setValue(bic);
-              changed = true;
+              txt = i18n.tr("BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken.");
             }
           }
 
@@ -602,12 +602,12 @@ public class KontoControl extends AbstractControl
             org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto(blz,kto);
             k.subnumber = (String) getUnterkonto().getValue();
             getIban().setValue(HBCIUtils.getIBANForKonto(k));
-            changed = true;
+            txt = i18n.tr("IBAN/BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken.");
           }
         }
         
-        if (changed)
-          GUI.getView().setSuccessText(i18n.tr("IBAN/BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken."));
+        if (txt != null)
+          GUI.getView().setSuccessText(txt);
       }
       catch (Exception e)
       {
