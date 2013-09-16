@@ -183,6 +183,7 @@ CREATE TABLE aueberweisung (
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
+     , endtoendid VARCHAR(35)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -295,4 +296,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',42);
+INSERT INTO version (name,version) values ('db',43);

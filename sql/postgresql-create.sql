@@ -58,7 +58,8 @@ CREATE TABLE aueberweisung (
   zweck varchar(140),
   termin date NOT NULL,
   ausgefuehrt integer NOT NULL,
-  ausgefuehrt_am timestamp
+  ausgefuehrt_am timestamp,
+  endtoendid varchar(35) NULL,
 );
 
 

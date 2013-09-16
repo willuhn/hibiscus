@@ -176,6 +176,11 @@ public class HBCIProperties
   public final static int UMSATZ_DEFAULT_DAYS = settings.getInt("umsatz.default.days",30);
   
   /**
+   * Maximale Laenge der EndtoEnd-ID bei SEPA.
+   */
+  public final static int HBCI_SEPA_ENDTOENDID_MAXLENGTH = settings.getInt("hbci.sepa.endtoendid.maxlength",35);
+
+  /**
    * Bereinigt einen Text um die nicht erlaubten Zeichen.
    * @param text zu bereinigender Text.
    * @param validChars Liste der erlaubten Zeichen.

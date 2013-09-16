@@ -56,6 +56,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setGegenkontoBLZ(getGegenkontoBLZ());
     u.setKonto(getKonto());
     u.setZweck(getZweck());
+    u.setEndtoEndId(getEndtoEndId());
     return u;
   }
 
@@ -103,6 +104,9 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
         
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      
+      HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
     }
     catch (RemoteException e)
     {
@@ -153,28 +157,20 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     if (zweck2 != null && zweck2.length() > 0)
       throw new RemoteException("second usage not allowed for foreign transfer");
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#getEndtoEndId()
+   */
+  public String getEndtoEndId() throws RemoteException
+  {
+    return (String) getAttribute("endtoendid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setEndtoEndId(java.lang.String)
+   */
+  public void setEndtoEndId(String id) throws RemoteException
+  {
+    setAttribute("endtoendid",id);
+  }
 }
-
-
-/**********************************************************************
- * $Log: AuslandsUeberweisungImpl.java,v $
- * Revision 1.6  2011/03/01 10:52:18  willuhn
- * @B Exception nur dann werfen, wenn bei Textschluessel oder Verwendungszweck auch tatsaechlich etwas angegeben wurde - siehe Mail von Patrick vom 01.03.2011
- *
- * Revision 1.5  2010/04/27 11:02:32  willuhn
- * @R Veralteten Verwendungszweck-Code entfernt
- *
- * Revision 1.4  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.3  2009/05/07 15:13:37  willuhn
- * @N BIC in Auslandsueberweisung
- *
- * Revision 1.2  2009/03/17 23:44:15  willuhn
- * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
- *
- * Revision 1.1  2009/02/17 00:00:02  willuhn
- * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
- *
- **********************************************************************/

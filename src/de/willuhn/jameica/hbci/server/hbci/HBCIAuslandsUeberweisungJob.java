@@ -79,6 +79,9 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       if (zweck != null && zweck.trim().length() > 0)
 			  setJobParam("usage",zweck);
 			
+      String endToEndId = ueberweisung.getEndtoEndId();
+      if (endToEndId != null && endToEndId.trim().length() > 0)
+        setJobParam("endtoendid",endToEndId);
 		}
 		catch (RemoteException e)
 		{

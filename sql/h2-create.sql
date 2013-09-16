@@ -65,6 +65,7 @@ CREATE TABLE aueberweisung (
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
   ausgefuehrt_am datetime NULL,
+  endtoendid varchar(35),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -293,6 +294,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',42);
+INSERT INTO version (name,version) values ('db',43);
   
 COMMIT;

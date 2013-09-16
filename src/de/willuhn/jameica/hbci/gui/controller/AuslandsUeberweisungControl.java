@@ -72,6 +72,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private AddressInput empfName              = null;
   private TextInput empfkto                  = null;
   private TextInput bic                      = null;
+  private TextInput endToEndId               = null;
 
   private TerminInput termin                 = null;
   private ReminderIntervalInput interval     = null;
@@ -209,6 +210,25 @@ public class AuslandsUeberweisungControl extends AbstractControl
   }
 
   /**
+   * Liefert das Eingabe-Feld fuer die End2End-ID.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getEndToEndId() throws RemoteException
+  {
+    if (this.endToEndId == null)
+    {
+      this.endToEndId = new TextInput(getTransfer().getEndtoEndId(),HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      this.endToEndId.setName(i18n.tr("End-to-End ID"));
+      this.endToEndId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      this.endToEndId.setEnabled(!getTransfer().ausgefuehrt());
+      this.endToEndId.setHint(i18n.tr("freilassen wenn nicht benötigt"));
+      this.endToEndId.setMandatory(false);
+    }
+    return this.endToEndId;
+  }
+
+  /**
    * Liefert das Eingabe-Feld fuer den Verwendungszweck.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -320,6 +340,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       t.setKonto((Konto)getKontoAuswahl().getValue());
       t.setZweck((String)getZweck().getValue());
       t.setTermin((Date) getTermin().getValue());
+      t.setEndtoEndId((String) getEndToEndId().getValue());
 
       String kto  = (String)getEmpfaengerKonto().getValue();
       String name = getEmpfaengerName().getText();
