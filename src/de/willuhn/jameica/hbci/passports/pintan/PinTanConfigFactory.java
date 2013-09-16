@@ -90,11 +90,6 @@ public class PinTanConfigFactory
 		}
 
 		HBCIPassport p = config.getPassport();
-		if (found)
-		{
-	    Logger.info("clear bpd cache");
-	    p.clearBPD();
-		}
     Logger.info("saving passport config");
     p.saveChanges();
   }

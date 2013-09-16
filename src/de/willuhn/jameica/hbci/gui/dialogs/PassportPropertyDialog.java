@@ -14,6 +14,7 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.widgets.Composite;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
@@ -82,6 +83,15 @@ public class PassportPropertyDialog extends AbstractDialog
             return;
           
           passport.clearBPD();
+          
+          // Das triggert beim naechsten Verbindungsaufbau
+          // HBCIHandler.<clinit>
+          // -> HBCIHandler.registerUser()
+          // -> HBCIUser.register()
+          // -> HBCIUser.updateUserData()
+          // -> HBCIUser.fetchSysId() - und das holt die BPD beim naechsten mal ueber einen nicht-anonymen Dialog
+          ((AbstractHBCIPassport)passport).syncSysId();
+          
           passport.saveChanges();
           table.clearBPD();
           

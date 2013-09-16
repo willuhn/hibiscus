@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.pintan;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -314,7 +313,11 @@ public class Controller extends AbstractControl
   private HBCIPassport getHBCIPassport() throws RemoteException
   {
     if (this.passport == null)
-      this.passport = PinTanConfigFactory.load(new File(config.getFilename()));
+    {
+      // this.passport = PinTanConfigFactory.load(new File(config.getFilename()));
+      // Mit obiger Zeile haben wir den Passport doppelt geoeffnet. In der Config haben wir ja schon eine Instanz
+      this.passport = this.config.getPassport();
+    }
     return this.passport;
   }
 
