@@ -1,5 +1,7 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0262 In SEPA nicht zulässige Sonderzeichen im Inhabernamen des eigenen Kontos beim
+              Versand einer SEPA-Überweisung ersetzen
   * NEW: 0261 BUGZILLA 1265 - Support für End-to-End ID in SEPA-Überweisungen
   * BUG: 0260 BUGZILLA 1396 - Hinweistext geändert, dass nur die BIC wurde vervollständigt wurde
   * BUG: 0259 BUGZILLA 1395 - Wenn Adressbuch-Eintrag nur IBAN hat, dann nicht zusätzlich nach Konto/BLZ in Umsätzen suchen

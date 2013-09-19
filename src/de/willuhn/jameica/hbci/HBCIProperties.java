@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBService;
@@ -179,6 +180,13 @@ public class HBCIProperties
    * Maximale Laenge der EndtoEnd-ID bei SEPA.
    */
   public final static int HBCI_SEPA_ENDTOENDID_MAXLENGTH = settings.getInt("hbci.sepa.endtoendid.maxlength",35);
+  
+  /**
+   * Text-Replacements fuer SEPA.
+   * Die in SEPA nicht zulaessigen Zeichen "&*%$üöäÜÖÄß" werden ersetzt.
+   */
+  public final static String[][] TEXT_REPLACEMENTS_SEPA = new String[][] {new String[]{"&","*","%","$","ü", "ö", "ä", "Ü", "Ö", "Ä", "ß"},
+                                                                          new String[]{"+",".",".",".","ue","oe","ae","Ue","Oe","Ae","ss"}};
 
   /**
    * Bereinigt einen Text um die nicht erlaubten Zeichen.
@@ -199,6 +207,21 @@ public class HBCIProperties
         sb.append(c);
     }
     return sb.toString();
+  }
+  
+  /**
+   * Ersetzt im Text Strings entsprechend der Replacements. 
+   * @param text der Text mit den zu ersetzenden Zeichen.
+   * @param replacements die Ersetzungen.
+   * @return der Text mit den ersetzten Zeichen.
+   * @see HBCIProperties#TEXT_REPLACEMENTS_SEPA
+   */
+  public final static String replace(String text, String[][] replacements)
+  {
+    if (text == null || text.length() == 0)
+      return text;
+    
+    return StringUtils.replaceEach(text,replacements[0],replacements[1]);
   }
   
   /**
