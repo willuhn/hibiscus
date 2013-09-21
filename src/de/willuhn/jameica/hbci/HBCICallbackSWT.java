@@ -78,6 +78,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   	{
   	  case HBCIUtils.LOG_INTERN:
   		case HBCIUtils.LOG_DEBUG2:
+        Logger.trace(msg);
+        log = false;
+        break;
+  		  
 			case HBCIUtils.LOG_DEBUG:
   			Logger.debug(msg);
         log = false;

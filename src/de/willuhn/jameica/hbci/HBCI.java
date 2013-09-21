@@ -100,7 +100,8 @@ public class HBCI extends AbstractPlugin
     LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
     LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
     LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
-    LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG2));
+    LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG));
+    LOGMAPPING.put(Level.TRACE, new Integer(HBCIUtils.LOG_DEBUG2));
 
     call(new ServiceCall()
     {
