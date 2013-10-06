@@ -12,20 +12,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.structures.Konto;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
+import de.jost_net.OBanToo.SEPA.IBANCode;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.input.LinkInput;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -34,14 +36,14 @@ import de.willuhn.util.I18N;
  */
 public class IbanCalcDialog extends AbstractDialog
 {
-  private final static int WINDOW_WIDTH = 400;
+  private final static int WINDOW_WIDTH = 500;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private TextInput konto      = null;
-  private TextInput unterkonto = null;
   private TextInput blz        = null;
   private TextInput iban       = null;
   private TextInput bic        = null;
+  private LabelInput msg       = null;
   
   /**
    * ct
@@ -70,20 +72,20 @@ public class IbanCalcDialog extends AbstractDialog
   {
     Container container1 = new SimpleContainer(parent);
     container1.addHeadline(i18n.tr("Wichtiger Hinweis"));
-    container1.addText(i18n.tr("Für einige Banken gelten Sonder-Regeln für die IBAN-Berechnung, die von\n" +
-    		                      "Hibiscus noch nicht unterstützt werden. Bis dahin gilt:\n\n" +
-    		                      "Bitte verifizieren Sie die errechneten IBANs vor der Verwendung und\n" +
-    		                      "benutzen Sie diese nicht ungeprüft.\n\nSiehe auch:\n"),true);
-    container1.addLabelPair("",new LinkInput("http://www.willuhn.de/blog/index.php?/archives/644-Hibiscus-Integrierter-IBAN-Rechner.html"));
+    container1.addText(i18n.tr("Für einige Banken gelten Sonder-Regeln für die IBAN-Berechnung, die von " +
+                               "Hibiscus u.U. nicht unterstützt werden." +
+                               "\n\nDaher gilt: " +
+                               "Bitte verifizieren Sie die errechneten IBANs vor der Verwendung und " +
+                               "benutzen Sie diese nicht ungeprüft."),true);
 
     Container container2 = new SimpleContainer(parent);
     container2.addHeadline(i18n.tr("Nationale Bankverbindung"));
     container2.addInput(this.getBlz());
     container2.addInput(this.getKonto());
-    container2.addInput(this.getUnterkonto());
     container2.addHeadline(i18n.tr("Zugehörige SEPA-Bankverbindung"));
     container2.addInput(this.getBic());
     container2.addInput(this.getIban());
+    container2.addInput(this.getMessage());
 
     ButtonArea buttons = new ButtonArea();
     
@@ -138,27 +140,19 @@ public class IbanCalcDialog extends AbstractDialog
   }
   
   /**
-   * Liefert das Eingabe-Feld fuer die Unterkontonummer.
-   * @return das Eingabe-Feld fuer die Unterkontonummer.
+   * Liefert ein Label fuer die Fehlermeldungen.
+   * @return ein Label fuer die Fehlermeldungen.
    */
-  private TextInput getUnterkonto()
+  private LabelInput getMessage()
   {
-    if (this.unterkonto != null)
-      return this.unterkonto;
+    if (this.msg != null)
+      return this.msg;
     
-    this.unterkonto = new TextInput("",5);
-    this.unterkonto.setName(i18n.tr("Unterkonto"));
-    this.unterkonto.setComment("falls vorhanden");
-    this.unterkonto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
-    this.unterkonto.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        calc();
-      }
-    });
-    return this.unterkonto;
+    this.msg = new LabelInput("");
+    this.msg.setColor(Color.ERROR);
+    return this.msg;
   }
-
+  
   /**
    * Liefert das Eingabe-Feld fuer die BLZ.
    * @return Eingabe-Feld.
@@ -209,8 +203,8 @@ public class IbanCalcDialog extends AbstractDialog
     String bic  = "";
 
     // Bankverbindung checken
-    String kto = StringUtils.trimToNull((String) getKonto().getValue());
-    String blz = StringUtils.trimToNull((String) getBlz().getValue());
+    String kto = StringUtils.trimToEmpty((String) getKonto().getValue());
+    String blz = StringUtils.trimToEmpty((String) getBlz().getValue());
     if (kto == null)
     {
       getKonto().setComment(i18n.tr("Bitte Kontonummer eingeben"));
@@ -231,10 +225,27 @@ public class IbanCalcDialog extends AbstractDialog
       
       if (ok)
       {
-        Konto k = new Konto(blz,kto);
-        k.subnumber = (String)getUnterkonto().getValue();
-        iban = HBCIUtils.getIBANForKonto(k);
-        bic = HBCIUtils.getBICForBLZ(blz);
+        try
+        {
+          IBAN newIban = HBCIProperties.getIBAN(blz,kto);
+          iban = newIban.getIBAN();
+          bic = newIban.getBIC();
+          
+          IBANCode code = newIban.getCode();
+          if (code != null && code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
+            getMessage().setValue("Prüfziffer konnte nicht verifiziert werden. Bitte prüfen Sie die IBAN");
+          else
+            getMessage().setValue("");
+        }
+        catch (ApplicationException ae)
+        {
+          getMessage().setValue(ae.getMessage());
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while calculating IBAN/BIC",e);
+          getMessage().setValue(i18n.tr("IBAN-Berechnung fehlgeschlagen"));
+        }
       }
     }
     

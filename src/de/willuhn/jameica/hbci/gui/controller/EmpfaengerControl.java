@@ -22,8 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.structures.Konto;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -384,14 +384,26 @@ public class EmpfaengerControl extends AbstractControl
 
 	      if (blz != null && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
 	      {
-	        if (bic == null)
-	          getBic().setValue(HBCIUtils.getBICForBLZ(blz));
-
+	        String newBic = null;
+	        
 	        if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
 	        {
-            getIban().setValue(HBCIUtils.getIBANForKonto(new Konto(blz,kto)));
+	          IBAN newIban = HBCIProperties.getIBAN(blz,kto);
+	          newBic = newIban.getBIC();
+            getIban().setValue(newIban.getIBAN());
 	        }
+	        
+          if (bic == null)
+          {
+            if (newBic == null) // nur wenn sie nicht schon von obantoo ermittelt wurde
+              newBic = HBCIUtils.getBICForBLZ(blz);
+            getBic().setValue(newBic);
+          }
 	      }
+	    }
+	    catch (ApplicationException ae)
+	    {
+	      Logger.warn("unable to complete IBAN/BIC: " + ae.getMessage());
 	    }
 	    catch (Exception e)
 	    {

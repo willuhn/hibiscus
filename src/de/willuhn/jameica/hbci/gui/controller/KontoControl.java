@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -585,29 +586,37 @@ public class KontoControl extends AbstractControl
 
         String txt = null;
         
+        String newBic = null;
+        
         if (blz != null && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
         {
+          if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
+          {
+            IBAN newIban = HBCIProperties.getIBAN(blz,kto);
+            getIban().setValue(newIban.getIBAN());
+            newBic = newIban.getBIC();
+            txt = i18n.tr("IBAN/BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken.");
+          }
+          
           if (bic == null)
           {
-            bic = HBCIUtils.getBICForBLZ(blz);
-            if (StringUtils.trimToNull(bic) != null)
+            if (newBic == null)
+              newBic = HBCIUtils.getBICForBLZ(blz);
+            if (StringUtils.trimToNull(newBic) != null)
             {
-              getBic().setValue(bic);
+              getBic().setValue(newBic);
               txt = i18n.tr("BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken.");
             }
           }
 
-          if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
-          {
-            org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto(blz,kto);
-            k.subnumber = (String) getUnterkonto().getValue();
-            getIban().setValue(HBCIUtils.getIBANForKonto(k));
-            txt = i18n.tr("IBAN/BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken.");
-          }
         }
         
         if (txt != null)
           GUI.getView().setSuccessText(txt);
+      }
+      catch (ApplicationException ae)
+      {
+        Logger.warn("unable to auto-complete IBAN/BIC: " + ae.getMessage());
       }
       catch (Exception e)
       {

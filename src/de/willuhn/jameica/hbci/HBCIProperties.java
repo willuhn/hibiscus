@@ -13,10 +13,16 @@
 package de.willuhn.jameica.hbci;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
+import de.jost_net.OBanToo.SEPA.IBANCode;
+import de.jost_net.OBanToo.SEPA.SEPAException;
+import de.jost_net.OBanToo.SEPA.SEPAException.Fehler;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -400,6 +406,72 @@ public class HBCIProperties
         Logger.error("unable to verify iban crc number",e2);
         return true;
       }
+    }
+  }
+  
+  private final static Map<Fehler,String> obantooCodes = new HashMap<Fehler,String>()
+  {{
+    put(Fehler.BLZ_LEER,"Keine BLZ angegeben");
+    put(Fehler.BLZ_UNGUELTIGE_LAENGE, "BLZ nicht achtstellig");
+    put(Fehler.BLZ_UNGUELTIG,"BLZ unbekannt");
+    put(Fehler.KONTO_LEER,"Keine Kontonummer angegeben");
+    put(Fehler.KONTO_UNGUELTIGE_LAENGE,"Länge der Kontonummer ungültig");
+    put(Fehler.KONTO_PRUEFZIFFER_FALSCH,"Prüfziffer der Kontonummer falsch");
+    put(Fehler.KONTO_PRUEFZIFFERNREGEL_NICHT_IMPLEMENTIERT,"Prüfziffern-Verfahren der Kontonummer unbekannt");
+    put(Fehler.IBANREGEL_NICHT_IMPLEMENTIERT,"IBAN-Regel unbekannt");
+    put(Fehler.UNGUELTIGES_LAND,"Land unbekannt");
+  }};
+  
+  /**
+   * Erzeugt die IBAN aus der uebergebenen Bankverbindung.
+   * @param blz die BLZ.
+   * @param konto die Kontonummer.
+   * @return die IBAN.
+   * @throws ApplicationException
+   */
+  public final static IBAN getIBAN(String blz, String konto) throws ApplicationException
+  {
+    try
+    {
+      IBAN iban = new IBAN(konto, blz, "DE");
+      
+      // Rückgabe-Code checken
+      IBANCode code = iban.getCode();
+      if (code == null || code == IBANCode.GUELTIG)
+        return iban;
+      
+      // Tolerieren wir ebenfalls
+      if (code == IBANCode.KONTONUMMERERSETZT || 
+          code == IBANCode.GEMELDETEBLZZURLOESCHUNGVORGEMERKT ||
+          code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
+        return iban;
+
+      // Fehler werfen
+      throw new ApplicationException(code.getMessage());
+    }
+    catch (SEPAException e)
+    {
+      // Checken, ob wir einen Fehlertext haben
+      String msg = e.getMessage();
+      if (msg != null)
+        throw new ApplicationException(msg);
+      
+      // Dann halt anhand des Fehlercodes
+      Fehler f = e.getFehler();
+      if (f != null)
+      {
+        msg = obantooCodes.get(f);
+        if (msg != null)
+          throw new ApplicationException(msg);
+      }
+      
+      Logger.error("unable to generate IBAN",e);
+      throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
+    }
+    catch (Exception e2)
+    {
+      Logger.error("unable to generate IBAN",e2);
+      throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
     }
   }
   
