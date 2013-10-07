@@ -1,10 +1,4 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIAuslandsUeberweisungJob.java,v $
- * $Revision: 1.7 $
- * $Date: 2012/03/01 22:19:15 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
  * Copyright (c) by willuhn.webdesign
  * All rights reserved
@@ -18,46 +12,46 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
-import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Job fuer "Auslandsueberweisung".
+ * Job fuer "SEPA-Lastschrift".
  */
-public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
+public class HBCISepaLastschriftJob extends AbstractHBCIJob
 {
 
-	private AuslandsUeberweisung ueberweisung = null;
-	private Konto konto                       = null;
+	private SepaLastschrift lastschrift = null;
+	private Konto konto                 = null;
 
   /**
 	 * ct.
-   * @param ueberweisung die auszufuehrende Ueberweisung.
+   * @param lastschrift die auszufuehrende Lastschrift.
    * @throws ApplicationException
    * @throws RemoteException
    */
-  public HBCIAuslandsUeberweisungJob(AuslandsUeberweisung ueberweisung) throws ApplicationException, RemoteException
+  public HBCISepaLastschriftJob(SepaLastschrift lastschrift) throws ApplicationException, RemoteException
 	{
 		try
 		{
-			if (ueberweisung == null)
+			if (lastschrift == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Auftrag an"));
 		
-			if (ueberweisung.isNewObject())
-				ueberweisung.store();
+			if (lastschrift.isNewObject())
+			  lastschrift.store();
       
-      if (ueberweisung.ausgefuehrt())
+      if (lastschrift.ausgefuehrt())
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt"));
 
-      this.ueberweisung = ueberweisung;
-      this.konto = this.ueberweisung.getKonto();
+      this.lastschrift = lastschrift;
+      this.konto = this.lastschrift.getKonto();
 
-      if (this.ueberweisung.getBetrag() > Settings.getUeberweisungLimit())
+      if (this.lastschrift.getBetrag() > Settings.getUeberweisungLimit())
         throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
           HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
 
@@ -68,24 +62,26 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 			setJobParam("src",own);
 			
       org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
-      k.bic = ueberweisung.getGegenkontoBLZ();
-      k.iban = ueberweisung.getGegenkontoNummer();
-      k.name = ueberweisung.getGegenkontoName();
+      k.bic = lastschrift.getGegenkontoBLZ();
+      k.iban = lastschrift.getGegenkontoNummer();
+      k.name = lastschrift.getGegenkontoName();
       setJobParam("dst",k);
 			
-      // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-      setJobParam("btg",ueberweisung.getBetrag(),curr);
+      setJobParam("btg",lastschrift.getBetrag(),curr);
       
-      String zweck = ueberweisung.getZweck();
+      String zweck = lastschrift.getZweck();
       if (zweck != null && zweck.trim().length() > 0)
 			  setJobParam("usage",zweck);
 			
-      String endToEndId = ueberweisung.getEndtoEndId();
+      String endToEndId = lastschrift.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)
         setJobParam("endtoendid",endToEndId);
+      
+      setJobParam("mandateid",lastschrift.getMandateId());
+      setJobParam("manddateofsig",lastschrift.getSignatureDate());
 		}
 		catch (RemoteException e)
 		{
@@ -107,7 +103,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   public String getIdentifier()
   {
-    return "UebSEPA";
+    return "LastSEPA";
   }
   
   /**
@@ -115,7 +111,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   public String getName() throws RemoteException
   {
-    return i18n.tr("SEPA-Überweisung an {0} (IBAN: {1})",new String[]{ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer()});
+    return i18n.tr("SEPA-Lastschrift an {0} (IBAN: {1})",lastschrift.getGegenkontoName(), lastschrift.getGegenkontoNummer());
   }
 
   /**
@@ -123,11 +119,11 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
-    ueberweisung.setAusgefuehrt(true);
+    lastschrift.setAusgefuehrt(true);
     
-    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung));
-    konto.addToProtokoll(i18n.tr("SEPA-Überweisung ausgeführt an: {0}",ueberweisung.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);
-    Logger.info("foreign transfer submitted successfully");
+    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(lastschrift));
+    konto.addToProtokoll(i18n.tr("SEPA-Lastschrift eingezogen von: {0}",lastschrift.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);
+    Logger.info("sepa direct debit submitted successfully");
   }
 
   /**
@@ -135,7 +131,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   String markFailed(String error) throws ApplicationException, RemoteException
   {
-    String msg = i18n.tr("Fehler beim Ausführen des Auftrages an {0}: {1}",new String[]{ueberweisung.getGegenkontoName(),error});
+    String msg = i18n.tr("Fehler beim Einziehen der SEPA-Lastschrift von {0}: {1}",lastschrift.getGegenkontoName(),error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }
@@ -145,7 +141,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   void markCancelled() throws RemoteException, ApplicationException
   {
-    String msg = i18n.tr("Ausführung des Auftrages an {0} abgebrochen",ueberweisung.getGegenkontoName());
+    String msg = i18n.tr("Ausführung der SEPA-Lastschrift {0} abgebrochen",lastschrift.getGegenkontoName());
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
   }
 

@@ -1,0 +1,554 @@
+/**********************************************************************
+ * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
+ * $Revision: 1.14 $
+ * $Date: 2012/02/26 13:00:39 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn software & services
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.jameica.hbci.gui.controller;
+
+import java.rmi.RemoteException;
+import java.util.Date;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.AbstractControl;
+import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.DateInput;
+import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
+import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
+import de.willuhn.jameica.hbci.gui.input.TerminInput;
+import de.willuhn.jameica.hbci.gui.parts.SepaLastschriftList;
+import de.willuhn.jameica.hbci.reminder.ReminderUtil;
+import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.reminder.ReminderInterval;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
+
+/**
+ * Controller fuer SEPA-Lastschriften.
+ */
+public class SepaLastschriftControl extends AbstractControl
+{
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  private SepaLastschriftList list           = null;
+
+  private SepaLastschrift transfer           = null;
+  
+  // Eingabe-Felder
+  private Input kontoAuswahl                 = null;
+  private Input betrag                       = null;
+  private TextInput zweck                    = null;
+
+  private AddressInput empfName              = null;
+  private TextInput empfkto                  = null;
+  private TextInput bic                      = null;
+  private TextInput endToEndId               = null;
+  private TextInput mandateId                = null;
+  private DateInput signature                = null;
+
+  private TerminInput termin                 = null;
+  private ReminderIntervalInput interval     = null;
+
+  private CheckboxInput storeEmpfaenger      = null;
+  
+  
+  /**
+   * ct.
+   * @param view
+   */
+  public SepaLastschriftControl(AbstractView view)
+  {
+    super(view);
+  }
+  
+  /**
+   * @return der Auftrag
+   * @throws RemoteException
+   */
+  public SepaLastschrift getTransfer() throws RemoteException
+  {
+    if (this.transfer != null)
+      return this.transfer;
+    
+    Object o = getCurrentObject();
+    if (o instanceof SepaLastschrift)
+    {
+      this.transfer = (SepaLastschrift) o;
+      return this.transfer;
+    }
+    
+    this.transfer = (SepaLastschrift) Settings.getDBService().createObject(SepaLastschrift.class,null);
+    return this.transfer;
+  }
+  
+  /**
+   * Liefert die Liste der SEPA-Lastschriften.
+   * @return Liste der SEPA-Lastschriften.
+   * @throws RemoteException
+   */
+  public SepaLastschriftList getSepaLastschriftListe() throws RemoteException
+  {
+    if (this.list == null)
+      this.list = new SepaLastschriftList(new SepaLastschriftNew());
+    return this.list;
+  }
+
+  /**
+   * Liefert ein Auswahlfeld fuer das Konto.
+   * @return Auswahl-Feld.
+   * @throws RemoteException
+   */
+  public Input getKontoAuswahl() throws RemoteException
+  {
+    if (this.kontoAuswahl != null)
+      return this.kontoAuswahl;
+    
+    KontoListener kl = new KontoListener();
+    MyKontoFilter filter = new MyKontoFilter();
+    this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
+    this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
+    this.kontoAuswahl.setMandatory(true);
+    this.kontoAuswahl.addListener(kl);
+    this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
+
+    // einmal ausloesen
+    kl.handleEvent(null);
+
+    if (!filter.found)
+      this.kontoAuswahl.setComment(i18n.tr("Bitte tragen Sie IBAN/BIC in Ihrem Konto ein"));
+
+    return this.kontoAuswahl;
+  }
+  
+  /**
+   * Liefert das Eingabe-Feld fuer den Empfaenger-Namen.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public AddressInput getEmpfaengerName() throws RemoteException
+  {
+    if (empfName != null)
+      return empfName;
+    empfName = new AddressInput(getTransfer().getGegenkontoName(), AddressFilter.FOREIGN);
+    empfName.setMandatory(true);
+    empfName.addListener(new EmpfaengerListener());
+    empfName.setEnabled(!getTransfer().ausgefuehrt());
+    return empfName;
+  }
+
+  
+  /**
+   * Liefert das Eingabe-Feld fuer den Empfaenger.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public TextInput getEmpfaengerKonto() throws RemoteException
+  {
+    if (empfkto != null)
+      return empfkto;
+
+    empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
+    empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS + " ");
+    empfkto.setMandatory(true);
+    empfkto.setEnabled(!getTransfer().ausgefuehrt());
+    empfkto.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        String s = (String) empfkto.getValue();
+        if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
+          return;
+        empfkto.setValue(s.replaceAll(" ",""));
+      }
+    });
+    return empfkto;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer die BIC.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getEmpfaengerBic() throws RemoteException
+  {
+    if (this.bic == null)
+    {
+      this.bic = new TextInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BIC_MAXLENGTH);
+      this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
+      this.bic.setEnabled(!getTransfer().ausgefuehrt());
+      this.bic.setMandatory(true);
+    }
+    return this.bic;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer die End2End-ID.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getEndToEndId() throws RemoteException
+  {
+    if (this.endToEndId == null)
+    {
+      this.endToEndId = new TextInput(getTransfer().getEndtoEndId(),HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      this.endToEndId.setName(i18n.tr("End-to-End ID"));
+      this.endToEndId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      this.endToEndId.setEnabled(!getTransfer().ausgefuehrt());
+      this.endToEndId.setHint(i18n.tr("freilassen wenn nicht benötigt"));
+      this.endToEndId.setMandatory(false);
+    }
+    return this.endToEndId;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer die Mandate-ID.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getMandateId() throws RemoteException
+  {
+    if (this.mandateId == null)
+    {
+      this.mandateId = new TextInput(getTransfer().getMandateId(),HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
+      this.mandateId.setName(i18n.tr("Mandats-ID"));
+      this.mandateId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      this.mandateId.setEnabled(!getTransfer().ausgefuehrt());
+      this.mandateId.setMandatory(true);
+    }
+    return this.mandateId;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer das Unterschriftsdatum.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getSignatureDate() throws RemoteException
+  {
+    if (this.signature == null)
+    {
+      this.signature = new DateInput(getTransfer().getSignatureDate());
+      this.signature.setName(i18n.tr("Unterschriftsdatum des Mandats"));
+      this.signature.setEnabled(!getTransfer().ausgefuehrt());
+      this.signature.setMandatory(true);
+    }
+    return this.signature;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer den Verwendungszweck.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getZweck() throws RemoteException
+  {
+    if (zweck != null)
+      return zweck;
+    zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+    zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+    zweck.setEnabled(!getTransfer().ausgefuehrt());
+    return zweck;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer den Betrag.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getBetrag() throws RemoteException
+  {
+    if (betrag != null)
+      return betrag;
+    HibiscusTransfer t = getTransfer();
+    double d = t.getBetrag();
+    if (d == 0.0d) d = Double.NaN;
+    betrag = new DecimalInput(d,HBCI.DECIMALFORMAT);
+
+    Konto k = t.getKonto();
+    betrag.setComment(k == null ? "" : k.getWaehrung());
+    betrag.setMandatory(true);
+    betrag.setEnabled(!getTransfer().ausgefuehrt());
+    
+    new KontoListener().handleEvent(null);
+
+    return betrag;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer den Termin.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public TerminInput getTermin() throws RemoteException
+  {
+    if (this.termin == null)
+      this.termin = new TerminInput((Terminable) getTransfer());
+    return termin;
+  }
+
+  /**
+   * Liefert das Intervall fuer die zyklische Ausfuehrung.
+   * @return Auswahlfeld.
+   * @throws Exception
+   */
+  public ReminderIntervalInput getReminderInterval() throws Exception
+  {
+    if (this.interval != null)
+      return this.interval;
+    
+    this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
+    return this.interval;
+  }
+
+  /**
+   * Liefert eine CheckBox ueber die ausgewaehlt werden kann,
+   * ob der Empfaenger mitgespeichert werden soll.
+   * @return CheckBox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getStoreEmpfaenger() throws RemoteException
+  {
+    if (storeEmpfaenger != null)
+      return storeEmpfaenger;
+
+    // Nur bei neuen Transfers aktivieren
+    HibiscusTransfer t = getTransfer();
+    // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
+    // noch kein Gegenkonto definiert ist.
+    boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
+    
+    // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
+    de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+    enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
+    storeEmpfaenger = new CheckboxInput(enabled);
+
+    return storeEmpfaenger;
+  }
+
+  /**
+   * Speichert den Geld-Transfer.
+   * @return true, wenn das Speichern erfolgreich war, sonst false.
+   */
+  public synchronized boolean handleStore()
+  {
+    SepaLastschrift t = null;
+    
+    try
+    {
+      t = this.getTransfer();
+      if (t.ausgefuehrt())
+        return true;
+      
+      t.transactionBegin();
+
+      Double d = (Double) getBetrag().getValue();
+      t.setBetrag(d == null ? Double.NaN : d.doubleValue());
+      
+      t.setKonto((Konto)getKontoAuswahl().getValue());
+      t.setZweck((String)getZweck().getValue());
+      t.setTermin((Date) getTermin().getValue());
+      t.setEndtoEndId((String) getEndToEndId().getValue());
+      t.setMandateId((String) getMandateId().getValue());
+      t.setSignatureDate((Date) getSignatureDate().getValue());
+
+      String kto  = (String)getEmpfaengerKonto().getValue();
+      String name = getEmpfaengerName().getText();
+      String bic  = (String) getEmpfaengerBic().getValue();
+
+      t.setGegenkontoNummer(kto);
+      t.setGegenkontoName(name);
+      t.setGegenkontoBLZ(bic);
+      
+      t.store();
+
+      // Reminder-Intervall speichern
+      ReminderIntervalInput input = this.getReminderInterval();
+      if (input.containsInterval())
+        ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
+
+      Boolean store = (Boolean) getStoreEmpfaenger().getValue();
+      if (store.booleanValue())
+      {
+        HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+        e.setIban(kto);
+        e.setName(name);
+        e.setBic(bic);
+        
+        // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
+        new EmpfaengerAdd().handleAction(e);
+      }
+      GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
+      t.transactionCommit();
+
+      if (t.getBetrag() > Settings.getUeberweisungLimit())
+        GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getTransfer().getKonto().getWaehrung()));
+      
+      return true;
+    }
+    catch (Exception e)
+    {
+      if (t != null) {
+        try {
+          t.transactionRollback();
+        }
+        catch (Exception xe) {
+          Logger.error("rollback failed",xe);
+        }
+      }
+      
+      if (e instanceof ApplicationException)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("error while saving order",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Eigener ueberschriebener Kontofilter.
+   */
+  private class MyKontoFilter implements KontoFilter
+  {
+    // Wir leiten die Anfrage an den weiter
+    private KontoFilter foreign = KontoFilter.FOREIGN;
+
+    private boolean found = false;
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
+     */
+    public boolean accept(Konto konto) throws RemoteException
+    {
+      boolean b = foreign.accept(konto);
+      found |= b;
+      return b;
+    }
+  }
+
+  /**
+   * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
+   * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
+   */
+  private class KontoListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event) {
+
+      try {
+        Object o = getKontoAuswahl().getValue();
+        if (o == null || !(o instanceof Konto))
+        {
+          getBetrag().setComment("");
+          return;
+        }
+
+        Konto konto = (Konto) o;
+        getBetrag().setComment(konto.getWaehrung());
+
+        // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
+        // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
+        getTransfer().setKonto(konto);
+      }
+      catch (RemoteException er)
+      {
+        Logger.error("error while updating currency",er);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei Ermittlung der Währung"));
+      }
+    }
+  }
+
+  /**
+   * Listener, der bei Auswahl des Empfaengers die restlichen Daten vervollstaendigt.
+   */
+  private class EmpfaengerListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event) {
+      if (event == null)
+        return;
+      
+      if (!(event.data instanceof Address))
+        return;
+      
+      Address a = (Address) event.data;
+
+      try {
+        getEmpfaengerName().setText(a.getName());
+        getEmpfaengerKonto().setValue(a.getIban());
+        getEmpfaengerBic().setValue(a.getBic());
+
+        // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
+        getStoreEmpfaenger().setValue(Boolean.FALSE);
+        
+        try
+        {
+          String zweck = (String) getZweck().getValue();
+          if ((zweck != null && zweck.length() > 0))
+            return;
+          
+          DBIterator list = getTransfer().getList();
+          list.addFilter("empfaenger_konto = ?",new Object[]{a.getKontonummer()});
+          list.setOrder("order by id desc");
+          if (list.hasNext())
+          {
+            HibiscusTransfer t = (HibiscusTransfer) list.next();
+            getZweck().setValue(t.getZweck());
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to autocomplete subject",e);
+        }
+
+          
+      }
+      catch (RemoteException er)
+      {
+        Logger.error("error while choosing empfaenger",er);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
+      }
+    }
+  }
+
+}

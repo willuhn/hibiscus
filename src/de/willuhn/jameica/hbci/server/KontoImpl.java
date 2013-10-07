@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -288,6 +289,15 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         au.delete();
       }
 
+      // SEPA-Lastschriften
+      list = getSepaLastschriften();
+      SepaLastschrift sl = null;
+      while (list.hasNext())
+      {
+        sl = (SepaLastschrift) list.next();
+        sl.delete();
+      }
+
       // und noch die Protokolle
       list = getProtokolle();
       Protokoll p = null;
@@ -447,6 +457,20 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     HBCIDBService service = (HBCIDBService) getService();
 
     DBIterator list = service.createList(AuslandsUeberweisung.class);
+    list.addFilter("konto_id = " + getID());
+
+    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
+    return list;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaLastschriften()
+   */
+  public DBIterator getSepaLastschriften() throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(SepaLastschrift.class);
     list.addFilter("konto_id = " + getID());
 
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");

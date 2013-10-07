@@ -59,7 +59,23 @@ CREATE TABLE aueberweisung (
   termin date NOT NULL,
   ausgefuehrt integer NOT NULL,
   ausgefuehrt_am timestamp,
+  endtoendid varchar(35) NULL
+);
+
+CREATE TABLE sepalastschrift (
+  id serial primary key,
+  konto_id integer NOT NULL,
+  empfaenger_konto varchar(40) NOT NULL,
+  empfaenger_name varchar(140) NOT NULL,
+  empfaenger_bic varchar(15) NULL,
+  betrag float NOT NULL,
+  zweck varchar(140),
+  termin date NOT NULL,
+  ausgefuehrt integer NOT NULL,
+  ausgefuehrt_am timestamp,
   endtoendid varchar(35) NULL,
+  mandateid varchar(35) NOT NULL,
+  sigdate date NOT NULL
 );
 
 
@@ -237,6 +253,7 @@ ALTER TABLE slastbuchung ADD CONSTRAINT fk_slastschrift1 FOREIGN KEY (slastschri
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_konto7 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sueberweisungbuchung ADD CONSTRAINT fk_sueberweisung1 FOREIGN KEY (sueberweisung_id) REFERENCES sueberweisung (id) DEFERRABLE;
 ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE sepalastschrift ADD CONSTRAINT fk_konto9 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);
@@ -256,4 +273,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',42);
+INSERT INTO version (name,version) values ('db',44);

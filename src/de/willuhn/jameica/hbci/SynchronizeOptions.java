@@ -92,7 +92,8 @@ public class SynchronizeOptions implements Serializable
            getSyncDauerauftraege() ||
            getSyncLastschriften() ||
            getSyncUeberweisungen() ||
-           getSyncAuslandsUeberweisungen();
+           getSyncAuslandsUeberweisungen() ||
+           getSyncSepaLastschriften();
   }
   
   /**
@@ -107,6 +108,7 @@ public class SynchronizeOptions implements Serializable
     this.setSyncLastschriften(status);
     this.setSyncUeberweisungen(status);
     this.setSyncAuslandsUeberweisungen(status);
+    this.setSyncSepaLastschriften(status);
   }
 
   /**
@@ -166,6 +168,15 @@ public class SynchronizeOptions implements Serializable
   public boolean getSyncAuslandsUeberweisungen()
   {
     return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",false);
+  }
+
+  /**
+   * Prueft, ob offene und ueberfaellige SEPA-Lastschriften eingereicht werden sollen.
+   * @return true, wenn sie synchronisiert werden sollen.
+   */
+  public boolean getSyncSepaLastschriften()
+  {
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepalast",false);
   }
 
   /**
@@ -230,6 +241,15 @@ public class SynchronizeOptions implements Serializable
   public void setSyncAuslandsUeberweisungen(boolean b)
   {
     settings.setAttribute("sync.konto." + id + ".uebforeign",b);
+  }
+
+  /**
+   * Legt fest, ob offene und ueberfaellige SEPA-Lastschriften eingereicht werden sollen.
+   * @param b true, wenn sie synchronisiert werden sollen.
+   */
+  public void setSyncSepaLastschriften(boolean b)
+  {
+    settings.setAttribute("sync.konto." + id + ".sepalast",b);
   }
 
   /**

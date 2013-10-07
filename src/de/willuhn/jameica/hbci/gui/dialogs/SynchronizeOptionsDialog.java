@@ -55,6 +55,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private CheckboxInput syncLast     = null;
   private CheckboxInput syncDauer    = null;
   private CheckboxInput syncAueb     = null;
+  private CheckboxInput syncSepaLast = null;
   private LabelInput error           = null;
   private Button apply               = null;
 
@@ -108,6 +109,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           options.setSyncLastschriften(((Boolean)getSyncLast().getValue()).booleanValue());
           options.setSyncDauerauftraege(((Boolean)getSyncDauer().getValue()).booleanValue());
           options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
+          options.setSyncSepaLastschriften(((Boolean)getSyncSepaLast().getValue()).booleanValue());
         }
         close();
       }
@@ -129,6 +131,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       group.addInput(getSyncUeb());
       group.addInput(getSyncAueb());
       group.addInput(getSyncLast());
+      group.addInput(getSyncSepaLast());
       group.addInput(getSyncDauer());
     }
     
@@ -230,6 +233,20 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       this.syncAueb.setName(i18n.tr("Fällige SEPA-Überweisungen absenden"));
     }
     return this.syncAueb;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der SEPA-Lastschriften.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncSepaLast()
+  {
+    if (this.syncSepaLast == null)
+    {
+      this.syncSepaLast = new CheckboxInput(options.getSyncSepaLastschriften());
+      this.syncSepaLast.setName(i18n.tr("Fällige SEPA-Lastschriften einziehen"));
+    }
+    return this.syncSepaLast;
   }
 
   /**
