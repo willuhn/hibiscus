@@ -77,6 +77,7 @@ public class SepaLastschriftNew extends AbstractView
       container.addHeadline(i18n.tr("Mandat"));
       container.addInput(control.getMandateId());
       container.addInput(control.getSignatureDate());
+      container.addInput(control.getSequenceType());
     }
 
     Container container = new SimpleContainer(getParent());

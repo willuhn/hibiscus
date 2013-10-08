@@ -202,6 +202,7 @@ CREATE TABLE sepalastschrift (
      , endtoendid VARCHAR(35)
      , mandateid VARCHAR(35) NOT NULL
      , sigdate DATE NOT NULL
+     , sequencetype VARCHAR(8) NOT NULL
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -316,4 +317,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',44);
+INSERT INTO version (name,version) values ('db',45);

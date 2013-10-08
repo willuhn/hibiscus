@@ -58,4 +58,18 @@ public interface SepaLastschrift extends BaseUeberweisung, Duplicatable
    * @throws RemoteException
    */
   public void setSignatureDate(Date date) throws RemoteException;
+  
+  /**
+   * Liefert den Sequenz-Typ der Lastschrft.
+   * @return der Sequenz-Typ der Lastschrift.
+   * @throws RemoteException
+   */
+  public SepaLastSequenceType getSequenceType() throws RemoteException;
+  
+  /**
+   * Speichert den Sequenz-Typ der Lastschrift.
+   * @param type der Sequenz-Typ der Lastschrift.
+   * @throws RemoteException
+   */
+  public void setSequenceType(SepaLastSequenceType type) throws RemoteException;
 }

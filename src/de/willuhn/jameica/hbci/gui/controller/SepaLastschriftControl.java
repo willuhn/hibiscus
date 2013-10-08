@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -45,6 +46,7 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -76,6 +78,7 @@ public class SepaLastschriftControl extends AbstractControl
   private TextInput endToEndId               = null;
   private TextInput mandateId                = null;
   private DateInput signature                = null;
+  private SelectInput sequenceType           = null;
 
   private TerminInput termin                 = null;
   private ReminderIntervalInput interval     = null;
@@ -241,7 +244,7 @@ public class SepaLastschriftControl extends AbstractControl
     if (this.mandateId == null)
     {
       this.mandateId = new TextInput(getTransfer().getMandateId(),HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
-      this.mandateId.setName(i18n.tr("Mandats-ID"));
+      this.mandateId.setName(i18n.tr("Mandats-Referenz"));
       this.mandateId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
       this.mandateId.setEnabled(!getTransfer().ausgefuehrt());
       this.mandateId.setMandatory(true);
@@ -264,6 +267,23 @@ public class SepaLastschriftControl extends AbstractControl
       this.signature.setMandatory(true);
     }
     return this.signature;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer den Sequenztyp.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getSequenceType() throws RemoteException
+  {
+    if (this.sequenceType == null)
+    {
+      this.sequenceType = new SelectInput(SepaLastSequenceType.values(),getTransfer().getSequenceType());
+      this.sequenceType.setName(i18n.tr("Sequenz-Typ"));
+      this.sequenceType.setEnabled(!getTransfer().ausgefuehrt());
+      this.sequenceType.setMandatory(true);
+    }
+    return this.sequenceType;
   }
 
   /**
@@ -381,6 +401,7 @@ public class SepaLastschriftControl extends AbstractControl
       t.setEndtoEndId((String) getEndToEndId().getValue());
       t.setMandateId((String) getMandateId().getValue());
       t.setSignatureDate((Date) getSignatureDate().getValue());
+      t.setSequenceType((SepaLastSequenceType)getSequenceType().getValue());
 
       String kto  = (String)getEmpfaengerKonto().getValue();
       String name = getEmpfaengerName().getText();

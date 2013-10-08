@@ -13,6 +13,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -103,12 +104,18 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
         
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
-      
-      HBCIProperties.checkLength(getMandateId(), HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
-      HBCIProperties.checkChars(getMandateId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      String mandateId = getMandateId();
+      if (mandateId == null || mandateId.length() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie die Mandatsreferenz ein."));
+      HBCIProperties.checkLength(mandateId, HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
+      HBCIProperties.checkChars(mandateId, HBCIProperties.HBCI_SEPA_VALIDCHARS);
       
       if (this.getSignatureDate() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie das Unterschriftsdatum des Mandats ein"));
+      
+      if (getSequenceType() == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie den Sequenz-Typ aus"));
     }
     catch (RemoteException e)
     {
@@ -206,5 +213,33 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   public void setSignatureDate(Date date) throws RemoteException
   {
     setAttribute("sigdate",date);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getSequenceType()
+   */
+  public SepaLastSequenceType getSequenceType() throws RemoteException
+  {
+    String val = (String) getAttribute("sequencetype");
+    if (val == null || val.length() == 0)
+      return null;
+    
+    try
+    {
+      return SepaLastSequenceType.valueOf(val);
+    }
+    catch (Exception e)
+    {
+      Logger.error("invalid sequencetype: " + val,e);
+      return null;
+    }
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setSequenceType(de.willuhn.jameica.hbci.rmi.SepaLastSequenceType)
+   */
+  public void setSequenceType(SepaLastSequenceType type) throws RemoteException
+  {
+    setAttribute("sequencetype",type != null ? type.name() : null);
   }
 }

@@ -75,7 +75,8 @@ CREATE TABLE sepalastschrift (
   ausgefuehrt_am timestamp,
   endtoendid varchar(35) NULL,
   mandateid varchar(35) NOT NULL,
-  sigdate date NOT NULL
+  sigdate date NOT NULL,
+  sequencetype varchar(8) NOT NULL
 );
 
 
@@ -273,4 +274,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',44);
+INSERT INTO version (name,version) values ('db',45);

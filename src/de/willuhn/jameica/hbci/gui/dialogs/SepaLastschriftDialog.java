@@ -64,7 +64,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
     group.addLabelPair(i18n.tr("BIC des Zahlungspflichtigen"),empfBic);
 
     Input empfMandate = new LabelInput(last.getMandateId());
-    group.addLabelPair(i18n.tr("Mandats-ID"),empfMandate);
+    group.addLabelPair(i18n.tr("Mandats-Referenz"),empfMandate);
 
     LabelInput betrag = new LabelInput(HBCI.DECIMALFORMAT.format(last.getBetrag()) + " " + last.getKonto().getWaehrung());
     betrag.setColor(Color.ERROR);
