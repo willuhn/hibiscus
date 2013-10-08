@@ -58,8 +58,9 @@ public class AuslandsUeberweisungSearchProvider implements SearchProvider
     DBIterator list = service.createList(AuslandsUeberweisung.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
                    "LOWER(empfaenger_name) LIKE ? OR " +
+                   "LOWER(endtoendid) LIKE ? OR " +
                    "LOWER(empfaenger_konto) LIKE ?",
-                   text,text,text);
+                   text,text,text,text);
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
 
     ArrayList results = new ArrayList();
