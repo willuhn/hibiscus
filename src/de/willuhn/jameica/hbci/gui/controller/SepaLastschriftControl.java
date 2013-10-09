@@ -76,6 +76,7 @@ public class SepaLastschriftControl extends AbstractControl
   private TextInput empfkto                  = null;
   private TextInput bic                      = null;
   private TextInput endToEndId               = null;
+  private TextInput creditorId               = null;
   private TextInput mandateId                = null;
   private DateInput signature                = null;
   private SelectInput sequenceType           = null;
@@ -232,6 +233,24 @@ public class SepaLastschriftControl extends AbstractControl
       this.endToEndId.setMandatory(false);
     }
     return this.endToEndId;
+  }
+
+  /**
+   * Liefert das Eingabe-Feld fuer die Glaeubiger-ID.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getCreditorId() throws RemoteException
+  {
+    if (this.creditorId == null)
+    {
+      this.creditorId = new TextInput(getTransfer().getCreditorId(),HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
+      this.creditorId.setName(i18n.tr("Gläubiger-Identifikation"));
+      this.creditorId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      this.creditorId.setEnabled(!getTransfer().ausgefuehrt());
+      this.creditorId.setMandatory(true);
+    }
+    return this.creditorId;
   }
 
   /**
@@ -399,6 +418,7 @@ public class SepaLastschriftControl extends AbstractControl
       t.setZweck((String)getZweck().getValue());
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
+      t.setCreditorId((String) getCreditorId().getValue());
       t.setMandateId((String) getMandateId().getValue());
       t.setSignatureDate((Date) getSignatureDate().getValue());
       t.setSequenceType((SepaLastSequenceType)getSequenceType().getValue());

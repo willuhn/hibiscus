@@ -70,14 +70,15 @@ public class SepaLastschriftNew extends AbstractView
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
+      container.addHeadline(i18n.tr("Mandat"));
+      container.addInput(control.getCreditorId());
+      container.addInput(control.getMandateId());
+      container.addInput(control.getSignatureDate());
+      container.addInput(control.getSequenceType());
       container.addHeadline(i18n.tr("Sonstige Informationen"));
       container.addInput(control.getTermin());
       container.addInput(control.getReminderInterval());
       container.addInput(control.getEndToEndId());
-      container.addHeadline(i18n.tr("Mandat"));
-      container.addInput(control.getMandateId());
-      container.addInput(control.getSignatureDate());
-      container.addInput(control.getSequenceType());
     }
 
     Container container = new SimpleContainer(getParent());

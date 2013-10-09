@@ -200,6 +200,7 @@ CREATE TABLE sepalastschrift (
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
      , endtoendid VARCHAR(35)
+     , creditorid VARCHAR(35) NOT NULL
      , mandateid VARCHAR(35) NOT NULL
      , sigdate DATE NOT NULL
      , sequencetype VARCHAR(8) NOT NULL
@@ -317,4 +318,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',45);
+INSERT INTO version (name,version) values ('db',46);

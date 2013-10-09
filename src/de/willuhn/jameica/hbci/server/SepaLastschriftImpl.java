@@ -57,6 +57,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setEndtoEndId(getEndtoEndId());
     u.setMandateId(getMandateId());
     u.setSignatureDate(getSignatureDate());
+    u.setCreditorId(getCreditorId());
     return u;
   }
 
@@ -104,6 +105,12 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
         
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      String creditorId = getCreditorId();
+      if (creditorId == null || creditorId.length() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie die Gläubiger-Identifikation ein."));
+      HBCIProperties.checkLength(creditorId, HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
+      HBCIProperties.checkChars(creditorId, HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
       String mandateId = getMandateId();
       if (mandateId == null || mandateId.length() == 0)
@@ -205,6 +212,22 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   public Date getSignatureDate() throws RemoteException
   {
     return (Date) getAttribute("sigdate");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getCreditorId()
+   */
+  public String getCreditorId() throws RemoteException
+  {
+    return (String) getAttribute("creditorid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setCreditorId(java.lang.String)
+   */
+  public void setCreditorId(String id) throws RemoteException
+  {
+    setAttribute("creditorid",id);
   }
   
   /**

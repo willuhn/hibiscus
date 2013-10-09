@@ -193,6 +193,11 @@ public class HBCIProperties
   public final static int HBCI_SEPA_MANDATEID_MAXLENGTH = settings.getInt("hbci.sepa.mandateid.maxlength",35);
 
   /**
+   * Maximale Laenge der Glaeubiger-ID bei SEPA.
+   */
+  public final static int HBCI_SEPA_CREDITORID_MAXLENGTH = settings.getInt("hbci.sepa.creditorid.maxlength",35);
+
+  /**
    * Text-Replacements fuer SEPA.
    * Die in SEPA nicht zulaessigen Zeichen "&*%$üöäÜÖÄß" werden ersetzt.
    */

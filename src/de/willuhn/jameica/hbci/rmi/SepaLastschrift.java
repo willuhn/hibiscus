@@ -46,6 +46,20 @@ public interface SepaLastschrift extends BaseUeberweisung, Duplicatable
   public void setMandateId(String id) throws RemoteException;
   
   /**
+   * Liefert die Glaeubiger-ID.
+   * @return die Glaeubiger-ID.
+   * @throws RemoteException
+   */
+  public String getCreditorId() throws RemoteException;
+  
+  /**
+   * Speichert die Glaeubiger-ID.
+   * @param id die Glaeubiger-ID.
+   * @throws RemoteException
+   */
+  public void setCreditorId(String id) throws RemoteException;
+
+  /**
    * Liefert das Datum der Unterschrift des Mandats.
    * @return das Datum der Unterschrift des Mandats.
    * @throws RemoteException

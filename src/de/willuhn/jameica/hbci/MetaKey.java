@@ -21,9 +21,24 @@ public enum MetaKey
   @SuppressWarnings("javadoc") REMINDER_CREATOR("reminder.creator",  null, "unknown"),
   
   /**
-   * Meta-Key fuer die SEPA-Mandatsreferenz.
+   * SEPA-Mandatsreferenz.
    */
-  SEPA_MANDATE_ID("sepa.mandate.id","SEPA-Mandatsreferenz",null);
+  SEPA_MANDATE_ID("sepa.mandateid", "SEPA-Mandatsreferenz",null),
+  
+  /**
+   * Signatur-Datum des Mandats.
+   */
+  SEPA_MANDATE_SIGDATE("sepa.sigdate", "Signatur-Datum des Mandats",null),
+  
+  /**
+   * SEPA-Lastschrift Sequenz-Typ.
+   */
+  SEPA_SEQUENCE_CODE("sepa.sequencetype", "Signatur-Datum des Mandats",null),
+
+  /**
+   * Gläubiger-Identifikation.
+   */
+  SEPA_CREDITOR_ID("sepa.creditor.id", "Gläubiger-Identifikation",null),
   
   ;
 
