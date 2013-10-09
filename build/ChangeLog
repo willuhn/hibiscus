@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0264 Kontoauszüge: Option "Nur ungeprüfte Umsätze anzeigen" persistent speichern, nicht nur für die Session
   * NEW: 0263 BUGZILLA 1393 - In neueren SEPA-Versionen als "SEPA-Descriptor" die URN senden
   * NEW: 0262 In SEPA nicht zulässige Sonderzeichen im Inhabernamen des eigenen Kontos beim
               Versand einer SEPA-Überweisung ersetzen
