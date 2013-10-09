@@ -15,6 +15,7 @@ import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.system.Application;
@@ -40,7 +41,7 @@ public class OpenReminderTemplate implements Action
     try
     {
       HibiscusDBObject object = (HibiscusDBObject) context;
-      String id = object.getMeta("reminder.template",null);
+      String id = MetaKey.REMINDER_TEMPLATE.get(object);
       if (id == null)
         return;
       

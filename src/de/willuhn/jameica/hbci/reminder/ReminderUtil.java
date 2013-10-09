@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.reminder.Reminder;
@@ -52,8 +53,10 @@ public class ReminderUtil
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
+      MetaKey UUID = MetaKey.REMINDER_UUID;
+      
       // Reminder laden
-      String uuid       = order.getMeta("reminder.uuid",null);
+      String uuid       = UUID.get(order);
       Reminder reminder = (uuid != null ? provider.get(uuid) : null);
 
       // a) ohne Intervall
@@ -63,7 +66,7 @@ public class ReminderUtil
         if (reminder != null)
         {
           provider.delete(uuid);
-          order.setMeta("reminder.uuid",null); // Referenz loeschen
+          UUID.set(order,null); // Referenz loeschen
         }
       }
       else // b) mit Intervall
@@ -98,7 +101,7 @@ public class ReminderUtil
         {
           uuid = provider.add(reminder);
           // UUID des Reminders speichern
-          order.setMeta("reminder.uuid",uuid);
+          UUID.set(order,uuid);
         }
       }
       

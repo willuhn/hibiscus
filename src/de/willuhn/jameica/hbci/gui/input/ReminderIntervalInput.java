@@ -26,6 +26,7 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LinkInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.gui.action.OpenReminderTemplate;
 import de.willuhn.jameica.hbci.gui.dialogs.ReminderIntervalDialog;
 import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
@@ -74,7 +75,7 @@ public class ReminderIntervalInput implements Input
     // Fuer Auftraege, die bereits selbst via Reminder erzeugt wurden, duerfen keine
     // neuen Reminder angelegt werden. Daher nehmen wir hier ein LinkInput, welches
     // auf die Kopier-Vorlage verlinkt.
-    if (bean.getMeta("reminder.template",null) != null)
+    if (MetaKey.REMINDER_TEMPLATE.get(bean) != null)
     {
       this.input = new LinkInput(i18n.tr("von dieser <a>Vorlage</a>"));
       this.input.setName(i18n.tr("Wiederholung"));
@@ -97,7 +98,7 @@ public class ReminderIntervalInput implements Input
     }
     
     this.containsInterval = true;
-    String uuid = bean.getMeta("reminder.uuid",null);
+    String uuid = MetaKey.REMINDER_UUID.get(bean);
     ReminderInterval ri = null;
     
     if (uuid != null)

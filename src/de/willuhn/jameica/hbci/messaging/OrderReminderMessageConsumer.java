@@ -18,6 +18,7 @@ import java.util.Map;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
@@ -72,10 +73,10 @@ public class OrderReminderMessageConsumer implements MessageConsumer
       HibiscusDBObject t = (HibiscusDBObject) list.next();
       // Wenn der Auftrag in den Meta-Daten die ID des gesuchten Auftrages hat,
       // dann ist er bereits erzeugt worden.
-      String from = t.getMeta("reminder.template",null);
+      String from = MetaKey.REMINDER_TEMPLATE.get(t);
       if (from != null && from.equals(id))
       {
-        Logger.debug("already cloned by " + t.getMeta("reminder.creator","unknown"));
+        Logger.debug("already cloned by " + MetaKey.REMINDER_CREATOR.get(t));
         return;
       }
     }
@@ -95,8 +96,8 @@ public class OrderReminderMessageConsumer implements MessageConsumer
       order.store();                              // speichern, noetig, weil wir die ID brauchen
 
       // Meta-Daten speichern
-      order.setMeta("reminder.creator",hostname);
-      order.setMeta("reminder.template",id);
+      MetaKey.REMINDER_CREATOR.set(order,hostname);
+      MetaKey.REMINDER_TEMPLATE.set(order,id);
 
       order.transactionCommit();
       Application.getMessagingFactory().sendSyncMessage(new ImportMessage(order)); //synchron senden, weil wir schon im Messaging-Thread sind

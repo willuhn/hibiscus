@@ -36,6 +36,7 @@ import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
@@ -95,7 +96,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
           // Checken, ob der Auftrag einen Reminder hat oder ob es ein geclonter Auftrag ist
           HibiscusDBObject o = (HibiscusDBObject) l;
-          String uuid = o.getMeta("reminder.uuid",null);
+          String uuid = MetaKey.REMINDER_UUID.get(o);
           if (uuid != null)
           {
             try
@@ -109,7 +110,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
               Logger.error("unable to determine reminder",e);
             }
           }
-          else if (o.getMeta("reminder.template",null) != null)
+          else if (MetaKey.REMINDER_TEMPLATE.get(o) != null)
           {
             item.setImage(4,SWTUtil.getImage("edit-copy.png"));
           }
