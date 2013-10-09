@@ -64,6 +64,7 @@ import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -75,6 +76,8 @@ import de.willuhn.util.I18N;
  */
 public class KontoauszugList extends UmsatzList
 {
+  private final static Settings settings = new Settings(KontoauszugList.class);
+  
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   // Konto/Zeitraum/Suchbegriff/nur geprueft
@@ -245,8 +248,7 @@ public class KontoauszugList extends UmsatzList
     if (this.unchecked != null)
       return this.unchecked;
     
-    Boolean b = (Boolean) cache.get("kontoauszug.list.unchecked");
-    this.unchecked = new CheckboxInput(b != null && b.booleanValue());
+    this.unchecked = new CheckboxInput(settings.getBoolean("kontoauszug.list.unchecked",false));
     this.unchecked.addListener(this.listener);
     return this.unchecked;
   }
@@ -484,8 +486,10 @@ public class KontoauszugList extends UmsatzList
     cache.put("kontoauszug.list.text",             zk);
     cache.put("kontoauszug.list.betrag.from",      min);
     cache.put("kontoauszug.list.betrag.to",        max);
-    cache.put("kontoauszug.list.unchecked",        unchecked);
     cache.put("kontoauszug.list.subkategorien",    subKategorien);
+    
+    // geprueft/ungeprueft Flag speichern wir permanent
+    settings.setAttribute("kontoauszug.list.unchecked",unchecked);
 
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
