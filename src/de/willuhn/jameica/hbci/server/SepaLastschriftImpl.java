@@ -58,6 +58,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setMandateId(getMandateId());
     u.setSignatureDate(getSignatureDate());
     u.setCreditorId(getCreditorId());
+    u.setSequenceType(getSequenceType());
     return u;
   }
 

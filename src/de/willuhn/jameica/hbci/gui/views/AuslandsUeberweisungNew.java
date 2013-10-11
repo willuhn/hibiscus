@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.PanelButton;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -26,6 +27,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
+import de.willuhn.jameica.hbci.gui.action.SepaExportUeberweisung;
 import de.willuhn.jameica.hbci.gui.controller.AuslandsUeberweisungControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisung;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -55,6 +57,7 @@ public class AuslandsUeberweisungNew extends AbstractView
     this.transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButton("edit-select-all.png",new SepaExportUeberweisung(transfer),i18n.tr("Als SEPA-XML-Datei exportieren...")));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportAuslandsUeberweisung(transfer)));
 		
     Container cl = new SimpleContainer(getParent());

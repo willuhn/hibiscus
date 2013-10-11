@@ -8,12 +8,18 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
+
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
@@ -82,6 +88,8 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       
       setJobParam("mandateid",lastschrift.getMandateId());
       setJobParam("manddateofsig",lastschrift.getSignatureDate());
+      setJobParam("creditorid",lastschrift.getCreditorId());
+      setJobParam("sequencetype",lastschrift.getSequenceType().name());
 		}
 		catch (RemoteException e)
 		{
@@ -120,6 +128,38 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
   void markExecuted() throws RemoteException, ApplicationException
   {
     lastschrift.setAusgefuehrt(true);
+    
+    // Wenn wir eine zugeordnete Adresse haben, koennen wir den Sequenz-Type umsetzen
+    String id = StringUtils.trimToNull(MetaKey.ADDRESS_ID.get(lastschrift));
+    if (id != null)
+    {
+      try
+      {
+        HibiscusAddress ha = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,id);
+        String seqCode = StringUtils.trimToNull(MetaKey.SEPA_SEQUENCE_CODE.get(ha));
+        if (seqCode != null)
+        {
+          SepaLastSequenceType type = SepaLastSequenceType.valueOf(seqCode);
+          if (type == SepaLastSequenceType.FRST)
+          {
+            Logger.debug("auto-switching sequence-code for address-id" + id + " from FRST to RCUR");
+            MetaKey.SEPA_SEQUENCE_CODE.set(ha,SepaLastSequenceType.RCUR.name());
+          }
+        }
+      }
+      catch (IllegalArgumentException ie)
+      {
+        Logger.error("unable to determine enum value of SepaLastSequenceType",ie);
+      }
+      catch (ObjectNotFoundException e)
+      {
+        Logger.info("address-id " + id + " no longer exists, unable to auto-switch sequence-code");
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to to auto-switch sequence-code for address-id" + id,re);
+      }
+    }
     
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(lastschrift));
     konto.addToProtokoll(i18n.tr("SEPA-Lastschrift eingezogen von: {0}",lastschrift.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);

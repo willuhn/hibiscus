@@ -61,6 +61,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class ExportDialog extends AbstractDialog implements Extendable
 {
+  final static Settings SETTINGS = new Settings(ExportDialog.class);
+  
   private final static int WINDOW_WIDTH = 420;
 
   private static DateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
@@ -72,8 +74,6 @@ public class ExportDialog extends AbstractDialog implements Extendable
   private Object[] objects        = null;	
   private Class type              = null;
 
-  private Settings  settings      = null;
-  
   private boolean exportEnabled   = true;
   private Container group         = null;
 
@@ -90,9 +90,6 @@ public class ExportDialog extends AbstractDialog implements Extendable
 
     this.objects = objects;
     this.type = type;
-
-    settings = new Settings(this.getClass());
-    settings.setStoreWhenRead(true);
   }
 
   /**
@@ -158,7 +155,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     if (exp == null || exp.exporter == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Export-Format aus"));
 
-    settings.setAttribute("lastformat",exp.format.getName());
+    SETTINGS.setAttribute("lastformat",exp.format.getName());
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
@@ -168,7 +165,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     ext = ext.replaceAll("\\*.",""); // "*." entfernen
     fd.setFileName(i18n.tr("hibiscus-export-{0}." + ext,DATEFORMAT.format(new Date())));
 
-    String path = settings.getString("lastdir",System.getProperty("user.home"));
+    String path = SETTINGS.getString("lastdir",System.getProperty("user.home"));
     if (path != null && path.length() > 0)
       fd.setFilterPath(path);
 
@@ -183,11 +180,11 @@ public class ExportDialog extends AbstractDialog implements Extendable
     final File file = new File(s);
     
     // Wir merken uns noch das Verzeichnis vom letzten mal
-    settings.setAttribute("lastdir",file.getParent());
+    SETTINGS.setAttribute("lastdir",file.getParent());
 
     // Dialog schliessen
     final boolean open = ((Boolean)getOpenFile().getValue()).booleanValue();
-    settings.setAttribute("open",open);
+    SETTINGS.setAttribute("open",open);
     close();
 
     final Exporter exporter = exp.exporter;
@@ -259,7 +256,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
   {
     if (this.openFile == null)
     {
-      this.openFile = new CheckboxInput(settings.getBoolean("open",true));
+      this.openFile = new CheckboxInput(SETTINGS.getBoolean("open",true));
       this.openFile.setName(i18n.tr("Datei nach dem Export öffnen"));
     }
     return this.openFile;
@@ -279,7 +276,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
 
     int size          = 0;
     ArrayList l       = new ArrayList();
-    String lastFormat = settings.getString("lastformat",null);
+    String lastFormat = SETTINGS.getString("lastformat",null);
     Exp selected      = null;
 
     for (int i=0;i<exporters.length;++i)

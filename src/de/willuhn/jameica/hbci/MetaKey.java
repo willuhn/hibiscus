@@ -19,6 +19,7 @@ public enum MetaKey
   @SuppressWarnings("javadoc") REMINDER_UUID("reminder.uuid",        null, null),
   @SuppressWarnings("javadoc") REMINDER_TEMPLATE("reminder.template",null, null),
   @SuppressWarnings("javadoc") REMINDER_CREATOR("reminder.creator",  null, "unknown"),
+  @SuppressWarnings("javadoc") ADDRESS_ID("address.id",              null, null),
   
   /**
    * SEPA-Mandatsreferenz.
@@ -39,7 +40,7 @@ public enum MetaKey
    * Gläubiger-Identifikation.
    */
   SEPA_CREDITOR_ID("sepa.creditor.id", "Gläubiger-Identifikation",null),
-  
+
   ;
 
   private String name         = null;

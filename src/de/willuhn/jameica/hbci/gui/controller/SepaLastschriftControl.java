@@ -16,10 +16,12 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -31,6 +33,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
@@ -52,6 +55,7 @@ import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -85,6 +89,8 @@ public class SepaLastschriftControl extends AbstractControl
   private ReminderIntervalInput interval     = null;
 
   private CheckboxInput storeEmpfaenger      = null;
+  
+  private HibiscusAddress address            = null;
   
   
   /**
@@ -164,6 +170,29 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (empfName != null)
       return empfName;
+    
+    // Wir schauen mal, ob wir in dem Auftrag schon eine Adress-ID haben
+    // Wenn das der Fall ist, bearbeitet der User scheinbar gerade eine
+    // existierende Lastschrift. Wir laden dann die Adresse, damit die
+    // Mandats-Daten beim Speichern wieder dieser zugeordnet werden.
+    try
+    {
+      SepaLastschrift s = this.getTransfer();
+      if (!s.isNewObject())
+      {
+        String id = StringUtils.trimToNull(MetaKey.ADDRESS_ID.get(s));
+        if (id != null)
+          this.address = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,id);
+      }
+    }
+    catch (ObjectNotFoundException e)
+    {
+      // Die Adresse gibts nicht mehr
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to restore linked address from transfer",re);
+    }
     empfName = new AddressInput(getTransfer().getGegenkontoName(), AddressFilter.FOREIGN);
     empfName.setMandatory(true);
     empfName.addListener(new EmpfaengerListener());
@@ -280,7 +309,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (this.signature == null)
     {
-      this.signature = new DateInput(getTransfer().getSignatureDate());
+      this.signature = new DateInput(getTransfer().getSignatureDate(),DateUtil.DEFAULT_FORMAT);
       this.signature.setName(i18n.tr("Unterschriftsdatum des Mandats"));
       this.signature.setEnabled(!getTransfer().ausgefuehrt());
       this.signature.setMandatory(true);
@@ -414,7 +443,8 @@ public class SepaLastschriftControl extends AbstractControl
       Double d = (Double) getBetrag().getValue();
       t.setBetrag(d == null ? Double.NaN : d.doubleValue());
       
-      t.setKonto((Konto)getKontoAuswahl().getValue());
+      Konto k = (Konto)getKontoAuswahl().getValue();
+      t.setKonto(k);
       t.setZweck((String)getZweck().getValue());
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
@@ -448,7 +478,27 @@ public class SepaLastschriftControl extends AbstractControl
         
         // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
         new EmpfaengerAdd().handleAction(e);
+        
+        // wenn sie in der Action gespeichert wurde, sollte sie jetzt eine ID haben und wir koennen die Meta-Daten dran haengen
+        if (e.getID() != null)
+          this.address = e;
       }
+      
+      // Glaeubiger-ID im Konto speichern, damit wir sie beim naechsten Map parat haben
+      MetaKey.SEPA_CREDITOR_ID.set(k,t.getCreditorId());
+      
+      // Daten des Mandats als Meta-Daten an der Adresse speichern
+      if (this.address != null)
+      {
+        MetaKey.SEPA_MANDATE_ID.set(this.address,t.getMandateId());
+        MetaKey.SEPA_SEQUENCE_CODE.set(this.address,t.getSequenceType().name());
+        MetaKey.SEPA_MANDATE_SIGDATE.set(this.address,DateUtil.DEFAULT_FORMAT.format(t.getSignatureDate()));
+        
+        // Adress-ID am Auftrag speichern, damit wir nach erfolgreicher Ausfuehrung des Auftrages den
+        // Sequence-Typ von FRST auf RCUR setzen koennen
+        MetaKey.ADDRESS_ID.set(t,this.address.getID());
+      }
+      
       GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
       t.transactionCommit();
 
@@ -523,10 +573,12 @@ public class SepaLastschriftControl extends AbstractControl
 
         Konto konto = (Konto) o;
         getBetrag().setComment(konto.getWaehrung());
-
-        // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
-        // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
         getTransfer().setKonto(konto);
+        
+        // Checken, ob wir im Konto eine Glaeubiger-ID haben
+        String creditorId = StringUtils.trimToNull(MetaKey.SEPA_CREDITOR_ID.get(konto));
+        if (creditorId != null)
+          getCreditorId().setValue(creditorId);
       }
       catch (RemoteException er)
       {
@@ -568,6 +620,7 @@ public class SepaLastschriftControl extends AbstractControl
           if ((zweck != null && zweck.length() > 0))
             return;
           
+          // Verwendungszweck vervollstaendigen
           DBIterator list = getTransfer().getList();
           list.addFilter("empfaenger_konto = ?",new Object[]{a.getKontonummer()});
           list.setOrder("order by id desc");
@@ -582,12 +635,41 @@ public class SepaLastschriftControl extends AbstractControl
           Logger.error("unable to autocomplete subject",e);
         }
 
+        // Checken, ob wir in der Adresse Mandats-Daten haben
+        if (a instanceof HibiscusAddress)
+        {
+          // Wir merken uns die ausgewaehlte Adresse fuer die spaetere Speicherung dieser Daten an der Adresse.
+          address = (HibiscusAddress) a;
           
+          String mandateId = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_ID.get(address));
+          String sigDate   = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_SIGDATE.get(address));
+          String seqCode   = StringUtils.trimToNull(MetaKey.SEPA_SEQUENCE_CODE.get(address));
+          
+          if (mandateId != null)
+            getMandateId().setValue(mandateId);
+          
+          if (sigDate != null)
+            getSignatureDate().setValue(sigDate);
+          
+          if (seqCode != null)
+          {
+            try
+            {
+              SepaLastSequenceType type = SepaLastSequenceType.valueOf(seqCode);
+              getSequenceType().setValue(type);
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to determine enum value of SepaLastSequenceType for " + seqCode,e);
+            }
+          }
+        }
+        
       }
       catch (RemoteException er)
       {
         Logger.error("error while choosing empfaenger",er);
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Auswahl des Gegenkontos"),StatusBarMessage.TYPE_ERROR));
       }
     }
   }

@@ -13,13 +13,15 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.PanelButton;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
+import de.willuhn.jameica.hbci.gui.action.SepaExportLastschrift;
+import de.willuhn.jameica.hbci.gui.action.SepaLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SepaLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaLastschrift;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -49,6 +51,7 @@ public class SepaLastschriftNew extends AbstractView
     this.transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Lastschrift bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButton("edit-select-all.png",new SepaExportLastschrift(transfer),i18n.tr("Als SEPA-XML-Datei exportieren...")));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaLastschrift(transfer)));
 		
     Container cl = new SimpleContainer(getParent());
@@ -99,7 +102,7 @@ public class SepaLastschriftNew extends AbstractView
     Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
       public void handleAction(Object context) throws ApplicationException {
 				if (control.handleStore())
-  				new AuslandsUeberweisungExecute().handleAction(transfer);
+  				new SepaLastschriftExecute().handleAction(transfer);
       }
     },null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());

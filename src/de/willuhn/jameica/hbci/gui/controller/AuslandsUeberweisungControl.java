@@ -442,9 +442,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
         Konto konto = (Konto) o;
         getBetrag().setComment(konto.getWaehrung());
-
-        // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
-        // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
         getTransfer().setKonto(konto);
       }
       catch (RemoteException er)
