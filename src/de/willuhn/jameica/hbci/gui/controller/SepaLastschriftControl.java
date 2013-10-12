@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -616,18 +617,18 @@ public class SepaLastschriftControl extends AbstractControl
         
         try
         {
-          String zweck = (String) getZweck().getValue();
-          if ((zweck != null && zweck.length() > 0))
-            return;
-          
-          // Verwendungszweck vervollstaendigen
-          DBIterator list = getTransfer().getList();
-          list.addFilter("empfaenger_konto = ?",new Object[]{a.getKontonummer()});
-          list.setOrder("order by id desc");
-          if (list.hasNext())
+          String zweck = StringUtils.trimToNull((String) getZweck().getValue());
+          if (zweck == null)
           {
-            HibiscusTransfer t = (HibiscusTransfer) list.next();
-            getZweck().setValue(t.getZweck());
+            // Verwendungszweck vervollstaendigen
+            DBIterator list = getTransfer().getList();
+            list.addFilter("empfaenger_konto = ?",new Object[]{a.getKontonummer()});
+            list.setOrder("order by id desc");
+            if (list.hasNext())
+            {
+              HibiscusTransfer t = (HibiscusTransfer) list.next();
+              getZweck().setValue(t.getZweck());
+            }
           }
         }
         catch (Exception e)
@@ -638,37 +639,70 @@ public class SepaLastschriftControl extends AbstractControl
         // Checken, ob wir in der Adresse Mandats-Daten haben
         if (a instanceof HibiscusAddress)
         {
+          HibiscusAddress addressCur = address;
+          
           // Wir merken uns die ausgewaehlte Adresse fuer die spaetere Speicherung dieser Daten an der Adresse.
           address = (HibiscusAddress) a;
           
-          String mandateId = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_ID.get(address));
-          String sigDate   = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_SIGDATE.get(address));
-          String seqCode   = StringUtils.trimToNull(MetaKey.SEPA_SEQUENCE_CODE.get(address));
+          String miNew = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_ID.get(address));
+          String sdNew = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_SIGDATE.get(address));
+          String scNew = StringUtils.trimToNull(MetaKey.SEPA_SEQUENCE_CODE.get(address));
+          String miCur               = StringUtils.trimToNull((String)getMandateId().getValue());
+          Date sdCur                 = (Date) getSignatureDate().getValue();
           
-          if (mandateId != null)
-            getMandateId().setValue(mandateId);
+          if (miNew != null)
+            getMandateId().setValue(miNew);
           
-          if (sigDate != null)
-            getSignatureDate().setValue(sigDate);
+          if (sdNew != null)
+            getSignatureDate().setValue(sdNew);
           
-          if (seqCode != null)
+          if (scNew != null)
           {
             try
             {
-              SepaLastSequenceType type = SepaLastSequenceType.valueOf(seqCode);
+              SepaLastSequenceType type = SepaLastSequenceType.valueOf(scNew);
               getSequenceType().setValue(type);
             }
             catch (Exception e)
             {
-              Logger.error("unable to determine enum value of SepaLastSequenceType for " + seqCode,e);
+              Logger.error("unable to determine enum value of SepaLastSequenceType for " + scNew,e);
             }
           }
+          
+          // Hatten wir vorher Eingaben drin?
+          boolean haveCur = miCur != null || sdCur != null;
+          
+          // Haben wir jetzt komplett neue Eingaben drin?
+          boolean haveNew = miNew != null && sdNew != null && scNew != null;
+          
+          // Wenn eine *andere* Adresse ausgewaehlt wurde und vorher schon Mandatsdaten drin
+          // standen und wir die nicht komplett ueberschrieben haben, zeigen wir einen Warnhinweis an
+          if (addressCur != null && !BeanUtil.equals(address,addressCur) && haveCur && !haveNew)
+          {
+            String msg = i18n.tr("Sie haben eine neue Adresse ausgewählt, zu der noch keine vollständigen Mandatsdaten\n" +
+            		                 "hinterlegt sind. Die Daten des Mandats stammen u.U. noch von der vorher ausgewählten\n" +
+            		                 "Adresse.\n\nMandats-Referenz und Unterschriftsdatum entfernen und neu eingeben?");
+            
+            boolean clear = Application.getCallback().askUser(msg);
+            if (clear)
+            {
+              getMandateId().setValue("");
+              getSignatureDate().setValue(null);
+              getSequenceType().setValue(SepaLastSequenceType.FRST);
+              getMandateId().focus();
+            }
+          }
+          
         }
         
       }
-      catch (RemoteException er)
+      catch (ApplicationException ae)
       {
-        Logger.error("error while choosing empfaenger",er);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while choosing empfaenger",e);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Auswahl des Gegenkontos"),StatusBarMessage.TYPE_ERROR));
       }
     }

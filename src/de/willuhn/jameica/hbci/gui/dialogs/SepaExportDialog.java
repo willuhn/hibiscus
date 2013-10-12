@@ -33,8 +33,10 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -111,6 +113,23 @@ public class SepaExportDialog extends AbstractDialog
         }
         
         file = new File(s);
+        if (file.exists() && file.canRead())
+        {
+          try
+          {
+            if (!Application.getCallback().askUser(i18n.tr("Datei existiert bereits. Überschreiben?")))
+              return;
+          }
+          catch (OperationCanceledException oce)
+          {
+            return;
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while asking user to overwrite file",e);
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Export fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+          }
+        }
         close();
       }
     },null,true,"ok.png");
@@ -177,8 +196,6 @@ public class SepaExportDialog extends AbstractDialog
     {
       protected void customize(FileDialog fd)
       {
-        fd.setOverwrite(true);
-        
         if (path != null && path.length() > 0)
           fd.setFilterPath(path);
       }
