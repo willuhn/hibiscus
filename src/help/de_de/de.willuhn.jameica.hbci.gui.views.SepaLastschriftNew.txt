@@ -1,0 +1,19 @@
+<form>
+
+	<p>
+		<span color="header" font="header">SEPA-Lastschrift bearbeiten</span>
+	</p>
+
+  <p>
+    <b>Wichtige Hinweise:</b> Bitte beachten Sie die für die jeweilige
+    Lastschrift-Art (CORE, COR1, B2B) vorgeschriebenen Vorlauffristen
+    und senden Sie den Auftrag <b>rechzeitig</b> an Ihre Bank. Informationen
+    hierzu finden Sie bei der <a href="http://www.bundesbank.de/Redaktion/DE/Standardartikel/Kerngeschaeftsfelder/Unbarer_Zahlungsverkehr/die_sepa_lastschrift.html">Bundesbank</a>.
+  </p>
+	<p>
+		<b>Tipp:</b> Wenn Ihr Konto nicht in der Auswahl erscheint, dann besitzt es
+		noch keine IBAN/BIC. Öffnen Sie hierzu die Konto-Eigenschaften und geben
+		Sie dort die beiden Werte ein. Anschließend wird das Konto in der
+		Auswahlliste erscheinen. 
+	</p>
+</form>

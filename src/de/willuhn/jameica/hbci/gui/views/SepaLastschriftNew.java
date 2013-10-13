@@ -70,6 +70,7 @@ public class SepaLastschriftNew extends AbstractView
       container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
 
       container.addHeadline(i18n.tr("SEPA"));
+      container.addText(i18n.tr("Bitte beachten Sie die Vorlauffristen."),true);
       container.addInput(control.getType());
       container.addInput(control.getTargetDate());
       container.addInput(control.getEndToEndId());

@@ -1,0 +1,16 @@
+<form>
+	<p>
+		<span color="header" font="header">Vorhandene SEPA-Lastschriften</span>
+	</p>
+	
+	<p>
+		In dieser Liste sehen Sie alle von Ihnen eingegebenen SEPA-Lastschriften.
+	</p>
+	
+	<p>
+		<b>Tipp:</b> Eine bereits ausgeführte SEPA-Lastschrift kann nicht
+		erneut abgesendet werden. Sie können diese jedoch duplizieren,
+		indem Sie mit der rechten Maustaste auf die gewünschte Buchung
+		klicken und anschließend <b>Duplizieren</b> wählen.
+	</p>
+</form>
