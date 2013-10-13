@@ -28,6 +28,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.dialogs.SepaExportDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -108,6 +109,8 @@ public class SepaExportLastschrift implements Action
       props.setProperty("mandateid",    StringUtils.trimToEmpty(u.getMandateId()));
       props.setProperty("manddateofsig",ISO_DATE.format(u.getSignatureDate()));
       props.setProperty("sequencetype", u.getSequenceType().name());
+      props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : "1999-01-01");
+      props.setProperty("type",         u.getType() != null ? u.getType().name() : SepaLastType.CORE.name());
 
       ISEPAGenerator gen = SEPAGeneratorFactory.get("LastSEPA",version);
       os = new BufferedOutputStream(new FileOutputStream(target));

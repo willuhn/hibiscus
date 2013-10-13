@@ -14,6 +14,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
+import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -59,6 +60,8 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setSignatureDate(getSignatureDate());
     u.setCreditorId(getCreditorId());
     u.setSequenceType(getSequenceType());
+    u.setTargetDate(getTargetDate());
+    u.setType(getType());
     return u;
   }
 
@@ -265,5 +268,49 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   public void setSequenceType(SepaLastSequenceType type) throws RemoteException
   {
     setAttribute("sequencetype",type != null ? type.name() : null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getTargetDate()
+   */
+  public Date getTargetDate() throws RemoteException
+  {
+    return (Date) getAttribute("targetdate");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setTargetDate(java.util.Date)
+   */
+  public void setTargetDate(Date date) throws RemoteException
+  {
+    setAttribute("targetdate",date);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getType()
+   */
+  public SepaLastType getType() throws RemoteException
+  {
+    String val = (String) getAttribute("sepatype");
+    if (val == null || val.length() == 0)
+      return null;
+    
+    try
+    {
+      return SepaLastType.valueOf(val);
+    }
+    catch (Exception e)
+    {
+      Logger.error("invalid sepa-type: " + val,e);
+      return null;
+    }
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setType(de.willuhn.jameica.hbci.rmi.SepaLastType)
+   */
+  public void setType(SepaLastType type) throws RemoteException
+  {
+    setAttribute("sepatype",type != null ? type.name() : null);
   }
 }

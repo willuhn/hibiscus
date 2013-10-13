@@ -68,6 +68,11 @@ public class SepaLastschriftNew extends AbstractView
       container.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
       container.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
       container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+
+      container.addHeadline(i18n.tr("SEPA"));
+      container.addInput(control.getType());
+      container.addInput(control.getTargetDate());
+      container.addInput(control.getEndToEndId());
     }
     
     // Rechte Seite
@@ -78,10 +83,10 @@ public class SepaLastschriftNew extends AbstractView
       container.addInput(control.getMandateId());
       container.addInput(control.getSignatureDate());
       container.addInput(control.getSequenceType());
-      container.addHeadline(i18n.tr("Sonstige Informationen"));
+      container.addHeadline(i18n.tr("Sonstige Informationen (nur Hibiscus-intern)"));
+      container.addText(i18n.tr("Diese Daten werden nicht an die Bank übertragen."),true);
       container.addInput(control.getTermin());
       container.addInput(control.getReminderInterval());
-      container.addInput(control.getEndToEndId());
     }
 
     Container container = new SimpleContainer(getParent());

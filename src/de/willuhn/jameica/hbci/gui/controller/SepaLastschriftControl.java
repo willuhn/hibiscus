@@ -51,6 +51,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
+import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -85,6 +86,8 @@ public class SepaLastschriftControl extends AbstractControl
   private TextInput mandateId                = null;
   private DateInput signature                = null;
   private SelectInput sequenceType           = null;
+  private SelectInput type                   = null;
+  private DateInput targetDate               = null;
 
   private TerminInput termin                 = null;
   private ReminderIntervalInput interval     = null;
@@ -336,6 +339,40 @@ public class SepaLastschriftControl extends AbstractControl
   }
 
   /**
+   * Liefert das Eingabe-Feld fuer den Typ.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getType() throws RemoteException
+  {
+    if (this.type == null)
+    {
+      this.type = new SelectInput(SepaLastType.values(),getTransfer().getType());
+      this.type.setName(i18n.tr("Lastschrift-Art"));
+      this.type.setEnabled(!getTransfer().ausgefuehrt());
+    }
+    return this.type;
+  }
+  
+  /**
+   * Liefert das Eingabe-Feld fuer das Ausfuehrungsdatum.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getTargetDate() throws RemoteException
+  {
+    if (this.targetDate == null)
+    {
+      this.targetDate = new DateInput(getTransfer().getTargetDate(),DateUtil.DEFAULT_FORMAT);
+      this.targetDate.setName(i18n.tr("Fälligkeitsdatum"));
+      this.targetDate.setEnabled(!getTransfer().ausgefuehrt());
+    }
+    return this.targetDate;
+  }
+
+
+
+  /**
    * Liefert das Eingabe-Feld fuer den Verwendungszweck.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -381,8 +418,10 @@ public class SepaLastschriftControl extends AbstractControl
    */
   public TerminInput getTermin() throws RemoteException
   {
-    if (this.termin == null)
-      this.termin = new TerminInput((Terminable) getTransfer());
+    if (this.termin != null)
+      return this.termin;
+    
+    this.termin = new TerminInput((Terminable) getTransfer());
     return termin;
   }
 
@@ -453,6 +492,8 @@ public class SepaLastschriftControl extends AbstractControl
       t.setMandateId((String) getMandateId().getValue());
       t.setSignatureDate((Date) getSignatureDate().getValue());
       t.setSequenceType((SepaLastSequenceType)getSequenceType().getValue());
+      t.setType((SepaLastType)getType().getValue());
+      t.setTargetDate((Date) getTargetDate().getValue());
 
       String kto  = (String)getEmpfaengerKonto().getValue();
       String name = getEmpfaengerName().getText();

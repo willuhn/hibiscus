@@ -7,6 +7,7 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -20,6 +21,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
+import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
@@ -90,6 +92,14 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       setJobParam("manddateofsig",lastschrift.getSignatureDate());
       setJobParam("creditorid",lastschrift.getCreditorId());
       setJobParam("sequencetype",lastschrift.getSequenceType().name());
+      
+      SepaLastType type = lastschrift.getType();
+      if (type != null)
+        setJobParam("type",type.name());
+      
+      Date targetDate = lastschrift.getTargetDate();
+      if (targetDate != null)
+        setJobParam("targetdate",targetDate);
 		}
 		catch (RemoteException e)
 		{
