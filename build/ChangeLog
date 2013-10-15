@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0267 Neue obantoo-Version 2.0.5
   * NEW: 0266 BUGZILLA 1245 - Lastschrift-Art (CORE, COR1, B2B) sowie Faelligkeitstermin auswaehlbar
   * NEW: 0265 BUGZILLA 1245 - allererster Test-Code fuer SEPA-Lastschriften
   * NEW: 0264 Kontoauszüge: Option "Nur ungeprüfte Umsätze anzeigen" persistent speichern, nicht nur für die Session
