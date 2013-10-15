@@ -168,7 +168,7 @@ public class UmsatzList extends TablePart implements Extendable
             // Saldo nicht mit einfaerben, dass irritiert sonst,
             // wenn die Buchung zwar einen negativen Betrag hat,
             // der Saldo aber einen positiven (und umgekehrt)
-            item.setForeground(7,Color.WIDGET_FG.getSWTColor());
+            item.setForeground(7,Color.FOREGROUND.getSWTColor());
           }
 
           item.setText(1,""); // Kein Text in den Flags - wir wollen nur das Bild

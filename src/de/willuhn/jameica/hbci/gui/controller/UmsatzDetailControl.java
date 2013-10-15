@@ -240,7 +240,7 @@ public class UmsatzDetailControl extends AbstractControl {
     double s = getUmsatz().getBetrag();
     betrag = new LabelInput(HBCI.DECIMALFORMAT.format(s));
     betrag.setComment(getUmsatz().getKonto().getWaehrung());
-    betrag.setColor(ColorUtil.getColor(s,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
+    betrag.setColor(ColorUtil.getColor(s,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
     return betrag;
   }
 
@@ -287,7 +287,7 @@ public class UmsatzDetailControl extends AbstractControl {
     double s = getUmsatz().getSaldo();
 		saldo = new LabelInput(HBCI.DECIMALFORMAT.format(s));
 		saldo.setComment(getUmsatz().getKonto().getWaehrung());
-    saldo.setColor(ColorUtil.getColor(s,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
+    saldo.setColor(ColorUtil.getColor(s,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
     return saldo;
 	}
 

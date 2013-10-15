@@ -149,7 +149,7 @@ public class EmpfaengerList extends TablePart implements Part
           if (o == null || !(o instanceof Address))
             return;
           if (o instanceof HibiscusAddress)
-            item.setForeground(Color.WIDGET_FG.getSWTColor());
+            item.setForeground(Color.FOREGROUND.getSWTColor());
           else
             item.setForeground(Color.COMMENT.getSWTColor());
         }

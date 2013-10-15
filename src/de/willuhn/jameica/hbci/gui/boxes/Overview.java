@@ -243,7 +243,7 @@ public class Overview extends AbstractBox implements Box
       if (saldoDate != null)
         comment += " [" + HBCI.DATEFORMAT.format(saldoDate) + "]";
       saldo.setComment(comment);
-      saldo.setColor(ColorUtil.getColor(d,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
+      saldo.setColor(ColorUtil.getColor(d,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
       ////////////////////////////////////////////////////////////////////////////
 
       
@@ -275,7 +275,7 @@ public class Overview extends AbstractBox implements Box
 
       double diff = in - out;
       getBilanz().setValue(HBCI.DECIMALFORMAT.format(diff));
-      ((LabelInput)getBilanz()).setColor(ColorUtil.getColor(diff,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
+      ((LabelInput)getBilanz()).setColor(ColorUtil.getColor(diff,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
     }
     catch (RemoteException e)
     {

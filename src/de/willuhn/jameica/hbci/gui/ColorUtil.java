@@ -29,7 +29,7 @@ public class ColorUtil
   {
     return ColorUtil.getColor(value,Settings.getBuchungSollForeground(),
                                     Settings.getBuchungHabenForeground(),
-                                    de.willuhn.jameica.gui.util.Color.WIDGET_FG.getSWTColor());
+                                    de.willuhn.jameica.gui.util.Color.FOREGROUND.getSWTColor());
   }
   
   /**

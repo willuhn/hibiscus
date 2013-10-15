@@ -161,7 +161,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
           double plusminus = ea.getPlusminus();
           if (summe)
           {
-            item.setForeground(Color.WIDGET_FG.getSWTColor());
+            item.setForeground(Color.FOREGROUND.getSWTColor());
           }
           else
           {

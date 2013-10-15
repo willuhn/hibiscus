@@ -225,7 +225,7 @@ public class UmsatzTypListDialog extends AbstractDialog
             else if (t == UmsatzTyp.TYP_EINNAHME)
               c = Settings.getBuchungHabenForeground();
             else
-              c = de.willuhn.jameica.gui.util.Color.WIDGET_FG.getSWTColor();
+              c = de.willuhn.jameica.gui.util.Color.FOREGROUND.getSWTColor();
           }
           item.setForeground(c);
         }

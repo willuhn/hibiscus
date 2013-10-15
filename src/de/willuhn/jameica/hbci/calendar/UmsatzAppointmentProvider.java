@@ -131,7 +131,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
       {
         Logger.error("unable to detect color",e);
       }
-      return Color.WIDGET_FG.getSWTColor().getRGB();
+      return Color.BLACK.getSWTColor().getRGB();
     }
     
     /**

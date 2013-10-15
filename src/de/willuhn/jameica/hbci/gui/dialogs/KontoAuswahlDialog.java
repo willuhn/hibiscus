@@ -262,7 +262,7 @@ public class KontoAuswahlDialog extends AbstractDialog
       if (date != null)
       {
         double saldo = this.preselected.getSaldo();
-        getSaldo().setColor(ColorUtil.getColor(saldo,Color.ERROR,Color.SUCCESS,Color.WIDGET_FG));
+        getSaldo().setColor(ColorUtil.getColor(saldo,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
         
         String curr = this.preselected.getWaehrung();
         if (curr == null || curr.length() == 0)

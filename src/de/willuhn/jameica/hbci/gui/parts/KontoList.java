@@ -157,7 +157,7 @@ public class KontoList extends TablePart implements Part
 
           // Sonst schwarz
           else
-            item.setForeground(Color.WIDGET_FG.getSWTColor());
+            item.setForeground(Color.FOREGROUND.getSWTColor());
 
           item.setForeground(saldocolumn,ColorUtil.getForeground(k.getSaldo()));
         }
