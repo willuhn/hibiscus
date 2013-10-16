@@ -132,8 +132,6 @@ public class IbanCalcDialog extends AbstractDialog
         
         if (s.indexOf(" ") != -1)
           konto.setValue(s.replaceAll(" ",""));
-        
-        calc();
       }
     });
     return this.konto;
@@ -205,11 +203,11 @@ public class IbanCalcDialog extends AbstractDialog
     // Bankverbindung checken
     String kto = StringUtils.trimToEmpty((String) getKonto().getValue());
     String blz = StringUtils.trimToEmpty((String) getBlz().getValue());
-    if (kto == null)
+    if (kto.length() == 0)
     {
       getKonto().setComment(i18n.tr("Bitte Kontonummer eingeben"));
     }
-    if (blz == null)
+    if (blz.length() == 0)
     {
       getBlz().setComment(i18n.tr("Bitte BLZ eingeben"));
     }
@@ -218,7 +216,7 @@ public class IbanCalcDialog extends AbstractDialog
       getBlz().setComment(i18n.tr("BLZ ungültig"));
     }
     
-    if (kto != null && blz != null && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
+    if (kto.length() > 0 && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
     {
       boolean ok = HBCIProperties.checkAccountCRC(blz,kto);
       getKonto().setComment(i18n.tr(ok ? "Konto OK" : "BLZ/Kto ungültig, bitte prüfen"));
