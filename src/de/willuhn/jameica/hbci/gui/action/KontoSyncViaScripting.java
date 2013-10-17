@@ -41,9 +41,6 @@ public class KontoSyncViaScripting implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!Application.getPluginLoader().isInstalled("de.willuhn.jameica.scripting.Plugin"))
-      return;
-
 		if (context == null || !(context instanceof Konto))
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 

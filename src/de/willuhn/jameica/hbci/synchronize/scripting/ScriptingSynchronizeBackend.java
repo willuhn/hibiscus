@@ -39,8 +39,6 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
    */
   private final static String CTX_JS_FUNCTION = "ctx.js.function";
 
-  private Boolean scriptingInstalled = null;
-  
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getName()
    */
@@ -122,9 +120,6 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
    */
   public synchronized SynchronizeSession execute(List<SynchronizeJob> jobs) throws ApplicationException, OperationCanceledException
   {
-    if (!this.isScriptingInstalled())
-      throw new ApplicationException(i18n.tr("Plugin \"jameica.scripting\" nicht installiert"));
-
     try
     {
       // Wir checken extra noch, ob es wirklich alles Offline-Konten sind
@@ -145,18 +140,6 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
   }
 
   /**
-   * Prueft, ob das Scripting-Plugin installiert ist.
-   * @return true, wenn das Scripting-Plugin installiert ist.
-   */
-  private boolean isScriptingInstalled()
-  {
-    if (this.scriptingInstalled == null)
-      this.scriptingInstalled = Application.getPluginLoader().isInstalled("de.willuhn.jameica.scripting.Plugin");
-    
-    return this.scriptingInstalled.booleanValue();
-  }
-  
-  /**
    * Liefert den auszufuehrenden Javascript-Funktionsnamen fuer den angegebenen Job.
    * @param type der Job-Typ.
    * @param konto das Konto.
@@ -164,9 +147,6 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
    */
   private String getFunction(Class<? extends SynchronizeJob> type, Konto konto)
   {
-    if (!this.isScriptingInstalled())
-      return null;
-
     try
     {
       // 1. Nur Offline-Konten. Die anderen haben eine HBCI-Anbindung
