@@ -190,7 +190,7 @@ public class KontoNew extends AbstractView
         sync.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));
         buttons.addButton(sync);
       }
-      else if (Application.getPluginLoader().isInstalled("de.willuhn.jameica.scripting.Plugin")) // Fallback auf das alte Verfahren
+      else // Fallback auf das alte Verfahren
       {
         Button sync = new Button(i18n.tr("via Scripting synchronisieren"), new KontoSyncViaScripting(),konto,false,"mail-send-receive.png");
         sync.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));
