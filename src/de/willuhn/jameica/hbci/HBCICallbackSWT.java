@@ -293,6 +293,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
             Logger.error("IBAN/CRC error: " + msg+ " ["+retData.toString()+"]: ");
           break;
           
+        case WRONG_PIN:
+          Logger.error("detected wrong PIN: " + msg+ " ["+retData.toString()+"]: ");
+          break;
+
 				case HAVE_ERROR:
 					Logger.error("NOT IMPLEMENTED: " + msg+ " ["+retData.toString()+"]: ");
 					throw new HBCI_Exception("reason not implemented");
