@@ -89,7 +89,7 @@ public class About extends AbstractDialog
     container.addPart(text);
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Diagnose-Informationen"), new Action() {
+    buttons.addButton(i18n.tr("Datenbank-Informationen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -104,7 +104,7 @@ public class About extends AbstractDialog
         catch (Exception e)
         {
           Logger.error("unable to display debug dialog",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen der Diagnose-Informationen"), StatusBarMessage.TYPE_ERROR));
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen der Datenbank-Informationen"), StatusBarMessage.TYPE_ERROR));
         }
       }
     },null,false,"dialog-information.png");

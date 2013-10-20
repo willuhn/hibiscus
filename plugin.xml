@@ -25,8 +25,8 @@
       <item id="hibiscus.menu.settings"              name="&amp;Einstellungen"                                 icon="document-properties.png"         action="de.willuhn.jameica.hbci.gui.action.Settings" />
       <item name="-" />
       <item id="hibiscus.menu.ext"                   name="Er&amp;weitert">
-        <item id="hibiscus.menu.ext.backup.create"   name="Diagnose-Backup &amp;erstellen"                     icon="document-save.png"               action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
-        <item id="hibiscus.menu.ext.backup.restore"  name="Diagnose-Backup &amp;importieren"                   icon="document-open.png"               action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
+        <item id="hibiscus.menu.ext.backup.create"   name="Datenbank-Backup &amp;erstellen"                     icon="document-save.png"               action="de.willuhn.jameica.hbci.gui.action.BackupCreate" />
+        <item id="hibiscus.menu.ext.backup.restore"  name="Datenbank-Backup &amp;importieren"                   icon="document-open.png"               action="de.willuhn.jameica.hbci.gui.action.BackupRestore" />
         <item name="-" />
         <item id="hibiscus.menu.ext.iban.calculator" name="IBAN-Rechner"                                       icon="accessories-calculator.png"      action="de.willuhn.jameica.hbci.gui.action.IbanCalc" />
       </item>

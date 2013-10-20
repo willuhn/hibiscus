@@ -34,8 +34,10 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -53,6 +55,32 @@ public class BackupRestore implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    // Wir checken vorher, ob die Datenbank leer ist. Ansonsten koennen wir das
+    // eh nicht sinnvoll importieren.
+    try
+    {
+      if (Settings.getDBService().createList(Konto.class).size() > 0)
+      {
+        String text = i18n.tr("Die Hibiscus-Installation enthält bereits Daten.\n" +
+                              "Das Backup kann nur in eine neue Hibiscus-Installation importiert werden.");
+        Application.getCallback().notifyUser(text);
+        return;
+      }
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (OperationCanceledException oce)
+    {
+      return;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to notify user",e);
+      throw new ApplicationException(i18n.tr("Datenbank-Import fehlgeschlagen"));
+    }
+    
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.OPEN);
     fd.setFileName("hibiscus-backup-" + BackupCreate.DATEFORMAT.format(new Date()) + ".xml");
     fd.setFilterExtensions(new String[]{"*.xml"});

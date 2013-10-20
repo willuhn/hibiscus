@@ -44,7 +44,7 @@ public class DebugDialog extends AbstractDialog
   public DebugDialog(int position)
   {
     super(position);
-    this.setTitle(i18n.tr("Diagnose-Informationen"));
+    this.setTitle(i18n.tr("Datenbank-Informationen"));
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
