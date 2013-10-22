@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/AuslandsUeberweisungDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/05/11 10:05:23 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -48,7 +42,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);
-    group.addHeadline(i18n.tr("Details der SEPA-Überweisung"));
+    group.addHeadline(i18n.tr("Details der SEPA-Lastschrift"));
 			
 		Input kto = new LabelInput(last.getKonto().getKontonummer());
 		kto.setComment(last.getKonto().getBezeichnung());
