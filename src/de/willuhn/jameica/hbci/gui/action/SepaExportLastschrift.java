@@ -92,6 +92,10 @@ public class SepaExportLastschrift implements Action
       File target         = d.getFile();
       PainVersion version = d.getPainVersion();
       
+      String endToEndId = StringUtils.trimToNull(u.getEndtoEndId());
+      if (endToEndId == null)
+        endToEndId = "NOTPROVIDED";
+      
       Properties props = new Properties();
       props.setProperty("src.bic",      StringUtils.trimToEmpty(k.getBic()));
       props.setProperty("src.iban",     StringUtils.trimToEmpty(k.getIban()));
@@ -103,7 +107,7 @@ public class SepaExportLastschrift implements Action
       props.setProperty("btg.curr",     k.getWaehrung() != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE);
       props.setProperty("usage",        StringUtils.trimToEmpty(u.getZweck()));
       props.setProperty("sepaid",       Long.toString(System.currentTimeMillis()));
-      props.setProperty("endtoendid",   StringUtils.trimToEmpty(u.getEndtoEndId()));
+      props.setProperty("endtoendid",   endToEndId);
       
       props.setProperty("creditorid",   StringUtils.trimToEmpty(u.getCreditorId()));
       props.setProperty("mandateid",    StringUtils.trimToEmpty(u.getMandateId()));

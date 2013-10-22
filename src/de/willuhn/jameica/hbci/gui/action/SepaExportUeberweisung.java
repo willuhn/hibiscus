@@ -87,6 +87,10 @@ public class SepaExportUeberweisung implements Action
       File target         = d.getFile();
       PainVersion version = d.getPainVersion();
       
+      String endToEndId = StringUtils.trimToNull(u.getEndtoEndId());
+      if (endToEndId == null)
+        endToEndId = "NOTPROVIDED";
+
       Properties props = new Properties();
       props.setProperty("src.bic",    StringUtils.trimToEmpty(k.getBic()));
       props.setProperty("src.iban",   StringUtils.trimToEmpty(k.getIban()));
@@ -98,7 +102,7 @@ public class SepaExportUeberweisung implements Action
       props.setProperty("btg.curr",   k.getWaehrung() != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE);
       props.setProperty("usage",      StringUtils.trimToEmpty(u.getZweck()));
       props.setProperty("sepaid",     Long.toString(System.currentTimeMillis()));
-      props.setProperty("endtoendid", StringUtils.trimToEmpty(u.getEndtoEndId()));
+      props.setProperty("endtoendid", endToEndId);
       
       ISEPAGenerator gen = SEPAGeneratorFactory.get("UebSEPA",version);
       os = new BufferedOutputStream(new FileOutputStream(target));
