@@ -88,6 +88,7 @@ CREATE TABLE sepalastschrift (
   sequencetype varchar(8) NOT NULL,
   sepatype varchar(8) NULL,
   targetdate date NULL,
+  orderid varchar(255) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -317,6 +318,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',47);
+INSERT INTO version (name,version) values ('db',48);
   
 COMMIT;

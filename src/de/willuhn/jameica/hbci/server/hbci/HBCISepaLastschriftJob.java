@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.kapott.hbci.GV_Result.AbstractGVRLastSEPA;
 
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
@@ -35,6 +36,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
 {
 
 	private SepaLastschrift lastschrift = null;
+	private SepaLastType type           = null;
 	private Konto konto                 = null;
 
   /**
@@ -57,7 +59,8 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt"));
 
       this.lastschrift = lastschrift;
-      this.konto = this.lastschrift.getKonto();
+      this.konto       = this.lastschrift.getKonto();
+      this.type        = this.lastschrift.getType();
 
       if (this.lastschrift.getBetrag() > Settings.getUeberweisungLimit())
         throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
@@ -121,6 +124,15 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
    */
   public String getIdentifier()
   {
+    switch (this.type)
+    {
+      case B2B:
+        return "LastB2BSEPA";
+      case COR1:
+        return "LastB2BSEPA";
+    }
+    
+    // Default CORE
     return "LastSEPA";
   }
   
@@ -137,6 +149,14 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
+    // Order-ID uebernehmen, wenn erhalten
+    AbstractGVRLastSEPA result = (AbstractGVRLastSEPA) this.getJobResult();
+    String orderId = result.getOrderId();
+    Logger.info("orderid for job: " + orderId);
+    lastschrift.setOrderId(orderId);
+    lastschrift.store();
+
+    // Als ausgefuehrt markieren (die Funktion macht intern bereits ein store())
     lastschrift.setAusgefuehrt(true);
     
     // Wenn wir eine zugeordnete Adresse haben, koennen wir den Sequenz-Type umsetzen
@@ -172,7 +192,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
     }
     
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(lastschrift));
-    konto.addToProtokoll(i18n.tr("SEPA-Lastschrift eingezogen von: {0}",lastschrift.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);
+    konto.addToProtokoll(i18n.tr("SEPA-Lastschrift (Order-ID: {0}) eingereicht für: {1}",orderId, lastschrift.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);
     Logger.info("sepa direct debit submitted successfully");
   }
 

@@ -79,7 +79,8 @@ CREATE TABLE sepalastschrift (
   sigdate date NOT NULL,
   sequencetype varchar(8) NOT NULL,
   sepatype varchar(8),
-  targetdate date
+  targetdate date,
+  orderid varchar(255)
 );
 
 
@@ -277,4 +278,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',47);
+INSERT INTO version (name,version) values ('db',48);

@@ -313,4 +313,20 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("sepatype",type != null ? type.name() : null);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getOrderId()
+   */
+  public String getOrderId() throws RemoteException
+  {
+    return (String) this.getAttribute("orderid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setOrderId(java.lang.String)
+   */
+  public void setOrderId(String orderId) throws RemoteException
+  {
+    this.setAttribute("orderid",orderId);
+  }
 }

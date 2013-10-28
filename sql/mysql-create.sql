@@ -206,6 +206,7 @@ CREATE TABLE sepalastschrift (
      , sequencetype VARCHAR(8) NOT NULL
      , sepatype VARCHAR(8)
      , targetdate DATE
+     , orderid VARCHAR(255)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -320,4 +321,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',47);
+INSERT INTO version (name,version) values ('db',48);

@@ -115,4 +115,18 @@ public interface SepaLastschrift extends BaseUeberweisung, Duplicatable
    */
   public void setType(SepaLastType type) throws RemoteException;
   
+  /**
+   * Liefert die von der Bank nach der Uebertragung zurueckgemeldete Order-ID.
+   * @return die Order-ID. NULL, wenn der Auftrag noch nicht an die Bank gesendet wurde.
+   * @throws RemoteException
+   */
+  public String getOrderId() throws RemoteException;
+  
+  /**
+   * Speichert die von der Bank zurueckgemeldete Order-ID.
+   * @param orderId die von der Bank zurueckgemeldete Order-ID.
+   * @throws RemoteException
+   */
+  public void setOrderId(String orderId) throws RemoteException;
+  
 }
