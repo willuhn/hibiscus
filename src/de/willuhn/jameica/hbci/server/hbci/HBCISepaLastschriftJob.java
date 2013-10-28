@@ -96,9 +96,8 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       setJobParam("creditorid",lastschrift.getCreditorId());
       setJobParam("sequencetype",lastschrift.getSequenceType().name());
       
-      SepaLastType type = lastschrift.getType();
-      if (type != null)
-        setJobParam("type",type.name());
+      if (this.type != null)
+        setJobParam("type",this.type.name());
       
       Date targetDate = lastschrift.getTargetDate();
       if (targetDate != null)
@@ -124,12 +123,15 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
    */
   public String getIdentifier()
   {
-    switch (this.type)
+    if (this.type != null)
     {
-      case B2B:
-        return "LastB2BSEPA";
-      case COR1:
-        return "LastB2BSEPA";
+      switch (this.type)
+      {
+        case B2B:
+          return "LastB2BSEPA";
+        case COR1:
+          return "LastB2BSEPA";
+      }
     }
     
     // Default CORE
