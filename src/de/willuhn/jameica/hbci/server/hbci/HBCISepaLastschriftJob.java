@@ -124,18 +124,10 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
   public String getIdentifier()
   {
     if (this.type != null)
-    {
-      switch (this.type)
-      {
-        case B2B:
-          return "LastB2BSEPA";
-        case COR1:
-          return "LastB2BSEPA";
-      }
-    }
+      return this.type.getJobName();
     
     // Default CORE
-    return "LastSEPA";
+    return SepaLastType.CORE.getJobName();
   }
   
   /**

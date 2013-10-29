@@ -114,9 +114,11 @@ public class SepaExportLastschrift implements Action
       props.setProperty("manddateofsig",ISO_DATE.format(u.getSignatureDate()));
       props.setProperty("sequencetype", u.getSequenceType().name());
       props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : "1999-01-01");
-      props.setProperty("type",         u.getType() != null ? u.getType().name() : SepaLastType.CORE.name());
+      
+      SepaLastType type = u.getType();
+      type = type != null ? type : SepaLastType.CORE;
 
-      ISEPAGenerator gen = SEPAGeneratorFactory.get("LastSEPA",version);
+      ISEPAGenerator gen = SEPAGeneratorFactory.get(type.getJobName(),version);
       os = new BufferedOutputStream(new FileOutputStream(target));
       gen.generate(props,os,false);
       os.close();
