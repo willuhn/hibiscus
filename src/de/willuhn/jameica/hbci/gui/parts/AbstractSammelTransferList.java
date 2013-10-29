@@ -19,6 +19,8 @@ import java.util.Date;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericObject;
@@ -147,6 +149,12 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     this.pending = new CheckboxInput(settings.getBoolean("transferlist.filter.pending",false));
     this.pending.setName(i18n.tr("Nur offene Aufträge anzeigen"));
     this.pending.addListener(this.listener);
+    this.pending.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("transferlist.filter.pending",((Boolean)pending.getValue()).booleanValue());
+      }
+    });
     return this.pending;
   }
 
@@ -157,7 +165,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   {
     try
     {
-      return (super.hasChanged() && pending != null && pending.hasChanged());
+      return (super.hasChanged() || (pending != null && pending.hasChanged()));
     }
     catch (Exception e)
     {
