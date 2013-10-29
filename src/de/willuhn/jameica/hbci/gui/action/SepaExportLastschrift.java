@@ -96,6 +96,11 @@ public class SepaExportLastschrift implements Action
       if (endToEndId == null)
         endToEndId = "NOTPROVIDED";
       
+      SepaLastType type = u.getType();
+      if (type == null)
+        type = SepaLastType.CORE;
+      
+
       Properties props = new Properties();
       props.setProperty("src.bic",      StringUtils.trimToEmpty(k.getBic()));
       props.setProperty("src.iban",     StringUtils.trimToEmpty(k.getIban()));
@@ -114,9 +119,7 @@ public class SepaExportLastschrift implements Action
       props.setProperty("manddateofsig",ISO_DATE.format(u.getSignatureDate()));
       props.setProperty("sequencetype", u.getSequenceType().name());
       props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : "1999-01-01");
-      
-      SepaLastType type = u.getType();
-      type = type != null ? type : SepaLastType.CORE;
+      props.setProperty("type",         type.name());
 
       ISEPAGenerator gen = SEPAGeneratorFactory.get(type.getJobName(),version);
       os = new BufferedOutputStream(new FileOutputStream(target));
