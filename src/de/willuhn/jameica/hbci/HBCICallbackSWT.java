@@ -24,6 +24,7 @@ import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.gui.DialogFactory;
@@ -157,7 +158,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
       }
 
 			AccountContainer container = accountCache.get(passport);
-
+			
 			switch (reason) {
         
 			  // Hier kommen nur noch die PIN/TAN und DDV-Passports an. Die von RDH werden
@@ -295,6 +296,11 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
           
         case WRONG_PIN:
           Logger.error("detected wrong PIN: " + msg+ " ["+retData.toString()+"]: ");
+          break;
+          
+        case USERID_CHANGED:
+          Logger.info("got changed user/account data (code 3072) - saving in persistent data for later handling");
+          ((AbstractHBCIPassport)passport).setPersistentData(PassportHandle.CONTEXT_USERID_CHANGED,retData.toString());
           break;
 
 				case HAVE_ERROR:

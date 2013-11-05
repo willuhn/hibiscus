@@ -15,6 +15,8 @@ package de.willuhn.jameica.hbci.passports.pintan.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
@@ -36,7 +38,9 @@ import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TanMediaDialog;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -199,6 +203,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   public void close() throws RemoteException {
 		if (hbciPassport == null && handler == null)
 			return;
+
+		this.handleChangedCustomerData();
+		
 		try {
 			Logger.info("closing pin/tan passport");
 			handler.close();
@@ -213,6 +220,119 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       ((HBCICallbackSWT)callback).setCurrentHandle(null);
     
     Logger.info("pin/tan passport closed");
+  }
+  
+  /**
+   * Behandelt die GAD-spezifische Rueckmeldung zur Aenderung der Kundenkennung
+   */
+  private void handleChangedCustomerData()
+  {
+    if (hbciPassport == null && handler == null)
+      return;
+
+    Object o = ((AbstractHBCIPassport)hbciPassport).getPersistentData(CONTEXT_USERID_CHANGED);
+    if (o == null)
+      return;
+
+    try
+    {
+      String changes = o.toString();
+      int pos = changes.indexOf("|");
+      if (pos == -1)
+        return;
+      
+      String userId = changes.substring(0,pos);
+      String custId = changes.substring(pos+1);
+      if (userId.length() == 0 || custId.length() == 0)
+        return;
+      
+      String custOld = hbciPassport.getCustomerId();
+      String userOld = hbciPassport.getUserId();
+
+      String text = i18n.tr("Die Bank hat mitgeteilt, dass sich die Benutzer- und Kundenkennung Ihres\n" +
+      		                  "Bank-Zugangs geändert hat. Die neuen Zugangsdaten lauten:\n\n" +
+                            "  Alte Kundenkennung: {0}\n" +
+                            "  Neue Kundenkennung: {1}\n\n" +
+      		                  "  Alte Benutzerkennung: {2}\n" +
+                            "  Neue Benutzerkennung: {3}\n\n" +
+      		                  "Möchten Sie die geänderten Zugangsdaten jetzt übernehmen?");
+      
+      boolean b = Application.getCallback().askUser(text,new String[]{custOld,custId,userOld,userId});
+      if (!b)
+        return;
+      
+      // 1) Aenderung im Passport selbst
+      Logger.info("applying new customer data to passport");
+      hbciPassport.setCustomerId(custId);
+      hbciPassport.setUserId(userId);
+      hbciPassport.saveChanges();
+      
+      // 2) UPD nach Zugangsdaten durchsuchen
+      Properties upd = hbciPassport.getUPD();
+      Enumeration e = upd.keys();
+      int count = 0;
+      while (e.hasMoreElements())
+      {
+        String key = (String) e.nextElement();
+        String value = upd.getProperty(key);
+        if (value == null || value.length() == 0)
+          continue;
+        
+        if (value.equals(custOld))
+        {
+          Logger.info("updating UPD entry " + key + " with new customer/user id");
+          upd.setProperty(key,custId);
+          count++;
+        }
+        else if (value.equals(userOld))
+        {
+          Logger.info("updating UPD entry " + key + " with new customer/user id");
+          upd.setProperty(key,userId);
+          count++;
+        }
+      }
+      Logger.info("updated " + count + " entries in UPD");
+      
+      // 3) Kundenkennung in zugeordneten Konten aktualisieren
+      count = 0;
+      org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
+      if (konten != null && konten.length > 0)
+      {
+        for (org.kapott.hbci.structures.Konto konto:konten)
+        {
+          Konto k = Converter.HBCIKonto2HibiscusKonto(konto, PassportImpl.class);
+          if (!k.isNewObject())
+          {
+            k.setKundennummer(custId);
+            k.store();
+            Logger.info("updating customerid in account ID " + k.getID());
+            k.addToProtokoll(i18n.tr("Geänderte Kundenkennung im Konto - neu: {0}, alt: {1}",custId,custOld),Protokoll.TYP_SUCCESS);
+            count++;
+          }
+        }
+      }
+      Logger.info("updated customerid in " + count + " accounts");
+
+      // 4) Aenderung im Konto protokollieren
+      Konto konto = this.passport != null ? this.passport.getKonto() : null;
+      if (konto != null)
+      {
+        konto.addToProtokoll(i18n.tr("Geänderte Kundenkennung im Bankzugang - neu: {0}, alt: {1}",custId,custOld),Protokoll.TYP_SUCCESS);
+        konto.addToProtokoll(i18n.tr("Geänderte Benutzerkennung im Bankzugang - neu: {0}, alt: {1}",userId,userOld),Protokoll.TYP_SUCCESS);
+        Logger.info("logged changes in account");
+      }
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Geänderte Zugangsdaten erfolgreich übernommen"),StatusBarMessage.TYPE_SUCCESS));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while applying new user-/customer data",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Übernehmen der geänderten Zugangsdaten: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+    finally
+    {
+      // aus den Context-Daten entfernen, wenn wir es behandelt haben
+      ((AbstractHBCIPassport)hbciPassport).setPersistentData(CONTEXT_USERID_CHANGED,null);
+    }
   }
 
   /**

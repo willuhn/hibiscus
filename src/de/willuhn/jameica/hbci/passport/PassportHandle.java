@@ -32,6 +32,11 @@ public interface PassportHandle extends Remote
    * der Passport erstellt wurde.
    */
   public final static String CONTEXT_CONFIG = "hibiscus.context.config";
+  
+  /**
+   * Identifier fuer den Persistent-Parameter mit ggf geaenderter Kunden- und Benutzerkennung.
+   */
+  public final static String CONTEXT_USERID_CHANGED = "hibiscus.context.userid.changed";
 
   /**
    * Oeffnet den Passport und liefert den HBCIHandler zrueck.
