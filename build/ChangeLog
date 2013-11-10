@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0271 Neues Build von HBCI4Java mit zusammengefassten Generatoren fuer CORE/COR1/B2B Lastschrift via "getPainJobName"
   * NEW: 0270 Neue obantoo-Version 2.0.8
   * NEW: 0269 Behandlung des 3072-Rückmelde-Codes von GAD-Banken für die Übermittlung geänderter Anmelde-Daten
   * NEW: 0268 Neue obantoo-Version 2.0.7
