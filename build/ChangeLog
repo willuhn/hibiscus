@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0270 Neue obantoo-Version 2.0.8
   * NEW: 0269 Behandlung des 3072-Rückmelde-Codes von GAD-Banken für die Übermittlung geänderter Anmelde-Daten
   * NEW: 0268 Neue obantoo-Version 2.0.7
   * NEW: 0267 Neue obantoo-Version 2.0.5
