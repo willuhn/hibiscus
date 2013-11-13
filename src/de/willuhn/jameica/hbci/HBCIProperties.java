@@ -478,7 +478,7 @@ public class HBCIProperties
       Logger.error("unable to generate IBAN",e);
       throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
     }
-    catch (Exception e2)
+    catch (Throwable e2) // BUGZILLA-1405 auch "ExceptionInInitializerError" in obantoo mit fangen
     {
       Logger.error("unable to generate IBAN",e2);
       throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
