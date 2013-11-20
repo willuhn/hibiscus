@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0273 Sync-Optionen kuenftig fuer alles (ausser Dauerauftraege abrufen) per Default aktiv
   * NEW: 0272 Neue obantoo-Version 2.0.9 (2.0.8 enthielt eine kaputte BLZ.txt)
   * NEW: 0271 Neues Build von HBCI4Java mit zusammengefassten Generatoren fuer CORE/COR1/B2B Lastschrift via "getPainJobName"
   * NEW: 0270 Neue obantoo-Version 2.0.8

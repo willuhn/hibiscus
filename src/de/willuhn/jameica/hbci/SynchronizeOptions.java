@@ -122,7 +122,7 @@ public class SynchronizeOptions implements Serializable
     // war, nehmen wir als Default-Wert auch den von dort.
     // Damit wird beim ersten mal der Vorwert uebernommen.
     // (Sanfte Migration)
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".saldo",getSyncKontoauszuege());
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".saldo",true);
   }
 
   /**
@@ -140,7 +140,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncUeberweisungen()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".ueb",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".ueb",true);
   }
 
   /**
@@ -149,7 +149,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncLastschriften()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".last",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".last",true);
   }
 
   /**
@@ -167,7 +167,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncAuslandsUeberweisungen()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",true);
   }
 
   /**
@@ -176,7 +176,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncSepaLastschriften()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepalast",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepalast",true);
   }
 
   /**
