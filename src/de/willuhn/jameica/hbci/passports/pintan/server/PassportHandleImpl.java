@@ -150,7 +150,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 			String hbciVersion = config.getHBCIVersion();
 			if (hbciVersion == null || hbciVersion.length() == 0)
-				hbciVersion = "plus";
+				hbciVersion = "300";
 
       Logger.info("[PIN/TAN] url         : " + config.getURL());
       Logger.info("[PIN/TAN] blz         : " + config.getBLZ());
