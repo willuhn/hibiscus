@@ -34,17 +34,17 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
   public List<String> getBlzList()
   {
     List<String> list = new ArrayList<String>();
-    list.add("20090500"); // Netbank
-    list.add("60090800"); // SpardaBank BW
-    list.add("33060592"); // SpardaBank West - siehe https://www.willuhn.de/blog/index.php?url=archives/519-Neues-in-Hibiscus.html&serendipity[csuccess]=true#c1146
-    list.add("12096597"); // SpardaBank Berlin - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c14
-    list.add("55090500"); // SpardaBank Suedwest - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c16
-    list.add("40060560"); // SpardaBank Münster - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c28
-    list.add("20690500"); // SpardaBank Hamburg - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c47
-    list.add("37060590"); // SpardaBank West 2 - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c53
-    list.add("36060591"); // SpardaBank West 3 - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c53
-    list.add("70090500"); // SpardaBank München - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c59
-    list.add("76090500"); // SpardaBank Nürnberg - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c62
+//    list.add("20090500"); // Netbank
+//    list.add("60090800"); // SpardaBank BW
+//    list.add("33060592"); // SpardaBank West - siehe https://www.willuhn.de/blog/index.php?url=archives/519-Neues-in-Hibiscus.html&serendipity[csuccess]=true#c1146
+//    list.add("12096597"); // SpardaBank Berlin - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c14
+//    list.add("55090500"); // SpardaBank Suedwest - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c16
+//    list.add("40060560"); // SpardaBank Münster - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c28
+//    list.add("20690500"); // SpardaBank Hamburg - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c47
+//    list.add("37060590"); // SpardaBank West 2 - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c53
+//    list.add("36060591"); // SpardaBank West 3 - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c53
+//    list.add("70090500"); // SpardaBank München - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c59
+//    list.add("76090500"); // SpardaBank Nürnberg - https://www.willuhn.de/bugzilla/show_bug.cgi?id=887#c62
     return list;
   }
 
