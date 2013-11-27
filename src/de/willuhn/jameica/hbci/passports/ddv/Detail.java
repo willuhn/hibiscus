@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Detail.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/09/01 09:40:53 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -97,27 +91,13 @@ public class Detail extends AbstractView
     
     buttonArea.paint(getParent());
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#canBookmark()
+   */
+  public boolean canBookmark()
+  {
+    return false;
+  }
+
 }
-
-
-/**********************************************************************
- * $Log: Detail.java,v $
- * Revision 1.4  2011/09/01 09:40:53  willuhn
- * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
- *
- * Revision 1.3  2011-04-29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.2  2011-04-08 15:19:15  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.1  2010-09-07 15:28:05  willuhn
- * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
- *
- * Revision 1.5  2010-07-13 10:55:29  willuhn
- * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
- *
- * Revision 1.4  2010/06/17 11:45:49  willuhn
- * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- **********************************************************************/

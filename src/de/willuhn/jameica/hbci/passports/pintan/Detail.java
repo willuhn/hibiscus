@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/Detail.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/05/23 10:47:29 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -112,30 +106,12 @@ public class Detail extends AbstractView
     },null,false,"document-save.png");
     buttons.paint(getParent());
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#canBookmark()
+   */
+  public boolean canBookmark()
+  {
+    return false;
+  }
 }
-
-
-/**********************************************************************
- * $Log: Detail.java,v $
- * Revision 1.7  2011/05/23 10:47:29  willuhn
- * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
- *
- * Revision 1.6  2011-05-09 09:35:15  willuhn
- * @N BUGZILLA 827
- *
- * Revision 1.5  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.4  2010-10-11 20:58:51  willuhn
- * @N BUGZILLA 927
- *
- * Revision 1.3  2010-07-22 12:37:41  willuhn
- * @N GUI poliert
- *
- * Revision 1.2  2010-07-13 11:01:05  willuhn
- * @N Icons in PIN/TAN-Config
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- **********************************************************************/
