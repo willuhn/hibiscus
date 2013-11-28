@@ -65,11 +65,12 @@ public class Overview extends AbstractBox implements Box
   private DateInput start          = null;
   private DateInput end            = null;
   
-  private MessageConsumer mc = new SaldoMessageConsumer();
+  private final MessageConsumer mc = new SaldoMessageConsumer();
   
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
+  @Override
   public String getName()
   {
     return "Hibiscus: " + i18n.tr("Finanz-Übersicht");
@@ -78,9 +79,10 @@ public class Overview extends AbstractBox implements Box
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
-    Container group = new SimpleContainer(parent);
+    final Container group = new SimpleContainer(parent);
     group.addLabelPair(i18n.tr("Konto") + ":", getKontoAuswahl());
     group.addLabelPair(i18n.tr("Beginn des Zeitraumes") + ":", getStart());
     group.addLabelPair(i18n.tr("Ende des Zeitraumes") + ":", getEnd());
@@ -93,6 +95,7 @@ public class Overview extends AbstractBox implements Box
     
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
     parent.addDisposeListener(new DisposeListener() {
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -103,6 +106,7 @@ public class Overview extends AbstractBox implements Box
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
    */
+  @Override
   public int getDefaultIndex()
   {
     return 0;
@@ -111,6 +115,7 @@ public class Overview extends AbstractBox implements Box
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
+  @Override
   public boolean getDefaultEnabled()
   {
     return true;
@@ -128,8 +133,11 @@ public class Overview extends AbstractBox implements Box
 
     this.kontoAuswahl = new KontoInput(konto != null && (konto instanceof Konto) && ((Konto) konto).getID() != null ? ((Konto) konto) : null,KontoFilter.ACTIVE);
     this.kontoAuswahl.setSupportGroups(true);
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    if ( this.kontoAuswahl.getList().size() != 1 ) {
+      this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
+    }
     this.kontoAuswahl.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         refresh();
@@ -162,7 +170,7 @@ public class Overview extends AbstractBox implements Box
     
     if (startDate == null)
     {
-      Calendar cal = Calendar.getInstance();
+      final Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       cal.set(Calendar.DAY_OF_MONTH,1);
       startDate = cal.getTime();
@@ -170,6 +178,7 @@ public class Overview extends AbstractBox implements Box
     
     this.start = new DateInput(DateUtil.startOfDay(startDate),HBCI.DATEFORMAT);
     this.start.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         refresh();
@@ -189,7 +198,7 @@ public class Overview extends AbstractBox implements Box
 
     if (endDate == null)
     {
-      Calendar cal = Calendar.getInstance();
+      final Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       endDate = cal.getTime();
@@ -197,6 +206,7 @@ public class Overview extends AbstractBox implements Box
 
     this.end = new DateInput(DateUtil.endOfDay(endDate),HBCI.DATEFORMAT);
     this.end.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         refresh();
@@ -222,12 +232,12 @@ public class Overview extends AbstractBox implements Box
       double d = 0d;
       if (konto == null || !(konto instanceof Konto))
       {
-        DBIterator konten = Settings.getDBService().createList(Konto.class);
+        final DBIterator konten = Settings.getDBService().createList(Konto.class);
         if (konto != null && (konto instanceof String))
           konten.addFilter("kategorie = ?", (String) konto);
         while (konten.hasNext())
         {
-          Konto k = (Konto) konten.next();
+          final Konto k = (Konto) konten.next();
           d += k.getSaldo();
         }
       }
@@ -237,7 +247,7 @@ public class Overview extends AbstractBox implements Box
         saldoDate = ((Konto) konto).getSaldoDatum();
       }
       
-      LabelInput saldo = (LabelInput) this.getSaldo();
+      final LabelInput saldo = (LabelInput) this.getSaldo();
       saldo.setValue(HBCI.DECIMALFORMAT.format(d));
       String comment = HBCIProperties.CURRENCY_DEFAULT_DE;
       if (saldoDate != null)
@@ -254,12 +264,12 @@ public class Overview extends AbstractBox implements Box
       double out = 0d;
       if (konto == null || !(konto instanceof Konto))
       {
-        DBIterator i = Settings.getDBService().createList(Konto.class);
+        final DBIterator i = Settings.getDBService().createList(Konto.class);
         if (konto != null && (konto instanceof String))
           i.addFilter("kategorie = ?", (String) konto);
         while (i.hasNext())
         {
-          Konto k = (Konto) i.next();
+          final Konto k = (Konto) i.next();
           in  += KontoUtil.getEinnahmen(k,startDate,endDate);
           out += KontoUtil.getAusgaben(k,startDate,endDate);
         }
@@ -273,11 +283,11 @@ public class Overview extends AbstractBox implements Box
       getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));
       getEinnahmen().setValue(HBCI.DECIMALFORMAT.format(in));
 
-      double diff = in - out;
+      final double diff = in - out;
       getBilanz().setValue(HBCI.DECIMALFORMAT.format(diff));
       ((LabelInput)getBilanz()).setColor(ColorUtil.getColor(diff,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
     }
-    catch (RemoteException e)
+    catch (final RemoteException e)
     {
       Logger.error("unable to calculate sum",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Berechnen der Bilanz"),StatusBarMessage.TYPE_ERROR));
@@ -328,6 +338,7 @@ public class Overview extends AbstractBox implements Box
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#isActive()
    */
+  @Override
   public boolean isActive()
   {
     return super.isActive() && !Settings.isFirstStart();
@@ -341,6 +352,7 @@ public class Overview extends AbstractBox implements Box
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{SaldoMessage.class};
@@ -349,9 +361,11 @@ public class Overview extends AbstractBox implements Box
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       GUI.getDisplay().syncExec(new Runnable() {
+        @Override
         public void run()
         {
           refresh();
@@ -362,6 +376,7 @@ public class Overview extends AbstractBox implements Box
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */
+    @Override
     public boolean autoRegister()
     {
       return false;

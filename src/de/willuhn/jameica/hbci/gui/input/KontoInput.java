@@ -53,7 +53,7 @@ public class KontoInput extends SelectInput
   private Control control = null;
   private boolean supportGroups = false;
 
-  private MessageConsumer mc = new SaldoMessageConsumer();
+  private final MessageConsumer mc = new SaldoMessageConsumer();
 
   /**
    * ct.
@@ -65,7 +65,12 @@ public class KontoInput extends SelectInput
   {
     super(init(filter),konto);
     setName(i18n.tr("Konto"));
-    setPleaseChoose(i18n.tr("Bitte wählen..."));
+    // Wenn nur ein Konto hinterlegt ist das gleich vorselektieren
+    if ( super.getList().size() == 1 ) {
+      super.setPreselected(super.getList().get(0));
+    } else {
+      setPleaseChoose(i18n.tr("Bitte wählen..."));
+    }
     this.setComment("");
 
     this.listener = new KontoListener();
@@ -108,15 +113,15 @@ public class KontoInput extends SelectInput
     this.token = s;
     this.store = store;
 
-    String id = settings.getString(this.token,null);
+    final String id = settings.getString(this.token,null);
     if (id != null && id.length() > 0)
     {
       try
       {
-        Konto k = (Konto) Settings.getDBService().createObject(Konto.class,id);
+        final Konto k = (Konto) Settings.getDBService().createObject(Konto.class,id);
         this.setPreselected(k);
       }
-      catch (Exception e)
+      catch (final Exception e)
       {
         // wir koennen leider nicht checken, ob "id" =~ /[0-9]{1,9}/ ist, weil der Gruppen-Name ja auch nur aus Zahlen bestehen kann
         // daher halt direkt im catch der ObjectNotFoundException
@@ -147,6 +152,7 @@ public class KontoInput extends SelectInput
   /**
    * @see de.willuhn.jameica.gui.input.SelectInput#getControl()
    */
+  @Override
   public Control getControl()
   {
     if (this.control != null)
@@ -156,6 +162,7 @@ public class KontoInput extends SelectInput
 
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
     this.control.addDisposeListener(new DisposeListener() {
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -175,7 +182,7 @@ public class KontoInput extends SelectInput
 
     try
     {
-      Object o = getValue();
+      final Object o = getValue();
       String value = null;
 
       if (o != null)
@@ -187,7 +194,7 @@ public class KontoInput extends SelectInput
       }
       settings.setAttribute(token,value);
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       // Hier lief was schief. Wir loeschen die Vorauswahl
       settings.setAttribute(token,(String) null);
@@ -203,23 +210,23 @@ public class KontoInput extends SelectInput
   private static List init(KontoFilter filter) throws RemoteException
   {
     groups = KontoUtil.getGroups(); // Gruppen neu laden
-    boolean haveGroups = groups.size() > 0;
+    final boolean haveGroups = groups.size() > 0;
 
-    DBIterator it = Settings.getDBService().createList(Konto.class);
+    final DBIterator it = Settings.getDBService().createList(Konto.class);
     it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
-    List l = new ArrayList();
+    final List l = new ArrayList();
 
     String current = null;
 
     while (it.hasNext())
     {
-      Konto k = (Konto) it.next();
+      final Konto k = (Konto) it.next();
 
       if (filter == null || filter.accept(k))
       {
         if (haveGroups)
         {
-          String kat = StringUtils.trimToNull(k.getKategorie());
+          final String kat = StringUtils.trimToNull(k.getKategorie());
           if (kat != null) // haben wir eine Kategorie?
           {
             if (current == null || !kat.equals(current)) // Neue Kategorie?
@@ -238,9 +245,10 @@ public class KontoInput extends SelectInput
   /**
    * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
    */
+  @Override
   public Object getValue()
   {
-    Object o = super.getValue();
+    final Object o = super.getValue();
 
     if ((o instanceof String) && !this.supportGroups) // Kategorie
     {
@@ -253,6 +261,7 @@ public class KontoInput extends SelectInput
   /**
    * @see de.willuhn.jameica.gui.input.SelectInput#format(java.lang.Object)
    */
+  @Override
   protected String format(Object bean)
   {
     if (bean == null)
@@ -263,11 +272,11 @@ public class KontoInput extends SelectInput
 
     try
     {
-      Konto k = (Konto) bean;
+      final Konto k = (Konto) bean;
 
-      boolean disabled = k.hasFlag(Konto.FLAG_DISABLED);
+      final boolean disabled = k.hasFlag(Konto.FLAG_DISABLED);
 
-      StringBuffer sb = new StringBuffer();
+      final StringBuffer sb = new StringBuffer();
       if (groups.size() > 0)
         sb.append("   "); // Wir haben Gruppen - also einruecken
       if (disabled)
@@ -275,9 +284,9 @@ public class KontoInput extends SelectInput
 
       sb.append(i18n.tr("Kto. {0}",k.getKontonummer()));
 
-      String blz = k.getBLZ();
+      final String blz = k.getBLZ();
       sb.append(" [");
-      String bankName = HBCIUtils.getNameForBLZ(blz);
+      final String bankName = HBCIUtils.getNameForBLZ(blz);
       if (bankName != null && bankName.length() > 0)
       {
         sb.append(bankName);
@@ -290,7 +299,7 @@ public class KontoInput extends SelectInput
       sb.append("] ");
       sb.append(k.getName());
 
-      String bez = k.getBezeichnung();
+      final String bez = k.getBezeichnung();
       if (bez != null && bez.length() > 0)
       {
         sb.append(" - ");
@@ -307,7 +316,7 @@ public class KontoInput extends SelectInput
         sb.append("]");
       return sb.toString();
     }
-    catch (RemoteException re)
+    catch (final RemoteException re)
     {
       Logger.error("unable to format address",re);
       return null;
@@ -322,26 +331,27 @@ public class KontoInput extends SelectInput
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
+    @Override
     public void handleEvent(Event event) {
 
       try {
-        Object o = getValue();
+        final Object o = getValue();
         if (o == null || !(o instanceof Konto))
         {
           setComment("");
           return;
         }
 
-        Konto konto = (Konto) o;
-        String w = konto.getWaehrung();
+        final Konto konto = (Konto) o;
+        final String w = konto.getWaehrung();
 
-        Date datum = konto.getSaldoDatum();
+        final Date datum = konto.getSaldoDatum();
         if (datum != null)
           setComment(i18n.tr("Saldo: {0} {1} vom {2}", new String[]{HBCI.DECIMALFORMAT.format(konto.getSaldo()),w,HBCI.DATEFORMAT.format(datum)}));
         else
           setComment("");
       }
-      catch (RemoteException er)
+      catch (final RemoteException er)
       {
         Logger.error("error while updating currency",er);
         GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei Ermittlung der Währung"));
@@ -357,6 +367,7 @@ public class KontoInput extends SelectInput
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{SaldoMessage.class};
@@ -365,16 +376,18 @@ public class KontoInput extends SelectInput
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
-      SaldoMessage msg = (SaldoMessage) message;
-      GenericObject o = msg.getObject();
+      final SaldoMessage msg = (SaldoMessage) message;
+      final GenericObject o = msg.getObject();
       if (!(o instanceof Konto))
         return;
 
       final Konto konto = (Konto) o;
 
       GUI.getDisplay().syncExec(new Runnable() {
+        @Override
         public void run()
         {
           // Checken, ob wir das Konto in der Liste haben. Wenn ja, aktualisieren
@@ -390,11 +403,11 @@ public class KontoInput extends SelectInput
 
             for (int i=0;i<list.size();++i)
             {
-              Object item = list.get(i);
+              final Object item = list.get(i);
               if (!(item instanceof Konto))
                 continue; // Ist eine Konto-Gruppe
 
-              Konto k = (Konto) item;
+              final Konto k = (Konto) item;
               if (BeanUtil.equals(konto,k))
               {
                 list.set(i,konto);
@@ -409,12 +422,12 @@ public class KontoInput extends SelectInput
             if (listener != null)
               listener.handleEvent(null);
           }
-          catch (NoSuchMethodError e)
+          catch (final NoSuchMethodError e)
           {
             // TODO "getList" hab ich erst am 15.04. eingebaut. Das catch kann hier also mal irgendwann weg
             Logger.warn(e.getMessage() + " - update your jameica installation");
           }
-          catch (Exception e)
+          catch (final Exception e)
           {
             Logger.error("unable to refresh konto",e);
           }
@@ -425,6 +438,7 @@ public class KontoInput extends SelectInput
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */
+    @Override
     public boolean autoRegister()
     {
       return false;

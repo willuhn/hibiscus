@@ -83,7 +83,9 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoAuswahl.setRememberSelection("auswertungen.umsatztree");
     this.kontoAuswahl.setSupportGroups(true);
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    if ( this.kontoAuswahl.getList().size() != 1 ) {
+      this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    }
     return this.kontoAuswahl;
   }
 
@@ -124,17 +126,17 @@ public class UmsatzTypTreeControl extends AbstractControl
    */
   public de.willuhn.jameica.hbci.io.UmsatzTree getUmsatzTree() throws RemoteException
   {
-    de.willuhn.jameica.hbci.io.UmsatzTree tree = new de.willuhn.jameica.hbci.io.UmsatzTree();
+    final de.willuhn.jameica.hbci.io.UmsatzTree tree = new de.willuhn.jameica.hbci.io.UmsatzTree();
     tree.setEnd((Date) getEnd().getValue());
     tree.setStart((Date) getStart().getValue());
-    Object konto = getKontoAuswahl().getValue();
+    final Object konto = getKontoAuswahl().getValue();
     if (konto != null && (konto instanceof Konto))
       tree.setTitle(((Konto) konto).getBezeichnung());
     else if (konto != null && (konto instanceof String))
       tree.setTitle((String) konto);
     
-    Object o = getTree().getSelection();
-    List<UmsatzTreeNode> selection = new LinkedList<UmsatzTreeNode>(); 
+    final Object o = getTree().getSelection();
+    final List<UmsatzTreeNode> selection = new LinkedList<UmsatzTreeNode>(); 
     if (o instanceof UmsatzTreeNode)
       selection.add((UmsatzTreeNode)o);
     else if (o instanceof UmsatzTreeNode[])
@@ -167,12 +169,12 @@ public class UmsatzTypTreeControl extends AbstractControl
    */
   private DBIterator getUmsaetze() throws RemoteException
   {
-    Object o    = getKontoAuswahl().getValue();
+    final Object o    = getKontoAuswahl().getValue();
 
-    Date von = (Date) getStart().getValue();
-    Date bis = (Date) getEnd().getValue();
+    final Date von = (Date) getStart().getValue();
+    final Date bis = (Date) getEnd().getValue();
 
-    DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
+    final DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     if (o != null && (o instanceof Konto))
       umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
     else if (o != null && (o instanceof String))
@@ -205,15 +207,15 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     try
     {
-      TreePart tree = getTree();
-      List items = tree.getItems();
+      final TreePart tree = getTree();
+      final List items = tree.getItems();
       for (int i=0;i<items.size();++i)
       {
         tree.setExpanded((GenericObject)items.get(i),!this.expanded,true);
       }
       this.expanded = !this.expanded;
     }
-    catch (RemoteException re)
+    catch (final RemoteException re)
     {
       Logger.error("unable to expand tree",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aufklappen/Zuklappen"), StatusBarMessage.TYPE_ERROR));
@@ -231,7 +233,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       getTree().restoreState();
       handleRefreshChart();
     }
-    catch (RemoteException re)
+    catch (final RemoteException re)
     {
       Logger.error("unable to redraw tree",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
@@ -246,7 +248,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     try
     {
       // 1. Wir holen uns die aktuell selektierten Objekte
-      Object selection = getTree().getSelection();
+      final Object selection = getTree().getSelection();
 
       List l = null;
       
@@ -267,7 +269,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       getChart().setData(l, (Date) getStart().getValue(), (Date) getEnd().getValue());
       getChart().redraw();
     }
-    catch (RemoteException re)
+    catch (final RemoteException re)
     {
       Logger.error("unable to redraw chart",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
@@ -281,9 +283,9 @@ public class UmsatzTypTreeControl extends AbstractControl
    */
   private List<GenericObjectNode> getAllGroups() throws RemoteException
   {
-    List<GenericObjectNode> list = new ArrayList<GenericObjectNode>();
-    List<GenericObjectNode> root = getTree().getItems();
-    for (GenericObjectNode r:root)
+    final List<GenericObjectNode> list = new ArrayList<GenericObjectNode>();
+    final List<GenericObjectNode> root = getTree().getItems();
+    for (final GenericObjectNode r:root)
     {
       _addGroup(r,list);
     }
@@ -298,10 +300,10 @@ public class UmsatzTypTreeControl extends AbstractControl
   private void _addGroup(GenericObjectNode root, List<GenericObjectNode> target) throws RemoteException
   {
     target.add(root);
-    GenericIterator children = root.getChildren();
+    final GenericIterator children = root.getChildren();
     while (children.hasNext())
     {
-      GenericObject o = children.next();
+      final GenericObject o = children.next();
       if (o instanceof GenericObjectNode)
         _addGroup((GenericObjectNode)o,target);
     }

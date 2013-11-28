@@ -116,6 +116,7 @@ public class KontoauszugList extends UmsatzList
     // das Reload, um schnell aufeinanderfolgende Updates
     // zu buendeln.
     this.listener = new DelayedListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         handleReload(false);
@@ -127,6 +128,7 @@ public class KontoauszugList extends UmsatzList
    * Ueberschrieben, um die Tabelle vorher noch mit Daten zu fuellen.
    * @see de.willuhn.jameica.hbci.gui.parts.UmsatzList#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     addColumn(new KontoColumn()); // BUGZILLA 723
@@ -140,49 +142,51 @@ public class KontoauszugList extends UmsatzList
     folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     {
-      TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Zeitraum/Suchbegriff"));
+      final TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Zeitraum/Suchbegriff"));
 
-      ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
+      final ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
       
-      Container left = new SimpleContainer(columns.getComposite());
+      final Container left = new SimpleContainer(columns.getComposite());
       left.addLabelPair(i18n.tr("Zweck/Notiz/Art enthält"), this.getText());
       left.addLabelPair(i18n.tr("Konto"),                   this.getKontoAuswahl());
       left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorie());
       left.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
       
-      Container right = new SimpleContainer(columns.getComposite());
+      final Container right = new SimpleContainer(columns.getComposite());
       right.addLabelPair(i18n.tr("Start-Datum"),            this.getStart());
       right.addLabelPair(i18n.tr("End-Datum"),              this.getEnd());
       right.addCheckbox(this.getSubKategorien(),i18n.tr("Untergeordnete Kategorien einbeziehen"));
     }
     
     {
-      TabGroup tab = new TabGroup(folder,i18n.tr("Gegenkonto/Betrag"));
+      final TabGroup tab = new TabGroup(folder,i18n.tr("Gegenkonto/Betrag"));
       tab.addLabelPair(i18n.tr("Kontonummer enthält"), this.getGegenkontoNummer());
 
-      ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
-      Container left = new SimpleContainer(columns.getComposite());
+      final ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
+      final Container left = new SimpleContainer(columns.getComposite());
       left.addLabelPair(i18n.tr("BLZ enthält"),                    this.getGegenkontoBLZ());
       left.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"), this.getGegenkontoName());
 
-      Container right = new SimpleContainer(columns.getComposite());
+      final Container right = new SimpleContainer(columns.getComposite());
       right.addLabelPair(i18n.tr("Mindest-Betrag"), this.getMindestBetrag());
       right.addLabelPair(i18n.tr("Höchst-Betrag"),        this.getHoechstBetrag());
     }
     
     // Wir merken uns das aktive Tab.
-    Integer tab = (Integer) cache.get("tab");
+    final Integer tab = (Integer) cache.get("tab");
     if (tab != null) folder.setSelection(tab);
     folder.addDisposeListener(new DisposeListener() {
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         cache.put("tab",folder.getSelectionIndex());
       }
     });
     
-    ButtonArea buttons = new ButtonArea();
+    final ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         handlePrint();
@@ -190,6 +194,7 @@ public class KontoauszugList extends UmsatzList
     },null,false,"document-save.png");
     buttons.addButton(i18n.tr("Filter zurücksetzen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         handleReset();
@@ -197,6 +202,7 @@ public class KontoauszugList extends UmsatzList
     },null,false,"edit-undo.png");
     buttons.addButton(i18n.tr("&Aktualisieren"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         handleReload(true);
@@ -208,6 +214,7 @@ public class KontoauszugList extends UmsatzList
     handleReload(true);
     
     parent.addDisposeListener(new DisposeListener() {
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         GUI.getView().setLogoText(""); // Hinweis-Test wieder ausblenden BUGZILLA 449
@@ -234,7 +241,9 @@ public class KontoauszugList extends UmsatzList
     this.kontoAuswahl.setRememberSelection("auswertungen.kontoauszug");
     this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setComment(null);
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    if ( this.kontoAuswahl.getList().size() != 1 ) {
+      this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    }
     this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
   }
@@ -303,13 +312,14 @@ public class KontoauszugList extends UmsatzList
     // Wenn in der Kategorie-Auswahl "<Alle Kategorien>" ausgewaehlt wurde, deaktivieren wir uns
     this.kategorie.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         try
         {
           getSubKategorien().setEnabled(kategorie.getValue() != null);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           Logger.error("unable to update checkbox",e);
         }
@@ -329,7 +339,7 @@ public class KontoauszugList extends UmsatzList
     if (this.subKategorien != null)
       return this.subKategorien;
     
-    Boolean b = (Boolean) cache.get("kontoauszug.list.subkategorien");
+    final Boolean b = (Boolean) cache.get("kontoauszug.list.subkategorien");
     this.subKategorien = new CheckboxInput(b != null && b.booleanValue());
     this.subKategorien.addListener(this.listener);
     this.subKategorien.setEnabled(this.getKategorie().getValue() != null); // initial nur aktiviert, wenn eine Kategorie ausgewaehlt ist
@@ -346,7 +356,7 @@ public class KontoauszugList extends UmsatzList
     if (this.gegenkontoNummer != null)
       return this.gegenkontoNummer;
 
-    AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
+    final AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new AddressListener());
     this.gegenkontoNummer = new DialogInput((String) cache.get("kontoauszug.list.gegenkonto.nummer"),d);
     this.gegenkontoNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
@@ -414,6 +424,7 @@ public class KontoauszugList extends UmsatzList
     this.betragFrom.addListener(this.listener);
     this.betragFrom.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         try
@@ -424,8 +435,8 @@ public class KontoauszugList extends UmsatzList
             // Wenn beim Hoechstbetrag noch nichts eingegeben ist, uebernehmen
             // wird dort automatisch den Mindestbetrag
             // Vorschlag von Roberto aus Mail vom 30.08.2008
-            Input i = getHoechstBetrag();
-            Double value = (Double) i.getValue();
+            final Input i = getHoechstBetrag();
+            final Double value = (Double) i.getValue();
             if (value == null || value.isNaN())
             {
               i.setValue(betragFrom.getValue());
@@ -433,7 +444,7 @@ public class KontoauszugList extends UmsatzList
             }
           }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           Logger.error("error while auto applying max value",e);
         }
@@ -465,18 +476,18 @@ public class KontoauszugList extends UmsatzList
    */
   private synchronized List<Umsatz> getUmsaetze() throws RemoteException
   {
-    Object o          = getKontoAuswahl().getValue();
-    Date start        = (Date) getStart().getValue();
-    Date end          = (Date) getEnd().getValue();
-    String gkName     = (String) getGegenkontoName().getValue();
-    String gkBLZ      = (String) getGegenkontoBLZ().getValue();
-    String gkNummer   = (String) getGegenkontoNummer().getText();
-    Double min        = (Double) getMindestBetrag().getValue();
-    Double max        = (Double) getHoechstBetrag().getValue();
+    final Object o          = getKontoAuswahl().getValue();
+    final Date start        = (Date) getStart().getValue();
+    final Date end          = (Date) getEnd().getValue();
+    final String gkName     = (String) getGegenkontoName().getValue();
+    final String gkBLZ      = (String) getGegenkontoBLZ().getValue();
+    final String gkNummer   = (String) getGegenkontoNummer().getText();
+    final Double min        = (Double) getMindestBetrag().getValue();
+    final Double max        = (Double) getHoechstBetrag().getValue();
     String zk         = (String) getText().getValue();
-    UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
-    boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
-    boolean subKategorien = ((Boolean) getSubKategorien().getValue()).booleanValue();
+    final UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
+    final boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
+    final boolean subKategorien = ((Boolean) getSubKategorien().getValue()).booleanValue();
     
     // Aktuelle Werte speichern
     cache.put("kontoauszug.list.gegenkonto.nummer",gkNummer);
@@ -491,7 +502,7 @@ public class KontoauszugList extends UmsatzList
     // geprueft/ungeprueft Flag speichern wir permanent
     settings.setAttribute("kontoauszug.list.unchecked",unchecked);
 
-    DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
+    final DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
     // BUGZILLA 449
     this.hasFilter = false;
@@ -542,10 +553,10 @@ public class KontoauszugList extends UmsatzList
 
     GUI.getView().setLogoText(this.hasFilter ? i18n.tr("Hinweis: Aufgrund von Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
     
-    List<Umsatz> result = new LinkedList<Umsatz>();
+    final List<Umsatz> result = new LinkedList<Umsatz>();
     while (umsaetze.hasNext())
     {
-      Umsatz u = (Umsatz) umsaetze.next();
+      final Umsatz u = (Umsatz) umsaetze.next();
       if (typ != null && !matches(typ, u, subKategorien))
         continue;
       
@@ -615,7 +626,7 @@ public class KontoauszugList extends UmsatzList
       // Damit werden genau die ausgegeben, die gerade
       // angezeigt werden und wir sparen uns das erneute
       // Laden aus der Datenbank
-      List list = this.getItems();
+      final List list = this.getItems();
 
       if (list == null || list.size() == 0)
       {
@@ -628,14 +639,14 @@ public class KontoauszugList extends UmsatzList
       Exporter.SESSION.put("pdf.start",getStart().getValue());
       Exporter.SESSION.put("pdf.end",getEnd().getValue());
 
-      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
+      final Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
       new UmsatzExport().handleAction(u);
     }
-    catch (ApplicationException ae)
+    catch (final ApplicationException ae)
     {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getLocalizedMessage(),StatusBarMessage.TYPE_ERROR));
     }
-    catch (RemoteException re)
+    catch (final RemoteException re)
     {
       Logger.error("error while reloading table",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
@@ -664,7 +675,7 @@ public class KontoauszugList extends UmsatzList
       this.changed = true;
       handleReload(true);
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       Logger.error("unable to reset filters",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen der Filter"), StatusBarMessage.TYPE_ERROR));
@@ -686,21 +697,22 @@ public class KontoauszugList extends UmsatzList
     
     GUI.startSync(new Runnable() // Sanduhr einblenden
     {
+      @Override
       public void run()
       {
         try
         {
           removeAll();
           
-          List<Umsatz> list = getUmsaetze();
-          for(Umsatz u:list)
+          final List<Umsatz> list = getUmsaetze();
+          for(final Umsatz u:list)
             addItem(u);
 
           
           // Zum Schluss Sortierung aktualisieren
           sort();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           Logger.error("error while reloading table",e);
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
@@ -718,7 +730,7 @@ public class KontoauszugList extends UmsatzList
   {
     try
     {
-      boolean b = this.changed;
+      final boolean b = this.changed;
       this.changed = false;
       return b || getStart().hasChanged() ||
                 getEnd().hasChanged() ||
@@ -733,7 +745,7 @@ public class KontoauszugList extends UmsatzList
                 getSubKategorien().hasChanged() ||
                 getText().hasChanged();
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       Logger.error("unable to check change status",e);
       return false;
@@ -749,19 +761,20 @@ public class KontoauszugList extends UmsatzList
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
+    @Override
     public void handleEvent(Event event)
     {
       if (event == null || event.data == null)
         return;
 
-      Address address = (Address) event.data;
+      final Address address = (Address) event.data;
       try
       {
         getGegenkontoNummer().setText(address.getKontonummer());
         getGegenkontoBLZ().setValue(address.getBlz());
         getGegenkontoName().setValue(address.getName());
       }
-      catch (RemoteException er)
+      catch (final RemoteException er)
       {
         Logger.error("error while choosing gegenkonto",er);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Auswahl des Gegenkontos"), StatusBarMessage.TYPE_ERROR));

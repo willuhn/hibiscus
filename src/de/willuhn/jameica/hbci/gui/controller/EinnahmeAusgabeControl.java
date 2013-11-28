@@ -81,16 +81,19 @@ public class EinnahmeAusgabeControl extends AbstractControl
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoAuswahl.setRememberSelection("auswertungen.einnahmeausgabe");
     this.kontoAuswahl.setSupportGroups(true);
-    this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    if ( this.kontoAuswahl.getList().size() != 1 ) {
+      this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    }
     this.kontoAuswahl.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         try
         {
           handleReload();
         }
-        catch (RemoteException e)
+        catch (final RemoteException e)
         {
           Logger.error("error while reloading table",e);
         }
@@ -149,16 +152,17 @@ public class EinnahmeAusgabeControl extends AbstractControl
       /**
        * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
        */
+      @Override
       public void format(TableItem item)
       {
         if (item == null)
           return;
         
-        EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
-        boolean summe = ea.isSumme();
+        final EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
+        final boolean summe = ea.isSumme();
         try
         {
-          double plusminus = ea.getPlusminus();
+          final double plusminus = ea.getPlusminus();
           if (summe)
           {
             item.setForeground(Color.FOREGROUND.getSWTColor());
@@ -170,7 +174,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
           }
           
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           Logger.error("unable to format line", e);
         }
@@ -189,11 +193,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
    */
   private List<EinnahmeAusgabe> getWerte() throws RemoteException
   {
-    List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
+    final List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
 
     Date start  = (Date) this.getStart().getValue();
     Date end    = (Date) this.getEnd().getValue();
-    Object o    = getKontoAuswahl().getValue();
+    final Object o    = getKontoAuswahl().getValue();
 
     // Uhrzeit zuruecksetzen, falls vorhanden
     if (start != null) start = DateUtil.startOfDay(start);
@@ -212,14 +216,14 @@ public class EinnahmeAusgabeControl extends AbstractControl
     double summeAusgaben     = 0.0d;
     double summeEndsaldo     = 0.0d;
     
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
+    final DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
     // Einschraenken auf gewaehlte Kontogruppe
     if (o != null && (o instanceof String))
       it.addFilter("kategorie = ?", (String) o);
     it.setOrder("ORDER BY blz, kontonummer");
     while (it.hasNext())
     {
-      EinnahmeAusgabe ea = new EinnahmeAusgabe((Konto) it.next(),start,end);
+      final EinnahmeAusgabe ea = new EinnahmeAusgabe((Konto) it.next(),start,end);
       
       // Zu den Summen hinzufuegen
       summeAnfangssaldo += ea.getAnfangssaldo();
@@ -230,7 +234,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     
     // Summenzeile noch hinten dran haengen
-    EinnahmeAusgabe summen = new EinnahmeAusgabe();
+    final EinnahmeAusgabe summen = new EinnahmeAusgabe();
     summen.setIsSumme(true);
     summen.setText(i18n.tr("Summe"));
     summen.setAnfangssaldo(summeAnfangssaldo);
@@ -250,11 +254,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
    */
   public void handleReload() throws RemoteException
   {
-    TablePart table = this.getTable();
+    final TablePart table = this.getTable();
     table.removeAll();
     
-    Date tStart = (Date) getStart().getValue();
-    Date tEnd = (Date) getEnd().getValue();
+    final Date tStart = (Date) getStart().getValue();
+    final Date tEnd = (Date) getEnd().getValue();
     if (tStart != null && tEnd != null && tStart.after(tEnd))
     {
       GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
@@ -262,8 +266,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     GUI.getView().setErrorText(""); // ggf. vorher angezeigten Fehler loeschen
 
-    List<EinnahmeAusgabe> list = this.getWerte();
-    for (EinnahmeAusgabe ea:list)
+    final List<EinnahmeAusgabe> list = this.getWerte();
+    for (final EinnahmeAusgabe ea:list)
       table.addItem(ea);
   }
 }
