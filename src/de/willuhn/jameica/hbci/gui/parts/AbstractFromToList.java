@@ -80,6 +80,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.buttons = new ButtonArea();
     
     this.listener = new Listener() {
+      @Override
       public void handleEvent(Event event) {
         // Wenn das event "null" ist, kann es nicht
         // von SWT ausgeloest worden sein sondern
@@ -138,7 +139,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
       return this.konto;
     
     this.konto = new KontoInput(null,KontoFilter.ALL);
-    this.konto.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    if ( this.konto.getList().size() != 1 ) {
+      this.konto.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    }
     this.konto.setSupportGroups(true);
     this.konto.setComment(null);
     this.konto.setRememberSelection("auftraege");
@@ -166,18 +169,19 @@ public abstract class AbstractFromToList extends TablePart implements Part
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
    * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     final TabFolder folder = new TabFolder(parent, SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
+    final TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
-    ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
+    final ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
     
     {
       this.left = new SimpleContainer(cols.getComposite());
       
-      Input t = this.getText();
+      final Input t = this.getText();
       this.left.addInput(t);
       
       // Duerfen wir erst nach dem Zeichnen
@@ -187,13 +191,14 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
     
     {
-      Container right = new SimpleContainer(cols.getComposite());
+      final Container right = new SimpleContainer(cols.getComposite());
       right.addInput(this.getFrom());
       right.addInput(this.getTo());
     }
 
     this.buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         handleReload(true);
@@ -202,7 +207,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.buttons.paint(parent);
    
     // Erstbefuellung
-    GenericIterator items = getList(getKonto().getValue(),(Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
+    final GenericIterator items = getList(getKonto().getValue(),(Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
     if (items != null)
     {
       items.begin();
@@ -279,6 +284,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
       GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
       GUI.startSync(new Runnable() //Sanduhr anzeigen
       {
+        @Override
         public void run()
         {
           try
@@ -288,7 +294,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
             removeAll();
 
             // Liste neu laden
-            GenericIterator items = getList(konto,dfrom,dto,text);
+            final GenericIterator items = getList(konto,dfrom,dto,text);
             if (items == null)
               return;
             
@@ -302,7 +308,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
             // Speichern der Werte aus den Filter-Feldern.
             settings.setAttribute("transferlist.filter.text",text);
           }
-          catch (Exception e)
+          catch (final Exception e)
           {
             Logger.error("error while reloading table",e);
             Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
@@ -314,7 +320,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
         }
       });
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       Logger.error("error while reloading data",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
@@ -335,7 +341,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
              (to != null && to.hasChanged()) ||
              (text != null && text.hasChanged());
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       Logger.error("unable to check change status",e);
       return true;
@@ -349,11 +355,12 @@ public abstract class AbstractFromToList extends TablePart implements Part
    */
   private class DelayedAdapter extends KeyAdapter
   {
-    private Listener forward = new DelayedListener(400,new Listener()
+    private final Listener forward = new DelayedListener(400,new Listener()
     {
       /**
        * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
        */
+      @Override
       public void handleEvent(Event event)
       {
         // hier kommt dann das verzoegerte Event an.
@@ -365,6 +372,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     /**
      * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
+    @Override
     public void keyReleased(KeyEvent e)
     {
       forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht

@@ -68,7 +68,7 @@ public class SaldoChart implements Part
   
   private KontoInput kontoauswahl = null;
   private UmsatzDaysInput range   = null;
-  private Listener reloadListener = new ReloadListener();
+  private final Listener reloadListener = new ReloadListener();
   
   private LineChart chart         = null;
   // private LineChart forecast      = null;
@@ -116,7 +116,9 @@ public class SaldoChart implements Part
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoauswahl.setRememberSelection("auswertungen.saldochart");
     this.kontoauswahl.setSupportGroups(true);
-    this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    if ( this.kontoauswahl.getList().size() != 1 ) {
+      this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    }
     if (tiny)
       this.kontoauswahl.setComment(null); // Keinen Kommentar anzeigen
     this.kontoauswahl.addListener(this.reloadListener);
@@ -141,6 +143,7 @@ public class SaldoChart implements Part
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     try
@@ -149,28 +152,29 @@ public class SaldoChart implements Part
       {
         if (tiny)
         {
-          ColumnLayout layout = new ColumnLayout(parent,2);
-          Container left = new SimpleContainer(layout.getComposite());
+          final ColumnLayout layout = new ColumnLayout(parent,2);
+          final Container left = new SimpleContainer(layout.getComposite());
           left.addInput(this.getKontoAuswahl());
-          Container right = new SimpleContainer(layout.getComposite());
+          final Container right = new SimpleContainer(layout.getComposite());
           right.addInput(this.getRange());
         }
         else
         {
           final TabFolder folder = new TabFolder(parent, SWT.NONE);
           folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-          TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
+          final TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
           
           tab.addInput(this.getKontoAuswahl());
           tab.addInput(this.getRange());
 
-          ButtonArea buttons = new ButtonArea();
+          final ButtonArea buttons = new ButtonArea();
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
           {
           
             /**
              * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
              */
+            @Override
             public void handleAction(Object context) throws ApplicationException
             {
               reloadListener.handleEvent(new Event());
@@ -182,7 +186,7 @@ public class SaldoChart implements Part
       }
       else
       {
-        Container container = new SimpleContainer(parent);
+        final Container container = new SimpleContainer(parent);
         container.addInput(this.getRange());
       }
       
@@ -209,11 +213,11 @@ public class SaldoChart implements Part
 //        this.forecast.paint(forecast.getComposite());
 //      }
     }
-    catch (RemoteException re)
+    catch (final RemoteException re)
     {
       throw re;
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       Logger.error("unable to paint chart",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Saldo-Verlaufs"),StatusBarMessage.TYPE_ERROR));
@@ -231,6 +235,7 @@ public class SaldoChart implements Part
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
+    @Override
     public void handleEvent(Event event)
     {
       if (chart == null)
@@ -238,7 +243,7 @@ public class SaldoChart implements Part
       
       try
       {
-        int start = ((Integer)getRange().getValue()).intValue();
+        final int start = ((Integer)getRange().getValue()).intValue();
 
         Object o = konto;
         if (o == null) // Das ist der Fall, wenn das Kontoauswahlfeld verfuegbar ist
@@ -269,6 +274,7 @@ public class SaldoChart implements Part
           }
           
           date = (Date) Settings.getDBService().execute(query,params,new ResultSetExtractor() {
+            @Override
             public Object extract(ResultSet rs) throws RemoteException, SQLException
             {
               if (!rs.next())
@@ -279,7 +285,7 @@ public class SaldoChart implements Part
         }
         else
         {
-          long d = start * 24l * 60l * 60l * 1000l;
+          final long d = start * 24l * 60l * 60l * 1000l;
           date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
         }
         
@@ -312,25 +318,25 @@ public class SaldoChart implements Part
         
         if (o == null || !(o instanceof Konto)) // wir zeichnen einen Stacked-Graph ueber alle Konten 
         {
-          DBIterator it = Settings.getDBService().createList(Konto.class);
+          final DBIterator it = Settings.getDBService().createList(Konto.class);
           if (o != null && (o instanceof String)) it.addFilter("kategorie = ?", (String) o);
-          ChartDataSaldoSumme s = new ChartDataSaldoSumme();
+          final ChartDataSaldoSumme s = new ChartDataSaldoSumme();
           while (it.hasNext())
           {
-            ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf((Konto)it.next(),date);
+            final ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf((Konto)it.next(),date);
             chart.addData(v);
             s.add(v.getData());
           }
 
-          ChartDataSaldoTrend t = new ChartDataSaldoTrend();
+          final ChartDataSaldoTrend t = new ChartDataSaldoTrend();
           t.add(s.getData());
           chart.addData(s);
           chart.addData(t);
         }
         else // Ansonsten nur fuer eine
         {
-          ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o,date);
-          ChartDataSaldoTrend   t = new ChartDataSaldoTrend();
+          final ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o,date);
+          final ChartDataSaldoTrend   t = new ChartDataSaldoTrend();
           t.add(s.getData());
           chart.addData(s);
           chart.addData(t);
@@ -348,7 +354,7 @@ public class SaldoChart implements Part
         oPrev = o;
         startPrev = start;
       }
-      catch (Exception e)
+      catch (final Exception e)
       {
         Logger.error("unable to redraw chart",e);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren des Saldo-Verlaufs"),StatusBarMessage.TYPE_ERROR));

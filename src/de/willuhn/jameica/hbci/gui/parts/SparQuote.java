@@ -76,8 +76,8 @@ public class SparQuote implements Part
   private SpinnerInput tagAuswahl      = null;
   private SpinnerInput monatAuswahl    = null;
 
-  private List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
-  private List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
+  private final List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
+  private final List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
 
   private Listener listener            = null; // BUGZILLA 575
 
@@ -92,6 +92,7 @@ public class SparQuote implements Part
   {
     this.listener = new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         try
@@ -101,7 +102,7 @@ public class SparQuote implements Part
           if (chart != null)
             chart.redraw();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           // ignorieren wir. Durch den Delayed-Listener kann dieses
           // Event auch aufgerufen werden, wenn der Dialog schon verlassen wurde
@@ -127,14 +128,14 @@ public class SparQuote implements Part
     monate = value == null ? 1 : value.intValue();
 
     // Anzahl der Tage
-    Integer days = (Integer) getStartAuswahl().getValue();
+    final Integer days = (Integer) getStartAuswahl().getValue();
     if (days == null || days == -1)
     {
       start = null;
     }
     else
     {
-      long d = days * 24l * 60l * 60l * 1000l;
+      final long d = days * 24l * 60l * 60l * 1000l;
       start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
     }
   }
@@ -150,7 +151,9 @@ public class SparQuote implements Part
       return this.kontoauswahl;
 
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
-    this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    if ( this.kontoauswahl.getList().size() != 1 ) {
+      this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    }
     this.kontoauswahl.setSupportGroups(true);
     this.kontoauswahl.setRememberSelection("auswertungen.spartquote");
     this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
@@ -210,6 +213,7 @@ public class SparQuote implements Part
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     load();
@@ -217,7 +221,7 @@ public class SparQuote implements Part
     {
       final TabFolder folder = new TabFolder(parent, SWT.NONE);
       folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
+      final TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
       tab.addInput(getKontoAuswahl());
       tab.addInput(getStartAuswahl());
@@ -225,9 +229,10 @@ public class SparQuote implements Part
       tab.addInput(getMonatAuswahl());
     }
 
-    ButtonArea topButtons = new ButtonArea();
+    final ButtonArea topButtons = new ButtonArea();
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
 
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         listener.handleEvent(null);
@@ -238,6 +243,7 @@ public class SparQuote implements Part
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data,null);
     this.table.addColumn(i18n.tr("Monat"), "monat", new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null)
@@ -251,21 +257,22 @@ public class SparQuote implements Part
     this.table.setRememberOrder(true);
     this.table.setRememberColWidths(true);
     this.table.setFormatter(new TableFormatter() {
+      @Override
       public void format(TableItem item)
       {
         if (item == null || item.getData() == null)
           return;
-        UmsatzEntry ue = (UmsatzEntry) item.getData();
+        final UmsatzEntry ue = (UmsatzEntry) item.getData();
         item.setForeground(ColorUtil.getForeground(ue.einnahmen - ue.ausgaben));
       }
     });
 
-    TabFolder folder = new TabFolder(parent, SWT.NONE);
+    final TabFolder folder = new TabFolder(parent, SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
     try
     {
-      TabGroup tab2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"),false,1);
+      final TabGroup tab2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"),false,1);
 
       this.chart = new LineChart();
       this.chart.addData(new ChartDataSparQuote());
@@ -273,13 +280,13 @@ public class SparQuote implements Part
       this.chart.setTitle(i18n.tr("Sparquote im zeitlichen Verlauf"));
       this.chart.paint(tab2.getComposite());
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       Logger.error("unable to create chart",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erzeugen des Diagramms"),StatusBarMessage.TYPE_ERROR));
     }
 
-    TabGroup tab = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"));
+    final TabGroup tab = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"));
     this.table.paint(tab.getComposite());
   }
 
@@ -294,7 +301,7 @@ public class SparQuote implements Part
 
     this.table.removeAll();
 
-    for (UmsatzEntry e:this.data)
+    for (final UmsatzEntry e:this.data)
     {
       this.table.addItem(e);
     }
@@ -309,8 +316,8 @@ public class SparQuote implements Part
     this.data.clear();
     calculateRange();
 
-    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
-    Object o = getKontoAuswahl().getValue();
+    final DBIterator umsaetze = UmsatzUtil.getUmsaetze();
+    final Object o = getKontoAuswahl().getValue();
     if (o != null && (o instanceof Konto))
       umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
     else if (o != null && (o instanceof String))
@@ -320,13 +327,13 @@ public class SparQuote implements Part
       umsaetze.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
 
     UmsatzEntry currentEntry = null;
-    Calendar cal             = Calendar.getInstance();
+    final Calendar cal             = Calendar.getInstance();
     Date currentLimit        = null;
 
     while (umsaetze.hasNext())
     {
-      Umsatz u = (Umsatz) umsaetze.next();
-      Date date = u.getDatum();
+      final Umsatz u = (Umsatz) umsaetze.next();
+      final Date date = u.getDatum();
       if (date == null)
       {
         Logger.warn("no date found for umsatz, skipping record");
@@ -354,7 +361,7 @@ public class SparQuote implements Part
         currentLimit = DateUtil.startOfDay(cal.getTime());
       }
 
-      double betrag = u.getBetrag();
+      final double betrag = u.getBetrag();
       if (betrag > 0)
         currentEntry.einnahmen += betrag;
       else
@@ -379,20 +386,20 @@ public class SparQuote implements Part
    */
   private UmsatzEntry getDurchschnitt(List<UmsatzEntry> list, int pos)
   {
-    UmsatzEntry ue = new UmsatzEntry();
+    final UmsatzEntry ue = new UmsatzEntry();
     int found = 0;
     for (int i=-4;i<=4;++i)
     {
       try
       {
-        UmsatzEntry current = (UmsatzEntry)list.get(pos + i);
+        final UmsatzEntry current = (UmsatzEntry)list.get(pos + i);
         found++;
         ue.ausgaben  += current.ausgaben;
         ue.einnahmen += current.einnahmen;
         if (i == 0) // Als Monat verwenden wir genau den aus der Mitte
           ue.monat = current.monat;
       }
-      catch (IndexOutOfBoundsException e)
+      catch (final IndexOutOfBoundsException e)
       {
         // Ignore
       }
@@ -458,6 +465,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
      */
+    @Override
     public List getData() throws RemoteException
     {
       return data;
@@ -466,9 +474,10 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
      */
+    @Override
     public String getLabel() throws RemoteException
     {
-      Object o = getKontoAuswahl().getValue();
+      final Object o = getKontoAuswahl().getValue();
       if (o != null && (o instanceof String))
         return (String) o;
       else if (o != null && (o instanceof Konto))
@@ -479,6 +488,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
      */
+    @Override
     public String getDataAttribute() throws RemoteException
     {
       return "sparquote";
@@ -487,6 +497,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelAttribute()
      */
+    @Override
     public String getLabelAttribute() throws RemoteException
     {
       return "monat";
@@ -495,6 +506,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
      */
+    @Override
     public boolean getCurve()
     {
       return false;
@@ -503,6 +515,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
      */
+    @Override
     public int[] getColor() throws RemoteException
     {
       return null;
@@ -526,6 +539,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
      */
+    @Override
     public List getData() throws RemoteException
     {
       return trend;
@@ -534,6 +548,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
      */
+    @Override
     public String getLabel() throws RemoteException
     {
       return i18n.tr("Trend");
@@ -542,6 +557,7 @@ public class SparQuote implements Part
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
      */
+    @Override
     public boolean getCurve()
     {
       return true;
