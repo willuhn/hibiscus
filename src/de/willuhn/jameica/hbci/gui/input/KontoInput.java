@@ -65,12 +65,13 @@ public class KontoInput extends SelectInput
   {
     super(init(filter),konto);
     setName(i18n.tr("Konto"));
+
     // Wenn nur ein Konto hinterlegt ist das gleich selektieren
-    if ( super.getList().size() == 1 ) {
-      super.setPreselected(super.getList().get(0));
-    } else {
-      setPleaseChoose(i18n.tr("Bitte wählen..."));
-    }
+    List konten = this.getList();
+    if (konten != null && konten.size() == 1)
+      this.setPreselected(konten.get(0));
+    
+    setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setComment("");
 
     this.listener = new KontoListener();
