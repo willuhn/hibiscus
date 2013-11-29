@@ -67,9 +67,13 @@ public class KontoInput extends SelectInput
     setName(i18n.tr("Konto"));
 
     // Wenn nur ein Konto hinterlegt ist das gleich selektieren
-    List konten = this.getList();
-    if (konten != null && konten.size() == 1)
-      this.setPreselected(konten.get(0));
+    // Und nur dann, wenn wir keine Gruppen haben - die landen naemlich auch in this.list
+    if (groups == null || groups.size() == 0)
+    {
+      List konten = this.getList();
+      if (konten != null && konten.size() == 1)
+        this.setPreselected(konten.get(0));
+    }
     
     setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setComment("");
