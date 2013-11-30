@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.AccountInput;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
@@ -175,20 +176,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
     if (empfkto != null)
       return empfkto;
 
-    empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
-    empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS + " ");
+    empfkto = new AccountInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
+    empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     empfkto.setMandatory(true);
     empfkto.setEnabled(!getTransfer().ausgefuehrt());
-    empfkto.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        String s = (String) empfkto.getValue();
-        if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
-          return;
-        empfkto.setValue(s.replaceAll(" ",""));
-      }
-    });
     return empfkto;
   }
 
@@ -201,7 +192,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     if (this.bic == null)
     {
-      this.bic = new TextInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BIC_MAXLENGTH);
+      this.bic = new AccountInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BIC_MAXLENGTH + 4); // max. 4 Leerzeichen
       this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
       this.bic.setEnabled(!getTransfer().ausgefuehrt());
       this.bic.setMandatory(true);

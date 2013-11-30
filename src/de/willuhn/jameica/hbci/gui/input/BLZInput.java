@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
-import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
@@ -28,7 +27,7 @@ import de.willuhn.util.I18N;
  * BUGZILLA 380
  * Vorkonfiguriertes Eingabe-Feld fuer BLZ.
  */
-public class BLZInput extends TextInput
+public class BLZInput extends AccountInput
 {
   private Listener listener = null;
   private I18N i18n         = null;
@@ -44,7 +43,7 @@ public class BLZInput extends TextInput
     this.i18n     = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.listener = new BLZListener();
 
-    this.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS + " ");
+    this.setValidChars(HBCIProperties.HBCI_BLZ_VALIDCHARS);
     this.setName(i18n.tr("BLZ"));
     this.setComment("");
     this.addListener(this.listener);
@@ -82,10 +81,7 @@ public class BLZInput extends TextInput
         {
           // Wir schnipseln gleich noch Leerzeichen raus - aber nur, wenn welche drin stehen
           if (b.indexOf(' ') != -1)
-          {
             b = b.replaceAll(" ","");
-            BLZInput.super.setValue(b);
-          }
           setComment(HBCIUtils.getNameForBLZ(b));
         }
         else

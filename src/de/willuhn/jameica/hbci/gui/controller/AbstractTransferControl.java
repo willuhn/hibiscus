@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.dialogs.VerwendungszweckDialog;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.AccountInput;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
@@ -153,22 +154,12 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (empfkto != null)
 			return empfkto;
 
-		empfkto = new TextInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
+		empfkto = new AccountInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
 		empfkto.setName(i18n.tr("Kontonummer"));
 		empfkto.setComment("");
-    empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
+    empfkto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     empfkto.setMandatory(true);
     empfkto.addListener(new KontonummerListener());
-    empfkto.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        String s = (String) empfkto.getValue();
-        if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
-          return;
-        empfkto.setValue(s.replaceAll(" ",""));
-      }
-    });
 		return empfkto;
 	}
 
