@@ -44,6 +44,8 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
@@ -67,7 +69,8 @@ public class EmpfaengerList extends TablePart implements Part
   private KeyAdapter listener    = null;
   private AddressFilter filter   = null;
 
-  private MessageConsumer mc = null;
+  private MessageConsumer mcImport = null;
+  private MessageConsumer mcChanged = null;
   
   private static Settings mySettings = new Settings(EmpfaengerList.class);
 
@@ -174,8 +177,12 @@ public class EmpfaengerList extends TablePart implements Part
 
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Adressen informiert werden.
-    this.mc = new EmpfaengerMessageConsumer();
-    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+    this.mcImport = new EmpfaengerImportMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mcImport);
+    
+    // Und noch ein Message-Consumer fuer geaenderte Adressen
+    this.mcChanged = new EmpfaengerChangedMessageConsumer();
+    Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
   }
 
   /**
@@ -232,7 +239,8 @@ public class EmpfaengerList extends TablePart implements Part
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
-        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+        Application.getMessagingFactory().unRegisterMessageConsumer(mcImport);
+        Application.getMessagingFactory().unRegisterMessageConsumer(mcChanged);
       }
     });
 
@@ -248,12 +256,12 @@ public class EmpfaengerList extends TablePart implements Part
   /**
    * Hilfsklasse damit wir ueber importierte Empfaenger informiert werden.
    */
-  public class EmpfaengerMessageConsumer implements MessageConsumer
+  public class EmpfaengerImportMessageConsumer implements MessageConsumer
   {
     /**
      * ct.
      */
-    public EmpfaengerMessageConsumer()
+    public EmpfaengerImportMessageConsumer()
     {
       super();
     }
@@ -296,6 +304,52 @@ public class EmpfaengerList extends TablePart implements Part
     {
       return false;
     }
+  }
+  
+  /**
+   * Message-Consumer der ueber geaenderte Adressen benachrichtigt wird.
+   */
+  private class EmpfaengerChangedMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ObjectChangedMessage.class};
+    }
+    
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(final Message message) throws Exception
+    {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
+        public void run()
+        {
+          try
+          {
+            ObjectMessage m = (ObjectMessage) message;
+            Object o = m.getObject();
+            updateItem(o,o);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to update address",e);
+          }
+        }
+      });
+    }
+    
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+    
   }
 
   

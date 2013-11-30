@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerExport;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerImport;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
+import de.willuhn.jameica.hbci.gui.action.SepaConvertAddress;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -58,6 +59,8 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport(),"document-open.png"));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Nach SEPA konvertieren..."), new SepaConvertAddress(),"internet-web-browser.png"));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);

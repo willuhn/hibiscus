@@ -1,5 +1,6 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0276 Batch-SEPA-Konvertierung von Adressen (Rechtsklick in Adressliste "Nach SEPA konvertieren..."
   * NEW: 0275 Bei Chipkarte per Default jetzt FinTS3 statt HBCI 2.1 verwenden, wenn keine Version ermittelbar oder explizit angegeben
   * NEW: 0274 Bei PIN/TAN per Default jetzt FinTS3 statt HBCI+ verwenden, wenn keine Version ermittelbar oder explizit angegeben
   * NEW: 0273 Sync-Optionen kuenftig fuer alles (ausser Dauerauftraege abrufen) per Default aktiv
