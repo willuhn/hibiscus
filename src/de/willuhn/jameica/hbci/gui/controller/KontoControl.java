@@ -644,10 +644,8 @@ public class KontoControl extends AbstractControl
 			{
 	      Passport p = (Passport) getPassportAuswahl().getValue();
 			  if (p == null)
-			  {
-	        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"), StatusBarMessage.TYPE_ERROR));
-	        return;
-			  }
+			    throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"));
+			  
         getKonto().setPassportClass(p.getClass().getName());
 			}
 			
