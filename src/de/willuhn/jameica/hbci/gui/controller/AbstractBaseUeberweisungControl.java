@@ -99,14 +99,14 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
       bu = (BaseUeberweisung) getTransfer();
       if (bu.ausgefuehrt()) // BUGZILLA 1197
         return true;
-      bu.transactionBegin();
-
+      
 			Date termin = (Date) getTermin().getValue();
 			bu.setTermin(termin);
       
       TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
       bu.setTextSchluessel(s == null ? null : s.getCode());
 
+      bu.transactionBegin();
 			if (super.handleStore())
 			{
 	      // Reminder-Intervall speichern
@@ -116,6 +116,10 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 
 	      bu.transactionCommit();
 	      return true;
+			}
+			else
+			{
+			  bu.transactionRollback();
 			}
 		}
     catch (Exception e)
