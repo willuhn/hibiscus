@@ -345,8 +345,6 @@ public class AddressInput implements Input
       super.setText(after);
       if (before != null && !before.equals(after))
         GUI.getView().setErrorText(i18n.tr("Im Namen wurden nicht zulässige Zeichen entfernt"));
-      else
-        GUI.getView().setErrorText("");
     }
 
     /**

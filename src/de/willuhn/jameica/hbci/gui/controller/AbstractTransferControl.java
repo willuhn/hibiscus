@@ -329,8 +329,6 @@ public abstract class AbstractTransferControl extends AbstractControl
 
       if (t.getBetrag() > Settings.getUeberweisungLimit())
         GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
-      else
-        GUI.getView().setErrorText(""); // Fehlertext entfernen
       
       return true;
 		}

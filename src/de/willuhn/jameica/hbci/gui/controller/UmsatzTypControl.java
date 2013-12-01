@@ -141,7 +141,6 @@ public class UmsatzTypControl extends AbstractControl
           // ungueltig ist
           try
           {
-            GUI.getView().setErrorText("");
             String p = (String) pattern.getValue();
             if (p == null || p.length() == 0)
               return;

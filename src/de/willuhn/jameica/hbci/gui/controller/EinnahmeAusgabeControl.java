@@ -260,7 +260,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
       GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
       return;
     }
-    GUI.getView().setErrorText(""); // ggf. vorher angezeigten Fehler loeschen
 
     List<EinnahmeAusgabe> list = this.getWerte();
     for (EinnahmeAusgabe ea:list)

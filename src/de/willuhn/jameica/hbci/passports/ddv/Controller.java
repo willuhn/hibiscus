@@ -621,8 +621,6 @@ public class Controller extends AbstractControl
         if (r == null)
           return;
 
-        GUI.getView().setErrorText(""); // Fehlertext erstmal resetten
-
         if (!r.isSupported())
         {
           GUI.getView().setErrorText(i18n.tr("Der ausgewählte Kartenleser wird von Hibiscus nicht unterstützt"));

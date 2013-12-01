@@ -657,8 +657,6 @@ public class UmsatzList extends TablePart implements Extendable
 
               if (typ.matches(u,true))
               {
-                // ggf. vorher geworfene Fehlermeldung wieder entfernen
-                GUI.getView().setErrorText("");
                 UmsatzList.this.addItem(u);
               }
             }

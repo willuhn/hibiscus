@@ -670,7 +670,6 @@ public class KontoControl extends AbstractControl
 			this.getDelButton().setEnabled(true);
 			this.getSynchronizeOptions().setEnabled(!getKonto().hasFlag(Konto.FLAG_DISABLED));
 			GUI.getStatusBar().setSuccessText(i18n.tr("Konto gespeichert."));
-      GUI.getView().setSuccessText("");
 
       // BUGZILLA 1356
       Application.getMessagingFactory().sendMessage(new SaldoMessage(getKonto()));

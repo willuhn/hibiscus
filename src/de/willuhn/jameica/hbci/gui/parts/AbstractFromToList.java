@@ -274,8 +274,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
       }
 
       // Fehlertext "End-Datum muss ..." ggf. wieder entfernen
-      GUI.getView().setErrorText("");
-
       GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
       GUI.startSync(new Runnable() //Sanduhr anzeigen
       {
