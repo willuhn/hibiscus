@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.gui.input;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -77,35 +78,35 @@ public class HBCIVersionInput extends SelectInput
   {
     try
     {
-      String[] s = null;
+      List<String> list = null;
+      
       if (passport != null)
       {
-        s = passport.getSuppVersions(); // Wir haben einen Passport, dann nur die unterstuetzten anzeigen
+        String[] s = passport.getSuppVersions(); // Wir haben einen Passport, dann nur die unterstuetzten anzeigen
+        list = new ArrayList<String>(Arrays.asList(s)); // Neue Array-List, damit wir Elemente drin aendern koennen
 
         // BUGZILLA 684
-        List list = Arrays.asList(s);
-        if (list.contains("220") && !list.contains("plus")) // "220" enthalten aber nicht "plus"
-        {
-          String[] newList = new String[s.length+1];
-          System.arraycopy(s,0,newList,0,s.length);
-          newList[s.length] = "plus";
-          s = newList;
-        }
+        if (list.contains("220") && !list.contains("plus")) // "220" enthalten aber nicht "plus", dann haengen wir das "plus" noch an
+          list.add("plus");
+        
+        if (list.contains("400"))
+          list.remove("400"); // FinTS4 unterstuetzen wir noch nicht
       }
 
       // BUGZILLA 37 http://www.willuhn.de/bugzilla/show_bug.cgi?id=37
       // Ansonsten alle, die wir kennen
-      if (s == null || s.length == 0)
-        s = (String[]) nameLookup.keySet().toArray(new String[nameLookup.size()]);
+      if (list == null || list.size() == 0)
+        list = new ArrayList<String>(nameLookup.keySet());
 
-      Arrays.sort(s); // Sortieren
+      Collections.sort(list);
 
-      ArrayList l = new ArrayList();
+      List<HBCIVersionObject> l = new ArrayList<HBCIVersionObject>();
       if (passport != null)
         l.add(new HBCIVersionObject(null)); // Default-Wert (ohne Versionsnummer) - nur, wenn Passport da
-      for (int i=0;i<s.length;++i)
+      
+      for (String s:list)
       {
-        l.add(new HBCIVersionObject(s[i]));
+        l.add(new HBCIVersionObject(s));
       }
       return l;
     }
