@@ -68,6 +68,8 @@ public class DeleteBookmarkMessageConsumer implements MessageConsumer
       if (cId != null && cId.equals(id))
       {
         service.delete(b);
+        // hier kein Break, weil eine Entity auf mehreren Seiten gebookmarkt
+        // sein kann. Zum Beispiel ein Umsatz in UmsatzDetail und in UmsatzEditDetail
       }
       
     }
