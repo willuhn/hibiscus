@@ -434,7 +434,7 @@ public class Controller extends AbstractControl
       conf = PinTanConfigFactory.create();
       GUI.startView(Detail.class,conf);
       
-      GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration erfolgreich erstellt"));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration erfolgreich erstellt. Bitte klicken Sie \"Speichern\" zum Übernehmen."));
     }
     catch (ApplicationException e)
     {

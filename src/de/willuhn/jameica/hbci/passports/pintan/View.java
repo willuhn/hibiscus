@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/View.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/04/29 11:38:57 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -19,7 +13,9 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -52,25 +48,26 @@ public class View extends AbstractView
     buttons.paint(getParent());
 
     control.getConfigList().paint(getParent());
+    
+    // Wenn wir mit einem Passport als Context statt der konkreten Config 
+    // aufgerufen wurden, dann hatte der User explizit auf "Neuer Bank-Zugang..."
+    // geklickt. In dem Fall starten wir sofort den Dialog zur Erstellung eines
+    // neuen Bankzugangs.
+    // Das machen wir aber als neues Runnable, damit die View erstmal
+    // komplett gezeichnet werden kann
+    Object ctx = this.getCurrentObject();
+    if (ctx instanceof Passport)
+    {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          setCurrentObject(null); // Context loeschen, damit wir das nicht nochmal aufrufen, wenn wir mit Back-Action zurueckkommen
+          Logger.info("starting wizzard for creation of new passport");
+          control.handleCreate();
+        }
+      });
+    }
   }
 }
-
-
-/**********************************************************************
- * $Log: View.java,v $
- * Revision 1.5  2011/04/29 11:38:57  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.4  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.3  2010-09-07 15:17:07  willuhn
- * @N GUI-Cleanup
- *
- * Revision 1.2  2010-07-13 11:01:05  willuhn
- * @N Icons in PIN/TAN-Config
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- **********************************************************************/
