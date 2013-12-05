@@ -84,7 +84,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     try
     {
       // Delete-Message schicken
-      Application.getMessagingFactory().getMessagingQueue("hibiscus." + this.getTableName() + ".delete").sendSyncMessage(new QueryMessage(this));
+      Application.getMessagingFactory().getMessagingQueue("hibiscus.dbobject.delete").sendSyncMessage(new QueryMessage(this));
 
       // Meta-Daten loeschen - muss NACH der Message erfolgen - sonst fehlen uns dort die Meta-Daten schon
       DBPropertyUtil.deleteAll(this.getPrefix());
