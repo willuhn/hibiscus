@@ -89,6 +89,7 @@
 
     <consumer queue="hibiscus.ueberweisung.delete"         class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
     <consumer queue="hibiscus.aueberweisung.delete"        class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
+    <consumer queue="hibiscus.sepalastschrift.delete"      class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
     <consumer queue="hibiscus.sueberweisung.delete"        class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
     <consumer queue="hibiscus.lastschrift.delete"          class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
     <consumer queue="hibiscus.slastschrift.delete"         class="de.willuhn.jameica.hbci.messaging.DeleteReminderMessageConsumer" />
