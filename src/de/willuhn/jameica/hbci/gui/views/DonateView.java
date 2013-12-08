@@ -72,21 +72,11 @@ public class DonateView extends AbstractView
     
     {
       Container container = new SimpleContainer(getParent());
-      container.addHeadline(i18n.tr("Idee"));
-      container.addText(i18n.tr("Hibiscus wird von vielen tausend Usern in Deutschland genutzt. " +
-      		                      "Eine sehr kleine, aber regelmäßige Spende (z.Bsp. ein oder zwei Euro im Monat) von " +
-      		                      "nur einem Teil der vielen User würde bereits genügen, damit ich " +
-      		                      "in Vollzeit an Hibiscus arbeiten könnte. " +
-      		                      "Angenommen, es fänden sich 1000 User, die bereit sind, zwei Euro im Monat " +
-      		                      "mittels Dauerauftrag zu spenden. Dann blieben nach Abzug der Steuern, die ich " +
-      		                      "darauf bezahlen muss, immer noch über 1000,- Euro monatlich übrig.\n\n" +
-      		                      "Ein kleiner Einsatz von Vielen. Aber eine große Wirkung. Hibiscus wäre nicht mehr " +
-      		                      "länger ein Freizeitprojekt. Sondern eine Vollzeit-Aufgabe für mich. Und Sie " +
-      		                      "wären meine Arbeitgeber. Eine faszinierende Idee, wie ich finde.\n\n" +
-      		                      "Ich würde mich freuen, wenn Sie dies mit unterstützen wollen. Durch Klick auf " +
-      		                      "\"Dauerauftrag erstellen\" können Sie einen Dauerauftrag anlegen, in dem bereits " +
-      		                      "mein Konto als Empfänger eingetragen ist. Absenden müssen Sie ihn natürlich noch " +
-      		                      "manuell ;)\n\n" +
+      container.addHeadline(i18n.tr("Unterstützen"));
+      container.addText(i18n.tr("Ich würde mich freuen, wenn Sie das Projekt mit unterstützen wollen. Durch Klick auf " +
+      		                      "\"Dauerauftrag erstellen\" können Sie eine einmalige Überweisung oder einen Dauerauftrag (z.Bsp. mit 1 oder 2 EUR) " +
+      		                      "erstellen, in dem mein Konto bereits als Empfänger eingetragen ist.\n\n" +
+      		                      "Nur wenn Sie wollen - es ist völlig freiwillig.\n\n" +
       		                      "Vielen Dank!\n" +
       		                      "Olaf Willuhn"),true);
     }
