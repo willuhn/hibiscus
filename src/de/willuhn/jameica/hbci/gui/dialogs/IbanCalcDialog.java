@@ -56,6 +56,14 @@ public class IbanCalcDialog extends AbstractDialog
     
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#isModeless()
+   */
+  protected boolean isModeless()
+  {
+    return true;
+  }
 
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
