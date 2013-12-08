@@ -40,9 +40,9 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
-import de.willuhn.jameica.hbci.gui.input.AccountInput;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
+import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
@@ -217,7 +217,7 @@ public class SepaLastschriftControl extends AbstractControl
     if (empfkto != null)
       return empfkto;
 
-    empfkto = new AccountInput(getTransfer().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
+    empfkto = new IBANInput(getTransfer().getGegenkontoNummer());
     empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     empfkto.setMandatory(true);
     empfkto.setEnabled(!getTransfer().ausgefuehrt());

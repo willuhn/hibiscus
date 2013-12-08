@@ -30,6 +30,7 @@ public class BICInput extends AccountInput
   {
     super(value,HBCIProperties.HBCI_BIC_MAXLENGTH + 4); // max. 4 Leerzeichen
     this.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS + LOWERCASE_CHARS);
+    this.setName("BIC");
     
     this.addListener(new Listener()
     {
@@ -39,8 +40,7 @@ public class BICInput extends AccountInput
         if (s == null || s.length() == 0)
           return;
         
-        s = s.toUpperCase();
-        BICInput.super.setValue(s.replaceAll(" ",""));
+        setValue(s.toUpperCase());
       }
     });
   }

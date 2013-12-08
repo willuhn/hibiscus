@@ -48,6 +48,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
 import de.willuhn.jameica.hbci.gui.parts.SaldoChart;
@@ -491,18 +492,7 @@ public class KontoControl extends AbstractControl
   {
     if (this.iban == null)
     {
-      this.iban = new TextInput(getKonto().getIban(),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
-      this.iban.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS + " ");
-      this.iban.addListener(new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-          String s = (String) iban.getValue();
-          if (s == null || s.length() == 0 || s.indexOf(" ") == -1)
-            return;
-          iban.setValue(s.replaceAll(" ",""));
-        }
-      });
+      this.iban = new IBANInput(getKonto().getIban());
     }
     return this.iban;
   }
