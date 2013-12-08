@@ -1,7 +1,8 @@
 HEAD 2.5.1 (nightly)
 
+  * NEW: 0281 Neue HBCI4Java-Version - https://github.com/willuhn/hbci4java/pull/14
   * NEW: 0280 BUGZILLA 1431 - Kleinbuchstaben in BIC automatisch gegen Gross-Buchstaben ersetzen
-  * NEW: 0279 IBAN-Dialog nicht-modal, damit man BIC und IBAN rauskopieren kann 
+  * NEW: 0279 IBAN-Dialog nicht-modal, damit man BIC und IBAN rauskopieren kann
   * NEW: 0278 Neue HBCI4Java-Version
   * NEW: 0277 Beim Anlegen einer neuen PIN/TAN-Config sofort den Dialog fuer die Benutzerdaten öffnen, spart den zusätzlichen
               Klick auf "Neue Config"
