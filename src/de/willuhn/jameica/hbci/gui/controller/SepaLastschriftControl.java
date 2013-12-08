@@ -42,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.AccountInput;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
@@ -232,8 +233,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (this.bic == null)
     {
-      this.bic = new AccountInput(getTransfer().getGegenkontoBLZ(),HBCIProperties.HBCI_BIC_MAXLENGTH + 4); // max. 4 Leerzeichen
-      this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
+      this.bic = new BICInput(getTransfer().getGegenkontoBLZ());
       this.bic.setEnabled(!getTransfer().ausgefuehrt());
       this.bic.setMandatory(true);
     }

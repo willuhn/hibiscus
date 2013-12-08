@@ -75,7 +75,7 @@ public class HBCIProperties
   /**
    * Liste der in einer BIC erlaubten Zeichen.
    */
-  public final static String HBCI_BIC_VALIDCHARS = settings.getString("hbci.bic.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
+  public final static String HBCI_BIC_VALIDCHARS = settings.getString("hbci.bic.validchars", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
 
 	/**
    * Liste der in Bankleitzahlen erlaubten Zeichen.

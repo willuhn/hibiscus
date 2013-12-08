@@ -46,6 +46,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
+import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
@@ -515,8 +516,7 @@ public class KontoControl extends AbstractControl
   {
     if (this.bic == null)
     {
-      this.bic = new TextInput(getKonto().getBic(),HBCIProperties.HBCI_BIC_MAXLENGTH);
-      this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
+      this.bic = new BICInput(getKonto().getBic());
     }
     return this.bic;
   }

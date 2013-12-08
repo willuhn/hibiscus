@@ -40,6 +40,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
@@ -323,8 +324,7 @@ public class EmpfaengerControl extends AbstractControl
   {
     if (this.bic == null)
     {
-      this.bic = new TextInput(getAddress().getBic(),HBCIProperties.HBCI_BIC_MAXLENGTH);
-      this.bic.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS);
+      this.bic = new BICInput(getAddress().getBic());
       this.bic.setEnabled(isHibiscusAdresse());
     }
     return this.bic;
