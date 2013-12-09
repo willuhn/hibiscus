@@ -190,6 +190,30 @@ public class SynchronizeOptions implements Serializable
   }
   
   /**
+   * Aktiviert/deaktiviert die automatische Saldenberechnung fuer Offlinekonten.
+   * Wenn dieses Setting fals liefert, wird unter keinen Umstaenden der Saldo
+   * automatisch berechnet.
+   * @return true, wenn der Saldo des Offline-Kontos automatisch berechnet werden
+   * soll, wenn kein Scripting-Backend vorhanden ist.
+   */
+  public boolean getAutoSaldo()
+  {
+    return !this.disabled && this.offline && settings.getBoolean("sync.konto." + id + ".autosaldo",true);
+  }
+  
+  /**
+   * Aktiviert/deaktiviert die automatische Saldenberechnung fuer Offlinekonten.
+   * Wenn dieses Setting fals liefert, wird unter keinen Umstaenden der Saldo
+   * automatisch berechnet.
+   * @param b true, wenn der Saldo des Offline-Kontos automatisch berechnet werden
+   * soll, wenn kein Scripting-Backend vorhanden ist.
+   */
+  public void setAutoSaldo(boolean b)
+  {
+    settings.setAttribute("sync.konto." + id + ".autosaldo",b);
+  }
+  
+  /**
    * Legt fest, ob die Kontoauszuege abgerufen werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.
    */

@@ -74,6 +74,11 @@ public class OfflineSaldoMessageConsumer implements MessageConsumer
     if (!k.hasFlag(Konto.FLAG_OFFLINE))
       return;
 
+    // Explizit abgeschaltet. Sie mail von Sebastian vom 09.12.2013
+    SynchronizeOptions options = new SynchronizeOptions(k);
+    if (!options.getAutoSaldo())
+      return;
+    
     // Wenn fuer das Offline-Konto das Synchronisieren des Saldos
     // aktiv ist, halten wir uns raus
     // Siehe Mail von Sebastian vom 08.05.2013
@@ -87,10 +92,8 @@ public class OfflineSaldoMessageConsumer implements MessageConsumer
     // ob das Abrufen des Saldos dort schon aktiviert ist
     if (engine.supports(SynchronizeJobKontoauszug.class,k))
     {
-      SynchronizeOptions options = new SynchronizeOptions(k);
-      if (options.getSyncSaldo())
+      if (options.getSyncSaldo()) // Das Script holt den Saldo. Also machen wir nichts
         return;
-      
     }
 
     // Betrag der Buchung
