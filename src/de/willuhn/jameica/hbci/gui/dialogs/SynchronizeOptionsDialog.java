@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -45,6 +46,9 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
+  private final static int WINDOW_WIDTH = 400;
+  
+  private Konto konto                = null;
   private boolean offline            = false;
   private boolean syncAvail          = false;
   private SynchronizeOptions options = null;
@@ -69,6 +73,8 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     super(position);
     this.setTitle(i18n.tr("Synchronisierungsoptionen"));
+    this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
+    this.konto = konto;
     this.options = new SynchronizeOptions(konto);
     this.offline = konto.hasFlag(Konto.FLAG_OFFLINE);
     
@@ -87,8 +93,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     Container group = new SimpleContainer(parent);
 
-    group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei\nder Synchronisierung des Kontos ausgeführt werden sollen."),false);
-
+    group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei der " +
+    		                  "Synchronisierung des Kontos ausgeführt werden sollen."),true);
+    
+    group.addHeadline(this.konto.getLongName());
+    
     this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -147,6 +156,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     },null,false,"process-stop.png");
     
     group.addButtonArea(buttons);
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
   
   /**
