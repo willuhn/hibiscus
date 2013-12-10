@@ -15,7 +15,9 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -54,10 +56,13 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Vorgefertigte Liste mit den offenen Synchronisierungs-TODOs fuer ein Konto.
+ * Vorgefertigte Liste mit den offenen Synchronisierungsaufgaben.
  */
 public class SynchronizeList extends TablePart
 {
+  // Wir cachen die Liste der vom User explizit abgewaehlten Aufgaben waehrend der Sitzung
+  private static Map<String,Boolean> uncheckedCache = new HashMap<String,Boolean>();
+  
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private MessageConsumer mc = new MyMessageConsumer();
   private List<Synchronization> syncList = new ArrayList<Synchronization>();
@@ -69,8 +74,6 @@ public class SynchronizeList extends TablePart
   public SynchronizeList() throws RemoteException
   {
     super(new Configure());
-    this.init();
-    
     this.addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
     this.setSummary(false);
     this.setCheckable(true);
@@ -118,7 +121,18 @@ public class SynchronizeList extends TablePart
       {
         for (SynchronizeJob job:jobs)
         {
-          this.addItem(job,true); // per Default angeklickt
+          boolean checked = true;
+          try
+          {
+            // nicht markiert, wenn das letzte Mal explizit abgewaehlt
+            checked = !uncheckedCache.containsKey(job.getName());
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to determine if job was unchecked",e);
+          }
+          this.addItem(job,checked);
+
           sync.getJobs().add(job);
         }
       }
@@ -147,6 +161,17 @@ public class SynchronizeList extends TablePart
       {
         try
         {
+          SynchronizeJob job = (SynchronizeJob) event.data;
+          if (job != null)
+          {
+            TableItem item = (TableItem) event.item;
+            boolean b = item.getChecked();
+            String key = job.getName();
+            if (b)
+              uncheckedCache.remove(key);
+            else
+              uncheckedCache.put(key,Boolean.TRUE);
+          }
           List<SynchronizeJob> selected = getItems(true);
           start.setEnabled(selected != null && selected.size() > 0);
         }
@@ -160,11 +185,38 @@ public class SynchronizeList extends TablePart
     
     super.paint(parent);
     
+    // Erst nach dem paint() machen, damit der initiale Checked-State aus dem Cache beachtet wird
+    this.init();
+    
     ButtonArea b = new ButtonArea();
     b.addButton(i18n.tr("Optionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
     b.addButton(start);
     b.paint(parent);
-    
+  }
+  
+  /**
+   * Cached die Liste der abgewaehlten Aufgaben.
+   */
+  private void cacheUnchecked()
+  {
+    try
+    {
+      uncheckedCache.clear();
+      List<SynchronizeJob> selected = getItems(true);
+      List<SynchronizeJob> all      = getItems(false);
+      for (SynchronizeJob j:all)
+      {
+        if (!selected.contains(j))
+        {
+          // abgewaehlt
+          uncheckedCache.put(j.getName(),Boolean.TRUE);
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to cache unchecked items",e);
+    }
   }
   
   /**
@@ -179,10 +231,20 @@ public class SynchronizeList extends TablePart
     {
       try
       {
-        KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.SYNCED,KontoAuswahlDialog.POSITION_CENTER);
-        d1.setText(i18n.tr("Bitte wählen Sie das Konto, für welches Sie die " +
-                           "Synchronisierungsoptionen ändern möchten."));
-        Konto k = (Konto) d1.open();
+        Konto k  = null;
+        Object o = getSelection();
+        if (o instanceof SynchronizeJob)
+          k = ((SynchronizeJob)o).getKonto();
+        
+        // Konto erfragen
+        if (k == null)
+        {
+          KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.SYNCED,KontoAuswahlDialog.POSITION_CENTER);
+          d1.setText(i18n.tr("Bitte wählen Sie das Konto, für welches Sie die " +
+                             "Synchronisierungsoptionen ändern möchten."));
+          k = (Konto) d1.open();
+        }
+        
         if (k == null)
           return;
 
@@ -221,9 +283,11 @@ public class SynchronizeList extends TablePart
     {
       try
       {
+        cacheUnchecked();
+        
         Logger.info("Collecting synchronize jobs");
         List<SynchronizeJob> selected = getItems(true);
-        
+
         // Iterieren ueber die Synchronisationen und die rauswerfen, die nicht markiert sind
         List<Synchronization> result = new ArrayList<Synchronization>();
         for (Synchronization s:syncList)
