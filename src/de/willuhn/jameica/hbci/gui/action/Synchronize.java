@@ -19,6 +19,7 @@ import java.util.List;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeExecuteDialog;
 import de.willuhn.jameica.hbci.synchronize.Synchronization;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
@@ -59,6 +60,7 @@ public class Synchronize implements Action
 
     Logger.info("backends to synchronize: " + list.size());
     List<Synchronization> result = new ArrayList<Synchronization>();
+    List<SynchronizeJob> nonRecurring = new ArrayList<SynchronizeJob>();
     for (Object o:list)
     {
       if (!(o instanceof Synchronization))
@@ -66,9 +68,18 @@ public class Synchronize implements Action
         Logger.warn("type " + o.getClass() + " is no valid synchronization");
         continue;
       }
-      
-      result.add((Synchronization) o);
+
+      Synchronization sync = (Synchronization) o;
+      List<SynchronizeJob> jobs = sync.getJobs();
+      for (SynchronizeJob job:jobs)
+      {
+        if (!job.isRecurring())
+          nonRecurring.add(job);
+      }
+      result.add(sync);
     }
+    
+    this.checkNonRecurring(nonRecurring);
     
     Logger.info("synchronizing " + result.size() + " backends");
     this.list = result.iterator();
@@ -76,6 +87,44 @@ public class Synchronize implements Action
     // Auf die Events registrieren, um die Folge-Backends zu starten
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mc);
     this.sync();
+  }
+  
+  /**
+   * Zeigt nochmal einen Warndialog an, wenn in der Synchronisation Auftraege
+   * enthalten, die Geld bewegen. Dann hat der User die Chance, den Vorgang
+   * noch abzubrechen, falls er sie auf der Startseite in der Liste der Synchronisierungsaufgaben
+   * uebersehen hat - z.Bsp. weil er viele Konten hat und die Ueberweisungen ausserhalb
+   * des sichtbaren Bereichs waren.
+   * @param jobs die Liste der Auftraege.
+   * @throws ApplicationException
+   * @throws OperationCanceledException
+   */
+  private void checkNonRecurring(List<SynchronizeJob> jobs) throws ApplicationException, OperationCanceledException
+  {
+    if (jobs == null || jobs.size() == 0)
+      return;
+    
+    if (Application.inServerMode())
+      return;
+
+    try
+    {
+      SynchronizeExecuteDialog d = new SynchronizeExecuteDialog(jobs,SynchronizeExecuteDialog.POSITION_CENTER);
+      d.open();
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (OperationCanceledException oce)
+    {
+      throw oce;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while checking jobs",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Ausführen der Aufträge: {0}",e.getMessage()));
+    }
   }
   
   /**
