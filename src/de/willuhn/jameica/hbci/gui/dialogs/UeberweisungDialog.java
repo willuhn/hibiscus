@@ -75,8 +75,6 @@ public class UeberweisungDialog extends AbstractExecuteDialog
     group.addHeadline(i18n.tr("Verwendungszweck"));
     group.addText(VerwendungszweckUtil.toString(ueb,"\n"),false);
 
-    group.addText(i18n.tr("Sind Sie sicher, daß Sie den Auftrag jetzt ausführen wollen?") + "\n",true);
-
     super.paint(parent);
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }

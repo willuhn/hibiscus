@@ -69,8 +69,6 @@ public class SammelTransferDialog extends AbstractExecuteDialog
     buchungen.setSummary(false);
     buchungen.paint(parent);
 
-    Container group2 = new SimpleContainer(parent);
-    group2.addText(i18n.tr("Sind Sie sicher, daß Sie den Sammel-Auftrag jetzt ausführen wollen?"),true);
     super.paint(parent);
   
   }

@@ -69,7 +69,6 @@ public class LastschriftDialog extends AbstractExecuteDialog
     group.addHeadline(i18n.tr("Verwendungszweck"));
     group.addText(VerwendungszweckUtil.toString(ueb,"\n"),false);
     
-    group.addText(i18n.tr("Sind Sie sicher, daﬂ Sie die Lastschrift jetzt einreichen wollen?") + "\n",true);
     super.paint(parent);
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }

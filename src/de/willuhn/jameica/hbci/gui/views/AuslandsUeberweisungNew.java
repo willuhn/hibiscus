@@ -79,10 +79,12 @@ public class AuslandsUeberweisungNew extends AbstractView
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
-      container.addHeadline(i18n.tr("Sonstige Informationen"));
+      container.addHeadline(i18n.tr("SEPA"));
+      container.addInput(control.getEndToEndId());
+      container.addHeadline(i18n.tr("Sonstige Informationen (nur Hibiscus-intern)"));
+      container.addText(i18n.tr("Diese Daten werden nicht an die Bank übertragen."),true);
       container.addInput(control.getTermin());
       container.addInput(control.getReminderInterval());
-      container.addInput(control.getEndToEndId());
     }
 
     Container container = new SimpleContainer(getParent());

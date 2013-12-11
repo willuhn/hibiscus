@@ -12,11 +12,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Date;
 
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.AuslandsUeberweisungDialog;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
@@ -29,6 +28,7 @@ import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -61,6 +61,18 @@ public class AuslandsUeberweisungExecute implements Action
 			if (u.isNewObject())
 				u.store(); // wir speichern bei Bedarf selbst.
 
+      Date termin = DateUtil.startOfDay(u.getTermin());
+      Date now    = DateUtil.startOfDay(new Date());
+      if ((termin.getTime() - now.getTime()) >= (24 * 60 * 60 * 1000))
+      {
+        String q = i18n.tr("Der Termin liegt mindestens 1 Tag in Zukunft. Hibiscus unterstützt derzeit\n" +
+        		               "noch keine bankseitig terminierten SEPA-Überweisungen. Der Auftrag wird von\n" +
+        		               "der Bank daher sofort ausgeführt.\n\n" +
+                           "Dennoch ausführen?");
+        if (!Application.getCallback().askUser(q))
+          return;
+      }
+			
 			AuslandsUeberweisungDialog d = new AuslandsUeberweisungDialog(u,AuslandsUeberweisungDialog.POSITION_CENTER);
 			try
 			{
@@ -75,7 +87,7 @@ public class AuslandsUeberweisungExecute implements Action
 			catch (Exception e)
 			{
 				Logger.error("error while showing confirm dialog",e);
-				GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen des Auftrages"));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen der Überweisung"),StatusBarMessage.TYPE_ERROR));
 				return;
 			}
 
@@ -91,11 +103,15 @@ public class AuslandsUeberweisungExecute implements Action
 	    
 	    backend.execute(Arrays.asList(job));
 		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while executing transfer",e);
-			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen des Auftrages"),StatusBarMessage.TYPE_ERROR));
-		}
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while executing transfer",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen der Überweisung: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
   }
 
 }

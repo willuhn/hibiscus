@@ -89,6 +89,8 @@ public class DauerauftragDialog extends AbstractExecuteDialog
     group.addHeadline(i18n.tr("Verwendungszweck"));
     group.addText(VerwendungszweckUtil.toString(auftrag,"\n"),false);
 
+    group.addSeparator();
+    
     if (auftrag.isActive())
       group.addText(i18n.tr("Sind Sie sicher, daß Sie diese Änderungen jetzt zur Bank senden wollen?") + "\n",true);
     else
