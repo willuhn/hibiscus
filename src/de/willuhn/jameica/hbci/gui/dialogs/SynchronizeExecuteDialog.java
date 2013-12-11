@@ -60,6 +60,7 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     TablePart table = new TablePart(this.jobs,null);
     table.addColumn(i18n.tr("Aufträge"),"name");
     table.setSummary(false);
+    table.setRememberColWidths(true);
     container.addPart(table);
     
     // table.paint(parent);

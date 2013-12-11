@@ -76,6 +76,7 @@ public class SynchronizeList extends TablePart
     super(new Configure());
     this.addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
     this.setSummary(false);
+    this.setRememberColWidths(true);
     this.setCheckable(true);
 
     // BUGZILLA 583
