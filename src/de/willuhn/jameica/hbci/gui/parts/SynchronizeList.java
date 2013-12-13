@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SynchronizeList.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/12/27 22:47:52 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -64,7 +58,8 @@ public class SynchronizeList extends TablePart
   private static Map<String,Boolean> uncheckedCache = new HashMap<String,Boolean>();
   
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private MessageConsumer mc = new MyMessageConsumer();
+  private MessageConsumer mcSync  = new SyncMessageConsumer();
+  private MessageConsumer mcCache = new CacheMessageConsumer();
   private List<Synchronization> syncList = new ArrayList<Synchronization>();
 
   /**
@@ -76,7 +71,7 @@ public class SynchronizeList extends TablePart
     super(new Configure());
     this.addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
     this.setSummary(false);
-    this.setRememberColWidths(true);
+//    this.setRememberColWidths(true);
     this.setCheckable(true);
 
     // BUGZILLA 583
@@ -98,6 +93,8 @@ public class SynchronizeList extends TablePart
         }
       }
     });
+    
+    init();
   }
   
   /**
@@ -146,11 +143,13 @@ public class SynchronizeList extends TablePart
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mc);
+    Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mcSync);
+    Application.getMessagingFactory().getMessagingQueue("jameica.gui.view.unbind").registerMessageConsumer(this.mcCache);
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
-        Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(mc);
+        Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(mcSync);
+        Application.getMessagingFactory().getMessagingQueue("jameica.gui.view.unbind").unRegisterMessageConsumer(mcCache);
       }
     });
 
@@ -162,17 +161,6 @@ public class SynchronizeList extends TablePart
       {
         try
         {
-          SynchronizeJob job = (SynchronizeJob) event.data;
-          if (job != null)
-          {
-            TableItem item = (TableItem) event.item;
-            boolean b = item.getChecked();
-            String key = job.getName();
-            if (b)
-              uncheckedCache.remove(key);
-            else
-              uncheckedCache.put(key,Boolean.TRUE);
-          }
           List<SynchronizeJob> selected = getItems(true);
           start.setEnabled(selected != null && selected.size() > 0);
         }
@@ -352,9 +340,9 @@ public class SynchronizeList extends TablePart
   }
   
   /**
-   * Hilfsklasse zum Abfragen der Status-Codes von der HBCI-Factory.
+   * Hilfsklasse zum Abfragen der Status-Codes der SynchronizeEngine.
    */
-  private class MyMessageConsumer implements MessageConsumer
+  private class SyncMessageConsumer implements MessageConsumer
   {
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
@@ -400,6 +388,37 @@ public class SynchronizeList extends TablePart
           }
         }
       });
+    }
+  }
+  
+  /**
+   * Wird beim unbind der View benachrichtigt und speichert die aktuelle Auswahl
+   * der abgewaehlten Sync-Aufgaben.
+   */
+  private class CacheMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{QueryMessage.class};
+    }
+    
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      cacheUnchecked();
     }
   }
 
