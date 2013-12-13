@@ -1,10 +1,4 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/AuslandsUeberweisungNew.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/03/13 00:25:12 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
  * Copyright (c) by willuhn software & services
  * All rights reserved
@@ -13,19 +7,23 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -34,7 +32,6 @@ import de.willuhn.util.ApplicationException;
  */
 public class AuslandsUeberweisungNew implements Action
 {
-
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -66,21 +63,51 @@ public class AuslandsUeberweisungNew implements Action
         Umsatz umsatz = (Umsatz) context;
         u = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
         u.setBetrag(Math.abs(umsatz.getBetrag())); // negative Betraege automatisch in positive umwandeln
-        u.setGegenkontoBLZ(umsatz.getGegenkontoBLZ());
         u.setGegenkontoName(umsatz.getGegenkontoName());
-        u.setGegenkontoNummer(umsatz.getGegenkontoNummer());
         u.setKonto(umsatz.getKonto());
         u.setTermin(new Date());
+
+        // BUGZILLA 1437
+        // Wenn wir ein Gegenkonto haben, dann pruefen wir, ob es wie eine IBAN aussieht.
+        // Falls ja, uebernehmen wir sie. Falls nicht, schauen wir im Adressbuch, ob
+        // wir die Adresse kennen und dort vielleicht BIC und IBAN haben
+        String kto = StringUtils.trimToEmpty(umsatz.getGegenkontoNummer());
+        String blz = StringUtils.trimToEmpty(umsatz.getGegenkontoBLZ());
+        if (kto.length() <= 10 && kto.length() > 0 && blz.length() > 0) // aber nur, wenn wir auch was zum Suchen im Adressbuch haben
+        {
+          // kann keine IBAN sein. Die ist per Definition laenger
+          
+          // Also im Adressbuch schauen
+          HibiscusAddress address = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
+          address.setBlz(blz);
+          address.setKontonummer(kto);
+          AddressbookService book = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
+          Address a = book.contains(address);
+          kto = a != null ? a.getIban() : null;
+          blz = a != null ? a.getBic() : null;
+        }
+        
+        
+        u.setGegenkontoBLZ(blz);
+        u.setGegenkontoNummer(kto);
+
         
         // die weiteren Verwendungszweck-Zeilen gibts bei SEPA-Ueberweisungen nicht.
         // Daher landen die alle in einer Zeile
         u.setZweck(VerwendungszweckUtil.toString(umsatz));
       }
     }
-    catch (RemoteException e)
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (OperationCanceledException oce)
+    {
+      throw oce;
+    }
+    catch (Exception e)
     {
       Logger.error("error while creating transfer",e);
-      // Dann halt nicht
     }
 
     GUI.startView(de.willuhn.jameica.hbci.gui.views.AuslandsUeberweisungNew.class,u);
@@ -88,10 +115,3 @@ public class AuslandsUeberweisungNew implements Action
 
 }
 
-
-/**********************************************************************
- * $Log: AuslandsUeberweisungNew.java,v $
- * Revision 1.1  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- **********************************************************************/

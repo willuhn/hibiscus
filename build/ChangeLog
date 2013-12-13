@@ -1,5 +1,7 @@
 HEAD 2.5.1 (nightly)
 
+  * BUG: 0283 BUGZILLA 1437 - Beim Erstellen von SEPA-Auftraegen aus dem Adressbuch oder aus einem
+              Umsatz heraus wurde Kto/BLZ statt BIC/IBAN übernommen
   * NEW: 0282 Bei IBANs die ersten beiden Buchstaben automatisch gegen Grossbuchstaben ersetzen
   * NEW: 0281 Neue HBCI4Java-Version - https://github.com/willuhn/hbci4java/pull/14
   * NEW: 0280 BUGZILLA 1431 - Kleinbuchstaben in BIC automatisch gegen Gross-Buchstaben ersetzen
