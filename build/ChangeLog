@@ -1,4 +1,6 @@
-HEAD 2.5.1 (nightly)
+HEAD 2.7 (nightly)
+
+2013-12-18 Version 2.6.0
 
   * BUG: 0283 BUGZILLA 1437 - Beim Erstellen von SEPA-Auftraegen aus dem Adressbuch oder aus einem
               Umsatz heraus wurde Kto/BLZ statt BIC/IBAN übernommen
