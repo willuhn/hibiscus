@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0284 Export von SEPA-Lastschriften in PAIN-XML schlug u.U. fehl - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16600
+
 2013-12-18 Version 2.6.0
 
   * BUG: 0283 BUGZILLA 1437 - Beim Erstellen von SEPA-Auftraegen aus dem Adressbuch oder aus einem

@@ -121,7 +121,9 @@ public class SepaExportLastschrift implements Action
       props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : "1999-01-01");
       props.setProperty("type",         type.name());
 
-      ISEPAGenerator gen = SEPAGeneratorFactory.get(type.getJobName(),version);
+      // Hier muss immer CORE angegeben sein, weil es nur einen Generator fuer CORE/COR1/B2B gibt.
+      // Im Property "type" ist aber der korrekte Typ hinterlegt.
+      ISEPAGenerator gen = SEPAGeneratorFactory.get(SepaLastType.CORE.getJobName(),version);
       os = new BufferedOutputStream(new FileOutputStream(target));
       gen.generate(props,os,false);
       os.close();
