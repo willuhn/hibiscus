@@ -15,6 +15,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 
@@ -51,7 +52,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
 		Input empfName = new LabelInput(last.getGegenkontoName());
 		group.addLabelPair(i18n.tr("Name des Zahlungspflichtigen"),empfName);
 
-		Input empfKto = new LabelInput(last.getGegenkontoNummer());
+		Input empfKto = new LabelInput(HBCIProperties.groupIban(last.getGegenkontoNummer()));
 		group.addLabelPair(i18n.tr("IBAN des Zahlungspflichtigen"),empfKto);
 
     Input empfBic = new LabelInput(last.getGegenkontoBLZ());

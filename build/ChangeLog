@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0285 BUGZILLA 1442 - gruppierte Darstellung der IBAN in Bestätigungsdialog von SEPA-Überweisung und -Lastschrift
   * BUG: 0284 Export von SEPA-Lastschriften in PAIN-XML schlug u.U. fehl - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16600
 
 2013-12-18 Version 2.6.0

@@ -21,6 +21,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 
@@ -57,7 +58,7 @@ public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
 		Input empfName = new LabelInput(ueb.getGegenkontoName());
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
-		Input empfKto = new LabelInput(ueb.getGegenkontoNummer());
+		Input empfKto = new LabelInput(HBCIProperties.groupIban(ueb.getGegenkontoNummer()));
 		group.addLabelPair(i18n.tr("IBAN des Empfängers"),empfKto);
 
     Input empfBic = new LabelInput(ueb.getGegenkontoBLZ());

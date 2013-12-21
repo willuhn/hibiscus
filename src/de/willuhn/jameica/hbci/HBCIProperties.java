@@ -294,6 +294,34 @@ public class HBCIProperties
         throw new ApplicationException(i18n.tr("Der Text \"{0}\" wird nach der HBCI-Kodierung (ß wird hierbei gegen SS ersetzt) zu lang.",chars));
     }
   }
+  
+  /**
+   * Gruppiert den String alle <code>len</code> Zeichen in Bloecke, die durch den
+   * String <code>sep</code> getrennt sind.  
+   * @param s der zu gruppierende String.
+   * @param len Anzahl der Zeichen pro Gruppe.
+   * @param sep das Trennzeichen. Falls null, wird ein Leerzeichen als Trenner verwendet.
+   * @return der gruppierte String.
+   */
+  public final static String group(String s, int len, String sep)
+  {
+    if (s == null)
+      return "";
+    
+    if (sep == null)
+      sep = " ";
+    return s.replaceAll("(.{" + len + "})", "$0" + sep).trim();
+  }
+  
+  /**
+   * Gruppiert eine IBAN in Gruppen zu je 4 Zeichen.
+   * @param s die IBAN.
+   * @return die gruppierte Darstellung.
+   */
+  public final static String groupIban(String s)
+  {
+    return group(s,4," ");
+  }
 
   /**
    * Prueft die Gueltigkeit der BLZ/Kontonummer-Kombi anhand von Pruefziffern.
