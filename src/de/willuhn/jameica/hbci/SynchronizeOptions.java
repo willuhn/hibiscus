@@ -140,7 +140,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncUeberweisungen()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".ueb",true);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".ueb",false);
   }
 
   /**
@@ -149,7 +149,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncLastschriften()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".last",true);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".last",false);
   }
 
   /**
@@ -167,7 +167,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncAuslandsUeberweisungen()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",true);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",false);
   }
 
   /**
@@ -176,7 +176,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncSepaLastschriften()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepalast",true);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepalast",false);
   }
 
   /**
