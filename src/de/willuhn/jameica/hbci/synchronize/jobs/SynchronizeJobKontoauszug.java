@@ -46,7 +46,7 @@ public class SynchronizeJobKontoauszug extends AbstractSynchronizeJob
       String s = "{0}: ";
       
       if (o.getSyncKontoauszuege())
-        s += "Kontoauszüge";
+        s += "Umsätze";
       if (o.getSyncSaldo())
       {
         if (o.getSyncKontoauszuege())

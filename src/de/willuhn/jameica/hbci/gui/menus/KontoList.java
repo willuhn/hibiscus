@@ -62,7 +62,7 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"system-file-manager.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Kontoauszüge anzeigen..."),new UmsatzList(),"text-x-generic.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new UmsatzList(),"text-x-generic.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png")
     {
 

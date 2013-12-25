@@ -90,7 +90,7 @@ public class EmpfaengerNew extends AbstractView
     gd.heightHint = 100; // wir verdecken sonst den Kommentar
     folder.setLayoutData(gd);
 
-    TabGroup tab = new TabGroup(folder,i18n.tr("Kontoauszüge"), false,1);
+    TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze"), false,1);
     control.getUmsatzListe().paint(tab.getComposite());
 
     // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107

@@ -197,7 +197,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
    */
   String getTitle() throws ApplicationException
   {
-    return i18n.tr("Kontoauszug");
+    return i18n.tr("Umsätze");
   }
 }
 

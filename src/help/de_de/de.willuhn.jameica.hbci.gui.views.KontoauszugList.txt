@@ -1,6 +1,6 @@
 <form>
 	<p>
-		<span color="header" font="header">Kontoauszüge</span>
+		<span color="header" font="header">Umsätze</span>
 	</p>
 	
 	<p>

@@ -61,7 +61,7 @@ public class KontoResetAuszugsdatum implements Action
       k.reset();
       k.store();
       Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(k));
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontoauszugsdatum zurückgesetzt."), StatusBarMessage.TYPE_SUCCESS));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Datum zurückgesetzt."), StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
     {

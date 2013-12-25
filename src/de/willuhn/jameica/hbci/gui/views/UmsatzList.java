@@ -69,9 +69,9 @@ public class UmsatzList extends AbstractView
       s3 = HBCI.DECIMALFORMAT.format(d) + " " + k.getWaehrung(); // Saldo wurde schonmal abgerufen
 
     if (s3 == null)
-  		GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
+  		GUI.getView().setTitle(i18n.tr("Umsätze: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
     else
-      GUI.getView().setTitle(i18n.tr("Kontoauszüge: {0} [Kto.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
+      GUI.getView().setTitle(i18n.tr("Umsätze: {0} [Kto.-Nr.: {1}, Saldo: {2}]",new String[]{s1,s2,s3}));
 		
 		final TablePart list = control.getUmsatzListe();
 		final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportUmsatzList(list));

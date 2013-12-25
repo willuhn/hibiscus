@@ -10,7 +10,7 @@
 	
 	<p>
 		<b>Tipp:</b> Sie können Bankverbindungen auch aus
-		Ihren Kontoauszügen übernehmen, indem Sie doppelt
+		Ihren Umsätzen übernehmen, indem Sie doppelt
 		auf eine Buchung in den Umsatzlisten klicken
 		und dort <b>In Adressbuch übernehmen</b>
 		wählen.

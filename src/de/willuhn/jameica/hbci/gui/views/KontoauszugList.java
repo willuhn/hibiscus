@@ -44,7 +44,7 @@ public class KontoauszugList extends AbstractView
    */
   public void bind() throws Exception
   {
-    GUI.getView().setTitle(i18n.tr("Kontoauszüge"));
+    GUI.getView().setTitle(i18n.tr("Umsätze"));
 
     final de.willuhn.jameica.hbci.gui.parts.KontoauszugList list = new de.willuhn.jameica.hbci.gui.parts.KontoauszugList();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportUmsatzList(list));

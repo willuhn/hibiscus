@@ -182,7 +182,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     if (this.syncUmsatz == null)
     {
       this.syncUmsatz = new CheckboxInput(options.getSyncKontoauszuege());
-      this.syncUmsatz.setName(i18n.tr("Kontoauszüge (Umsätze) abrufen"));
+      this.syncUmsatz.setName(i18n.tr("Umsätze abrufen"));
       if (this.offline)
         this.syncUmsatz.addListener(new OfflineListener());
     }
@@ -314,7 +314,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         boolean a = ((Boolean)getSyncOffline().getValue()).booleanValue();
         boolean b = ((Boolean)getSyncUmsatz().getValue()).booleanValue();
         if (a && b)
-          getErrorLabel().setValue(i18n.tr("Kontoauszüge und Anlegen von Gegenbuchungen\nkönnen nicht zusammen aktiviert werden."));
+          getErrorLabel().setValue(i18n.tr("Umsatzabruf und Anlegen von Gegenbuchungen\nkönnen nicht zusammen aktiviert werden."));
         else
           getErrorLabel().setValue("\n");
         
