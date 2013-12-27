@@ -14,11 +14,14 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
@@ -42,6 +45,8 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     ButtonArea buttons = new ButtonArea();
     
     Umsatz u = getControl().getUmsatz();
+    
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportUmsatzList(u)));
     
     this.checked = new Button(i18n.tr("Geprüft"),new Action()
     {
