@@ -22,6 +22,7 @@ import java.util.Hashtable;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.PdfPCell;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -141,12 +142,20 @@ public class PDFUmsatzExporter implements Exporter
         {
 
           u = (Umsatz)list.get(i);
-          reporter.addColumn(reporter.getDetailCell((u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" ) + "\n"
-                                    + (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : ""), Element.ALIGN_LEFT));
-          reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n"
-                                    + reporter.notNull(u.getArt()), Element.ALIGN_LEFT));
-
-          reporter.addColumn(reporter.getDetailCell(VerwendungszweckUtil.toString(u,"\n"), Element.ALIGN_LEFT));
+          String valuta = (u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" );
+          String datum  = (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : "");
+          
+          BaseColor color = null;
+          int style = Font.NORMAL;
+          if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+          {
+            color = BaseColor.GRAY;
+            style = Font.ITALIC;
+          }
+          
+          reporter.addColumn(reporter.getDetailCell(valuta + "\n" + datum, Element.ALIGN_LEFT,null,color,style));
+          reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT,null,color,style));
+          reporter.addColumn(reporter.getDetailCell(VerwendungszweckUtil.toString(u,"\n"), Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
           if (showSaldo)
             reporter.addColumn(reporter.getDetailCell(u.getSaldo()));

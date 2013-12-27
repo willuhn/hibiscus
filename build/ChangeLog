@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0288 Vormerkbuchungen beim Export nach CSV, HTML und PDF kenntlich machen
   * CHG: 0287 "Kontoauszug" umbenannt in "Umsätze" - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16617
   * CHG: 0286 Changeset 0273 wieder rückgängig gemacht - ist sicherer so, damit nicht versehenltich jemand eine Ueberweisung absendet
   * NEW: 0285 BUGZILLA 1442 - gruppierte Darstellung der IBAN in Bestätigungsdialog von SEPA-Überweisung und -Lastschrift

@@ -180,6 +180,7 @@
 #end
         <th>Primanota</th>
         <th>Referenz</th>
+        <th>Vormerkbuchung</th>
       </tr>
       
       #foreach($t in $objects)
@@ -207,6 +208,7 @@
 #end
           <td>$!t.primanota</td>
           <td>$!t.customerRef</td>
+          <td>#if(!$umsatz.hasFlag(2))ja#end</td>
         </tr>
       #end
     </table>

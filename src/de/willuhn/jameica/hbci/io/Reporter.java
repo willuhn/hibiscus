@@ -216,10 +216,7 @@ public class Reporter
    */
   public PdfPCell getDetailCell(String text, int align, BaseColor backgroundcolor)
   {
-    PdfPCell cell = new PdfPCell(new Phrase(notNull(text), FontFactory.getFont(FontFactory.HELVETICA, 8)));
-    cell.setHorizontalAlignment(align);
-    cell.setBackgroundColor(backgroundcolor);
-    return cell;
+    return this.getDetailCell(text, align, backgroundcolor, null, Font.NORMAL);
   }
 
   /**
@@ -230,7 +227,24 @@ public class Reporter
    */
   public PdfPCell getDetailCell(String text, int align)
   {
-    return getDetailCell(text, align, BaseColor.WHITE);
+    return getDetailCell(text, align, null);
+  }
+
+  /**
+   * Erzeugt eine Zelle der Tabelle.
+   * @param text der anzuzeigende Text.
+   * @param align die Ausrichtung.
+   * @param backgroundColor die Hintergundfarbe.
+   * @param textColor die Textfarbe.
+   * @param fontStyle der Schrift-Style.
+   * @return die erzeugte Zelle.
+   */
+  public PdfPCell getDetailCell(String text, int align, BaseColor backgroundColor, BaseColor textColor, int fontStyle)
+  {
+    PdfPCell cell = new PdfPCell(new Phrase(notNull(text), FontFactory.getFont(FontFactory.HELVETICA, 8, fontStyle, textColor != null ? textColor : BaseColor.BLACK)));
+    cell.setHorizontalAlignment(align);
+    cell.setBackgroundColor(backgroundColor != null ? backgroundColor : BaseColor.WHITE);
+    return cell;
   }
 
   /**
@@ -250,7 +264,7 @@ public class Reporter
    */
   public PdfPCell getDetailCell(double value)
   {
-    Font f = FontFactory.getFont(FontFactory.HELVETICA, 8f, Font.NORMAL, value >= 0 ? BaseColor.BLACK : BaseColor.RED);
+    Font f = FontFactory.getFont(FontFactory.HELVETICA, 8f, Font.NORMAL, value >= 0.01d ? BaseColor.BLACK : BaseColor.RED);
     PdfPCell cell = new PdfPCell(new Phrase(HBCI.DECIMALFORMAT.format(value), f));
     cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
     return cell;
