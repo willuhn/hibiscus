@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0290 BUGZILLA 1446 - beim erneuten Öffnen einer Überweisung war das Default-Konto vorausgewählt
   * NEW: 0289 Druck-Button auch in Detailansicht eines Umsatzes anzeigen
   * NEW: 0288 Vormerkbuchungen beim Export nach CSV, HTML und PDF kenntlich machen
   * CHG: 0287 "Kontoauszug" umbenannt in "Umsätze" - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16617

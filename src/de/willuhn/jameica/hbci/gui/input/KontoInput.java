@@ -45,6 +45,7 @@ public class KontoInput extends SelectInput
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoInput.class);
 
+  private Konto konto = null;
   private static List<String> groups = null;
 
   private KontoListener listener = null;
@@ -64,6 +65,7 @@ public class KontoInput extends SelectInput
   public KontoInput(Konto konto, KontoFilter filter) throws RemoteException
   {
     super(init(filter),konto);
+    this.konto = konto;
     setName(i18n.tr("Konto"));
 
     // Wenn nur ein Konto hinterlegt ist das gleich selektieren
@@ -119,7 +121,7 @@ public class KontoInput extends SelectInput
     this.store = store;
 
     String id = settings.getString(this.token,null);
-    if (id != null && id.length() > 0)
+    if (this.konto == null && id != null && id.length() > 0) // BUGZILLA 1446 - nur uebernehmen, wenn wir noch keins vorausgewaehlt haben
     {
       try
       {
