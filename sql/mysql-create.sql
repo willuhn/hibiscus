@@ -211,6 +211,37 @@ CREATE TABLE sepalastschrift (
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE sepaslast (
+       id int(10) AUTO_INCREMENT
+     , konto_id int(10) NOT NULL
+     , bezeichnung VARCHAR(255) NOT NULL
+     , sequencetype VARCHAR(8) NOT NULL
+     , sepatype VARCHAR(8)
+     , targetdate DATE
+     , termin DATE NOT NULL
+     , ausgefuehrt int(10) NOT NULL
+     , ausgefuehrt_am DATETIME
+     , orderid VARCHAR(255)
+     , UNIQUE (id)
+     , PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE sepaslastbuchung (
+       id int(10) AUTO_INCREMENT
+     , sepaslast_id int(10) NOT NULL
+     , empfaenger_konto VARCHAR(40) NOT NULL
+     , empfaenger_name VARCHAR(140) NOT NULL
+     , empfaenger_bic VARCHAR(15) NULL
+     , betrag DOUBLE NOT NULL
+     , zweck VARCHAR(140)
+     , endtoendid VARCHAR(35)
+     , creditorid VARCHAR(35) NOT NULL
+     , mandateid VARCHAR(35) NOT NULL
+     , sigdate DATE NOT NULL
+     , UNIQUE (id)
+     , PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 CREATE TABLE umsatz (
        id int(10) AUTO_INCREMENT
      , konto_id int(10) NOT NULL
@@ -298,6 +329,8 @@ CREATE INDEX idx_dauerauftrag_konto ON dauerauftrag(konto_id);
 CREATE INDEX idx_aueberweisung_konto ON aueberweisung(konto_id);
 CREATE INDEX idx_reminder_uuid ON reminder(uuid);
 CREATE INDEX idx_sepalast_konto ON sepalastschrift(konto_id);
+CREATE INDEX idx_sepaslast_konto ON sepaslast(konto_id);
+CREATE INDEX idx_sepaslastbuchung_sepaslast ON sepaslastbuchung(sepaslast_id);
 
 ALTER TABLE lastschrift ADD CONSTRAINT fk_lastschrift_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_sueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
@@ -312,6 +345,8 @@ ALTER TABLE umsatz ADD CONSTRAINT fk_umsatz_umsatztyp FOREIGN KEY (umsatztyp_id)
 ALTER TABLE dauerauftrag ADD CONSTRAINT fk_dauerauftrag_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE aueberweisung ADD CONSTRAINT fk_aueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sepalastschrift ADD CONSTRAINT fk_sepalast_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE sepaslast ADD CONSTRAINT fk_sepaslast_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslastbuchung_sepaslast FOREIGN KEY (sepaslast_id) REFERENCES sepaslast (id);
 
 -- Indizes fuer grosse Datenmengen
 ALTER TABLE umsatz ADD INDEX (datum);
@@ -321,4 +356,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',48);
+INSERT INTO version (name,version) values ('db',49);
