@@ -45,7 +45,7 @@ public class LastschriftList extends AbstractTransferList
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date, java.lang.String)
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getList(java.lang.Object, java.util.Date, java.util.Date, java.lang.String)
    */
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
