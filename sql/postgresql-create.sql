@@ -67,13 +67,13 @@ CREATE TABLE sepalastschrift (
   konto_id integer NOT NULL,
   empfaenger_konto varchar(40) NOT NULL,
   empfaenger_name varchar(140) NOT NULL,
-  empfaenger_bic varchar(15),
+  empfaenger_bic varchar(15) NULL,
   betrag float NOT NULL,
   zweck varchar(140),
   termin date NOT NULL,
   ausgefuehrt integer NOT NULL,
   ausgefuehrt_am timestamp,
-  endtoendid varchar(35),
+  endtoendid varchar(35) NULL,
   creditorid varchar(35) NOT NULL,
   mandateid varchar(35) NOT NULL,
   sigdate date NOT NULL,
@@ -81,33 +81,6 @@ CREATE TABLE sepalastschrift (
   sepatype varchar(8),
   targetdate date,
   orderid varchar(255)
-);
-
-CREATE TABLE sepaslast (
-  id serial primary key,
-  konto_id integer NOT NULL,
-  bezeichnung varchar(255) NOT NULL,
-  sequencetype varchar(8) NOT NULL,
-  sepatype varchar(8),
-  targetdate date,
-  termin date NOT NULL,
-  ausgefuehrt integer NOT NULL,
-  ausgefuehrt_am timestamp,
-  orderid varchar(255)
-);
-
-CREATE TABLE sepaslastbuchung (
-  id serial primary key,
-  sepaslast_id integer NOT NULL,
-  empfaenger_konto varchar(40) NOT NULL,
-  empfaenger_name varchar(140) NOT NULL,
-  empfaenger_bic varchar(15),
-  betrag float NOT NULL,
-  zweck varchar(140),
-  endtoendid varchar(35),
-  creditorid varchar(35) NOT NULL,
-  mandateid varchar(35) NOT NULL,
-  sigdate date NOT NULL
 );
 
 
@@ -286,8 +259,6 @@ ALTER TABLE sueberweisung ADD CONSTRAINT fk_konto7 FOREIGN KEY (konto_id) REFERE
 ALTER TABLE sueberweisungbuchung ADD CONSTRAINT fk_sueberweisung1 FOREIGN KEY (sueberweisung_id) REFERENCES sueberweisung (id) DEFERRABLE;
 ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sepalastschrift ADD CONSTRAINT fk_konto9 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE sepaslast ADD CONSTRAINT fk_konto10 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslast1 FOREIGN KEY (sepaslast_id) REFERENCES sepaslast (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);
@@ -307,4 +278,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',49);
+INSERT INTO version (name,version) values ('db',48);
