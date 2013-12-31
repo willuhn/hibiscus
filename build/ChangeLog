@@ -1,5 +1,10 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0291 Wenn aus den Kontodetails den Button "Alle Umsaetze" klickt und dort Umsätze abruft, wurden die
+              nicht live hinzugefügt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16672
+              
+2013-12-30 Version 2.6.1
+
   * BUG: 0290 BUGZILLA 1446 - beim erneuten Öffnen einer Überweisung war das Default-Konto vorausgewählt
   * NEW: 0289 Druck-Button auch in Detailansicht eines Umsatzes anzeigen
   * NEW: 0288 Vormerkbuchungen beim Export nach CSV, HTML und PDF kenntlich machen
