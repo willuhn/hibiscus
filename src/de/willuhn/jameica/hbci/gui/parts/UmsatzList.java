@@ -586,19 +586,29 @@ public class UmsatzList extends TablePart implements Extendable
       timeout.start();
     }
     
+    /**
+     * 
+     */
     private synchronized void process()
+    {
+      this.process(false);
+    }
+
+    /**
+     * @param force true, wenn das Reload forciert werden soll.
+     */
+    private synchronized void process(final boolean force)
     {
       if (disposed)
         return;
       
-      GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
       GUI.startSync(new Runnable()
       {
         public void run()
         {
           try
           {
-            if (!hasChanged())
+            if (!force && !hasChanged())
               return;
               
             // Erstmal alle rausschmeissen
@@ -669,10 +679,6 @@ public class UmsatzList extends TablePart implements Extendable
           catch (Exception e)
           {
             Logger.error("error while loading umsatz",e);
-          }
-          finally
-          {
-            GUI.getView().setLogoText("");
           }
         }
       });
@@ -822,7 +828,7 @@ public class UmsatzList extends TablePart implements Extendable
 
             umsaetze.add(o);
             if (filter && kl != null)
-              kl.process();
+              kl.process(true);
             else
             {
               addItem(o);
