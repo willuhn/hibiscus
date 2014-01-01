@@ -1,12 +1,10 @@
 /*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/rmi/PinTanConfig.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/23 10:47:29 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+ * 
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
  *
-****************************************************************************/
+ ****************************************************************************/
+
 package de.willuhn.jameica.hbci.passports.pintan.rmi;
 
 import java.rmi.RemoteException;
@@ -231,20 +229,21 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setTanMedia(String name) throws RemoteException;
+  
+  /**
+   * Liefert ein Custom-Property.
+   * @param name Name des Property.
+   * @return Wert des Property.
+   * @throws RemoteException
+   */
+  public String getCustomProperty(String name) throws RemoteException;
+  
+  /**
+   * Speichert ein Custom-Property.
+   * @param name Name des Property.
+   * @param value Wert des Property.
+   * @throws RemoteException
+   */
+  public void setCustomProperty(String name, String value) throws RemoteException;
+  
 }
-
-/*****************************************************************************
- * $Log: PinTanConfig.java,v $
- * Revision 1.4  2011/05/23 10:47:29  willuhn
- * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
- *
- * Revision 1.3  2011-05-09 09:35:15  willuhn
- * @N BUGZILLA 827
- *
- * Revision 1.2  2011-04-29 09:17:35  willuhn
- * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
- * @R Passports sind keine UnicastRemote-Objekte mehr
- *
- * Revision 1.1  2010-06-17 11:38:16  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
-*****************************************************************************/

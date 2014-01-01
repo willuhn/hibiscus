@@ -1,12 +1,10 @@
 /*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/server/PinTanConfigImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/06/17 08:49:19 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+ * 
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
  *
-****************************************************************************/
+ ****************************************************************************/
+
 package de.willuhn.jameica.hbci.passports.pintan.server;
 
 import java.io.File;
@@ -468,21 +466,25 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".showtan",show);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCustomProperty(java.lang.String)
+   */
+  public String getCustomProperty(String name) throws RemoteException
+  {
+    if (name == null)
+      return null;
+    return settings.getString(getID() + "." + name,null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCustomProperty(java.lang.String, java.lang.String)
+   */
+  public void setCustomProperty(String name, String value) throws RemoteException
+  {
+    if (name == null)
+      return;
+    
+    settings.setAttribute(getID() + "." + name,value);
+  }
 }
-
-/*****************************************************************************
- * $Log: PinTanConfigImpl.java,v $
- * Revision 1.8  2011/06/17 08:49:19  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.7  2011-05-23 10:47:29  willuhn
- * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
- *
- * Revision 1.6  2011-05-09 09:35:16  willuhn
- * @N BUGZILLA 827
- *
- * Revision 1.5  2011-04-29 09:17:35  willuhn
- * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
- * @R Passports sind keine UnicastRemote-Objekte mehr
-*****************************************************************************/

@@ -143,10 +143,18 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
       hbciPassport = config.getPassport();
 
-      // Wir speichern die verwendete PIN/TAN-Config im Passport. Dann wissen wir
-      // spaeter in den HBCI-Callbacks noch, aus welcher Config der Passport
-      // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt.
-      ((AbstractHBCIPassport)hbciPassport).setPersistentData(CONTEXT_CONFIG,config);
+      {
+        AbstractHBCIPassport ap = (AbstractHBCIPassport) hbciPassport;
+        
+        // Wir speichern die verwendete PIN/TAN-Config im Passport. Dann wissen wir
+        // spaeter in den HBCI-Callbacks noch, aus welcher Config der Passport
+        // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt.
+        ap.setPersistentData(CONTEXT_CONFIG,config);
+        
+        String cannationalacc = config.getCustomProperty("cannationalacc");
+        if (cannationalacc != null)
+          ap.setPersistentData("cannationalacc",cannationalacc);
+      }
 
 			String hbciVersion = config.getHBCIVersion();
 			if (hbciVersion == null || hbciVersion.length() == 0)
