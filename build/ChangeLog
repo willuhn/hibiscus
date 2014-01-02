@@ -1,5 +1,9 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0292 Beginn des Merge-Window nicht mehr hart basierend auf dem Datum des letzten Abrufes ermitteln sondern
+              basierend auf dem ältesten zurückgemeldeten Umsatz (insofern ermittelbar). Damit kommt es nicht zu
+              Umsatz-Dopplern wenn die Bank beim Umsatz-Abruf das Start-Datum ignoriert und sehr alte Umsaetze liefert,
+              die ausserhalb des Merge-Window (letzter Abruf minus 30 Tage) liegen
   * BUG: 0291 Wenn aus den Kontodetails den Button "Alle Umsaetze" klickt und dort Umsätze abruft, wurden die
               nicht live hinzugefügt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16672
               
