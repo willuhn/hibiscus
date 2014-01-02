@@ -1,9 +1,11 @@
 HEAD 2.7 (nightly)
 
-  * NEW: 0292 Beginn des Merge-Window nicht mehr hart basierend auf dem Datum des letzten Abrufes ermitteln sondern
+  * NEW: 0293 Beginn des Merge-Window nicht mehr hart basierend auf dem Datum des letzten Abrufes ermitteln sondern
               basierend auf dem ältesten zurückgemeldeten Umsatz (insofern ermittelbar). Damit kommt es nicht zu
               Umsatz-Dopplern wenn die Bank beim Umsatz-Abruf das Start-Datum ignoriert und sehr alte Umsaetze liefert,
               die ausserhalb des Merge-Window (letzter Abruf minus 30 Tage) liegen
+  * NEW: 0292 Neue HBCI4Java-Version mit Beruecksichtigung fuer "cannationalacc"
+              https://github.com/willuhn/hbci4java/commit/1117898c8a5fc9fe203860046ce7021fd7c1ce05
   * BUG: 0291 Wenn aus den Kontodetails den Button "Alle Umsaetze" klickt und dort Umsätze abruft, wurden die
               nicht live hinzugefügt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16672
               
