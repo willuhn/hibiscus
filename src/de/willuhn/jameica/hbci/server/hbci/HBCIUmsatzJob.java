@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -48,6 +49,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCIUmsatzJob extends AbstractHBCIJob
 {
+  private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
 	private Konto konto     = null;
 	private Date saldoDatum = null;
@@ -138,33 +140,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
    */
   void markExecuted() throws RemoteException, ApplicationException
   {
-    Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Merge-Fenster ermitteln
-    Date d = null;
-    if (this.saldoDatum != null)
-    {
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(this.saldoDatum);
-      cal.add(Calendar.DATE,settings.getInt("umsatz.mergewindow.offset",-30));
-      d = cal.getTime();
-    }
-    if (d == null)
-      Logger.info("merge window: not set");
-    else
-      Logger.info("merge window: " + d + " - now");
-
-    // zu mergende Umsaetze ermitteln
-    DBIterator existing = konto.getUmsaetze(d,null);
-    
-    //
-    ////////////////////////////////////////////////////////////////////////////
-
-
-    
-    GVRKUms result = (GVRKUms) getJobResult();
 
     // In HBCI gibts fuer Umsaetze ja keine eindeutigen IDs. Daher muessen
     // wir anhand der Eigenschaften vergleichen, ob wir den Umsatz schon
@@ -182,10 +158,16 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     // noch anlegen.
     Map<Umsatz,Integer> duplicates = new HashMap<Umsatz,Integer>();
     
+
+    GVRKUms result = (GVRKUms) getJobResult();
+    List lines     = result.getFlatData();
+    Date d         = this.getMergeWindow(lines);
+
+    // zu mergende Umsaetze ermitteln
+    DBIterator existing = konto.getUmsaetze(d,null);
     
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
-    List lines  = result.getFlatData();
     if (lines != null && lines.size() > 0)
     {
       int created = 0;
@@ -416,5 +398,50 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     String msg = i18n.tr("Fehler beim Abrufen der Umsätze: {0}",error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
+  }
+  
+  /**
+   * Liefert das Beginn-Datum des Merge-Window.
+   * @param list Liste der abgerufenen Buchungen. Wenn da welche enthalten
+   * sind, wird das Datum der darin befindlichen aeltesten Buchung verwendet.
+   * Andernfalls wird das Start-Datum des Abrufs (minus 30 Tage) verwendet.
+   * @return das Beginn-Datgum des Merge-Window.
+   */
+  private Date getMergeWindow(List<UmsLine> list)
+  {
+    Date d = null;
+    
+    String basedOn = null;
+    
+    if (list != null && list.size() > 0)
+    {
+      for (UmsLine line:list)
+      {
+        if (line.bdate == null)
+          continue;
+        
+        if (d == null || line.bdate.before(d))
+        {
+          d = line.bdate;
+          basedOn = "fetched data"; 
+        }
+      }
+    }
+    
+    if (d == null && this.saldoDatum != null)
+    {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(this.saldoDatum);
+      cal.add(Calendar.DATE,settings.getInt("umsatz.mergewindow.offset",-30));
+      d = cal.getTime();
+      basedOn = "last sync";
+    }
+    
+    if (d == null)
+      Logger.info("merge window: not set");
+    else
+      Logger.info("merge window: " + d + " - now (based on " + basedOn + ")");
+    
+    return d;
   }
 }
