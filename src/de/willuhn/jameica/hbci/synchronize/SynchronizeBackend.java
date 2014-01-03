@@ -60,6 +60,18 @@ public interface SynchronizeBackend
    * Die Funktion darf auch NULL liefern.
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k);
+  
+  /**
+   * Liefert eine optionale Liste mit Property-Namen, die in Hibiscus
+   * in den Sync-Einstellungen als Eingabefelder fuer zusaetzliche Konfigurationsoptionen
+   * angezeigt werden sollen. Wird z.Bsp. vom ScriptingBackend verwendet, um dort
+   * die Zugangsdaten zur Webseite hinterlegen zu koennen, ohne dafuer Kontonummer,
+   * Benutzerkennung, usw. des Kontos "missbrauchen" zu muessen.
+   * @param k das Konto.
+   * @return Liste von lesbaren Property-Namen. Die werden dem Benutzer 1:1 als
+   * Label von Eingabefeldern angezeigt.
+   */
+  public List<String> getPropertyNames(Konto k);
 
   /**
    * Fuehrt die uebergebenen Jobs auf dem Backend aus.

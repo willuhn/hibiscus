@@ -96,7 +96,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
     // 1. Checken, ob wir ueberhaupt ein Script haben, welches diesen Job beherrscht
     String function = this.getFunction(type,konto);
     if (function == null)
-      throw new ApplicationException(i18n.tr("Plugin \"jameica.scripting\" nicht installiert oder der Geschäftsvorfall wird nicht via {0} unterstützt",this.getName()));
+      throw new ApplicationException(i18n.tr("Der Geschäftsvorfall wird nicht via {0} unterstützt",this.getName()));
 
     SynchronizeJob instance = super.create(type,konto);
     instance.setContext(CTX_JS_FUNCTION,function); // Funktion noch drin speichern
@@ -138,6 +138,51 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
 
     return super.execute(jobs);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
+   */
+  public List<String> getPropertyNames(Konto konto)
+  {
+    try
+    {
+      // Nur Offline-Konten.
+      if (konto == null || !konto.hasFlag(Konto.FLAG_OFFLINE) || konto.hasFlag(Konto.FLAG_DISABLED))
+        return null;
+      
+      QueryMessage msg = new QueryMessage("hibiscus.sync.options",konto);
+      Application.getMessagingFactory().getMessagingQueue("jameica.scripting").sendSyncMessage(msg);
+      Object data = msg.getData();
+      if (data == null)
+      {
+        Logger.debug("no property names found");
+        return null;
+      }
+      
+      List<String> result = new ArrayList<String>();
+      List list = (data instanceof List) ? (List) data : Arrays.asList(data);
+      for (Object o:list)
+      {
+        if (o instanceof Exception) // eines der Scripte hat eine Exception geworfen
+        {
+          // brauchen wir nicht loggen. Hat der JS-Invoker schon gemacht
+          continue;
+        }
+        
+        if (o instanceof String)
+        {
+          result.add((String)o);
+        }
+      }
+      
+      return result;
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine property-names",re);
+      return null;
+    }
+  }
 
   /**
    * Liefert den auszufuehrenden Javascript-Funktionsnamen fuer den angegebenen Job.
@@ -157,7 +202,6 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
       
       // 2. Checken, ob wir ein passendes Script haben
       // Das Javascript liefert den Namen der auszufuehrenden JS-Funktion zurueck
-      // FIXME: Result cachen und via Messaging ueber Script-Reloads informieren lassen
       QueryMessage msg = new QueryMessage("hibiscus.sync.function",new Object[]{konto,type});
       Application.getMessagingFactory().getMessagingQueue("jameica.scripting").sendSyncMessage(msg);
       Object data = msg.getData();

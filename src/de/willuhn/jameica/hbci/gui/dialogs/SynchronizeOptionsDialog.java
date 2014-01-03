@@ -14,6 +14,8 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -24,6 +26,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
@@ -32,10 +35,13 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -62,6 +68,8 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private CheckboxInput syncSepaLast = null;
   private LabelInput error           = null;
   private Button apply               = null;
+  
+  private List<TextInput> properties = new ArrayList<TextInput>();
 
   /**
    * ct.
@@ -83,6 +91,29 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine = service.get(SynchronizeEngine.class);
       this.syncAvail = engine.supports(SynchronizeJobKontoauszug.class,konto);
+      
+      // checken, ob wir Addon-Properties haben
+      if (this.syncAvail)
+      {
+        try
+        {
+          SynchronizeBackend backend = engine.getBackend(SynchronizeJobKontoauszug.class,konto);
+          List<String> names = backend.getPropertyNames(konto);
+          if (names != null && names.size() > 0)
+          {
+            for (String name:names)
+            {
+              final TextInput t = new TextInput(konto.getMeta(name,null));
+              t.setName(name);
+              this.properties.add(t);
+            }
+          }
+        }
+        catch (ApplicationException ae)
+        {
+          Logger.error(ae.getMessage());
+        }
+      }
     }
   }
 
@@ -120,6 +151,19 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
           options.setSyncSepaLastschriften(((Boolean)getSyncSepaLast().getValue()).booleanValue());
         }
+        
+        try
+        {
+          for (TextInput prop:properties)
+          {
+            konto.setMeta(prop.getName(),(String)prop.getValue());
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to apply properties",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Übernehmen der Optionen fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
         close();
       }
     },null,true,"ok.png");
@@ -142,6 +186,15 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       group.addInput(getSyncLast());
       group.addInput(getSyncSepaLast());
       group.addInput(getSyncDauer());
+    }
+    
+    if (this.properties.size() > 0)
+    {
+      group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
+      for (TextInput text:this.properties)
+      {
+        group.addInput(text);
+      }
     }
     
     group.addInput(getErrorLabel());

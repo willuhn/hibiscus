@@ -249,6 +249,14 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
+   */
+  public List<String> getPropertyNames(Konto k)
+  {
+    return null;
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#execute(java.util.List)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren.
    */
