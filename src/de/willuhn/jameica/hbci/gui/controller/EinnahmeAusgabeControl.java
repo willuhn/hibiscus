@@ -216,7 +216,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     // Einschraenken auf gewaehlte Kontogruppe
     if (o != null && (o instanceof String))
       it.addFilter("kategorie = ?", (String) o);
-    it.setOrder("ORDER BY blz, kontonummer");
+    it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
     while (it.hasNext())
     {
       EinnahmeAusgabe ea = new EinnahmeAusgabe((Konto) it.next(),start,end);

@@ -313,6 +313,7 @@ public class SaldoChart implements Part
         if (o == null || !(o instanceof Konto)) // wir zeichnen einen Stacked-Graph ueber alle Konten 
         {
           DBIterator it = Settings.getDBService().createList(Konto.class);
+          it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
           if (o != null && (o instanceof String)) it.addFilter("kategorie = ?", (String) o);
           ChartDataSaldoSumme s = new ChartDataSaldoSumme();
           while (it.hasNext())

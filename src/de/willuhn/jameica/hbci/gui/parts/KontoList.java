@@ -253,7 +253,7 @@ public class KontoList extends TablePart implements Part
   private static DBIterator init() throws RemoteException
   {
     DBIterator i = Settings.getDBService().createList(Konto.class);
-    i.setOrder("ORDER BY blz, bezeichnung");
+    i.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
     return i;
   }
 

@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0295 Konten immer gleich sortieren - erst nach Kategorie, dann nach BLZ, dann Konto, dann Bezeichnung
   * NEW: 0294 Support fuer Addon-Optionen von Scripting-Konten
   * NEW: 0293 Beginn des Merge-Window nicht mehr hart basierend auf dem Datum des letzten Abrufes ermitteln sondern
               basierend auf dem ältesten zurückgemeldeten Umsatz (insofern ermittelbar). Damit kommt es nicht zu
