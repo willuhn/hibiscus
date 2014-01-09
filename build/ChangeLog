@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+
+2014-01-09 Version 2.6.2
+
   * NEW: 0296 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/2ad509db2cbad2079efad8759ecb490f96b05eab
   * NEW: 0295 Konten immer gleich sortieren - erst nach Kategorie, dann nach BLZ, dann Konto, dann Bezeichnung
