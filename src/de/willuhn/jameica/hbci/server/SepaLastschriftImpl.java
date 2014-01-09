@@ -63,6 +63,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setSequenceType(getSequenceType());
     u.setTargetDate(getTargetDate());
     u.setType(getType());
+    u.setOrderId(getOrderId());
     return u;
   }
 
@@ -132,7 +133,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     catch (RemoteException e)
     {
       Logger.error("error while checking foreign ueberweisung",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Prüfen der SEPA-Überweisung."));
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des SEPA-Auftrages."));
     }
   }
 
