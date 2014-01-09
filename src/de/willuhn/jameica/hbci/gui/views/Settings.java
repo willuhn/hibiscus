@@ -12,8 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import java.rmi.RemoteException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
@@ -25,12 +23,9 @@ import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -74,28 +69,6 @@ public class Settings extends AbstractView implements Extendable
     TabGroup colors = new TabGroup(getTabFolder(),i18n.tr("Farben"));
     colors.addLabelPair(i18n.tr("Textfarbe von Sollbuchungen"),control.getBuchungSollForeground());
     colors.addLabelPair(i18n.tr("Textfarbe von Habenbuchungen"),control.getBuchungHabenForeground());
-
-		// Passports
-    TabGroup passports = new TabGroup(getTabFolder(),i18n.tr("HBCI-Sicherheitsmedien"));
-		passports.addPart(control.getPassportListe());
-		
-    ButtonArea passportButtons = new ButtonArea();
-    passportButtons.addButton(i18n.tr("Sicherheitsmedium konfigurieren..."), new Action() {
-    
-      public void handleAction(Object context) throws ApplicationException
-      {
-        try
-        {
-          new PassportDetail().handleAction(control.getPassportListe().getSelection());
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to load passport",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Öffnen des Sicherheitsmediums"), StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    },null,false,"document-properties.png");
-    passports.addButtonArea(passportButtons);
 
     // Umsatz-Kategorien
     TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));

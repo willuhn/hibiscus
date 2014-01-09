@@ -27,15 +27,12 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
-import de.willuhn.jameica.hbci.gui.action.PassportDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
-import de.willuhn.jameica.hbci.gui.parts.PassportList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -60,7 +57,6 @@ public class SettingsControl extends AbstractControl
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
 
-  private TablePart passportList          = null;
   private UmsatzTypTree umsatzTypTree     = null;
 
   private Input ueberweisungLimit         = null;
@@ -71,18 +67,6 @@ public class SettingsControl extends AbstractControl
   public SettingsControl(AbstractView view)
   {
     super(view);
-  }
-
-	/**
-	 * Liefert eine Tabelle mit den existierenden Passports.
-   * @return Tabelle mit den Passports.
-   * @throws RemoteException
-   */
-  public TablePart getPassportListe() throws RemoteException
-	{
-    if (passportList == null)
-      passportList = new PassportList(new PassportDetail());
-		return passportList;
   }
 
   /**

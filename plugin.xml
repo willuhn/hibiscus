@@ -16,8 +16,11 @@
   <menu>
     <item id="hibiscus.menu"                         name="&amp;Hibiscus">
       <item id="hibiscus.menu.transfer"              name="&amp;Zahlungsverkehr">
-        <item id="hibiscus.menu.transfer.ueb"        name="Neue Überweisung..."       shortcut="ALT+U"    icon="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
-        <item id="hibiscus.menu.transfer.last"       name="Neue Lastschrift..."       shortcut="ALT+T"    icon="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftNew" />
+        <item id="hibiscus.menu.transfer.sepaueb"    name="Neue SEPA-Überweisung..."  shortcut="ALT+U"    icon="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew" />
+        <item id="hibiscus.menu.transfer.sepalast"   name="Neue SEPA-Lastschrift..."  shortcut="ALT+T"    icon="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew" />
+        <item name="-" />
+        <item id="hibiscus.menu.transfer.ueb"        name="Neue Überweisung..."                           icon="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungNew" />
+        <item id="hibiscus.menu.transfer.last"       name="Neue Lastschrift..."                           icon="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftNew" />
         <item id="hibiscus.menu.transfer.sammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    icon="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew" />
         <item id="hibiscus.menu.transfer.sammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    icon="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew" />
       </item>
