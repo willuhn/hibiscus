@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0299 BUGZILLA 1458 - Enum falsch aufgeloest in org.kapott.hbci.sepa.jaxb.pain_008_002_02.LocalInstrumentSEPACode.B2B
   * CHG: 0298 Alte Konfiguration der Sicherheitsmedien unter Hibiscus->Einstellungen entfernt, wurde durch "Bankzugänge"
               in der Navi abgelöst
   * NEW: 0297 BUGZILLA 1272 - Shortcuts für neue SEPA-Überweisung/-Lastschrift im Menu (löst die für die IZV-Überweisung/-Lastschrift ab)
