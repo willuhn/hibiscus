@@ -11,6 +11,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +24,7 @@ import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
@@ -48,6 +50,11 @@ import de.willuhn.util.ProgressMonitor;
 @Lifecycle(Type.CONTEXT)
 public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
 {
+  /**
+   * Queue, ueber die die rohen HBCI-Nachrichten getraced werden koennen.
+   */
+  public final static String HBCI_TRACE = "hibiscus.sync.hbci.trace";
+  
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getName()
    */
@@ -188,6 +195,9 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       ////////////////////////////////////////////////////////////////////
       // lokale Variablen
       ProgressMonitor monitor = HBCISynchronizeBackend.this.worker.getMonitor();
+      
+      Application.getMessagingFactory().getMessagingQueue(HBCI_TRACE).sendMessage(new HBCITraceMessage(HBCITraceMessage.Type.ID,this.getKonto().getID()));
+      Application.getMessagingFactory().getMessagingQueue(HBCI_TRACE).sendMessage(new HBCITraceMessage(HBCITraceMessage.Type.INFO,"\n\n" + i18n.tr("{0} Synchronisiere Konto: {1}",HBCI.LONGDATEFORMAT.format(new Date()),this.getKonto().getLongName())));
 
       // Wir ermitteln anhand der Gesamt-Anzahl von Jobs, wieviel Fortschritt
       // pro Job gemacht wird, addieren das fuer unsere Gruppe, ziehen noch

@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCICallbackSWT.java,v $
- * $Revision: 1.75 $
- * $Date: 2011/07/06 14:45:13 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -19,11 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWTException;
-import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -355,11 +347,10 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 		}
   }
 
-	/**
-	 * Protokolliert die Status-Info aus dem HBCI-Kernel mit INFO-Level.
-   * @param text zu loggender Text.
+  /**
+   * @see de.willuhn.jameica.hbci.AbstractHibiscusHBCICallback#status(java.lang.String)
    */
-  private void status(String text)
+  protected void status(String text)
 	{
     Logger.info(text);
     
@@ -373,15 +364,6 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     }
 	}
 	
-	/**
-	 * Protokolliert die Status-Info aus dem HBCI-Kernel mit DEBUG-Level.
-   * @param text zu loggender Text.
-   */
-  private void debug(String text)
-	{
-		Logger.debug(text);
-	}
-
   /**
    * Speichert das aktuelle Handle.
    * Haesslicher Workaround.
@@ -391,206 +373,4 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   {
     this.currentHandle = handle;
   }
-  
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
-   */
-  public void status(HBCIPassport passport, int statusTag, Object[] o) {
-		switch (statusTag) {
-
-			case STATUS_INST_BPD_INIT:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_INST_DATA"));
-				break;
-
-			case STATUS_INST_BPD_INIT_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_INST_DATA_DONE",passport.getBPDVersion()));
-				break;
-
-			case STATUS_INST_GET_KEYS:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_INST_KEYS"));
-				break;
-
-			case STATUS_INST_GET_KEYS_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_INST_KEYS_DONE"));
-				break;
-
-			case STATUS_SEND_KEYS:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_SEND_MY_KEYS"));
-				break;
-
-			case STATUS_SEND_KEYS_DONE:
-				// status(HBCIUtilsInternal.getLocMsg("STATUS_SEND_MY_KEYS_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
-				status(HBCIUtilsInternal.getLocMsg("STATUS_SEND_MY_KEYS_DONE"));
-				break;
-
-			case STATUS_INIT_SYSID:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SYSID"));
-				break;
-
-			case STATUS_INIT_SYSID_DONE:
-				// status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SYSID_DONE",o[1].toString()) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SYSID_DONE",o[1].toString()));
-				break;
-
-			case STATUS_INIT_SIGID:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SIGID"));
-				break;
-
-			case STATUS_INIT_SIGID_DONE:
-				// status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SIGID_DONE",o[1].toString()) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_SIGID_DONE",o[1].toString()));
-				break;
-
-			case STATUS_INIT_UPD:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_USER_DATA"));
-				break;
-
-			case STATUS_INIT_UPD_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_REC_USER_DATA_DONE",passport.getUPDVersion()));
-				break;
-
-			case STATUS_LOCK_KEYS:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_USR_LOCK"));
-				break;
-
-			case STATUS_LOCK_KEYS_DONE:
-				// status(HBCIUtilsInternal.getLocMsg("STATUS_USR_LOCK_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
-				status(HBCIUtilsInternal.getLocMsg("STATUS_USR_LOCK_DONE"));
-				break;
-
-			case STATUS_DIALOG_INIT:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_INIT"));
-				break;
-
-			case STATUS_DIALOG_INIT_DONE:
-				// status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_INIT_DONE",o[1]) + ", Status: "+((HBCIMsgStatus)o[0]).toString());
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_INIT_DONE",o[1]));
-				break;
-
-			case STATUS_SEND_TASK:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_NEW_JOB",((HBCIJob)o[0]).getName()));
-				break;
-
-			case STATUS_SEND_TASK_DONE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_JOB_DONE",((HBCIJob)o[0]).getName()));
-				break;
-
-			case STATUS_DIALOG_END:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_END"));
-				break;
-
-			case STATUS_DIALOG_END_DONE:
-				// status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_END_DONE") + ", Status: "+((HBCIMsgStatus)o[0]).toString());
-				status(HBCIUtilsInternal.getLocMsg("STATUS_DIALOG_END_DONE"));
-				break;
-
-			case STATUS_MSG_CREATE:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_CREATE",o[0].toString()));
-				break;
-
-			case STATUS_MSG_SIGN:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_SIGN"));
-				break;
-
-			case STATUS_MSG_CRYPT:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_CRYPT"));
-				break;
-
-			case STATUS_MSG_SEND:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_SEND"));
-				break;
-
-			case STATUS_MSG_RECV:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_RECV"));
-				break;
-
-			case STATUS_MSG_PARSE:
-				debug(HBCIUtilsInternal.getLocMsg("STATUS_MSG_PARSE",o[0].toString()+")"));
-				break;
-
-			case STATUS_MSG_DECRYPT:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_DECRYPT"));
-				break;
-
-			case STATUS_MSG_VERIFY:
-				status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_VERIFY"));
-				break;
-
-			default:
-				throw new HBCI_Exception(HBCIUtilsInternal.getLocMsg("STATUS_INVALID",String.valueOf(statusTag)));
-		}
-    
-  }
 }
-
-
-/**********************************************************************
- * $Log: HBCICallbackSWT.java,v $
- * Revision 1.75  2011/07/06 14:45:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.74  2011-07-06 14:36:50  willuhn
- * *** empty log message ***
- *
- * Revision 1.73  2011-07-06 14:33:35  willuhn
- * @B Callbacks 12 und 13 duerfen nicht im Passport behandelt werden, weil das auch in Situationen passieren kann, wo der Passport gerade nicht im Callback registriert ist
- *
- * Revision 1.72  2011-07-06 08:00:18  willuhn
- * @N Debug-Output
- *
- * Revision 1.71  2011-05-25 10:03:09  willuhn
- * @R unused import
- *
- * Revision 1.70  2011-05-25 10:02:53  willuhn
- * @C getypter Account-Cache
- *
- * Revision 1.69  2011-05-24 09:06:11  willuhn
- * @C Refactoring und Vereinfachung von HBCI-Callbacks
- *
- * Revision 1.68  2011-05-18 09:49:45  willuhn
- * @N Log-Level "INTERN" hinzugefuegt
- *
- * Revision 1.67  2010-07-22 22:36:24  willuhn
- * @N Code-Cleanup
- *
- * Revision 1.66  2010-07-22 11:35:50  willuhn
- * @C changed log level
- *
- * Revision 1.65  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.64  2010/05/27 09:36:23  willuhn
- * @C CRC-Fehler nur loggen, wenn KTO/BLZ-Pruefung aktiv ist
- *
- * Revision 1.63  2009/04/14 13:38:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.62  2009/03/30 22:54:15  willuhn
- * @C Checksummen-Speicherung geaendert:
- *  1) Es wird SHA1 statt MD5 verwendet
- *  2) Es wird die Checksumme der Checksumme der Checksumme erstellt
- *  3) ein zufaellig erzeugter Salt wird eingefuegt
- *  4) es werden nur noch die ersten 3 Zeichen der Checksumme gespeichert
- *
- * Revision 1.61  2009/03/18 22:08:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.60  2008/11/04 11:55:16  willuhn
- * @N Update auf HBCI4Java 2.5.9
- *
- * Revision 1.59  2008/09/17 23:44:29  willuhn
- * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
- *
- * Revision 1.58  2008/05/30 12:31:41  willuhn
- * @N Erster Code fuer gecachte BPD/UPD
- *
- * Revision 1.57  2008/05/30 12:01:37  willuhn
- * @N Gemeinsame Basisimplementierung des HBCICallback in Hibiscus und Payment-Server
- *
- * Revision 1.56  2008/02/25 22:21:15  willuhn
- * @R undo
- **********************************************************************/
