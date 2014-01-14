@@ -158,17 +158,19 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     // noch anlegen.
     Map<Umsatz,Integer> duplicates = new HashMap<Umsatz,Integer>();
     
+    boolean fetchUnbooked  = settings.getBoolean("umsatz.fetchnotbooked",true);
 
-    GVRKUms result = (GVRKUms) getJobResult();
-    List lines     = result.getFlatData();
-    Date d         = this.getMergeWindow(lines);
+    GVRKUms result         = (GVRKUms) getJobResult();
+    List<UmsLine> booked   = result.getFlatData();
+    List<UmsLine> unbooked = fetchUnbooked ? result.getFlatDataUnbooked() : null;
+    Date d                 = this.getMergeWindow(booked,unbooked);
 
     // zu mergende Umsaetze ermitteln
     DBIterator existing = konto.getUmsaetze(d,null);
     
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
-    if (lines != null && lines.size() > 0)
+    if (booked != null && booked.size() > 0)
     {
       int created = 0;
       int skipped = 0;
@@ -176,9 +178,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       
       UmsatzRewriter rewriter = RewriterRegistry.getRewriter(konto.getBLZ(),konto.getKontonummer());
       
-      for (int i=0;i<lines.size();++i)
+      for (int i=0;i<booked.size();++i)
       {
-        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
+        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)booked.get(i));
         umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
 
         if (rewriter != null)
@@ -252,20 +254,18 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
     ////////////////////////////////////////////////////////////////////////////
     // Vorgemerkte Umsaetze
-    boolean fetchNotbooked = settings.getBoolean("umsatz.fetchnotbooked",true);
-    lines = result.getFlatDataUnbooked();
-		if (fetchNotbooked)
+		if (fetchUnbooked)
 		{
-      if (lines != null && lines.size() > 0)
+      if (unbooked != null && unbooked.size() > 0)
       {
         List<Umsatz> fetched = new ArrayList<Umsatz>();
         
         int created = 0;
         int skipped = 0;
         Logger.info("applying not-booked (vorgemerkte) entries");
-        for (int i=0;i<lines.size();++i)
+        for (int i=0;i<unbooked.size();++i)
         {
-          final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)lines.get(i));
+          final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)unbooked.get(i));
           umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
           umsatz.setSaldo(0d); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
           umsatz.setKonto(konto);
@@ -402,20 +402,23 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   
   /**
    * Liefert das Beginn-Datum des Merge-Window.
-   * @param list Liste der abgerufenen Buchungen. Wenn da welche enthalten
+   * @param booked Liste der abgerufenen Buchungen. Wenn da welche enthalten
    * sind, wird das Datum der darin befindlichen aeltesten Buchung verwendet.
    * Andernfalls wird das Start-Datum des Abrufs (minus 30 Tage) verwendet.
+   * @param unbooked die optionale Liste der Vormerkbuchungen. Insofern die
+   * Bank welche geliefert hat und das Abrufen der Vormerkbuchungen aktiviert ist.
+   * Andernfalls ist der Parameter NULL.
    * @return das Beginn-Datgum des Merge-Window.
    */
-  private Date getMergeWindow(List<UmsLine> list)
+  private Date getMergeWindow(List<UmsLine> booked, List<UmsLine> unbooked)
   {
     Date d = null;
     
     String basedOn = null;
     
-    if (list != null && list.size() > 0)
+    if (booked != null && booked.size() > 0)
     {
-      for (UmsLine line:list)
+      for (UmsLine line:booked)
       {
         if (line.bdate == null)
           continue;
@@ -423,10 +426,26 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         if (d == null || line.bdate.before(d))
         {
           d = line.bdate;
-          basedOn = "fetched data"; 
+          basedOn = "fetched booked entries";
         }
       }
     }
+    
+    if (unbooked != null && unbooked.size() > 0)
+    {
+      for (UmsLine line:unbooked)
+      {
+        if (line.bdate == null)
+          continue;
+        
+        if (d == null || line.bdate.before(d))
+        {
+          d = line.bdate;
+          basedOn = "fetched not-booked entries";
+        }
+      }
+    }
+
     
     if (d == null && this.saldoDatum != null)
     {
