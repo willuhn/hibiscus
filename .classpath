@@ -9,6 +9,6 @@
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart_0.7.0.v20110128.jar"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart.ext_0.7.0.v20110128.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.3.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/obantoo-bin-2.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/obantoo-bin-2.0.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
