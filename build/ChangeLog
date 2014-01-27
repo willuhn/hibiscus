@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0302 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/e87f5a8186acf55e80da7effca0f6d82554bbb33
   * NEW: 0301 Bei der Ermittlung des Merge-Window auch die Vormerkbuchungen berücksichtigen. Siehe 0293.
   * NEW: 0300 Tracen der HBCI-Kommunikation unabhaengig vom Log moeglich. Die HBCI-Prptokolle koennen im Menu ueber Hibiscus->Erweitert gespeichert werden
   * BUG: 0299 BUGZILLA 1458 - Enum falsch aufgeloest in org.kapott.hbci.sepa.jaxb.pain_008_002_02.LocalInstrumentSEPACode.B2B
