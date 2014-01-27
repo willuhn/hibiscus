@@ -129,6 +129,9 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
       
       if (getSequenceType() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den Sequenz-Typ aus"));
+      
+      if (this.getTermin() == null)
+        this.setTermin(new Date());
     }
     catch (RemoteException e)
     {

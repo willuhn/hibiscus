@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -108,6 +109,10 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      
+      if (this.getTermin() == null)
+        this.setTermin(new Date());
+
     }
     catch (RemoteException e)
     {
