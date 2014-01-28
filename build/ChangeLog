@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0304 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/bdc1e61c4a6f5f16d9c756b175768ef1482b9d19
   * NEW: 0303 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/6c4c642949aee1dafec835689e1db9f3241548dd
   * NEW: 0302 Neue HBCI4Java-Version, Stand
