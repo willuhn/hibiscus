@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0305 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/b4694672b9feadfc6ff17e8810e6482cb7d80113
   * NEW: 0305 Leerzeichen in Mandate-ID nicht zulassen
   * NEW: 0304 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/bdc1e61c4a6f5f16d9c756b175768ef1482b9d19
