@@ -76,7 +76,7 @@ public class SepaLastschriftControl extends AbstractControl
   private SepaLastschrift transfer           = null;
   
   // Eingabe-Felder
-  private Input kontoAuswahl                 = null;
+  private KontoInput kontoAuswahl            = null;
   private Input betrag                       = null;
   private TextInput zweck                    = null;
 
@@ -154,6 +154,7 @@ public class SepaLastschriftControl extends AbstractControl
     MyKontoFilter filter = new MyKontoFilter();
     this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
     this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
+    this.kontoAuswahl.setRememberSelection("auftraege",false); // BUGZILLA 1362 - zuletzt ausgewaehltes Konto gleich uebernehmen
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
@@ -288,7 +289,7 @@ public class SepaLastschriftControl extends AbstractControl
     {
       this.mandateId = new TextInput(getTransfer().getMandateId(),HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
       this.mandateId.setName(i18n.tr("Mandats-Referenz"));
-      this.mandateId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      this.mandateId.setValidChars(HBCIProperties.HBCI_SEPA_MANDATE_VALIDCHARS);
       this.mandateId.setEnabled(!getTransfer().ausgefuehrt());
       this.mandateId.setMandatory(true);
     }

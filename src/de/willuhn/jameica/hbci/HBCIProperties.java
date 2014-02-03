@@ -60,13 +60,18 @@ public class HBCIProperties
    */
   // public final static String HBCI_SWIFT_VALIDCHARS = settings.getString("hbci.swift.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 '()+,-./:?{}"); 
 
-  /**
+	/**
    * Liste der in SEPA erlaubten Zeichen.
    * Siehe http://www.ebics.de/fileadmin/unsecured/anlage3/anlage3_spec/Anlage_3_DatenformateV2.6.pdf
    * Absatz 2.1, BUGZILLA 1244
    */
   public final static String HBCI_SEPA_VALIDCHARS = settings.getString("hbci.sepa.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789':?,- (+.)/");
-  
+
+  /**
+   * Liste der fuer die Mandate-ID gueltigen Zeichen. RestrictedIdentificationSEPA2.
+   */
+  public final static String HBCI_SEPA_MANDATE_VALIDCHARS = settings.getString("hbci.sepa.mandate.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789':?,-(+.)/");
+
   /**
    * Liste der in einer IBAN erlaubten Zeichen.
    */
