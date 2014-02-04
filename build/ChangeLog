@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0306 Umsatzliste des Kontos: Beim Eintreffen neuer Umsätze zusätzlich Konto checken
   * NEW: 0305 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/b4694672b9feadfc6ff17e8810e6482cb7d80113
   * NEW: 0305 Leerzeichen in Mandate-ID nicht zulassen

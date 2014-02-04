@@ -819,19 +819,31 @@ public class UmsatzList extends TablePart implements Extendable
         {
           try
           {
+            Umsatz newUmsatz = (Umsatz) o;
+            
             // BUGZILLA 692 haben wir den schon?
             for (Object u:umsaetze)
             {
-              if (BeanUtil.equals(u,o))
+              if (BeanUtil.equals(u,newUmsatz))
+                return;
+            }
+            
+            // Checken, ob er Umsatz ueberhaupt zum Konto passt
+            // Wenn man waehrend der Synchronisierung in ein anderes Konto klickt, koennte es sonst
+            // passieren, dass ein Umsatz hier temporaer in der Liste landet, weil halt zufaellig grad
+            // diese View offen ist.
+            if (konto != null)
+            {
+              if (!BeanUtil.equals(konto,newUmsatz.getKonto())) // ist von einem anderen Konto
                 return;
             }
 
-            umsaetze.add(o);
+            umsaetze.add(newUmsatz);
             if (filter && kl != null)
               kl.process(true);
             else
             {
-              addItem(o);
+              addItem(newUmsatz);
               sort();
             }
           }
@@ -862,79 +874,3 @@ public class UmsatzList extends TablePart implements Extendable
   
   
 }
-
-
-/**********************************************************************
- * $Log: UmsatzList.java,v $
- * Revision 1.83  2012/04/23 21:03:41  willuhn
- * @N BUGZILLA 1227
- *
- * Revision 1.82  2012/04/05 21:23:41  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.81  2011/10/26 09:33:29  willuhn
- * @B Kategorie war versehentlich editierbar
- *
- * Revision 1.80  2011-09-15 09:43:36  willuhn
- * @N BUGZILLA 728
- *
- * Revision 1.79  2011-08-11 08:16:38  willuhn
- * @R Umsatz-Preview erstmal wieder entfernt
- *
- * Revision 1.78  2011-08-05 11:21:58  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.77  2011-07-20 15:41:36  willuhn
- * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
- *
- * Revision 1.76  2011-07-20 15:13:11  willuhn
- * @N Filter-Einstellungen nur noch fuer die Dauer der Sitzung speichern - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76837#76837
- *
- * Revision 1.75  2011-07-04 13:13:30  willuhn
- * @B Syntax-Belegnummer wurde in den Kontoauszuegen nicht mit angezeigt
- *
- * Revision 1.74  2011-05-04 12:04:40  willuhn
- * @N Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer ueber einen Schieberegler eingestellt werden
- * @B Dispose-Checks in Umsatzliste
- *
- * Revision 1.73  2011-05-03 16:46:10  willuhn
- * @R Flatstyle entfernt - war eh nicht mehr zeitgemaess und rendere auf aktuellen OS sowieso haesslich
- * @C SelectInput verwendet jetzt Combo statt CCombo - das sieht auf den verschiedenen OS besser aus
- *
- * Revision 1.72  2011-04-28 08:02:42  willuhn
- * @B BUGZILLA 692
- *
- * Revision 1.71  2011-01-11 22:44:40  willuhn
- * @N BUGZILLA 978
- *
- * Revision 1.70  2011-01-05 11:20:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.69  2011-01-05 11:19:10  willuhn
- * @N Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt auch in "Umsaetze nach Kategorien"
- * @N NeueUmsaetze.isNew(Umsatz) zur Pruefung, ob ein Umsatz neu ist
- *
- * Revision 1.68  2010-09-27 11:55:05  willuhn
- * @N BUGZILLA 804
- *
- * Revision 1.67  2010-08-26 11:30:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.66  2010-08-11 16:06:05  willuhn
- * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
- *
- * Revision 1.65  2010/05/30 23:29:31  willuhn
- * @N Alle Verwendungszweckzeilen in Umsatzlist und -tree anzeigen (BUGZILLA 782)
- *
- * Revision 1.64  2010/03/16 00:44:18  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- **********************************************************************/
