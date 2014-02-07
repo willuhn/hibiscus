@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VerwendungszweckUtil.java,v $
- * $Revision: 1.10 $
- * $Date: 2011/08/10 10:46:50 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -83,6 +77,46 @@ public class VerwendungszweckUtil
     if (l.size() > 0) t.setZweck(l.remove(0));  // Zeile 1
     if (l.size() > 0) t.setZweck2(l.remove(0)); // Zeile 2
     if (l.size() > 0) t.setWeitereVerwendungszwecke(l.toArray(new String[l.size()])); // Zeile 3 - x
+  }
+  
+  /**
+   * Bricht die Verwendungszweck-Zeilen auf $limit Zeichen lange Haeppchen neu um.
+   * Jedoch nur, wenn wirklich Zeilen enthalten sind, die laenger sind.
+   * Andernfalls wird nichts umgebrochen.
+   * @param limit das Zeichen-Limit pro Zeile.
+   * @param lines die Zeilen.
+   * @return die neu umgebrochenen Zeilen.
+   */
+  public static String[] rewrap(int limit, String... lines)
+  {
+    if (lines == null || lines.length == 0)
+      return lines;
+    
+    boolean found = false;
+    for (String s:lines)
+    {
+      if (s != null && s.length() > limit)
+      {
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      return lines;
+
+    List<String> l = clean(lines);
+    
+    // Zu einem String mergen
+    StringBuffer sb = new StringBuffer();
+    for (String line:l)
+    {
+      sb.append(line);
+    }
+    String result = sb.toString();
+
+    // und neu zerlegen
+    String s = result.replaceAll("(.{" + limit + "})","$1--##--##");
+    return s.split("--##--##");
   }
   
   /**
@@ -265,18 +299,3 @@ public class VerwendungszweckUtil
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: VerwendungszweckUtil.java,v $
- * Revision 1.10  2011/08/10 10:46:50  willuhn
- * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
- * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
- * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
- *
- * Revision 1.9  2011-06-07 10:07:50  willuhn
- * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
- *
- * Revision 1.8  2011-05-11 09:12:07  willuhn
- * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
- **********************************************************************/

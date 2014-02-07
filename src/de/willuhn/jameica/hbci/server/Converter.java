@@ -114,6 +114,9 @@ public class Converter {
     if (lines.length == 0)
       lines = VerwendungszweckUtil.parse(u.additional);
 
+    // Es gibt eine erste Bank, die 40 Zeichen lange Verwendungszwecke lieferte.
+    // Siehe Mail von Frank vom 06.02.2014
+    lines = VerwendungszweckUtil.rewrap(35,lines);
     VerwendungszweckUtil.apply(umsatz,lines);
     //
     ////////////////////////////////////////////////////////////////////////////
