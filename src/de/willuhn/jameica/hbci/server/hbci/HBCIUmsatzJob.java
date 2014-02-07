@@ -256,6 +256,15 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     // Vorgemerkte Umsaetze
 		if (fetchUnbooked)
 		{
+		  // Den Abgleich gegen die Vormerkbuchungen machen wir gegen alle
+		  // vorhandenen Vormerkbuchungen, nicht nur gegen die aus dem Zeitraum
+		  // der aktuellen Lieferung. Denn hier wollen wir nicht nur Doppler
+		  // vermeiden sondern ausserdem auch die loeschen, die von der Bank nicht
+		  // mehr geliefert werden. Die sind zwischenzeitlich valutiert worden
+		  // und muessen in Hibiscus geloescht werden.
+	    DBIterator existingUnbooked = konto.getUmsaetze(null,null);
+	    existingUnbooked.addFilter("flags = " + Umsatz.FLAG_NOTBOOKED);
+
       if (unbooked != null && unbooked.size() > 0)
       {
         List<Umsatz> fetched = new ArrayList<Umsatz>();
@@ -274,11 +283,12 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           Umsatz fromDB = null;
           // Anzahl der vorhandenen Umsaetze in der DB zaehlen
           int counter = 0;
-          existing.begin();
-          for (int j = 0; j<existing.size(); j++)
+          existingUnbooked.begin();
+          for (int j = 0; j<existingUnbooked.size(); j++)
           {
-            GenericObject dbObject = existing.next();
-            if (dbObject.equals(umsatz)) {
+            GenericObject dbObject = existingUnbooked.next();
+            if (dbObject.equals(umsatz))
+            {
               counter++;
               fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
             }
@@ -291,7 +301,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
             // neu. Dazu zaehlen wir mit, wie oft wir gerade einen "gleichen" 
             // Umsatz empfangen haben. 
             Integer countInCurrentJobResult = duplicates.get(fromDB);
-            if (countInCurrentJobResult == null) {
+            if (countInCurrentJobResult == null)
+            {
               duplicates.put(fromDB, 1);
               skipped++;
               continue;
@@ -326,20 +337,20 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         Logger.info("clean obsolete notbooked entries");
         GenericIterator newList = PseudoIterator.fromArray((Umsatz[]) fetched.toArray(new Umsatz[fetched.size()]));
         int deleted = 0;
-        existing.begin();
-        while (existing.hasNext())
+        existingUnbooked.begin();
+        while (existingUnbooked.hasNext())
         {
-          Umsatz u = (Umsatz) existing.next();
-          if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+          Umsatz u = (Umsatz) existingUnbooked.next();
+          
+          if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+            continue; // nur zur Sicherheit, dass wir nicht versehentlich welche loeschen, die keine Vormerkbuchungen sind
+
+          // Mal schauen, ob der im aktuellen Durchlauf enthalten war:
+          if (newList.contains(u) == null)
           {
-            // Ist ein vorgemerkter Umsatz. Mal schauen, ob der im aktuellen
-            // Durchlauf enthalten war:
-            if (newList.contains(u) == null)
-            {
-              // Wurde nicht mehr von der Bank uebertragen, kann daher raus
-              u.delete();
-              deleted++;
-            }
+            // Wurde nicht mehr von der Bank uebertragen, kann daher raus
+            u.delete();
+            deleted++;
           }
         }
         Logger.info("removed entries: " + deleted);
@@ -349,16 +360,19 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       {
         Logger.info("got no new not-booked (vorgemerkte) entries");
         
-        // Keine neuen vorgemerkten Umsaetze 
+        // Keine neuen vorgemerkten Umsaetze
+        // Dann loeschen wir pauschal alle, die in der Vergangenheit liegen
+        // (mindestens gestern).
         Logger.info("clean obsolete not-booked entries");
         Date current = DateUtil.startOfDay(new Date());
         int count = 0;
-        existing.begin();
-        while (existing.hasNext())
+        existingUnbooked.begin();
+        while (existingUnbooked.hasNext())
         {
-          Umsatz u = (Umsatz) existing.next();
-          if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
-            continue;
+          Umsatz u = (Umsatz) existingUnbooked.next();
+          
+          if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+            continue; // nur zur Sicherheit, dass wir nicht versehentlich welche loeschen, die keine Vormerkbuchungen sind
 
           Date test = u.getDatum();
           if (test == null)

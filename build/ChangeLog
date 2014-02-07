@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0307 Abgerufene Vormerkbuchungen gegen alle in der DB vorhanden abgleichen.
+              Andernfalls könnten alte in der DB liegen bleiben.
   * BUG: 0306 Umsatzliste des Kontos: Beim Eintreffen neuer Umsätze zusätzlich Konto checken
   * NEW: 0305 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/b4694672b9feadfc6ff17e8810e6482cb7d80113
