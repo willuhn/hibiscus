@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0310 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/cd130fb06e910f915ea3c5feab1376006ca88131
   * BUG: 0309 BUGZILLA 1477 - Parameter "Index des HBCI-Zugangs" wurde bei PCSC-Kartenlesern nicht
               gespeichert und Parameter "PIN-Eingabe über Tastatur" war nicht auswählbar.
               Beide Index-Parameter geändert in Spinner (war vorher Freitext)
