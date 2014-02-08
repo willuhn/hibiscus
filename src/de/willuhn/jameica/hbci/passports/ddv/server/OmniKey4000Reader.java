@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.passports.ddv.server;
 
 import java.io.File;
 
-import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Platform;
 
@@ -23,7 +22,7 @@ import de.willuhn.jameica.system.Platform;
  * Kartenlesers OmniKey 4000 PCMCIA.
  * Danke an Martin Clausen fuer die Hinweise.
  */
-public class OmniKey4000Reader extends AbstractReader implements Reader
+public class OmniKey4000Reader extends AbstractReader
 {
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()

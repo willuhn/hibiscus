@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.FileInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
@@ -241,7 +242,7 @@ public class Controller extends AbstractControl
     if (this.ctNumber != null)
       return this.ctNumber;
 
-    this.ctNumber = new TextInput(Integer.toString(getConfig().getCTNumber()));
+    this.ctNumber = new SpinnerInput(0,4,getConfig().getCTNumber());
     this.ctNumber.setEnabled(!isPCSC());
     this.ctNumber.setName(i18n.tr("Index des Lesers"));
     this.ctNumber.setComment(i18n.tr("meist 0"));
@@ -286,7 +287,7 @@ public class Controller extends AbstractControl
     if (this.entryIndex != null)
       return this.entryIndex;
 
-    this.entryIndex = new TextInput(Integer.toString(getConfig().getEntryIndex()));
+    this.entryIndex = new SpinnerInput(1,4,getConfig().getEntryIndex());
     this.entryIndex.setName(i18n.tr("Index des HBCI-Zugangs"));
     this.entryIndex.setComment(i18n.tr("meist 1"));
     return this.entryIndex;
@@ -302,7 +303,6 @@ public class Controller extends AbstractControl
       return this.useSoftPin;
 
     this.useSoftPin = new CheckboxInput(getConfig().useSoftPin());
-    this.useSoftPin.setEnabled(!isPCSC());
     this.useSoftPin.setName(i18n.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
     return this.useSoftPin;
   }
@@ -450,34 +450,17 @@ public class Controller extends AbstractControl
       
       if (!r.isPCSCReader())
       {
-        try
-        {
-          getConfig().setCTNumber(Integer.parseInt((String) getCTNumber().getValue()));
-        }
-        catch (Exception e)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des Lesers\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
-          return false;
-        }
-
-        try
-        {
-          getConfig().setEntryIndex(Integer.parseInt((String) getEntryIndex().getValue()));
-        }
-        catch (Exception e)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie im Feld \"Index des HBCI-Zugangs\" eine gültige Zahl ein."),StatusBarMessage.TYPE_ERROR));
-          return false;
-        }
-        
+        getConfig().setCTNumber((Integer) getCTNumber().getValue());
         getConfig().setPort((String) getPort().getValue());
-        getConfig().setSoftPin((Boolean) getSoftPin().getValue());
         getConfig().setCTAPIDriver((String) getCTAPI().getValue());
       }
       else
       {
         getConfig().setPCSCName((String) getPCSCName().getValue());
       }
+
+      getConfig().setEntryIndex((Integer) getEntryIndex().getValue());
+      getConfig().setSoftPin((Boolean) getSoftPin().getValue());
 
       getConfig().setKonten(getKontoAuswahl().getItems());
       getConfig().setReaderPreset(r);
@@ -631,7 +614,6 @@ public class Controller extends AbstractControl
         getCTAPI().setEnabled(!pcsc);
         getCTNumber().setEnabled(!pcsc);
         getPort().setEnabled(!pcsc);
-        getSoftPin().setEnabled(!pcsc);
         getPCSCName().setEnabled(pcsc);
 
         if (!pcsc)
@@ -649,12 +631,13 @@ public class Controller extends AbstractControl
             getPort().setPreselected(port);
           
           int ctNumber = r.getCTNumber();
-          if (ctNumber != -1)
+          if (ctNumber >= 0)
             getCTNumber().setValue(new Integer(ctNumber));
 
           getCTAPI().setValue(s);
-          getSoftPin().setValue(new Boolean(r.useSoftPin()));
         }
+        
+        getSoftPin().setValue(new Boolean(r.useSoftPin()));
     	}
     	catch (Exception e)
     	{

@@ -14,14 +14,13 @@ package de.willuhn.jameica.hbci.passports.ddv.server;
 
 import java.io.File;
 
-import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Platform;
 
 /**
  * Basis-Implementierung fuer die Default-Einstellungen von Kaan-Readern.
  */
-public abstract class AbstractKaanReader extends AbstractReader implements Reader
+public abstract class AbstractKaanReader extends AbstractReader
 {
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()

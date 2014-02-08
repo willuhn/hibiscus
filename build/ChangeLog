@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0309 BUGZILLA 1477 - Parameter "Index des HBCI-Zugangs" wurde bei PCSC-Kartenlesern nicht
+              gespeichert und Parameter "PIN-Eingabe über Tastatur" war nicht auswählbar.
+              Beide Index-Parameter geändert in Spinner (war vorher Freitext)
   * NEW: 0308 Ueberlange Verwendungszwecke (mehr als 35 Zeichen) beim Umsatz-Abruf auf
               maximal erlaubte Laenge umbrechen
   * NEW: 0307 Abgerufene Vormerkbuchungen gegen alle in der DB vorhanden abgleichen.

@@ -17,14 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Platform;
 
 /**
  * Implementierung fuer die Default-Einstellungen eines Kartenlesers via pcsc-ctapi-wrapper.
  */
-public class PCSCWrapperReader extends AbstractReader implements Reader
+public class PCSCWrapperReader extends AbstractReader
 {
   private final static Map<Integer,String[]> LOCATIONS = new HashMap<Integer,String[]>();
   

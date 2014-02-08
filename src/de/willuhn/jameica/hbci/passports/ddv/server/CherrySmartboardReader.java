@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.passports.ddv.server;
 
 import java.io.File;
 
-import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Platform;
 
@@ -22,7 +21,7 @@ import de.willuhn.jameica.system.Platform;
  * Implementierung fuer die Default-Einstellungen der
  * Kartenleser-Reihe Cherry Smartboard.
  */
-public class CherrySmartboardReader extends AbstractReader implements Reader
+public class CherrySmartboardReader extends AbstractReader
 {
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()

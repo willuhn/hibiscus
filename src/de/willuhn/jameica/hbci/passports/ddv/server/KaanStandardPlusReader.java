@@ -12,13 +12,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
-import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 
 /**
  * Implementierung fuer die Default-Einstellungen des
  * "Kaan Standard Plus USB" von Kobil.
  */
-public class KaanStandardPlusReader extends AbstractKaanReader implements Reader
+public class KaanStandardPlusReader extends AbstractKaanReader
 {
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
