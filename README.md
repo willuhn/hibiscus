@@ -1,10 +1,7 @@
 Hibiscus
 ========
 
-A java based, plattform independant (running on Linux, Windows and Mac) homebanking application using the 
-german HBCI standard. All Data models (accounts, transactions, addresses,..) are stored encrypted into an
-embedded database (H2) default or mysql-database
+A Java based, plattform independent (running on Linux, Windows, OS X, OpenBSD, OpenSolaris) homebanking application, that uses the 
+german FinTS/HBCI standard. All data (accounts, transactions, addresses, ..) are stored encrypted into an embedded database (H2) by default or on a Mysql server (if configured).
 
-Hibiscus Runs as a plugin within the Jameica framework as a standalone application or in Server mode. 
-
-
+Hibiscus runs as a plugin within the [Jameica framework](https://github.com/willuhn/jameica) as either a typical desktop application or headless in server mode.
