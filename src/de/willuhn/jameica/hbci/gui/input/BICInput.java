@@ -11,6 +11,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung eines Eingabefeldes fuer die BIC.
@@ -40,7 +43,14 @@ public class BICInput extends AccountInput
         if (s == null || s.length() == 0)
           return;
         
-        setValue(s.toUpperCase());
+        try
+        {
+          setValue(HBCIProperties.checkBIC(s.toUpperCase()));
+        }
+        catch (ApplicationException ae)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_INFO));
+        }
       }
     });
   }
