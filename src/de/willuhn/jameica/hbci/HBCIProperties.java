@@ -452,17 +452,40 @@ public class HBCIProperties
     }
   }
   
+  /**
+   * Prueft die BIC und liefert eine ggf korrigierte Version zurueck. 
+   * @param bic die zu pruefende BIC.
+   * @return die korrigierte BIC (ggf um "XXX" ergaenzt).
+   * @throws ApplicationException
+   */
+  public final static String checkBIC(String bic) throws ApplicationException
+  {
+    // Eine BIC hat entweder exakt 8 oder exakt 11 Zeichen. Bei 8 Zeichen vervollstaendigen
+    // wir rechts mit 3 * X. Bei 11 Zeichen lassen wir es so. Bei irgendwas
+    // anderem bringen wir einen Fehler.
+    checkChars(bic,HBCI_BIC_VALIDCHARS);
+    
+    int len = bic.length();
+    if (len != HBCI_BIC_MAXLENGTH && len != 8)
+      throw new ApplicationException(i18n.tr("Bitte prüfen Sie die Länge der BIC. Muss entweder 8 oder 11 Zeichen lang sein."));
+    
+    if (len == 8)
+      bic += "XXX";
+    
+    return bic;
+  }
+  
   private final static Map<Fehler,String> obantooCodes = new HashMap<Fehler,String>()
   {{
-    put(Fehler.BLZ_LEER,"Keine BLZ angegeben");
-    put(Fehler.BLZ_UNGUELTIGE_LAENGE, "BLZ nicht achtstellig");
-    put(Fehler.BLZ_UNGUELTIG,"BLZ unbekannt");
-    put(Fehler.KONTO_LEER,"Keine Kontonummer angegeben");
-    put(Fehler.KONTO_UNGUELTIGE_LAENGE,"Länge der Kontonummer ungültig");
-    put(Fehler.KONTO_PRUEFZIFFER_FALSCH,"Prüfziffer der Kontonummer falsch");
-    put(Fehler.KONTO_PRUEFZIFFERNREGEL_NICHT_IMPLEMENTIERT,"Prüfziffern-Verfahren der Kontonummer unbekannt");
-    put(Fehler.IBANREGEL_NICHT_IMPLEMENTIERT,"IBAN-Regel unbekannt");
-    put(Fehler.UNGUELTIGES_LAND,"Land unbekannt");
+    put(Fehler.BLZ_LEER,                                    i18n.tr("Keine BLZ angegeben"));
+    put(Fehler.BLZ_UNGUELTIGE_LAENGE,                       i18n.tr("BLZ nicht achtstellig"));
+    put(Fehler.BLZ_UNGUELTIG,                               i18n.tr("BLZ unbekannt"));
+    put(Fehler.KONTO_LEER,                                  i18n.tr("Keine Kontonummer angegeben"));
+    put(Fehler.KONTO_UNGUELTIGE_LAENGE,                     i18n.tr("Länge der Kontonummer ungültig"));
+    put(Fehler.KONTO_PRUEFZIFFER_FALSCH,                    i18n.tr("Prüfziffer der Kontonummer falsch"));
+    put(Fehler.KONTO_PRUEFZIFFERNREGEL_NICHT_IMPLEMENTIERT, i18n.tr("Prüfziffern-Verfahren der Kontonummer unbekannt"));
+    put(Fehler.IBANREGEL_NICHT_IMPLEMENTIERT,               i18n.tr("IBAN-Regel unbekannt"));
+    put(Fehler.UNGUELTIGES_LAND,                            i18n.tr("Land unbekannt"));
   }};
   
   /**
