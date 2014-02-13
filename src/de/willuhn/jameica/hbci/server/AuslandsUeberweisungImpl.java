@@ -93,8 +93,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
 
       if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die BIC des Gegenkontos ein"));
-      HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_VALIDCHARS);
-      HBCIProperties.checkLength(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_MAXLENGTH);
+      HBCIProperties.checkBIC(getGegenkontoBLZ());
 
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
