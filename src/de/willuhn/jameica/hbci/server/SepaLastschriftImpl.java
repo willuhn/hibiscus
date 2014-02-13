@@ -98,8 +98,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
 
       if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die BIC des Gegenkontos ein"));
-      HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_VALIDCHARS);
-      HBCIProperties.checkLength(getGegenkontoBLZ(), HBCIProperties.HBCI_BIC_MAXLENGTH);
+      HBCIProperties.checkBIC(getGegenkontoBLZ());
 
       if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
@@ -111,6 +110,9 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
         
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
       String creditorId = getCreditorId();
       if (creditorId == null || creditorId.length() == 0)
