@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0312 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/bc2108ad8dabe468e3fca314c4314d63d9a036ef
   * NEW: 0311 Neue obantoo-Version 2.1.1
   * NEW: 0310 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/cd130fb06e910f915ea3c5feab1376006ca88131
