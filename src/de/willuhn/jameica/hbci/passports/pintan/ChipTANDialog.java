@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/ChipTANDialog.java,v $
- * $Revision: 1.12 $
- * $Date: 2012/06/18 10:52:28 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -142,64 +136,6 @@ public class ChipTANDialog extends TANDialog
       if (this.canvas != null)
         return;
 
-      //////////////////////////////////////////////////////////////////////////
-      // Das Composite fuer den Flicker-Code
-      {
-        this.comp = new Composite(parent,SWT.BORDER);
-        this.comp.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-
-        final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
-        int width = SWTUtil.mm2px(60); // das muesste ca. die Breite von ReinerSCT-Geraeten sein
-        if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
-        gd.widthHint = settings.getInt("width",width);
-        gd.heightHint = 140; // sollte passen
-        this.comp.setLayoutData(gd);
-
-        // Wir lassen etwas Abstand zum Rand
-        GridLayout gl = new GridLayout();
-        gl.marginHeight = 20;
-        gl.marginWidth = 20;
-        this.comp.setLayout(gl);
-        
-        // Beim Disposen stoppen wir den Flicker-Thread.
-        this.comp.addDisposeListener(new DisposeListener()
-        {
-          public void widgetDisposed(DisposeEvent e)
-          {
-            // Wir merken uns die Groesse des Canvas.
-            Logger.info("saving width of flickercode: " + gd.widthHint + " px");
-            settings.setAttribute("width",gd.widthHint);
-          }
-        });
-      }
-      //
-      //////////////////////////////////////////////////////////////////////////
-
-      //////////////////////////////////////////////////////////////////////////
-      // Das eigentliche Canvas mit dem Flicker-Code.
-      this.canvas = new Canvas(this.comp,SWT.NONE);
-      this.canvas.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-      this.canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
-      
-      // Bei jedem Paint-Event aktualisieren wir die Balken
-      this.canvas.addPaintListener(new PaintListener()
-      {
-        public void paintControl(PaintEvent e)
-        {
-          update(e.gc);
-        }
-      });
-      this.canvas.addDisposeListener(new DisposeListener() {
-        public void widgetDisposed(DisposeEvent e)
-        {
-          // Update-Thread stoppen
-          stop();
-        }
-      });
-      //
-      //////////////////////////////////////////////////////////////////////////
-
-
       ////////////////////////////////////////////////////////////////////////
       // die beiden Buttons zum Vergroessern und Verkleinern
       {
@@ -280,6 +216,65 @@ public class ChipTANDialog extends TANDialog
       //
       ////////////////////////////////////////////////////////////////////////
       
+
+      //////////////////////////////////////////////////////////////////////////
+      // Das Composite fuer den Flicker-Code
+      {
+        this.comp = new Composite(parent,SWT.BORDER);
+        this.comp.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+
+        final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
+        int width = SWTUtil.mm2px(60); // das muesste ca. die Breite von ReinerSCT-Geraeten sein
+        if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
+        gd.widthHint = settings.getInt("width",width);
+        gd.heightHint = 140; // sollte passen
+        this.comp.setLayoutData(gd);
+
+        // Wir lassen etwas Abstand zum Rand
+        GridLayout gl = new GridLayout();
+        gl.marginHeight = 20;
+        gl.marginWidth = 20;
+        this.comp.setLayout(gl);
+        
+        // Beim Disposen stoppen wir den Flicker-Thread.
+        this.comp.addDisposeListener(new DisposeListener()
+        {
+          public void widgetDisposed(DisposeEvent e)
+          {
+            // Wir merken uns die Groesse des Canvas.
+            Logger.info("saving width of flickercode: " + gd.widthHint + " px");
+            settings.setAttribute("width",gd.widthHint);
+          }
+        });
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+      //////////////////////////////////////////////////////////////////////////
+      // Das eigentliche Canvas mit dem Flicker-Code.
+      this.canvas = new Canvas(this.comp,SWT.NONE);
+      this.canvas.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+      this.canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
+      
+      // Bei jedem Paint-Event aktualisieren wir die Balken
+      this.canvas.addPaintListener(new PaintListener()
+      {
+        public void paintControl(PaintEvent e)
+        {
+          update(e.gc);
+        }
+      });
+      this.canvas.addDisposeListener(new DisposeListener() {
+        public void widgetDisposed(DisposeEvent e)
+        {
+          // Update-Thread stoppen
+          stop();
+        }
+      });
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+
       
       // Und los gehts
       this.start();
@@ -321,43 +316,3 @@ public class ChipTANDialog extends TANDialog
   }
 }
 
-
-/**********************************************************************
- * $Log: ChipTANDialog.java,v $
- * Revision 1.12  2012/06/18 10:52:28  willuhn
- * @B Flicker-Code u.U. zu klein auf Displays mit hoher DPI-Zahl
- *
- * Revision 1.11  2011/05/30 16:14:52  willuhn
- * @N Geschwindigkeit anpassbar
- *
- * Revision 1.10  2011-05-30 15:52:03  willuhn
- * @B nicht comp.getSize().x speichern sondern gd.widthHint - ersteres enthaelt auch noch die Rahmenbreite, was dazu fuehrt, dass der Code mit jedem Oeffnen 4px (2 x 2px Rand) breiter wird
- *
- * Revision 1.9  2011-05-30 10:13:14  willuhn
- * @N Flicker-Code kann jetzt bequem in der Breite geaendert werden
- *
- * Revision 1.8  2011-05-27 10:51:02  willuhn
- * @N Erster Support fuer optisches chipTAN
- *
- * Revision 1.7  2011-05-26 10:13:18  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2011-05-19 07:59:53  willuhn
- * @C optisches chipTAN voruebergehend deaktiviert, damit ich in Ruhe in hbci4Java an der Unterstuetzung weiterarbeiten kann
- *
- * Revision 1.5  2011-05-17 23:37:22  willuhn
- * @C Wir duerfen nicht einfach Zeichen entfernen
- *
- * Revision 1.4  2011-05-11 08:33:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2011-05-10 11:16:55  willuhn
- * @C Fallback auf normalen TAN-Dialog, wenn der Flicker-Code nicht lesbar ist
- *
- * Revision 1.2  2011-05-09 17:24:46  willuhn
- * @N ChipTAN-Dialog jetzt in echt
- *
- * Revision 1.1  2010-12-08 12:34:57  willuhn
- * @C Flicker-Code in Dialog verschoben
- *
- **********************************************************************/
