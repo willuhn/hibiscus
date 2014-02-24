@@ -1,12 +1,10 @@
 /*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AbstractSammelTransferControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2012/02/26 13:00:39 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+ * 
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
  *
-****************************************************************************/
+ ****************************************************************************/
+
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
@@ -19,7 +17,6 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -32,21 +29,22 @@ import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.reminder.ReminderUtil;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Abstrakte Basis-Implementierung des Controllers fuer die Dialog Liste der Sammellastschriften/Sammel-Überweisungen.
+ * Abstrakte Basis-Implementierung des Controllers fuer die Dialog Liste der SEPA-Sammellastschriften/SEPA-Sammelüberweisungen.
  * @author willuhn
  * @param <T> der konkrete Typ des Sammel-Auftrages.
  */
-public abstract class AbstractSammelTransferControl<T extends SammelTransfer> extends AbstractControl
+public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTransfer> extends AbstractControl
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -54,13 +52,12 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
   private Input name                     = null;
   private TerminInput termin             = null;
   private ReminderIntervalInput interval = null;
-  private Input summe                    = null;
 
   /**
    * ct.
    * @param view
    */
-  public AbstractSammelTransferControl(AbstractView view)
+  public AbstractSepaSammelTransferControl(AbstractView view)
   {
     super(view);
   }
@@ -91,25 +88,29 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public KontoInput getKontoAuswahl() throws RemoteException
+  public Input getKontoAuswahl() throws RemoteException
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
     
-    Konto k = getTransfer().getKonto();
     KontoListener kl = new KontoListener();
-    this.kontoAuswahl = new KontoInput(k,getTransfer().isNewObject() ? KontoFilter.ONLINE : KontoFilter.ALL); // Falls nachtraeglich das Konto deaktiviert wurde
+    MyKontoFilter filter = new MyKontoFilter();
+    this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
+    this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
     this.kontoAuswahl.setRememberSelection("auftraege",false); // BUGZILLA 1362 - zuletzt ausgewaehltes Konto gleich uebernehmen
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
-    
+
     // einmal ausloesen
     kl.handleEvent(null);
 
-    
+    if (!filter.found)
+      this.kontoAuswahl.setComment(i18n.tr("Bitte tragen Sie IBAN/BIC in Ihrem Konto ein"));
+
     return this.kontoAuswahl;
   }
+
 
   /**
    * Liefert das Eingabe-Feld fuer den Termin.
@@ -126,9 +127,9 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
   /**
    * Liefert das Intervall fuer die zyklische Ausfuehrung.
    * @return Auswahlfeld.
-   * @throws Exception
+   * @throws RemoteException
    */
-  public ReminderIntervalInput getReminderInterval() throws Exception
+  public ReminderIntervalInput getReminderInterval() throws RemoteException
   {
     if (this.interval != null)
       return this.interval;
@@ -137,21 +138,6 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
     return this.interval;
   }
 
-  /**
-   * Liefert ein Anzeige-Feld mit der Gesamt-Summe der Buchungen.
-   * @return Anzeige-Feld.
-   * @throws RemoteException
-   */
-  public Input getSumme() throws RemoteException
-  {
-    if (this.summe != null)
-      return this.summe;
-    this.summe = new LabelInput(HBCI.DECIMALFORMAT.format(getTransfer().getSumme()));
-    Konto k = getTransfer().getKonto();
-    this.summe.setComment(k != null ? k.getWaehrung() : "");
-    return this.summe;
-  }
-  
   /**
    * Liefert ein Eingabe-Feld fuer den Namen des Sammel-Auftrages.
    * @return Name des Sammel-Auftrages.
@@ -169,58 +155,55 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
 
   /**
    * Speichert den Auftrag.
-   * @return true, wenn der Auftrag erfolgreich gespeichert werden konnte.
+   * @throws Exception
    */
-  public synchronized boolean handleStore()
+  public synchronized void store() throws Exception
   {
-    SammelTransfer t = null;
-    
-    try
-    {
-      t = this.getTransfer();
-      if (t.ausgefuehrt()) // BUGZILLA 1197
-        return true;
-      t.transactionBegin();
-      
-      t.setKonto((Konto)getKontoAuswahl().getValue());
-      t.setBezeichnung((String)getName().getValue());
-      t.setTermin((Date)getTermin().getValue());
-      t.store();
+    SepaSammelTransfer t = this.getTransfer();
+    if (t.ausgefuehrt())
+      return;
 
-      // Reminder-Intervall speichern
-      ReminderIntervalInput input = this.getReminderInterval();
-      if (input.containsInterval())
-        ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
+    t.setKonto((Konto)getKontoAuswahl().getValue());
+    t.setBezeichnung((String)getName().getValue());
+    t.setTermin((Date)getTermin().getValue());
+    t.store();
 
-      t.transactionCommit();
-      
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sammel-Auftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
-      return true;
-    }
-    catch (Exception e)
-    {
-      if (t != null) {
-        try {
-          t.transactionRollback();
-        }
-        catch (Exception xe) {
-          Logger.error("rollback failed",xe);
-        }
-      }
-      
-      if (e instanceof ApplicationException)
-      {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
-      }
-      else
-      {
-        Logger.error("error while saving order",e);
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
-      }
-    }
-    return false;
+    // Reminder-Intervall speichern
+    ReminderIntervalInput input = this.getReminderInterval();
+    if (input.containsInterval())
+      ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
+
+    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("SEPA-Sammelauftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
   }
-  
+
+  /**
+   * Speichert den Auftrag.
+   * @return true, wenn das Speichern erfolgreich war, sonst false.
+   */
+  public abstract boolean handleStore();
+
+  /**
+   * Eigener ueberschriebener Kontofilter.
+   */
+  private class MyKontoFilter implements KontoFilter
+  {
+    // Wir leiten die Anfrage an den weiter
+    private KontoFilter foreign = KontoFilter.FOREIGN;
+
+    private boolean found = false;
+
+    /**
+     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
+     */
+    public boolean accept(Konto konto) throws RemoteException
+    {
+      boolean b = foreign.accept(konto);
+      found |= b;
+      return b;
+    }
+  }
+
+
   /**
    * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
    * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
@@ -260,20 +243,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
      */
     public DeleteMenuItem()
     {
-      super(i18n.tr("Buchung(en) löschen..."),new Action() {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          new DBObjectDelete().handleAction(context);
-          try
-          {
-            getSumme().setValue(HBCI.DECIMALFORMAT.format(getTransfer().getSumme()));
-          }
-          catch (RemoteException e)
-          {
-            Logger.error("unable to refresh summary",e);
-          }
-        }
-      }, "user-trash-full.png");
+      super(i18n.tr("Buchung(en) löschen..."),new DBObjectDelete(), "user-trash-full.png");
     }
     
     /**
@@ -309,17 +279,23 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
       super(i18n.tr("Neue Buchung..."),new Action() {
         public void handleAction(Object context) throws ApplicationException
         {
-          if (handleStore())
+          try
           {
-            try
-            {
+            if (handleStore())
               action.handleAction(getTransfer());
-            }
-            catch (RemoteException e)
-            {
-              Logger.error("unable to load sammelueberweisung",e);
-              throw new ApplicationException(i18n.tr("Fehler beim Laden des Sammel-Auftrages"));
-            }
+          }
+          catch (OperationCanceledException oce)
+          {
+            // ignore
+          }
+          catch (ApplicationException ae)
+          {
+            throw ae;
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to store transfer",e);
+            throw new ApplicationException(i18n.tr("Erstellen der Buchung fehlgeschlagen: {0}",e.getMessage()));
           }
         }
       },"text-x-generic.png");

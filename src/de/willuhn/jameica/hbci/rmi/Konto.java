@@ -270,7 +270,14 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
    */
   public DBIterator getSepaLastschriften() throws RemoteException;
 
-	/**
+  /**
+   * Liefert eine Liste aller SEPA-Sammellastschriften, die ueber dieses Konto getaetigt wurden.
+   * @return Liste der SEPA-Sammellastschriften.
+   * @throws RemoteException
+   */
+  public DBIterator getSepaSammelLastschriften() throws RemoteException;
+
+  /**
 	 * Liefert alle Dauerauftraege, die fuer das Konto vorliegen. Dabei werden
 	 * auch jene geliefert, die lokal erstellt, jedoch noch nicht zur Bank
 	 * hochgeladen wurden.

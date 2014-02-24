@@ -25,16 +25,15 @@ import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.parts.SammelLastschriftList;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung des Controllers fuer den Dialog "Liste der Sammellastschriften".
  * @author willuhn
  */
-public class SammelLastschriftControl extends AbstractSammelTransferControl
+public class SammelLastschriftControl extends AbstractSammelTransferControl<SammelLastschrift>
 {
-  private SammelTransfer transfer     = null;
+  private SammelLastschrift transfer  = null;
   private SammelLastschriftList table = null;
   private TablePart buchungen         = null;
 
@@ -50,12 +49,12 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getTransfer()
    */
-  public SammelTransfer getTransfer() throws RemoteException
+  public SammelLastschrift getTransfer() throws RemoteException
   {
     if (transfer != null)
       return transfer;
 
-    transfer = (SammelTransfer) getCurrentObject();
+    transfer = (SammelLastschrift) getCurrentObject();
     if (transfer != null)
       return transfer;
 

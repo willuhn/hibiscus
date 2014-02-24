@@ -56,6 +56,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.messaging.MessageBus;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
@@ -518,7 +519,7 @@ public class SepaLastschriftControl extends AbstractControl
           this.address = e;
       }
       
-      // Glaeubiger-ID im Konto speichern, damit wir sie beim naechsten Map parat haben
+      // Glaeubiger-ID im Konto speichern, damit wir sie beim naechsten Mal parat haben
       MetaKey.SEPA_CREDITOR_ID.set(k,t.getCreditorId());
       
       // Daten des Mandats als Meta-Daten an der Adresse speichern
@@ -533,11 +534,10 @@ public class SepaLastschriftControl extends AbstractControl
         MetaKey.ADDRESS_ID.set(t,this.address.getID());
       }
       
-      GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
       t.transactionCommit();
 
-      if (t.getBetrag() > Settings.getUeberweisungLimit())
-        GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getTransfer().getKonto().getWaehrung()));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+      MessageBus.send("hibiscus.transfer.check",t);
       
       return true;
     }
@@ -712,7 +712,7 @@ public class SepaLastschriftControl extends AbstractControl
           // standen und wir die nicht komplett ueberschrieben haben, zeigen wir einen Warnhinweis an
           if (addressCur != null && !BeanUtil.equals(address,addressCur) && haveCur && !haveNew)
           {
-            String msg = i18n.tr("Sie haben eine neue Adresse ausgewählt, zu der noch keine vollständigen Mandatsdaten\n" +
+            String msg = i18n.tr("Sie haben eine neue Adresse ausgewählt zu der noch keine vollständigen Mandatsdaten\n" +
             		                 "hinterlegt sind. Die Daten des Mandats stammen u.U. noch von der vorher ausgewählten\n" +
             		                 "Adresse.\n\nMandats-Referenz und Unterschriftsdatum entfernen und neu eingeben?");
             

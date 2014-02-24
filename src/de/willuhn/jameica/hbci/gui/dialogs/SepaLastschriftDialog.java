@@ -45,7 +45,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
     Container group = new SimpleContainer(parent);
     group.addHeadline(i18n.tr("Details der SEPA-Lastschrift"));
 			
-		Input kto = new LabelInput(last.getKonto().getKontonummer());
+		Input kto = new LabelInput(last.getKonto().getIban());
 		kto.setComment(last.getKonto().getBezeichnung());
 		group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
 

@@ -49,6 +49,8 @@ public class SepaLastschriftList extends AbstractTransferList
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
+    addColumn(i18n.tr("Art"),"sepatype");
+    addColumn(i18n.tr("Sequenz"),"sequencetype");
   }
 
   /**

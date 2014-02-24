@@ -1,10 +1,12 @@
 /**********************************************************************
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
+
+import java.rmi.RemoteException;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
@@ -13,91 +15,91 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.PanelButton;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
-import de.willuhn.jameica.hbci.gui.action.SepaExportLastschrift;
-import de.willuhn.jameica.hbci.gui.action.SepaLastschriftExecute;
-import de.willuhn.jameica.hbci.gui.controller.SepaLastschriftControl;
-import de.willuhn.jameica.hbci.io.print.PrintSupportSepaLastschrift;
+import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftExecute;
+import de.willuhn.jameica.hbci.gui.controller.SepaSammelLastschriftControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportSepaSammelLastschrift;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
-import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Bearbeitung der SEPA-Lastschrift.
+ * Bearbeitung der SEPA-Sammel-Lastschriften.
  */
-public class SepaLastschriftNew extends AbstractView
+public class SepaSammelLastschriftNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private MessageConsumer mc = new MyMessageConsumer();
-  private SepaLastschrift transfer = null;
+  private SepaSammelLastschrift transfer = null;
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-		final SepaLastschriftControl control = new SepaLastschriftControl(this);
+
+		final SepaSammelLastschriftControl control = new SepaSammelLastschriftControl(this);
     this.transfer = control.getTransfer();
 
-		GUI.getView().setTitle(i18n.tr("SEPA-Lastschrift bearbeiten"));
-    GUI.getView().addPanelButton(new PanelButton("edit-select-all.png",new SepaExportLastschrift(transfer),i18n.tr("Als SEPA-XML-Datei exportieren...")));
-    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaLastschrift(transfer)));
+		GUI.getView().setTitle(i18n.tr("SEPA-Sammellastschrift bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaSammelLastschrift(transfer)));
 		
-    Container cl = new SimpleContainer(getParent());
-    cl.addHeadline(i18n.tr("Konto"));
-		cl.addInput(control.getKontoAuswahl());
-		
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
+    group.addLabelPair(i18n.tr("Gutschriftskonto"),control.getKontoAuswahl());
+    group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
+
     ColumnLayout cols = new ColumnLayout(getParent(),2);
-		
+
     // Linke Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
-      container.addHeadline(i18n.tr("Zahlungspflichtiger"));
-      container.addLabelPair(i18n.tr("Name"), control.getEmpfaengerName());
-      container.addLabelPair(i18n.tr("IBAN"), control.getEmpfaengerKonto());    
-      container.addLabelPair(i18n.tr("BIC"),  control.getEmpfaengerBic());
-      container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
-
       container.addHeadline(i18n.tr("SEPA"));
       container.addText(i18n.tr("Bitte beachten Sie die Vorlauffristen."),true);
       container.addInput(control.getType());
+      container.addInput(control.getSequenceType());
       container.addInput(control.getTargetDate());
-      container.addInput(control.getEndToEndId());
     }
-    
+		
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
-      container.addHeadline(i18n.tr("Mandat"));
-      container.addInput(control.getCreditorId());
-      container.addInput(control.getMandateId());
-      container.addInput(control.getSignatureDate());
-      container.addInput(control.getSequenceType());
       container.addHeadline(i18n.tr("Sonstige Informationen (nur Hibiscus-intern)"));
       container.addText(i18n.tr("Diese Daten werden nicht an die Bank übertragen."),true);
       container.addInput(control.getTermin());
       container.addInput(control.getReminderInterval());
     }
 
-    Container container = new SimpleContainer(getParent());
-    container.addHeadline(i18n.tr("Details"));
-    container.addLabelPair(i18n.tr("Verwendungszweck"),	control.getZweck());
-    container.addLabelPair(i18n.tr("Betrag"),           control.getBetrag());
-
-		ButtonArea buttonArea = new ButtonArea();
-		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
-    buttonArea.addButton(i18n.tr("Duplizieren..."), new Action() {
+    ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("Sammelauftrag löschen"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new DBObjectDelete().handleAction(context);
+        try
+        {
+          // Buchungen aus der Liste entfernen, wenn der Auftrag geloescht wurde
+          if (transfer.getID() == null)
+            control.getBuchungen().removeAll();
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to remove bookings",re);
+        }
+      }
+    },transfer,false,"user-trash-full.png");
+    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         if (control.handleStore()) // BUGZILLA 1181
@@ -105,29 +107,41 @@ public class SepaLastschriftNew extends AbstractView
       }
     },null,false,"edit-copy.png");
 
-    Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
+    Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
-				if (control.handleStore())
-  				new SepaLastschriftExecute().handleAction(transfer);
+        if (control.handleStore())
+          new de.willuhn.jameica.hbci.gui.action.SepaSammelLastBuchungNew().handleAction(transfer);
       }
-    },null,false,"emblem-important.png");
+    },null,false,"text-x-generic.png");
+    add.setEnabled(!transfer.ausgefuehrt());
+    
+		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
+			public void handleAction(Object context) throws ApplicationException {
+        if (control.handleStore())
+  				new SepaSammelLastschriftExecute().handleAction(transfer);
+			}
+		},null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
     
-    Button store = new Button(i18n.tr("Speichern"), new Action() {
+    Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
-      	control.handleStore();
+        control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
     
-    buttonArea.addButton(execute);
-    buttonArea.addButton(store);
+    buttons.addButton(add);
+    buttons.addButton(execute);
+    buttons.addButton(store);
     
-    buttonArea.paint(getParent());
+    buttons.paint(getParent());
+
+    new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
+    control.getBuchungen().paint(getParent());
     
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
@@ -167,7 +181,7 @@ public class SepaLastschriftNew extends AbstractView
       
       // View neu laden
       if (transfer.equals(o))
-        GUI.startView(SepaLastschriftNew.this,transfer);
+        GUI.startView(SepaSammelLastschriftNew.this,transfer);
     }
   
     /**
@@ -178,5 +192,4 @@ public class SepaLastschriftNew extends AbstractView
       return false;
     }
   }
-
 }

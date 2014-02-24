@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/Open.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/10/20 16:18:29 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -23,6 +19,7 @@ import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -42,16 +39,17 @@ public class Open implements Action
   
   static
   {
-    actionMap.put(Ueberweisung.class,         UeberweisungNew.class);
-    actionMap.put(Lastschrift.class,          LastschriftNew.class);
-    actionMap.put(Dauerauftrag.class,         DauerauftragNew.class);
-    actionMap.put(AuslandsUeberweisung.class, AuslandsUeberweisungNew.class);
-    actionMap.put(SepaLastschrift.class,      SepaLastschriftNew.class);
-    actionMap.put(SammelUeberweisung.class,   SammelUeberweisungNew.class);
-    actionMap.put(SammelLastschrift.class,    SammelLastschriftNew.class);
-    actionMap.put(Konto.class,                KontoNew.class);
-    actionMap.put(Umsatz.class,               UmsatzDetail.class);
-    actionMap.put(UmsatzTyp.class,            UmsatzTypNew.class);
+    actionMap.put(Ueberweisung.class,          UeberweisungNew.class);
+    actionMap.put(Lastschrift.class,           LastschriftNew.class);
+    actionMap.put(Dauerauftrag.class,          DauerauftragNew.class);
+    actionMap.put(AuslandsUeberweisung.class,  AuslandsUeberweisungNew.class);
+    actionMap.put(SepaLastschrift.class,       SepaLastschriftNew.class);
+    actionMap.put(SepaSammelLastschrift.class, SepaSammelLastschriftNew.class);
+    actionMap.put(SammelUeberweisung.class,    SammelUeberweisungNew.class);
+    actionMap.put(SammelLastschrift.class,     SammelLastschriftNew.class);
+    actionMap.put(Konto.class,                 KontoNew.class);
+    actionMap.put(Umsatz.class,                UmsatzDetail.class);
+    actionMap.put(UmsatzTyp.class,             UmsatzTypNew.class);
   }
   
   /**
@@ -81,12 +79,3 @@ public class Open implements Action
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: Open.java,v $
- * Revision 1.1  2011/10/20 16:18:29  willuhn
- * @N Generische Aktion zum Oeffnen von Fach-Objekten
- *
- **********************************************************************/

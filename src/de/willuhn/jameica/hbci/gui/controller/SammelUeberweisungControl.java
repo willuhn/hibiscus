@@ -24,7 +24,6 @@ import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.SammelUeberweisungList;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.util.ApplicationException;
 
@@ -32,9 +31,9 @@ import de.willuhn.util.ApplicationException;
  * Implementierung des Controllers fuer den Dialog "Liste der Sammellastschriften".
  * @author willuhn
  */
-public class SammelUeberweisungControl extends AbstractSammelTransferControl
+public class SammelUeberweisungControl extends AbstractSammelTransferControl<SammelUeberweisung>
 {
-  private SammelTransfer transfer      = null;
+  private SammelUeberweisung transfer  = null;
   private SammelUeberweisungList table = null;
   private TablePart buchungen          = null;
 
@@ -50,12 +49,12 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getTransfer()
    */
-  public SammelTransfer getTransfer() throws RemoteException
+  public SammelUeberweisung getTransfer() throws RemoteException
   {
     if (transfer != null)
       return transfer;
 
-    transfer = (SammelTransfer) getCurrentObject();
+    transfer = (SammelUeberweisung) getCurrentObject();
     if (transfer != null)
       return transfer;
 

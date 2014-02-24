@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
@@ -123,8 +124,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       }
       if (bic != null && bic.length() > 0)
       {
-        HBCIProperties.checkLength(bic, HBCIProperties.HBCI_BIC_MAXLENGTH);
-        HBCIProperties.checkChars(bic, HBCIProperties.HBCI_BIC_VALIDCHARS);
+        HBCIProperties.checkBIC(bic);
       }
       //
       //////////////////////////////////////////////////////////////////////////
@@ -474,6 +474,16 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     list.addFilter("konto_id = " + getID());
 
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
+    return list;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaSammelLastschriften()
+   */
+  public DBIterator getSepaSammelLastschriften() throws RemoteException
+  {
+    DBIterator list = getService().createList(SepaSammelLastschrift.class);
+    list.addFilter("konto_id = " + getID());
     return list;
   }
 

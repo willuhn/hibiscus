@@ -80,7 +80,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       setJobParam("btg",ueberweisung.getBetrag(),curr);
       
       String zweck = ueberweisung.getZweck();
-      if (zweck != null && zweck.trim().length() > 0)
+      if (zweck != null && zweck.length() > 0)
 			  setJobParam("usage",zweck);
 			
       String endToEndId = ueberweisung.getEndtoEndId();

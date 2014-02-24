@@ -50,6 +50,8 @@ import de.willuhn.jameica.hbci.server.SammelLastschriftImpl;
 import de.willuhn.jameica.hbci.server.SammelUeberweisungBuchungImpl;
 import de.willuhn.jameica.hbci.server.SammelUeberweisungImpl;
 import de.willuhn.jameica.hbci.server.SepaLastschriftImpl;
+import de.willuhn.jameica.hbci.server.SepaSammelLastBuchungImpl;
+import de.willuhn.jameica.hbci.server.SepaSammelLastschriftImpl;
 import de.willuhn.jameica.hbci.server.TurnusImpl;
 import de.willuhn.jameica.hbci.server.UeberweisungImpl;
 import de.willuhn.jameica.hbci.server.UmsatzImpl;
@@ -157,10 +159,10 @@ public class BackupCreate implements Action
           backup(SammelUeberweisungBuchungImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
-//          monitor.setStatusText(i18n.tr("Speichere SEPA-Lastschriften"));
-//          backup(SepaSammelLastschriftImpl.class,writer,monitor);
-//          backup(SepaSammelLastBuchungImpl.class,writer,monitor);
-//          monitor.addPercentComplete(5);
+          monitor.setStatusText(i18n.tr("Speichere SEPA-Lastschriften"));
+          backup(SepaSammelLastschriftImpl.class,writer,monitor);
+          backup(SepaSammelLastBuchungImpl.class,writer,monitor);
+          monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Properties"));
           backup(DBPropertyImpl.class,writer,monitor);

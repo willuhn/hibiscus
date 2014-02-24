@@ -67,7 +67,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private AuslandsUeberweisung transfer      = null;
   
   // Eingabe-Felder
-  private Input kontoAuswahl                 = null;
+  private KontoInput kontoAuswahl            = null;
   private Input betrag                       = null;
   private TextInput zweck                    = null;
 
@@ -137,6 +137,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     MyKontoFilter filter = new MyKontoFilter();
     this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
     this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
+    this.kontoAuswahl.setRememberSelection("auftraege",false); // BUGZILLA 1362 - zuletzt ausgewaehltes Konto gleich uebernehmen
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());

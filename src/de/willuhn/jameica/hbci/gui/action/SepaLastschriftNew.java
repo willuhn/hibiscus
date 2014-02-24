@@ -24,6 +24,8 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
@@ -76,6 +78,41 @@ public class SepaLastschriftNew implements Action
         // Daher landen die alle in einer Zeile
         u.setZweck(VerwendungszweckUtil.toString(umsatz));
       }
+      else if (context instanceof SepaSammelLastBuchung)
+      {
+        try
+        {
+          SepaSammelLastBuchung b = (SepaSammelLastBuchung) context;
+          SepaSammelLastschrift st = (SepaSammelLastschrift) b.getSammelTransfer();
+          u = (SepaLastschrift) Settings.getDBService().createObject(SepaLastschrift.class,null);
+          u.setBetrag(b.getBetrag());
+          u.setGegenkontoBLZ(b.getGegenkontoBLZ());
+          u.setGegenkontoName(b.getGegenkontoName());
+          u.setGegenkontoNummer(b.getGegenkontoNummer());
+          u.setZweck(b.getZweck());
+          u.setCreditorId(b.getCreditorId());
+          u.setEndtoEndId(b.getEndtoEndId());
+          u.setMandateId(b.getMandateId());
+          u.setSignatureDate(b.getSignatureDate());
+          
+          if (st != null)
+          {
+            u.setKonto(st.getKonto());
+            u.setTermin(st.getTermin());
+            
+            u.setSequenceType(st.getSequenceType());
+            u.setTargetDate(st.getTargetDate());
+            u.setType(st.getType());
+          }
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("error while creating transfer",re);
+          // Dann halt nicht
+        }
+      }
+      
+      
     }
     catch (RemoteException e)
     {

@@ -21,32 +21,35 @@ public enum SepaLastType
   /**
    * Basis-Lastschrift
    */
-  CORE("LastSEPA","Basis-Lastschrift"),
+  CORE("LastSEPA","MultiLastSEPA","Basis-Lastschrift"),
   
   /**
    * Basis-Lastschrift mit verkuerztem Vorlauf.
    */
-  COR1("LastCOR1SEPA","Basis-Lastschrift (kurzer Vorlauf)"),
+  COR1("LastCOR1SEPA","MultiLastCOR1SEPA","Basis-Lastschrift (kurzer Vorlauf)"),
   
   /**
    * B2B-Lastschrift
    */
-  B2B("LastB2BSEPA","B2B-Lastschrift"),
+  B2B("LastB2BSEPA","MultiLastB2BSEPA","B2B-Lastschrift"),
   
   ;
   
   private String jobName = null;
+  private String multiJobName = null;
   private String description = null;
   
   /**
    * ct.
    * @param jobName der zugehoerige HBCI-Job-Name von HBCI4Java
+   * @param multiJobName der zugehoerige HBCI-Job-Name von HBCI4Java fuer den Sammel-Auftrag.
    * @param description sprechender Name des Typs.
    */
-  private SepaLastType(String jobName, String description)
+  private SepaLastType(String jobName, String multiJobName, String description)
   {
-    this.jobName = jobName;
-    this.description = description;
+    this.jobName      = jobName;
+    this.multiJobName = multiJobName;
+    this.description  = description;
   }
   
   /**
@@ -56,6 +59,15 @@ public enum SepaLastType
   public String getJobName()
   {
     return this.jobName;
+  }
+  
+  /**
+   * Liefert den zugehoerigen HBCI-Job-Namen von HBCI4Java fuer den Sammel-Auftrag.
+   * @return der zugehoerige HBCI-Job-Name von HBCI4Java fuer den Sammel-Auftrag.
+   */
+  public String getMultiJobName()
+  {
+    return this.multiJobName;
   }
   
   /**

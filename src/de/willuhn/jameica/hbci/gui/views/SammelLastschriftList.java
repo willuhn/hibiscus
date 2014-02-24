@@ -21,7 +21,6 @@ import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.SammelLastschriftImport;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
 import de.willuhn.jameica.system.Application;
@@ -55,7 +54,7 @@ public class SammelLastschriftList extends AbstractView
 
     ButtonArea buttons = table.getButtons();
     buttons.addButton(i18n.tr("Importieren..."),new SammelLastschriftImport(),null,false,"document-open.png");
-    buttons.addButton(i18n.tr("Neue Sammel-Lastschrift"),new SammelLastschriftNew(),null,false,"text-x-generic.png");
+    buttons.addButton(i18n.tr("Neue Sammel-Lastschrift"),new de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew(),null,false,"text-x-generic.png");
 
     table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen

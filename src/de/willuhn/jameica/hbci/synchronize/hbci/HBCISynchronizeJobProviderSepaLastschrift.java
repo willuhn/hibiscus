@@ -19,8 +19,10 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaLastschrift;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaSammelLastschrift;
 import de.willuhn.logging.Logger;
 
 /**
@@ -35,6 +37,7 @@ public class HBCISynchronizeJobProviderSepaLastschrift implements HBCISynchroniz
   private final static List<Class<? extends SynchronizeJob>> JOBS = new ArrayList<Class<? extends SynchronizeJob>>()
   {{
     add(HBCISynchronizeJobSepaLastschrift.class);
+    add(HBCISynchronizeJobSepaSammelLastschrift.class);
   }};
 
   /**
@@ -53,6 +56,7 @@ public class HBCISynchronizeJobProviderSepaLastschrift implements HBCISynchroniz
         if (!options.getSyncSepaLastschriften())
           continue;
         
+        // Einzellastschriften
         DBIterator list = kt.getSepaLastschriften();
         list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
         while (list.hasNext())
@@ -63,6 +67,20 @@ public class HBCISynchronizeJobProviderSepaLastschrift implements HBCISynchroniz
           
           SynchronizeJobSepaLastschrift job = backend.create(SynchronizeJobSepaLastschrift.class,kt);
           job.setContext(SynchronizeJob.CTX_ENTITY,u);
+          jobs.add(job);
+        }
+        
+        // Sammellastschriften
+        list = k.getSepaSammelLastschriften();
+        list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
+        while (list.hasNext())
+        {
+          SepaSammelLastschrift sl = (SepaSammelLastschrift) list.next();
+          if (!sl.ueberfaellig() || sl.ausgefuehrt()) // Doppelt haelt besser ;)
+            continue; // Nur ueberfaellige Auftraege
+          
+          SynchronizeJobSepaSammelLastschrift job = backend.create(SynchronizeJobSepaSammelLastschrift.class,kt);
+          job.setContext(SynchronizeJob.CTX_ENTITY,sl);
           jobs.add(job);
         }
       }

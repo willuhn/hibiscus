@@ -84,7 +84,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       setJobParam("btg",lastschrift.getBetrag(),curr);
       
       String zweck = lastschrift.getZweck();
-      if (zweck != null && zweck.trim().length() > 0)
+      if (zweck != null && zweck.length() > 0)
 			  setJobParam("usage",zweck);
 			
       String endToEndId = lastschrift.getEndtoEndId();
