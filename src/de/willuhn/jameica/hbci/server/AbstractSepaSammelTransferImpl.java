@@ -318,39 +318,4 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
     return sum;
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
-  public Duplicatable duplicate() throws RemoteException
-  {
-    SepaSammelTransfer l = null;
-    try
-    {
-      l = (SepaSammelTransfer) getService().createObject(this.getClass(),null);
-      
-      l.transactionBegin();
-      l.setBezeichnung(this.getBezeichnung());
-      l.setKonto(this.getKonto());
-      l.setTermin(new Date());
-      l.store();
-      
-      List<T> list = this.getBuchungen();
-      for (T t:list)
-      {
-        T copy = (T) ((Duplicatable)t).duplicate();
-        copy.setSammelTransfer(l);
-        copy.store();
-      }
-      l.transactionCommit();
-      return (Duplicatable) l;
-    }
-    catch (Exception e)
-    {
-      if (l != null)
-        l.transactionRollback();
-      Logger.error("unable to duplicate sepa sammeltransfer",e);
-      throw new RemoteException(i18n.tr("Fehler beim Duplizieren des SEPA-Sammelauftrages"),e);
-    }
-  }
 }

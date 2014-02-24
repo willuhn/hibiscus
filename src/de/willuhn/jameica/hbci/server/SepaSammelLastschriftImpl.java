@@ -177,15 +177,41 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.server.AbstractSammelTransferImpl#duplicate()
+   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
   public Duplicatable duplicate() throws RemoteException
   {
-    SepaSammelLastschrift u = (SepaSammelLastschrift) super.duplicate();
-    u.setSequenceType(getSequenceType());
-    u.setTargetDate(getTargetDate());
-    u.setType(getType());
-    u.setOrderId(getOrderId());
-    return u;
+    SepaSammelLastschrift l = null;
+    try
+    {
+      l = (SepaSammelLastschrift) getService().createObject(SepaSammelLastschrift.class,null);
+      
+      l.transactionBegin();
+      l.setBezeichnung(this.getBezeichnung());
+      l.setKonto(this.getKonto());
+      l.setTermin(new Date());
+      l.setSequenceType(getSequenceType());
+      l.setTargetDate(getTargetDate());
+      l.setType(getType());
+      l.setOrderId(getOrderId());
+      l.store();
+      
+      List<SepaSammelLastBuchung> list = this.getBuchungen();
+      for (SepaSammelLastBuchung t:list)
+      {
+        SepaSammelLastBuchung copy = (SepaSammelLastBuchung) t.duplicate();
+        copy.setSammelTransfer(l);
+        copy.store();
+      }
+      l.transactionCommit();
+      return (Duplicatable) l;
+    }
+    catch (Exception e)
+    {
+      if (l != null)
+        l.transactionRollback();
+      Logger.error("unable to duplicate sepa sammeltransfer",e);
+      throw new RemoteException(i18n.tr("Fehler beim Duplizieren des SEPA-Sammelauftrages"),e);
+    }
   }
 }
