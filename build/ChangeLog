@@ -1,5 +1,11 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0315 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/92443f340bb5fa5cc96f713b7e4a4dde1d40b0a0
+  * NEW: 0314 Allererster Code für SEPA-Sammellastschriften
+
+2014-02-23 Version 2.6.3
+
   * NEW: 0313 Kontroll-Buttons in Flicker-Dialog oberhalb des Flicker-Codes anzeigen, damit man
               die besser bedienen kann, während man den TAN-Generator an den Bildschirm hält. 
   * NEW: 0312 Neue HBCI4Java-Version, Stand
