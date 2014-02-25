@@ -56,7 +56,7 @@ public class HBCITraceMessage implements Message
   
   /**
    * Liefert den Payload der Message.
-   * @return
+   * @return der Payload der Message.
    */
   public String getData()
   {
