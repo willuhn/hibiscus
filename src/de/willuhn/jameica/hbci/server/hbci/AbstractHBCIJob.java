@@ -13,9 +13,11 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
@@ -119,23 +121,35 @@ public abstract class AbstractHBCIJob
   public void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException, ApplicationException
   {
   	this.job = job;
-  	Enumeration e = params.keys();
-  	while (e.hasMoreElements())
+  	Iterator i = params.keySet().iterator();
+  	while (i.hasNext())
   	{
-  		String name = (String) e.nextElement();
-  		Object value = params.get(name);
+  		Object key = i.next();
+  		Object value = params.get(key);
+  		
+  		String name = null;
+  		Integer idx = null;
+  		if (key instanceof SimpleEntry)
+  		{
+  		  name = (String) ((SimpleEntry) key).getKey();
+  		  idx  = (Integer) ((SimpleEntry) key).getValue();
+  		}
+  		else
+  		{
+  		  name = (String) key;
+  		}
 
   		if (value instanceof Konto)
-	  		job.setParam(name,(Konto)value);
+        job.setParam(name,idx,(Konto)value);
 
 			else if (value instanceof Date)
-				job.setParam(name,(Date)value);
+				job.setParam(name,idx,(Date)value);
 
 			else if (value instanceof Value)
-				job.setParam(name,(Value)value);
+				job.setParam(name,idx,(Value)value);
 
 	  	else
-				job.setParam(name,value.toString());
+				job.setParam(name,idx,value.toString());
   	}
   }
 
@@ -311,13 +325,25 @@ public abstract class AbstractHBCIJob
    */
   final void setJobParam(String name, String value)
 	{
-		if (name == null || value == null)
-		{
-			Logger.warn("[job parameter] no name or value given");
-			return;
-		}
-		params.put(name,value);
+    this.setJobParam(name,null,value);
 	}
+  
+  /**
+   * Ueber diese Funktion koennen die konkreten Implementierungen
+   * ihre zusaetzlichen Job-Parameter setzen.
+   * @param name Name des Parameters.
+   * @param index optionaler Index des Parameters.
+   * @param value Wert des Parameters.
+   */
+  final void setJobParam(String name, Integer index, String value)
+  {
+    if (name == null || value == null)
+    {
+      Logger.warn("[job parameter] no name or value given");
+      return;
+    }
+    params.put(new AbstractMap.SimpleEntry(name,index),value);
+  }
 
 	/**
 	 * Speichern eines komplexes Objektes 
@@ -326,15 +352,26 @@ public abstract class AbstractHBCIJob
 	 */
 	final void setJobParam(String name, org.kapott.hbci.structures.Konto konto)
 	{
-		if (name == null || konto == null)
-		{
-			Logger.warn("[job parameter] no name or value given");
-			return;
-		}
-		params.put(name,konto);
+	  this.setJobParam(name,null,konto);
 	}
 
   /**
+   * Speichern eines komplexes Objektes 
+   * @param name Name des Parameters.
+   * @param index optionaler Index des Parameters.
+   * @param konto das Konto.
+   */
+  final void setJobParam(String name, Integer index, org.kapott.hbci.structures.Konto konto)
+  {
+    if (name == null || konto == null)
+    {
+      Logger.warn("[job parameter] no name or value given");
+      return;
+    }
+    params.put(new AbstractMap.SimpleEntry(name,index),konto);
+  }
+
+	/**
 	 * Speichern eines Int-Wertes.
 	 * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
 	 * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
@@ -363,13 +400,28 @@ public abstract class AbstractHBCIJob
 	 */
 	final void setJobParam(String name, double value, String currency)
 	{
-		if (name == null)
-		{
-			Logger.warn("[job parameter] no name given");
-			return;
-		}
-		params.put(name,new Value(String.valueOf(value),currency));
+	  this.setJobParam(name,null,value,currency);
 	}
+	
+  /**
+   * Speichern eines Geld-Betrages
+   * Bitte diese Funktion fuer Betraege verwenden, damit sichergestellt ist,
+   * dass der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+   * aufgrund verschiedener Locales fehlschlagen.
+   * @param name Name des Parameters.
+   * @param index optionaler Index des Parameters.
+   * @param value Geldbetrag.
+   * @param currency Waehrung.
+   */
+  final void setJobParam(String name, Integer index, double value, String currency)
+  {
+    if (name == null)
+    {
+      Logger.warn("[job parameter] no name given");
+      return;
+    }
+    params.put(new AbstractMap.SimpleEntry(name,index),new Value(String.valueOf(value),currency));
+  }
 
 	/**
 	 * Speichern eines Datums.
@@ -381,14 +433,28 @@ public abstract class AbstractHBCIJob
 	 */
 	final void setJobParam(String name, Date date)
 	{
-		if (name == null || date == null)
-		{
-			Logger.warn("[job parameter] no name given or value given");
-			return;
-		}
-		params.put(name,date);
+	  this.setJobParam(name,null,date);
 	}
 	
+  /**
+   * Speichern eines Datums.
+   * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
+   * der Kernel die Werte typsicher erhaelt und Formatierungsfehler
+   * aufgrund verschiedener Locales fehlschlagen.
+   * @param name Name des Parameters.
+   * @param index optionaler Index des Parameters.
+   * @param date Datum.
+   */
+  final void setJobParam(String name, Integer index, Date date)
+  {
+    if (name == null || date == null)
+    {
+      Logger.warn("[job parameter] no name given or value given");
+      return;
+    }
+    params.put(new AbstractMap.SimpleEntry(name,index),date);
+  }
+
 	/**
 	 * Setzt die Job-Parameter fuer die Verwendungszweck-Zeilen.
 	 * Sie werden auf die Job-Parameter usage, usage_2, usage_3,...

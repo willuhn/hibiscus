@@ -72,9 +72,13 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
 
       if (!HBCIProperties.checkIBANCRC(getGegenkontoNummer()))
         throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
-        
-      HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
-      HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      String zweck = this.getZweck();
+      if (zweck == null || zweck.length() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Verwendungszweck ein"));
+
+      HBCIProperties.checkLength(zweck, HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+      HBCIProperties.checkChars(zweck, HBCIProperties.HBCI_SEPA_VALIDCHARS);
       
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);

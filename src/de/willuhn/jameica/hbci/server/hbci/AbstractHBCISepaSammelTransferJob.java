@@ -80,22 +80,27 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
       
       for (int i=0;i<buchungen.size();++i)
       {
-        String idx = "[" + Integer.toString(i) + "]";
-        SepaSammelTransferBuchung b = buchungen.get(0);
+        SepaSammelTransferBuchung b = buchungen.get(i);
+        
+        // Wir nehmen explizit ein Integer-Objekt, um sicherzugehen, dass
+        // wir nicht durch Autoboxing die falsche Signatur erwischen
+        Integer idx = Integer.valueOf(i);
+        
         org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
         k.bic  = b.getGegenkontoBLZ();
         k.iban = b.getGegenkontoNummer();
         k.name = b.getGegenkontoName();
-        setJobParam("dst" + idx,k);
-        setJobParam("btg" + idx,b.getBetrag(),curr);
+        
+        setJobParam("dst", idx, k);
+        setJobParam("btg", idx, b.getBetrag(),curr);
         
         String zweck = b.getZweck();
         if (zweck != null && zweck.length() > 0)
-          setJobParam("usage" + idx,zweck);
+          setJobParam("usage", idx ,zweck);
         
         String endToEndId = b.getEndtoEndId();
         if (endToEndId != null && endToEndId.trim().length() > 0)
-          setJobParam("endtoendid" + idx,endToEndId);
+          setJobParam("endtoendid", idx, endToEndId);
       }
 		}
 		catch (RemoteException e)

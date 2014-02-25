@@ -200,7 +200,7 @@ public class SepaSammelTransferBuchungList extends TablePart
       String curr = null;
       for (int i=0;i<size;++i)
       {
-        SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) items.get(0);
+        SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) items.get(i);
         
         if (curr == null)
           curr = t.getSammelTransfer().getKonto().getWaehrung();

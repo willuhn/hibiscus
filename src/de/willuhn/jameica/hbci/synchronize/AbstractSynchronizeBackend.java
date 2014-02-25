@@ -18,6 +18,7 @@ import java.util.Map;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
@@ -389,7 +390,14 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
           catch (Exception e)
           {
             if (!(e instanceof ApplicationException))
+            {
               Logger.error("error while synchronizing",e);
+              
+              // Wir holen uns noch die eigentliche Ursache aus den Causes um eine plausible Fehlermeldung zu kriegen
+              Throwable t = HBCIProperties.getCause(e);
+              if (t instanceof Exception)
+                e = (Exception) t;
+            }
             
             // Wir muessen den User nur fragen, wenn auch wirklich noch weitere Job-Gruppen vorhanden sind
             boolean resume = false;
@@ -411,7 +419,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
               if (e instanceof ApplicationException)
                 this.updateStatus(ProgressMonitor.STATUS_ERROR,e.getMessage());
               else
-                this.updateStatus(ProgressMonitor.STATUS_ERROR,i18n.tr("Synchronisierung fehlgeschlagen: {0}",e.getMessage()));
+                this.updateStatus(ProgressMonitor.STATUS_ERROR,i18n.tr("Fehler: {0}",e.getMessage()));
               break;
             }
           }

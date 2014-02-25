@@ -47,12 +47,15 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
     
     for (int i=0;i<buchungen.size();++i)
     {
-      String idx = "[" + Integer.toString(i) + "]";
-      SepaSammelLastBuchung b = buchungen.get(0);
+      SepaSammelLastBuchung b = buchungen.get(i);
       
-      setJobParam("mandateid" + idx,    b.getMandateId());
-      setJobParam("manddateofsig" + idx,b.getSignatureDate());
-      setJobParam("creditorid" + idx,   b.getCreditorId());
+      // Wir nehmen explizit ein Integer-Objekt, um sicherzugehen, dass
+      // wir nicht durch Autoboxing die falsche Signatur erwischen
+      Integer idx = Integer.valueOf(i);
+      
+      setJobParam("mandateid",     idx, b.getMandateId());
+      setJobParam("manddateofsig", idx, b.getSignatureDate());
+      setJobParam("creditorid",    idx, b.getCreditorId());
     }
     
     setJobParam("sequencetype",lastschrift.getSequenceType().name());
