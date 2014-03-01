@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0318 Funktion zum Zusammenfassen von SEPA-Einzellastschriften zu ein oder
+              mehreren SEPA-Sammelaufträgen
+  * NEW: 0317 Beta-Markierung bei SEPA-Sammellastschriften entfernt
   * NEW: 0316 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/04ec58ac90510aae6707643a05acb536b1f0e9c3
   * NEW: 0315 Neue HBCI4Java-Version, Stand

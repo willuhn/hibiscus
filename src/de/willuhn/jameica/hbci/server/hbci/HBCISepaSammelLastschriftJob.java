@@ -76,7 +76,7 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
       return this.type.getMultiJobName();
     
     // Default CORE
-    return SepaLastType.CORE.getMultiJobName();
+    return SepaLastType.DEFAULT.getMultiJobName();
   }
 
   /**

@@ -98,7 +98,7 @@ public class SepaExportLastschrift implements Action
       
       SepaLastType type = u.getType();
       if (type == null)
-        type = SepaLastType.CORE;
+        type = SepaLastType.DEFAULT;
       
 
       Properties props = new Properties();

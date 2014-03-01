@@ -127,7 +127,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       return this.type.getJobName();
     
     // Default CORE
-    return SepaLastType.CORE.getJobName();
+    return SepaLastType.DEFAULT.getJobName();
   }
   
   /**

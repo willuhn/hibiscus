@@ -35,6 +35,11 @@ public enum SepaLastType
   
   ;
   
+  /**
+   * Der Default-Typ (CORE).
+   */
+  public static SepaLastType DEFAULT = CORE;
+  
   private String jobName = null;
   private String multiJobName = null;
   private String description = null;
