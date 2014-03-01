@@ -12,7 +12,6 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftImport;
 import de.willuhn.jameica.hbci.gui.controller.SepaSammelLastschriftControl;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -39,9 +38,7 @@ public class SepaSammelLastschriftList extends AbstractView
 //      }
 //    });
     
-    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Beta: Unterstützung noch im Test-Stadium, bitte noch nicht produktiv verwenden!"),StatusBarMessage.TYPE_INFO));
-
-    GUI.getView().setTitle(i18n.tr("(Beta) Vorhandene SEPA-Sammellastschriften"));
+    GUI.getView().setTitle(i18n.tr("Vorhandene SEPA-Sammellastschriften"));
 //    GUI.getView().addPanelButton(print);
 
     ButtonArea buttons = table.getButtons();

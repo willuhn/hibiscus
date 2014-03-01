@@ -64,7 +64,7 @@
       <item id="hibiscus.navi.sepatransfer"                  name="SEPA-Zahlungsverkehr"     icon-close="folder.png" icon-open="folder-open.png">
         <item id="hibiscus.navi.transfer.uebforeign"         name="SEPA-Überweisungen"       icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungList" />
         <item id="hibiscus.navi.transfer.sepalast"           name="SEPA-Lastschriften"       icon-close="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftList" />
-        <item id="hibiscus.navi.transfer.sepasammellast"     name="(Beta) SEPA-Sammellastschriften" icon-close="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftList" />
+        <item id="hibiscus.navi.transfer.sepasammellast"     name="SEPA-Sammellastschriften" icon-close="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftList" />
       </item>
       <item id="hibiscus.navi.reporting"                     name="Auswertungen"             icon-close="folder.png" icon-open="folder-open.png">
         <item id="hibiscus.navi.reporting.kontoauszug"       name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugRpt" />
