@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/Controller.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/09/01 12:16:08 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -272,9 +266,9 @@ public class Controller extends AbstractControl
     if (this.pcscName != null)
       return this.pcscName;
     this.pcscName = new TextInput(getConfig().getPCSCName());
-    this.pcscName.setComment(i18n.tr("optional (nur bei PC/SC-Kartenleser)"));
+    this.pcscName.setHint(i18n.tr("nur eingeben, wenn mehrere Leser vorhanden"));
     this.pcscName.setEnabled(isPCSC());
-    this.pcscName.setName(i18n.tr("Name des PC/SC-Kartenlesers"));
+    this.pcscName.setName(i18n.tr("Identifier des PC/SC-Kartenlesers"));
     return this.pcscName;
   }
 
@@ -635,6 +629,10 @@ public class Controller extends AbstractControl
             getCTNumber().setValue(new Integer(ctNumber));
 
           getCTAPI().setValue(s);
+        }
+        else
+        {
+          getCTAPI().setValue("");
         }
         
         getSoftPin().setValue(new Boolean(r.useSoftPin()));
