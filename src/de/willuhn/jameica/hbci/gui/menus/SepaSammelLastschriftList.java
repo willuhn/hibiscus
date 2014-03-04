@@ -23,7 +23,6 @@ import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaSammelLastschrift;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -57,7 +56,7 @@ public class SepaSammelLastschriftList extends ContextMenu
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Drucken..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        new Print().handleAction(new PrintSupportSepaSammelLastschrift((SammelLastschrift) context));
+        new Print().handleAction(new PrintSupportSepaSammelLastschrift((SepaSammelLastschrift) context));
       }
     },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SepaSammelLastschriftExport(),"document-save.png"));
