@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLImporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2012/03/28 22:47:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -29,6 +23,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
@@ -168,6 +163,9 @@ public class XMLImporter implements Importer
     if (SammelTransfer.class.isAssignableFrom(objectType))
       return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.
 
+    if (SepaSammelTransfer.class.isAssignableFrom(objectType))
+      return null; // Keine SEPA-Sammel-Auftraege - die muessen gesondert behandelt werden.
+
     // BUGZILLA 1149
     if (Umsatz.class.isAssignableFrom(objectType))
       return null; // Keine Umsaetze - die muessen gesondert behandelt werden.
@@ -192,35 +190,3 @@ public class XMLImporter implements Importer
     return new IOFormat[] { f };
   }
 }
-
-/*******************************************************************************
- * $Log: XMLImporter.java,v $
- * Revision 1.8  2012/03/28 22:47:18  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.7  2011/12/04 22:06:55  willuhn
- * @N BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
- *
- * Revision 1.6  2010/06/01 21:57:31  willuhn
- * @N "XML-Format" in "Hibiscus-Format" umbenannt - das "XML" verwirrte User und brachte sie zu der Annahme, man koenne da beliebige XML-Dateien importieren ;)
- * @R binaeres "Hibiscus-Format" (via ObjectInputStream/ObjectOutputStream) entfernt - war ohnehin schon seit Jahren deaktiviert und obsolet - das XML-Format kann das besser
- *
- * Revision 1.5  2010/04/16 12:20:51  willuhn
- * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen
- *
- * Revision 1.4  2009/10/05 17:12:03  willuhn
- * @B Import-Message wurde doppelt verschickt
- *
- * Revision 1.3  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- * Revision 1.2  2008/02/13 23:44:27  willuhn
- * @R Hibiscus-Eigenformat (binaer-serialisierte Objekte) bei Export und Import abgeklemmt
- * @N Import und Export von Umsatz-Kategorien im XML-Format
- * @B Verzaehler bei XML-Import
- *
- * Revision 1.1  2008/01/22 13:34:45  willuhn
- * @N Neuer XML-Import/-Export
- *
- ******************************************************************************/

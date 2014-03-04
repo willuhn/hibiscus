@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLSammelTransferExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/02/13 14:17:01 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -59,7 +53,7 @@ public class XMLSammelTransferExporter extends XMLExporter
     return new IOFormat[]{new IOFormat() {
       public String getName()
       {
-        return i18n.tr("XML-Format");
+        return i18n.tr("Hibiscus-Format");
       }
     
       /**
@@ -72,11 +66,3 @@ public class XMLSammelTransferExporter extends XMLExporter
     }};
   }
 }
-
-
-/*********************************************************************
- * $Log: XMLSammelTransferExporter.java,v $
- * Revision 1.1  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- **********************************************************************/

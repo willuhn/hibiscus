@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLExporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/01 21:57:31 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -23,6 +17,7 @@ import de.willuhn.datasource.serialize.Writer;
 import de.willuhn.datasource.serialize.XmlWriter;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -98,6 +93,9 @@ public class XMLExporter implements Exporter
     if (SammelTransfer.class.isAssignableFrom(objectType))
       return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.
 
+    if (SepaSammelTransfer.class.isAssignableFrom(objectType))
+      return null; // Keine SEPA-Sammel-Auftraege - die muessen gesondert behandelt werden.
+    
     return new IOFormat[]{new IOFormat() {
       public String getName()
       {
@@ -123,27 +121,3 @@ public class XMLExporter implements Exporter
   }
 
 }
-
-
-/*********************************************************************
- * $Log: XMLExporter.java,v $
- * Revision 1.5  2010/06/01 21:57:31  willuhn
- * @N "XML-Format" in "Hibiscus-Format" umbenannt - das "XML" verwirrte User und brachte sie zu der Annahme, man koenne da beliebige XML-Dateien importieren ;)
- * @R binaeres "Hibiscus-Format" (via ObjectInputStream/ObjectOutputStream) entfernt - war ohnehin schon seit Jahren deaktiviert und obsolet - das XML-Format kann das besser
- *
- * Revision 1.4  2009/02/13 14:17:01  willuhn
- * @N BUGZILLA 700
- *
- * Revision 1.3  2008/01/22 13:34:45  willuhn
- * @N Neuer XML-Import/-Export
- *
- * Revision 1.2  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.1  2006/12/01 01:28:16  willuhn
- * @N Experimenteller Import-Export-Code
- *
- **********************************************************************/

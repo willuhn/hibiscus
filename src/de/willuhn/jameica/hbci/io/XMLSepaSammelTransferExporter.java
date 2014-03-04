@@ -53,7 +53,7 @@ public class XMLSepaSammelTransferExporter extends XMLExporter
     return new IOFormat[]{new IOFormat() {
       public String getName()
       {
-        return i18n.tr("XML-Format");
+        return i18n.tr("Hibiscus-Format");
       }
     
       /**

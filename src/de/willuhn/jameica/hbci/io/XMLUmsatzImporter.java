@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/XMLUmsatzImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2012/03/28 22:47:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -195,14 +189,3 @@ public class XMLUmsatzImporter extends XMLImporter
     return new IOFormat[] { f };
   }
 }
-
-/*******************************************************************************
- * $Log: XMLUmsatzImporter.java,v $
- * Revision 1.2  2012/03/28 22:47:18  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.1  2011/12/04 22:06:55  willuhn
- * @N BUGZILLA 1149 - Umsaetze beim XML-Import einem beliebigen Konto zuordenbar
- *
- ******************************************************************************/
