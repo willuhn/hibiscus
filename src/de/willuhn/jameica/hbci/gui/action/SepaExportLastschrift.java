@@ -38,7 +38,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Action zum Exportieren eines SEPA-Lastschrift als SEPA-XML-Datei.
+ * Action zum Exportieren einer SEPA-Lastschrift als SEPA-XML-Datei.
  */
 public class SepaExportLastschrift implements Action
 {
@@ -92,10 +92,6 @@ public class SepaExportLastschrift implements Action
       File target         = d.getFile();
       PainVersion version = d.getPainVersion();
       
-      String endToEndId = StringUtils.trimToNull(u.getEndtoEndId());
-      if (endToEndId == null)
-        endToEndId = "NOTPROVIDED";
-      
       SepaLastType type = u.getType();
       if (type == null)
         type = SepaLastType.DEFAULT;
@@ -112,7 +108,7 @@ public class SepaExportLastschrift implements Action
       props.setProperty("btg.curr",     k.getWaehrung() != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE);
       props.setProperty("usage",        StringUtils.trimToEmpty(u.getZweck()));
       props.setProperty("sepaid",       Long.toString(System.currentTimeMillis()));
-      props.setProperty("endtoendid",   endToEndId);
+      props.setProperty("endtoendid",   StringUtils.trimToEmpty(u.getEndtoEndId()));
       
       props.setProperty("creditorid",   StringUtils.trimToEmpty(u.getCreditorId()));
       props.setProperty("mandateid",    StringUtils.trimToEmpty(u.getMandateId()));
