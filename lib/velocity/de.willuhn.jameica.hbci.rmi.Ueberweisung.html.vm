@@ -181,7 +181,7 @@
           <td style="text-align:right">$!decimalformat.format($t.betrag) $!t.konto.waehrung</td>
           <td>
             $!t.zweck
-            #if($!t.zweck != '')
+            #if($!t.zweck2 != '')
               <br/>
               $!t.zweck2
             #end

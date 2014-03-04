@@ -215,7 +215,7 @@
                 <td>$!b.gegenkontoName, Kto. $!b.gegenkontoNummer, BLZ $!b.gegenkontoBLZ</td>
                 <td>
                   $!b.zweck
-                  #if($!b.zweck != '')
+                  #if($!b.zweck2 != '')
                     <br/>
                     $!b.zweck2
                   #end

@@ -135,7 +135,7 @@
         <tr>
           <td class="left">Verwendungszweck:</td>
           <td class="right">$!t.zweck
-            #if($!t.zweck != '')
+            #if($!t.zweck2 != '')
               <br/>
               $!t.zweck2
             #end

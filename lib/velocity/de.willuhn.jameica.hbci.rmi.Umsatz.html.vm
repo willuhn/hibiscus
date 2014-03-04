@@ -193,7 +193,7 @@
           <td>$!dateformat.format($t.datum)</td>
           <td>
             $!t.zweck
-            #if($!t.zweck != '')
+            #if($!t.zweck2 != '')
               <br/>
               $!t.zweck2
             #end
