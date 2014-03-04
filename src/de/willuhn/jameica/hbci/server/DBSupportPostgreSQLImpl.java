@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -80,7 +81,10 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
       String text = i18n.tr("Bei der Verwendung von PostgreSQL werden Datenbank-Updates " +
           "nicht automatisch ausgefuehrt. Bitte fuehren Sie das folgende SQL-Script " +
           "manuell aus:\n{0}",f.getAbsolutePath());
-      Application.addWelcomeMessage(text);
+
+      BootMessage msg = new BootMessage(text);
+      msg.setTitle(i18n.tr("Hinweis zur Verwendung von PostgreSQL"));
+      Application.getMessagingFactory().getMessagingQueue("jameica.boot").queueMessage(msg);
     }
   }
 

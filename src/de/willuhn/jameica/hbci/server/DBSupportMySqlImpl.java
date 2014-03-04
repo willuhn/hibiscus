@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -80,7 +81,10 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
       String text = i18n.tr("Bei der Verwendung von MySQL wird die Datenbank " +
           "nicht automatisch angelegt. Bitte führen Sie das folgende SQL-Script " +
           "manuell aus, falls Sie dies nicht bereits getan haben:\n{0}",f.getAbsolutePath());
-      Application.addWelcomeMessage(text);
+      
+      BootMessage msg = new BootMessage(text);
+      msg.setTitle(i18n.tr("Hinweis zur Verwendung von MySQL"));
+      Application.getMessagingFactory().getMessagingQueue("jameica.boot").queueMessage(msg);
     }
   }
 
