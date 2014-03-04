@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0322 HTML-Export für SEPA-Sammellastschriften
+  * NEW: 0321 XML-Export und -Import für SEPA-Sammellastschriften
   * NEW: 0320 Support für Suche in SEPA-Sammellastschriften
   * NEW: 0319 Druck-Support für SEPA-Sammellastschriften
   * NEW: 0318 Funktion zum Zusammenfassen von SEPA-Einzellastschriften zu ein oder

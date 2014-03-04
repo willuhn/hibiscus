@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!charset" />
+    <title>SEPA-Sammellastschriften [$!dateformat.format($datum)]</title>
+  </head>
+  <style>
+    body  {
+      background-color        : #ffffff;
+      background-attachment   : fixed;
+      color                   : #000000;
+      margin-left             : 10px;
+      margin-right            : 10px;
+      margin-top              : 10px;
+      margin-bottom           : 0px;
+    }
+
+    p,h1,h2,h3,h4,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
+      font-family             : Verdana, Helvetica, Arial;
+      color                   : #000000;
+      font-size               : 8pt;
+    }
+
+    table {
+    }
+    th {
+      text-align               : left;
+    }
+    td {
+      vertical-align           : top;
+      text-align               : left;
+    }
+
+    table.data {
+      width                    : 100%;
+      border                   : 1px solid #E0E0E0;
+    }
+    table.data th {
+      color                    : #ffffff;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      background-color         : #b0b0a0;
+    }
+    table.data td {
+      background               : #f8f8f8;
+      margin                   : 0px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 7pt;
+      color                    : #505050;
+  	  white-space              : nowrap;
+    }
+
+    tr.ausgefuehrt_false td {
+      background               : #fff1f1;
+      margin                   : 0px;
+      padding-left             : 3px;
+      padding-right            : 10px;
+      font-size                : 7pt;
+      color                    : #900000;
+      white-space              : nowrap;
+    }
+    
+    table.inner {
+      width                    : 100%;
+    }
+    
+    table.inner tr th {
+      background               : none;
+      font-weight              : bold;
+      color                    : #000000;
+    }
+    table.inner tr td {
+      border-top               : 1px solid #a4a4a4;
+    }
+
+    ol,ul {
+      list-style-position      : outside;
+    }
+    
+    ul {
+      list-style-type          : disk;
+      margin-top               : 0px;
+      margin-bottom            : 0px;
+    }
+    
+    h1 {
+      color                    : #d76B00;
+      font-weight              : bold;
+      font-size                : 10pt;
+      margin-top               : 1px;
+      margin-bottom            : 1px;
+    }
+    
+    h2 {
+      color                    : #000055;
+      font-weight              : bold;
+      font-size                : 8pt;
+      margin-top               : 1px;
+      margin-bottom            : 3px;
+    }
+    
+    h3 {
+      font-weight              : normal;
+      font-size                : 7pt;
+      margin-top               : 5px;
+      margin-bottom            : 0px;
+    }
+
+    div.comment {
+      margin-top               : 4px;
+      margin-bottom            : 4px;
+      padding-left             : 4px;
+      padding-top              : 2px;
+      border                   : 1px solid #E0E0E0;
+      font-size                : 7pt;
+      color                    : #707070;
+    }
+
+    div.box {
+      margin-top               : 4px;
+      margin-bottom            : 4px;
+      padding-left             : 4px;
+      padding-top              : 2px;
+      border                   : 1px solid #E0E0E0;
+      color                    : #404040;
+    }
+
+    pre {
+      margin-top               : 4px;
+      margin-bottom            : 4px;
+      padding                  : 4px;
+      border                   : 1px solid #E0E0E0;
+      font-family              : BitStream Vera Sans Mono, Terminal [DEC], Courier New, Courier;
+      font-size                : 8pt;
+      color                    : #505050;
+    }
+
+    a:link  {
+      color                    : #000088;
+      text-decoration          : none;
+    }
+    
+    a:visited  {
+      color                    : #808080;
+      text-decoration          : none;
+    }
+    
+    a:hover {
+      color                    : #0000dd;
+      text-decoration          : none;
+    }
+    
+    a:active {
+      color                    : #0000dd;
+      text-decoration          : none;
+    }
+    
+    a:focus {
+      color                    : #0000dd;
+      text-decoration          : none;
+    }
+
+    @media print
+    {
+      table.data td {
+        color                  : #000000;
+      }
+    }
+
+  </style>
+  <body>
+    <h1>SEPA-Sammellastschriften</h1>
+    <h2>$!dateformat.format($datum)</h2>
+
+    <br/><br/>
+	
+    #foreach($t in $objects)
+      <table class="data">
+        <tr>
+          <th>Datum</th>
+          <th>Konto</th>
+          <th>Bezeichnung</th>
+          <th style="text-align:right">Summe</th>
+          <th>Ausgef&uuml;hrt</th>
+        </tr>
+        <tr class="ausgefuehrt_$t.ausgefuehrt()">
+          <td>$!dateformat.format($t.termin)</td>
+          <td>$!t.konto.longName</td>
+          <td>$!t.bezeichnung</td>
+          <td style="text-align:right">$!decimalformat.format($t.Summe) $!t.konto.waehrung</td>
+          <td>
+            #if($t.ausfuehrungsdatum)
+              $!longdateformat.format($t.ausfuehrungsdatum)
+            #elseif($t.ausgefuehrt())
+              Ja
+            #else
+              Nein
+            #end
+          </td>
+        </tr>
+        <tr class="ausgefuehrt_$t.ausgefuehrt()">
+          <td colspan="5">
+            <br/><br/>
+            <table class="inner">
+              <tr>
+                <th style="width:30%">Gegenkonto</th>
+                <th>Verwendungszweck</th>
+                <th style="text-align:right">Betrag</th>
+              </tr>
+              
+              #foreach($b in $t.buchungen)
+              <tr>
+                <td>$!b.gegenkontoName, Kto. $!b.gegenkontoNummer, BLZ $!b.gegenkontoBLZ</td>
+                <td>$!b.zweck</td>
+                <td style="text-align:right">$!decimalformat.format($b.betrag) $!t.konto.waehrung</td>
+              </tr>
+              #end
+            </table>
+          </td>
+        </tr>
+      </table>
+      <br/><br/>
+    #end
+  </body>
+</html>
