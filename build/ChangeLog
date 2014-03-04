@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0320 Support für Suche in SEPA-Sammellastschriften
   * NEW: 0319 Druck-Support für SEPA-Sammellastschriften
   * NEW: 0318 Funktion zum Zusammenfassen von SEPA-Einzellastschriften zu ein oder
               mehreren SEPA-Sammelaufträgen
