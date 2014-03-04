@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0319 Druck-Support für SEPA-Sammellastschriften
   * NEW: 0318 Funktion zum Zusammenfassen von SEPA-Einzellastschriften zu ein oder
               mehreren SEPA-Sammelaufträgen
   * NEW: 0317 Beta-Markierung bei SEPA-Sammellastschriften entfernt
