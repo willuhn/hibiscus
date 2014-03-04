@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0324 BUGZILLA 1419 - Unterstützung für SEPA-Termin-Überweisungen
   * NEW: 0323 Export von SEPA-Sammellastschriften im PAIN-XML-Format
   * NEW: 0322 HTML-Export für SEPA-Sammellastschriften
   * NEW: 0321 XML-Export und -Import für SEPA-Sammellastschriften

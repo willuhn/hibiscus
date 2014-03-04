@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/AuslandsUeberweisung.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/10/20 23:12:58 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -35,4 +29,18 @@ public interface AuslandsUeberweisung extends BaseUeberweisung, Duplicatable
    * @throws RemoteException
    */
   public void setEndtoEndId(String id) throws RemoteException;
+  
+  /**
+   * Prueft, ob es sich um einen bankseitige Termin-Ueberweisung handelt.
+   * @return true, wenn es eine bankseitige Termin-Ueberweisung ist.
+   * @throws RemoteException
+   */
+  public boolean isTerminUeberweisung() throws RemoteException;
+  
+  /**
+   * Legt fest, ob es sich um eine bankseitige Termin-Ueberweisung handelt.
+   * @param termin true, wenn es eine bankseitige Terminueberweisung sein soll.
+   * @throws RemoteException
+   */
+  public void setTerminUeberweisung(boolean termin) throws RemoteException;
 }

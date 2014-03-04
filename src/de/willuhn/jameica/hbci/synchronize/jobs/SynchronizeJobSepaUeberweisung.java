@@ -29,6 +29,10 @@ public class SynchronizeJobSepaUeberweisung extends AbstractSynchronizeJob
     {
       AuslandsUeberweisung ueb = (AuslandsUeberweisung) this.getContext(CTX_ENTITY);
       Konto k = ueb.getKonto();
+      
+      if (ueb.isTerminUeberweisung())
+        return i18n.tr("{0}: ({1}) {2} {3} per {4} an {5} überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),HBCI.DATEFORMAT.format(ueb.getTermin()),ueb.getGegenkontoName());
+      
       return i18n.tr("{0}: ({1}) {2} {3} an {4} überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName());
     }
     catch (RemoteException re)

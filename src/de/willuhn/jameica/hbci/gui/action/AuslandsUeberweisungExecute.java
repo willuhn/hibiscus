@@ -63,16 +63,18 @@ public class AuslandsUeberweisungExecute implements Action
 
       Date termin = DateUtil.startOfDay(u.getTermin());
       Date now    = DateUtil.startOfDay(new Date());
-      if ((termin.getTime() - now.getTime()) >= (24 * 60 * 60 * 1000))
+      if (!u.isTerminUeberweisung() && (termin.getTime() - now.getTime()) >= (24 * 60 * 60 * 1000))
       {
-        String q = i18n.tr("Der Termin liegt mindestens 1 Tag in Zukunft. Hibiscus unterstützt derzeit\n" +
-        		               "noch keine bankseitig terminierten SEPA-Überweisungen. Der Auftrag wird von\n" +
-        		               "der Bank daher sofort ausgeführt.\n\n" +
-                           "Dennoch ausführen?");
-        if (!Application.getCallback().askUser(q))
-          return;
+        String q = i18n.tr("Der Termin liegt mindestens 1 Tag in Zukunft.\n" +
+                           "Soll der Auftrag stattdessen als bankseitige SEPA-Terminüberweisung " +
+                           "ausgeführt werden?");
+        if (Application.getCallback().askUser(q))
+        {
+          u.setTerminUeberweisung(true);
+          u.store();
+        }
       }
-			
+
 			AuslandsUeberweisungDialog d = new AuslandsUeberweisungDialog(u,AuslandsUeberweisungDialog.POSITION_CENTER);
 			try
 			{

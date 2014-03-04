@@ -1,18 +1,16 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIAuslandsUeberweisungJob.java,v $
- * $Revision: 1.7 $
- * $Date: 2012/03/01 22:19:15 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.Date;
+import java.util.Properties;
+
+import org.kapott.hbci.GV.HBCIJob;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -22,6 +20,7 @@ import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -33,6 +32,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 {
 
 	private AuslandsUeberweisung ueberweisung = null;
+  private boolean isTermin                  = false;
 	private Konto konto                       = null;
 
   /**
@@ -55,7 +55,8 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt"));
 
       this.ueberweisung = ueberweisung;
-      this.konto = this.ueberweisung.getKonto();
+      this.konto        = this.ueberweisung.getKonto();
+      this.isTermin     = this.ueberweisung.isTerminUeberweisung();
 
       if (this.ueberweisung.getBetrag() > Settings.getUeberweisungLimit())
         throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
@@ -107,9 +108,28 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   public String getIdentifier()
   {
+    if (isTermin)
+      return "TermUebSEPA";
+    
     return "UebSEPA";
   }
-  
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
+   */
+  public void setJob(HBCIJob job) throws RemoteException, ApplicationException
+  {
+    if (this.isTermin)
+    {
+      Date date = this.ueberweisung.getTermin();
+      Properties p = job.getJobRestrictions();
+      new PreTimeRestriction(date,p).test();
+      this.setJobParam("date",date);
+    }
+
+    super.setJob(job);
+  }
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
    */

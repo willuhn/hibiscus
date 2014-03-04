@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/AuslandsUeberweisungControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2012/02/26 13:00:39 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -14,6 +8,7 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
@@ -51,6 +46,7 @@ import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -78,6 +74,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
   private TerminInput termin                 = null;
   private ReminderIntervalInput interval     = null;
+  private CheckboxInput banktermin           = null;
 
   private CheckboxInput storeEmpfaenger      = null;
   
@@ -265,8 +262,46 @@ public class AuslandsUeberweisungControl extends AbstractControl
    */
   public TerminInput getTermin() throws RemoteException
   {
-    if (this.termin == null)
-      this.termin = new TerminInput((Terminable) getTransfer());
+    if (this.termin != null)
+      return this.termin;
+    
+    this.termin = new TerminInput((Terminable) getTransfer());
+    this.termin.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          if (!termin.hasChanged())
+            return;
+          
+          Date date = (Date) termin.getValue();
+          if (date == null)
+            return;
+          
+          // Wenn das Datum eine Woche in der Zukunft liegt, fragen wir den User, ob es vielleicht
+          // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
+          // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
+          boolean isTermin = ((Boolean) getBankTermin().getValue()).booleanValue();
+          if (isTermin)
+            return;
+
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(DateUtil.startOfDay(new Date()));
+          cal.add(Calendar.DATE,6);
+          if (DateUtil.startOfDay(date).after(cal.getTime()))
+          {
+            String q = i18n.tr("Soll der Auftrag als bankseitig geführte SEPA-Terminüberweisung ausgeführt werden?");
+            getBankTermin().setValue(Application.getCallback().askUser(q));
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to check for termueb",e);
+        }
+        
+      }
+    });
+      
     return termin;
   }
 
@@ -308,6 +343,42 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
     return storeEmpfaenger;
   }
+  
+  /**
+   * Liefert eine Checkbox mit der eingestellt werden kann, ob es sich um einen bankseitigen Termin-Auftrag handelt.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getBankTermin() throws RemoteException
+  {
+    if (this.banktermin != null)
+      return this.banktermin;
+    
+    final AuslandsUeberweisung u = this.getTransfer();
+    this.banktermin = new CheckboxInput(u.isTerminUeberweisung());
+    this.banktermin.setName(i18n.tr("bankseitige SEPA-Terminüberweisung"));
+    this.banktermin.setEnabled(!u.ausgefuehrt());
+    this.banktermin.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        // Wir muessen die Entscheidung, ob es eine Termin-Ueberweisung ist,
+        // sofort im Objekt speichern, denn die Information wird von
+        // "getTermin()" gebraucht, um zu erkennen, ob der Auftrag faellig ist
+        try
+        {
+          u.setTerminUeberweisung(((Boolean)banktermin.getValue()).booleanValue());
+          getTermin().updateComment(); // Kommentar vom Termin-Eingabefeld aktualisieren.
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to set flag",e);
+        }
+      }
+    });
+    
+    return this.banktermin;
+  }
 
   /**
    * Speichert den Geld-Transfer.
@@ -332,6 +403,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       t.setZweck((String)getZweck().getValue());
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
+      t.setTerminUeberweisung(((Boolean) getBankTermin().getValue()).booleanValue());
 
       String kto  = (String)getEmpfaengerKonto().getValue();
       String name = getEmpfaengerName().getText();
@@ -498,53 +570,4 @@ public class AuslandsUeberweisungControl extends AbstractControl
       }
     }
   }
-
 }
-
-
-/**********************************************************************
- * $Log: AuslandsUeberweisungControl.java,v $
- * Revision 1.14  2012/02/26 13:00:39  willuhn
- * @B BUGZILLA 1197
- *
- * Revision 1.13  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.12  2011-05-20 16:22:31  willuhn
- * @N Termin-Eingabefeld in eigene Klasse ausgelagert (verhindert duplizierten Code) - bessere Kommentare
- *
- * Revision 1.11  2011-04-11 14:36:38  willuhn
- * @N Druck-Support fuer Lastschriften und SEPA-Ueberweisungen
- *
- * Revision 1.10  2011-04-07 17:52:07  willuhn
- * @N BUGZILLA 1014
- *
- * Revision 1.9  2010/04/14 17:44:10  willuhn
- * @N BUGZILLA 83
- *
- * Revision 1.8  2010/04/11 22:05:40  willuhn
- * @N virtuelle Konto-Adressen in SEPA-Auftraegen beruecksichtigen
- *
- * Revision 1.7  2010/04/05 21:19:34  willuhn
- * @N Leerzeichen in IBAN zulassen - und nach Eingabe automatisch abschneiden (wie bei BLZ) - siehe http://www.willuhn.de/blog/index.php?/archives/506-Beta-Phase-fuer-Jameica-1.9Hibiscus-1.11-eroeffnet.html#c1079
- *
- * Revision 1.6  2009/10/29 12:26:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2009/10/20 23:12:58  willuhn
- * @N Support fuer SEPA-Ueberweisungen
- * @N Konten um IBAN und BIC erweitert
- *
- * Revision 1.4  2009/10/07 23:08:56  willuhn
- * @N BUGZILLA 745: Deaktivierte Konten in Auswertungen zwar noch anzeigen, jedoch mit "[]" umschlossen. Bei der Erstellung von neuen Auftraegen bleiben sie jedoch ausgeblendet. Bei der Gelegenheit wird das Default-Konto jetzt mit ">" markiert
- *
- * Revision 1.3  2009/05/07 15:13:37  willuhn
- * @N BIC in Auslandsueberweisung
- *
- * Revision 1.2  2009/03/17 23:44:14  willuhn
- * @N BUGZILLA 159 - Auslandsueberweisungen. Erste Version
- *
- * Revision 1.1  2009/03/13 00:25:12  willuhn
- * @N Code fuer Auslandsueberweisungen fast fertig
- *
- **********************************************************************/

@@ -5,9 +5,16 @@
 	</p>
 
 	<p>
-		<b>Tipp:</b> Wenn Ihr Konto nicht in der Auswahl erscheint, dann besitzt es
+		<b>Hinweis:</b> Wenn Ihr Konto nicht in der Auswahl erscheint, dann besitzt es
 		noch keine IBAN/BIC. Öffnen Sie hierzu die Konto-Eigenschaften und geben
 		Sie dort die beiden Werte ein. Anschließend wird das Konto in der
 		Auswahlliste erscheinen. 
 	</p>
+	
+  <p>
+    <b>Tipp:</b> Aktivieren Sie <b>bankseitige SEPA-Terminüberweisung</b>, um den
+    Auftrag sofort an die Bank zu senden. Er wird dann erst zum angegebenen
+    Fälligkeitsdatum von der Bank ausgeführt.
+  </p>
+  
 </form>

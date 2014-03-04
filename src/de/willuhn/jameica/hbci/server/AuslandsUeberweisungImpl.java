@@ -59,6 +59,9 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setKonto(getKonto());
     u.setZweck(getZweck());
     u.setEndtoEndId(getEndtoEndId());
+    u.setTerminUeberweisung(isTerminUeberweisung());
+    u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
+    
     return u;
   }
 
@@ -118,6 +121,35 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       Logger.error("error while checking foreign ueberweisung",e);
       throw new ApplicationException(i18n.tr("Fehler beim Prüfen der SEPA-Überweisung."));
     }
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isTerminUeberweisung()
+   */
+  public boolean isTerminUeberweisung() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("banktermin");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setTerminUeberweisung(boolean)
+   */
+  public void setTerminUeberweisung(boolean termin) throws RemoteException
+  {
+    setAttribute("banktermin",termin ? new Integer(1) : null);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#ueberfaellig()
+   */
+  public boolean ueberfaellig() throws RemoteException
+  {
+    // Termin-Auftraege werden sofort faellig gestellt, weil sie ja durch die Bank terminiert werden
+    if (isTerminUeberweisung())
+      return !ausgefuehrt();
+    
+    return super.ueberfaellig();
   }
 
   /**
