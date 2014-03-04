@@ -1,0 +1,16 @@
+<form>
+	<p>
+		<span color="header" font="header">Vorhandene SEPA-Sammellastschriften</span>
+	</p>
+	
+	<p>
+		In dieser Liste sehen Sie alle von Ihnen eingegebenen SEPA-Sammellastschriften.
+	</p>
+	
+	<p>
+		<b>Tipp:</b> Eine bereits ausgeführte SEPA-Sammellastschrift kann nicht
+		erneut abgesendet werden. Sie können diese jedoch duplizieren,
+		indem Sie mit der rechten Maustaste auf die gewünschte Buchung
+		klicken und anschließend <b>Duplizieren</b> wählen.
+	</p>
+</form>
