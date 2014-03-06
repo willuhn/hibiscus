@@ -54,13 +54,13 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
     Object data = this.ctx;
     
     if (data == null)
-        throw new ApplicationException(i18n.tr("Bitte wÃ¤hlen Sie einen Auftrag aus"));
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
     
     if (data instanceof TablePart)
       data = ((TablePart)data).getSelection();
     
     if (!(data instanceof SepaSammelTransfer))
-      throw new ApplicationException(i18n.tr("Bitte wÃ¤hlen Sie einen Auftrag aus"));
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
 
     try
     {
@@ -148,7 +148,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
 
     // Termin
     Date termin = a.getTermin();
-    table.add(new TextPrint(i18n.tr("FÃ¤llig am"),fontNormal));
+    table.add(new TextPrint(i18n.tr("Fällig am"),fontNormal));
     table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
 
     // Summe
@@ -157,7 +157,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
 
     // Ausfuehrungsstatus
     Date ausgefuehrt = a.getAusfuehrungsdatum();
-    table.add(new TextPrint(i18n.tr("AusgefÃ¼hrt"),fontNormal));
+    table.add(new TextPrint(i18n.tr("Ausgeführt"),fontNormal));
     if (ausgefuehrt != null)
       table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
     else
