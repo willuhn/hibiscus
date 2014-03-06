@@ -54,13 +54,13 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
     Object data = this.ctx;
     
     if (data == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
+        throw new ApplicationException(i18n.tr("Bitte wï¿½hlen Sie einen Auftrag aus"));
     
     if (data instanceof TablePart)
       data = ((TablePart)data).getSelection();
     
     if (!(data instanceof SepaSammelTransfer))
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
+      throw new ApplicationException(i18n.tr("Bitte wï¿½hlen Sie einen Auftrag aus"));
 
     try
     {
@@ -106,7 +106,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
           String usage = VerwendungszweckUtil.toString(b,"\n");
 
           children.add(new TextPrint(Integer.toString(++count),fontTiny));
-          children.add(new TextPrint(i18n.tr("{0}, Kto. {1}, BLZ {2}",b.getGegenkontoName(),b.getGegenkontoNummer(),b.getGegenkontoBLZ()),fontTiny));
+          children.add(new TextPrint(i18n.tr("{0}, IBAN. {1}, BIC {2}",b.getGegenkontoName(),b.getGegenkontoNummer(),b.getGegenkontoBLZ()),fontTiny));
           children.add(new TextPrint(usage,fontTiny));
           children.add(new TextPrint(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + k.getWaehrung(),fontTiny));
         }
@@ -148,7 +148,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
 
     // Termin
     Date termin = a.getTermin();
-    table.add(new TextPrint(i18n.tr("Fällig am"),fontNormal));
+    table.add(new TextPrint(i18n.tr("Fï¿½llig am"),fontNormal));
     table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
 
     // Summe
@@ -157,7 +157,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
 
     // Ausfuehrungsstatus
     Date ausgefuehrt = a.getAusfuehrungsdatum();
-    table.add(new TextPrint(i18n.tr("Ausgeführt"),fontNormal));
+    table.add(new TextPrint(i18n.tr("Ausgefï¿½hrt"),fontNormal));
     if (ausgefuehrt != null)
       table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
     else
