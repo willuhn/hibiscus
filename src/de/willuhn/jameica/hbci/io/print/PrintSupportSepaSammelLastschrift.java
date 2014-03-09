@@ -8,9 +8,11 @@
 package de.willuhn.jameica.hbci.io.print;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.TextPrint;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.util.ApplicationException;
 
@@ -49,7 +51,10 @@ public class PrintSupportSepaSammelLastschrift extends AbstractPrintSupportSepaS
     table.add(new TextPrint(a.getSequenceType().getDescription(),fontNormal));
     table.add(new TextPrint(i18n.tr("Lastschrift-Art"),fontNormal));
     table.add(new TextPrint(a.getType().getDescription(),fontNormal));
-    
+    Date faellig = a.getTargetDate();
+    table.add(new TextPrint(i18n.tr("Fälligkeitsdatum"),fontNormal));
+    table.add(new TextPrint(faellig == null ? "-" : HBCI.DATEFORMAT.format(faellig),fontNormal));
+
     return table;
   }
 }
