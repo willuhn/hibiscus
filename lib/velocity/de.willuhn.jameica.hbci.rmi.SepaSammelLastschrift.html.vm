@@ -212,7 +212,7 @@
               
               #foreach($b in $t.buchungen)
               <tr>
-                <td>$!b.gegenkontoName, Kto. $!b.gegenkontoNummer, BLZ $!b.gegenkontoBLZ</td>
+                <td>$!b.gegenkontoName, IBAN. $!b.gegenkontoNummer, BIC $!b.gegenkontoBLZ</td>
                 <td>$!b.zweck</td>
                 <td style="text-align:right">$!decimalformat.format($b.betrag) $!t.konto.waehrung</td>
               </tr>
