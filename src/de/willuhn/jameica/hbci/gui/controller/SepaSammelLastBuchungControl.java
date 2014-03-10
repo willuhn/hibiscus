@@ -125,8 +125,13 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
       return this.creditorId;
     
     SepaSammelLastBuchung s = this.getBuchung();
+    String creditorId       = s.getCreditorId();
     
-    this.creditorId = new TextInput(s.getCreditorId(),HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
+    // Checken, ob wir im Konto eine Glaeubiger-ID haben
+    if (StringUtils.trimToNull(creditorId) == null)
+      creditorId = StringUtils.trimToNull(MetaKey.SEPA_CREDITOR_ID.get(s.getSammelTransfer().getKonto()));
+    
+    this.creditorId = new TextInput(creditorId,HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
     this.creditorId.setName(i18n.tr("Gläubiger-Identifikation"));
     this.creditorId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     this.creditorId.setEnabled(!s.getSammelTransfer().ausgefuehrt());
