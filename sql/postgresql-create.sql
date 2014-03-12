@@ -111,6 +111,25 @@ CREATE TABLE sepaslastbuchung (
   sigdate date NOT NULL
 );
 
+CREATE TABLE sepasueb (
+  id serial primary key,
+  konto_id integer NOT NULL,
+  bezeichnung varchar(255) NOT NULL,
+  termin date NOT NULL,
+  ausgefuehrt integer NOT NULL,
+  ausgefuehrt_am timestamp
+);
+
+CREATE TABLE sepasuebbuchung (
+  id serial primary key,
+  sepasueb_id integer NOT NULL,
+  empfaenger_konto varchar(40) NOT NULL,
+  empfaenger_name varchar(140) NOT NULL,
+  empfaenger_bic varchar(15),
+  betrag float NOT NULL,
+  zweck varchar(140),
+  endtoendid varchar(35)
+);
 
 CREATE TABLE protokoll (
   id serial primary key,
@@ -289,6 +308,8 @@ ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERE
 ALTER TABLE sepalastschrift ADD CONSTRAINT fk_konto9 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sepaslast ADD CONSTRAINT fk_konto10 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslast1 FOREIGN KEY (sepaslast_id) REFERENCES sepaslast (id) DEFERRABLE;
+ALTER TABLE sepasueb ADD CONSTRAINT fk_konto11 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasueb1 FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);
@@ -308,4 +329,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',50);
+INSERT INTO version (name,version) values ('db',51);

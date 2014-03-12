@@ -180,7 +180,33 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
    * Speichert den Auftrag.
    * @return true, wenn das Speichern erfolgreich war, sonst false.
    */
-  public abstract boolean handleStore();
+  public synchronized boolean handleStore()
+  {
+    try
+    {
+      SepaSammelTransfer t = this.getTransfer();
+      if (t.ausgefuehrt())
+        return true;
+      
+      this.store();
+      
+      return true;
+    }
+    catch (Exception e)
+    {
+      if (e instanceof ApplicationException)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("error while saving order",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+      }
+    }
+    return false;
+
+  }
 
   /**
    * Eigener ueberschriebener Kontofilter.

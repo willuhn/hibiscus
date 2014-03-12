@@ -37,6 +37,7 @@ import de.willuhn.jameica.messaging.MessageBus;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -271,7 +272,33 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
    * Speichert die Buchung.
    * @return true, wenn das Speichern erfolgreich war, sonst false.
    */
-  public abstract boolean handleStore();
+  public synchronized boolean handleStore()
+  {
+    try
+    {
+      SepaSammelTransferBuchung s = this.getBuchung();
+      SepaSammelTransfer t = s.getSammelTransfer();
+      
+      if (t.ausgefuehrt())
+        return true;
+      
+      this.store();
+      return true;
+    }
+    catch (Exception e)
+    {
+      if (e instanceof ApplicationException)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      else
+      {
+        Logger.error("error while saving order",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+      }
+    }
+    return false;
+  }
 
   /**
    * Listener, der bei Auswahl des Empfaengers die restlichen Daten vervollstaendigt.

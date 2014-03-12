@@ -125,6 +125,30 @@ CREATE TABLE sepaslastbuchung (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE sepasueb (
+  id IDENTITY(1),
+  konto_id int(4) NOT NULL,
+  bezeichnung varchar(255) NOT NULL,
+  termin date NOT NULL,
+  ausgefuehrt int(1) NOT NULL,
+  ausgefuehrt_am datetime NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE sepasuebbuchung (
+  id IDENTITY(1),
+  sepasueb_id int(4) NOT NULL,
+  empfaenger_konto varchar(40) NOT NULL,
+  empfaenger_name varchar(140) NOT NULL,
+  empfaenger_bic varchar(15) NULL,
+  betrag double NOT NULL,
+  zweck varchar(140),
+  endtoendid varchar(35),
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE protokoll (
   id IDENTITY(1),
   konto_id int(4) NOT NULL,
@@ -330,6 +354,8 @@ ALTER TABLE aueberweisung ADD CONSTRAINT fk_konto8 FOREIGN KEY (konto_id) REFERE
 ALTER TABLE sepalastschrift ADD CONSTRAINT fk_konto9 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sepaslast ADD CONSTRAINT fk_konto10 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslast1 FOREIGN KEY (sepaslast_id) REFERENCES sepaslast (id) DEFERRABLE;
+ALTER TABLE sepasueb ADD CONSTRAINT fk_konto11 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasueb1 FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id) DEFERRABLE;
 
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;
@@ -352,6 +378,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',50);
+INSERT INTO version (name,version) values ('db',51);
   
 COMMIT;

@@ -10,6 +10,8 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.DateInput;
@@ -20,6 +22,7 @@ import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastBuchungNew;
@@ -47,6 +50,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
   private SelectInput sequenceType        = null;
   private SelectInput type                = null;
   private DateInput targetDate            = null;
+  private Input name                      = null;
 
 
   /**
@@ -73,6 +77,21 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
       this.sequenceType.setMandatory(true);
     }
     return this.sequenceType;
+  }
+  
+  /**
+   * Ueberschrieben, um einen Namensvorschlag anzuzeigen.
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getName()
+   */
+  public Input getName() throws RemoteException
+  {
+    if (this.name != null)
+      return this.name;
+    
+    this.name = super.getName();
+    if (StringUtils.trimToNull((String)this.name.getValue()) == null)
+      this.name.setValue(i18n.tr("SEPA-Sammellastschrift vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
+    return this.name;
   }
 
   /**
@@ -108,6 +127,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
   }
   
   /**
+   * Ueberschrieben, um die Lastschrift-spezifischen Attribute zu setzen.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#handleStore()
    */
   public synchronized boolean handleStore()
@@ -166,7 +186,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     if (table != null)
       return table;
 
-    table = new de.willuhn.jameica.hbci.gui.parts.SepaSammelLastschriftList(new SepaSammelLastschriftNew());
+    table = new SepaSammelLastschriftList(new SepaSammelLastschriftNew());
     return table;
   }
 

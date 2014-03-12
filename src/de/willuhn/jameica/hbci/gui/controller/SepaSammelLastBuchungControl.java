@@ -180,6 +180,7 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
 
 
   /**
+   * Ueberschrieben, um die Lastschrift-spezifischen Attribute zu setzen.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferBuchungControl#handleStore()
    */
   public synchronized boolean handleStore()

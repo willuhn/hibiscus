@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0325 Unterstützung für SEPA-Sammelüberweisungen
+
 2014-03-09 Version 2.6.4
 
   * NEW: 0324 BUGZILLA 1419 - Unterstützung für SEPA-Termin-Überweisungen

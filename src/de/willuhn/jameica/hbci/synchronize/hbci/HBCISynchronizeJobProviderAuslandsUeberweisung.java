@@ -19,7 +19,9 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaUeberweisung;
 import de.willuhn.logging.Logger;
 
@@ -35,6 +37,7 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung implements HBCISynch
   private final static List<Class<? extends SynchronizeJob>> JOBS = new ArrayList<Class<? extends SynchronizeJob>>()
   {{
     add(HBCISynchronizeJobSepaUeberweisung.class);
+    add(HBCISynchronizeJobSepaSammelUeberweisung.class);
   }};
 
   /**
@@ -53,6 +56,7 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung implements HBCISynch
         if (!options.getSyncAuslandsUeberweisungen())
           continue;
         
+        // Einzelueberweisungen
         DBIterator list = kt.getAuslandsUeberweisungen();
         list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
         while (list.hasNext())
@@ -65,6 +69,21 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung implements HBCISynch
           job.setContext(SynchronizeJob.CTX_ENTITY,u);
           jobs.add(job);
         }
+        
+        // Sammelueberweisungen
+        list = k.getSepaSammelUeberweisungen();
+        list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
+        while (list.hasNext())
+        {
+          SepaSammelUeberweisung su = (SepaSammelUeberweisung) list.next();
+          if (!su.ueberfaellig() || su.ausgefuehrt()) // Doppelt haelt besser ;)
+            continue; // Nur ueberfaellige Auftraege
+          
+          SynchronizeJobSepaSammelUeberweisung job = backend.create(SynchronizeJobSepaSammelUeberweisung.class,kt);
+          job.setContext(SynchronizeJob.CTX_ENTITY,su);
+          jobs.add(job);
+        }
+        
       }
       catch (Exception e)
       {

@@ -243,6 +243,30 @@ CREATE TABLE sepaslastbuchung (
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE sepasueb (
+       id int(10) AUTO_INCREMENT
+     , konto_id int(10) NOT NULL
+     , bezeichnung VARCHAR(255) NOT NULL
+     , termin DATE NOT NULL
+     , ausgefuehrt int(10) NOT NULL
+     , ausgefuehrt_am DATETIME
+     , UNIQUE (id)
+     , PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE sepasuebbuchung (
+       id int(10) AUTO_INCREMENT
+     , sepasueb_id int(10) NOT NULL
+     , empfaenger_konto VARCHAR(40) NOT NULL
+     , empfaenger_name VARCHAR(140) NOT NULL
+     , empfaenger_bic VARCHAR(15) NULL
+     , betrag DOUBLE NOT NULL
+     , zweck VARCHAR(140)
+     , endtoendid VARCHAR(35)
+     , UNIQUE (id)
+     , PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 CREATE TABLE umsatz (
        id int(10) AUTO_INCREMENT
      , konto_id int(10) NOT NULL
@@ -332,6 +356,8 @@ CREATE INDEX idx_reminder_uuid ON reminder(uuid);
 CREATE INDEX idx_sepalast_konto ON sepalastschrift(konto_id);
 CREATE INDEX idx_sepaslast_konto ON sepaslast(konto_id);
 CREATE INDEX idx_sepaslastbuchung_sepaslast ON sepaslastbuchung(sepaslast_id);
+CREATE INDEX idx_sepasueb_konto ON sepasueb(konto_id);
+CREATE INDEX idx_sepasuebbuchung_sepasueb ON sepasuebbuchung(sepasueb_id);
 
 ALTER TABLE lastschrift ADD CONSTRAINT fk_lastschrift_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_sueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
@@ -348,6 +374,8 @@ ALTER TABLE aueberweisung ADD CONSTRAINT fk_aueberweisung_konto FOREIGN KEY (kon
 ALTER TABLE sepalastschrift ADD CONSTRAINT fk_sepalast_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sepaslast ADD CONSTRAINT fk_sepaslast_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslastbuchung_sepaslast FOREIGN KEY (sepaslast_id) REFERENCES sepaslast (id);
+ALTER TABLE sepasusb ADD CONSTRAINT fk_sepasueb_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasuebbuchung_sepasueb FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id);
 
 -- Indizes fuer grosse Datenmengen
 ALTER TABLE umsatz ADD INDEX (datum);
@@ -357,4 +385,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',50);
+INSERT INTO version (name,version) values ('db',51);

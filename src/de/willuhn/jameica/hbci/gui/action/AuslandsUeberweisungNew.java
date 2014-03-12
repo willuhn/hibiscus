@@ -7,6 +7,7 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
+import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +21,8 @@ import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
@@ -95,6 +98,32 @@ public class AuslandsUeberweisungNew implements Action
         // die weiteren Verwendungszweck-Zeilen gibts bei SEPA-Ueberweisungen nicht.
         // Daher landen die alle in einer Zeile
         u.setZweck(VerwendungszweckUtil.toString(umsatz));
+      }
+      else if (context instanceof SepaSammelUeberweisungBuchung)
+      {
+        try
+        {
+          SepaSammelUeberweisungBuchung b = (SepaSammelUeberweisungBuchung) context;
+          SepaSammelUeberweisung st = (SepaSammelUeberweisung) b.getSammelTransfer();
+          u = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
+          u.setBetrag(b.getBetrag());
+          u.setGegenkontoBLZ(b.getGegenkontoBLZ());
+          u.setGegenkontoName(b.getGegenkontoName());
+          u.setGegenkontoNummer(b.getGegenkontoNummer());
+          u.setZweck(b.getZweck());
+          u.setEndtoEndId(b.getEndtoEndId());
+          
+          if (st != null)
+          {
+            u.setKonto(st.getKonto());
+            u.setTermin(st.getTermin());
+          }
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("error while creating transfer",re);
+          // Dann halt nicht
+        }
       }
     }
     catch (ApplicationException ae)
