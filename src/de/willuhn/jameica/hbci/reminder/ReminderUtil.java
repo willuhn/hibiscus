@@ -44,7 +44,10 @@ public class ReminderUtil
   public static void apply(HibiscusDBObject order, ReminderInterval interval, Date end) throws Exception
   {
     if (!(order instanceof Terminable))
+    {
+      Logger.info("type " + order.getClass().getName() + " does not support reminders");
       throw new ApplicationException(i18n.tr("Der Auftrag unterstützt keine Termine"));
+    }
     
     try
     {
