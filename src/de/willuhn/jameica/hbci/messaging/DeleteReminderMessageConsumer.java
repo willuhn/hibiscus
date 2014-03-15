@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.messaging;
 
 import de.willuhn.jameica.hbci.reminder.ReminderUtil;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
+import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
@@ -37,7 +38,7 @@ public class DeleteReminderMessageConsumer implements MessageConsumer
   {
     QueryMessage msg = (QueryMessage) message;
     Object data      = msg.getData();
-    if (!(data instanceof HibiscusDBObject))
+    if (!(data instanceof Terminable) || !(data instanceof HibiscusDBObject))
       return;
 
     // Dabei wird der Reminder geloescht
