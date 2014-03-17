@@ -80,11 +80,10 @@ public class IbanCalcDialog extends AbstractDialog
   {
     Container container1 = new SimpleContainer(parent);
     container1.addHeadline(i18n.tr("Wichtiger Hinweis"));
-    container1.addText(i18n.tr("Für einige Banken gelten Sonder-Regeln für die IBAN-Berechnung, die von " +
+    container1.addText(i18n.tr("Für einige Banken gelten Sonderregeln für die IBAN-Berechnung, die von " +
                                "Hibiscus u.U. nicht unterstützt werden." +
                                "\n\nDaher gilt: " +
-                               "Bitte verifizieren Sie die errechneten IBANs vor der Verwendung und " +
-                               "benutzen Sie diese nicht ungeprüft."),true);
+                               "Bitte verifizieren Sie daher die errechnete IBAN."),true);
 
     Container container2 = new SimpleContainer(parent);
     container2.addHeadline(i18n.tr("Nationale Bankverbindung"));
