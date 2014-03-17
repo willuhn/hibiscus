@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.NotificationPanel;
 import de.willuhn.jameica.gui.parts.NotificationPanel.Type;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -82,6 +83,11 @@ public class HBCITraceDialog extends AbstractDialog
     this.panel.setText(Type.INFO,i18n.tr("Bitte wählen Sie ein Konto aus."));
     
     Container group = new SimpleContainer(parent);
+    group.addHeadline(i18n.tr("Wichtiger Hinweis"));
+    group.addText(i18n.tr("Das HBCI-Protokoll kann streng vertrauliche Informationen wie z.Bsp. Ihre PIN enthalten. Veröffentlichen Sie das Protokoll daher niemals " +
+    		                  "in einem Forum bzw. versenden Sie es nicht per E-Mail. Öffnen Sie die Datei ggf. in einem Texteditor und schwärzen Sie darin enthaltene " +
+    		                  "sensible Daten.\n"),true, Color.ERROR);
+    
     group.addText(i18n.tr("Klicken Sie nach Auswahl des Kontos bitte auf \"Speichern\", um die HBCI-Protokolle des Kontos in der angegebenen Datei zu speichern."),true);
     group.addInput(this.getKontoAuswahl());
     group.addInput(this.getFile());
