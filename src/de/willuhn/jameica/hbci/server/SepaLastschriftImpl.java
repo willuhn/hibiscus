@@ -119,6 +119,8 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
         throw new ApplicationException(i18n.tr("Bitte geben Sie die Gläubiger-Identifikation ein."));
       HBCIProperties.checkLength(creditorId, HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
       HBCIProperties.checkChars(creditorId, HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      if (!HBCIProperties.checkCreditorIdCRC(getCreditorId()))
+        throw new ApplicationException(i18n.tr("Ungültige Gläubiger-Identifikation. Bitte prüfen Sie Ihre Eingaben."));
 
       String mandateId = getMandateId();
       if (mandateId == null || mandateId.length() == 0)
