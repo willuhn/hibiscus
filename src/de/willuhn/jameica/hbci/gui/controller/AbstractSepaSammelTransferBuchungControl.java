@@ -334,7 +334,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
             // Verwendungszweck vervollstaendigen
             SepaSammelTransferBuchung s = getBuchung();
             DBIterator list = s.getList();
-            list.addFilter("empfaenger_konto = ?",a.getKontonummer());
+            list.addFilter("empfaenger_konto = ?",a.getIban());
             list.setOrder("order by id desc");
             if (list.hasNext())
             {

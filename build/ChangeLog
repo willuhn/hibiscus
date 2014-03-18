@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0327 Vervollständigen des Verwendungszweck bei Auswahl einer Adresse in SEPA-Aufträgen
+              basierend auf vorherigen Zahlungen an diese Adresse
   * NEW: 0326 Tolerieren von kaputten MT940-Daten (Zeile, die mit "-:61:" beginnt). Das "-" ist da
               eigentlich nicht erlaubt, einige Banken senden das aber so.
   * NEW: 0325 Unterstützung für SEPA-Sammelüberweisungen
