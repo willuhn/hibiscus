@@ -57,7 +57,7 @@ public class HBCITraceMessageConsumer implements MessageConsumer
     
     if (current == null)
     {
-      Logger.warn("no ID to assign HBCI trace to");
+      Logger.debug("no ID to assign HBCI trace to");
       return;
     }
     

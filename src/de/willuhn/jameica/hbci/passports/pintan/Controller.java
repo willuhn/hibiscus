@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.AbstractControl;
@@ -470,11 +471,26 @@ public class Controller extends AbstractControl
         konten = (Konto[]) checked.toArray(new Konto[checked.size()]);
       config.setKonten(konten);
       
+      String version = (String) getHBCIVersion().getValue();
       config.setFilterType((String) getFilterType().getValue());
       config.setBezeichnung((String) getBezeichnung().getValue());
       config.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
-			config.setHBCIVersion((String) getHBCIVersion().getValue());
+			config.setHBCIVersion(version);
 			config.setPort((Integer)getPort().getValue());
+			
+			if (getHBCIVersion().hasChanged())
+			{
+        // Das triggert beim naechsten Verbindungsaufbau
+        // HBCIHandler.<clinit>
+        // -> HBCIHandler.registerUser()
+        // -> HBCIUser.register()
+        // -> HBCIUser.updateUserData()
+        // -> HBCIUser.fetchSysId() - und das holt die BPD beim naechsten mal ueber einen nicht-anonymen Dialog
+			  Logger.info("hbci version has changed to \"" + version + "\" - set sysId to 0 to force BPD reload on next connect");
+			  AbstractHBCIPassport p = (AbstractHBCIPassport)config.getPassport();
+			  p.getBPD().remove("BPA.version");
+        p.syncSysId();
+			}
 
 
       PinTanConfigFactory.store(config);
