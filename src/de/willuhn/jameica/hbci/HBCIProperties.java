@@ -477,14 +477,12 @@ public class HBCIProperties
   /**
    * Prueft die Gueltigkeit einer Creditor-ID (Gläubiger-Identifikationsnummer)
    * anhand von Pruefziffern.
-   * @see HBCIUtils#checkCredtitorIdCRC(java.lang.String)
+   * @see HBCIUtils#checkCredtitorIdCRC(String)
    * @param creditorId die Creditor-ID
    * @return true, wenn die Creditor-ID ok ist.
    */
   public final static boolean checkCreditorIdCRC(String creditorId)
   {
-//    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
-//      return true;
     try
     {
       if (creditorId == null || // Nichts angegeben

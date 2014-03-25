@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0332 Creditor-ID auf Plausibilität prüfen, Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/31e9842347aa13893a252bad54d6a7ee8e4789cd
   * NEW: 0331 SEPA-Batchbook-Modus in Sammelaufträgen auswählbar
   * NEW: 0330 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/1c14431d172697b1afd06c9f936aafa028cf24da
