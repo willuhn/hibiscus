@@ -104,12 +104,12 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           {
             for (String name:names)
             {
-              if (name.startsWith("checkbox:"))
+              if (name.endsWith("(true/false)"))
               {
-                String newName = name.replace("checkbox:","");
+                String newName = name.replace("(true/false)","").trim();
                 String value = konto.getMeta(newName,null);
                 final CheckboxInput t = new CheckboxInput(value != null && Boolean.valueOf(value).booleanValue());
-                t.setName(name);
+                t.setName(newName);
                 this.properties.add(t);
               }
               else
