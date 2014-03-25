@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0331 SEPA-Batchbook-Modus in Sammelaufträgen auswählbar
   * NEW: 0330 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/1c14431d172697b1afd06c9f936aafa028cf24da
   * NEW: 0329 Support für Checkboxen in erweiterten Sync-Optionen von Offline-Konten

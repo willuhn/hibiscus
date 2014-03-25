@@ -11,8 +11,10 @@ import java.util.List;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.rmi.BatchBookType;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
@@ -72,6 +74,10 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
       setJobParam("src",own);
+      
+      BatchBookType batch = BatchBookType.byValue(MetaKey.SEPA_BATCHBOOK.get(this.transfer));
+      if (batch != null && batch != BatchBookType.NONE)
+        setJobParam("batchbook",batch.getValue());
       
 
       String curr = konto.getWaehrung();

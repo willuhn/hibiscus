@@ -104,20 +104,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           {
             for (String name:names)
             {
-              if (name.endsWith("(true/false)"))
-              {
-                String newName = name.replace("(true/false)","").trim();
-                String value = konto.getMeta(newName,null);
-                final CheckboxInput t = new CheckboxInput(value != null && Boolean.valueOf(value).booleanValue());
-                t.setName(newName);
-                this.properties.add(t);
-              }
-              else
-              {
-                final TextInput t = new TextInput(konto.getMeta(name,null));
-                t.setName(name);
-                this.properties.add(t);
-              }
+              this.createCustomProperty(name);
             }
           }
         }
@@ -127,6 +114,29 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         }
       }
     }
+  }
+  
+  /**
+   * Erzeugt ein Custom-Property-Input fuer den angegebenen Property-Namen.
+   * @param name der Name des Custom-Property.
+   * @throws RemoteException
+   */
+  private void createCustomProperty(String name) throws RemoteException
+  {
+    Input t = null;
+    if (name.endsWith("(true/false)"))
+    {
+      String newName = name.replace("(true/false)","").trim();
+      String value = konto.getMeta(newName,null);
+      t = new CheckboxInput(value != null && Boolean.valueOf(value).booleanValue());
+      t.setName(newName);
+    }
+    else
+    {
+      t = new TextInput(konto.getMeta(name,null));
+      t.setName(name);
+    }
+    this.properties.add(t);
   }
 
   /**

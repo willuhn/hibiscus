@@ -22,12 +22,15 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.BatchBookInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.reminder.ReminderUtil;
+import de.willuhn.jameica.hbci.rmi.BatchBookType;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
@@ -52,6 +55,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
   private Input name                     = null;
   private TerminInput termin             = null;
   private ReminderIntervalInput interval = null;
+  private BatchBookInput batchbook       = null;
 
   /**
    * ct.
@@ -111,6 +115,20 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     return this.kontoAuswahl;
   }
 
+  /**
+   * Liefert ein Auswahlfeld fuer den Batchbook-Mode.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public BatchBookInput getBatchBook() throws RemoteException
+  {
+    if (this.batchbook != null)
+      return this.batchbook;
+    
+    T t = this.getTransfer();
+    this.batchbook = new BatchBookInput(t.getKonto(),t);
+    return this.batchbook;
+  }
 
   /**
    * Liefert das Eingabe-Feld fuer den Termin.
@@ -163,11 +181,18 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     if (t.ausgefuehrt())
       return;
 
-    t.setKonto((Konto)getKontoAuswahl().getValue());
+    Konto k = (Konto)getKontoAuswahl().getValue();
+    t.setKonto(k);
     t.setBezeichnung((String)getName().getValue());
     t.setTermin((Date)getTermin().getValue());
     t.store();
 
+    // Batchbook-Mode speichern. Sowohl im Auftrag als auch im Konto als Preset fuer den naechsten Auftrag
+    BatchBookType batch = (BatchBookType) this.getBatchBook().getValue();
+    String value = batch != null ? batch.getValue() : null;
+    MetaKey.SEPA_BATCHBOOK.set(t,value);
+    MetaKey.SEPA_BATCHBOOK.set(k,t.getClass().getSimpleName(),value);
+    
     // Reminder-Intervall speichern
     ReminderIntervalInput input = this.getReminderInterval();
     if (input.containsInterval())
@@ -247,10 +272,15 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
           return;
 
         Konto konto = (Konto) o;
+        T transfer  = getTransfer();
 
         // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
         // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
-        getTransfer().setKonto(konto);
+        transfer.setKonto(konto);
+        
+        // Fuer den Fall, dass der Auftrag noch keinen Batchbook-Type hat,
+        // das neu ausgewaehlte Konto jedoch einen anderen als den momentanen.
+        getBatchBook().update(konto,transfer);
       }
       catch (RemoteException er)
       {

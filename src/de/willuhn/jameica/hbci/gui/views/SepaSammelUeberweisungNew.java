@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.PanelButton;
+import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -63,11 +64,24 @@ public class SepaSammelUeberweisungNew extends AbstractView
     group.addLabelPair(i18n.tr("Zu belastendes Konto"),control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
 
-    group.addHeadline(i18n.tr("Sonstige Informationen (nur Hibiscus-intern)"));
-    group.addText(i18n.tr("Diese Daten werden nicht an die Bank übertragen."),true);
-    group.addInput(control.getTermin());
-    group.addInput(control.getReminderInterval());
-
+    ColumnLayout cols = new ColumnLayout(getParent(),2);
+    
+    // Linke Seite
+    {
+      Container container = new SimpleContainer(cols.getComposite());
+      container.addHeadline(i18n.tr("SEPA"));
+      container.addInput(control.getBatchBook());
+    }
+    
+    // Rechte Seite
+    {
+      Container container = new SimpleContainer(cols.getComposite());
+      container.addHeadline(i18n.tr("Sonstige Informationen (nur Hibiscus-intern)"));
+      container.addText(i18n.tr("Diese Daten werden nicht an die Bank übertragen."),true);
+      container.addInput(control.getTermin());
+      container.addInput(control.getReminderInterval());
+    }
+    
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Sammelauftrag löschen"),new Action() {
       public void handleAction(Object context) throws ApplicationException

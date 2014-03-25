@@ -40,6 +40,11 @@ public enum MetaKey
    * Gläubiger-Identifikation.
    */
   SEPA_CREDITOR_ID("sepa.creditor.id", "Gläubiger-Identifikation",null),
+  
+  /**
+   * Batch-Book-Flag.
+   */
+  SEPA_BATCHBOOK("sepa.batchbook", "Als Stapelbuchung senden",null),
 
   ;
 
@@ -86,7 +91,7 @@ public enum MetaKey
    */
   public String get(HibiscusDBObject o) throws RemoteException
   {
-    return o.getMeta(this.name,this.defaultValue);
+    return this.get(o,null);
   }
   
   /**
@@ -97,9 +102,39 @@ public enum MetaKey
    */
   public void set(HibiscusDBObject o, String value) throws RemoteException
   {
-    o.setMeta(this.name,value);
+    this.set(o,null,value);
   }
   
+  /**
+   * Liefert den Wert des Meta-Keys fuer das Objekt.
+   * @param o das Objekt.
+   * @param suffix optionaler Suffix, um verschiedene Varianten des Meta-Key verwenden zu koennen.
+   * @return der Wert des Meta-Keys oder der Default-Wert, wenn kein Wert existiert.
+   * @throws RemoteException
+   */
+  public String get(HibiscusDBObject o, String suffix) throws RemoteException
+  {
+    String key = this.name;
+    if (suffix != null)
+      key = key + "." + suffix;
+    return o.getMeta(key,this.defaultValue);
+  }
+  
+  /**
+   * Speichert den Wert des Meta-Keys fuer das Objekt.
+   * @param o das Objekt.
+   * @param suffix optionaler Suffix, um verschiedene Varianten des Meta-Key verwenden zu koennen.
+   * @param value der Wert des Meta-Keys.
+   * @throws RemoteException
+   */
+  public void set(HibiscusDBObject o, String suffix, String value) throws RemoteException
+  {
+    String key = this.name;
+    if (suffix != null)
+      key = key + "." + suffix;
+    o.setMeta(key,value);
+  }
+
 }
 
 
