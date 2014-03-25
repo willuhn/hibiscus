@@ -474,7 +474,49 @@ public class HBCIProperties
     
     return bic;
   }
-  
+  /**
+   * Prueft die Gueltigkeit einer Creditor-ID (Gläubiger-Identifikationsnummer)
+   * anhand von Pruefziffern.
+   * @see HBCIUtils#checkCredtitorIdCRC(java.lang.String)
+   * @param creditorId die Creditor-ID
+   * @return true, wenn die Creditor-ID ok ist.
+   */
+  public final static boolean checkCreditorIdCRC(String creditorId)
+  {
+//    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
+//      return true;
+    try
+    {
+      if (creditorId == null || // Nichts angegeben
+          creditorId.length() == 0 || // Nichts angegeben
+          creditorId.length() > HBCI_SEPA_CREDITORID_MAXLENGTH ) // zu lang
+      {
+        return false;
+      }
+      return HBCIUtils.checkCredtitorIdCRC(creditorId);
+    }
+    catch (NumberFormatException nfe)
+    {
+      Logger.warn("invalid creditor-id: " + nfe.getMessage());
+      return false;
+    }
+    catch (Exception e)
+    {
+      try
+      {
+        Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
+        HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
+        HBCIUtils.initThread(plugin.getHBCIPropetries(),plugin.getHBCICallback());
+        return HBCIUtils.checkCredtitorIdCRC(creditorId);
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to verify creditor id crc number",e2);
+        return true;
+      }
+    }
+  }
+
   private final static Map<Fehler,String> obantooCodes = new HashMap<Fehler,String>()
   {{
     put(Fehler.BLZ_LEER,                                    i18n.tr("Keine BLZ angegeben"));
