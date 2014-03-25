@@ -548,7 +548,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
             return;
           
           DBIterator list = getTransfer().getList();
-          list.addFilter("empfaenger_konto = ?",new Object[]{a.getKontonummer()});
+          list.addFilter("empfaenger_konto = ?",a.getIban());
           list.setOrder("order by id desc");
           if (list.hasNext())
           {

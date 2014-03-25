@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
@@ -69,7 +70,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private LabelInput error           = null;
   private Button apply               = null;
   
-  private List<TextInput> properties = new ArrayList<TextInput>();
+  private List<Input> properties = new ArrayList<Input>();
 
   /**
    * ct.
@@ -103,9 +104,20 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           {
             for (String name:names)
             {
-              final TextInput t = new TextInput(konto.getMeta(name,null));
-              t.setName(name);
-              this.properties.add(t);
+              if (name.endsWith("(true/false)"))
+              {
+                String newName = name.replace("(true/false)","").trim();
+                String value = konto.getMeta(newName,null);
+                final CheckboxInput t = new CheckboxInput(value != null && Boolean.valueOf(value).booleanValue());
+                t.setName(newName);
+                this.properties.add(t);
+              }
+              else
+              {
+                final TextInput t = new TextInput(konto.getMeta(name,null));
+                t.setName(name);
+                this.properties.add(t);
+              }
             }
           }
         }
@@ -154,9 +166,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         
         try
         {
-          for (TextInput prop:properties)
+          for (Input prop:properties)
           {
-            konto.setMeta(prop.getName(),(String)prop.getValue());
+            Object value = prop.getValue();
+            konto.setMeta(prop.getName(),value != null ? value.toString() : null);
           }
         }
         catch (Exception e)
@@ -191,9 +204,9 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     if (this.properties.size() > 0)
     {
       group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
-      for (TextInput text:this.properties)
+      for (Input prop:this.properties)
       {
-        group.addInput(text);
+        group.addInput(prop);
       }
     }
     

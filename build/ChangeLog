@@ -1,5 +1,14 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0330 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/1c14431d172697b1afd06c9f936aafa028cf24da
+  * NEW: 0329 Support für Checkboxen in erweiterten Sync-Optionen von Offline-Konten
+  * NEW: 0328 Beim Ändern der HBCI-Version in einer PIN/TAN-Config das Neuladen der BPD
+              forcieren. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17285&highlight=&page=last#last_post
+  * NEW: 0327 Vervollständigen des Verwendungszweck bei Auswahl einer Adresse in SEPA-Aufträgen
+              basierend auf vorherigen Zahlungen an diese Adresse
+  * NEW: 0326 Tolerieren von kaputten MT940-Daten (Zeile, die mit "-:61:" beginnt). Das "-" ist da
+              eigentlich nicht erlaubt, einige Banken senden das aber so.
   * NEW: 0325 Unterstützung für SEPA-Sammelüberweisungen
 
 2014-03-09 Version 2.6.4
