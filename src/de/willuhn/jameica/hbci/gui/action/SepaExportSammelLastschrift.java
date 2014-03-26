@@ -28,6 +28,7 @@ import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.gui.dialogs.SepaExportDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
@@ -108,6 +109,7 @@ public class SepaExportSammelLastschrift implements Action
       props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : "1999-01-01");
       props.setProperty("type",         type.name());
       props.setProperty("sepaid",       Long.toString(System.currentTimeMillis()));
+      props.setProperty("batchbook",    MetaKey.SEPA_BATCHBOOK.get(u));
       
       List<SepaSammelLastBuchung> buchungen = u.getBuchungen();
       for (int i=0;i<buchungen.size();++i)

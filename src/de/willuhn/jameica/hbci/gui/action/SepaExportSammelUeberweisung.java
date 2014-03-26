@@ -26,6 +26,7 @@ import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.gui.dialogs.SepaExportDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
@@ -95,6 +96,7 @@ public class SepaExportSammelUeberweisung implements Action
       props.setProperty("src.iban",     StringUtils.trimToEmpty(k.getIban()));
       props.setProperty("src.name",     StringUtils.trimToEmpty(k.getName()));
       props.setProperty("sepaid",       Long.toString(System.currentTimeMillis()));
+      props.setProperty("batchbook",    MetaKey.SEPA_BATCHBOOK.get(u));
       
       List<SepaSammelUeberweisungBuchung> buchungen = u.getBuchungen();
       for (int i=0;i<buchungen.size();++i)
