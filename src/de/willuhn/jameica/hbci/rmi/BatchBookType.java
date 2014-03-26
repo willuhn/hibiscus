@@ -20,17 +20,17 @@ public enum BatchBookType
   /**
    * BatchBooking-Flag gar nicht mitschicken.
    */
-  NONE("","Vorgabewert der Bank verwenden (Standard)"),
+  NONE(null,"","Vorgabewert der Bank verwenden (Standard)"),
   
   /**
    * BatchBooking-Flag als true senden.
    */
-  TRUE("1","Als Stapelbuchung senden"),
+  TRUE(Boolean.TRUE,"1","Als Stapelbuchung senden"),
   
   /**
    * BatchBooking-Flag als false senden.
    */
-  FALSE("0","Als Einzelbuchungen senden (erfordert ggf. Bankvereinbarung)"),
+  FALSE(Boolean.FALSE,"0","Als Einzelbuchungen senden (erfordert ggf. Bankvereinbarung)"),
   
   ;
   
@@ -39,16 +39,19 @@ public enum BatchBookType
    */
   public static BatchBookType DEFAULT = NONE;
   
+  private Boolean bv = null;
   private String value = null;
   private String description = null;
   
   /**
    * ct.
-   * @param value der zugehoerige Property-Wert.
+   * @param bv der interne Boolean-Wert.
+   * @param value der zugehoerige Property-Wert, welcher auch von HBCI4Java verwendet wird.
    * @param description sprechender Name des Typs.
    */
-  private BatchBookType(String value, String description)
+  private BatchBookType(Boolean bv, String value, String description)
   {
+    this.bv          = bv;
     this.value       = value;
     this.description = description;
   }
@@ -60,6 +63,15 @@ public enum BatchBookType
   public String getValue()
   {
     return this.value;
+  }
+  
+  /**
+   * Liefert den zugehoerigen Boolean-Wert.
+   * @return der zugehoerige Boolean-Wert.
+   */
+  public Boolean getBooleanValue()
+  {
+    return this.bv;
   }
   
   /**
@@ -90,6 +102,25 @@ public enum BatchBookType
     return null;
   }
   
+  /**
+   * Liefert den passenden Batchbook-Typ fuer den angegebenen Wert.
+   * @param value der Wert.
+   * @return die zugehoerige Enum.
+   */
+  public static BatchBookType byValue(Boolean value)
+  {
+    for (BatchBookType type:BatchBookType.values())
+    {
+      if (value == type.bv) // fuer den NULL Fall.
+        return type;
+
+      if (value != null && value.equals(type.bv))
+        return type;
+    }
+    
+    return null;
+  }
+
   /**
    * @see java.lang.Enum#toString()
    */
