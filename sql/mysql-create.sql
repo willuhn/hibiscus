@@ -374,7 +374,7 @@ ALTER TABLE aueberweisung ADD CONSTRAINT fk_aueberweisung_konto FOREIGN KEY (kon
 ALTER TABLE sepalastschrift ADD CONSTRAINT fk_sepalast_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sepaslast ADD CONSTRAINT fk_sepaslast_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslastbuchung_sepaslast FOREIGN KEY (sepaslast_id) REFERENCES sepaslast (id);
-ALTER TABLE sepasusb ADD CONSTRAINT fk_sepasueb_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE sepasueb ADD CONSTRAINT fk_sepasueb_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasuebbuchung_sepasueb FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id);
 
 -- Indizes fuer grosse Datenmengen
