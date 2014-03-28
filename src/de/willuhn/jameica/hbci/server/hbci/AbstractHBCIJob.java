@@ -138,18 +138,40 @@ public abstract class AbstractHBCIJob
   		{
   		  name = (String) key;
   		}
+  		
+  		if (idx != null)
+  		{
+        if (value instanceof Konto)
+          job.setParam(name,idx,(Konto)value);
 
-  		if (value instanceof Konto)
-        job.setParam(name,idx,(Konto)value);
+        else if (value instanceof Date)
+          job.setParam(name,idx,(Date)value);
 
-			else if (value instanceof Date)
-				job.setParam(name,idx,(Date)value);
+        else if (value instanceof Value)
+          job.setParam(name,idx,(Value)value);
 
-			else if (value instanceof Value)
-				job.setParam(name,idx,(Value)value);
+        else
+          job.setParam(name,idx,value.toString());
+  		}
+  		else
+  		{
+  		  // Wenn idx null ist, muessen die alten Funktionen
+  		  // ausgefuehrt werden, weil die in einigen GV-Klassen ueberschrieben wurden.
+  		  // Z.Bsp. um bei DEs des Typ "bin" ein "B" davor zu schreiben. Z.Bsp. bei
+  		  // den IZV-Sammelauftraegen. Die werden sonst von SyntaxBin.expand nicht mehr
+  		  // als Binaer-Daten erkannt.
+        if (value instanceof Konto)
+          job.setParam(name,(Konto)value);
 
-	  	else
-				job.setParam(name,idx,value.toString());
+        else if (value instanceof Date)
+          job.setParam(name,(Date)value);
+
+        else if (value instanceof Value)
+          job.setParam(name,(Value)value);
+
+        else
+          job.setParam(name,value.toString());
+  		}
   	}
   }
 

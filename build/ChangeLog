@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0333 IZV-Sammelaufträge konnten nicht mehr ausgeführt werden.
+              Fehlermeldung "ungültiger Indikator für Binärdatenformat: 0"
   * NEW: 0332 Creditor-ID auf Plausibilität prüfen, Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/31e9842347aa13893a252bad54d6a7ee8e4789cd
   * NEW: 0331 SEPA-Batchbook-Modus in Sammelaufträgen auswählbar
