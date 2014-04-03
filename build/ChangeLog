@@ -1,5 +1,9 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0336 Druck von SEPA-Einzelaufträgen überarbeitet
+  * NEW: 0335 Neue HBCI4Java-Version, Stand
+              https://github.com/willuhn/hbci4java/commit/b788aadcc03df5d8d84ac84010e0211b07c3ab68
+
 2014-04-01 Version 2.6.5
 
   * BUG: 0333 IZV-Sammelaufträge konnten nicht mehr ausgeführt werden.

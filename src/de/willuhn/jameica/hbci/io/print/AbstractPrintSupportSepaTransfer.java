@@ -17,12 +17,8 @@ import net.sf.paperclips.LineBreakPrint;
 import net.sf.paperclips.PagePrint;
 import net.sf.paperclips.Print;
 import net.sf.paperclips.TextPrint;
-
-import org.kapott.hbci.manager.HBCIUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
@@ -30,17 +26,18 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Abstrakter Druck-Support fuer einzelne Ueberweisungen und Lastschriften.
+ * Abstrakter Druck-Support fuer einzelne SEPA-Ueberweisungen und -Lastschriften.
+ * @param <T> der konkrete Typ des SEPA-Auftrages.
  */
-public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrintSupport
+public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisung> extends AbstractPrintSupport
 {
-  private BaseUeberweisung auftrag = null;
+  private T auftrag = null;
   
   /**
    * ct.
    * @param a der zu druckende Auftrag.
    */
-  public AbstractPrintSupportBaseUeberweisung(BaseUeberweisung a)
+  public AbstractPrintSupportSepaTransfer(T a)
   {
     this.auftrag = a;
   }
@@ -55,8 +52,8 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
     
     try
     {
-      BaseUeberweisung a = this.auftrag;
-      Konto k            = a.getKonto();
+      T a     = this.auftrag;
+      Konto k = a.getKonto();
       
       // Die eigentlich Tabelle mit den Werten
       DefaultGridLook look = new DefaultGridLook(5,5);
@@ -65,22 +62,17 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
       // Konto
       table.add(new TextPrint(i18n.tr("Konto"),fontNormal));
       table.add(new TextPrint(notNull(k != null ? k.getLongName() : null),fontNormal));
+      table.add(new EmptyPrint());
+      table.add(new TextPrint(i18n.tr("IBAN: {0}",k.getIban()),fontNormal));
       
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
       
-      // Empfaenger
+      // Gegenkonto
       {
-        String blz = a.getGegenkontoBLZ();
-        
         table.add(new TextPrint(i18n.tr("Gegenkonto"),fontNormal));
-        table.add(new TextPrint(notNull(a.getGegenkontoName()),fontBold));
-        table.add(new EmptyPrint());
-        if (blz != null && blz.length() > 0)
-          table.add(new TextPrint(i18n.tr("{0} [BLZ: {1}]\nKonto: {2}",notNull(HBCIUtils.getNameForBLZ(blz)),blz,notNull(a.getGegenkontoNummer())),fontNormal));
-        else
-          table.add(new EmptyPrint());
+        table.add(new TextPrint(i18n.tr("{0}\nIBAN: {1}\nBIC: {2}",a.getGegenkontoName(),a.getGegenkontoNummer(),a.getGegenkontoBLZ()),fontNormal));
       }
 
       // Leerzeile
@@ -108,13 +100,6 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
       
       // Der Rest
       {
-        table.add(new TextPrint(i18n.tr("Textschlüssel"),fontNormal));
-        table.add(new TextPrint(notNull(TextSchluessel.get(a.getTextSchluessel())),fontNormal));
-        
-        // Leerzeile
-        table.add(new LineBreakPrint(fontTiny));
-        table.add(new LineBreakPrint(fontTiny));
-        
         Date termin = a.getTermin();
         table.add(new TextPrint(i18n.tr("Fällig am"),fontNormal));
         table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
@@ -135,6 +120,15 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
       Logger.error("unable to print data",re);
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
+  }
+  
+  /**
+   * Liefert den Auftrag.
+   * @return der Auftrag.
+   */
+  protected T getTransfer()
+  {
+    return this.auftrag;
   }
   
   /**

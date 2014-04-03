@@ -16,10 +16,8 @@ import de.willuhn.util.ApplicationException;
 /**
  * Druck-Support fuer Auslandsueberweisungen.
  */
-public class PrintSupportAuslandsUeberweisung extends AbstractPrintSupportBaseUeberweisung
+public class PrintSupportAuslandsUeberweisung extends AbstractPrintSupportSepaTransfer<AuslandsUeberweisung>
 {
-  private AuslandsUeberweisung u = null;
-  
   /**
    * ct.
    * @param u die zu druckende Auslandsueberweisung.
@@ -27,7 +25,6 @@ public class PrintSupportAuslandsUeberweisung extends AbstractPrintSupportBaseUe
   public PrintSupportAuslandsUeberweisung(AuslandsUeberweisung u)
   {
     super(u);
-    this.u = u;
   }
 
   /**
@@ -37,7 +34,7 @@ public class PrintSupportAuslandsUeberweisung extends AbstractPrintSupportBaseUe
   {
     try
     {
-      if (u.isTerminUeberweisung())
+      if (this.getTransfer().isTerminUeberweisung())
         return i18n.tr("SEPA-Terminüberweisung");
     }
     catch (RemoteException re)

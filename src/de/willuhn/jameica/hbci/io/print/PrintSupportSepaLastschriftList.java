@@ -15,7 +15,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Druck-Support fuer eine Liste von SEPA-Lastschriften.
  */
-public class PrintSupportSepaLastschriftList extends AbstractPrintSupportBaseUeberweisungList
+public class PrintSupportSepaLastschriftList extends AbstractPrintSupportSepaTransferList
 {
   /**
    * ct.
@@ -35,7 +35,7 @@ public class PrintSupportSepaLastschriftList extends AbstractPrintSupportBaseUeb
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportBaseUeberweisungList#printContent()
+   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportSepaTransferList#printContent()
    */
   Print printContent() throws ApplicationException
   {

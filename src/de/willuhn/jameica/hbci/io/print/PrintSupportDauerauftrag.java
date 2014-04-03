@@ -91,7 +91,7 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
         table.add(new TextPrint(notNull(a.getGegenkontoName()),fontBold));
         table.add(new EmptyPrint());
         if (blz != null && blz.length() > 0)
-          table.add(new TextPrint(i18n.tr("{0}, Kto. {1} [BLZ: {2}]",notNull(HBCIUtils.getNameForBLZ(blz)),notNull(a.getGegenkontoNummer()),blz),fontNormal));
+          table.add(new TextPrint(i18n.tr("{0} [BLZ: {1}]\nKonto: {2}",notNull(HBCIUtils.getNameForBLZ(blz)),blz,notNull(a.getGegenkontoNummer())),fontNormal));
         else
           table.add(new EmptyPrint());
       }

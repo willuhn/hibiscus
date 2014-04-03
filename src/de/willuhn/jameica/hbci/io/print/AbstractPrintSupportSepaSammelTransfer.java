@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import net.sf.paperclips.DefaultGridLook;
+import net.sf.paperclips.EmptyPrint;
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.LineBorder;
 import net.sf.paperclips.LineBreakPrint;
@@ -145,6 +146,8 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
     // Konto
     table.add(new TextPrint(i18n.tr("Konto"),fontNormal));
     table.add(new TextPrint(notNull(k != null ? k.getLongName() : null),fontNormal));
+    table.add(new EmptyPrint());
+    table.add(new TextPrint(i18n.tr("IBAN: {0}",k.getIban()),fontNormal));
 
     // Termin
     Date termin = a.getTermin();
