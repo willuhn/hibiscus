@@ -87,6 +87,7 @@
     <consumer queue="hibiscus.query.bankname"              class="de.willuhn.jameica.hbci.messaging.QueryBanknameMessageConsumer" />
     <consumer queue="hibiscus.query.accountcrc"            class="de.willuhn.jameica.hbci.messaging.QueryAccountCRCMessageConsumer" />
     <consumer queue="hibiscus.query.ibancrc"               class="de.willuhn.jameica.hbci.messaging.QueryIBANCRCMessageConsumer" />
+    <consumer queue="hibiscus.query.ibancalc"              class="de.willuhn.jameica.hbci.messaging.QueryIBANCalcMessageConsumer" />
     <consumer queue="hibiscus.transfer.lastschrift"        class="de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer" />
     <consumer queue="hibiscus.transfer.check"              class="de.willuhn.jameica.hbci.messaging.CheckLimitMessageConsumer" />
     <consumer queue="hibiscus.passport.rdh.hbciversion"    class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer" />
