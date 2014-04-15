@@ -73,9 +73,7 @@ public class UmsatzUtil
 
     String text = "%" + query.toLowerCase() + "%";
     DBIterator list = getUmsaetzeBackwards();
-    list.addFilter("LOWER(zweck) LIKE ? OR " +
-                   "LOWER(zweck2) LIKE ? OR " +
-                   "LOWER(zweck3) LIKE ? OR " +
+    list.addFilter("LOWER(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))) LIKE ? OR " +
                    "LOWER(empfaenger_name) LIKE ? OR " +
                    "empfaenger_konto LIKE ? OR " +
                    "empfaenger_blz LIKE ? OR " +
@@ -83,7 +81,7 @@ public class UmsatzUtil
                    "LOWER(art) LIKE ? OR " +
                    "LOWER(customerref) LIKE ? OR " +
                    "LOWER(kommentar) LIKE ?",
-                   text,text,text,text,text,text,text,text,text,text);
+                   text,text,text,text,text,text,text,text);
     return list;
   }
 

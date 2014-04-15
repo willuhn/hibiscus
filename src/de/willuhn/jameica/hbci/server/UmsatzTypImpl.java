@@ -261,7 +261,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     if (s == null || s.trim().length() == 0)
       return false;
 
-    String zweck = VerwendungszweckUtil.toString(umsatz);
+    String zweck = VerwendungszweckUtil.toString(umsatz,"");
     String name  = umsatz.getGegenkontoName();
     String kto   = umsatz.getGegenkontoNummer();
     String kom   = umsatz.getKommentar();
