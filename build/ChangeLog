@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0337 BUGZILLA 1503 - Zusammenführen von SEPA-Überweisungen zu Sammelaufträgen. War
+              schon implementiert. Nur der Menupunkt fehlte noch.
   * CHG: 0336 Druck von SEPA-Einzelaufträgen überarbeitet
   * NEW: 0335 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/b788aadcc03df5d8d84ac84010e0211b07c3ab68
