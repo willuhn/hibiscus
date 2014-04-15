@@ -500,13 +500,13 @@ public class KontoauszugList extends UmsatzList
     // Zeitraum
     // Der Warnhinweis wird nicht fuer den Zeitraum angezeigt, da der
     // immer vorhanden ist
-    if (start != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(start).getTime())});
-    if (end != null)   umsaetze.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(end).getTime())});
+    if (start != null) umsaetze.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(start).getTime()));
+    if (end != null)   umsaetze.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
-    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?",new Object[]{"%" + gkBLZ + "%"});this.hasFilter = true;}
-    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("empfaenger_konto like ?",new Object[]{"%" + gkNummer + "%"});this.hasFilter = true;}
-    if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?",new Object[]{"%" + gkName.toLowerCase() + "%"});hasFilter = true;}
+    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?","%" + gkBLZ + "%");this.hasFilter = true;}
+    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("empfaenger_konto like ?","%" + gkNummer + "%");this.hasFilter = true;}
+    if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?","%" + gkName.toLowerCase() + "%");hasFilter = true;}
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
@@ -521,21 +521,22 @@ public class KontoauszugList extends UmsatzList
     // Betrag
     if (min != null && !(Double.isNaN(min.doubleValue())))
     {
-      umsaetze.addFilter("betrag >= ?",new Object[]{min});
+      umsaetze.addFilter("betrag >= ?",min);
       this.hasFilter = true;
     }
     if (max != null && (!Double.isNaN(max.doubleValue())))
     {
-      umsaetze.addFilter("betrag <= ?",new Object[]{max});
+      umsaetze.addFilter("betrag <= ?",max);
       this.hasFilter = true;
     }
     /////////////////////////////////////////////////////////////////
     
     /////////////////////////////////////////////////////////////////
     // Zweck/Kommentar
-    if (zk != null && zk.length() > 0) {
+    if (zk != null && zk.length() > 0)
+    {
       zk = "%" + zk.toLowerCase() + "%";
-      umsaetze.addFilter("(LOWER(zweck) like ? OR LOWER(zweck2) like ? OR LOWER(zweck3) like ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",new Object[]{zk,zk,zk,zk,zk});
+      umsaetze.addFilter("(LOWER(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))) LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
     }
     /////////////////////////////////////////////////////////////////
 
