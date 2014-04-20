@@ -13,6 +13,8 @@
 
 package de.willuhn.jameica.hbci.messaging;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
@@ -74,11 +76,22 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     // Wenn der Umsatz schon von einem Offline-Konto kommt, legen
     // wir keine Gegenbuchung mehr an. Das fuehrt sonst zu einem Ping-Pong-Spiel ;)
     Konto k = u.getKonto();
-    if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+    if (!k.hasFlag(Konto.FLAG_OFFLINE))
       return;
 
     // Checken, ob wir ein lokal passendes Offline-Konto haben
-    Konto gegenkonto = KontoUtil.find(u.getGegenkontoNummer(), u.getGegenkontoBLZ(),Konto.FLAG_OFFLINE);
+    Konto gegenkonto = null;
+    if (StringUtils.trimToEmpty(u.getGegenkontoNummer()).length() > 10)
+    {
+      // Das ist eine IBAN
+      gegenkonto = KontoUtil.findByIBAN(u.getGegenkontoNummer(),Konto.FLAG_OFFLINE);
+    }
+    else
+    {
+      // Konto mit Kto und BLZ
+      gegenkonto = KontoUtil.find(u.getGegenkontoNummer(), u.getGegenkontoBLZ(),Konto.FLAG_OFFLINE);
+    }
+    
     if (gegenkonto == null)
       return; // Das Konto haben wir nicht
     

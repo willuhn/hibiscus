@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0339 Support für das automatische Anlegen von Gegenbuchungen auf Offline-Konten für SEPA-Buchungen
   * NEW: 0338 Textsuche in Verwendungszwecken von Umsätzen nicht an Wortgrenze/Leerzeichen stoppen.
               http://www.onlinebanking-forum.de/forum/topic.php?t=17348
   * NEW: 0337 BUGZILLA 1503 - Zusammenführen von SEPA-Überweisungen zu Sammelaufträgen. War

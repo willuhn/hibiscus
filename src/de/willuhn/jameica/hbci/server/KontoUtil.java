@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
@@ -109,7 +111,59 @@ public class KontoUtil
     
     return null;
   }
+
+  /**
+   * Sucht das Konto in der Datenbank.
+   * @param iban die IBAN.
+   * @return das gefundene Konto oder NULL, wenn es nicht existiert.
+   * @throws RemoteException
+   */
+  public static Konto findByIBAN(String iban) throws RemoteException
+  {
+    return findByIBAN(iban,-1);
+  }
   
+  /**
+   * Sucht das Konto in der Datenbank.
+   * @param iban die IBAN.
+   * @param flag das Flag, welches das Konto besitzen muss.
+   * @return das gefundene Konto oder NULL, wenn es nicht existiert.
+   * @throws RemoteException
+   */
+  public static Konto findByIBAN(String iban, int flag) throws RemoteException
+  {
+    iban = StringUtils.trimToNull(iban);
+    if (iban == null)
+      return null;
+    
+    DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
+    DBIterator konten = service.createList(Konto.class);
+    konten.addFilter("lower(iban) = ?", iban.toLowerCase()); // case insensitive
+    while (konten.hasNext())
+    {
+      Konto test = (Konto) konten.next();
+      int current = test.getFlags();
+
+      if (flag == Konto.FLAG_NONE)
+      {
+        // Nur Konten ohne Flags zugelassen
+        if (current != flag)
+          continue;
+      }
+      else if (flag > 0)
+      {
+        // Ein Flag ist angegeben. Dann kommt das Konto nur
+        // in Frage, wenn es dieses Flag besitzt
+        if ((current & flag) != flag)
+          continue;
+      }
+      
+      return test;
+    }
+    
+    return null;
+  }
+
   /**
    * Liefert den Anfangssaldo eines Tages bzw. des 1. Tages nach diesem Datum mit Umsätzen
    * oder <code>0.0</code> wenn er noch nie abgefragt wurde.
