@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0341 Beim Einreichen von Aufträgen via XML-RPC/SOAP konnte es zu einer
+              "java.lang.ArithmeticException: Rounding necessary" kommen
   * NEW: 0340 Benutzer- und Kundenkennung bei PIN/TAN und Schlüsseldatei änderbar. Siehe
               http://www.onlinebanking-forum.de/forum/topic.php?t=16263
   * NEW: 0339 Support für das automatische Anlegen von Gegenbuchungen auf Offline-Konten für SEPA-Buchungen

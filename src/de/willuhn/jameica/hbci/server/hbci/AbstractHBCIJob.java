@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server.hbci;
 
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
@@ -442,7 +443,9 @@ public abstract class AbstractHBCIJob
       Logger.warn("[job parameter] no name given");
       return;
     }
-    params.put(new AbstractMap.SimpleEntry(name,index),new Value(String.valueOf(value),currency));
+    
+    BigDecimal bd = new BigDecimal(value).setScale(2,BigDecimal.ROUND_HALF_EVEN);
+    params.put(new AbstractMap.SimpleEntry(name,index),new Value(bd,currency));
   }
 
 	/**
