@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/Controller.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/08/08 15:46:16 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -22,6 +16,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.AbstractControl;
@@ -41,11 +36,13 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
+import de.willuhn.jameica.hbci.gui.action.PassportChange;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
+import de.willuhn.jameica.hbci.passport.PassportChangeRequest;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -140,8 +137,7 @@ public class Controller extends AbstractControl {
   {
     if (this.benutzerkennung != null)
       return this.benutzerkennung;
-    this.benutzerkennung = new TextInput(getHBCIPassport().getUserId());
-    this.benutzerkennung.setEnabled(false);
+    this.benutzerkennung = new TextInput(getHBCIPassport().getUserId(),20);
     this.benutzerkennung.setName(i18n.tr("Benutzerkennung"));
     return this.benutzerkennung;
   }
@@ -156,8 +152,7 @@ public class Controller extends AbstractControl {
   {
     if (this.kundenkennung != null)
       return this.kundenkennung;
-    this.kundenkennung = new TextInput(getHBCIPassport().getCustomerId());
-    this.kundenkennung.setEnabled(false);
+    this.kundenkennung = new TextInput(getHBCIPassport().getCustomerId(),20);
     this.kundenkennung.setName(i18n.tr("Kundenkennung"));
     return this.kundenkennung;
   }
@@ -646,6 +641,9 @@ public class Controller extends AbstractControl {
         p.saveChanges();
       }
       
+      PassportChangeRequest change = new PassportChangeRequest((AbstractHBCIPassport) p,(String)getKundenkennung().getValue(),(String)getBenutzerkennung().getValue());
+      new PassportChange().handleAction(change);
+      
       GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
       return true;
     }
@@ -781,185 +779,3 @@ public class Controller extends AbstractControl {
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: Controller.java,v $
- * Revision 1.8  2011/08/08 15:46:16  willuhn
- * @B Beim Aendern des Passwortes wurde das CurrentHandle nicht gesetzt - mit dem Effekt, dass der Callback fuer ...PASSPHRASE_SAVE nicht im RDH-PassportHandle landete sondern im HBCICallbackSWT. Dort werden die beiden Callbacks auch behandelt - aber eigentlich nur fuer DDV und PIN/TAN. Ergebnis: Hibiscus aendert das Passwort der Schluesseldiskette auf ein zufaelliges Passwowrt, welches der User aber nicht kennt.
- *
- * Revision 1.7  2011-06-17 08:49:19  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.6  2011-05-25 10:05:49  willuhn
- * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
- *
- * Revision 1.5  2011-04-29 11:38:57  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.4  2011-04-28 07:34:43  willuhn
- * @R Summen-Zeile nicht mehr anzeigen - unnuetz
- *
- * Revision 1.3  2010-09-29 23:43:34  willuhn
- * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
- * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
- * @N Config-Test jetzt auch bei Schluesseldatei
- * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
- *
- * Revision 1.2  2010-09-07 15:17:07  willuhn
- * @N GUI-Cleanup
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.46  2010/06/14 22:58:54  willuhn
- * @N Datei-Auswahldialog mit nativem Ueberschreib-Hinweis
- *
- * Revision 1.45  2009/06/16 15:32:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.44  2009/06/16 14:04:30  willuhn
- * @N Dialog zum Anzeigen der BPD/UPD
- *
- * Revision 1.43  2009/03/04 22:49:16  willuhn
- * @C INI-Brief anzeigen/drucken nur noch in Detail-Ansicht
- * @B falsche Button-Anzahl
- *
- * Revision 1.42  2009/03/04 22:37:05  willuhn
- * @N sync sig id (siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=55851#55851)
- *
- * Revision 1.41  2008/07/25 11:06:08  willuhn
- * @N RDH-2 Format
- * @C Haufenweise Code-Cleanup
- *
- * Revision 1.40  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- * Revision 1.39  2008/05/23 08:53:21  willuhn
- * @C Schluesseldateien beim Loeschen nicht mehr physisch loeschen
- *
- * Revision 1.38  2007/05/30 14:48:50  willuhn
- * @N Bug 314
- *
- * Revision 1.37  2007/05/04 13:19:16  willuhn
- * @N Erweiterter Warnhinweis beim Loeschen eines Schluessels
- *
- * Revision 1.36  2007/03/14 11:04:31  willuhn
- * @C bessere Fehleranzeige bei INI-Brieferstellung
- *
- * Revision 1.35  2007/02/21 10:32:55  willuhn
- * *** empty log message ***
- *
- * Revision 1.34  2007/02/21 10:30:01  willuhn
- * @B syntax error
- *
- * Revision 1.33  2007/02/21 10:29:10  willuhn
- * @C Contextmenu ueberarbeitet
- *
- * Revision 1.32  2006/10/23 14:45:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.31  2006/10/23 14:11:19  willuhn
- * @N Hervorheben alter Schluessel
- *
- * Revision 1.30  2006/01/22 23:42:31  willuhn
- * @B bug 173
- *
- * Revision 1.29  2005/11/16 13:04:34  willuhn
- * @B NPE
- *
- * Revision 1.28  2005/11/14 12:22:31  willuhn
- * @B bug 148
- *
- * Revision 1.27  2005/11/14 11:00:18  willuhn
- * @B bug 148
- *
- * Revision 1.26  2005/08/08 16:05:25  willuhn
- * @B bug 103
- *
- * Revision 1.25  2005/07/25 11:55:45  web0
- * *** empty log message ***
- *
- * Revision 1.24  2005/07/24 14:51:58  web0
- * *** empty log message ***
- *
- * Revision 1.23  2005/07/24 14:44:51  web0
- * *** empty log message ***
- *
- * Revision 1.22  2005/07/12 23:20:36  web0
- * @B NPEs
- *
- * Revision 1.21  2005/07/12 23:14:08  web0
- * @B ClassCastException
- *
- * Revision 1.20  2005/07/11 21:52:40  web0
- * @B NPE
- *
- * Revision 1.19  2005/06/23 21:52:57  web0
- * *** empty log message ***
- *
- * Revision 1.18  2005/06/06 22:57:53  web0
- * @B bug 72
- *
- * Revision 1.17  2005/04/18 09:22:16  web0
- * @B korrekte HBCI-Version konnte nicht ausgewaehlt werden
- *
- * Revision 1.16  2005/04/18 09:08:18  web0
- * @B table refresh after import
- *
- * Revision 1.15  2005/04/05 23:42:02  web0
- * @C moved HBCIVersionInput into Hibiscus source tree
- *
- * Revision 1.14  2005/04/04 11:34:20  web0
- * @B bug 36
- * @B bug 37
- *
- * Revision 1.13  2005/03/23 00:05:55  web0
- * @C RDH fixes
- *
- * Revision 1.12  2005/03/09 01:07:16  web0
- * @D javadoc fixes
- *
- * Revision 1.11  2005/02/28 18:39:57  web0
- * @N list of available hbci version is now read from hbci passport
- *
- * Revision 1.10  2005/02/28 15:08:24  web0
- * @N autodetection of right key
- *
- * Revision 1.9  2005/02/20 19:04:21  willuhn
- * @B Bug 7
- *
- * Revision 1.8  2005/02/08 22:26:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2005/02/08 18:34:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2005/02/07 22:06:48  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/02/02 16:15:35  willuhn
- * @N Erstellung neuer Schluessel
- * @N Schluessel-Import
- * @N Schluessel-Auswahl
- * @N Passport scharfgeschaltet
- *
- * Revision 1.4  2005/01/19 00:15:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/01/09 18:48:27  willuhn
- * @N native lib for sizrdh
- *
- * Revision 1.2  2005/01/07 19:00:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/01/05 15:32:28  willuhn
- * @N initial import
- *
- **********************************************************************/

@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0340 Benutzer- und Kundenkennung bei PIN/TAN und Schlüsseldatei änderbar. Siehe
+              http://www.onlinebanking-forum.de/forum/topic.php?t=16263
   * NEW: 0339 Support für das automatische Anlegen von Gegenbuchungen auf Offline-Konten für SEPA-Buchungen
   * NEW: 0338 Textsuche in Verwendungszwecken von Umsätzen nicht an Wortgrenze/Leerzeichen stoppen.
               http://www.onlinebanking-forum.de/forum/topic.php?t=17348
