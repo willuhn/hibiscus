@@ -37,6 +37,8 @@ import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.MultiInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -61,6 +63,7 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -86,6 +89,7 @@ public class KontoauszugList extends UmsatzList
   private KontoInput kontoAuswahl      = null;
   private DateInput start              = null;
   private DateInput end                = null;
+  private SelectInput range            = null;
   private UmsatzTypInput kategorie     = null;
   private CheckboxInput subKategorien  = null;
 
@@ -151,8 +155,11 @@ public class KontoauszugList extends UmsatzList
       left.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
       
       Container right = new SimpleContainer(columns.getComposite());
-      right.addLabelPair(i18n.tr("Start-Datum"),            this.getStart());
-      right.addLabelPair(i18n.tr("End-Datum"),              this.getEnd());
+
+      right.addInput(this.getRange());
+      MultiInput range = new MultiInput(this.getStart(),this.getEnd());
+      right.addInput(range);
+      
       right.addCheckbox(this.getSubKategorien(),i18n.tr("Untergeordnete Kategorien einbeziehen"));
     }
     
@@ -262,11 +269,12 @@ public class KontoauszugList extends UmsatzList
       return this.start;
     
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
-    this.start.setComment(i18n.tr("Frühestes Datum"));
+    this.start.setName(i18n.tr("Von"));
+    this.start.setComment(null);
     this.start.addListener(this.listener);
     return this.start;
   }
-
+  
   /**
    * Liefert ein Auswahl-Feld fuer das End-Datum.
    * @return Auswahl-Feld.
@@ -277,10 +285,43 @@ public class KontoauszugList extends UmsatzList
       return this.end;
 
     this.end = new DateToInput(null,"umsatzlist.filter.to");
-    this.end.setComment(i18n.tr("Spätestes Datum"));
+    this.end.setName(i18n.tr("bis"));
+    this.end.setComment(null);
     this.end.addListener(this.listener);
     return this.end;
   }
+  
+  /**
+   * Liefert eine Auswahl mit Zeit-Presets.
+   * @return eine Auswahl mit Zeit-Presets.
+   */
+  public SelectInput getRange()
+  {
+    if (this.range != null)
+      return this.range;
+    
+    this.range = new SelectInput(Range.KNOWN,null);
+    this.range.setPleaseChoose(i18n.tr("Bitte wählen..."));
+    this.range.setName(i18n.tr("Zeitraum"));
+    
+    this.range.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        Range choosen = (Range) range.getValue();
+        if (choosen == null)
+          return;
+        
+        getStart().setValue(choosen.getStart());
+        getEnd().setValue(choosen.getEnd());
+        handleReload(true);
+      }
+    });
+    
+    return this.range;
+  }
+
+
   
   /**
    * Liefert ein Auswahl-Feld fuer die Kategorie. 

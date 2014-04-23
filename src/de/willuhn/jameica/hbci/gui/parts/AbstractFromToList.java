@@ -31,6 +31,8 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.MultiInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -44,6 +46,7 @@ import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
@@ -62,6 +65,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   private KontoInput konto       = null;
   private Input from             = null;
   private Input to               = null;
+  private SelectInput range      = null;
   private Input text             = null;
   private Container left         = null;
 
@@ -107,7 +111,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
       return this.from;
     
     this.from = new DateFromInput();
-    this.from.setName(i18n.tr("Anzeige von"));
+    this.from.setName(i18n.tr("Von"));
     this.from.setComment(null);
     this.from.addListener(this.listener);
     return this.from;
@@ -156,11 +160,42 @@ public abstract class AbstractFromToList extends TablePart implements Part
       return this.to;
 
     this.to = new DateToInput();
-    this.to.setName(i18n.tr("Anzeige bis"));
+    this.to.setName(i18n.tr("bis"));
     this.to.setComment(null);
     this.to.addListener(this.listener);
     return this.to;
   }
+  
+  /**
+   * Liefert eine Auswahl mit Zeit-Presets.
+   * @return eine Auswahl mit Zeit-Presets.
+   */
+  public SelectInput getRange()
+  {
+    if (this.range != null)
+      return this.range;
+    
+    this.range = new SelectInput(Range.KNOWN,null);
+    this.range.setPleaseChoose(i18n.tr("Bitte wählen..."));
+    this.range.setName(i18n.tr("Zeitraum"));
+    
+    this.range.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        Range choosen = (Range) range.getValue();
+        if (choosen == null)
+          return;
+        
+        getFrom().setValue(choosen.getStart());
+        getTo().setValue(choosen.getEnd());
+        handleReload(true);
+      }
+    });
+    
+    return this.range;
+  }
+
 
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
@@ -188,8 +223,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
     
     {
       Container right = new SimpleContainer(cols.getComposite());
-      right.addInput(this.getFrom());
-      right.addInput(this.getTo());
+      
+      right.addInput(this.getRange());
+      MultiInput range = new MultiInput(this.getFrom(),this.getTo());
+      right.addInput(range);
     }
 
     this.buttons.addButton(i18n.tr("Aktualisieren"), new Action()
