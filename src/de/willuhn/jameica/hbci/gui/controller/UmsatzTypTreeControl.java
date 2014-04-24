@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypTreeControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2012/04/05 21:44:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by Heiner Jostkleigrewe
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -16,8 +10,13 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -27,12 +26,16 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TreePart;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTree;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -40,7 +43,6 @@ import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
@@ -50,14 +52,19 @@ import de.willuhn.util.I18N;
 public class UmsatzTypTreeControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Map cache = new HashMap();
 
   private KontoInput kontoAuswahl  = null;
+  private TextInput text           = null;
   private DateInput start          = null;
   private DateInput end            = null;
+  private RangeInput range         = null;
   
   private UmsatzTree tree          = null;
   private UmsatzTypVerlauf chart   = null;
   private boolean expanded         = false;
+  
+  private Listener listener        = null;
   
   /**
    * ct.
@@ -67,6 +74,16 @@ public class UmsatzTypTreeControl extends AbstractControl
   public UmsatzTypTreeControl(AbstractView view)
   {
     super(view);
+    
+    // bei Ausloesungen ueber SWT-Events verzoegern wir
+    // das Reload, um schnell aufeinanderfolgende Updates
+    // zu buendeln.
+    this.listener = new DelayedListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        handleReload();
+      }
+    });
   }
 
   /**
@@ -81,10 +98,48 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.kontoAuswahl;
     
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
-    this.kontoAuswahl.setRememberSelection("auswertungen.umsatztree");
-    this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
+    this.kontoAuswahl.setSupportGroups(true);
+    this.kontoAuswahl.setComment(null);
+    this.kontoAuswahl.setRememberSelection("auswertungen.umsatztree");
+    this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
+  }
+  
+  /**
+   * Liefert ein Eingabefeld fuer einen Suchbegriff.
+   * @return Eingabefeld fuer einen Suchbegriff.
+   */
+  public TextInput getText()
+  {
+    if (this.text != null)
+      return this.text;
+
+    this.text = new TextInput((String)cache.get("kontoauszug.list.text"),HBCIProperties.HBCI_TRANSFER_USAGE_MAXLENGTH);
+    this.text.setName(i18n.tr("Suchbegriff"));
+    return this.text;
+  }
+  
+  /**
+   * Liefert eine Auswahl mit Zeit-Presets.
+   * @return eine Auswahl mit Zeit-Presets.
+   */
+  public RangeInput getRange()
+  {
+    if (this.range != null)
+      return this.range;
+    
+    this.range = new RangeInput(this.getStart(),this.getEnd());
+    this.range.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        if (range.getValue() != null)
+          handleReload();
+      }
+    });
+    
+    return this.range;
   }
 
   /**
@@ -98,7 +153,9 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.start;
 
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
-    this.start.setComment(i18n.tr("Frühestes Datum"));
+    this.start.setName(i18n.tr("Von"));
+    this.start.setComment(null);
+    this.start.addListener(this.listener);
     return this.start;
   }
 
@@ -113,7 +170,9 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.end;
 
     this.end = new DateToInput(null,"umsatzlist.filter.to");
-    this.end.setComment(i18n.tr("Spätestes Datum"));
+    this.end.setName(i18n.tr("bis"));
+    this.end.setComment(null);
+    this.end.addListener(this.listener);
     return this.end;
   }
   
@@ -169,18 +228,16 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     Object o    = getKontoAuswahl().getValue();
 
-    Date von = (Date) getStart().getValue();
-    Date bis = (Date) getEnd().getValue();
+    Date von    = (Date) getStart().getValue();
+    Date bis    = (Date) getEnd().getValue();
+    String text = (String) getText().getValue();
 
-    DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
-    if (o != null && (o instanceof Konto))
-      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
-    else if (o != null && (o instanceof String))
-      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
-    if (von != null) umsaetze.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(von).getTime())});
-    if (bis != null) umsaetze.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(bis).getTime())});
+    cache.put("kontoauszug.list.text",text);
+
+    Konto k = (o instanceof Konto) ? (Konto) o : null;
+    String kat = (o instanceof String) ? (String) o : null;
     
-    return umsaetze;
+    return UmsatzUtil.find(k,kat,von,bis,text);
   }
   
   /**
@@ -307,29 +364,3 @@ public class UmsatzTypTreeControl extends AbstractControl
     }
   }
 }
-
-/*******************************************************************************
- * $Log: UmsatzTypTreeControl.java,v $
- * Revision 1.21  2012/04/05 21:44:18  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.20  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.19  2011-08-05 11:21:58  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.18  2011-05-19 08:41:53  willuhn
- * @N BUGZILLA 1038 - generische Loesung
- *
- * Revision 1.17  2011-04-29 07:41:56  willuhn
- * @N BUGZILLA 781
- *
- * Revision 1.16  2011-04-12 21:16:47  willuhn
- * @N BUGZILLA 629 - statt FocusListener jetzt SelectionListener
- *
- * Revision 1.15  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- ******************************************************************************/

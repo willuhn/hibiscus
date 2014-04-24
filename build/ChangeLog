@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0344 Unterstützung für Suchbegriffe in Umsätze nach Kategorie
+  * NEW: 0343 Zeitraum-Presets auch in Umsätze nach Kategorie und in Einnahmen/Ausgaben
   * NEW: 0342 Erster Code für Zeitraum-Presets
   * BUG: 0341 Beim Einreichen von Aufträgen via XML-RPC/SOAP konnte es zu einer
               "java.lang.ArithmeticException: Rounding necessary" kommen

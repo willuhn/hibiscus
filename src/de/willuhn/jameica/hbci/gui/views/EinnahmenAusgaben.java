@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/EinnahmenAusgaben.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/12/18 23:20:20 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by Heiner Jostkleigrewe
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -23,7 +17,11 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
@@ -56,9 +54,17 @@ public class EinnahmenAusgaben extends AbstractView
       folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
-      tab.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
-      tab.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
-      tab.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+      ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
+      
+      Container left = new SimpleContainer(cols.getComposite());
+      left.addInput(control.getKontoAuswahl());
+      
+      Container right = new SimpleContainer(cols.getComposite());
+        
+      right.addInput(control.getRange());
+      MultiInput range = new MultiInput(control.getStart(),control.getEnd());
+      right.addInput(range);
+      
     }
 
     ButtonArea buttons = new ButtonArea();
@@ -85,15 +91,7 @@ public class EinnahmenAusgaben extends AbstractView
        */
       public void handleAction(Object context) throws ApplicationException
       {
-        try
-        {
-          control.handleReload();
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to reload data",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Daten"),StatusBarMessage.TYPE_ERROR));
-        }
+        control.handleReload();
       }
     
     },null,true,"view-refresh.png");
@@ -102,28 +100,3 @@ public class EinnahmenAusgaben extends AbstractView
     control.getTable().paint(this.getParent());
   }
 }
-/*******************************************************************************
- * $Log: EinnahmenAusgaben.java,v $
- * Revision 1.11  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.10  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.9  2010-08-24 17:38:05  willuhn
- * @N BUGZILLA 896
- *
- * Revision 1.8  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.7  2009/05/06 23:11:23  willuhn
- * @N Mehr Icons auf Buttons
- *
- * Revision 1.6  2009/04/05 21:16:22  willuhn
- * @B BUGZILLA 716
- *
- * Revision 1.5  2009/01/20 10:51:46  willuhn
- * @N Mehr Icons - fuer Buttons
- ******************************************************************************/

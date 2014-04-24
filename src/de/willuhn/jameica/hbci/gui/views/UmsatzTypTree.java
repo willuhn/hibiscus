@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypTree.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/12/18 23:20:20 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by Heiner Jostkleigrewe
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -16,16 +10,26 @@ package de.willuhn.jameica.hbci.gui.views;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TreePart;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypTreeExport;
@@ -57,9 +61,43 @@ public class UmsatzTypTree extends AbstractView
       folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
-      tab.addLabelPair(i18n.tr("Konto"), control.getKontoAuswahl());
-      tab.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
-      tab.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+      ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
+      
+      Container left = new SimpleContainer(cols.getComposite());
+      left.addInput(control.getKontoAuswahl());
+      
+      Input t = control.getText();
+      left.addInput(t);
+      
+      // Duerfen wir erst nach dem Zeichnen
+      t.getControl().addKeyListener(new KeyAdapter(){
+        private Listener forward = new DelayedListener(400,new Listener()
+        {
+          /**
+           * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+           */
+          public void handleEvent(Event event)
+          {
+            // hier kommt dann das verzoegerte Event an.
+            control.handleReload();
+          }
+        
+        });
+
+        /**
+         * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+         */
+        public void keyReleased(KeyEvent e)
+        {
+          forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
+        }
+      });
+      
+      Container right = new SimpleContainer(cols.getComposite());
+        
+      right.addInput(control.getRange());
+      MultiInput range = new MultiInput(control.getStart(),control.getEnd());
+      right.addInput(range);
     }
 
     ButtonArea buttons = new ButtonArea();
@@ -119,23 +157,4 @@ public class UmsatzTypTree extends AbstractView
     chart.paint(tg2.getComposite());
 
   }
-
 }
-/*******************************************************************************
- * $Log: UmsatzTypTree.java,v $
- * Revision 1.16  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.15  2011-05-03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.14  2011-04-12 21:16:47  willuhn
- * @N BUGZILLA 629 - statt FocusListener jetzt SelectionListener
- *
- * Revision 1.13  2011-04-08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.12  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- ******************************************************************************/
