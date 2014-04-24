@@ -38,7 +38,6 @@ import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.MultiInput;
-import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -56,6 +55,7 @@ import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.io.Exporter;
@@ -63,7 +63,6 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
-import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -89,7 +88,7 @@ public class KontoauszugList extends UmsatzList
   private KontoInput kontoAuswahl      = null;
   private DateInput start              = null;
   private DateInput end                = null;
-  private SelectInput range            = null;
+  private RangeInput range             = null;
   private UmsatzTypInput kategorie     = null;
   private CheckboxInput subKategorien  = null;
 
@@ -295,33 +294,23 @@ public class KontoauszugList extends UmsatzList
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
    */
-  public SelectInput getRange()
+  public RangeInput getRange()
   {
     if (this.range != null)
       return this.range;
     
-    this.range = new SelectInput(Range.KNOWN,null);
-    this.range.setPleaseChoose(i18n.tr("Bitte wählen..."));
-    this.range.setName(i18n.tr("Zeitraum"));
-    
+    this.range = new RangeInput(this.getStart(),this.getEnd());
     this.range.addListener(new Listener()
     {
       public void handleEvent(Event event)
       {
-        Range choosen = (Range) range.getValue();
-        if (choosen == null)
-          return;
-        
-        getStart().setValue(choosen.getStart());
-        getEnd().setValue(choosen.getEnd());
-        handleReload(true);
+        if (range.getValue() != null)
+          handleReload(true);
       }
     });
     
     return this.range;
   }
-
-
   
   /**
    * Liefert ein Auswahl-Feld fuer die Kategorie. 

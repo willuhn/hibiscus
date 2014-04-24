@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractTransferList.java,v $
- * $Revision: 1.30 $
- * $Date: 2011/10/26 11:43:28 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -212,8 +206,8 @@ public abstract class AbstractTransferList extends AbstractFromToList
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
     DBIterator list = service.createList(getObjectType());
-    if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-    if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
+    if (from != null) list.addFilter("termin >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
+    if (to   != null) list.addFilter("termin <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
 
     if (konto != null && (konto instanceof Konto))
       list.addFilter("konto_id = " + ((Konto) konto).getID());

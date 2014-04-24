@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/AbstractFromToList.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/12/18 23:20:20 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -32,7 +26,6 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.MultiInput;
-import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -46,7 +39,7 @@ import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
-import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
@@ -65,7 +58,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   private KontoInput konto       = null;
   private Input from             = null;
   private Input to               = null;
-  private SelectInput range      = null;
+  private RangeInput range       = null;
   private Input text             = null;
   private Container left         = null;
 
@@ -170,26 +163,18 @@ public abstract class AbstractFromToList extends TablePart implements Part
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
    */
-  public SelectInput getRange()
+  public RangeInput getRange()
   {
     if (this.range != null)
       return this.range;
     
-    this.range = new SelectInput(Range.KNOWN,null);
-    this.range.setPleaseChoose(i18n.tr("Bitte wählen..."));
-    this.range.setName(i18n.tr("Zeitraum"));
-    
+    this.range = new RangeInput(this.getFrom(),this.getTo());
     this.range.addListener(new Listener()
     {
       public void handleEvent(Event event)
       {
-        Range choosen = (Range) range.getValue();
-        if (choosen == null)
-          return;
-        
-        getFrom().setValue(choosen.getStart());
-        getTo().setValue(choosen.getEnd());
-        handleReload(true);
+        if (range.getValue() != null)
+          handleReload(true);
       }
     });
     
@@ -407,49 +392,3 @@ public abstract class AbstractFromToList extends TablePart implements Part
   }
 
 }
-
-
-/**********************************************************************
- * $Log: AbstractFromToList.java,v $
- * Revision 1.13  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.12  2011-08-05 11:21:58  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.11  2011-06-28 09:24:35  willuhn
- * @N Position speichern
- *
- * Revision 1.10  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.9  2010-08-16 11:13:52  willuhn
- * @N In den Auftragslisten kann jetzt auch nach einem Text gesucht werden
- *
- * Revision 1.8  2007/06/04 23:23:47  willuhn
- * @B error while saving transfer list date
- *
- * Revision 1.7  2007/06/04 22:18:29  willuhn
- * @B typo
- *
- * Revision 1.6  2007/04/26 23:08:13  willuhn
- * @C Umstellung auf DelayedListener
- *
- * Revision 1.5  2007/04/26 18:27:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2007/04/26 15:02:36  willuhn
- * @N Optisches Feedback beim Neuladen der Daten
- *
- * Revision 1.3  2007/04/26 13:59:31  willuhn
- * @N Besseres Reload-Verhalten in Transfer-Listen
- *
- * Revision 1.2  2007/04/24 17:15:51  willuhn
- * @B Vergessen, "size" hochzuzaehlen, wenn Objekte vor paint() hinzugefuegt werden
- *
- * Revision 1.1  2007/04/24 16:55:00  willuhn
- * @N Aktualisierte Daten nur bei geaendertem Datum laden
- *
- **********************************************************************/
