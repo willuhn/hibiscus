@@ -35,6 +35,7 @@ import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -271,6 +272,7 @@ public class HBCI4JavaFormat implements KeyFormat
       InvalidPassphraseException ipe = (InvalidPassphraseException) HBCIProperties.getCause(e,InvalidPassphraseException.class);
       if (ipe != null)
       {
+        Logger.write(Level.TRACE,"password for key file seems to be wrong",e);
         String text = i18n.tr("Das Passwort für die Schlüsseldatei ist falsch.");
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
         throw new ApplicationException(text);
