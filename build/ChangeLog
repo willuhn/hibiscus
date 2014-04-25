@@ -1,5 +1,9 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0346 HBCI-Version "2.2" nicht mehr anbieten (es sei denn, sie wurde vorher explizit ausgewählt)
+              http://www.onlinebanking-forum.de/forum/topic.php?p=106066#real106066
+  * BUG: 0345 Fehlermeldung über fehlendem Schreibzugriff beim Erstellen eines INI-Briefes wurde
+              nicht angezeigt. http://www.onlinebanking-forum.de/forum/topic.php?p=106085#real106085
   * NEW: 0344 Unterstützung für Suchbegriffe in Umsätze nach Kategorie
   * NEW: 0343 Zeitraum-Presets auch in Umsätze nach Kategorie und in Einnahmen/Ausgaben
   * NEW: 0342 Erster Code für Zeitraum-Presets

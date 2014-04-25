@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
@@ -155,9 +156,17 @@ public class RDHKeyFactory
       Logger.warn("operation cancelled; " + oce.getMessage());
       throw oce;
     }
-    catch (ApplicationException ae)
+    catch (final ApplicationException ae)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr(ae.getMessage()),StatusBarMessage.TYPE_ERROR));
+      Logger.error(ae.getMessage());
+      
+      // Meldung wurde sonst nicht in der GUI angezeigt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?p=106085#real106085
+      GUI.getDisplay().asyncExec(new Runnable() {
+        public void run()
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+        }
+      });
     }
     catch (Throwable t)
     {

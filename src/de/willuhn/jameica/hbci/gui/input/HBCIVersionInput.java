@@ -1,24 +1,20 @@
-/*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/HBCIVersionInput.java,v $
- * $Revision: 1.15 $
- * $Date: 2011/05/11 08:43:56 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+/**********************************************************************
  *
-****************************************************************************/
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
+ *
+ **********************************************************************/
+
 package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.kapott.hbci.passport.HBCIPassport;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -27,25 +23,40 @@ import de.willuhn.util.I18N;
 
 /**
  * Combo-Box, die die verfuegbaren HBCI-Versionen enthaelt.
- * @author willuhn
  */
 public class HBCIVersionInput extends SelectInput
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private static I18N i18n;
+  private final static List<HBCIVersion> VERSIONS = Collections.unmodifiableList(new ArrayList<HBCIVersion>()
+  {{
+    add(new HBCIVersion("201", "HBCI 2.01",true));
+    add(new HBCIVersion("210", "HBCI 2.1",true));
+    add(new HBCIVersion("220", "HBCI 2.2",false));
+    add(new HBCIVersion("plus","HBCI 2.2 (HBCI+)",true));
+    add(new HBCIVersion("300", "FinTS 3.0",true));
+    add(new HBCIVersion("400", "FinTS 4.0",false));
+  }});
 
-  private static Hashtable nameLookup = new Hashtable();
-  
-  static
+  /**
+   * Liefert das HBCIVersion-Objekt fuer die angegebene ID oder NULL, wenn sie nicht existiert.
+   * @param id die ID der HBCI-Version.
+   * @return die HBCIVersion oder NULL.
+   */
+  private static HBCIVersion findById(String id)
   {
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
-    nameLookup.put("201","HBCI 2.01");
-    nameLookup.put("210","HBCI 2.1");
-    nameLookup.put("220","HBCI 2.2");
-    nameLookup.put("plus","HBCI+ (HBCI 2.2 mit PIN/TAN-Unterstützung)");
-    nameLookup.put("300","FinTS 3.0");
+    if (id == null)
+      return null;
+    
+    for (HBCIVersion version:VERSIONS)
+    {
+      if (id.equals(version.getId()))
+        return version;
+    }
+    
+    return null;
   }
+
 
   /**
    * ct.
@@ -59,142 +70,83 @@ public class HBCIVersionInput extends SelectInput
   /**
    * ct.
    * @param passport Passport.
-   * @param selectedVersion die vorausgewaehlte HBCI-Version.
+   * @param selected die vorausgewaehlte HBCI-Version.
    * @throws RemoteException
    */
-  public HBCIVersionInput(HBCIPassport passport, String selectedVersion) throws RemoteException
+  public HBCIVersionInput(HBCIPassport passport, String selected) throws RemoteException
   {
-    super(createList(passport),selectedVersion == null ? null : new HBCIVersionObject(selectedVersion));
+    super(createList(passport,selected),findById(selected));
     this.setName(i18n.tr("HBCI-Version"));
+    
+    // Default-Wert (ohne Versionsnummer) - nur, wenn Passport da
+    if (passport != null)
+      this.setPleaseChoose(i18n.tr("Version aus Sicherheitsmedium lesen"));
   }
 
   /**
-   * Erzeugt einen GenericIterator fuer die Auswahl der HBCI-Versionen.
+   * Erzeugt eine Liste mit den unterstuetzten HBCI-Versionen des Passports.
    * @param passport Passport.
+   * @param selected die aktuell ausgewaehlte Versionsnummer.
    * @return Liste der unterstuetzten HBCI-Versionen.
-   * @throws RemoteException
    */
-  private static List createList(HBCIPassport passport) throws RemoteException
+  private static List createList(HBCIPassport passport, String selected)
   {
-    try
+    List<String> list = null;
+    
+    if (passport != null)
     {
-      List<String> list = null;
-      
-      if (passport != null)
+      String[] s = passport.getSuppVersions(); // Wir haben einen Passport, dann nur die unterstuetzten anzeigen
+      list = new ArrayList<String>(Arrays.asList(s)); // Neue Array-List, damit wir Elemente drin aendern koennen
+
+      // BUGZILLA 684
+      if (list.contains("220") && !list.contains("plus")) // "220" enthalten aber nicht "plus", dann haengen wir das "plus" noch an
       {
-        String[] s = passport.getSuppVersions(); // Wir haben einen Passport, dann nur die unterstuetzten anzeigen
-        list = new ArrayList<String>(Arrays.asList(s)); // Neue Array-List, damit wir Elemente drin aendern koennen
-
-        // BUGZILLA 684
-        if (list.contains("220") && !list.contains("plus")) // "220" enthalten aber nicht "plus", dann haengen wir das "plus" noch an
-          list.add("plus");
-        
-        if (list.contains("400"))
-          list.remove("400"); // FinTS4 unterstuetzen wir noch nicht
+        // Wir fuegen das direkt hinter "220" ein
+        list.add(list.indexOf("220")+1,"plus");
       }
+    }
 
-      // BUGZILLA 37 http://www.willuhn.de/bugzilla/show_bug.cgi?id=37
-      // Ansonsten alle, die wir kennen
-      if (list == null || list.size() == 0)
-        list = new ArrayList<String>(nameLookup.keySet());
-
-      Collections.sort(list);
-
-      List<HBCIVersionObject> l = new ArrayList<HBCIVersionObject>();
-      if (passport != null)
-        l.add(new HBCIVersionObject(null)); // Default-Wert (ohne Versionsnummer) - nur, wenn Passport da
-      
+    // BUGZILLA 37 http://www.willuhn.de/bugzilla/show_bug.cgi?id=37
+    // Ansonsten alle, die wir kennen
+    List<HBCIVersion> versions = new ArrayList<HBCIVersion>();
+    if (list == null || list.size() == 0)
+    {
+      versions.addAll(VERSIONS);
+    }
+    else
+    {
       for (String s:list)
       {
-        l.add(new HBCIVersionObject(s));
+        HBCIVersion version = findById(s);
+        if (version == null)
+        {
+          Logger.warn("unknown HBCI version: " + s + ", skipping");
+          continue;
+        }
+        versions.add(version);
       }
-      return l;
     }
-    catch (Exception e)
+    
+    // Rauswerfen der inaktiven HBCI-Versionen, wenn sie nicht gerade verwendet werden
+    List<HBCIVersion> result = new ArrayList<HBCIVersion>();
+    for (HBCIVersion v:versions)
     {
-      Logger.error("error while loading hbci versions from key",e);
-      throw new RemoteException(i18n.tr("Fehler beim Lesen der unterstützten HBCI-Versionen"),e);
-    }
-  }
-
-  /**
-   * Hilfs-Objekt.
-   * @author willuhn
-   */
-  private static class HBCIVersionObject implements GenericObject
-  {
-
-    private String id = null;
-
-    /**
-     * ct.
-     * @param id ID der HBCI-Version.
-     */
-    private HBCIVersionObject(String id)
-    {
-      this.id = id;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      if (this.id == null)
-        return i18n.tr("Version aus Sicherheitsmedium lesen");
-
-      String name = (String) nameLookup.get(this.id);
-      if (name == null)
+      // Version aktiv. Anzeigen
+      if (v.active)
       {
-        Logger.warn("unknown hbci version: " + name);
-        return id;
+        result.add(v);
       }
-      return name;
+      else
+      {
+        // Nicht aktiv. Dann nur, wenn sie gerade verwendet wird.
+        if (selected != null && selected.equals(v.id))
+          result.add(v);
+      }
     }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[] {"foo"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return id;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "foo";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null)
-        return false;
-
-      boolean nullOwn   = getID() == null;
-      boolean nullOther = arg0.getID() == null;
-
-      // Die ID kann <null> sein.
-      if (nullOwn && nullOther)  return true;
-      if (nullOwn && !nullOther) return false;
-
-      return this.getID().equals(arg0.getID());
-    }
+    
+    return result;
   }
-
+  
   /**
    * Liefert die ID der ausgwaehlten HBCI-Version als <code>java.lang.String</code>.
    * Moegliche Rueckgabe-Werte:<br>
@@ -210,15 +162,8 @@ public class HBCIVersionInput extends SelectInput
    */
   public Object getValue()
   {
-    try
-    {
-      HBCIVersionObject o = (HBCIVersionObject) super.getValue();
-      return o.getID();
-    }
-    catch (Exception e)
-    {
-      return null;
-    }
+    HBCIVersion o = (HBCIVersion) super.getValue();
+    return o != null ? o.getId() : null;
   }
 
   /**
@@ -226,7 +171,7 @@ public class HBCIVersionInput extends SelectInput
    */
   public void setPreselected(Object preselected)
   {
-    super.setPreselected(preselected == null ? null : new HBCIVersionObject(preselected.toString()));
+    super.setPreselected((preselected instanceof String) ? findById((String) preselected) : null);
   }
 
   /**
@@ -234,52 +179,49 @@ public class HBCIVersionInput extends SelectInput
    */
   public void setValue(Object o)
   {
-    super.setValue(o == null ? null : new HBCIVersionObject(o.toString()));
+    super.setValue((o instanceof String) ? findById((String) o) : null);
   }
   
+  /**
+   * Bean, die die HBCI-Version kapselt.
+   */
+  private static class HBCIVersion
+  {
+
+    private String id      = null;
+    private String name    = null;
+    private boolean active = true;
+
+    /**
+     * ct.
+     * @param id ID der HBCI-Version.
+     * @param name Name der HBCI-Version.
+     * @param active legt fest, ob die Version aktiv ist und angeboten werden soll.
+     */
+    private HBCIVersion(String id, String name, boolean active)
+    {
+      this.id = id;
+      this.name = name;
+      this.active = active;
+    }
+    
+    /**
+     * Liefert die ID der Version.
+     * @return die ID der Version.
+     */
+    public String getId()
+    {
+      return this.id;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return this.name;
+    }
+  }
   
 }
-
-/*****************************************************************************
- * $Log: HBCIVersionInput.java,v $
- * Revision 1.15  2011/05/11 08:43:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2009/01/04 23:10:37  willuhn
- * @B BUGZILLA 684
- *
- * Revision 1.13  2008/07/25 13:31:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2008/07/25 11:06:44  willuhn
- * @N Auswahl-Dialog fuer HBCI-Version
- * @N Code-Cleanup
- *
- * Revision 1.11  2007/07/24 13:51:25  willuhn
- * @N BUGZILLA 61
- *
- * Revision 1.10  2005/11/01 22:53:44  willuhn
- * @N hbci4java updated to 2.5.0 rc1
- * @N added "FinTS 3.0" to HBCIVersionInput
- *
- * Revision 1.9  2005/10/17 11:36:38  willuhn
- * @B bug 141 FinTS 3 entfernt
- *
- * Revision 1.8  2005/07/12 23:29:01  web0
- * *** empty log message ***
- *
- * Revision 1.7  2005/06/27 11:26:30  web0
- * @N neuer Test bei Dauerauftraegen (zum Monatsletzten)
- * @N neue DDV-Lib
- *
- * Revision 1.6  2005/06/15 16:10:48  web0
- * @B javadoc fixes
- *
- * Revision 1.5  2005/04/18 09:28:45  web0
- * @B zu wenig HBCI-Versionen in Auswahl
- * @B Refresh der Liste nach RDH-Schluesselimport
- *
- * Revision 1.4  2005/04/05 23:43:53  web0
- * @C moved HBCIVersionInput into Hibiscus source tree
- *
-*****************************************************************************/
