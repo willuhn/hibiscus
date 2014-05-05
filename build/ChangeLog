@@ -2,6 +2,8 @@ HEAD 2.7 (nightly)
 
 2014-05-04 Version 2.6.6
 
+  * NEW: 0348 Detailansicht der Konten überarbeitet - mehr Platz für Umsätze und Saldoverlauf
+  * BUG: 0347 BUGZILLA 1512 - Quartal in Zeitraum-Preset ein Monat zu lang
   * NEW: 0346 HBCI-Version "2.2" nicht mehr anbieten (es sei denn, sie wurde vorher explizit ausgewählt)
               http://www.onlinebanking-forum.de/forum/topic.php?p=106066#real106066
   * BUG: 0345 Fehlermeldung über fehlendem Schreibzugriff beim Erstellen eines INI-Briefes wurde

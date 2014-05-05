@@ -263,7 +263,7 @@ public abstract class Range
     {
       Calendar cal = this.createCalendar();
       cal.setTime(this.getStart());
-      cal.add(Calendar.MONTH,3);
+      cal.add(Calendar.MONTH,2);
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
@@ -300,7 +300,7 @@ public abstract class Range
     {
       Calendar cal = this.createCalendar();
       cal.setTime(this.getStart());
-      cal.add(Calendar.MONTH,3);
+      cal.add(Calendar.MONTH,2);
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }

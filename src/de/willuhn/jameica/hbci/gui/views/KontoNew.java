@@ -29,6 +29,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -120,35 +121,44 @@ public class KontoNew extends AbstractView
     });
     quickSelect.paint(this.getParent());
 
-    ColumnLayout columns = new ColumnLayout(getParent(),2);
-    SimpleContainer left = new SimpleContainer(columns.getComposite());
+    TabFolder lf = new TabFolder(this.getParent(), SWT.NONE);
+    lf.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    left.addHeadline(i18n.tr("Eigenschaften"));
-    left.addLabelPair(i18n.tr("Bezeichnung des Kontos"),   control.getBezeichnung());
-    left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
-    left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
+    TabGroup props = new TabGroup(lf,i18n.tr("Eigenschaften"));
+    {
+      ColumnLayout columns = new ColumnLayout(props.getComposite(),2);
+      Container left = new SimpleContainer(columns.getComposite());
+      left.addLabelPair(i18n.tr("Gruppe"),                   control.getKategorie());
+      left.addLabelPair(i18n.tr("Bezeichnung des Kontos"),   control.getBezeichnung());
+      left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
+      left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
+      
+      Input avail = control.getSaldoAvailable();
+      if (avail != null)
+        left.addLabelPair(i18n.tr("Verfügbarer Betrag"),avail);
+
+      Container right = new SimpleContainer(columns.getComposite(),true);
+      right.addHeadline(i18n.tr("Notizen"));
+      right.addPart(control.getKommentar());
+    }
+
+
+    TabGroup account = new TabGroup(lf,i18n.tr("Zugangsdaten"));
+    {
+      ColumnLayout columns = new ColumnLayout(account.getComposite(),2);
+      Container left = new SimpleContainer(columns.getComposite());
+      left.addLabelPair(i18n.tr("Kontonummer"),              control.getKontonummer());
+      left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());
+      left.addLabelPair(i18n.tr("Unterkontonummer"),         control.getUnterkonto());
+      left.addLabelPair(i18n.tr("Verfahren"),                control.getPassportAuswahl());
+      left.addLabelPair(i18n.tr("Kundenkennung"),            control.getKundennummer());
+
+      Container right = new SimpleContainer(columns.getComposite());
+      right.addLabelPair(i18n.tr("IBAN"),                     control.getIban());
+      right.addLabelPair(i18n.tr("BIC"),                      control.getBic());
+      right.addInput(control.getOffline());
+    }
     
-    Input avail = control.getSaldoAvailable();
-    if (avail != null)
-      left.addLabelPair(i18n.tr("Verfügbarer Betrag"),avail);
-
-    left.addHeadline(i18n.tr("HBCI-Konfiguration"));
-    left.addLabelPair(i18n.tr("Verfahren"),                control.getPassportAuswahl());
-    left.addLabelPair(i18n.tr("Kundenkennung"),            control.getKundennummer());
-		left.addLabelPair(i18n.tr("Kontonummer"),              control.getKontonummer());
-		left.addLabelPair(i18n.tr("Unterkontonummer"),         control.getUnterkonto());
-		left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());
-
-    SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
-    right.addHeadline(i18n.tr("IBAN/BIC"));
-    right.addLabelPair(i18n.tr("IBAN"),                    control.getIban());
-    right.addLabelPair(i18n.tr("BIC"),                     control.getBic());
-
-    right.addHeadline(i18n.tr("Notiz"));
-    right.addPart(control.getKommentar());
-    right.addLabelPair(i18n.tr("Gruppe"),control.getKategorie());
-    right.addInput(control.getOffline());
-
     // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(control.getSynchronizeOptions());
