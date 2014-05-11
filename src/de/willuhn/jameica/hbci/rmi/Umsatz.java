@@ -189,6 +189,20 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public boolean isAssigned() throws RemoteException;
+  
+  /**
+   * Liefert true, wenn der Umsatz nicht vorgemerkt ist.
+   * @return true, wenn der Umsatz nicht vorgemerkt ist.
+   * @throws RemoteException
+   */
+  public boolean isBooked() throws RemoteException;
+  
+  /**
+   * Liefert true, wenn der Umsatz geprueft ist.
+   * @return true, wenn der Umsatz geprueft ist.
+   * @throws RemoteException
+   */
+  public boolean isChecked() throws RemoteException;
 }
 
 

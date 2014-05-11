@@ -147,7 +147,7 @@ public class PDFUmsatzExporter implements Exporter
           
           BaseColor color = null;
           int style = Font.NORMAL;
-          if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+          if (!u.isBooked())
           {
             color = BaseColor.GRAY;
             style = Font.ITALIC;

@@ -583,7 +583,7 @@ public class KontoauszugList extends UmsatzList
       if (unchecked)
       {
         // Nur ungepruefte anzeigen
-        if ((u.getFlags() & Umsatz.FLAG_CHECKED) != 0)
+        if (!u.isChecked())
           continue;
       }
       result.add(u);
