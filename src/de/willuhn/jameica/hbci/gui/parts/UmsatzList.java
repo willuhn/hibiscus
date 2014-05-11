@@ -157,7 +157,7 @@ public class UmsatzList extends TablePart implements Extendable
         try {
           item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           
-          if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+          if (!u.isBooked())
           {
             item.setForeground(Color.COMMENT.getSWTColor());
           }
@@ -172,7 +172,7 @@ public class UmsatzList extends TablePart implements Extendable
           }
 
           item.setText(1,""); // Kein Text in den Flags - wir wollen nur das Bild
-          if (u.hasFlag(Umsatz.FLAG_CHECKED))
+          if (u.isChecked())
             item.setImage(1,SWTUtil.getImage("emblem-default.png"));
           else
             item.setImage(1,null); // Image wieder entfernen. Noetig, weil wir auch bei Updates aufgerufen werden

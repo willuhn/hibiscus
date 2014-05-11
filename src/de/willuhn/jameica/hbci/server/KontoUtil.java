@@ -188,7 +188,7 @@ public class KontoUtil
     {
       Umsatz u = (Umsatz) list.next();
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+      if (u.isBooked())
         return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
     }
 
@@ -201,7 +201,7 @@ public class KontoUtil
     {
       Umsatz u = (Umsatz) list.next();
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+      if (u.isBooked())
         return u.getSaldo();
     }
     return 0.0d;
@@ -225,7 +225,7 @@ public class KontoUtil
       Umsatz u = (Umsatz) list.next();
       
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+      if (u.isBooked())
         return u.getSaldo();
     }
     return 0.0d;
