@@ -193,7 +193,7 @@ public class Controller extends AbstractControl
   private boolean isPCSC()
   {
     Reader r = (Reader) getReaderPresets().getValue();
-    return r.isPCSCReader();
+    return r.getType().isPCSC();
   }
   
   /**
@@ -440,9 +440,7 @@ public class Controller extends AbstractControl
   {
     try
     {
-      Reader r = (Reader) getReaderPresets().getValue();
-      
-      if (!r.isPCSCReader())
+      if (!isPCSC())
       {
         getConfig().setCTNumber((Integer) getCTNumber().getValue());
         getConfig().setPort((String) getPort().getValue());
@@ -457,7 +455,7 @@ public class Controller extends AbstractControl
       getConfig().setSoftPin((Boolean) getSoftPin().getValue());
 
       getConfig().setKonten(getKontoAuswahl().getItems());
-      getConfig().setReaderPreset(r);
+      getConfig().setReaderPreset((Reader) getReaderPresets().getValue());
       getConfig().setHBCIVersion((String) getHBCIVersion().getValue());
       getConfig().setName((String) getBezeichnung().getValue());
       DDVConfigFactory.store(getConfig());
@@ -604,7 +602,7 @@ public class Controller extends AbstractControl
           return;
         }
         
-        boolean pcsc = r.isPCSCReader();
+        boolean pcsc = isPCSC();
         getCTAPI().setEnabled(!pcsc);
         getCTNumber().setEnabled(!pcsc);
         getPort().setEnabled(!pcsc);

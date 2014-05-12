@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
+import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader.Type;
 import de.willuhn.jameica.hbci.passports.ddv.server.CustomReader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportImpl;
@@ -209,7 +210,8 @@ public class DDVConfigFactory
 
         // Checken, ob der CTAPI-Treiber existiert.
         String s = StringUtils.trimToNull(reader.getCTAPIDriver());
-        if (!reader.isPCSCReader())
+        Type type = reader.getType();
+        if (type.isCTAPI())
         {
           if (s == null)
           {
@@ -233,7 +235,7 @@ public class DDVConfigFactory
         temp.setHBCIVersion("210");
 
         // PC/SC-Kartenleser suchen
-        if (reader.isPCSCReader())
+        if (type.isPCSC())
         {
           try
           {
@@ -472,9 +474,9 @@ public class DDVConfigFactory
     if (config == null)
       throw new ApplicationException(i18n.tr("Keine Konfiguration ausgewählt"));
 
-    boolean isPCSC = config.getReaderPreset().isPCSCReader();
+    Type type = config.getReaderPreset().getType();
     
-    if (isPCSC)
+    if (type.isPCSC())
     {
       String pcscName = config.getPCSCName();
       Logger.info("  pcsc name: " + pcscName);
@@ -517,7 +519,7 @@ public class DDVConfigFactory
     //////////////////////////////////////////////////////////////////////////
 
 
-    if (!isPCSC)
+    if (type.isCTAPI())
     {
       String port = Integer.toString(DDVConfig.getPortForName(config.getPort()));
       Logger.info("  port: " + config.getPort() + " [ID: " + port + "]");
@@ -533,9 +535,9 @@ public class DDVConfigFactory
     Logger.info("  entry index: " + config.getEntryIndex());
     HBCIUtils.setParam(Passport.ENTRYIDX,Integer.toString(config.getEntryIndex()));
 
-    String type = isPCSC ? "DDVPCSC" : "DDV";
-    Logger.info("  passport type: " + type);
-    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(type);
+    String id = type.getIdentifier();
+    Logger.info("  passport type: " + id);
+    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(id);
   }
 
   

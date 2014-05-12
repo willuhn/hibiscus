@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0349 Experimentelle Unterstützung für Kartenleser-Preset "RDH-Karte via PC/SC-Kartenleser"
+
 2014-05-04 Version 2.6.6
 
   * NEW: 0348 Detailansicht der Konten überarbeitet - mehr Platz für Umsätze und Saldoverlauf

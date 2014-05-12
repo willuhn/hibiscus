@@ -76,11 +76,11 @@ public class PCSCReader implements Reader
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isPCSCReader()
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getType()
    */
-  public boolean isPCSCReader()
+  public Type getType()
   {
-    return true;
+    return Type.DDV_PCSC;
   }
 
   /**

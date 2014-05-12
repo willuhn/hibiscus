@@ -21,6 +21,68 @@ package de.willuhn.jameica.hbci.passports.ddv.rmi;
  */
 public interface Reader
 {
+  /**
+   * Typ-Definition fuer die verschiedenen Arten von Karten.
+   */
+  public static enum Type
+  {
+    /**
+     * DDV-Karte via CTAPI.
+     */
+    DDV_CTAPI("DDV"),
+    
+    /**
+     * DDV-Karte via PCSC.
+     */
+    DDV_PCSC("DDVPCSC"),
+    
+    /**
+     * RDH-Karte via PCSC.
+     */
+    RDH_PCSC("RSA"),
+    
+    ;
+
+    private String id = null;
+    
+    /**
+     * ct.
+     * @param id der Identifier des Passports in HBCI4Java.
+     */
+    private Type(String id)
+    {
+      this.id = id;
+    }
+    
+    /**
+     * Liefert den Identifier des Passports in HBCI4Java.
+     * @return der Identifier des Passports in HBCI4Java.
+     */
+    public String getIdentifier()
+    {
+      return this.id;
+    }
+    
+    
+    /**
+     * Liefert true, wenn das ein PCSC-Kartenleser ist.
+     * @return true, wenn das ein PCSC-Kartenleser ist.
+     */
+    public boolean isPCSC()
+    {
+      return this == DDV_PCSC || this == RDH_PCSC;
+    }
+    
+    /**
+     * Liefert true, wenn das ein CTAPI-Kartenleser ist.
+     * @return true, wenn das ein CTAPI-Kartenleser ist.
+     */
+    public boolean isCTAPI()
+    {
+      return this == DDV_CTAPI;
+    }
+  }
+  
 	/**
 	 * Liefert den Namen des Chipkartenlesers.
    * @return Name des Lesers.
@@ -58,42 +120,9 @@ public interface Reader
   public boolean useSoftPin();
   
   /**
-   * Prueft, ob es eine Kartenleser-Konfiguration via javax.smartcardio ist.
-   * @return true, wenn es eine ist.
+   * Liefert die Art des Kartenlesers.
+   * @return die Art des Kartenlesers.
    */
-  public boolean isPCSCReader();
+  public Type getType();
 
 }
-
-
-/**********************************************************************
- * $Log: Reader.java,v $
- * Revision 1.6  2011/09/06 11:54:25  willuhn
- * @C JavaReader in PCSCReader umbenannt - die PIN-Eingabe fehlt noch
- *
- * Revision 1.5  2011-09-01 12:16:08  willuhn
- * @N Kartenleser-Suche kann jetzt abgebrochen werden
- * @N Erster Code fuer javax.smartcardio basierend auf dem OCF-Code aus HBCI4Java 2.5.8
- *
- * Revision 1.4  2011-09-01 09:40:53  willuhn
- * @R Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
- *
- * Revision 1.3  2010-09-07 15:28:06  willuhn
- * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
- *
- * Revision 1.2  2010-07-22 22:36:24  willuhn
- * @N Code-Cleanup
- *
- * Revision 1.1  2010/06/17 11:45:49  willuhn
- * @C kompletten Code aus "hbci_passport_ddv" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.3  2006/08/03 22:13:49  willuhn
- * @N OmniKey 4000 Preset
- *
- * Revision 1.2  2006/04/05 15:15:43  willuhn
- * @N Alternativer Treiber fuer Towitoko Kartenzwerg
- *
- * Revision 1.1  2004/07/27 22:56:18  willuhn
- * @N Reader presets
- *
- **********************************************************************/
