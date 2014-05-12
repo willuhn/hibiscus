@@ -53,7 +53,7 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
    * @see de.willuhn.jameica.hbci.passport.Passport#getName()
    */
   public String getName() throws RemoteException {
-    return i18n.tr("Chipkarte (DDV)");
+    return i18n.tr("Chipkartenleser");
   }
 
   /**
