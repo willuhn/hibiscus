@@ -120,7 +120,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     if (this.targetDate == null)
     {
       this.targetDate = new DateInput(getTransfer().getTargetDate(),DateUtil.DEFAULT_FORMAT);
-      this.targetDate.setName(i18n.tr("Fälligkeitsdatum"));
+      this.targetDate.setName(i18n.tr("Zieltermin"));
       this.targetDate.setEnabled(!getTransfer().ausgefuehrt());
     }
     return this.targetDate;
