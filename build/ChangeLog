@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0350 Neue HBCI4Java-Version (Unterstützung für SEPA-Bezeichner in VWZ), Stand
+              https://github.com/willuhn/hbci4java/commit/9cf329c3d4eb22ed97aa8c4f120b6a70a414dff7
   * NEW: 0349 Experimentelle Unterstützung für Kartenleser-Preset "RDH-Karte via PC/SC-Kartenleser"
 
 2014-05-04 Version 2.6.6
