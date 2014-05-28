@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/DauerauftragDeleteDialog.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/05/06 12:35:24 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -40,7 +34,7 @@ import de.willuhn.util.I18N;
  * Oeffnet einen Dialog zur Auswahl des Ziel-Datums zum Loeschen des
  * Dauerauftrages.
  */
-public class DauerauftragDeleteDialog extends AbstractDialog
+public class BaseDauerauftragDeleteDialog extends AbstractDialog
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -52,7 +46,7 @@ public class DauerauftragDeleteDialog extends AbstractDialog
   /**
    * @param position
    */
-  public DauerauftragDeleteDialog(int position) {
+  public BaseDauerauftragDeleteDialog(int position) {
     super(position);
     this.setTitle(i18n.tr("Zieldatum"));
   }
@@ -178,32 +172,3 @@ public class DauerauftragDeleteDialog extends AbstractDialog
 
 
 }
-
-
-/**********************************************************************
- * $Log: DauerauftragDeleteDialog.java,v $
- * Revision 1.9  2011/05/06 12:35:24  willuhn
- * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
- *
- * Revision 1.8  2011-03-07 10:33:53  willuhn
- * @N BUGZILLA 999
- *
- * Revision 1.7  2006/06/06 21:42:21  willuhn
- * @N Zeilenumbrueche in Dialogen (fuer Windows)
- *
- * Revision 1.6  2005/06/23 17:05:33  web0
- * @B bug 85
- *
- * Revision 1.5  2005/06/21 20:11:10  web0
- * @C cvs merge
- *
- * Revision 1.3  2005/06/08 10:24:41  web0
- * @B dialog muss bei "naechstmoeglicher Zeitpunkt" null liefern
- *
- * Revision 1.2  2005/06/07 22:19:57  web0
- * @B bug 49
- *
- * Revision 1.1  2005/06/07 21:57:25  web0
- * @B bug 18
- *
- **********************************************************************/

@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DauerauftragUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/10/27 17:08:03 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -17,7 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
+import de.willuhn.jameica.hbci.rmi.BaseDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 
 /**
@@ -33,7 +29,7 @@ public class DauerauftragUtil
    * @return die Termine, zu denen der Auftrag im angegebenen Zeitraum ausgefuehrt wird.
    * @throws RemoteException
    */
-  public static List<Date> getTermine(Dauerauftrag t, Date from, Date to) throws RemoteException
+  public static List<Date> getTermine(BaseDauerauftrag t, Date from, Date to) throws RemoteException
   {
     Date de       = t.getErsteZahlung();
     Date dl       = t.getLetzteZahlung();
@@ -88,12 +84,3 @@ public class DauerauftragUtil
     return result;
   }
 }
-
-
-
-/**********************************************************************
- * $Log: DauerauftragUtil.java,v $
- * Revision 1.3  2011/10/27 17:08:03  willuhn
- * @C Berechnung der kuenftigen geplanten Termine von Dauerauftraegen in neue Klasse DauerauftragUtil verschoben, damit der Code wiederverwendet werden kann (fuer den Forecast-Provider von Dauerauftraegen)
- *
- **********************************************************************/

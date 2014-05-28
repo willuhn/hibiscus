@@ -1,0 +1,17 @@
+<form>
+	<p>
+		<span color="header" font="header">Vorhandene SEPA-Daueraufträge</span>
+	</p>
+	
+	<p>
+		In dieser Liste sehen Sie alle existierenden SEPA-Daueraufträge.
+		Sie können diese mit denen bei Ihrer Bank gespeicherten
+		abgleichen, indem Sie <b>Existierende SEPA-Daueraufträge abrufen</b>
+		wählen.
+	</p>
+	
+	<p>
+		Abgelaufene SEPA-Daueraufträge (Datum der letzten Zahlung überschritten)
+		werden in grauer Schrift dargestellt.
+	</p>
+</form>

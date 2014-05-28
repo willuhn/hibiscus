@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/DauerauftragDelete.java,v $
- * $Revision: 1.19 $
- * $Date: 2011/03/07 10:40:48 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -27,12 +21,12 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.BaseDauerauftragDeleteDialog;
-import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
-import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobDauerauftragDelete;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragDelete;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
@@ -42,23 +36,23 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Action fuer Loeschen eines Dauerauftrages.
+ * Action fuer Loeschen eines SEPA-Dauerauftrages.
  * Existiert der Auftrag auch bei der Bank, wird er dort ebenfalls geloescht.
  */
-public class DauerauftragDelete implements Action
+public class SepaDauerauftragDelete implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
-   * Erwartet ein Objekt vom Typ <code>Dauerauftrag</code> im Context.
+   * Erwartet ein Objekt vom Typ <code>SepaDauerauftrag</code> im Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		if (context == null || !(context instanceof Dauerauftrag))
-			throw new ApplicationException(i18n.tr("Kein Dauerauftrag ausgewählt"));
+		if (!(context instanceof SepaDauerauftrag))
+			throw new ApplicationException(i18n.tr("Kein SEPA-Dauerauftrag ausgewählt"));
 
-    final Dauerauftrag da = (Dauerauftrag) context;
+    final SepaDauerauftrag da = (SepaDauerauftrag) context;
 
 		try
 		{
@@ -89,7 +83,7 @@ public class DauerauftragDelete implements Action
 	        super.extend(container);
 	      }
 	    };
-	    d.setTitle(i18n.tr("Dauerauftrag löschen"));
+	    d.setTitle(i18n.tr("SEPA-Dauerauftrag löschen"));
 	    d.setText(i18n.tr("Wollen Sie diesen Dauerauftrag wirklich löschen?"));
 	    d.setSize(350,SWT.DEFAULT);
 
@@ -106,7 +100,7 @@ public class DauerauftragDelete implements Action
 	      Date date = (Date) d2.open();
 	      
 	      Konto konto = da.getKonto();
-	      Class<SynchronizeJobDauerauftragDelete> type = SynchronizeJobDauerauftragDelete.class;
+	      Class<SynchronizeJobSepaDauerauftragDelete> type = SynchronizeJobSepaDauerauftragDelete.class;
 
 	      BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
 	      SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
@@ -114,16 +108,16 @@ public class DauerauftragDelete implements Action
 	      SynchronizeJob job         = backend.create(type,konto);
 	      
 	      job.setContext(SynchronizeJob.CTX_ENTITY,da);
-	      job.setContext(SynchronizeJobDauerauftragDelete.CTX_DATE,date);
+	      job.setContext(SynchronizeJobSepaDauerauftragDelete.CTX_DATE,date);
 	      
-        // Das Loeschen der Entity uebernimmt der HBCIDauerauftragDeleteJob selbst in "markExecuted"
+        // Das Loeschen der Entity uebernimmt der HBCISepaDauerauftragDeleteJob selbst in "markExecuted"
 	      backend.execute(Arrays.asList(job));
 	    }
 	    else
 	    {
 	      // nur lokal loeschen
 	      da.delete();
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Dauerauftrag lokal gelöscht."),StatusBarMessage.TYPE_SUCCESS));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("SEPA-Dauerauftrag lokal gelöscht."),StatusBarMessage.TYPE_SUCCESS));
 	    }
 		}
     catch (OperationCanceledException oce)

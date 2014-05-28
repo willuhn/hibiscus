@@ -8,6 +8,7 @@ package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Properties;
 
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -485,8 +486,12 @@ public class Controller extends AbstractControl
         // -> HBCIUser.updateUserData()
         // -> HBCIUser.fetchSysId() - und das holt die BPD beim naechsten mal ueber einen nicht-anonymen Dialog
 			  Logger.info("hbci version has changed to \"" + version + "\" - set sysId to 0 to force BPD reload on next connect");
-			  p.getBPD().remove("BPA.version");
-        p.syncSysId();
+			  Properties props = p.getBPD();
+			  if (props != null)
+			  {
+          props.remove("BPA.version");
+          p.syncSysId();
+			  }
 			}
 
 

@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.util.ApplicationException;
 
@@ -180,7 +181,50 @@ public class Converter {
 		return auftrag;
 	}
 
-	/**
+  /**
+   * Konvertiert eine Zeile aus der Liste der abgerufenen SEPA-Dauerauftraege.
+   * @param d der SEPA-Dauerauftrag aus HBCI4Java.
+   * @return Unser Dauerauftrag.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static SepaDauerauftrag HBCIDauer2HibiscusSepaDauerauftrag(GVRDauerList.Dauer d)
+    throws RemoteException, ApplicationException
+  {
+    SepaDauerauftragImpl auftrag = (SepaDauerauftragImpl) Settings.getDBService().createObject(SepaDauerauftrag.class,null);
+    auftrag.setErsteZahlung(d.firstdate);
+    auftrag.setLetzteZahlung(d.lastdate);
+    
+    // Das ist nicht eindeutig. Da der Converter schaut, ob er ein solches
+    // Konto schon hat und bei Bedarf das existierende verwendet. Es kann aber
+    // sein, dass ein User ein und das selbe Konto mit verschiedenen Sicherheitsmedien
+    // bedient. In diesem Fall wird der Dauerauftrag evtl. beim falschen Konto
+    // einsortiert. Ist aber kein Problem, weil der HBCIDauerauftragListJob
+    // das Konto eh nochmal gegen seines (und er kennt das richtige) ueberschreibt.
+    auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
+
+    auftrag.setBetrag(d.value.getDoubleValue());
+    auftrag.setOrderID(d.orderid);
+
+    // Jetzt noch der Empfaenger
+    auftrag.setGegenkonto(HBCIKonto2Address(d.other));
+    
+    auftrag.setChangable(d.can_change);
+    auftrag.setDeletable(d.can_delete);
+
+    // Verwendungszweck
+    VerwendungszweckUtil.apply(auftrag,d.usage);
+    
+    // Es kann wohl Faelle geben, wo der Auftrag keinen Verwendungszweck hat.
+    // In dem Fall tragen wir ein "-" ein.
+    if (auftrag.getZweck() == null)
+      auftrag.setZweck("-");
+    
+    auftrag.setTurnus(TurnusHelper.createByDauerAuftrag(d));
+    return auftrag;
+  }
+
+  /**
 	 * Konvertiert ein Hibiscus-Konto in ein HBCI4Java Konto.
    * @param konto unser Konto.
    * @return das HBCI4Java Konto.
@@ -268,6 +312,8 @@ public class Converter {
 	{
 		Konto k = new Konto("DE",adresse.getBlz(),adresse.getKontonummer());
 		k.name = adresse.getName();
+		k.iban = adresse.getIban();
+		k.bic  = adresse.getBic();
 		return k;
 	}
 

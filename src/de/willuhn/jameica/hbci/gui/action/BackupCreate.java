@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/BackupCreate.java,v $
- * $Revision: 1.7 $
- * $Date: 2012/01/25 21:49:26 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -49,6 +43,7 @@ import de.willuhn.jameica.hbci.server.SammelLastBuchungImpl;
 import de.willuhn.jameica.hbci.server.SammelLastschriftImpl;
 import de.willuhn.jameica.hbci.server.SammelUeberweisungBuchungImpl;
 import de.willuhn.jameica.hbci.server.SammelUeberweisungImpl;
+import de.willuhn.jameica.hbci.server.SepaDauerauftragImpl;
 import de.willuhn.jameica.hbci.server.SepaLastschriftImpl;
 import de.willuhn.jameica.hbci.server.SepaSammelLastBuchungImpl;
 import de.willuhn.jameica.hbci.server.SepaSammelLastschriftImpl;
@@ -133,6 +128,10 @@ public class BackupCreate implements Action
           
           monitor.setStatusText(i18n.tr("Speichere Daueraufträge"));
           backup(DauerauftragImpl.class,writer,monitor);
+          monitor.addPercentComplete(5);
+
+          monitor.setStatusText(i18n.tr("Speichere SEPA-Daueraufträge"));
+          backup(SepaDauerauftragImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Lastschriften"));
@@ -322,29 +321,3 @@ public class BackupCreate implements Action
   
 
 }
-
-
-/*********************************************************************
- * $Log: BackupCreate.java,v $
- * Revision 1.7  2012/01/25 21:49:26  willuhn
- * @B Die Reminder fehlten im Backup
- *
- * Revision 1.6  2010-07-21 16:11:13  willuhn
- * @C Diagnose-Backup aktualisiert (SEPA-Ueberweisungen und DBProperties fehlten, Umsatz-Kategorien muessen in der richtigen Reihenfolge exportiert werden)
- *
- * Revision 1.5  2010/06/08 11:27:59  willuhn
- * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
- *
- * Revision 1.4  2010/03/03 11:00:19  willuhn
- * @N Erst Status-Code setzen und dann erst den Text - sonst wird der Text nicht gruen gefaerbt
- *
- * Revision 1.3  2008/12/14 23:18:35  willuhn
- * @N BUGZILLA 188 - REFACTORING
- *
- * Revision 1.2  2008/09/02 18:14:25  willuhn
- * @N Diagnose-Backup erweitert
- *
- * Revision 1.1  2008/01/22 13:34:45  willuhn
- * @N Neuer XML-Import/-Export
- *
- **********************************************************************/

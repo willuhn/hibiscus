@@ -55,20 +55,21 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   
   private final static int WINDOW_WIDTH = 400;
   
-  private Konto konto                = null;
-  private boolean offline            = false;
-  private boolean syncAvail          = false;
-  private SynchronizeOptions options = null;
-  private CheckboxInput syncOffline  = null;
-  private CheckboxInput syncSaldo    = null;
-  private CheckboxInput syncUmsatz   = null;
-  private CheckboxInput syncUeb      = null;
-  private CheckboxInput syncLast     = null;
-  private CheckboxInput syncDauer    = null;
-  private CheckboxInput syncAueb     = null;
-  private CheckboxInput syncSepaLast = null;
-  private LabelInput error           = null;
-  private Button apply               = null;
+  private Konto konto                 = null;
+  private boolean offline             = false;
+  private boolean syncAvail           = false;
+  private SynchronizeOptions options  = null;
+  private CheckboxInput syncOffline   = null;
+  private CheckboxInput syncSaldo     = null;
+  private CheckboxInput syncUmsatz    = null;
+  private CheckboxInput syncUeb       = null;
+  private CheckboxInput syncLast      = null;
+  private CheckboxInput syncDauer     = null;
+  private CheckboxInput syncAueb      = null;
+  private CheckboxInput syncSepaLast  = null;
+  private CheckboxInput syncSepaDauer = null;
+  private LabelInput error            = null;
+  private Button apply                = null;
   
   private List<Input> properties = new ArrayList<Input>();
 
@@ -170,6 +171,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           options.setSyncUeberweisungen(((Boolean)getSyncUeb().getValue()).booleanValue());
           options.setSyncLastschriften(((Boolean)getSyncLast().getValue()).booleanValue());
           options.setSyncDauerauftraege(((Boolean)getSyncDauer().getValue()).booleanValue());
+          options.setSyncSepaDauerauftraege(((Boolean)getSyncSepaDauer().getValue()).booleanValue());
           options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
           options.setSyncSepaLastschriften(((Boolean)getSyncSepaLast().getValue()).booleanValue());
         }
@@ -209,6 +211,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       group.addInput(getSyncLast());
       group.addInput(getSyncSepaLast());
       group.addInput(getSyncDauer());
+      group.addInput(getSyncSepaDauer());
     }
     
     if (this.properties.size() > 0)
@@ -305,6 +308,20 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       this.syncDauer.setName(i18n.tr("Daueraufträge synchronisieren"));
     }
     return this.syncDauer;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der SEPA-Dauerauftraege.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncSepaDauer()
+  {
+    if (this.syncSepaDauer == null)
+    {
+      this.syncSepaDauer = new CheckboxInput(options.getSyncSepaDauerauftraege());
+      this.syncSepaDauer.setName(i18n.tr("SEPA-Daueraufträge synchronisieren"));
+    }
+    return this.syncSepaDauer;
   }
 
   /**

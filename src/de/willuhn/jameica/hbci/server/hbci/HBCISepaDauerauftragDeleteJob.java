@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/hbci/HBCIDauerauftragDeleteJob.java,v $
- * $Revision: 1.22 $
- * $Date: 2012/03/01 22:19:15 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -20,11 +14,10 @@ import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.HBCIJob;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.rmi.BaseDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.hbci.tests.CanTermDelRestriction;
@@ -32,13 +25,13 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Job fuer "Dauerauftrag loeschen".
+ * Job fuer "SEPA-Dauerauftrag loeschen".
  */
-public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
+public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
 {
-	private Dauerauftrag dauerauftrag = null;
-	private Konto konto 							= null;
-	private Date date                 = null;
+	private SepaDauerauftrag dauerauftrag = null;
+	private Konto konto 						     	= null;
+	private Date date                     = null;
 
   /**
 	 * ct.
@@ -48,12 +41,12 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
    * @throws RemoteException
    * @throws ApplicationException
    */
-  public HBCIDauerauftragDeleteJob(Dauerauftrag auftrag, Date date) throws RemoteException, ApplicationException
+  public HBCISepaDauerauftragDeleteJob(SepaDauerauftrag auftrag, Date date) throws RemoteException, ApplicationException
 	{
 		try
 		{
 			if (auftrag == null)
-				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Dauerauftrag aus"));
+				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen SEPA-Dauerauftrag aus"));
 
 			if (!auftrag.isActive())
 				throw new ApplicationException(i18n.tr("Dauerauftrag liegt nicht bei der Bank vor und muss daher nicht online gelöscht werden"));
@@ -66,12 +59,22 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 			this.date         = date;
 
       String orderID = this.dauerauftrag.getOrderID();
-      if (StringUtils.trimToEmpty(orderID).equals(Dauerauftrag.ORDERID_PLACEHOLDER))
+      if (StringUtils.trimToEmpty(orderID).equals(BaseDauerauftrag.ORDERID_PLACEHOLDER))
         setJobParam("orderid",""); // Duerfen wir nicht mitschicken
       else
         setJobParam("orderid",orderID);
 
-      setJobParam("src",Converter.HibiscusKonto2HBCIKonto(konto));
+      org.kapott.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
+      // Deutsche Umlaute im eigenen Namen noch ersetzen
+      // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
+      own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
+      setJobParam("src",own);
+
+      org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
+      k.bic = dauerauftrag.getGegenkontoBLZ();
+      k.iban = dauerauftrag.getGegenkontoNummer();
+      k.name = dauerauftrag.getGegenkontoName();
+      setJobParam("dst",k);
 
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
@@ -79,19 +82,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
 
       setJobParam("btg",dauerauftrag.getBetrag(),curr);
 
-      HibiscusAddress empfaenger = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
-      empfaenger.setBlz(dauerauftrag.getGegenkontoBLZ());
-      empfaenger.setKontonummer(dauerauftrag.getGegenkontoNummer());
-      empfaenger.setName(dauerauftrag.getGegenkontoName());
-      setJobParam("dst",Converter.Address2HBCIKonto(empfaenger));
-      setJobParam("name",empfaenger.getName());
-      
       setJobParamUsage(dauerauftrag);
-
-      String key = this.dauerauftrag.getTextSchluessel();
-      if (key != null && key.length() > 0)
-        setJobParam("key",key);
-
       setJobParam("firstdate",dauerauftrag.getErsteZahlung());
 
       Date letzteZahlung = dauerauftrag.getLetzteZahlung();
@@ -127,7 +118,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
     if (this.date != null)
     {
       Properties p = job.getJobRestrictions();
-      Logger.info("target date for DauerDel: " + this.date.toString());
+      Logger.info("target date for DauerSepaDel: " + this.date.toString());
       new CanTermDelRestriction(p).test(); // Test nur, wenn Datum angegeben
       this.setJobParam("date",this.date);
     }
@@ -139,7 +130,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
   public String getIdentifier() {
-    return "DauerDel";
+    return "DauerSEPADel";
   }
 
   /**
@@ -147,7 +138,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
    */
   public String getName() throws RemoteException
   {
-    return i18n.tr("Dauerauftrag an {0} löschen",dauerauftrag.getGegenkontoName());
+    return i18n.tr("SEPA-Dauerauftrag an {0} löschen",dauerauftrag.getGegenkontoName());
   }
 
   /**
@@ -156,8 +147,8 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
   void markExecuted() throws RemoteException, ApplicationException
   {
     dauerauftrag.delete();
-    konto.addToProtokoll(i18n.tr("Dauerauftrag an {0} gelöscht",dauerauftrag.getGegenkontoName()),Protokoll.TYP_SUCCESS);
-    Logger.info("dauerauftrag deleted successfully");
+    konto.addToProtokoll(i18n.tr("SEPA-Dauerauftrag an {0} gelöscht",dauerauftrag.getGegenkontoName()),Protokoll.TYP_SUCCESS);
+    Logger.info("sepa-dauerauftrag deleted successfully");
   }
 
   /**
@@ -165,7 +156,7 @@ public class HBCIDauerauftragDeleteJob extends AbstractHBCIJob
    */
   String markFailed(String error) throws RemoteException, ApplicationException
   {
-    String msg = i18n.tr("Fehler beim Löschen des Dauerauftrages an {0}: {1}",new String[]{dauerauftrag.getGegenkontoName(),error});
+    String msg = i18n.tr("Fehler beim Löschen des SEPA-Dauerauftrages an {0}: {1}",new String[]{dauerauftrag.getGegenkontoName(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }

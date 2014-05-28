@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBPropertyUtil.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/10/20 16:20:05 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -41,6 +35,11 @@ public class DBPropertyUtil
    * Query-Parameter fuer die BPD fuer "Dauerauftrag aendern".
    */
   public final static String BPD_QUERY_DAUER_EDIT = "Params%.DauerEditPar%.ParDauerEdit.%";
+
+  /**
+   * Query-Parameter fuer die BPD fuer "SEPA-Dauerauftrag aendern".
+   */
+  public final static String BPD_QUERY_SEPADAUER_EDIT = "Params%.DauerSEPAEditPar%.ParDauerSEPAEdit.%";
 
   /**
    * Liefert die BPD fuer das Konto und den angegebenen Suchfilter.
@@ -217,28 +216,3 @@ public class DBPropertyUtil
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: DBPropertyUtil.java,v $
- * Revision 1.6  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.5  2011/10/18 09:28:14  willuhn
- * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
- *
- * Revision 1.4  2011/10/14 13:25:37  willuhn
- * @N Parameter automatisch loeschen, wenn sie einen NULL-Wert kriegen
- *
- * Revision 1.3  2011-08-10 10:46:50  willuhn
- * @N Aenderungen nur an den DA-Eigenschaften zulassen, die gemaess BPD aenderbar sind
- * @R AccountUtil entfernt, Code nach VerwendungszweckUtil verschoben
- * @N Neue Abfrage-Funktion in DBPropertyUtil, um die BPD-Parameter zu Geschaeftsvorfaellen bequemer abfragen zu koennen
- *
- * Revision 1.2  2008/09/17 23:44:29  willuhn
- * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
- *
- * Revision 1.1  2008/05/30 14:23:48  willuhn
- * @N Vollautomatisches und versioniertes Speichern der BPD und UPD in der neuen Property-Tabelle
- *
- **********************************************************************/

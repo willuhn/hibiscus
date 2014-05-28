@@ -293,6 +293,15 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
 	 */
 	public DBIterator getDauerauftraege() throws RemoteException;
 
+  /**
+   * Liefert alle SEPA-Dauerauftraege, die fuer das Konto vorliegen. Dabei werden
+   * auch jene geliefert, die lokal erstellt, jedoch noch nicht zur Bank
+   * hochgeladen wurden.
+   * @return Liste der SEPA-Dauerauftraege.
+   * @throws RemoteException
+   */
+  public DBIterator getSepaDauerauftraege() throws RemoteException;
+
 	/**
 	 * Liefert alle Lastschriften, die fuer das Konto vorliegen.
 	 * @return Liste der Lastschriften.

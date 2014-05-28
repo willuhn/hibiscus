@@ -194,6 +194,25 @@ CREATE TABLE dauerauftrag (
   typ varchar(2) NULL
 );
 
+CREATE TABLE sepadauerauftrag (
+  id serial primary key,
+  konto_id integer NOT NULL,
+  empfaenger_konto varchar(40) NOT NULL,
+  empfaenger_name varchar(140) NOT NULL,
+  empfaenger_bic varchar(15),
+  betrag float NOT NULL,
+  zweck varchar(140),
+  erste_zahlung date NOT NULL,
+  letzte_zahlung date,
+  orderid varchar(100),
+  endtoendid varchar(35),
+  zeiteinheit integer NOT NULL,
+  intervall integer NOT NULL,
+  tag integer NOT NULL,
+  canchange int(1) NULL,
+  candelete int(1) NULL
+);
+
 CREATE TABLE turnus (
   id serial primary key,
   zeiteinheit integer NOT NULL,
@@ -310,6 +329,7 @@ ALTER TABLE sepaslast ADD CONSTRAINT fk_konto10 FOREIGN KEY (konto_id) REFERENCE
 ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslast1 FOREIGN KEY (sepaslast_id) REFERENCES sepaslast (id) DEFERRABLE;
 ALTER TABLE sepasueb ADD CONSTRAINT fk_konto11 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasueb1 FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id) DEFERRABLE;
+ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_konto12 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);
@@ -329,4 +349,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',51);
+INSERT INTO version (name,version) values ('db',52);

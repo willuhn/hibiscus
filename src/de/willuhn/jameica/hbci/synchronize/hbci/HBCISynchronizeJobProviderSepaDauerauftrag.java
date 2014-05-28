@@ -17,27 +17,27 @@ import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
-import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
-import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobDauerauftragList;
-import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobDauerauftragStore;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragList;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragStore;
 import de.willuhn.logging.Logger;
 
 /**
- * Implementierung eines Job-Providers zum Abrufen und Ausfuehren von Dauerauftraegen.
+ * Implementierung eines Job-Providers zum Abrufen und Ausfuehren von SEPA-Dauerauftraegen.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderDauerauftrag implements HBCISynchronizeJobProvider
+public class HBCISynchronizeJobProviderSepaDauerauftrag implements HBCISynchronizeJobProvider
 {
   @Resource
   private HBCISynchronizeBackend backend = null;
 
   private final static List<Class<? extends SynchronizeJob>> JOBS = new ArrayList<Class<? extends SynchronizeJob>>()
   {{
-    add(HBCISynchronizeJobDauerauftragDelete.class);
-    add(HBCISynchronizeJobDauerauftragStore.class);
-    add(HBCISynchronizeJobDauerauftragList.class);
+    add(HBCISynchronizeJobSepaDauerauftragDelete.class);
+    add(HBCISynchronizeJobSepaDauerauftragStore.class);
+    add(HBCISynchronizeJobSepaDauerauftragList.class);
   }};
 
   /**
@@ -53,24 +53,24 @@ public class HBCISynchronizeJobProviderDauerauftrag implements HBCISynchronizeJo
       {
         final SynchronizeOptions options = new SynchronizeOptions(kt);
 
-        if (!options.getSyncDauerauftraege())
+        if (!options.getSyncSepaDauerauftraege())
           continue;
         
         // Senden der neuen Dauerauftraege
-        DBIterator list = kt.getDauerauftraege();
+        DBIterator list = kt.getSepaDauerauftraege();
         while (list.hasNext())
         {
-          Dauerauftrag d = (Dauerauftrag) list.next();
+          SepaDauerauftrag d = (SepaDauerauftrag) list.next();
           if (d.isActive())
             continue; // Der wurde schon gesendet
           
-          SynchronizeJobDauerauftragStore job = backend.create(SynchronizeJobDauerauftragStore.class,kt);
+          SynchronizeJobSepaDauerauftragStore job = backend.create(SynchronizeJobSepaDauerauftragStore.class,kt);
           job.setContext(SynchronizeJob.CTX_ENTITY,d);
           jobs.add(job);
         }
         
         // Abrufen der existierenden Dauerauftraege.
-        SynchronizeJobDauerauftragList job = backend.create(SynchronizeJobDauerauftragList.class,kt);
+        SynchronizeJobSepaDauerauftragList job = backend.create(SynchronizeJobSepaDauerauftragList.class,kt);
         job.setContext(SynchronizeJob.CTX_ENTITY,kt);
         jobs.add(job);
       }

@@ -18,6 +18,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
@@ -43,6 +44,7 @@ public class Open implements Action
     actionMap.put(Ueberweisung.class,           UeberweisungNew.class);
     actionMap.put(Lastschrift.class,            LastschriftNew.class);
     actionMap.put(Dauerauftrag.class,           DauerauftragNew.class);
+    actionMap.put(SepaDauerauftrag.class,       SepaDauerauftragNew.class);
     actionMap.put(AuslandsUeberweisung.class,   AuslandsUeberweisungNew.class);
     actionMap.put(SepaLastschrift.class,        SepaLastschriftNew.class);
     actionMap.put(SepaSammelLastschrift.class,  SepaSammelLastschriftNew.class);

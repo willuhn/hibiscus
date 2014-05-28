@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
@@ -245,6 +246,15 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         da.delete();
       }
 
+      // dann die SEPA-Dauerauftraege
+      list = getSepaDauerauftraege();
+      SepaDauerauftrag sda = null;
+      while (list.hasNext())
+      {
+        sda = (SepaDauerauftrag) list.next();
+        sda.delete();
+      }
+      
       // noch die Lastschriften
       list = getLastschriften();
       Lastschrift ls = null;
@@ -526,6 +536,16 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaDauerauftraege()
+   */
+  public DBIterator getSepaDauerauftraege() throws RemoteException
+  {
+    DBIterator list = getService().createList(SepaDauerauftrag.class);
+    list.addFilter("konto_id = " + getID());
+    return list;
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getLastschriften()
    */

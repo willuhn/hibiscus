@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/DauerauftragList.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/12/18 23:20:20 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -21,9 +15,9 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
-import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
-import de.willuhn.jameica.hbci.io.print.PrintSupportDauerauftrag;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchSepaDauerauftraege;
+import de.willuhn.jameica.hbci.gui.controller.SepaDauerauftragControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportSepaDauerauftrag;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.Message;
@@ -33,9 +27,9 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Zeigt eine Liste mit den vorhandenen Dauerauftraegen an.
+ * Zeigt eine Liste mit den vorhandenen SEPA-Dauerauftraegen an.
  */
-public class DauerauftragList extends AbstractView
+public class SepaDauerauftragList extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
@@ -46,10 +40,10 @@ public class DauerauftragList extends AbstractView
    */
   public void bind() throws Exception
   {
-    DauerauftragControl control = new DauerauftragControl(this);
+    SepaDauerauftragControl control = new SepaDauerauftragControl(this);
     
-    final de.willuhn.jameica.hbci.gui.parts.DauerauftragList table = control.getDauerauftragListe();
-    final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportDauerauftrag(table));
+    final de.willuhn.jameica.hbci.gui.parts.SepaDauerauftragList table = control.getDauerauftragListe();
+    final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportSepaDauerauftrag(table));
     table.addSelectionListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -57,12 +51,12 @@ public class DauerauftragList extends AbstractView
       }
     });
 
-    GUI.getView().setTitle(i18n.tr("Vorhandene Daueraufträge"));
+    GUI.getView().setTitle(i18n.tr("Vorhandene SEPA-Daueraufträge"));
     GUI.getView().addPanelButton(print);
 		
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Daueraufträge abrufen..."),  new KontoFetchDauerauftraege(),null,false,"mail-send-receive.png");
-    buttons.addButton(i18n.tr("Neuer Dauerauftrag"),        new de.willuhn.jameica.hbci.gui.action.DauerauftragNew(),null,false,"text-x-generic.png");
+    buttons.addButton(i18n.tr("SEPA-Daueraufträge abrufen..."),  new KontoFetchSepaDauerauftraege(),null,false,"mail-send-receive.png");
+    buttons.addButton(i18n.tr("Neuer SEPA-Dauerauftrag"),        new de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew(),null,false,"text-x-generic.png");
     buttons.paint(getParent());
 
     table.paint(getParent());
@@ -104,7 +98,7 @@ public class DauerauftragList extends AbstractView
       
       // View neu laden
       if (o instanceof Konto)
-        GUI.startView(DauerauftragList.this,null);
+        GUI.startView(SepaDauerauftragList.this,null);
     }
   
     /**
