@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0352 Neue HBCI4Java-Version (falsches Encoding beim Parsen des SEPA-XML), Stand
+              https://github.com/willuhn/hbci4java/commit/90e5b37791643a91f9943db27f6f9b9f778af9c2
   * NEW: 0351 BUGZILLA 1266 - Unterstützung für SEPA-Daueraufträge
   * NEW: 0350 Neue HBCI4Java-Version (Unterstützung für SEPA-Bezeichner in VWZ), Stand
               https://github.com/willuhn/hbci4java/commit/9cf329c3d4eb22ed97aa8c4f120b6a70a414dff7
