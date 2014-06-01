@@ -11,6 +11,7 @@ import java.util.Arrays;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
@@ -43,7 +44,7 @@ public class KontoFetchSepaDauerauftraege implements Action
 		if (!(context instanceof Konto))
 		{
 			// 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
-			KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+			KontoAuswahlDialog d = new KontoAuswahlDialog(null,KontoFilter.FOREIGN,KontoAuswahlDialog.POSITION_CENTER);
 			try
 			{
 				context = d.open();
