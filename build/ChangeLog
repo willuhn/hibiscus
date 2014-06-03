@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0354 Neue Exporter-Infrastruktur fuer SEPA-Auftraege, Umstellung des bisherigen
+              Exports von SEPA-Aufträgen auf den Standard-Export-Mechanismus von Hibiscus.
   * NEW: 0353 Erweiterte SEPA-Zeichen (insb. Umlaute) in Daueraufträgen erlauben.
   * NEW: 0352 Neue HBCI4Java-Version (falsches Encoding beim Parsen des SEPA-XML), Stand
               https://github.com/willuhn/hbci4java/commit/90e5b37791643a91f9943db27f6f9b9f778af9c2

@@ -12,15 +12,13 @@ import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 /**
  * Exporter fuer SEPA-Lastschriften.
  */
-public class SepaLastschriftExport extends AbstractObjectExport
+public class SepaLastschriftExport extends Export
 {
-
   /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractObjectExport#getExportClass()
+   * ct.
    */
-  Class getExportClass()
+  public SepaLastschriftExport()
   {
-    return SepaLastschrift.class;
+    super(SepaLastschrift.class);
   }
-
 }

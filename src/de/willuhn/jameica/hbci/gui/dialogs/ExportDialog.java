@@ -50,6 +50,7 @@ import de.willuhn.jameica.hbci.io.IORegistry;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -226,6 +227,12 @@ public class ExportDialog extends AbstractDialog implements Extendable
           monitor.setStatusText(ae.getMessage());
           GUI.getStatusBar().setErrorText(ae.getMessage());
           throw ae;
+        }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info("operation cancelled: " + oce.getMessage());
+          monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
+          monitor.setStatusText(i18n.tr("Export abgebrochen"));
         }
         catch (Exception e)
         {

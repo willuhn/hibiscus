@@ -15,7 +15,6 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.PanelButton;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
@@ -23,7 +22,6 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
-import de.willuhn.jameica.hbci.gui.action.SepaExportSammelLastschrift;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SepaSammelLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaSammelLastschrift;
@@ -56,7 +54,6 @@ public class SepaSammelLastschriftNew extends AbstractView
     this.transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Sammellastschrift bearbeiten"));
-    GUI.getView().addPanelButton(new PanelButton("edit-select-all.png",new SepaExportSammelLastschrift(transfer),i18n.tr("Als SEPA-XML-Datei exportieren...")));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaSammelLastschrift(transfer)));
 		
     Container group = new SimpleContainer(getParent());

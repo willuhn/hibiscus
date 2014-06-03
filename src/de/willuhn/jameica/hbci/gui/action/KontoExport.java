@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2009/07/09 17:08:03 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -18,23 +12,13 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 /**
  * Exporter fuer Konten.
  */
-public class KontoExport extends AbstractObjectExport
+public class KontoExport extends Export
 {
-
   /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractObjectExport#getExportClass()
+   * ct.
    */
-  Class getExportClass()
+  public KontoExport()
   {
-    return Konto.class;
+    super(Konto.class);
   }
-
 }
-
-
-/*********************************************************************
- * $Log: KontoExport.java,v $
- * Revision 1.1  2009/07/09 17:08:03  willuhn
- * @N BUGZILLA #740
- *
- **********************************************************************/
