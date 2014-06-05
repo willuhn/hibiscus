@@ -35,7 +35,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class SepaLastschriftExporter extends AbstractSepaExporter
 {
-  private final static DateFormat ISO_DATE = new SimpleDateFormat("yyyy-MM-dd");
+  private final static DateFormat ISO_DATE = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
 
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#setup(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
@@ -64,10 +64,10 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#export(java.lang.Object, int, de.willuhn.jameica.hbci.io.AbstractSepaExporter.JobContext)
+   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, de.willuhn.jameica.hbci.io.AbstractSepaExporter.JobContext)
    */
   @Override
-  protected void export(Object o, int idx, JobContext ctx) throws Exception
+  protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
     Properties props = ctx.props;
     

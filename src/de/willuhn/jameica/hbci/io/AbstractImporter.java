@@ -7,7 +7,7 @@
 
 package de.willuhn.jameica.hbci.io;
 
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 
 import de.willuhn.io.IOUtil;
@@ -21,35 +21,35 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Abstrakte Basis-Klasse fuer Exporter.
+ * Abstrakte Basis-Klasse fuer Importer.
  */
-public abstract class AbstractExporter implements Exporter
+public abstract class AbstractImporter implements Importer
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
   @Override
-  public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     try
     {
-      this.setup(objects,format,os,monitor);
+      Object[] objects = this.setup(context,format,is,monitor);
       
       
       double factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
-      monitor.setStatusText(i18n.tr("Exportiere Daten"));
+      monitor.setStatusText(i18n.tr("Importiere Daten"));
       
       for (int i=0;i<objects.length;++i)
       {
         monitor.setPercentComplete((int)((i) * factor));
-        monitor.log(i18n.tr("Speichere Datensatz {0}",Integer.toString(i+1)));
+        monitor.log(i18n.tr("Lese Datensatz {0}",Integer.toString(i+1)));
         
-        this.exportObject(objects[i],i,os);
+        this.importObject(objects[i],i);
       }
-      this.commit(objects,format,os,monitor);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Daten exportiert"),StatusBarMessage.TYPE_SUCCESS));
+      this.commit(objects,format,is,monitor);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Daten importiert"),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (OperationCanceledException oce)
     {
@@ -61,50 +61,46 @@ public abstract class AbstractExporter implements Exporter
     }
     catch (Exception e)
     {
-      Logger.error("unable to export data",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Export der Daten: {0}",e.getMessage()),e);
+      Logger.error("unable to import data",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Import der Daten: {0}",e.getMessage()),e);
     }
     finally
     {
-      IOUtil.close(os);
+      IOUtil.close(is);
     }
   }
   
   /**
-   * Initialisiert den Export fuer die Objekte.
-   * @param objects die zu exportierenden Objekte.
-   * @param format das vom User ausgewaehlte Export-Format.
-   * @param os der Ziel-Ausgabe-Stream.
-   * @param monitor ein Monitor, an den der Exporter Ausgaben ueber seinen Bearbeitungszustand ausgeben kann.
+   * Initialisiert den Import fuer die Objekte.
+   * @param context Context, der dem Importer hilft, den Zusammenhang zu erkennen,
+   * in dem er aufgerufen wurde. Das kann zum Beispiel ein Konto sein.
+   * @param format das vom User ausgewaehlte Import-Format.
+   * @param is der Stream, aus dem die Daten gelesen werden.
+   * @param monitor ein Monitor, an den der Importer Ausgaben ueber seinen
    * @throws Exception
    */
-  void setup(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
-  {
-    if (objects == null || objects.length == 0)
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
-  }
+  abstract Object[] setup(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws Exception;
   
   /**
-   * Beendet den Export.
-   * @param objects die zu exportierenden Objekte.
-   * @param format das vom User ausgewaehlte Export-Format.
-   * @param os der Ziel-Ausgabe-Stream.
-   * @param monitor ein Monitor, an den der Exporter Ausgaben ueber seinen Bearbeitungszustand ausgeben kann.
+   * Beendet den Import.
+   * @param objects die zu importierenden Objekte.
+   * @param format das vom User ausgewaehlte Format.
+   * @param is der InputStream.
+   * @param monitor ein Monitor, an den der Importer Ausgaben ueber seinen Bearbeitungszustand ausgeben kann.
    * @throws Exception
    */
-  void commit(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
+  void commit(Object[] objects, IOFormat format, InputStream is, ProgressMonitor monitor) throws Exception
   {
   }
 
   
   /**
-   * Fuehrt den Export fuer ein einzelnes Objekt aus.
-   * @param o das zu exportierende Objekt.
+   * Fuehrt den Import fuer ein einzelnes Objekt aus.
+   * @param o das zu importierende Objekt.
    * @param idx der Index des Objekts in der Liste. Beginnend bei 0.
-   * @param os der OutputStream.
    * @throws Exception
    */
-  abstract void exportObject(Object o, int idx, OutputStream os) throws Exception;
+  abstract void importObject(Object o, int idx) throws Exception;
   
   /**
    * Liefert eine Liste von Objekt-Typen, die von diesem IO unterstuetzt werden.
@@ -163,7 +159,7 @@ public abstract class AbstractExporter implements Exporter
      */
     public String getName()
     {
-      return AbstractExporter.this.getName();
+      return AbstractImporter.this.getName();
     }
 
     /**
@@ -171,7 +167,7 @@ public abstract class AbstractExporter implements Exporter
      */
     public String[] getFileExtensions()
     {
-      return AbstractExporter.this.getFileExtensions();
+      return AbstractImporter.this.getFileExtensions();
     }
   }
 

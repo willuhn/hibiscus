@@ -1,3 +1,10 @@
+/**********************************************************************
+ *
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
+ *
+ **********************************************************************/
+
 package de.willuhn.jameica.hbci.io;
 
 import java.io.OutputStream;
@@ -136,12 +143,12 @@ public abstract class AbstractSepaExporter extends AbstractExporter
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#export(java.lang.Object, int, java.io.OutputStream)
+   * @see de.willuhn.jameica.hbci.io.AbstractExporter#exportObject(java.lang.Object, int, java.io.OutputStream)
    */
   @Override
-  void export(Object o, int idx, OutputStream os) throws Exception
+  void exportObject(Object o, int idx, OutputStream os) throws Exception
   {
-    this.export(o,idx,jobs.get(os));
+    this.exportObject(o,idx,jobs.get(os));
   }
   
   /**
@@ -168,7 +175,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
    * @param props die Properties.
    * @throws Exception
    */
-  protected abstract void export(Object o, int idx, JobContext ctx) throws Exception;
+  protected abstract void exportObject(Object o, int idx, JobContext ctx) throws Exception;
 
   /**
    * Liefert den zu verwendenden SEPA PAIN-Type.

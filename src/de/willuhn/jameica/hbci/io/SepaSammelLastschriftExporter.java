@@ -67,10 +67,10 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#export(java.lang.Object, int, de.willuhn.jameica.hbci.io.AbstractSepaExporter.JobContext)
+   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, de.willuhn.jameica.hbci.io.AbstractSepaExporter.JobContext)
    */
   @Override
-  protected void export(Object o, int idx, JobContext ctx) throws Exception
+  protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
     Properties props = ctx.props;
     
