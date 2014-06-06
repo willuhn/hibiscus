@@ -9,6 +9,8 @@ package de.willuhn.jameica.hbci.io;
 
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
@@ -37,6 +39,8 @@ public abstract class AbstractImporter implements Importer
     {
       Object[] objects = this.setup(context,format,is,monitor);
       
+
+      Map ctx = new HashMap();
       
       double factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
       monitor.setStatusText(i18n.tr("Importiere Daten"));
@@ -46,7 +50,7 @@ public abstract class AbstractImporter implements Importer
         monitor.setPercentComplete((int)((i) * factor));
         monitor.log(i18n.tr("Lese Datensatz {0}",Integer.toString(i+1)));
         
-        this.importObject(objects[i],i);
+        this.importObject(objects[i],i,ctx);
       }
       this.commit(objects,format,is,monitor);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Daten importiert"),StatusBarMessage.TYPE_SUCCESS));
@@ -98,9 +102,11 @@ public abstract class AbstractImporter implements Importer
    * Fuehrt den Import fuer ein einzelnes Objekt aus.
    * @param o das zu importierende Objekt.
    * @param idx der Index des Objekts in der Liste. Beginnend bei 0.
+   * @param ctx generische Map, in der die Implementierung Context-Informationen speichern kann. Die Map bleibt
+   * fuer den gesamten Import erhalten.
    * @throws Exception
    */
-  abstract void importObject(Object o, int idx) throws Exception;
+  abstract void importObject(Object o, int idx, Map ctx) throws Exception;
   
   /**
    * Liefert eine Liste von Objekt-Typen, die von diesem IO unterstuetzt werden.

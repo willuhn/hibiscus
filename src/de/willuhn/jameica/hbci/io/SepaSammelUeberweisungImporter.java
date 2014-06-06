@@ -9,6 +9,7 @@ package de.willuhn.jameica.hbci.io;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
@@ -17,17 +18,19 @@ import org.kapott.hbci.GV.SepaUtil;
 import org.kapott.hbci.GV.parsers.ISEPAParser;
 
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 
 /**
- * Importer fuer SEPA-Einzelueberweisungen.
+ * Importer fuer SEPA-Sammelueberweisungen.
  */
-public class SepaUeberweisungImporter extends AbstractSepaImporter
+public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
 {
   private final static DateFormat ISO_DATE = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
 
   /**
-   * @see de.willuhn.jameica.hbci.io.AbstractImporter#importObject(java.lang.Object, int, java.util.Map)
+   * @see de.willuhn.jameica.hbci.io.AbstractImporter#importObject(java.lang.Object, int)
    */
   @Override
   void importObject(Object o, int idx, Map ctx) throws Exception
@@ -35,19 +38,32 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
     DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
 
     Properties prop = (Properties) o;
+
+    SepaSammelUeberweisung ueb = (SepaSammelUeberweisung) ctx.get("ueb");
+    
+    // erster Datensatz. Wir erstellen den Sammelauftrag
+    if (ueb == null)
+    {
+      ueb = (SepaSammelUeberweisung) service.createObject(SepaSammelUeberweisung.class,null);
+      ueb.setBezeichnung(i18n.tr("SEPA-Sammelüberweisung vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
+      ueb.setKonto(this.findKonto(prop.getProperty(ISEPAParser.Names.SRC_IBAN.getValue())));
+      
+      String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
+      
+      if (date != null)
+        ueb.setTermin(ISO_DATE.parse(date));
+      
+      ueb.store();
+      ctx.put("ueb",ueb); // und im Context speichern
+    }
+
     AuslandsUeberweisung u = (AuslandsUeberweisung) service.createObject(AuslandsUeberweisung.class,null);
-    u.setKonto(this.findKonto(prop.getProperty(ISEPAParser.Names.SRC_IBAN.getValue())));
     u.setGegenkontoName(prop.getProperty(ISEPAParser.Names.DST_NAME.getValue()));
     u.setGegenkontoNummer(prop.getProperty(ISEPAParser.Names.DST_IBAN.getValue()));
     u.setGegenkontoBLZ(prop.getProperty(ISEPAParser.Names.DST_BIC.getValue()));
     u.setZweck(prop.getProperty(ISEPAParser.Names.USAGE.getValue()));
     
     u.setBetrag(Double.valueOf(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
-
-    String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
-    
-    if (date != null)
-      u.setTermin(ISO_DATE.parse(date));
 
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));
 
@@ -61,7 +77,8 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
   @Override
   Class[] getSupportedObjectTypes()
   {
-    return new Class[]{AuslandsUeberweisung.class};
+    return new Class[]{}; // TODO
+    // return new Class[]{SepaSammelUeberweisung.class};
   }
 
 }
