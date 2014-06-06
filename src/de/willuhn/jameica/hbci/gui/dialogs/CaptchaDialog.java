@@ -9,6 +9,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,8 +52,8 @@ public class CaptchaDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private byte[] image = null;
-  private String data  = null;
+  private InputStream image = null;
+  private String data       = null;
   
   private TextInput solution = null;
   private Button applyButton = null;
@@ -66,10 +67,31 @@ public class CaptchaDialog extends AbstractDialog
    */
   public CaptchaDialog(String url, int position) throws ApplicationException
   {
+    this(new ByteArrayInputStream(fetch(url)),position);
+  }
+  
+  /**
+   * ct.
+   * @param is Stream mit dem Bild.
+   * @param position
+   * @throws ApplicationException
+   */
+  public CaptchaDialog(InputStream is, int position) throws ApplicationException
+  {
     super(position,false);
     this.setTitle(i18n.tr("Captcha lösen"));
     this.setPanelText(i18n.tr("Bitte geben Sie den in der Grafik angezeigten Text ein."));
-    
+    this.image = is;
+  }
+  
+  /**
+   * Ruft das Bild von der URL ab.
+   * @param url die URL.
+   * @return Byte-Array mit dem Bild.
+   * @throws ApplicationException
+   */
+  private static byte[] fetch(String url) throws ApplicationException
+  {
     try
     {
       TransportService ts = Application.getBootLoader().getBootable(TransportService.class);
@@ -77,7 +99,7 @@ public class CaptchaDialog extends AbstractDialog
       
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       t.get(bos,new ConsoleMonitor());
-      this.image = bos.toByteArray();
+      return bos.toByteArray();
     }
     catch (ApplicationException ae)
     {
@@ -88,7 +110,6 @@ public class CaptchaDialog extends AbstractDialog
       Logger.error("unable to fetch image",e);
       throw new ApplicationException(i18n.tr("Download des Captcha-Bildes fehlgeschlagen: {0}",e.getMessage()));
     }
-    
   }
 
   /**
@@ -149,7 +170,7 @@ public class CaptchaDialog extends AbstractDialog
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    final Image image = new Image(GUI.getDisplay(),new ByteArrayInputStream(this.image));
+    final Image image = new Image(GUI.getDisplay(),this.image);
     final Rectangle size = image.getBounds();
 
     final Composite comp = new Composite(container.getComposite(),SWT.BORDER);
