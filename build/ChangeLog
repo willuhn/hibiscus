@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0355 BUGZILLA 1484 - Import von SEPA-Einzel- und Sammel-Überweisungen aus SEPA-XML
   * NEW: 0354 Neue Exporter-Infrastruktur fuer SEPA-Auftraege, Umstellung des bisherigen
               Exports von SEPA-Aufträgen auf den Standard-Export-Mechanismus von Hibiscus.
   * NEW: 0353 Erweiterte SEPA-Zeichen (insb. Umlaute) in Daueraufträgen erlauben.

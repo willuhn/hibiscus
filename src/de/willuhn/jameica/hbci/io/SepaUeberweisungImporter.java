@@ -17,7 +17,9 @@ import org.kapott.hbci.GV.SepaUtil;
 import org.kapott.hbci.GV.parsers.ISEPAParser;
 
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
+import de.willuhn.jameica.system.Application;
 
 /**
  * Importer fuer SEPA-Einzelueberweisungen.
@@ -46,13 +48,13 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
 
     String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
     
-    if (date != null)
+    if (date != null && !SepaUtil.DATE_UNDEFINED.equals(date))
       u.setTermin(ISO_DATE.parse(date));
 
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));
 
     u.store();
-
+    Application.getMessagingFactory().sendMessage(new ImportMessage(u));
   }
 
   /**

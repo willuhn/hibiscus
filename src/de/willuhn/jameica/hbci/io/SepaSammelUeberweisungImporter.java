@@ -19,8 +19,11 @@ import org.kapott.hbci.GV.parsers.ISEPAParser;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
+import de.willuhn.jameica.system.Application;
 
 /**
  * Importer fuer SEPA-Sammelueberweisungen.
@@ -50,24 +53,24 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
       
       String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
       
-      if (date != null)
+      if (date != null && !SepaUtil.DATE_UNDEFINED.equals(date))
         ueb.setTermin(ISO_DATE.parse(date));
       
       ueb.store();
       ctx.put("ueb",ueb); // und im Context speichern
+      Application.getMessagingFactory().sendMessage(new ImportMessage(ueb));
     }
 
-    AuslandsUeberweisung u = (AuslandsUeberweisung) service.createObject(AuslandsUeberweisung.class,null);
+    SepaSammelUeberweisungBuchung u = ueb.createBuchung();
     u.setGegenkontoName(prop.getProperty(ISEPAParser.Names.DST_NAME.getValue()));
     u.setGegenkontoNummer(prop.getProperty(ISEPAParser.Names.DST_IBAN.getValue()));
     u.setGegenkontoBLZ(prop.getProperty(ISEPAParser.Names.DST_BIC.getValue()));
     u.setZweck(prop.getProperty(ISEPAParser.Names.USAGE.getValue()));
-    
     u.setBetrag(Double.valueOf(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
-
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));
 
     u.store();
+    Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueb));
 
   }
 
@@ -77,8 +80,7 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
   @Override
   Class[] getSupportedObjectTypes()
   {
-    return new Class[]{}; // TODO
-    // return new Class[]{SepaSammelUeberweisung.class};
+    return new Class[]{SepaSammelUeberweisung.class};
   }
 
 }

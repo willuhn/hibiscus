@@ -82,7 +82,7 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
         type = SepaLastType.DEFAULT;
 
       props.setProperty("sequencetype", u.getSequenceType().name());
-      props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : "1999-01-01");
+      props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : SepaUtil.DATE_UNDEFINED);
       props.setProperty("type",         type.name());
     }
 
