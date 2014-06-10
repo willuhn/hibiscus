@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0357 Import von SEPA-Einzel- und Sammel-Lastschriften aus SEPA-XML
   * NEW: 0356 Neue obantoo-Version 2.1.2
   * NEW: 0355 BUGZILLA 1484 - Import von SEPA-Einzel- und Sammel-Überweisungen aus SEPA-XML
   * NEW: 0354 Neue Exporter-Infrastruktur fuer SEPA-Auftraege, Umstellung des bisherigen
