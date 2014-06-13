@@ -143,7 +143,7 @@ public class CaptchaDialog extends AbstractDialog
       }
     });
 
-    this.getShell().setMinimumSize(450,SWT.DEFAULT);
+    getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }
 
   /**
