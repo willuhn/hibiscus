@@ -514,7 +514,9 @@ public class DDVConfigFactory
     File f = new File(de.willuhn.jameica.hbci.Settings.getWorkPath() + "/passports/");
     if (!f.exists())
       f.mkdirs();
-    HBCIUtils.setParam("client.passport.DDV.path",de.willuhn.jameica.hbci.Settings.getWorkPath() + "/passports/");
+    
+    String headerName = type == Type.RDH_PCSC ? "RSA" : "DDV"; // siehe HBCIPassport[RSA/DDV], Konstruktor, "setParamHeader"
+    HBCIUtils.setParam("client.passport." + headerName + ".path",de.willuhn.jameica.hbci.Settings.getWorkPath() + "/passports/");
     //
     //////////////////////////////////////////////////////////////////////////
 
