@@ -26,7 +26,7 @@ import javax.smartcardio.TerminalFactory;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassportDDV;
+import org.kapott.hbci.passport.HBCIPassportChipcard;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
@@ -469,7 +469,7 @@ public class DDVConfigFactory
    * @throws ApplicationException
    * @throws RemoteException
    */
-  public static HBCIPassportDDV createPassport(DDVConfig config) throws ApplicationException, RemoteException
+  public static HBCIPassportChipcard createPassport(DDVConfig config) throws ApplicationException, RemoteException
   {
     if (config == null)
       throw new ApplicationException(i18n.tr("Keine Konfiguration ausgewählt"));
@@ -539,7 +539,7 @@ public class DDVConfigFactory
 
     String id = type.getIdentifier();
     Logger.info("  passport type: " + id);
-    return (HBCIPassportDDV) AbstractHBCIPassport.getInstance(id);
+    return (HBCIPassportChipcard) AbstractHBCIPassport.getInstance(id);
   }
 
   

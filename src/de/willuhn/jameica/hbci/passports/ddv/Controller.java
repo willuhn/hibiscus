@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.passport.HBCIPassportDDV;
+import org.kapott.hbci.passport.HBCIPassportChipcard;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -508,7 +508,7 @@ public class Controller extends AbstractControl
     Application.getController().start(new BackgroundTask() {
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
-        HBCIPassportDDV passport = null;
+        HBCIPassportChipcard passport = null;
         try
         {
           // Ist hier etwas umstaendlich, weil wir das Handle
@@ -535,6 +535,8 @@ public class Controller extends AbstractControl
           passport.setCountry(container.country);
           
           passport.saveChanges();
+          
+          
           passport.saveBankData();
         }
         catch (ApplicationException ae)
