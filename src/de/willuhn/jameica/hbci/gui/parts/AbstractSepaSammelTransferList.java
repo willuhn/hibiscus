@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.TableItem;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -221,7 +220,8 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
    */
   public class TransferMessageConsumer implements MessageConsumer
   {
-    private DelayedListener delayed = null;
+    private DelayedListener insertDelay = null;
+    private DelayedListener updateDelay = null;
     
     /**
      * ct.
@@ -229,7 +229,27 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     private TransferMessageConsumer()
     {
       if (listener != null)
-        this.delayed = new DelayedListener(listener);
+        this.insertDelay = new DelayedListener(listener);
+      
+      this.updateDelay = new DelayedListener(new Listener() {
+        
+        @Override
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            Object o = event.data;
+            if (o != null)
+            {
+              updateItem(o,o);
+            }
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to update item",e);
+          }
+        }
+      });
     }
     
     /**
@@ -262,27 +282,17 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
 
       if (message instanceof ObjectChangedMessage)
       {
-        GUI.startSync(new Runnable() {
-          public void run()
-          {
-            try
-            {
-              updateItem(o,o);
-            }
-            catch (Exception e)
-            {
-              Logger.error("unable to update item",e);
-            }
-          }
-        });
+        Event e = new Event();
+        e.data = o;
+        this.updateDelay.handleEvent(e);
         return;
       }
       
       // Wir forcieren das Reload. Da in den Eingabefeldern
       // nichts geaendert wurde, wuerde das Reload sonst nicht
       // stattfinden.
-      if (delayed != null)
-        delayed.handleEvent(null);
+      if (insertDelay != null)
+        insertDelay.handleEvent(null);
     }
 
     /**

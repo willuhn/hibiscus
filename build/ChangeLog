@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0359 Bugfixing Creditor-ID bei Import von SEPA-XML
   * NEW: 0358 Bugfixes bei RDH-Chipkarten
   * NEW: 0357 Import von SEPA-Einzel- und Sammel-Lastschriften aus SEPA-XML
   * NEW: 0356 Neue obantoo-Version 2.1.2
