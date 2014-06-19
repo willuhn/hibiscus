@@ -101,8 +101,8 @@ public class update0052 implements Update
         "  zeiteinheit integer NOT NULL," +
         "  intervall integer NOT NULL," +
         "  tag integer NOT NULL," +
-        "  canchange int(1) NULL," +
-        "  candelete int(1) NULL" +
+        "  canchange integer NULL," +
+        "  candelete integer NULL" +
         "  );\n" +
         "ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_konto12 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;\n");
 

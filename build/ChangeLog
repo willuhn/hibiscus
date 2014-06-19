@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0360 BUGZILLA 1529 - Syntax-Fehler im Postgres SQL-Script
+
 2014-06-17 Version 2.6.7
 
   * NEW: 0359 Bugfixing Creditor-ID bei Import von SEPA-XML

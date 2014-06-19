@@ -209,8 +209,8 @@ CREATE TABLE sepadauerauftrag (
   zeiteinheit integer NOT NULL,
   intervall integer NOT NULL,
   tag integer NOT NULL,
-  canchange int(1) NULL,
-  candelete int(1) NULL
+  canchange integer NULL,
+  candelete integer NULL
 );
 
 CREATE TABLE turnus (
