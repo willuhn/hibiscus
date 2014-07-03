@@ -538,6 +538,7 @@ public class Controller extends AbstractControl
           
           
           passport.saveBankData();
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bankdaten gespeichert"),StatusBarMessage.TYPE_SUCCESS));
         }
         catch (ApplicationException ae)
         {

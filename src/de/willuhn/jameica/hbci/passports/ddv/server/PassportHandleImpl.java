@@ -256,19 +256,19 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       }
 
       case HBCICallback.NEED_CHIPCARD:
-        return handleCallback(i18n.tr("Bitte legen Sie die Chipkarte in das Lesegerät"),true,settings.getBoolean("waitfor.card.insert",false));
+        return handleCallback(i18n.tr("Bitte legen Sie die Chipkarte in das Lesegerät"),true,settings.getBoolean("waitfor.card.insert",false), StatusBarMessage.TYPE_INFO);
 
       case HBCICallback.HAVE_CHIPCARD:
-        return handleCallback(i18n.tr("HBCI-Chipkarte wird ausgelesen."),false,false);
+        return handleCallback(i18n.tr("HBCI-Chipkarte wird ausgelesen."),false,false, StatusBarMessage.TYPE_SUCCESS);
 
       case HBCICallback.NEED_HARDPIN:
-        return handleCallback(i18n.tr("Bitte geben Sie die PIN in Ihren Chipkarten-Leser ein"),true,settings.getBoolean("waitfor.card.pin",false));
+        return handleCallback(i18n.tr("Bitte geben Sie die PIN in Ihren Chipkarten-Leser ein"),true,settings.getBoolean("waitfor.card.pin",false), StatusBarMessage.TYPE_INFO);
 
       case HBCICallback.HAVE_HARDPIN:
-        return handleCallback(i18n.tr("PIN wurde eingegeben."),false,false);
+        return handleCallback(i18n.tr("PIN wurde eingegeben."),false,false, StatusBarMessage.TYPE_SUCCESS);
 
       case HBCICallback.NEED_REMOVE_CHIPCARD:
-        return handleCallback(i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät."),false,settings.getBoolean("waitfor.card.eject",false));
+        return handleCallback(i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät."),false,settings.getBoolean("waitfor.card.eject",false), StatusBarMessage.TYPE_INFO);
     }
     
     return false;
@@ -280,10 +280,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
    * @param displayKonto true, wenn auch das Konto noch angezeigt werden soll.
    * @param wait true, wenn die Anzeige in einem modalen Dialog erfolgen soll.
    * Der Vorgang wird in dem Fall erst dann fortgesetzt, wenn der User auf OK klickt.
+   * @param type Typ der Message. Zum Beispiel {@link StatusBarMessage#TYPE_INFO}
    * @return true oder false wenn der Callback behandelt wurde oder nicht.
    * @throws Exception
    */
-  private boolean handleCallback(String text, boolean displayKonto, boolean wait) throws Exception
+  private boolean handleCallback(String text, boolean displayKonto, boolean wait, int type) throws Exception
   {
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
@@ -304,7 +305,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     {
       if (session != null)
         session.getProgressMonitor().setStatusText(text);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,type));
     }
     return true;
   }

@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0364 Default-HBCI-Version pro Kartenleser-Preset. Wird fuer RDH-Kartenleser
+              gebraucht, weil dort typischerweise FinTS3 verwendet wird statt HBCI 2.1
+              wie bei DDV-Kartenlesern.
   * CHG: 0363 Entfernung von altem Migrationscode
   * BUG: 0362 Bugfixes bei RDH-Chipkarten (Parameter Entry-Index wurde ignoriert)
   * NEW: 0361 Spendenfunktion auf SEPA umgestellt

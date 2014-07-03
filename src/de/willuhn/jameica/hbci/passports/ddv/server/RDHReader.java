@@ -30,4 +30,13 @@ public class RDHReader extends PCSCReader
   {
     return Type.RDH_PCSC;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
+   */
+  public String getDefaultHBCIVersion()
+  {
+    return "300";
+  }
+
 }

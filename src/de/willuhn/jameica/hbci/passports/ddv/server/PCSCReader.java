@@ -82,6 +82,14 @@ public class PCSCReader implements Reader
   {
     return Type.DDV_PCSC;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
+   */
+  public String getDefaultHBCIVersion()
+  {
+    return "210";
+  }
 
   /**
    * @see java.lang.Object#toString()

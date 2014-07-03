@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/ddv/rmi/Reader.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/09/06 11:54:25 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -144,5 +138,13 @@ public interface Reader
    * @return die Art des Kartenlesers.
    */
   public Type getType();
+  
+  /**
+   * Liefert die Default-HBCI-Version, die verwendet werden soll, wenn keine bekannt ist.
+   * Wird zum Beispiel bei der Suche nach Kartenlesern verwendet.
+   * @return die Default-HBCI-Version.
+   */
+  public String getDefaultHBCIVersion();
+  
 
 }

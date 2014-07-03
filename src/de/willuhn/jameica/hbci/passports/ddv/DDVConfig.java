@@ -242,7 +242,7 @@ public class DDVConfig implements Configuration
   {
     // BUG: Wir hatten hier vergessen, den Prefix mit anzugeben.
     // Wir migrieren die bisherigen Werte gleich.
-    return settings.getString(this.getPrefix() + "hbciversion",settings.getString("hbciversion","210"));
+    return settings.getString(this.getPrefix() + "hbciversion",settings.getString("hbciversion",getReaderPreset().getDefaultHBCIVersion()));
   }
 
   /**

@@ -228,7 +228,7 @@ public class DDVConfigFactory
         temp.setReaderPreset(reader);
         temp.setSoftPin(reader.useSoftPin());
         temp.setCTAPIDriver(s);
-        temp.setHBCIVersion("210");
+        temp.setHBCIVersion(reader.getDefaultHBCIVersion());
 
         // PC/SC-Kartenleser suchen
         if (type.isPCSC())
