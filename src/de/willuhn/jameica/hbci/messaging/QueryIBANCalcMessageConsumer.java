@@ -50,7 +50,7 @@ public class QueryIBANCalcMessageConsumer implements MessageConsumer
     Object data = qm.getData();
     if (data == null)
     {
-      qm.setData(Boolean.FALSE);
+      qm.setData(null);
       return;
     }
     String blz = data.toString();
@@ -60,9 +60,17 @@ public class QueryIBANCalcMessageConsumer implements MessageConsumer
       qm.setData(null);
       return;
     }
-    IBAN iban=HBCIProperties.getIBAN(s[0],s[1]);
-    String[] result=new String[]{iban.getIBAN(), iban.getBIC()};
-    qm.setData(result);
+    try
+    {
+      IBAN iban=HBCIProperties.getIBAN(s[0],s[1]);
+      String[] result=new String[]{iban.getIBAN(), iban.getBIC()};
+      qm.setData(result);
+    }
+    catch(Exception e)
+    {
+      qm.setData(e);
+    }
+    
   }
 
 }
