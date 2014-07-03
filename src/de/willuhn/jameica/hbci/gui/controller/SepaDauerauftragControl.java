@@ -513,7 +513,7 @@ public class SepaDauerauftragControl extends AbstractControl
         if (first == null || t == null)
           return;
 
-        Date next = TurnusHelper.getNaechsteZahlung(first,last,t,first);
+        Date next = TurnusHelper.getNaechsteZahlung(first,last,t,new Date());
         if (next != null)
           ersteZahlung.setComment(i18n.tr("Nächste: {0}", HBCI.DATEFORMAT.format(next)));
         else

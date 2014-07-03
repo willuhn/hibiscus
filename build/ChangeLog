@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0367 Anzeige der nächsten Zahlung in Detailansicht eines Dauerauftrages war falsch
+              (bezog sich nicht auf heute sondern auf das Datum der ersten Zahlung)
   * NEW: 0366 IBAN formatiert anzeigen (in Vierer-Gruppen)
   * NEW: 0365 Beim Senden einer DA-Aenderung direkt im Anschluss automatisch
               auch nochmal die Dauerauftraege abrufen, um die Aenderungen gleich
