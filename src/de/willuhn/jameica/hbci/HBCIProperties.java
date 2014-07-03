@@ -325,13 +325,14 @@ public class HBCIProperties
   }
   
   /**
-   * Gruppiert eine IBAN in Gruppen zu je 4 Zeichen.
+   * Gruppiert eine IBAN in Gruppen zu je 4 Zeichen und schreibt die ersten
+   * beiden Buchstaben (Laenderkennzeichen) gross.
    * @param s die IBAN.
-   * @return die gruppierte Darstellung.
+   * @return die formatierte Darstellung.
    */
-  public final static String groupIban(String s)
+  public final static String formatIban(String s)
   {
-    return group(s,4," ");
+    return StringUtils.capitalize(group(s,4," "));
   }
 
   /**

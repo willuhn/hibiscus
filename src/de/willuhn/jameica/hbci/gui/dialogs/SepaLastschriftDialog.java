@@ -52,7 +52,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
 		Input empfName = new LabelInput(last.getGegenkontoName());
 		group.addLabelPair(i18n.tr("Name des Zahlungspflichtigen"),empfName);
 
-		Input empfKto = new LabelInput(HBCIProperties.groupIban(last.getGegenkontoNummer()));
+		Input empfKto = new LabelInput(HBCIProperties.formatIban(last.getGegenkontoNummer()));
 		group.addLabelPair(i18n.tr("IBAN des Zahlungspflichtigen"),empfKto);
 
     Input empfBic = new LabelInput(last.getGegenkontoBLZ());

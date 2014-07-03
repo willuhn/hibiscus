@@ -7,9 +7,11 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCIProperties;
 
 /**
@@ -17,7 +19,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
  * Erlaubt die Eingabe von kleinen Buchstaben - ersetzt jedoch die
  * ersten beiden gegen Gross-Buchstaben.
  */
-public class IBANInput extends AccountInput
+public class IBANInput extends TextInput
 {
   /**
    * ct.
@@ -25,7 +27,7 @@ public class IBANInput extends AccountInput
    */
   public IBANInput(String value)
   {
-    super(value,HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
+    super(HBCIProperties.formatIban(value),HBCIProperties.HBCI_IBAN_MAXLENGTH + 5); // max. 5 Leerzeichen
     this.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     this.setName("IBAN");
     
@@ -37,11 +39,33 @@ public class IBANInput extends AccountInput
         if (s == null || s.length() < 2)
           return;
 
-        // Die ersten beiden Buchstaben gegen Gross-Buchstaben ersetzen
-        String s2 = s.substring(0,2).toUpperCase();
-        setValue(s2 + s.substring(2));
+        setValue(HBCIProperties.formatIban(s));
       }
     });
+  }
+  
+  /**
+   * Ueberschrieben, um sicherzustellen, dass die IBAN keine Leerzeichen enthaelt.
+   * @see de.willuhn.jameica.gui.input.TextInput#getValue()
+   */
+  @Override
+  public Object getValue()
+  {
+    String s = (String) super.getValue();
+    if (s == null)
+      return s;
+    
+    return StringUtils.deleteWhitespace(s);
+  }
+  
+  /**
+   * Ueberschrieben, um zusaetzlich noch die Leerzeichen zuzulassen.
+   * @see de.willuhn.jameica.gui.input.AbstractInput#setValidChars(java.lang.String)
+   */
+  @Override
+  public void setValidChars(String chars)
+  {
+    super.setValidChars(chars + " ");
   }
   
 }

@@ -42,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -308,8 +309,7 @@ public class EmpfaengerControl extends AbstractControl
   {
     if (this.iban == null)
     {
-      this.iban = new TextInput(getAddress().getIban(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
-      this.iban.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
+      this.iban = new IBANInput(getAddress().getIban());
       this.iban.setEnabled(isHibiscusAdresse());
     }
     return this.iban;

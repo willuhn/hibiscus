@@ -52,7 +52,7 @@ public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
 		Input empfName = new LabelInput(ueb.getGegenkontoName());
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
-		Input empfKto = new LabelInput(HBCIProperties.groupIban(ueb.getGegenkontoNummer()));
+		Input empfKto = new LabelInput(HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
 		group.addLabelPair(i18n.tr("IBAN des Empfängers"),empfKto);
 
     Input empfBic = new LabelInput(ueb.getGegenkontoBLZ());

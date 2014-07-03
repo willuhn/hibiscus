@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0366 IBAN formatiert anzeigen (in Vierer-Gruppen)
   * NEW: 0365 Beim Senden einer DA-Aenderung direkt im Anschluss automatisch
               auch nochmal die Dauerauftraege abrufen, um die Aenderungen gleich
               abzugleichen. Siehe http://www.willuhn.de/blog/index.php?/archives/695-Hibiscus-2.6.7-ist-da!.html#c2109

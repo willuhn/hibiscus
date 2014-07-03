@@ -55,7 +55,7 @@ public class SepaDauerauftragDialog extends AbstractExecuteDialog
     Input empfName = new LabelInput(auftrag.getGegenkontoName());
     group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
-    Input empfKto = new LabelInput(HBCIProperties.groupIban(auftrag.getGegenkontoNummer()));
+    Input empfKto = new LabelInput(HBCIProperties.formatIban(auftrag.getGegenkontoNummer()));
     group.addLabelPair(i18n.tr("IBAN des Empfängers"),empfKto);
 
     Input empfBic = new LabelInput(auftrag.getGegenkontoBLZ());

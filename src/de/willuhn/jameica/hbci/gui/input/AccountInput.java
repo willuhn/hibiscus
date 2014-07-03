@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.input.TextInput;
 
 /**
- * Basis-Klasse fuer die Eingabe von Kontonummern, BLZ, IBAN, BIC.
+ * Basis-Klasse fuer die Eingabe von Kontonummern, BLZ und BIC.
  * Erlaubt das Einfuegen von Leerzeichen, die
  * automatisch entfernt werden.
  */
