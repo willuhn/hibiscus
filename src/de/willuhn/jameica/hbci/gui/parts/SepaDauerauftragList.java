@@ -103,8 +103,8 @@ public class SepaDauerauftragList extends TablePart implements Part
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SepaDauerauftragList());
     
-    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
-    // Lastschriften informiert werden.
+    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende und geaenderte Dauerauftraege
+    // informiert werden.
     this.mc = new TransferMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }

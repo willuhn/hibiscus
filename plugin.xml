@@ -58,7 +58,7 @@
         <item id="hibiscus.navi.transfer.sepasammellast"     name="Sammellastschriften"      icon-close="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftList" />
         <item id="hibiscus.navi.transfer.sepadauer"          name="Daueraufträge"            icon-close="stock_form-time-field.png"       action="de.willuhn.jameica.hbci.gui.action.SepaDauerauftragList" />
       </item>
-      <item id="hibiscus.navi.transfer"                      name="Zahlungsverkehr (alt)"    icon-close="folder.png" icon-open="folder-open.png">
+      <item id="hibiscus.navi.transfer" expanded="false"     name="Zahlungsverkehr (alt)"    icon-close="folder.png" icon-open="folder-open.png">
         <item id="hibiscus.navi.transfer.ueb"                name="Überweisungen"            icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
         <item id="hibiscus.navi.transfer.einzellast"         name="Lastschriften"            icon-close="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
         <item id="hibiscus.navi.transfer.sammelueb"          name="Sammelüberweisungen"      icon-close="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
