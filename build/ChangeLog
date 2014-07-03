@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0365 Beim Senden einer DA-Aenderung direkt im Anschluss automatisch
+              auch nochmal die Dauerauftraege abrufen, um die Aenderungen gleich
+              abzugleichen. Siehe http://www.willuhn.de/blog/index.php?/archives/695-Hibiscus-2.6.7-ist-da!.html#c2109
   * NEW: 0364 Default-HBCI-Version pro Kartenleser-Preset. Wird fuer RDH-Kartenleser
               gebraucht, weil dort typischerweise FinTS3 verwendet wird statt HBCI 2.1
               wie bei DDV-Kartenlesern.
