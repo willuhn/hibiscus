@@ -34,7 +34,7 @@ public interface Reader
     /**
      * DDV-Karte via PCSC.
      */
-    DDV_PCSC("DDVPCSC"),
+    DDV_PCSC("DDVPCSC","DDV"),
     
     /**
      * RDH-Karte via PCSC.
@@ -44,6 +44,7 @@ public interface Reader
     ;
 
     private String id = null;
+    private String headerParam = null;
     
     /**
      * ct.
@@ -51,7 +52,18 @@ public interface Reader
      */
     private Type(String id)
     {
+      this(id,null);
+    }
+    
+    /**
+     * ct.
+     * @param id der Identifier des Passports in HBCI4Java.
+     * @param headerParam ggf abweichender Name fuer das Lookup der Parameter fuer HBCI4Java.
+     */
+    private Type(String id, String headerParam)
+    {
       this.id = id;
+      this.headerParam = headerParam;
     }
     
     /**
@@ -63,6 +75,14 @@ public interface Reader
       return this.id;
     }
     
+    /**
+     * Liefert den Namen fuer das Lookup der Parameter in HBCI4Java.
+     * @return der Name fuer das Lookup der Parameter in HBCI4Java.
+     */
+    public String getHeaderParam()
+    {
+      return this.headerParam != null ? this.headerParam : this.id;
+    }
     
     /**
      * Liefert true, wenn das ein PCSC-Kartenleser ist.

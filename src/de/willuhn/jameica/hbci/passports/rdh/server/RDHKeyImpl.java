@@ -1,12 +1,10 @@
-/*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/server/RDHKeyImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2012/03/28 22:47:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+/**********************************************************************
  *
-****************************************************************************/
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
+ *
+ **********************************************************************/
+
 package de.willuhn.jameica.hbci.passports.rdh.server;
 
 import java.io.File;
@@ -22,7 +20,6 @@ import de.willuhn.jameica.hbci.passports.rdh.Detail;
 import de.willuhn.jameica.hbci.passports.rdh.RDHKeyFactory;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.HBCI4JavaFormat;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat;
-import de.willuhn.jameica.hbci.passports.rdh.keyformat.SizRdhDirectFormat;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -206,17 +203,6 @@ public class RDHKeyImpl implements RDHKey
    */
   public Konto[] getKonten() throws RemoteException
   {
-    /////////////////////////////////////////////////////////////////
-    // BUGZILLA 314 Migration
-    String id = settings.getString(getID() + ".konto",null);
-    if (id != null && id.length() > 0)
-    {
-      settings.setAttribute(getID() + ".konto",(String) null); // Einzelwert loeschen
-      settings.setAttribute(getID() + ".konto",new String[]{id}); // Als Array neu speichern
-    }
-    /////////////////////////////////////////////////////////////////
-
-    // Und jetzt laden wir die Liste neu
     String[] ids = settings.getList(getID() + ".konto",null);
     if (ids == null || ids.length == 0)
       return null;
@@ -277,33 +263,10 @@ public class RDHKeyImpl implements RDHKey
     try
     {
       MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
-      String s = settings.getString(getID() + ".format",null);
-
-      // Migration. Wir schauen, ob fuer den Schluessel
-      // schon ein Format hinterlegt ist. Falls ja, nehmen
-      // wir das. Andernfalls weisen wir manuell das Format
-      // zu welches dem entspricht, bevor das KeyFormat-Interface
-      // existierte.
-
-      if (s != null && s.length() > 0)
-        return (KeyFormat) loader.load(s).newInstance();
-
       
-      // Migration noetig
-      Logger.info("determining key format for " + getFilename());
-      boolean shared = settings.getBoolean(getID() + ".shared",false);
-      s = shared ? SizRdhDirectFormat.class.getName() : HBCI4JavaFormat.class.getName();
-      Logger.info("  is " + s);
-        
-      // Wir speichern das gleich ab, damit wir es kuenftig wissen
-      KeyFormat format = (KeyFormat) loader.load(s).newInstance();
-      setFormat(format);
-        
-      // bei der Gelegenheit loeschen wir gleich noch die alten Parameter weg
-      settings.setAttribute(getID() + ".newkey",(String) null);
-      settings.setAttribute(getID() + ".shared",(String) null);
-
-      return format;
+      // Als Default nehmen wir das Eigenformat
+      String s = settings.getString(getID() + ".format",HBCI4JavaFormat.class.getName());
+      return (KeyFormat) loader.load(s).newInstance();
     }
     catch (RemoteException re)
     {
@@ -326,39 +289,3 @@ public class RDHKeyImpl implements RDHKey
   }
 
 }
-
-/*****************************************************************************
- * $Log: RDHKeyImpl.java,v $
- * Revision 1.4  2012/03/28 22:47:18  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.3  2011-06-17 08:49:19  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.2  2011-04-29 09:17:34  willuhn
- * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
- * @R Passports sind keine UnicastRemote-Objekte mehr
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.17  2008/07/25 12:56:50  willuhn
- * @B Bugfixing
- *
- * Revision 1.16  2008/07/25 11:06:08  willuhn
- * @N RDH-2 Format
- * @C Haufenweise Code-Cleanup
- *
- * Revision 1.15  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- * Revision 1.14  2007/05/30 14:48:50  willuhn
- * @N Bug 314
-*****************************************************************************/

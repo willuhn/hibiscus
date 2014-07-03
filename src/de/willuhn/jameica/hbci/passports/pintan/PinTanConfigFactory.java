@@ -1,18 +1,15 @@
-/*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/PinTanConfigFactory.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/06/17 08:49:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+/**********************************************************************
  *
-****************************************************************************/
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
+ *
+ **********************************************************************/
+
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
@@ -247,7 +244,6 @@ public class PinTanConfigFactory
    */
   public static synchronized GenericIterator getConfigs() throws RemoteException
   {
-    migrateToRelative();
     String[] found = settings.getList("config",new String[0]);
 
     ArrayList configs = new ArrayList();
@@ -324,132 +320,4 @@ public class PinTanConfigFactory
     return new File(file).getName();
   }
   
-  private static boolean inMigration = false;
-  
-  /**
-   * Migriert alle Pfadangaben zu relativen Angaben.
-   * BUGZILLA 276
-   */
-  private static void migrateToRelative() throws RemoteException
-  {
-    if (inMigration)
-      return;
-    
-    inMigration = true;
-    try
-    {
-      if (settings.getString("migration.276", null) != null)
-        return;
-      
-      Logger.info("migrating passport filenames to relative pathnames");
-      
-      // Schritt 1: Die Registry selbst
-      String[] absolute = settings.getList("config",new String[0]);
-      String[] relative = new String[absolute.length];
-      for (int i=0;i<absolute.length;++i)
-      {
-        relative[i] = toRelativePath(absolute[i]);
-        Logger.info("  " + absolute[i] + " -> " + relative[i]);
-      }
-      settings.setAttribute("config",relative);
-      
-      // Schritt 2: Die Einstellungen der einzelnen Passports
-      Settings ppSettings = new Settings(PinTanConfig.class);
-      absolute = ppSettings.getAttributes();
-      for (int i=0;i<absolute.length;++i)
-      {
-        // Neuen Wert schreiben
-        String rel = toRelativePath(absolute[i]);
-        ppSettings.setAttribute(rel,ppSettings.getString(absolute[i],null));
-        
-        // Alten Wert loeschen
-        ppSettings.setAttribute(absolute[i],(String) null);
-      }
-      
-      settings.setAttribute("migration.276", HBCI.DATEFORMAT.format(new Date()));
-    }
-    finally
-    {
-      inMigration = false;
-    }
-  }
 }
-
-/*****************************************************************************
- * $Log: PinTanConfigFactory.java,v $
- * Revision 1.3  2011/06/17 08:49:18  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.2  2010-09-06 11:01:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.21  2009/06/29 11:04:17  willuhn
- * @N Beim Speichern existierender Konfigurationen wird der BPD-Cache geloescht. Das soll Fehler bei VR-Banken vermeiden, nachdem dort die HBCI-Version geaendert wurde
- *
- * Revision 1.20  2008/01/22 15:00:44  willuhn
- * @B einzelne defekte Config ueberspringen
- *
- * Revision 1.19  2007/11/25 16:42:01  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2007/11/25 16:37:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2007/11/25 16:32:34  willuhn
- * @N Bug 276
- *
- * Revision 1.16  2007/11/25 16:20:11  willuhn
- * @N Bug 276
- *
- * Revision 1.15  2007/08/31 09:43:55  willuhn
- * @N Einer PIN/TAN-Config koennen jetzt mehrere Konten zugeordnet werden
- *
- * Revision 1.14  2007/08/30 23:35:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2007/07/05 09:59:00  willuhn
- * @N verdrahtete Konfigurationen aus der Liste von moeglichen Treffern streichen
- *
- * Revision 1.12  2006/01/10 22:34:07  willuhn
- * @B bug 173
- *
- * Revision 1.11  2005/07/18 12:53:30  web0
- * @B bug 96
- *
- * Revision 1.10  2005/06/23 22:33:22  web0
- * *** empty log message ***
- *
- * Revision 1.9  2005/06/21 20:19:04  web0
- * *** empty log message ***
- *
- * Revision 1.8  2005/06/09 23:06:02  web0
- * @N certificate checking activated
- *
- * Revision 1.7  2005/04/27 00:30:12  web0
- * @N real test connection
- * @N all hbci versions are now shown in select box
- * @C userid and customerid are changable
- *
- * Revision 1.6  2005/03/11 02:43:59  web0
- * @N PIN/TAN works ;)
- *
- * Revision 1.5  2005/03/11 00:49:30  web0
- * *** empty log message ***
- *
- * Revision 1.4  2005/03/10 18:38:48  web0
- * @N more PinTan Code
- *
- * Revision 1.3  2005/03/09 17:24:40  web0
- * *** empty log message ***
- *
- * Revision 1.2  2005/03/08 18:44:57  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/03/07 17:17:30  web0
- * *** empty log message ***
- *
-*****************************************************************************/

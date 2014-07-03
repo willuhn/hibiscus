@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci;
 import java.io.File;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -328,18 +327,8 @@ public class Settings
   public static Wallet getWallet() throws Exception
   {
 		if (wallet == null)
-		{
       wallet = new Wallet(HBCI.class);
-
-      // Migration BUGZILLA 62 - Loeschen der Liste der verbrauchten TANs
-      String date = settings.getString("migration.tancache.cleared",null);
-      if (date == null)
-      {
-        Logger.info("migration: removing cache of used tans");
-        wallet.deleteAll("tan.");
-        settings.setAttribute("migration.tancache.cleared",HBCI.LONGDATEFORMAT.format(new Date()));
-      }
-		}
+		
 		return wallet;
   }
 

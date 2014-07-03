@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,12 +29,10 @@ import org.kapott.hbci.passport.HBCIPassportChipcard;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
-import de.willuhn.jameica.hbci.passports.ddv.rmi.Passport;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader.Type;
 import de.willuhn.jameica.hbci.passports.ddv.server.CustomReader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
-import de.willuhn.jameica.hbci.passports.ddv.server.PassportImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -63,7 +60,6 @@ public class DDVConfigFactory
    */
   public static List<DDVConfig> getConfigs()
   {
-    migrate();
     String[] ids = settings.getList("config",new String[0]);
     List<DDVConfig> configs = new ArrayList<DDVConfig>();
     for (String id:ids)
@@ -405,55 +401,6 @@ public class DDVConfigFactory
   }
 
   /**
-   * Migriert die alte Kartenleser-Config von Hibiscus 1.11 (da war nur
-   * ein Kartenleser pro Installation moeglich) auf das neue Format.
-   */
-  private static synchronized void migrate()
-  {
-    // Migration lief bereits
-    if (settings.getString("migration.multiconfig",null) != null)
-      return;
-
-    // Checken, ob wir eine Kartenleser-Config haben
-    Settings oldConfig = new Settings(PassportImpl.class);
-
-    // Wenn ein CTAPI-Treiber angegeben ist, haben wir eine
-    if (oldConfig.getString(Passport.CTAPI,null) != null)
-    {
-      Logger.info("migrating ddv config");
-      // Neue Config anlegen
-      DDVConfig config = create();
-      config.setName("default");
-      
-      // Wir kopieren die Parameter in die neue Config
-      config.setCTAPIDriver(oldConfig.getString(Passport.CTAPI,""));
-      config.setCTNumber(oldConfig.getInt(Passport.CTNUMBER,0));
-      config.setEntryIndex(oldConfig.getInt(Passport.ENTRYIDX,1));
-      config.setHBCIVersion(oldConfig.getString("hbciversion","210"));
-      config.setPort(oldConfig.getString(Passport.PORT,DDVConfig.PORTS[0]));
-      config.setSoftPin(oldConfig.getBoolean(Passport.SOFTPIN,true));
-      
-      String s = oldConfig.getString("readerpreset",CustomReader.class.getName());
-      if (s != null && s.length() > 0)
-      {
-        try
-        {
-          config.setReaderPreset((Reader) Application.getClassLoader().load(s).newInstance());
-        }
-        catch (Throwable t) {/* ignore */}
-      }
-      
-      store(config); // Neue Config speichern
-    }
-
-    // Migration erledigt. Wir loeschen auch noch die alte Config
-    String[] keys = oldConfig.getAttributes();
-    for (String key:keys)
-      oldConfig.setAttribute(key,(String)null);
-    settings.setAttribute("migration.multiconfig",HBCI.DATEFORMAT.format(new Date()));
-  }
-  
-  /**
    * Erzeugt eine neue DDV-Config.
    * @return die neue DDV-Config.
    */
@@ -481,7 +428,9 @@ public class DDVConfigFactory
       String pcscName = config.getPCSCName();
       Logger.info("  pcsc name: " + pcscName);
       if (StringUtils.trimToNull(pcscName) != null)
-        HBCIUtils.setParam(Passport.NAME,pcscName);
+      {
+        HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.NAME),pcscName);
+      }
     }
     else
     {
@@ -504,7 +453,7 @@ public class DDVConfigFactory
         throw new ApplicationException(i18n.tr("CTAPI-Treiber-Datei \"{0}\" nicht gefunden oder nicht lesbar",ctapiDriver)); 
 
       Logger.info("  ctapi driver: " + ctapiDriver);
-      HBCIUtils.setParam(Passport.CTAPI, ctapiDriver);
+      HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.CTAPI), ctapiDriver);
       //
       //////////////////////////////////////////////////////////////////////////
     }
@@ -525,17 +474,17 @@ public class DDVConfigFactory
     {
       String port = Integer.toString(DDVConfig.getPortForName(config.getPort()));
       Logger.info("  port: " + config.getPort() + " [ID: " + port + "]");
-      HBCIUtils.setParam(Passport.PORT,port);
+      HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.PORT), port);
 
       Logger.info("  ctnumber: " + config.getCTNumber());
-      HBCIUtils.setParam(Passport.CTNUMBER,Integer.toString(config.getCTNumber()));
+      HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.CTNUMBER), Integer.toString(config.getCTNumber()));
     }
 
     Logger.info("  soft pin: " + config.useSoftPin());
-    HBCIUtils.setParam(Passport.SOFTPIN,  config.useSoftPin() ? "1" : "0");
+    HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.SOFTPIN), config.useSoftPin() ? "1" : "0");
 
     Logger.info("  entry index: " + config.getEntryIndex());
-    HBCIUtils.setParam(Passport.ENTRYIDX,Integer.toString(config.getEntryIndex()));
+    HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.ENTRYIDX), Integer.toString(config.getEntryIndex()));
 
     String id = type.getIdentifier();
     Logger.info("  passport type: " + id);
