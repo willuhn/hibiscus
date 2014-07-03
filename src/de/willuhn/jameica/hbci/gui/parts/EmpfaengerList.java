@@ -43,6 +43,7 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
+import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
@@ -121,7 +122,7 @@ public class EmpfaengerList extends TablePart implements Part
         }
       }
     });
-    addColumn(i18n.tr("IBAN"),"iban");
+    addColumn(i18n.tr("IBAN"),"iban", new IbanFormatter());
     addColumn(i18n.tr("Gruppe"),"kategorie");
     addColumn(i18n.tr("Notiz"),"kommentar",new Formatter()
     {

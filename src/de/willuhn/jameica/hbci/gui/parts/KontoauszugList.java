@@ -51,6 +51,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -133,7 +134,7 @@ public class KontoauszugList extends UmsatzList
   public synchronized void paint(Composite parent) throws RemoteException
   {
     addColumn(new KontoColumn()); // BUGZILLA 723
-    addColumn(i18n.tr("GK Konto"), "empfaenger_konto");
+    addColumn(i18n.tr("GK Konto"), "empfaenger_konto",new IbanFormatter());
     addColumn(i18n.tr("GK BLZ"),   "empfaenger_blz");
     addColumn(i18n.tr("Art"),      "art");
 

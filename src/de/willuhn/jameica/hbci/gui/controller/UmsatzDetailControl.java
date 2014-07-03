@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractControl;
@@ -33,6 +34,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
@@ -206,7 +208,13 @@ public class UmsatzDetailControl extends AbstractControl {
   {
     if (this.empfaengerKonto == null)
     {
-      this.empfaengerKonto = new TextInput(getUmsatz().getGegenkontoNummer(),HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      String s = getUmsatz().getGegenkontoNummer();
+      
+      if (StringUtils.trimToEmpty(s).length() > 10)
+        this.empfaengerKonto = new IBANInput(s);
+      else
+        this.empfaengerKonto = new TextInput(s,HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      
       this.empfaengerKonto.setEnabled(false);
     }
     return this.empfaengerKonto;

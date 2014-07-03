@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
@@ -77,7 +78,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     });
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Kontoinhaber"),"empfaenger_name");
-    addColumn(i18n.tr("IBAN"),"empfaenger_konto");
+    addColumn(i18n.tr("IBAN"),"empfaenger_konto", new IbanFormatter());
     addColumn(i18n.tr("BIC"),"empfaenger_bic");
     addColumn(i18n.tr("Betrag"),"this",new Formatter() {
       public String format(Object o)
@@ -137,7 +138,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     super(a.getBuchungen(), action);
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Kontoinhaber"),"empfaenger_name");
-    addColumn(i18n.tr("IBAN"),"empfaenger_konto");
+    addColumn(i18n.tr("IBAN"),"empfaenger_konto", new IbanFormatter());
     addColumn(i18n.tr("BIC"),"empfaenger_bic");
     Konto k = a.getKonto();
     String curr = k != null ? k.getWaehrung() : "";
