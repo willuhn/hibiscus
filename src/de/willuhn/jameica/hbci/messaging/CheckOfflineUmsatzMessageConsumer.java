@@ -70,13 +70,13 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     // Vormerkbuchungen ignorieren wir. Zum einen, weil wir sie in dem
     // Offline-Konto nicht wieder automatisch loeschen, zum anderen, weil
     // der User sie auch nicht loeschen kann
-    if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+    if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
       return;
     
     // Wenn der Umsatz schon von einem Offline-Konto kommt, legen
     // wir keine Gegenbuchung mehr an. Das fuehrt sonst zu einem Ping-Pong-Spiel ;)
     Konto k = u.getKonto();
-    if (!k.hasFlag(Konto.FLAG_OFFLINE))
+    if (k.hasFlag(Konto.FLAG_OFFLINE))
       return;
 
     // Checken, ob wir ein lokal passendes Offline-Konto haben
