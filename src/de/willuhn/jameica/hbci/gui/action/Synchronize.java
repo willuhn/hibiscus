@@ -22,8 +22,10 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeExecuteDialog;
 import de.willuhn.jameica.hbci.synchronize.Synchronization;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageBus;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -84,6 +86,7 @@ public class Synchronize implements Action
     Logger.info("synchronizing " + result.size() + " backends");
     this.list = result.iterator();
     
+    MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_RUNNING);
     // Auf die Events registrieren, um die Folge-Backends zu starten
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mc);
     this.sync();
@@ -138,6 +141,7 @@ public class Synchronize implements Action
       Logger.info("no more backends. synchronization done");
       Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Synchronisierung beendet"),StatusBarMessage.TYPE_SUCCESS));
+      MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_DONE);
       return;
     }
     
@@ -154,11 +158,13 @@ public class Synchronize implements Action
     {
       Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+      MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_ERROR);
     }
     catch (OperationCanceledException oce)
     {
       Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Synchronisierung abgebrochen"),StatusBarMessage.TYPE_ERROR));
+      MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_CANCEL);
     }
   }
   

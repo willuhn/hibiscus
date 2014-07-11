@@ -36,6 +36,11 @@ import de.willuhn.util.I18N;
 @Lifecycle(Type.CONTEXT)
 public class SynchronizeEngine
 {
+  /**
+   * Queue, an die der aktuelle Prozess-Status der Gesamt-Synchronisierung (RUNNING, ERROR, DONE, CANCEL) geschickt wird.
+   */
+  public final static String STATUS = "hibiscus.syncengine.status";
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private List<SynchronizeBackend> backends = null;

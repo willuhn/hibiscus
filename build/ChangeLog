@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0369 Startseite nach der Synchronisierung neu laden um neu eingetroffene Nachrichten sofort anzuzeigen.
+              Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17376&page=last#last_post
   * BUG: 0368 BUGZILLA 1537 - Check auf Offline-Konto beim Anlegen automatischer Gegenkonten war falsch
   * BUG: 0367 Anzeige der nächsten Zahlung in Detailansicht eines Dauerauftrages war falsch
               (bezog sich nicht auf heute sondern auf das Datum der ersten Zahlung)

@@ -97,6 +97,7 @@
     <consumer queue="hibiscus.dbobject.delete"             class="de.willuhn.jameica.hbci.messaging.DeleteBookmarkMessageConsumer" />
     
     <consumer queue="hibiscus.sync.hbci.trace"             class="de.willuhn.jameica.hbci.synchronize.hbci.HBCITraceMessageConsumer" />
+    <consumer queue="hibiscus.syncengine.status"           class="de.willuhn.jameica.hbci.messaging.SyncEngineStatusMessageConsumer" />
     
   </messaging>
   

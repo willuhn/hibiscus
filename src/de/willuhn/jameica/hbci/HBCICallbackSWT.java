@@ -22,6 +22,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
+import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
@@ -263,6 +264,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
             n.store();
             String text = i18n.tr("Neue Institutsnachricht empfangen");
             Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
+            Application.getMessagingFactory().sendMessage(new ImportMessage(n));
             session.getProgressMonitor().setStatusText(text);
           }
           catch (Exception e)
