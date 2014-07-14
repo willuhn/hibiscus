@@ -9,10 +9,14 @@ package de.willuhn.jameica.hbci.messaging;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.views.Start;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
@@ -20,6 +24,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class SyncEngineStatusMessageConsumer implements MessageConsumer
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -40,7 +46,7 @@ public class SyncEngineStatusMessageConsumer implements MessageConsumer
     if (!(data instanceof Integer))
       return;
     
-    int status = ((Integer) data).intValue();
+    final int status = ((Integer) data).intValue();
     
     // finaler Status.
     if (status == ProgressMonitor.STATUS_CANCEL ||
@@ -57,6 +63,15 @@ public class SyncEngineStatusMessageConsumer implements MessageConsumer
             Logger.info("Reloading start view");
             GUI.startView(Start.class,null);
           }
+          
+          int statusbarType = StatusBarMessage.TYPE_SUCCESS;
+          if (status == ProgressMonitor.STATUS_ERROR)
+            statusbarType = StatusBarMessage.TYPE_ERROR;
+          else if (status == ProgressMonitor.STATUS_CANCEL)
+            statusbarType = StatusBarMessage.TYPE_INFO;
+          
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Synchronisierung beendet"),statusbarType));
+          
         }
       });
     }

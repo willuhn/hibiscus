@@ -139,9 +139,7 @@ public class Synchronize implements Action
     if (!this.list.hasNext())
     {
       Logger.info("no more backends. synchronization done");
-      Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Synchronisierung beendet"),StatusBarMessage.TYPE_SUCCESS));
-      MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_DONE);
+      finish(ProgressMonitor.STATUS_DONE);
       return;
     }
     
@@ -166,6 +164,16 @@ public class Synchronize implements Action
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Synchronisierung abgebrochen"),StatusBarMessage.TYPE_ERROR));
       MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_CANCEL);
     }
+  }
+  
+  /**
+   * Beendet die Synchronisierung mit dem angegebenen Status.
+   * @param status der Status.
+   */
+  private void finish(int status)
+  {
+    MessageBus.send(SynchronizeEngine.STATUS,status);
+    Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
   }
   
   /**
@@ -194,10 +202,14 @@ public class Synchronize implements Action
         return;
       }
       
-      Integer status = (Integer) data;
-      if (status.intValue() == ProgressMonitor.STATUS_DONE)
+      int status = ((Integer) data).intValue();
+      if (status == ProgressMonitor.STATUS_DONE)
       {
         sync();
+      }
+      else if (status == ProgressMonitor.STATUS_ERROR || status == ProgressMonitor.STATUS_CANCEL)
+      {
+        finish(status);
       }
     }
 
