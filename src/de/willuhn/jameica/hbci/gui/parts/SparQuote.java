@@ -54,6 +54,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
@@ -66,6 +67,7 @@ import de.willuhn.util.I18N;
 public class SparQuote implements Part
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Settings settings = new Settings(SparQuote.class);
 
   private static DateFormat DATEFORMAT = new SimpleDateFormat("MM.yyyy");
 
@@ -171,6 +173,15 @@ public class SparQuote implements Part
     this.tagAuswahl = new SpinnerInput(1,31,this.stichtag);
     this.tagAuswahl.setComment(i18n.tr(". Tag des Monats"));
     this.tagAuswahl.setName(i18n.tr("Stichtag"));
+    this.tagAuswahl.setValue(settings.getInt("stichtag",1));
+    this.tagAuswahl.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("stichtag",(Integer) tagAuswahl.getValue());
+      }
+    });
     this.tagAuswahl.addListener(new DelayedListener(500,this.listener));
     return this.tagAuswahl;
   }
@@ -189,6 +200,15 @@ public class SparQuote implements Part
     this.monatAuswahl = new SpinnerInput(1,12,this.monate);
     this.monatAuswahl.setComment(i18n.tr("Anzahl der Monate pro Periode"));
     this.monatAuswahl.setName(i18n.tr("Monate"));
+    this.monatAuswahl.setValue(settings.getInt("monate",1));
+    this.monatAuswahl.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("monate",(Integer) monatAuswahl.getValue());
+      }
+    });
     this.monatAuswahl.addListener(new DelayedListener(500,this.listener));
     return this.monatAuswahl;
   }

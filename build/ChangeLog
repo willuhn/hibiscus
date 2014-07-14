@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0370 BUGZILLA 1538 - Sparquote: Auswahl des Stichtags und der Monate speichern
   * BUG: 0369 Startseite nach der Synchronisierung neu laden um neu eingetroffene Nachrichten sofort anzuzeigen.
               Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17376&page=last#last_post
   * BUG: 0368 BUGZILLA 1537 - Check auf Offline-Konto beim Anlegen automatischer Gegenkonten war falsch
