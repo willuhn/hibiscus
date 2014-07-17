@@ -23,7 +23,6 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
-import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoDisable;
@@ -32,8 +31,8 @@ import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoImport;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.KontoResetAuszugsdatum;
-import de.willuhn.jameica.hbci.gui.action.LastschriftNew;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
+import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew;
+import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Flaggable;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -89,10 +88,9 @@ public class KontoList extends ContextMenu implements Extendable
     }); // BUGZILLA 473
     addItem(ContextMenuItem.SEPARATOR);
 
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Überweisung..."),new UeberweisungNew(),"stock_next.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Lastschrift..."),new LastschriftNew(),"stock_previous.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue SEPA-Überweisung..."),new AuslandsUeberweisungNew(),"internet-web-browser.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new DauerauftragNew(),"stock_form-time-field.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"stock_next.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"stock_previous.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"stock_form-time-field.png"));
 
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new KontoExport(),"document-save.png"));
