@@ -48,6 +48,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.BackendInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
@@ -85,6 +86,7 @@ public class KontoControl extends AbstractControl
 	private Input name				 		        = null;
 	private Input bezeichnung	 		        = null;
 	private Input passportAuswahl         = null;
+  private Input backendAuswahl          = null;
   private Input kundennummer 		        = null;
   private Input kommentar               = null;
   
@@ -240,6 +242,7 @@ public class KontoControl extends AbstractControl
           boolean b = ((Boolean) getOffline().getValue()).booleanValue();
           getSaldo().setEnabled(b);
           getPassportAuswahl().setEnabled(!b);
+          getBackendAuswahl().setEnabled(!b);
           
           // Wir muessen die Aenderung sofort ins Konto uebernehmen, damit
           // der richtige Sync-Options-Dialog angezeigt wird.
@@ -628,6 +631,7 @@ public class KontoControl extends AbstractControl
 			if (offline)
 			{
 			  getKonto().setPassportClass(null);
+        getKonto().setBackendClass(null);
 			  getKonto().setSaldo(((Double)getSaldo().getValue()).doubleValue());
 			}
 			else
@@ -637,6 +641,9 @@ public class KontoControl extends AbstractControl
 			    throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"));
 			  
         getKonto().setPassportClass(p.getClass().getName());
+        if (getBackendAuswahl().getValue() != null) {
+          getKonto().setBackendClass(getBackendAuswahl().getValue().getClass().getName());
+        }
 			}
 			
 			applyOfflineState(offline);
@@ -821,5 +828,20 @@ public class KontoControl extends AbstractControl
     
   }
 
+
+  /**
+   * Liefert das Auswahl-Feld fuer das Zugangsverfahren.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public Input getBackendAuswahl() throws RemoteException, ApplicationException
+  {
+    if (backendAuswahl != null)
+      return backendAuswahl;
+
+    backendAuswahl = new BackendInput(getKonto());
+    return backendAuswahl;
+  }
 
 }

@@ -104,7 +104,23 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
 	 */
 	public String getPassportClass() throws RemoteException;
 
-	/**
+  /**
+   * Liefert die Java-Klasse des zu verwendenden Backend. 
+   * 
+   * @return Java-Klasse des Backends.
+   * @throws RemoteException
+   */
+  public String getBackendClass() throws RemoteException;
+
+  /**
+   * Setzt den zu verwendenden Backend 
+   * 
+   * @param backend Backend
+   * @throws RemoteException
+   */
+  public void setBackendClass(String backend) throws RemoteException;
+
+  /**
 	 * Liefert die Waehrungs-Bezeichnung der Bankverbindung.
 	 * 
 	 * @return Waehrungsbezeichnung.

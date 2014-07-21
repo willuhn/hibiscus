@@ -150,7 +150,8 @@ public class KontoNew extends AbstractView
       left.addLabelPair(i18n.tr("Kontonummer"),              control.getKontonummer());
       left.addLabelPair(i18n.tr("Bankleitzahl"),             control.getBlz());
       left.addLabelPair(i18n.tr("Unterkontonummer"),         control.getUnterkonto());
-      left.addLabelPair(i18n.tr("Verfahren"),                control.getPassportAuswahl());
+      left.addLabelPair(i18n.tr("Zugangsverfahren"),         control.getBackendAuswahl());
+      left.addLabelPair(i18n.tr("Pwd-Verwaltung"),           control.getPassportAuswahl());
       left.addLabelPair(i18n.tr("Kundenkennung"),            control.getKundennummer());
 
       Container right = new SimpleContainer(columns.getComposite());

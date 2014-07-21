@@ -12,6 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -115,11 +117,26 @@ public class PassportRegistry {
     init();
 		Enumeration e = passportsByName.elements();
 		Passport[] passports = new Passport[passportsByName.size()];
-		int i=0;
-		while (e.hasMoreElements())
-		{
-			passports[i++] = (Passport) load((Class)e.nextElement());
-		}
+    int i=0;
+    while (e.hasMoreElements())
+    {
+      passports[i++] = (Passport) load((Class)e.nextElement());
+    }
+		Arrays.sort(passports, new Comparator() {
+
+      @Override
+      public int compare(Object o1, Object o2)
+      {
+        if (o1 == null) {
+          return 1;
+        }
+        if (o2 == null) {
+          return -1;
+        }
+        return o1.getClass().toString().compareTo(o2.getClass().toString());
+      }
+		  
+		});
 		return passports;
 	}
 }

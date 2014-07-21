@@ -855,4 +855,21 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     this.setAttribute("kategorie",kategorie);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getBackendClass()
+   */
+  public String getBackendClass() throws RemoteException
+  {
+      return (String) getAttribute("backend_class");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setBackendClass(java.lang.String)
+   */
+  public void setBackendClass(String backend) throws RemoteException
+  {
+    setAttribute("backend_class", backend);
+  }
+
 }
