@@ -6,11 +6,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="src" path="/jameica"/>
 	<classpathentry kind="lib" path="lib/supercsv-1.31.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.12.jar" sourcepath="lib.src/hbci4java-2.5.12-src.zip"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart_0.7.0.v20110128.jar"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart.ext_0.7.0.v20110128.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.3.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="lib" path="lib/obantoo-bin-2.1.4.jar"/>
-	<classpathentry kind="lib" path="lib/hbci4java.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
