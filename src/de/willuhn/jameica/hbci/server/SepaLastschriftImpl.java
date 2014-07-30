@@ -57,6 +57,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setKonto(getKonto());
     u.setZweck(getZweck());
     u.setEndtoEndId(getEndtoEndId());
+    u.setPmtInfId(getPmtInfId());
     u.setMandateId(getMandateId());
     u.setSignatureDate(getSignatureDate());
     u.setCreditorId(getCreditorId());
@@ -113,6 +114,9 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
 
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
       String creditorId = getCreditorId();
       if (creditorId == null || creditorId.length() == 0)
@@ -352,4 +356,21 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     this.setAttribute("orderid",orderId);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getPmtInfId()
+   */
+  public String getPmtInfId() throws RemoteException
+  {
+    return (String) getAttribute("pmtinfid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setPmtInfId(java.lang.String)
+   */
+  public void setPmtInfId(String id) throws RemoteException
+  {
+    setAttribute("pmtinfid",id);
+  }
+
 }

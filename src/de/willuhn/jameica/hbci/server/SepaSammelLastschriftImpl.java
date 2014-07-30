@@ -194,6 +194,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
       l.setTargetDate(getTargetDate());
       l.setType(getType());
       l.setOrderId(getOrderId());
+      l.setPmtInfId(getPmtInfId());
       l.store();
       
       List<SepaSammelLastBuchung> list = this.getBuchungen();

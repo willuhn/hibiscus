@@ -71,6 +71,7 @@ public class SepaLastschriftNew extends AbstractView
       container.addInput(control.getType());
       container.addInput(control.getTargetDate());
       container.addInput(control.getEndToEndId());
+      container.addInput(control.getPmtInfId());
     }
     
     // Rechte Seite

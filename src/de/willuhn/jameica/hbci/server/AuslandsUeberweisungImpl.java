@@ -59,6 +59,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setKonto(getKonto());
     u.setZweck(getZweck());
     u.setEndtoEndId(getEndtoEndId());
+    u.setPmtInfId(getPmtInfId());
     u.setTerminUeberweisung(isTerminUeberweisung());
     u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
     
@@ -111,6 +112,10 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      
+      HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
       
       if (this.getTermin() == null)
         this.setTermin(new Date());
@@ -224,4 +229,21 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     setAttribute("endtoendid",id);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#getPmtInfId()
+   */
+  public String getPmtInfId() throws RemoteException
+  {
+    return (String) getAttribute("pmtinfid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setPmtInfId(java.lang.String)
+   */
+  public void setPmtInfId(String id) throws RemoteException
+  {
+    setAttribute("pmtinfid",id);
+  }
+
 }

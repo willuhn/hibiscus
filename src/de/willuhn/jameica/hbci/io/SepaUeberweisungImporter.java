@@ -52,6 +52,7 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
       u.setTermin(ISO_DATE.parse(date));
 
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));
+    u.setPmtInfId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PMTINFID.getValue())));
 
     u.store();
     Application.getMessagingFactory().sendMessage(new ImportMessage(u));

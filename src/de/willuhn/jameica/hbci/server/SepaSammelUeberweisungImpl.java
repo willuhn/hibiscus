@@ -82,6 +82,7 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
       u.setBezeichnung(this.getBezeichnung());
       u.setKonto(this.getKonto());
       u.setTermin(new Date());
+      u.setPmtInfId(getPmtInfId());
       u.store();
       
       List<SepaSammelUeberweisungBuchung> list = this.getBuchungen();

@@ -68,6 +68,7 @@ public class SepaSammelUeberweisungNew extends AbstractView
       Container container = new SimpleContainer(cols.getComposite());
       container.addHeadline(i18n.tr("SEPA"));
       container.addInput(control.getBatchBook());
+      container.addInput(control.getPmtInfId());
     }
     
     // Rechte Seite

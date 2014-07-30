@@ -87,6 +87,11 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       String endToEndId = ueberweisung.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)
         setJobParam("endtoendid",endToEndId);
+      
+      String pmtInfId = ueberweisung.getPmtInfId();
+      if (pmtInfId != null && pmtInfId.trim().length() > 0)
+        setJobParam("pmtinfid", pmtInfId);
+
 		}
 		catch (RemoteException e)
 		{

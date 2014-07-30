@@ -72,6 +72,7 @@ public class SepaSammelLastschriftNew extends AbstractView
       container.addInput(control.getSequenceType());
       container.addInput(control.getTargetDate());
       container.addInput(control.getBatchBook());
+      container.addInput(control.getPmtInfId());
     }
 		
     // Rechte Seite

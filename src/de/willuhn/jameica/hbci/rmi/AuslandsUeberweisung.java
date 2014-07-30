@@ -29,7 +29,21 @@ public interface AuslandsUeberweisung extends BaseUeberweisung, Duplicatable
    * @throws RemoteException
    */
   public void setEndtoEndId(String id) throws RemoteException;
+
+  /**
+   * Liefert die optionale PmtInf-ID fuer SEPA.
+   * @return die optionale PmtInf-ID fuer SEPA.
+   * @throws RemoteException
+   */
+  public String getPmtInfId() throws RemoteException;
   
+  /**
+   * Speichert die optionale PmtInf-ID fuer SEPA.
+   * @param id die optionale PmtInf-ID fuer SEPA.
+   * @throws RemoteException
+   */
+  public void setPmtInfId(String id) throws RemoteException;
+
   /**
    * Prueft, ob es sich um einen bankseitige Termin-Ueberweisung handelt.
    * @return true, wenn es eine bankseitige Termin-Ueberweisung ist.

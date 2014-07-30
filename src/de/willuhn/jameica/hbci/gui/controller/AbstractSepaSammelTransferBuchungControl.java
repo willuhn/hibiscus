@@ -167,7 +167,6 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
     zweck = new TextInput(s.getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
     zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
-    zweck.setMandatory(true);
     zweck.setEnabled(!s.getSammelTransfer().ausgefuehrt());
     return zweck;
   }

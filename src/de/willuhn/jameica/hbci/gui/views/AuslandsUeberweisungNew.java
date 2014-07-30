@@ -78,6 +78,7 @@ public class AuslandsUeberweisungNew extends AbstractView
       Container container = new SimpleContainer(cols.getComposite());
       container.addHeadline(i18n.tr("SEPA"));
       container.addInput(control.getEndToEndId());
+      container.addInput(control.getPmtInfId());
       container.addHeadline(i18n.tr("Sonstige Informationen"));
       container.addInput(control.getTermin());
       container.addInput(control.getBankTermin());

@@ -50,6 +50,7 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
       ueb = (SepaSammelUeberweisung) service.createObject(SepaSammelUeberweisung.class,null);
       ueb.setBezeichnung(i18n.tr("SEPA-Sammelüberweisung vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
       ueb.setKonto(this.findKonto(prop.getProperty(ISEPAParser.Names.SRC_IBAN.getValue())));
+      ueb.setPmtInfId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PMTINFID.getValue())));
       
       String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
       

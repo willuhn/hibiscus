@@ -85,6 +85,7 @@ public class SepaLastschriftControl extends AbstractControl
   private TextInput empfkto                  = null;
   private TextInput bic                      = null;
   private TextInput endToEndId               = null;
+  private TextInput pmtInfId                 = null;
   private TextInput creditorId               = null;
   private TextInput mandateId                = null;
   private DateInput signature                = null;
@@ -259,6 +260,25 @@ public class SepaLastschriftControl extends AbstractControl
       this.endToEndId.setMandatory(false);
     }
     return this.endToEndId;
+  }
+  
+  /**
+   * Liefert das Eingabe-Feld fuer die PmtInf-ID.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getPmtInfId() throws RemoteException
+  {
+    if (this.pmtInfId != null)
+      return this.pmtInfId;
+
+    this.pmtInfId = new TextInput(getTransfer().getPmtInfId(),HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+    this.pmtInfId.setName(i18n.tr("Referenz (Payment-Information ID)"));
+    this.pmtInfId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+    this.pmtInfId.setEnabled(!getTransfer().ausgefuehrt());
+    this.pmtInfId.setHint(i18n.tr("freilassen wenn nicht benötigt"));
+    this.pmtInfId.setMandatory(false);
+    return this.pmtInfId;
   }
 
   /**
@@ -481,6 +501,7 @@ public class SepaLastschriftControl extends AbstractControl
       t.setZweck((String)getZweck().getValue());
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
+      t.setPmtInfId((String) getPmtInfId().getValue());
       t.setCreditorId((String) getCreditorId().getValue());
       t.setMandateId((String) getMandateId().getValue());
       t.setSignatureDate((Date) getSignatureDate().getValue());
