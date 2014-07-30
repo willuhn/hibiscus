@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0372 Neue obantoo-Version 2.1.5
   * NEW: 0371 Neue HBCI4Java-Version
               Verwendungszweck ist jetzt optional. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17870&page=last#last_post
               Ausserdem: String "hbci4java-" aus SEPA-Message-ID entfernt. Das sieht unschoen aus, wenn es auf dem Kontoauszug mit erscheint.
