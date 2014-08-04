@@ -1,7 +1,10 @@
 HEAD 2.7 (nightly)
 
+2014-08-04 Version 2.6.8
+
+  * NEW: 0375 Neue obantoo-Version 2.1.6
   * NEW: 0374 Verwendungszweck auf bei Sammelauftragsbuchungen nicht mehr Pflicht
-  * NEW: 0373 Support Payment-Information ID
+  * NEW: 0373 Support für Payment-Information ID
   * NEW: 0372 Neue obantoo-Version 2.1.5
   * NEW: 0371 Neue HBCI4Java-Version
               Verwendungszweck ist jetzt optional. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17870&page=last#last_post
