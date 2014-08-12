@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0377 Moegliche NullpointerException, wenn man SEPA-Daueraufträge abruft aber gar keine
+              eingerichtet sind.
   * NEW: 0376 Neue obantoo-Version 2.1.7
 
 2014-08-04 Version 2.6.8
