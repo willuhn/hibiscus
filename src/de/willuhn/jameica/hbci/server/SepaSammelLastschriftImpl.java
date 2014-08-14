@@ -57,6 +57,9 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     try {
       if (getSequenceType() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den Sequenz-Typ aus"));
+      
+      if (this.getType() == null)
+        this.setType(SepaLastType.DEFAULT);
     }
     catch (RemoteException e)
     {
