@@ -62,6 +62,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setPmtInfId(getPmtInfId());
     u.setTerminUeberweisung(isTerminUeberweisung());
     u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
+    u.setUmbuchung(isUmbuchung());
     
     return u;
   }
@@ -70,6 +71,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException {
+    
     try {
       Konto k = getKonto();
 
@@ -116,6 +118,8 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
+      if (isUmbuchung() && isTerminUeberweisung())
+        throw new ApplicationException(i18n.tr("Eine Umbuchung kann nicht als Termin-Auftrag gesendet werden"));
       
       if (this.getTermin() == null)
         this.setTermin(new Date());
@@ -144,6 +148,24 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     setAttribute("banktermin",termin ? new Integer(1) : null);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isUmbuchung()
+   */
+  public boolean isUmbuchung() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("umbuchung");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setUmbuchung(boolean)
+   */
+  public void setUmbuchung(boolean b) throws RemoteException
+  {
+    setAttribute("umbuchung",b ? new Integer(1) : null);
+  }
+
 
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#ueberfaellig()

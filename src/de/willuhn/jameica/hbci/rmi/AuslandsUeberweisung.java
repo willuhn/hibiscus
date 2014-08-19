@@ -57,4 +57,18 @@ public interface AuslandsUeberweisung extends BaseUeberweisung, Duplicatable
    * @throws RemoteException
    */
   public void setTerminUeberweisung(boolean termin) throws RemoteException;
+  
+  /**
+   * Prueft, ob es sich um einen bankinterne Umbuchung handelt.
+   * @return true, wenn es eine bankinterne Umbuchung ist.
+   * @throws RemoteException
+   */
+  public boolean isUmbuchung() throws RemoteException;
+  
+  /**
+   * Legt fest, ob es sich um eine bankinterne Umbuchung handelt.
+   * @param b true, wenn es eine bankinterne Umbuchung sein soll.
+   * @throws RemoteException
+   */
+  public void setUmbuchung(boolean b) throws RemoteException;
 }

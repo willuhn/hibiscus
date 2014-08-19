@@ -80,8 +80,8 @@ public class AuslandsUeberweisungNew extends AbstractView
       container.addInput(control.getEndToEndId());
       container.addInput(control.getPmtInfId());
       container.addHeadline(i18n.tr("Sonstige Informationen"));
+      container.addInput(control.getTyp());
       container.addInput(control.getTermin());
-      container.addInput(control.getBankTermin());
 
       container.addHeadline(i18n.tr("Auftragswiederholung (nur Hibiscus-intern)"));
       container.addText(i18n.tr("Diese Information wird nicht an die Bank übertragen."),true);

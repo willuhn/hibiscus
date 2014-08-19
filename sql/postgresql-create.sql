@@ -58,6 +58,7 @@ CREATE TABLE aueberweisung (
   zweck varchar(140),
   termin date NOT NULL,
   banktermin integer NULL,
+  umbuchung integer NULL,
   ausgefuehrt integer NOT NULL,
   ausgefuehrt_am timestamp,
   endtoendid varchar(35) NULL,
@@ -354,4 +355,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',54);
+INSERT INTO version (name,version) values ('db',55);

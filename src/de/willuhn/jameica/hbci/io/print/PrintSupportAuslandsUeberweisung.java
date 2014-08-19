@@ -36,6 +36,8 @@ public class PrintSupportAuslandsUeberweisung extends AbstractPrintSupportSepaTr
     {
       if (this.getTransfer().isTerminUeberweisung())
         return i18n.tr("SEPA-Terminüberweisung");
+      else if (this.getTransfer().isUmbuchung())
+        return i18n.tr("SEPA-Umbuchung");
     }
     catch (RemoteException re)
     {

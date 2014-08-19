@@ -8,8 +8,10 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -21,6 +23,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -74,8 +77,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private TextInput pmtInfId                 = null;
 
   private TerminInput termin                 = null;
+  private SelectInput typ                    = null;
   private ReminderIntervalInput interval     = null;
-  private CheckboxInput banktermin           = null;
 
   private CheckboxInput storeEmpfaenger      = null;
   
@@ -302,8 +305,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
           // Wenn das Datum eine Woche in der Zukunft liegt, fragen wir den User, ob es vielleicht
           // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
           // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
-          boolean isTermin = ((Boolean) getBankTermin().getValue()).booleanValue();
-          if (isTermin)
+          Typ typ = (Typ) getTyp().getValue();
+          if (typ == null || typ.termin)
             return;
 
           Calendar cal = Calendar.getInstance();
@@ -312,7 +315,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
           if (DateUtil.startOfDay(date).after(cal.getTime()))
           {
             String q = i18n.tr("Soll der Auftrag als bankseitig geführte SEPA-Terminüberweisung ausgeführt werden?");
-            getBankTermin().setValue(Application.getCallback().askUser(q));
+            if (Application.getCallback().askUser(q))
+              getTyp().setValue(new Typ(true,false));
           }
         }
         catch (Exception e)
@@ -366,21 +370,26 @@ public class AuslandsUeberweisungControl extends AbstractControl
   }
   
   /**
-   * Liefert eine Checkbox mit der eingestellt werden kann, ob es sich um einen bankseitigen Termin-Auftrag handelt.
-   * @return Checkbox.
+   * Liefert eine Combobox zur Auswahl des Auftragstyps.
+   * Zur Wahl stehen Ueberweisung, Termin-Ueberweisung und Umbuchung.
+   * @return die Combobox.
    * @throws RemoteException
    */
-  public CheckboxInput getBankTermin() throws RemoteException
+  public SelectInput getTyp() throws RemoteException
   {
-    if (this.banktermin != null)
-      return this.banktermin;
+    if (this.typ != null)
+      return this.typ;
+    final AuslandsUeberweisung u = getTransfer();
     
-    final AuslandsUeberweisung u = this.getTransfer();
-    this.banktermin = new CheckboxInput(u.isTerminUeberweisung());
-    this.banktermin.setName(i18n.tr("bankseitige SEPA-Terminüberweisung"));
-    this.banktermin.setEnabled(!u.ausgefuehrt());
-    this.banktermin.addListener(new Listener()
-    {
+    List<Typ> list = new ArrayList<Typ>();
+    list.add(new Typ(false,false));
+    list.add(new Typ(true,false));
+    list.add(new Typ(false,true));
+    this.typ = new SelectInput(list,new Typ(u.isTerminUeberweisung(),u.isUmbuchung()));
+    this.typ.setName(i18n.tr("Auftragstyp"));
+    this.typ.setAttribute("name");
+    this.typ.setEnabled(!u.ausgefuehrt());
+    this.typ.addListener(new Listener() {
       public void handleEvent(Event event)
       {
         // Wir muessen die Entscheidung, ob es eine Termin-Ueberweisung ist,
@@ -388,8 +397,11 @@ public class AuslandsUeberweisungControl extends AbstractControl
         // "getTermin()" gebraucht, um zu erkennen, ob der Auftrag faellig ist
         try
         {
-          u.setTerminUeberweisung(((Boolean)banktermin.getValue()).booleanValue());
-          getTermin().updateComment(); // Kommentar vom Termin-Eingabefeld aktualisieren.
+          Typ t = (Typ) getTyp().getValue();
+          u.setTerminUeberweisung(t.termin);
+
+          // Kommentar vom Termin-Eingabefeld aktualisieren.
+          getTermin().updateComment();
         }
         catch (Exception e)
         {
@@ -397,8 +409,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
         }
       }
     });
-    
-    return this.banktermin;
+    return this.typ;
   }
 
   /**
@@ -425,7 +436,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
       t.setPmtInfId((String) getPmtInfId().getValue());
-      t.setTerminUeberweisung(((Boolean) getBankTermin().getValue()).booleanValue());
+
+      Typ typ = (Typ) getTyp().getValue();
+      t.setTerminUeberweisung(typ.termin);
+      t.setUmbuchung(typ.umb);
 
       String kto  = (String)getEmpfaengerKonto().getValue();
       String name = getEmpfaengerName().getText();
@@ -592,4 +606,48 @@ public class AuslandsUeberweisungControl extends AbstractControl
       }
     }
   }
+  
+  /**
+   * Hilfsklasse fuer den Auftragstyp.
+   */
+  public class Typ
+  {
+    private boolean termin = false;
+    private boolean umb    = false;
+    
+    /**
+     * ct.
+     * @param termin true bei Termin-Ueberweisung.
+     * @param umb true bei Umbuchung.
+     */
+    private Typ(boolean termin, boolean umb)
+    {
+      this.termin = termin;
+      this.umb    = umb;
+    }
+    
+    /**
+     * Liefert den sprechenden Namen des Typs.
+     * @return sprechender Name des Typs.
+     */
+    public String getName()
+    {
+      if (this.termin) return i18n.tr("Bankseitige SEPA-Terminüberweisung");
+      if (this.umb)    return i18n.tr("Interne Umbuchung (Übertrag)");
+      return           i18n.tr("Überweisung");
+    }
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object o)
+    {
+      if (o == null || !(o instanceof Typ))
+        return false;
+      Typ other = (Typ) o;
+      return other.termin == this.termin &&
+             other.umb == this.umb;
+    }
+  }
+
 }
