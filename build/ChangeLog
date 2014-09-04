@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0380 Anzeigen/Löschen der BPD jetzt auch bei Chipkarte
   * NEW: 0379 Support für SEPA-Umbuchungen
   * NEW: 0378 SEPA-Lastschrift-Art automatisch auf CORE setzen, wenn es nicht angegeben wurde
               (z.Bsp. wenn die Daten als Hibiscus-XML importiert wurden)
