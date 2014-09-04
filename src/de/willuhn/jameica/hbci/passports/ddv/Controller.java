@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.callback.HBCICallback;
+import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.HBCIPassportChipcard;
 
 import de.willuhn.jameica.gui.AbstractControl;
@@ -34,6 +35,7 @@ import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
 import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
@@ -390,6 +392,59 @@ public class Controller extends AbstractControl
     };
     Application.getController().start(task);
   }
+
+  /**
+   * Zeigt die BPD/UPD des Passports an.
+   */
+  public synchronized void handleDisplayProperties()
+  {
+    HBCIPassport passport = null;
+    try
+    {
+      // Ist hier etwas umstaendlich, weil wir das Handle
+      // nicht aufmachen duerfen. Wuerden wir das tun, dann
+      // wuerde HBCI4Java automatisch die UPD abrufen wollen,
+      // was fehlschlagen wird, wenn wir ungueltige Daten
+      // auf der Karte haben. Auf diese Weise hier koennen
+      // wir aber die Daten ohne Bank-Kontakt aendern
+      AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
+      HBCICallback callback = ((HBCI)plugin).getHBCICallback();
+      if (callback != null && (callback instanceof HBCICallbackSWT))
+        ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl(getConfig()));
+
+      passport = DDVConfigFactory.createPassport(getConfig());
+
+      new PassportPropertyDialog(PassportPropertyDialog.POSITION_CENTER,passport).open();
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info("operation cancelled");
+    }
+    catch (ApplicationException e)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr(e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (Throwable t)
+    {
+      Logger.error("error while displaying BPD/UPD",t);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler Anzeigen der BPD/UPD"),StatusBarMessage.TYPE_ERROR));
+    }
+    finally
+    {
+      if (passport != null)
+      {
+        try
+        {
+          passport.close();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while closing passport",e);
+        }
+      }
+    }
+  }
+
 
   /**
    * Erstellt eine neue Kartenleser-Config.
