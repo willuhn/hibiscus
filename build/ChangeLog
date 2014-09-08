@@ -1,5 +1,9 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0282 Beim Import eines Datenbank-Backups die Meldungen der Protokolle nur mit DEBUG-Level
+              loggen. Dort dürfen Fehler auftreten, denn beim Import der Datei werden vorher die Konten
+              importiert. Und deren Anlage führt auch bereits zur Erstellung von Protokollen, deren
+              IDs dann im Konflikt zu diesen hier stehen. 
   * NEW: 0381 BPD-Auto-Expiry - siehe https://github.com/willuhn/hbci4java/commit/9183772c20240aeb75a5710ba28abc4a2d81fba8
   * NEW: 0380 Anzeigen/Löschen der BPD jetzt auch bei Chipkarte
   * NEW: 0379 Support für SEPA-Umbuchungen
