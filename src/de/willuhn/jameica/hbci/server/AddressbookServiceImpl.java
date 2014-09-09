@@ -22,8 +22,10 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ClassFinder;
 import de.willuhn.util.I18N;
 
 /**
@@ -98,7 +100,10 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
       try
       {
         Logger.info("loading addressbooks");
-        Class[] found = Application.getClassLoader().getClassFinder().findImplementors(Addressbook.class);
+        
+        BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+        ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getClassLoader().getClassFinder();
+        Class[] found = finder.findImplementors(Addressbook.class);
         ArrayList list = new ArrayList();
 
         // Uns selbst tun wir immer zuerst rein.
@@ -111,7 +116,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
             continue; // Das sind wir selbst
           try
           {
-            Addressbook a = (Addressbook) found[i].newInstance();
+            Addressbook a = service.get(found[i]);
             Logger.info("  " + a.getName());
             list.add(a);
           }

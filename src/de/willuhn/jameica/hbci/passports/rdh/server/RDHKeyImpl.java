@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.passports.rdh.keyformat.HBCI4JavaFormat;
 import de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -262,11 +263,13 @@ public class RDHKeyImpl implements RDHKey
   {
     try
     {
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
       
       // Als Default nehmen wir das Eigenformat
       String s = settings.getString(getID() + ".format",HBCI4JavaFormat.class.getName());
-      return (KeyFormat) loader.load(s).newInstance();
+      Class c = loader.load(s);
+      return (KeyFormat) service.get(c);
     }
     catch (RemoteException re)
     {

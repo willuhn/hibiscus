@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
@@ -41,15 +42,16 @@ public class PassportRegistry {
 
     try {
 			Logger.info("searching for available passports");
-			ClassFinder finder = Application.getClassLoader().getClassFinder();
+	    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+			ClassFinder finder = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder();
 			Class[] found = finder.findImplementors(Passport.class);
-			for (int i=0;i<found.length;++i)
+			for (Class c:found)
 			{
 				try {
-					Passport p = (Passport) found[i].newInstance();
+					Passport p = service.get(c);
 					Application.getCallback().getStartupMonitor().setStatusText("init passport " + p.getName());
- 				  passportsByName.put(p.getName(),found[i]);
-					passportsByClass.put(found[i].getName(),found[i]);
+ 				  passportsByName.put(p.getName(),c);
+					passportsByClass.put(c.getName(),c);
 					Logger.info("  " + p.getName() + " [" + p.getClass().getName() + "]");
 				}
 				catch (Exception e)
@@ -68,11 +70,19 @@ public class PassportRegistry {
 		}
 	}
 	
+  /**
+   * Erstellt eine Instanz die Passport-Klasse.
+   * @param c die Passport-Klasse.
+   * @return die Instanz.
+   * @throws Exception
+   */
   private static Passport load(Class c) throws Exception
   {
     if (c == null)
       return null;
-    Passport p = (Passport) c.newInstance();
+    
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    Passport p = service.get(c);
     Logger.debug("[" + c.getName() + "][" + p.getName() + "] instantiated successfully");
     return p;
   }

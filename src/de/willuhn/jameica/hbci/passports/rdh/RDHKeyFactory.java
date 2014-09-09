@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.RDHKeyImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -60,20 +61,21 @@ public class RDHKeyFactory
     ArrayList list = new ArrayList();
     try
     {
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
       Class[] classes = loader.getClassFinder().findImplementors(KeyFormat.class);
-      for (int i=0;i<classes.length;++i)
+      for (Class c:classes)
       {
         try
         {
-          KeyFormat format = (KeyFormat) classes[i].newInstance();
+          KeyFormat format = service.get(c);
           if (!format.hasFeature(neededFeature))
             continue;
           list.add(format);
         }
         catch (Exception e)
         {
-          Logger.error("unable to load key format " + classes[i] + " - skipping",e);
+          Logger.error("unable to load key format " + c + " - skipping",e);
         }
       }
     }

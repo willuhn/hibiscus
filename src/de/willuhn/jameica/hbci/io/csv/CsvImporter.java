@@ -37,6 +37,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.io.IOFormat;
 import de.willuhn.jameica.hbci.io.Importer;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -280,13 +281,14 @@ public class CsvImporter implements Importer
     List<IOFormat> formats = new ArrayList<IOFormat>();
     try
     {
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       ClassFinder finder = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder();
       Class<Format>[] classes = finder.findImplementors(Format.class);
       for (Class<Format> c:classes)
       {
         try
         {
-          Format f = c.newInstance();
+          Format f = service.get(c);
           Class type = f.getType();
           if (type == null)
           {

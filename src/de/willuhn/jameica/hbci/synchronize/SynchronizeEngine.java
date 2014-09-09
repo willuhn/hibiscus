@@ -60,7 +60,7 @@ public class SynchronizeEngine
     {
       Logger.info("loading synchronize backends");
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      Class[] found = Application.getClassLoader().getClassFinder().findImplementors(SynchronizeBackend.class);
+      Class[] found = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getClassLoader().getClassFinder().findImplementors(SynchronizeBackend.class);
       for (Class<SynchronizeBackend> c:found)
       {
         try
