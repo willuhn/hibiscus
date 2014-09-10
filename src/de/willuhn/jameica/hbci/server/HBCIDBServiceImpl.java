@@ -67,7 +67,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     try
     {
       Class c = cl.load(driverClass);
-      this.driver = service.get(c);
+      this.driver = (DBSupport) service.get(c);
     }
     catch (Throwable t)
     {

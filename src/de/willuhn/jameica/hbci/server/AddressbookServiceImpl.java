@@ -116,7 +116,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
             continue; // Das sind wir selbst
           try
           {
-            Addressbook a = service.get(found[i]);
+            Addressbook a = (Addressbook) service.get(found[i]);
             Logger.info("  " + a.getName());
             list.add(a);
           }

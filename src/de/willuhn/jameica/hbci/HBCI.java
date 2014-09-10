@@ -192,7 +192,7 @@ public class HBCI extends AbstractPlugin
         {
           BeanService service = Application.getBootLoader().getBootable(BeanService.class);
           Class c = Class.forName(callbackClass);
-          this.callback = service.get(c);
+          this.callback = (HBCICallback) service.get(c);
           Logger.info("callback: " + this.callback.getClass().getName());
         }
         catch (Throwable t)

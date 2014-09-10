@@ -219,7 +219,7 @@ public class DDVConfig implements Configuration
     {
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       Class c = Class.forName(s);
-      return service.get(c);
+      return (Reader) service.get(c);
     }
     catch (Throwable t)
     {

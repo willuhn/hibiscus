@@ -48,7 +48,7 @@ public class PassportRegistry {
 			for (Class c:found)
 			{
 				try {
-					Passport p = service.get(c);
+					Passport p = (Passport) service.get(c);
 					Application.getCallback().getStartupMonitor().setStatusText("init passport " + p.getName());
  				  passportsByName.put(p.getName(),c);
 					passportsByClass.put(c.getName(),c);
@@ -82,7 +82,7 @@ public class PassportRegistry {
       return null;
     
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    Passport p = service.get(c);
+    Passport p = (Passport) service.get(c);
     Logger.debug("[" + c.getName() + "][" + p.getName() + "] instantiated successfully");
     return p;
   }

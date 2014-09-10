@@ -68,7 +68,7 @@ public class RDHKeyFactory
       {
         try
         {
-          KeyFormat format = service.get(c);
+          KeyFormat format = (KeyFormat) service.get(c);
           if (!format.hasFeature(neededFeature))
             continue;
           list.add(format);
