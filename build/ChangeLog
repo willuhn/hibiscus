@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0283 GV-spezifische PAIN-Versionen berücksichtigen. Siehe
+              http://www.onlinebanking-forum.de/forum/topic.php?t=18038&page=last#last_post
   * NEW: 0282 Beim Import eines Datenbank-Backups die Meldungen der Protokolle nur mit DEBUG-Level
               loggen. Dort dürfen Fehler auftreten, denn beim Import der Datei werden vorher die Konten
               importiert. Und deren Anlage führt auch bereits zur Erstellung von Protokollen, deren
