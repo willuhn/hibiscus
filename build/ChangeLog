@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0286 Bei der Erstellung von INI-Briefen nur noch das HBCI4Java/Hibiscus-Format anbieten. Das
+              RDH2-Format unterstützen wir nicht komplett. 
   * NEW: 0285 Automatische Vervollständigung der BIC bei Eingabe der IBAN 
   * NEW: 0284 Umfangreichere Prüfung der IBAN bei der Eingabe mittels obantoo. Detailliertere Fehlermeldungen.
   * NEW: 0283 GV-spezifische PAIN-Versionen berücksichtigen. Siehe

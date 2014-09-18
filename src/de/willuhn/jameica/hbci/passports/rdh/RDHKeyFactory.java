@@ -148,8 +148,22 @@ public class RDHKeyFactory
         return;
       }
 
-      KeyFormatDialog d = new KeyFormatDialog(KeyFormatDialog.POSITION_CENTER,KeyFormat.FEATURE_CREATE);
-      KeyFormat format = (KeyFormat) d.open();
+      final int ft = KeyFormat.FEATURE_CREATE;
+      KeyFormat[] formats = RDHKeyFactory.getKeyFormats(ft);
+      
+      KeyFormat format = null;
+      if (formats != null && formats.length == 1)
+      {
+        format = formats[0];
+        Logger.info("only have one key format, that supports creation of new keys, choosing this one automatically: " + format.getName());
+      }
+      else
+      {
+        Logger.info("asking user which key format to be used");
+        KeyFormatDialog d = new KeyFormatDialog(KeyFormatDialog.POSITION_CENTER,ft);
+        format = (KeyFormat) d.open();
+      }
+      
       addKey(format.createKey(f));
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüsseldatei erfolgreich erstellt"),StatusBarMessage.TYPE_SUCCESS));
     }
