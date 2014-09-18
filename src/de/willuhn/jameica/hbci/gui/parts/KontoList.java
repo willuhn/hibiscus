@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -94,7 +93,7 @@ public class KontoList extends TablePart implements Part
         try
         {
           String blz = o.toString();
-          String name = HBCIUtils.getNameForBLZ(blz);
+          String name = HBCIProperties.getNameForBank(blz);
           if (name == null || name.length() == 0)
             return blz;
           return blz + " [" + name + "]";

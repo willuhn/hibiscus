@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -27,6 +26,7 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
@@ -75,7 +75,7 @@ public class PtSecMechDialog extends AbstractDialog
       if (konto != null)
       {
         s = konto.getBezeichnung();
-        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        String name = HBCIProperties.getNameForBank(konto.getBLZ());
         if (name != null && name.length() > 0)
           s += " [" + name + "]";
       }

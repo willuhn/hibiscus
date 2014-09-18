@@ -18,7 +18,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericObject;
@@ -26,6 +25,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
@@ -289,7 +289,7 @@ public class KontoInput extends SelectInput
 
       String blz = k.getBLZ();
       sb.append(" [");
-      String bankName = HBCIUtils.getNameForBLZ(blz);
+      String bankName = HBCIProperties.getNameForBank(blz);
       if (bankName != null && bankName.length() > 0)
       {
         sb.append(bankName);

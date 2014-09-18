@@ -12,11 +12,11 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.passports.pintan.Detail;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
@@ -57,7 +57,7 @@ public class PinTanConfigImpl implements PinTanConfig
     if ("blz".equals(attribute))
       return getBLZ();
     if ("bank".equals(attribute))
-      return HBCIUtils.getNameForBLZ(getBLZ());
+      return HBCIProperties.getNameForBank(getBLZ());
     if ("url".equals(attribute))
       return getURL();
     if ("port".equals(attribute))
@@ -91,7 +91,7 @@ public class PinTanConfigImpl implements PinTanConfig
     try
     {
       String name = this.getBezeichnung();
-      String bank = HBCIUtils.getNameForBLZ(getBLZ());
+      String bank = HBCIProperties.getNameForBank(getBLZ());
       String url  = this.getURL();
 
       boolean haveName = (name != null && name.trim().length() > 0);

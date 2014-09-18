@@ -107,7 +107,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
     SepaSammelTransferBuchung s = this.getBuchung();
 
-    empfkto = new IBANInput(s.getGegenkontoNummer());
+    empfkto = new IBANInput(s.getGegenkontoNummer(),this.getEmpfaengerBic());
     empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     empfkto.setMandatory(true);
     empfkto.setEnabled(!s.getSammelTransfer().ausgefuehrt());

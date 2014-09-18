@@ -220,7 +220,7 @@ public class SepaLastschriftControl extends AbstractControl
     if (empfkto != null)
       return empfkto;
 
-    empfkto = new IBANInput(getTransfer().getGegenkontoNummer());
+    empfkto = new IBANInput(getTransfer().getGegenkontoNummer(),this.getEmpfaengerBic());
     empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     empfkto.setMandatory(true);
     empfkto.setEnabled(!getTransfer().ausgefuehrt());

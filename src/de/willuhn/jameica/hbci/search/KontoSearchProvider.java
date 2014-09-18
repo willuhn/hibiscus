@@ -17,10 +17,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kapott.hbci.manager.HBCIUtils;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -101,7 +100,7 @@ public class KontoSearchProvider implements SearchProvider
     {
       try
       {
-        String bank = HBCIUtils.getNameForBLZ(this.konto.getBLZ());
+        String bank = HBCIProperties.getNameForBank(this.konto.getBLZ());
         String bez = this.konto.getBezeichnung();
         
         if (bank != null && bank.length() > 0)

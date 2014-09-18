@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -27,6 +26,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -137,7 +137,7 @@ public class SelectSizEntryDialog extends AbstractDialog
       
       try
       {
-        String bankName = HBCIUtils.getNameForBLZ(this.bank);
+        String bankName = HBCIProperties.getNameForBank(this.bank);
         if (bankName != null && bankName.length() > 0)
           this.bank += " [" + bankName + "]";
       }

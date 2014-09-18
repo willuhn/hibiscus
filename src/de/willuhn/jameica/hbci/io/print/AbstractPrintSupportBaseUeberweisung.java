@@ -17,9 +17,6 @@ import net.sf.paperclips.LineBreakPrint;
 import net.sf.paperclips.PagePrint;
 import net.sf.paperclips.Print;
 import net.sf.paperclips.TextPrint;
-
-import org.kapott.hbci.manager.HBCIUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.TextSchluessel;
@@ -78,7 +75,7 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
         table.add(new TextPrint(notNull(a.getGegenkontoName()),fontBold));
         table.add(new EmptyPrint());
         if (blz != null && blz.length() > 0)
-          table.add(new TextPrint(i18n.tr("{0} [BLZ: {1}]\nKonto: {2}",notNull(HBCIUtils.getNameForBLZ(blz)),blz,notNull(a.getGegenkontoNummer())),fontNormal));
+          table.add(new TextPrint(i18n.tr("{0} [BLZ: {1}]\nKonto: {2}",notNull(HBCIProperties.getNameForBank(blz)),blz,notNull(a.getGegenkontoNummer())),fontNormal));
         else
           table.add(new EmptyPrint());
       }

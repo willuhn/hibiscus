@@ -17,6 +17,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
+import de.willuhn.util.ApplicationException;
 
 
 /**
@@ -57,7 +58,16 @@ public class QueryIBANCRCMessageConsumer implements MessageConsumer
       qm.setData(Boolean.FALSE);
       return;
     }
-    qm.setData(new Boolean(HBCIProperties.checkIBANCRC(data.toString())));
+
+    try
+    {
+      HBCIProperties.getIBAN(data.toString());
+      qm.setData(Boolean.TRUE);
+    }
+    catch (ApplicationException ae)
+    {
+      qm.setData(Boolean.FALSE);
+    }
   }
 
 }

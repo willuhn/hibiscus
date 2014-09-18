@@ -12,13 +12,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import org.kapott.hbci.manager.HBCIUtils;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.NachrichtCopy;
 import de.willuhn.jameica.hbci.gui.controller.NachrichtControl;
@@ -45,7 +44,7 @@ public class NachrichtDetails extends AbstractView {
 		GUI.getView().setTitle(i18n.tr("System-Nachricht vom {0}", HBCI.DATEFORMAT.format(n.getDatum())));
 		
     SimpleContainer container = new SimpleContainer(getParent());
-    container.addText(i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIUtils.getNameForBLZ(n.getBLZ()),n.getBLZ()}) + "\n",true);
+    container.addText(i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIProperties.getNameForBank(n.getBLZ()),n.getBLZ()}) + "\n",true);
     container.addText(n.getNachricht(),true);
 
     ButtonArea buttons = new ButtonArea();

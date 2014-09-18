@@ -18,8 +18,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.zip.CRC32;
 
-import org.kapott.hbci.manager.HBCIUtils;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
@@ -121,8 +119,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       {
         HBCIProperties.checkLength(iban, HBCIProperties.HBCI_IBAN_MAXLENGTH);
         HBCIProperties.checkChars(iban, HBCIProperties.HBCI_IBAN_VALIDCHARS);
-        if (!HBCIProperties.checkIBANCRC(iban))
-          throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
+        HBCIProperties.getIBAN(iban);
       }
       if (bic != null && bic.length() > 0)
       {
@@ -668,7 +665,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       String kto = getKontonummer();
       try
       {
-        String name = HBCIUtils.getNameForBLZ(blz);
+        String name = HBCIProperties.getNameForBank(blz);
         if (name != null && name.length() > 0)
           blz = name;
         else

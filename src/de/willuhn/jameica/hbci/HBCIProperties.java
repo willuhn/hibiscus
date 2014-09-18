@@ -23,6 +23,8 @@ import de.jost_net.OBanToo.SEPA.IBAN;
 import de.jost_net.OBanToo.SEPA.IBANCode;
 import de.jost_net.OBanToo.SEPA.SEPAException;
 import de.jost_net.OBanToo.SEPA.SEPAException.Fehler;
+import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
+import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -215,6 +217,20 @@ public class HBCIProperties
   public final static String[][] TEXT_REPLACEMENTS_SEPA = new String[][] {new String[]{"&","*","%","$","ü", "ö", "ä", "Ü", "Ö", "Ä", "ß"},
                                                                           new String[]{"+",".",".",".","ue","oe","ae","Ue","Oe","Ae","ss"}};
 
+  private final static Map<Fehler,String> obantooCodes = new HashMap<Fehler,String>()
+  {{
+    put(Fehler.BLZ_LEER,                                    i18n.tr("Keine BLZ angegeben"));
+    put(Fehler.BLZ_UNGUELTIGE_LAENGE,                       i18n.tr("BLZ nicht achtstellig"));
+    put(Fehler.BLZ_UNGUELTIG,                               i18n.tr("BLZ unbekannt"));
+    put(Fehler.KONTO_LEER,                                  i18n.tr("Keine Kontonummer angegeben"));
+    put(Fehler.KONTO_UNGUELTIGE_LAENGE,                     i18n.tr("Länge der Kontonummer ungültig"));
+    put(Fehler.KONTO_PRUEFZIFFER_FALSCH,                    i18n.tr("Prüfziffer der Kontonummer falsch"));
+    put(Fehler.KONTO_PRUEFZIFFERNREGEL_NICHT_IMPLEMENTIERT, i18n.tr("Prüfziffern-Verfahren der Kontonummer unbekannt"));
+    put(Fehler.IBANREGEL_NICHT_IMPLEMENTIERT,               i18n.tr("IBAN-Regel unbekannt"));
+    put(Fehler.UNGUELTIGES_LAND,                            i18n.tr("Land unbekannt"));
+  }};
+
+
   /**
    * Bereinigt einen Text um die nicht erlaubten Zeichen.
    * @param text zu bereinigender Text.
@@ -334,6 +350,30 @@ public class HBCIProperties
   {
     return StringUtils.capitalize(group(s,4," "));
   }
+  
+  /**
+   * Ermittelt zu einer BIC oder BLZ den Namen der Bank.
+   * @param bic die BIC oder BLZ.
+   * @return der Name der Bank oder ein Leerstring, wenn nicht ermittelbar.
+   * Niemals NULL sondern hoechstens ein Leerstring.
+   */
+  public final static String getNameForBank(String bic)
+  {
+    bic = StringUtils.trimToNull(bic);
+    if (bic == null)
+      return null;
+    
+    Bank bank = null;
+    
+    // Wenn sie 8 Zeichen lang ist, gehen wir davon aus, dass es eine BLZ ist.
+    // Sonst versuchen wir es als BIC zu interpretieren.
+    if (bic.length() == HBCI_BLZ_LENGTH)
+      bank = Banken.getBankByBLZ(bic);
+    else
+      bank = Banken.getBankByBIC(bic);
+    
+    return bank != null ? bank.getBezeichnung() : null;
+  }
 
   /**
    * Prueft die Gueltigkeit der BLZ/Kontonummer-Kombi anhand von Pruefziffern.
@@ -421,41 +461,19 @@ public class HBCIProperties
    * @see HBCIUtils#checkIBANCRC(java.lang.String)
    * @param iban die IBAN.
    * @return true, wenn die IBAN ok ist.
+   * @deprecated Bitte {@link HBCIProperties#getIBAN(String)} verwenden.
    */
+  @Deprecated
   public final static boolean checkIBANCRC(String iban)
   {
-    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
-      return true;
     try
     {
-      if (iban == null || // Nichts angegeben
-          iban.length() == 0 || // Nichts angegeben
-          iban.length() > HBCI_IBAN_MAXLENGTH || // zu lang
-          iban.length() <= HBCI_KTO_MAXLENGTH_HARD) // zu kurz
-      {
-        return false;
-      }
-      return HBCIUtils.checkIBANCRC(iban);
+      getIBAN(iban);
+      return true;
     }
-    catch (NumberFormatException nfe)
+    catch (ApplicationException ae)
     {
-      Logger.warn("invalid iban: " + nfe.getMessage());
       return false;
-    }
-    catch (Exception e)
-    {
-      try
-      {
-        Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
-        HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-        HBCIUtils.initThread(plugin.getHBCIPropetries(),plugin.getHBCICallback());
-        return HBCIUtils.checkIBANCRC(iban);
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to verify iban crc number",e2);
-        return true;
-      }
     }
   }
   
@@ -522,19 +540,28 @@ public class HBCIProperties
     }
   }
 
-  private final static Map<Fehler,String> obantooCodes = new HashMap<Fehler,String>()
-  {{
-    put(Fehler.BLZ_LEER,                                    i18n.tr("Keine BLZ angegeben"));
-    put(Fehler.BLZ_UNGUELTIGE_LAENGE,                       i18n.tr("BLZ nicht achtstellig"));
-    put(Fehler.BLZ_UNGUELTIG,                               i18n.tr("BLZ unbekannt"));
-    put(Fehler.KONTO_LEER,                                  i18n.tr("Keine Kontonummer angegeben"));
-    put(Fehler.KONTO_UNGUELTIGE_LAENGE,                     i18n.tr("Länge der Kontonummer ungültig"));
-    put(Fehler.KONTO_PRUEFZIFFER_FALSCH,                    i18n.tr("Prüfziffer der Kontonummer falsch"));
-    put(Fehler.KONTO_PRUEFZIFFERNREGEL_NICHT_IMPLEMENTIERT, i18n.tr("Prüfziffern-Verfahren der Kontonummer unbekannt"));
-    put(Fehler.IBANREGEL_NICHT_IMPLEMENTIERT,               i18n.tr("IBAN-Regel unbekannt"));
-    put(Fehler.UNGUELTIGES_LAND,                            i18n.tr("Land unbekannt"));
-  }};
+  /**
+   * Erzeugt eine IBAN aus dem String und fuehrt diverse Pruefungen auf dieser durch.
+   * @param iban die IBAN.
+   * @return die gepruefte IBAN.
+   * @throws ApplicationException die Fehlermeldung, wenn die IBAN nicht korrekt ist.
+   */
+  public final static IBAN getIBAN(String iban) throws ApplicationException
+  {
+    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
+      return null;
+    
+    try
+    {
+      return new IBAN(iban);
+    }
+    catch (SEPAException se)
+    {
+      throw new ApplicationException(se.getMessage());
+    }
+  }
   
+
   /**
    * Erzeugt die IBAN aus der uebergebenen Bankverbindung.
    * @param blz die BLZ.

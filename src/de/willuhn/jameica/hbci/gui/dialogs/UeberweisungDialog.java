@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -22,6 +21,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 
@@ -59,7 +59,7 @@ public class UeberweisungDialog extends AbstractExecuteDialog
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
 		Input empfKto = new LabelInput(ueb.getGegenkontoNummer());
-		empfKto.setComment(ueb.getGegenkontoBLZ() + "/" + HBCIUtils.getNameForBLZ(ueb.getGegenkontoBLZ()));
+		empfKto.setComment(ueb.getGegenkontoBLZ() + "/" + HBCIProperties.getNameForBank(ueb.getGegenkontoBLZ()));
 		group.addLabelPair(i18n.tr("Konto des Empfängers"),empfKto);
 
     LabelInput betrag = new LabelInput(HBCI.DECIMALFORMAT.format(ueb.getBetrag()) + " " + ueb.getKonto().getWaehrung());

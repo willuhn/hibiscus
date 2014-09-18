@@ -16,10 +16,10 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
@@ -72,7 +72,7 @@ public class TANDialog extends PasswordDialog
       if (konto != null)
       {
         s = konto.getBezeichnung();
-        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        String name = HBCIProperties.getNameForBank(konto.getBLZ());
         if (name != null && name.length() > 0)
           s += " [" + name + "]";
       }
@@ -128,7 +128,7 @@ public class TANDialog extends PasswordDialog
       if (konto != null)
       {
         s = konto.getBezeichnung();
-        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        String name = HBCIProperties.getNameForBank(konto.getBLZ());
         if (name != null && name.length() > 0)
           s += " [" + name + "]";
       }

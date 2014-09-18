@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -380,7 +379,7 @@ public class AddressInput implements Input
         if (blz != null && blz.length() > 0)
         {
           sb.append(" - ");
-          String bankName = HBCIUtils.getNameForBLZ(blz);
+          String bankName = HBCIProperties.getNameForBank(blz);
           if (bankName != null && bankName.length() > 0)
           {
             sb.append(bankName);

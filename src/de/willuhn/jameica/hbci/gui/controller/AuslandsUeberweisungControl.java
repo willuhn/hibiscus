@@ -179,7 +179,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     if (empfkto != null)
       return empfkto;
 
-    empfkto = new IBANInput(getTransfer().getGegenkontoNummer());
+    empfkto = new IBANInput(getTransfer().getGegenkontoNummer(),this.getEmpfaengerBic());
     empfkto.setMandatory(true);
     empfkto.setEnabled(!getTransfer().ausgefuehrt());
     return empfkto;

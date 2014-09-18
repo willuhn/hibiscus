@@ -492,7 +492,7 @@ public class KontoControl extends AbstractControl
   {
     if (this.iban == null)
     {
-      this.iban = new IBANInput(getKonto().getIban());
+      this.iban = new IBANInput(getKonto().getIban(),this.getBic());
     }
     return this.iban;
   }
