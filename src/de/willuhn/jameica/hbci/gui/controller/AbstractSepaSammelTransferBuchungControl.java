@@ -30,7 +30,6 @@ import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
-import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.messaging.MessageBus;
@@ -337,7 +336,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
             list.setOrder("order by id desc");
             if (list.hasNext())
             {
-              HibiscusTransfer t = (HibiscusTransfer) list.next();
+              SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) list.next();
               getZweck().setValue(t.getZweck());
             }
           }

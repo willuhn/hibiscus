@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0287 Verwendungszweck wurde nicht vervollständigt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18087&page=last#last_post 
   * CHG: 0286 Bei der Erstellung von INI-Briefen nur noch das HBCI4Java/Hibiscus-Format anbieten. Das
               RDH2-Format unterstützen wir nicht komplett. 
   * NEW: 0285 Automatische Vervollständigung der BIC bei Eingabe der IBAN 
