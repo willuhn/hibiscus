@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0288 BUGZILLA 1565 - DPI-Zahl jetzt per Customizing konfigurierbar, maximale Breite von Flicker-Code verdreifacht
   * BUG: 0287 Verwendungszweck wurde nicht vervollständigt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18087&page=last#last_post 
   * CHG: 0286 Bei der Erstellung von INI-Briefen nur noch das HBCI4Java/Hibiscus-Format anbieten. Das
               RDH2-Format unterstützen wir nicht komplett. 

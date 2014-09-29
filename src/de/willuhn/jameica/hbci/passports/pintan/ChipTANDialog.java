@@ -74,6 +74,7 @@ public class ChipTANDialog extends TANDialog
     
     // Hier stehen dann noch die Anweisungen von der Bank drin
     super.paint(parent);
+    getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }
 
   /**
@@ -182,7 +183,10 @@ public class ChipTANDialog extends TANDialog
           public void widgetSelected(SelectionEvent e)
           {
             GridData gd = (GridData) comp.getLayoutData();
-            if (gd.widthHint > SWTUtil.mm2px(120)) // unplausibel
+            
+            // Eigentlich sollten 120mm als Grenze reichen. Wenn aber ein HighDPI-System falsche
+            // DPI-Zahlen zurueckliefert, koennte das zu wenig sein. Siehe BUGZILLA 1565
+            if (gd.widthHint > SWTUtil.mm2px(400))
               return;
             gd.widthHint += 5;
 
@@ -227,7 +231,11 @@ public class ChipTANDialog extends TANDialog
         int width = SWTUtil.mm2px(60); // das muesste ca. die Breite von ReinerSCT-Geraeten sein
         if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
         gd.widthHint = settings.getInt("width",width);
-        gd.heightHint = 140; // sollte passen
+
+        int height = SWTUtil.mm2px(40);
+        if (height == -1) width = 140;
+        gd.heightHint = height;
+        
         this.comp.setLayoutData(gd);
 
         // Wir lassen etwas Abstand zum Rand
