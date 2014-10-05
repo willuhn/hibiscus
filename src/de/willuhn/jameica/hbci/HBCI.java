@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Version;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.CustomDecimalFormat;
 import de.willuhn.logging.Level;
@@ -189,7 +190,9 @@ public class HBCI extends AbstractPlugin
       {
         try
         {
-          this.callback = (HBCICallback) Application.getClassLoader().load(callbackClass).newInstance();
+          BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+          Class c = Class.forName(callbackClass);
+          this.callback = (HBCICallback) service.get(c);
           Logger.info("callback: " + this.callback.getClass().getName());
         }
         catch (Throwable t)

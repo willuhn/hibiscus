@@ -18,13 +18,13 @@ import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -379,7 +379,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
         String blz = empfaenger.getBlz();
         getEmpfaengerBLZ().setValue(blz);
-        String name = HBCIUtils.getNameForBLZ(blz);
+        String name = HBCIProperties.getNameForBank(blz);
         getEmpfaengerBLZ().setComment(name);
       }
       catch (RemoteException er)

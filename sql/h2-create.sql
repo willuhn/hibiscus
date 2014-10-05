@@ -64,9 +64,11 @@ CREATE TABLE aueberweisung (
   zweck varchar(140),
   termin date NOT NULL,
   banktermin int(1) NULL,
+  umbuchung int(1) NULL,
   ausgefuehrt int(1) NOT NULL,
   ausgefuehrt_am datetime NULL,
   endtoendid varchar(35),
+  pmtinfid varchar(35),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -90,6 +92,7 @@ CREATE TABLE sepalastschrift (
   sepatype varchar(8) NULL,
   targetdate date NULL,
   orderid varchar(255) NULL,
+  pmtinfid varchar(35),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -105,6 +108,7 @@ CREATE TABLE sepaslast (
   ausgefuehrt int(1) NOT NULL,
   ausgefuehrt_am datetime NULL,
   orderid varchar(255) NULL,
+  pmtinfid varchar(35),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -132,6 +136,7 @@ CREATE TABLE sepasueb (
   termin date NOT NULL,
   ausgefuehrt int(1) NOT NULL,
   ausgefuehrt_am datetime NULL,
+  pmtinfid varchar(35),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -237,6 +242,7 @@ CREATE TABLE sepadauerauftrag (
   tag int(2) NOT NULL,
   canchange int(1) NULL,
   candelete int(1) NULL,
+  pmtinfid varchar(35),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -400,6 +406,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',52);
+INSERT INTO version (name,version) values ('db',55);
   
 COMMIT;

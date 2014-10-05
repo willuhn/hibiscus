@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
@@ -56,6 +57,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
   private TerminInput termin             = null;
   private ReminderIntervalInput interval = null;
   private BatchBookInput batchbook       = null;
+  private TextInput pmtInfId             = null;
 
   /**
    * ct.
@@ -170,6 +172,25 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     name.setEnabled(!getTransfer().ausgefuehrt());
     return name;
   }
+  
+  /**
+   * Liefert das Eingabe-Feld fuer die PmtInf-ID.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getPmtInfId() throws RemoteException
+  {
+    if (this.pmtInfId != null)
+      return this.pmtInfId;
+
+    this.pmtInfId = new TextInput(getTransfer().getPmtInfId(),HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+    this.pmtInfId.setName(i18n.tr("Referenz (Payment-Information ID)"));
+    this.pmtInfId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+    this.pmtInfId.setEnabled(!getTransfer().ausgefuehrt());
+    this.pmtInfId.setHint(i18n.tr("freilassen wenn nicht benötigt"));
+    this.pmtInfId.setMandatory(false);
+    return this.pmtInfId;
+  }
 
   /**
    * Speichert den Auftrag.
@@ -185,6 +206,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     t.setKonto(k);
     t.setBezeichnung((String)getName().getValue());
     t.setTermin((Date)getTermin().getValue());
+    t.setPmtInfId((String) getPmtInfId().getValue());
     t.store();
 
     // Batchbook-Mode speichern. Sowohl im Auftrag als auch im Konto als Preset fuer den naechsten Auftrag

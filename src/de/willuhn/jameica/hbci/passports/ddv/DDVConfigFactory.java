@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader.Type;
 import de.willuhn.jameica.hbci.passports.ddv.server.CustomReader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -41,6 +42,7 @@ import de.willuhn.jameica.system.Platform;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ClassFinder;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
@@ -82,12 +84,14 @@ public class DDVConfigFactory
     try
     {
       Logger.info("searching for reader presets");
-      Class<Reader>[] found = Application.getClassLoader().getClassFinder().findImplementors(Reader.class);
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getClassLoader().getClassFinder();
+      Class<Reader>[] found = finder.findImplementors(Reader.class);
       for (Class<Reader> r:found)
       {
         try
         {
-          presets.add(r.newInstance());
+          presets.add(service.get(r));
         }
         catch (Exception e)
         {

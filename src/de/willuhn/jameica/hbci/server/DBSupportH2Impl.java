@@ -43,7 +43,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     
     try
     {
-      Method m = Application.getClassLoader().load("org.h2.engine.Constants").getMethod("getVersion",(Class[]) null);
+      Method m = Class.forName("org.h2.engine.Constants").getMethod("getVersion",(Class[]) null);
       Logger.info("h2 version: " + m.invoke(null,(Object[])null));
     }
     catch (Throwable t)

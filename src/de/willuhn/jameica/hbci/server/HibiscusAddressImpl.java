@@ -101,8 +101,7 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
       {
         HBCIProperties.checkLength(iban, HBCIProperties.HBCI_IBAN_MAXLENGTH);
         HBCIProperties.checkChars(iban, HBCIProperties.HBCI_IBAN_VALIDCHARS);
-        if (!HBCIProperties.checkIBANCRC(iban))
-          throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
+        HBCIProperties.getIBAN(iban);
         haveAccount = true;
       }
       if (bic != null && bic.length() > 0)

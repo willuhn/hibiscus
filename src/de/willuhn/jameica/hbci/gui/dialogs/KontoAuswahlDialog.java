@@ -19,7 +19,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -189,7 +188,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     getInstitut().setValue("");
     if (this.preselected != null)
     {
-      String name = HBCIUtils.getNameForBLZ(this.preselected.getBLZ());
+      String name = HBCIProperties.getNameForBank(this.preselected.getBLZ());
       if (name != null && name.length() > 0)
         getInstitut().setValue(name);
     }

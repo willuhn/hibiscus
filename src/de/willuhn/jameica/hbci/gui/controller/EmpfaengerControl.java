@@ -309,7 +309,7 @@ public class EmpfaengerControl extends AbstractControl
   {
     if (this.iban == null)
     {
-      this.iban = new IBANInput(getAddress().getIban());
+      this.iban = new IBANInput(getAddress().getIban(),this.getBic());
       this.iban.setEnabled(isHibiscusAdresse());
     }
     return this.iban;

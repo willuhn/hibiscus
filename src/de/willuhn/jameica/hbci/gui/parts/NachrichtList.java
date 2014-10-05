@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.TableItem;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -28,6 +27,7 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
@@ -87,7 +87,7 @@ public class NachrichtList extends TablePart implements Part
         if (o == null)
           return null;
         String blz = o.toString();
-        return i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIUtils.getNameForBLZ(blz),blz});
+        return i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIProperties.getNameForBank(blz),blz});
       }
     });
     addColumn(i18n.tr("Nachricht"),"nachricht", new Formatter() {

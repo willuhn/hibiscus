@@ -33,6 +33,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 
 	private AuslandsUeberweisung ueberweisung = null;
   private boolean isTermin                  = false;
+  private boolean isUmb                     = false;
 	private Konto konto                       = null;
 
   /**
@@ -57,6 +58,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       this.ueberweisung = ueberweisung;
       this.konto        = this.ueberweisung.getKonto();
       this.isTermin     = this.ueberweisung.isTerminUeberweisung();
+      this.isUmb        = this.ueberweisung.isUmbuchung();
 
       if (this.ueberweisung.getBetrag() > Settings.getUeberweisungLimit())
         throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
@@ -87,6 +89,11 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       String endToEndId = ueberweisung.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)
         setJobParam("endtoendid",endToEndId);
+      
+      String pmtInfId = ueberweisung.getPmtInfId();
+      if (pmtInfId != null && pmtInfId.trim().length() > 0)
+        setJobParam("pmtinfid", pmtInfId);
+
 		}
 		catch (RemoteException e)
 		{
@@ -110,6 +117,8 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
   {
     if (isTermin)
       return "TermUebSEPA";
+    if (isUmb)
+      return "UmbSEPA";
     
     return "UebSEPA";
   }

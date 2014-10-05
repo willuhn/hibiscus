@@ -43,6 +43,9 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       String batchbook = MetaKey.SEPA_BATCHBOOK.get(u);
       if (batchbook != null)
         props.setProperty("batchbook", batchbook);
+      
+      props.setProperty("pmtinfid", StringUtils.trimToEmpty(u.getPmtInfId()));
+
     }
     
     Integer count = (Integer) ctx.meta.get("count");

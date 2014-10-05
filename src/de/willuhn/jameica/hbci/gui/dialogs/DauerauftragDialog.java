@@ -16,7 +16,6 @@ import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -24,6 +23,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
@@ -62,7 +62,7 @@ public class DauerauftragDialog extends AbstractExecuteDialog
 		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
 
 		Input empfKto = new LabelInput(auftrag.getGegenkontoNummer());
-		empfKto.setComment(auftrag.getGegenkontoBLZ() + "/" + HBCIUtils.getNameForBLZ(auftrag.getGegenkontoBLZ()));
+		empfKto.setComment(auftrag.getGegenkontoBLZ() + "/" + HBCIProperties.getNameForBank(auftrag.getGegenkontoBLZ()));
 		group.addLabelPair(i18n.tr("Konto des Empfängers"),empfKto);
 
     LabelInput betrag = new LabelInput(HBCI.DECIMALFORMAT.format(auftrag.getBetrag()) + " " + auftrag.getKonto().getWaehrung());

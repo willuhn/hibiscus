@@ -20,7 +20,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -148,7 +147,7 @@ public class SammelTransferBuchungList extends TablePart
         if (o == null)
           return null;
         String blz = o.toString();
-        String name = HBCIUtils.getNameForBLZ(blz);
+        String name = HBCIProperties.getNameForBank(blz);
         if (name != null && name.length() > 0)
           blz += " [" + name + "]";
         return blz;

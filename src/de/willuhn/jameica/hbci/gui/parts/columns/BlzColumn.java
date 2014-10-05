@@ -13,10 +13,9 @@
 
 package de.willuhn.jameica.hbci.gui.parts.columns;
 
-import org.kapott.hbci.manager.HBCIUtils;
-
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.parts.Column;
+import de.willuhn.jameica.hbci.HBCIProperties;
 
 /**
  * Vorformatierte Blz-Spalte.
@@ -39,7 +38,7 @@ public class BlzColumn extends Column
         if (o == null)
           return null;
         String blz = o.toString();
-        String name = HBCIUtils.getNameForBLZ(blz);
+        String name = HBCIProperties.getNameForBank(blz);
         if (name != null && name.length() > 0)
           blz += " [" + name + "]";
         return blz;

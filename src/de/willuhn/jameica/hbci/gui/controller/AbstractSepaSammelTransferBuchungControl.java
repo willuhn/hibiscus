@@ -30,7 +30,6 @@ import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
-import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.messaging.MessageBus;
@@ -107,7 +106,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
     SepaSammelTransferBuchung s = this.getBuchung();
 
-    empfkto = new IBANInput(s.getGegenkontoNummer());
+    empfkto = new IBANInput(s.getGegenkontoNummer(),this.getEmpfaengerBic());
     empfkto.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     empfkto.setMandatory(true);
     empfkto.setEnabled(!s.getSammelTransfer().ausgefuehrt());
@@ -167,7 +166,6 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
     zweck = new TextInput(s.getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
     zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
-    zweck.setMandatory(true);
     zweck.setEnabled(!s.getSammelTransfer().ausgefuehrt());
     return zweck;
   }
@@ -338,7 +336,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
             list.setOrder("order by id desc");
             if (list.hasNext())
             {
-              HibiscusTransfer t = (HibiscusTransfer) list.next();
+              SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) list.next();
               getZweck().setValue(t.getZweck());
             }
           }

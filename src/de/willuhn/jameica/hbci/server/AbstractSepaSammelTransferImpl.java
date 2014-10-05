@@ -75,6 +75,9 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
       if (getBezeichnung() == null || getBezeichnung().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
       
+      HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
       if (this.getTermin() == null)
         this.setTermin(new Date());
     }
@@ -318,4 +321,21 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
     return sum;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#getPmtInfId()
+   */
+  public String getPmtInfId() throws RemoteException
+  {
+    return (String) getAttribute("pmtinfid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#setPmtInfId(java.lang.String)
+   */
+  public void setPmtInfId(String id) throws RemoteException
+  {
+    setAttribute("pmtinfid",id);
+  }
+
 }

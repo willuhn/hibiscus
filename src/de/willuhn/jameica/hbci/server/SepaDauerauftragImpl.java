@@ -105,8 +105,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS_RELAX);
 
-      if (!HBCIProperties.checkIBANCRC(getGegenkontoNummer()))
-        throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
+      HBCIProperties.getIBAN(getGegenkontoNummer());
 
       String zweck = this.getZweck();
       if (zweck == null || zweck.length() == 0)

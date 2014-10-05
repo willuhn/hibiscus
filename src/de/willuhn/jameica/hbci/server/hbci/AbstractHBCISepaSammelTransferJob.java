@@ -79,6 +79,9 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
       if (batch != null && batch != BatchBookType.NONE)
         setJobParam("batchbook",batch.getValue());
       
+      String pmtInfId = this.transfer.getPmtInfId();
+      if (pmtInfId != null && pmtInfId.trim().length() > 0)
+        setJobParam("pmtinfid", pmtInfId);
 
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)

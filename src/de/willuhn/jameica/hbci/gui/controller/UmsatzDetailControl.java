@@ -16,7 +16,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -153,7 +152,7 @@ public class UmsatzDetailControl extends AbstractControl {
       return konto;
     Konto k = getUmsatz().getKonto();
     konto = new LabelInput(k.getKontonummer());
-    konto.setComment(HBCIUtils.getNameForBLZ(k.getBLZ()));
+    konto.setComment(HBCIProperties.getNameForBank(k.getBLZ()));
     return konto;
   }
 
@@ -211,7 +210,7 @@ public class UmsatzDetailControl extends AbstractControl {
       String s = getUmsatz().getGegenkontoNummer();
       
       if (StringUtils.trimToEmpty(s).length() > 10)
-        this.empfaengerKonto = new IBANInput(s);
+        this.empfaengerKonto = new IBANInput(s,null);
       else
         this.empfaengerKonto = new TextInput(s,HBCIProperties.HBCI_IBAN_MAXLENGTH);
       

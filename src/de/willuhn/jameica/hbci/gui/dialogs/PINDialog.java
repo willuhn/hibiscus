@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
@@ -57,7 +56,7 @@ public class PINDialog extends PasswordDialog
       {
         s = konto.getBezeichnung();
         s += " [" + i18n.tr("Nr.") + " " + konto.getKontonummer();
-        String name = HBCIUtils.getNameForBLZ(konto.getBLZ());
+        String name = HBCIProperties.getNameForBank(konto.getBLZ());
         if (name != null && name.length() > 0)
           s += " - " + name;
         s += "]";

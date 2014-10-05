@@ -35,9 +35,11 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -136,8 +138,18 @@ public class BackupRestore implements Action
             }
             catch (Exception e)
             {
-              Logger.error("unable to import " + o.getClass().getName() + ":" + o.getID() + ", skipping",e);
-              monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(o),e.getMessage()}));
+              if (o instanceof Protokoll)
+              {
+                // Bei den Protokollen kann das passieren. Denn beim Import der Datei werden vorher 
+                // die Konten importiert. Und deren Anlage fuehrt auch bereits zur Erstellung von
+                // Protokollen, deren IDs dann im Konflikt zu diesen hier stehen.
+                Logger.write(Level.DEBUG,"unable to import " + o.getClass().getName() + ":" + o.getID() + ", skipping",e);
+              }
+              else
+              {
+                Logger.error("unable to import " + o.getClass().getName() + ":" + o.getID() + ", skipping",e);
+                monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(o),e.getMessage()}));
+              }
             }
             if (count++ % 100 == 0)
               monitor.addPercentComplete(1);

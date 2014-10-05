@@ -29,9 +29,9 @@ import net.sf.paperclips.TextPrint;
 import net.sf.paperclips.TextStyle;
 
 import org.eclipse.swt.graphics.RGB;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -163,7 +163,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
             String blz = u.getGegenkontoBLZ();
             if (kto != null && kto.length() > 0 && blz != null && blz.length() > 0)
             {
-              String gi = HBCIUtils.getNameForBLZ(blz);
+              String gi = HBCIProperties.getNameForBank(blz);
               if (gi != null && gi.length() > 0)
                 sb.append(i18n.tr("Kto. {0}, {1}",kto,gi));
               else

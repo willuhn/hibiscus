@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TableItem;
-import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
@@ -42,6 +41,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -110,7 +110,7 @@ public class EmpfaengerList extends TablePart implements Part
         try
         {
           String blz = o.toString();
-          String name = HBCIUtils.getNameForBLZ(blz);
+          String name = HBCIProperties.getNameForBank(blz);
           if (name == null || name.length() == 0)
             return blz;
           return blz + " [" + name + "]";

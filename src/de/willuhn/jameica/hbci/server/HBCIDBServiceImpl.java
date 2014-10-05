@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.plugin.Manifest;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.version.UpdateProvider;
@@ -56,6 +57,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   public HBCIDBServiceImpl(String driverClass) throws RemoteException
   {
     super();
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     MultipleClassLoader cl = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
     this.setClassloader(cl);
     this.setClassFinder(cl.getClassFinder());
@@ -65,7 +67,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     try
     {
       Class c = cl.load(driverClass);
-      this.driver = (DBSupport) c.newInstance();
+      this.driver = (DBSupport) service.get(c);
     }
     catch (Throwable t)
     {

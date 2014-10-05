@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.passport.Configuration;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.hbci.passports.ddv.server.CustomReader;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
@@ -216,7 +217,9 @@ public class DDVConfig implements Configuration
     String s = settings.getString(this.getPrefix() + "readerpreset",CustomReader.class.getName());
     try
     {
-      return (Reader) Application.getClassLoader().load(s).newInstance();
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      Class c = Class.forName(s);
+      return (Reader) service.get(c);
     }
     catch (Throwable t)
     {

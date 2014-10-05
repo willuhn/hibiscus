@@ -182,9 +182,11 @@ CREATE TABLE aueberweisung (
      , zweck VARCHAR(140)
      , termin DATE NOT NULL
      , banktermin int(10)
+     , umbuchung int(1)
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
      , endtoendid VARCHAR(35)
+     , pmtinfid VARCHAR(35)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -208,6 +210,7 @@ CREATE TABLE sepalastschrift (
      , sepatype VARCHAR(8)
      , targetdate DATE
      , orderid VARCHAR(255)
+     , pmtinfid VARCHAR(35)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -223,6 +226,7 @@ CREATE TABLE sepaslast (
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
      , orderid VARCHAR(255)
+     , pmtinfid VARCHAR(35)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -250,6 +254,7 @@ CREATE TABLE sepasueb (
      , termin DATE NOT NULL
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
+     , pmtinfid VARCHAR(35)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -331,6 +336,7 @@ CREATE TABLE sepadauerauftrag (
      , tag int(10) NOT NULL
      , canchange int(1)
      , candelete int(1)
+     , pmtinfid VARCHAR(35)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -408,4 +414,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',52);
+INSERT INTO version (name,version) values ('db',55);

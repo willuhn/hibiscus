@@ -76,6 +76,7 @@ public class PassportPropertyDialog extends AbstractDialog
       {
         String s = i18n.tr("Die BPD (Bank-Parameter-Daten) werden beim nächsten Verbindungsaufbau \n" +
         		               "mit der Bank automatisch erneut abgerufen.\n\n" +
+        		               "Hinweis: Bei Verwendung einer Chipkarte müssen Sie gleich die PIN eingeben.\n\n" +
         		               "BPD jetzt löschen?");
         try
         {

@@ -67,6 +67,13 @@ public class Detail extends AbstractView
     control.getKontoAuswahl().paint(getParent());
 
     ButtonArea buttonArea = new ButtonArea();
+    buttonArea.addButton(i18n.tr("BPD/UPD"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleDisplayProperties();
+      }
+    },null,false,"text-x-generic.png");
     buttonArea.addButton(i18n.tr("Konfiguration testen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException

@@ -84,6 +84,7 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
       if (type == null)
         type = SepaLastType.DEFAULT;
 
+      props.setProperty("pmtinfid",     StringUtils.trimToEmpty(u.getPmtInfId()));
       props.setProperty("sequencetype", u.getSequenceType().name());
       props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : SepaUtil.DATE_UNDEFINED);
       props.setProperty("type",         type.name());

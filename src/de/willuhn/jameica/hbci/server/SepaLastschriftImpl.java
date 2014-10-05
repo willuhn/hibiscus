@@ -57,6 +57,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setKonto(getKonto());
     u.setZweck(getZweck());
     u.setEndtoEndId(getEndtoEndId());
+    u.setPmtInfId(getPmtInfId());
     u.setMandateId(getMandateId());
     u.setSignatureDate(getSignatureDate());
     u.setCreditorId(getCreditorId());
@@ -105,14 +106,16 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
-      if (!HBCIProperties.checkIBANCRC(getGegenkontoNummer()))
-        throw new ApplicationException(i18n.tr("Ungültige IBAN. Bitte prüfen Sie Ihre Eingaben."));
+      HBCIProperties.getIBAN(getGegenkontoNummer());
         
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
       String creditorId = getCreditorId();
       if (creditorId == null || creditorId.length() == 0)
@@ -133,6 +136,9 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
       
       if (getSequenceType() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den Sequenz-Typ aus"));
+      
+      if (this.getType() == null)
+        this.setType(SepaLastType.DEFAULT);
       
       if (this.getTermin() == null)
         this.setTermin(new Date());
@@ -352,4 +358,21 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     this.setAttribute("orderid",orderId);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getPmtInfId()
+   */
+  public String getPmtInfId() throws RemoteException
+  {
+    return (String) getAttribute("pmtinfid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setPmtInfId(java.lang.String)
+   */
+  public void setPmtInfId(String id) throws RemoteException
+  {
+    setAttribute("pmtinfid",id);
+  }
+
 }

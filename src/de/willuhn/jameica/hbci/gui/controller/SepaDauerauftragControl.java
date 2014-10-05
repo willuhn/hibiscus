@@ -323,7 +323,7 @@ public class SepaDauerauftragControl extends AbstractControl
       return empfkto;
 
     SepaDauerauftrag t = getTransfer();
-    empfkto = new IBANInput(t.getGegenkontoNummer());
+    empfkto = new IBANInput(t.getGegenkontoNummer(),this.getEmpfaengerBic());
     empfkto.setMandatory(true);
     if (t.isActive())
       empfkto.setEnabled(getBPD().getBoolean("recktoeditable",true));
