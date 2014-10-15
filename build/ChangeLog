@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0292 ChipTAN-Dialog wurde zu breit angezeigt und konnte nicht verkleinert werden
   * BUG: 0291 Datenbank-Update 0055 konnte auf Postgres nicht ausgeführt werden
   * BUG: 0290 BUGZILLA 1569 - IBANs aus unbekannten Ländern tolerieren
 

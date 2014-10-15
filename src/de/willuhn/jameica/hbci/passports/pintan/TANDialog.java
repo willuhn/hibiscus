@@ -38,7 +38,7 @@ public class TANDialog extends PasswordDialog
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private final static int WINDOW_WIDTH = 550;
+  protected final static int WINDOW_WIDTH = 550;
 
   private PinTanConfig config = null;
   

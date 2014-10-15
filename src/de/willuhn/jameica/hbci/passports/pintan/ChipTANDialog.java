@@ -74,7 +74,14 @@ public class ChipTANDialog extends TANDialog
     
     // Hier stehen dann noch die Anweisungen von der Bank drin
     super.paint(parent);
-    getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
+
+    // Wir muessen das Fenster wenigstens gross genug machen, damit der Flickercode reinpasst, falls
+    // der User den recht verbreitert hat
+    int width = settings.getInt("width",-1);
+    if (width > 0)
+      width +=10; // Wenigstens noch 10 Pixel Rand hinzufuegen.
+    // Wir nehmen den groesseren von beiden Werten
+    getShell().setMinimumSize(getShell().computeSize(width > WINDOW_WIDTH ? width : WINDOW_WIDTH,SWT.DEFAULT));
   }
 
   /**
@@ -164,7 +171,7 @@ public class ChipTANDialog extends TANDialog
             GridData gd = (GridData) comp.getLayoutData();
             if (gd.widthHint < SWTUtil.mm2px(20)) // unplausibel
               return;
-            gd.widthHint -= 5;
+            gd.widthHint -= 8;
             
             Point newSize = new Point(gd.widthHint,comp.getSize().y);
             comp.setSize(newSize);
@@ -188,7 +195,7 @@ public class ChipTANDialog extends TANDialog
             // DPI-Zahlen zurueckliefert, koennte das zu wenig sein. Siehe BUGZILLA 1565
             if (gd.widthHint > SWTUtil.mm2px(400))
               return;
-            gd.widthHint += 5;
+            gd.widthHint += 8;
 
             Point newSize = new Point(gd.widthHint,comp.getSize().y);
             comp.setSize(newSize);
