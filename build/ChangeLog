@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0291 Datenbank-Update 0055 konnte auf Postgres nicht ausgeführt werden
   * BUG: 0290 BUGZILLA 1569 - IBANs aus unbekannten Ländern tolerieren
 
 2014-10-07 Version 2.6.9
