@@ -1,5 +1,9 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0290 BUGZILLA 1569 - IBANs aus unbekannten Ländern tolerieren
+
+2014-10-07 Version 2.6.9
+
   * BUG: 0289 BUGZILLA 1567 - BPD-Auto-Expiry konnte zu Problemen bei Banken führen, die keinen anonymen BPD-Abruf unterstützen
   * NEW: 0288 BUGZILLA 1565 - DPI-Zahl jetzt per Customizing konfigurierbar, maximale Breite von Flicker-Code verdreifacht
   * BUG: 0287 Verwendungszweck wurde nicht vervollständigt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18087&page=last#last_post 

@@ -75,6 +75,9 @@ public class IBANInput extends TextInput
     {
       // 1. IBAN sofort checken
       IBAN iban = HBCIProperties.getIBAN(s);
+      
+      if (iban == null) // Keine IBAN
+        return;
 
       if (this.bicInput == null)
         return;

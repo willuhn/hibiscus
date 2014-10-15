@@ -12,8 +12,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -228,6 +230,12 @@ public class HBCIProperties
     put(Fehler.KONTO_PRUEFZIFFERNREGEL_NICHT_IMPLEMENTIERT, i18n.tr("Prüfziffern-Verfahren der Kontonummer unbekannt"));
     put(Fehler.IBANREGEL_NICHT_IMPLEMENTIERT,               i18n.tr("IBAN-Regel unbekannt"));
     put(Fehler.UNGUELTIGES_LAND,                            i18n.tr("Land unbekannt"));
+  }};
+  
+  private final static List<Fehler> ignoredErrors = new ArrayList<Fehler>()
+  {{
+    // Siehe BUGZILLA 1569
+    add(Fehler.UNGUELTIGES_LAND);
   }};
 
 
@@ -557,6 +565,13 @@ public class HBCIProperties
     }
     catch (SEPAException se)
     {
+      Fehler f = se.getFehler();
+      if (f != null && ignoredErrors.contains(f))
+      {
+        Logger.warn("unable to verify IBAN, got error " + f + ", will be tolerated");
+        return null;
+      }
+      
       throw new ApplicationException(se.getMessage());
     }
   }
