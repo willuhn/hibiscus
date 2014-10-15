@@ -37,18 +37,18 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
-import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
+import de.willuhn.jameica.hbci.gui.action.SepaSammelLastBuchungNew;
+import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
-import de.willuhn.jameica.hbci.gui.parts.SammelTransferBuchungList;
+import de.willuhn.jameica.hbci.gui.parts.SepaSammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
-import de.willuhn.jameica.hbci.rmi.SammelLastBuchung;
-import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -185,12 +185,11 @@ public class EmpfaengerControl extends AbstractControl
     if (this.sammelList != null)
       return this.sammelList;
 
-    DBIterator list = Settings.getDBService().createList(SammelLastBuchung.class);
-    list.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getAddress().getKontonummer()});
-    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBlz()});
+    DBIterator list = Settings.getDBService().createList(SepaSammelLastBuchung.class);
+    list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelList = new SammelTransferBuchungList(list,new SammelLastBuchungNew());
+    this.sammelList = new SepaSammelTransferBuchungList(list,new SepaSammelLastBuchungNew());
     return this.sammelList;
   }
 
@@ -205,12 +204,11 @@ public class EmpfaengerControl extends AbstractControl
     if (this.sammelList2 != null)
       return this.sammelList2;
 
-    DBIterator list = Settings.getDBService().createList(SammelUeberweisungBuchung.class);
-    list.addFilter("gegenkonto_nr like ?",  new Object[]{"%" + getAddress().getKontonummer()});
-    list.addFilter("gegenkonto_blz = ?", new Object[]{getAddress().getBlz()});
+    DBIterator list = Settings.getDBService().createList(SepaSammelUeberweisungBuchung.class);
+    list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelList2 = new SammelTransferBuchungList(list,new SammelUeberweisungBuchungNew());
+    this.sammelList2 = new SepaSammelTransferBuchungList(list,new SepaSammelUeberweisungBuchungNew());
     return this.sammelList2;
   }
 

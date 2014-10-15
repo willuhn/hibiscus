@@ -94,10 +94,10 @@ public class EmpfaengerNew extends AbstractView
     control.getUmsatzListe().paint(tab.getComposite());
 
     // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
-    TabGroup tab2 = new TabGroup(folder,i18n.tr("Eingezogene Sammel-Lastschriften"));
+    TabGroup tab2 = new TabGroup(folder,i18n.tr("Eingezogene SEPA-Sammellastschriften"));
     control.getSammelLastListe().paint(tab2.getComposite());
 
-    TabGroup tab3 = new TabGroup(folder,i18n.tr("Sammel-Überweisungen"));
+    TabGroup tab3 = new TabGroup(folder,i18n.tr("SEPA-Sammelüberweisungen"));
     control.getSammelUeberweisungListe().paint(tab3.getComposite());
   }
 }
