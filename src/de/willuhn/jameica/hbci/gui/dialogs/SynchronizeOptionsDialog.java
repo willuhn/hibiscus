@@ -88,8 +88,6 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     this.options = new SynchronizeOptions(konto);
     this.offline = konto.hasFlag(Konto.FLAG_OFFLINE);
     
-    if (this.offline)
-    {
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine = service.get(SynchronizeEngine.class);
       this.syncAvail = engine.supports(SynchronizeJobKontoauszug.class,konto);
@@ -114,7 +112,6 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           Logger.error(ae.getMessage());
         }
       }
-    }
   }
   
   /**

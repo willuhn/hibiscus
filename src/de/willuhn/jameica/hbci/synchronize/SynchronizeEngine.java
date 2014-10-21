@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.hbci.synchronize;
 
+import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -96,6 +97,23 @@ public class SynchronizeEngine
     }
     return this.backends;
   }
+
+  /**
+   * Liefert das zu der übergebenen Klassennamen passende Backend zurück
+   * @param classname Klassenname des Backends
+   * @return Backend
+   * @throws ApplicationException Wenn Backend mit diesem Klassennamen nicht gefunden wurde
+   */
+  public SynchronizeBackend getBackendByClassname(String classname) throws ApplicationException {
+    for (SynchronizeBackend backend:this.getBackends())
+    {
+      if (backend.getClass().getName().equals(classname)) {
+        return backend;
+      }
+    }
+    throw new ApplicationException(i18n.tr("Backend {0} nicht gefunden!", classname));
+    
+  }
   
   /**
    * Liefert ein passendes Backend fuer den angegebenen Job.
@@ -107,10 +125,24 @@ public class SynchronizeEngine
    */
   public SynchronizeBackend getBackend(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
   {
+    // Wenn im Konto eine Backendclass gesetzt ist, diese nutzen ...
+    try
+    {
+      if (konto.getBackendClass() != null && !konto.getBackendClass().isEmpty()) {
+          return getBackendByClassname(konto.getBackendClass());
+      }
+    } catch (RemoteException e)
+    {
+      throw new ApplicationException(i18n.tr("Fehler  beim Zugriff auf das Backend."), e);
+    }
+    // ... ansonsten nach einer Backend-Klasse suchen, die den Typ unterstützt
     for (SynchronizeBackend backend:this.getBackends())
     {
-      if (backend.supports(type,konto))
+      if (backend.supports(type,konto)) {
+        Logger.warn("Gewähltes Backend: " + konto.toString() + " " + backend.getClass());
         return backend;
+        
+      }
     }
     
     throw new ApplicationException(i18n.tr("Dieser Geschäftsvorfall wird für das angegebene Konto nicht unterstützt"));

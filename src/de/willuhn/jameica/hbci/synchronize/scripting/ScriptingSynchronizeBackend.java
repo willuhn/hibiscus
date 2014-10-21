@@ -194,8 +194,8 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
   {
     try
     {
-      // 1. Nur Offline-Konten. Die anderen haben eine HBCI-Anbindung
-      if (konto == null || !konto.hasFlag(Konto.FLAG_OFFLINE) || konto.hasFlag(Konto.FLAG_DISABLED))
+      // 1. Keine deaktivierten Konten
+       if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
         return null;
 
       Logger.debug("searching javascript function for job type " + type.getSimpleName());
