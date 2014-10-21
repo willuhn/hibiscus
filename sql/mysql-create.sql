@@ -16,6 +16,7 @@ CREATE TABLE konto (
      , bic VARCHAR(15) NULL
      , saldo_available DOUBLE
      , kategorie VARCHAR(255) NULL
+     , backend_class TEXT
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -414,4 +415,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',55);
+INSERT INTO version (name,version) values ('db',56);

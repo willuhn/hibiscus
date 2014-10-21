@@ -13,10 +13,13 @@
 
 package de.willuhn.jameica.hbci.synchronize;
 
+import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
@@ -42,8 +45,13 @@ public class SynchronizeEngine
   public final static String STATUS = "hibiscus.syncengine.status";
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private List<SynchronizeBackend> backends = null;
+  
+  /**
+   * Das Primaer-Backend.
+   */
+  private final static Class<? extends SynchronizeBackend> PRIMARY = HBCISynchronizeBackend.class;
 
   /**
    * Liefert eine Liste der gefundenen Backends.
@@ -74,13 +82,14 @@ public class SynchronizeEngine
         }
       }
       
-      // Wir sortieren die Backends so, dass HBCI immer Vorrang hat
+      // Wir sortieren die Backends so, dass das Primaer-Backend immer Vorrang hat
       Collections.sort(this.backends,new Comparator<SynchronizeBackend>() {
         public int compare(SynchronizeBackend o1, SynchronizeBackend o2)
         {
-          if (o1 instanceof HBCISynchronizeBackend)
+          
+          if (PRIMARY.isInstance(o1))
             return -1;
-          if (o2 instanceof HBCISynchronizeBackend)
+          if (PRIMARY.isInstance(o2))
             return 1;
           return 0;
         }
@@ -98,6 +107,41 @@ public class SynchronizeEngine
   }
   
   /**
+   * Liefert das im Konto hinterlegte Backend.
+   * @param konto das Konto.
+   * @return das angegebene Backend oder NULL, wenn keines angegeben ist oder
+   * das angegebene nicht gefunden wurde.
+   */
+  public SynchronizeBackend getBackend(Konto konto)
+  {
+    try
+    {
+      String s = konto != null ? StringUtils.trimToNull(konto.getBackendClass()) : null;
+      for (SynchronizeBackend b:this.getBackends())
+      {
+        if (s != null && s.equals(b.getClass().getName()))
+          return b;
+      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine backend for konto",re);
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Liefert das Primaer-Backend.
+   * @return das Primaer-Backend.
+   */
+  public SynchronizeBackend getPrimary()
+  {
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    return service.get(PRIMARY);
+  }
+  
+  /**
    * Liefert ein passendes Backend fuer den angegebenen Job.
    * Das erste gefundene wird verwendet.
    * @param type der Job-Typ.
@@ -107,6 +151,20 @@ public class SynchronizeEngine
    */
   public SynchronizeBackend getBackend(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
   {
+    // Wenn im Konto ein Backend hinterlegt ist, dan dieses verwenden
+    SynchronizeBackend bk = this.getBackend(konto);
+    if (bk != null)
+    {
+      
+      // Checken, ob das Backend den Geschaeftsvorfall ueberhaupt unterstuetzt
+      // TODO: Ich bin mir nicht sicher, ob auch bei einem explizit gewaehlten Backend geprueft
+      // werden sollte, ob das Backend den Geschaeftsvorfall unterstuetzt.
+//      if (!bk.supports(type,konto))
+//        throw new ApplicationException(i18n.tr("Das Zugangsverfahren des Kontos unterstützt diesen Geschäftsvorfall nicht"));
+      return bk;
+    }
+
+    // Ansonsten das erste nehmen, welches den Geschaeftsvorfall fuer das Konto unterstuetzt
     for (SynchronizeBackend backend:this.getBackends())
     {
       if (backend.supports(type,konto))

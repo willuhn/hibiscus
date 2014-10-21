@@ -48,6 +48,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
+import de.willuhn.jameica.hbci.gui.input.BackendInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
@@ -57,9 +58,12 @@ import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -84,6 +88,7 @@ public class KontoControl extends AbstractControl
 	private TextInput blz          		    = null;
 	private Input name				 		        = null;
 	private Input bezeichnung	 		        = null;
+  private Input backendAuswahl          = null;
 	private Input passportAuswahl         = null;
   private Input kundennummer 		        = null;
   private Input kommentar               = null;
@@ -232,30 +237,16 @@ public class KontoControl extends AbstractControl
     this.offline = new CheckboxInput(this.getKonto().hasFlag(Konto.FLAG_OFFLINE));
     this.offline.setName(i18n.tr("Offline-Konto"));
     
-    Listener l = new Listener() {
+    this.offline.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
-        try
-        {
-          boolean b = ((Boolean) getOffline().getValue()).booleanValue();
-          getSaldo().setEnabled(b);
-          getPassportAuswahl().setEnabled(!b);
-          
-          // Wir muessen die Aenderung sofort ins Konto uebernehmen, damit
-          // der richtige Sync-Options-Dialog angezeigt wird.
-          applyOfflineState(b);
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while updating offline status",e);
-        }
+        updateStatus();
       }
-    };
-    
-    this.offline.addListener(l);
+    });
     
     // einmal initial ausloesen
-    l.handleEvent(null);
+    this.updateStatus();
 
     return this.offline;
   }
@@ -416,7 +407,59 @@ public class KontoControl extends AbstractControl
 		return passportAuswahl;
 	}
 
-	/**
+  /**
+   * Liefert das Auswahl-Feld fuer das Backend.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public Input getBackendAuswahl() throws RemoteException, ApplicationException
+  {
+    if (backendAuswahl != null)
+      return backendAuswahl;
+    
+    backendAuswahl = new BackendInput(getKonto());
+    backendAuswahl.addListener(new Listener() {
+      @Override
+      public void handleEvent(Event event)
+      {
+        updateStatus();
+      }
+    });
+    
+    // einmal initial ausloesen
+    this.updateStatus();
+    return backendAuswahl;
+  }
+  
+  /**
+   * Aktualisiert die Auswahlmoeglichkeiten des Kontos.
+   */
+  private void updateStatus()
+  {
+    try
+    {
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeBackend hbci = service.get(HBCISynchronizeBackend.class);
+      
+      boolean offline = ((Boolean) getOffline().getValue()).booleanValue();
+      getSaldo().setEnabled(offline);
+      
+      // Wir muessen die Aenderung sofort ins Konto uebernehmen, damit
+      // der richtige Sync-Options-Dialog angezeigt wird.
+      applyOfflineState(offline);
+
+      SynchronizeBackend backend = (SynchronizeBackend) getBackendAuswahl().getValue();
+      // Den Passport gibts erstmal nur bei HBCI-Konten - und nur bei !offline
+      getPassportAuswahl().setEnabled(!offline && backend != null && backend.equals(hbci));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while updating passport selection",e);
+    }
+  }
+
+  /**
 	 * Liefert ein Feld zur Anzeige des Saldos.
    * @return Anzeige-Feld.
    * @throws RemoteException
@@ -627,17 +670,31 @@ public class KontoControl extends AbstractControl
 
 			if (offline)
 			{
+        getKonto().setBackendClass(null);
 			  getKonto().setPassportClass(null);
 			  getKonto().setSaldo(((Double)getSaldo().getValue()).doubleValue());
 			}
 			else
 			{
+        SynchronizeBackend backend = (SynchronizeBackend) getBackendAuswahl().getValue();
+        getKonto().setBackendClass(backend != null ? backend.getClass().getName() : null);
+        
+        BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+        final SynchronizeBackend hbci = service.get(HBCISynchronizeBackend.class);
+
 	      Passport p = (Passport) getPassportAuswahl().getValue();
-			  if (p == null)
-			    throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheitsmedium aus"));
-			  
-        getKonto().setPassportClass(p.getClass().getName());
+	      if (backend != null && backend.equals(hbci)) // Passport gibts nur bei Scripting
+	      {
+	        if (p == null)
+	          throw new ApplicationException(i18n.tr("Bitte wählen Sie ein FinTS-Sicherheitsverfahren aus"));
+	        getKonto().setPassportClass(p.getClass().getName());
+	      }
+	      else
+	      {
+	        getKonto().setPassportClass(null);
+	      }
 			}
+			
 			
 			applyOfflineState(offline);
 

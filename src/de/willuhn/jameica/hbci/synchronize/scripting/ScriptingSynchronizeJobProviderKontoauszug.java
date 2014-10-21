@@ -47,10 +47,11 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
     {
       try
       {
-        // Nur Offline-Konten. Die anderen haben eine HBCI-Anbindung
-        if (!kt.hasFlag(Konto.FLAG_OFFLINE) || kt.hasFlag(Konto.FLAG_DISABLED))
+        // Nur Offline-Konten oder Konten, bei denen explizit Scripting ausgewaehlt ist
+        if (!backend.supports(kt))
           continue;
-        
+
+        // Unterstuetzen wir Kontoauszug ueberhaupt?
         if (!backend.supports(type,k))
           continue;
 

@@ -12,12 +12,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
@@ -38,6 +42,9 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
    * Der Context-Name fuer den Javascript-Funktionsnamen.
    */
   private final static String CTX_JS_FUNCTION = "ctx.js.function";
+  
+  @Resource
+  private SynchronizeEngine engine = null;
 
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getName()
@@ -71,18 +78,11 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
     List<Konto> list = super.getSynchronizeKonten(k);
     List<Konto> result = new ArrayList<Konto>();
     
-    // Wir wollen nur die Offline-Konten haben
+    // Wir wollen nur die Offline-Konten und jene, bei denen Scripting explizit konfiguriert ist
     for (Konto konto:list)
     {
-      try
-      {
-        if (konto.hasFlag(Konto.FLAG_OFFLINE))
-          result.add(konto);
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to determine flags of konto",re);
-      }
+      if (this.supports(konto))
+        result.add(konto);
     }
     
     return result;
@@ -96,7 +96,10 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
     // 1. Checken, ob wir ueberhaupt ein Script haben, welches diesen Job beherrscht
     String function = this.getFunction(type,konto);
     if (function == null)
+    {
+      Logger.warn("job type " + type.getSimpleName() + " not supported by " + this.getName());
       throw new ApplicationException(i18n.tr("Der Geschäftsvorfall wird nicht via {0} unterstützt",this.getName()));
+    }
 
     SynchronizeJob instance = super.create(type,konto);
     instance.setContext(CTX_JS_FUNCTION,function); // Funktion noch drin speichern
@@ -122,12 +125,12 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
   {
     try
     {
-      // Wir checken extra noch, ob es wirklich alles Offline-Konten sind
+      // Wir checken extra noch, ob es wirklich alles Offline-Konten sind oder ob bei denen das Scripting ausgewaehlt wurde
       for (SynchronizeJob job:jobs)
       {
         Konto konto = job.getKonto();
-        if (!konto.hasFlag(Konto.FLAG_OFFLINE))
-          throw new ApplicationException(i18n.tr("Das Konto ist kein Offline-Konto: {0}",konto.getLongName()));
+        if (!this.supports(konto))
+          throw new ApplicationException(i18n.tr("Das Konto ist kein Offline-Konto oder das Zugangsverfahren {0} wurde nicht ausgewählt: {1}",this.getName(),konto.getLongName()));
       }
     }
     catch (RemoteException re)
@@ -140,6 +143,28 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
   }
   
   /**
+   * Prueft, ob das Konto prinzipiell unterstuetzt wird.
+   * @param konto das Konto.
+   * @return true, wenn es prinzipiell unterstuetzt wird.
+   */
+  boolean supports(Konto konto)
+  {
+    if (konto == null)
+      return false;
+    
+    try
+    {
+      SynchronizeBackend backend = engine.getBackend(konto);
+      return konto.hasFlag(Konto.FLAG_OFFLINE) || (backend != null && backend.equals(this));
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine synchronization support for konto",re);
+    }
+    return false;
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public List<String> getPropertyNames(Konto konto)
@@ -147,7 +172,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
     try
     {
       // Nur Offline-Konten.
-      if (konto == null || !konto.hasFlag(Konto.FLAG_OFFLINE) || konto.hasFlag(Konto.FLAG_DISABLED))
+      if (konto == null || !this.supports(konto) || konto.hasFlag(Konto.FLAG_DISABLED))
         return null;
       
       QueryMessage msg = new QueryMessage("hibiscus.sync.options",konto);
@@ -194,8 +219,8 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
   {
     try
     {
-      // 1. Nur Offline-Konten. Die anderen haben eine HBCI-Anbindung
-      if (konto == null || !konto.hasFlag(Konto.FLAG_OFFLINE) || konto.hasFlag(Konto.FLAG_DISABLED))
+      // 1. Nur Offline-Konten und jene, bei denen explizite Scripting ausgewaehl ist.
+      if (konto == null || !this.supports(konto) || konto.hasFlag(Konto.FLAG_DISABLED))
         return null;
 
       Logger.debug("searching javascript function for job type " + type.getSimpleName());

@@ -175,6 +175,15 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     return (String) getAttribute("passport_class");
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getBackendClass()
+   */
+  @Override
+  public String getBackendClass() throws RemoteException
+  {
+    return (String) getAttribute("backend_class");
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#setKontonummer(java.lang.String)
@@ -206,6 +215,15 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   public void setPassportClass(String passport) throws RemoteException
   {
     setAttribute("passport_class", passport);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setBackendClass(java.lang.String)
+   */
+  @Override
+  public void setBackendClass(String backend) throws RemoteException
+  {
+    setAttribute("backend_class", backend);
   }
 
   /**
