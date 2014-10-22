@@ -89,7 +89,6 @@ public class SynchronizeOptions implements Serializable
   {
     return getSyncSaldo() ||
            getSyncKontoauszuege() ||
-           getSyncDauerauftraege() ||
            getSyncSepaDauerauftraege() ||
            getSyncLastschriften() ||
            getSyncUeberweisungen() ||
@@ -105,7 +104,6 @@ public class SynchronizeOptions implements Serializable
   {
     this.setSyncSaldo(status);
     this.setSyncKontoauszuege(status);
-    this.setSyncDauerauftraege(status);
     this.setSyncSepaDauerauftraege(status);
     this.setSyncLastschriften(status);
     this.setSyncUeberweisungen(status);
@@ -154,15 +152,6 @@ public class SynchronizeOptions implements Serializable
     return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".last",false);
   }
 
-  /**
-   * Prueft, ob die Dauerauftraege synchronisiert werden sollen.
-   * @return true, wenn sie synchronisiert werden sollen.
-   */
-  public boolean getSyncDauerauftraege()
-  {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".dauer",false);
-  }
-  
   /**
    * Prueft, ob die SEPA-Dauerauftraege synchronisiert werden sollen.
    * @return true, wenn sie synchronisiert werden sollen.
@@ -260,15 +249,6 @@ public class SynchronizeOptions implements Serializable
     settings.setAttribute("sync.konto." + id + ".last",b);
   }
 
-  /**
-   * Legt fest, ob die Dauerauftraege synchronisiert werden sollen.
-   * @param b true, wenn sie synchronisiert werden sollen.
-   */
-  public void setSyncDauerauftraege(boolean b)
-  {
-    settings.setAttribute("sync.konto." + id + ".dauer",b);
-  }
-  
   /**
    * Legt fest, ob die SEPA-Dauerauftraege synchronisiert werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.

@@ -19,9 +19,8 @@ import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.DauerauftragDelete;
+import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
-import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
 import de.willuhn.jameica.hbci.io.print.PrintSupportDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.system.Application;
@@ -44,11 +43,8 @@ public class DauerauftragList extends ContextMenu
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),            new DauerauftragNew(),"document-open.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),    new DNeu(),"text-x-generic.png"));
-		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),        new DauerauftragDelete(),"user-trash-full.png"));
+		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),        new DBObjectDelete(),"user-trash-full.png"));
 		addItem(ContextMenuItem.SEPARATOR);
-		addItem(new ContextMenuItem(i18n.tr("Daueraufträge abrufen..."), new KontoFetchDauerauftraege(),"mail-send-receive.png"));
-    addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Drucken..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -56,42 +52,4 @@ public class DauerauftragList extends ContextMenu
       }
     },"document-print.png"));
 	}
-
-	/**
-	 * Ueberschreiben wir, um <b>grundsaetzlich</b> einen neuen Dauerauftrag
-	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
-   */
-  private class DNeu extends DauerauftragNew
-	{
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
-    public void handleAction(Object context) throws ApplicationException
-    {
-    	super.handleAction(null);
-    }
-	}
 }
-
-
-/**********************************************************************
- * $Log: DauerauftragList.java,v $
- * Revision 1.6  2011/04/11 16:48:33  willuhn
- * @N Drucken von Sammel- und Dauerauftraegen
- *
- * Revision 1.5  2011-03-07 10:33:53  willuhn
- * @N BUGZILLA 999
- *
- * Revision 1.4  2008/12/19 01:12:09  willuhn
- * @N Icons in Contextmenus
- *
- * Revision 1.3  2006/08/07 14:45:18  willuhn
- * @B typos
- *
- * Revision 1.2  2004/11/13 17:02:04  willuhn
- * @N Bearbeiten des Zahlungsturnus
- *
- * Revision 1.1  2004/10/25 17:58:56  willuhn
- * @N Haufen Dauerauftrags-Code
- *
- **********************************************************************/

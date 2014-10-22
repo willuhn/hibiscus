@@ -19,9 +19,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
-import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.KontoFetchDauerauftraege;
 import de.willuhn.jameica.hbci.gui.controller.DauerauftragControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportDauerauftrag;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -60,11 +58,6 @@ public class DauerauftragList extends AbstractView
     GUI.getView().setTitle(i18n.tr("Vorhandene Daueraufträge"));
     GUI.getView().addPanelButton(print);
 		
-    ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Daueraufträge abrufen..."),  new KontoFetchDauerauftraege(),null,false,"mail-send-receive.png");
-    buttons.addButton(i18n.tr("Neuer Dauerauftrag"),        new de.willuhn.jameica.hbci.gui.action.DauerauftragNew(),null,false,"text-x-generic.png");
-    buttons.paint(getParent());
-
     table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
   }

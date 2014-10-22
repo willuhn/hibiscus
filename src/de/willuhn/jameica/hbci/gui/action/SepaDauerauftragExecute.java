@@ -12,7 +12,6 @@ import java.util.Arrays;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.dialogs.DauerauftragDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SepaDauerauftragDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
@@ -49,7 +48,7 @@ public class SepaDauerauftragExecute implements Action
 		{
 			final SepaDauerauftrag d = (SepaDauerauftrag) context;
 			
-			SepaDauerauftragDialog dd = new SepaDauerauftragDialog(d,DauerauftragDialog.POSITION_CENTER);
+			SepaDauerauftragDialog dd = new SepaDauerauftragDialog(d,SepaDauerauftragDialog.POSITION_CENTER);
 			try
 			{
 				if (!((Boolean)dd.open()).booleanValue())

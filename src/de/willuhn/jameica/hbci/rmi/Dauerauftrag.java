@@ -19,11 +19,4 @@ public interface Dauerauftrag extends HibiscusTransfer, Checksum, BaseDauerauftr
    * @throws RemoteException
    */
   public String getTextSchluessel() throws RemoteException;
-
-  /**
-   * Speichert den Textschluessel.
-   * @param schluessel
-   * @throws RemoteException
-   */
-  public void setTextSchluessel(String schluessel) throws RemoteException;
 }

@@ -24,7 +24,6 @@ import org.kapott.hbci.swift.DTAUS;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
-import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -136,49 +135,6 @@ public class Converter {
 		  umsatz.setGegenkonto(a);
 		}
 		return umsatz;
-	}
-
-  /**
-	 * Konvertiert eine Zeile aus der Liste der abgerufenen Dauerauftraege.
-   * @param d der Dauerauftrag aus HBCI4Java.
-   * @return Unser Dauerauftrag.
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  public static Dauerauftrag HBCIDauer2HibiscusDauerauftrag(GVRDauerList.Dauer d)
-  	throws RemoteException, ApplicationException
-	{
-		DauerauftragImpl auftrag = (DauerauftragImpl) Settings.getDBService().createObject(Dauerauftrag.class,null);
-		auftrag.setErsteZahlung(d.firstdate);
-		auftrag.setLetzteZahlung(d.lastdate);
-    
-		// Das ist nicht eindeutig. Da der Converter schaut, ob er ein solches
-    // Konto schon hat und bei Bedarf das existierende verwendet. Es kann aber
-    // sein, dass ein User ein und das selbe Konto mit verschiedenen Sicherheitsmedien
-    // bedient. In diesem Fall wird der Dauerauftrag evtl. beim falschen Konto
-    // einsortiert. Ist aber kein Problem, weil der HBCIDauerauftragListJob
-		// das Konto eh nochmal gegen seines (und er kennt das richtige) ueberschreibt.
-    auftrag.setKonto(HBCIKonto2HibiscusKonto(d.my));
-
-    auftrag.setBetrag(d.value.getDoubleValue());
-		auftrag.setOrderID(d.orderid);
-
-		// Jetzt noch der Empfaenger
-		auftrag.setGegenkonto(HBCIKonto2Address(d.other));
-
-		// Textschlüssel
-		auftrag.setTextSchluessel(d.key);
-		
-		// Verwendungszweck
-		VerwendungszweckUtil.apply(auftrag,d.usage);
-		
-		// Es kann wohl Faelle geben, wo der Auftrag keinen Verwendungszweck hat.
-		// In dem Fall tragen wir ein "-" ein.
-		if (auftrag.getZweck() == null)
-		  auftrag.setZweck("-");
-		
-		auftrag.setTurnus(TurnusHelper.createByDauerAuftrag(d));
-		return auftrag;
 	}
 
   /**

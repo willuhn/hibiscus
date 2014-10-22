@@ -27,7 +27,6 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.TextSchluessel;
 import de.willuhn.jameica.hbci.gui.action.DauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
@@ -56,7 +55,6 @@ public class DauerauftragControl extends AbstractTransferControl {
 	private DateInput letzteZahlung	   = null;
 	private SelectInput textschluessel = null;
 	
-  private Dauerauftrag transfer      = null;
   private TypedProperties bpd        = null;
 
   private DauerauftragList list      = null;
@@ -70,20 +68,11 @@ public class DauerauftragControl extends AbstractTransferControl {
   }
 
 	/**
-	 * Ueberschrieben, damit wir bei Bedarf einen neuen Dauerauftrag erzeugen koennen.
 	 * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
 	 */
 	public HibiscusTransfer getTransfer() throws RemoteException
 	{
-    if (transfer != null)
-      return transfer;
-
-    Object o = getCurrentObject();
-    if (o != null && (o instanceof Dauerauftrag))
-      return (Dauerauftrag) o;
-      
-    transfer = (Dauerauftrag) Settings.getDBService().createObject(Dauerauftrag.class,null);
-    return transfer;
+	  return (Dauerauftrag) this.getCurrentObject();
 	}
 	
 	/**
@@ -354,22 +343,7 @@ public class DauerauftragControl extends AbstractTransferControl {
    */
   public synchronized boolean handleStore()
   {
-    try
-    {
-      Dauerauftrag d = (Dauerauftrag) getTransfer();
-      d.setErsteZahlung((Date)getErsteZahlung().getValue());
-      d.setLetzteZahlung((Date)getLetzteZahlung().getValue());
-      d.setTurnus((Turnus)getTurnus().getValue());
-      TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
-      d.setTextSchluessel(s == null ? null : s.getCode());
-      return super.handleStore();
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while saving dauerauftrag",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Dauerauftrages"));
-    }
-    return false;
+    return true;
   }
 
   
