@@ -27,8 +27,6 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
-import de.willuhn.jameica.hbci.gui.action.SammelLastBuchungNew;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -97,22 +95,6 @@ public class SammelLastschriftNew extends AbstractView
       }
     },null,false,"edit-copy.png");
 
-    Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
-        if (control.handleStore())
-          new SammelLastBuchungNew().handleAction(transfer);
-      }
-    },null,false,"text-x-generic.png");
-    add.setEnabled(!transfer.ausgefuehrt());
-    
-		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
-			public void handleAction(Object context) throws ApplicationException {
-        if (control.handleStore())
-  				new SammelLastschriftExecute().handleAction(transfer);
-			}
-		},null,false,"emblem-important.png");
-    execute.setEnabled(!transfer.ausgefuehrt());
-    
     Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
@@ -120,8 +102,6 @@ public class SammelLastschriftNew extends AbstractView
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
     
-    buttons.addButton(add);
-    buttons.addButton(execute);
     buttons.addButton(store);
     
     buttons.paint(getParent());

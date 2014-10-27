@@ -18,9 +18,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
-import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.SammelLastschriftImport;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
 import de.willuhn.jameica.system.Application;
@@ -52,29 +50,7 @@ public class SammelLastschriftList extends AbstractView
     GUI.getView().setTitle(i18n.tr("Vorhandene Sammel-Lastschriften"));
     GUI.getView().addPanelButton(print);
 
-    ButtonArea buttons = table.getButtons();
-    buttons.addButton(i18n.tr("Importieren..."),new SammelLastschriftImport(),null,false,"document-open.png");
-    buttons.addButton(i18n.tr("Neue Sammel-Lastschrift"),new de.willuhn.jameica.hbci.gui.action.SammelLastschriftNew(),null,false,"text-x-generic.png");
-
     table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
   }
 }
-
-
-/**********************************************************************
- * $Log: SammelLastschriftList.java,v $
- * Revision 1.12  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.11  2011-09-12 15:28:00  willuhn
- * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
- *
- * Revision 1.10  2011-04-11 16:48:33  willuhn
- * @N Drucken von Sammel- und Dauerauftraegen
- *
- * Revision 1.9  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- **********************************************************************/

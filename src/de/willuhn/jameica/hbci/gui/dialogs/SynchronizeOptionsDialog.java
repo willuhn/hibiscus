@@ -63,7 +63,6 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private CheckboxInput syncSaldo     = null;
   private CheckboxInput syncUmsatz    = null;
   private CheckboxInput syncUeb       = null;
-  private CheckboxInput syncLast      = null;
   private CheckboxInput syncAueb      = null;
   private CheckboxInput syncSepaLast  = null;
   private CheckboxInput syncSepaDauer = null;
@@ -168,7 +167,6 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         else
         {
           options.setSyncUeberweisungen(((Boolean)getSyncUeb().getValue()).booleanValue());
-          options.setSyncLastschriften(((Boolean)getSyncLast().getValue()).booleanValue());
           options.setSyncSepaDauerauftraege(((Boolean)getSyncSepaDauer().getValue()).booleanValue());
           options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
           options.setSyncSepaLastschriften(((Boolean)getSyncSepaLast().getValue()).booleanValue());
@@ -206,7 +204,6 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     {
       group.addInput(getSyncUeb());
       group.addInput(getSyncAueb());
-      group.addInput(getSyncLast());
       group.addInput(getSyncSepaLast());
       group.addInput(getSyncSepaDauer());
     }
@@ -277,20 +274,6 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       this.syncUeb.setName(i18n.tr("Fällige Überweisungen absenden"));
     }
     return this.syncUeb;
-  }
-
-  /**
-   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Lastschriften.
-   * @return Checkbox.
-   */
-  private CheckboxInput getSyncLast()
-  {
-    if (this.syncLast == null)
-    {
-      this.syncLast = new CheckboxInput(options.getSyncLastschriften());
-      this.syncLast.setName(i18n.tr("Fällige Lastschriften einziehen"));
-    }
-    return this.syncLast;
   }
 
   /**

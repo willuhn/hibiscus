@@ -31,7 +31,9 @@
         <item id="hibiscus.menu.ext.hbcitrace"           name="HBCI-Protokoll speichern..."                   icon="mail-send-receive.png"           action="de.willuhn.jameica.hbci.gui.action.HBCITrace" />
       </item>
       <item id="hibiscus.menu.archive"                   name="Archiv">
-        <item id="hibiscus.menu.archive.transfer.dauer"  name="Daueraufträge"                                 icon="stock_form-time-field.png"      action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
+        <item id="hibiscus.menu.archive.transfer.dauer"      name="Daueraufträge"                             icon="stock_form-time-field.png"      action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
+        <item id="hibiscus.menu.archive.transfer.einzellast" name="Lastschriften"                             icon="stock_previous.png"             action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
+        <item id="hibiscus.menu.archive.transfer.sammellast" name="Sammellastschriften"                       icon="stock_navigator-shift-left.png" action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
       </item>
       <item id="hibiscus.menu.handbuch"              name="&amp;Handbuch"                                 icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
       <item id="hibiscus.menu.support"               name="&amp;Support"                                  icon="internet-web-browser.png"        action="de.willuhn.jameica.hbci.gui.action.SupportAction"/>
@@ -61,9 +63,7 @@
       </item>
       <item id="hibiscus.navi.transfer" expanded="false"     name="Zahlungsverkehr (alt)"    icon-close="folder.png" icon-open="folder-open.png">
         <item id="hibiscus.navi.transfer.ueb"                name="Überweisungen"            icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
-        <item id="hibiscus.navi.transfer.einzellast"         name="Lastschriften"            icon-close="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
         <item id="hibiscus.navi.transfer.sammelueb"          name="Sammelüberweisungen"      icon-close="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
-        <item id="hibiscus.navi.transfer.sammellast"         name="Sammellastschriften"      icon-close="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
       </item>
       <item id="hibiscus.navi.reporting"                     name="Auswertungen"             icon-close="folder.png" icon-open="folder-open.png">
         <item id="hibiscus.navi.reporting.kontoauszug"       name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugRpt" />

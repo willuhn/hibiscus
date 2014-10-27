@@ -90,7 +90,6 @@ public class SynchronizeOptions implements Serializable
     return getSyncSaldo() ||
            getSyncKontoauszuege() ||
            getSyncSepaDauerauftraege() ||
-           getSyncLastschriften() ||
            getSyncUeberweisungen() ||
            getSyncAuslandsUeberweisungen() ||
            getSyncSepaLastschriften();
@@ -105,7 +104,6 @@ public class SynchronizeOptions implements Serializable
     this.setSyncSaldo(status);
     this.setSyncKontoauszuege(status);
     this.setSyncSepaDauerauftraege(status);
-    this.setSyncLastschriften(status);
     this.setSyncUeberweisungen(status);
     this.setSyncAuslandsUeberweisungen(status);
     this.setSyncSepaLastschriften(status);
@@ -141,15 +139,6 @@ public class SynchronizeOptions implements Serializable
   public boolean getSyncUeberweisungen()
   {
     return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".ueb",false);
-  }
-
-  /**
-   * Prueft, ob offene und ueberfaellige Lastschriften eingereicht werden sollen.
-   * @return true, wenn sie synchronisiert werden sollen.
-   */
-  public boolean getSyncLastschriften()
-  {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".last",false);
   }
 
   /**
@@ -238,15 +227,6 @@ public class SynchronizeOptions implements Serializable
   public void setSyncUeberweisungen(boolean b)
   {
     settings.setAttribute("sync.konto." + id + ".ueb",b);
-  }
-
-  /**
-   * Legt fest, ob offene und ueberfaellige Lastschriften eingereicht werden sollen.
-   * @param b true, wenn sie synchronisiert werden sollen.
-   */
-  public void setSyncLastschriften(boolean b)
-  {
-    settings.setAttribute("sync.konto." + id + ".last",b);
   }
 
   /**
