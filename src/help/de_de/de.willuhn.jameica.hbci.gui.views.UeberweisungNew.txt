@@ -3,10 +3,4 @@
 	<p>
 		<span color="header" font="header">Überweisung bearbeiten</span>
 	</p>
-
-	<p>
-		<b>Tipp:</b> Wählen Sie als Auftragstyp <b>Termin-Überweisung</b>,
-    wenn der Auftrag erst zum angegebenen Zeitpunkt von der Bank
-    ausgeführt werden soll.
-	</p>
 </form>

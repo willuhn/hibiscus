@@ -1,13 +1,6 @@
 <form>
 	<p>
-		<span color="header" font="header">Vorhandene Daueraufträge</span>
-	</p>
-	
-	<p>
-		In dieser Liste sehen Sie alle existierenden Daueraufträge.
-		Sie können diese mit denen bei Ihrer Bank gespeicherten
-		abgleichen, indem Sie <b>Existierende Daueraufträge abrufen</b>
-		wählen.
+		<span color="header" font="header">Daueraufträge</span>
 	</p>
 	
 	<p>

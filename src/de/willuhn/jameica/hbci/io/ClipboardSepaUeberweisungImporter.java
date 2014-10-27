@@ -13,27 +13,27 @@ import org.eclipse.swt.dnd.TextTransfer;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.rmi.Ueberweisung;
+import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.logging.Logger;
 
 /**
  * Genersicher Parser fuer die Zwischenablage.
  * Durchsucht diese nach sinnvollen Daten, um daraus ggf. eine
- * neue Ueberweisung mit vorausgefuellten Werten erzeugen zu koennen.
+ * neue SEPA-Ueberweisung mit vorausgefuellten Werten erzeugen zu koennen.
  */
-public class ClipboardUeberweisungImporter
+public class ClipboardSepaUeberweisungImporter
 {
   private final static Pattern PT_SPLIT = Pattern.compile(":[\n\r]", Pattern.MULTILINE);
-  private final static Pattern PT_KONTO = Pattern.compile("(.*nummer.*)|(.*Konto.*)|(.*Kto.*)", Pattern.CASE_INSENSITIVE);
-  private final static Pattern PT_BLZ   = Pattern.compile("(.*Bankleitzahl.*)|(.*BLZ.*)", Pattern.CASE_INSENSITIVE);
+  private final static Pattern PT_KONTO = Pattern.compile("(.*iban.*)|(.*Konto.*)|(.*Kto.*)", Pattern.CASE_INSENSITIVE);
+  private final static Pattern PT_BLZ   = Pattern.compile("(.*bic.*)", Pattern.CASE_INSENSITIVE);
   private final static Pattern PT_ZWECK = Pattern.compile("(.*zweck.*)", Pattern.CASE_INSENSITIVE);
   private final static Pattern PT_NAME  = Pattern.compile("(.*Inhaber.*)|(.*Name.*)|(.*Empfänger.*)|(.*Empfaenger.*)", Pattern.CASE_INSENSITIVE);
 
 	/**
-   * Versucht eine Ueberweisung aus der Zwischenablage zu erstellen.
+   * Versucht eine SEPA-Ueberweisung aus der Zwischenablage zu erstellen.
    * @return die Ueberweisung, wenn eine erstellt werden konnte oder null.
 	 */
-	public Ueberweisung getUeberweisung()
+	public AuslandsUeberweisung getUeberweisung()
   {
     try
     {
@@ -71,7 +71,7 @@ public class ClipboardUeberweisungImporter
         values.put(line.substring(0,sep).trim(),line.substring(sep+1).trim());
 			}
 
-      Ueberweisung u = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
+      AuslandsUeberweisung u = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
 
       Iterator i = values.keySet().iterator();
       while (i.hasNext())

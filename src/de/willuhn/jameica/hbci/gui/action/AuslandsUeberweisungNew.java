@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.io.ClipboardSepaUeberweisungImporter;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
@@ -124,6 +125,11 @@ public class AuslandsUeberweisungNew implements Action
           Logger.error("error while creating transfer",re);
           // Dann halt nicht
         }
+      }
+      else 
+      {
+        ClipboardSepaUeberweisungImporter i = new ClipboardSepaUeberweisungImporter();
+        u = i.getUeberweisung();
       }
     }
     catch (ApplicationException ae)

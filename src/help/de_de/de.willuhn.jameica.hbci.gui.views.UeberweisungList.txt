@@ -6,11 +6,4 @@
 	<p>
 		In dieser Liste sehen Sie alle von Ihnen eingegebenen Überweisungen.
 	</p>
-	
-	<p>
-		<b>Tipp:</b> Eine bereits ausgeführte Überweisung kann nicht
-		erneut abgesendet werden. Sie können diese jedoch duplizieren,
-		indem Sie mit der rechten Maustaste auf die gewünschte Buchung
-		klicken und anschließend <b>Duplizieren</b> wählen.
-	</p>
 </form>

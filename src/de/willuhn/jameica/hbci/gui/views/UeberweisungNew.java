@@ -24,8 +24,6 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
-import de.willuhn.jameica.hbci.gui.action.Duplicate;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -91,22 +89,6 @@ public class UeberweisungNew extends AbstractView
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
-    buttonArea.addButton(i18n.tr("Duplizieren..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (control.handleStore()) // BUGZILLA 1181
-          new Duplicate().handleAction(transfer);
-      }
-    },null,false,"edit-copy.png");
-
-    Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
-				if (control.handleStore()) // BUGZILLA 661
-  				new UeberweisungExecute().handleAction(transfer);
-      }
-    },null,false,"emblem-important.png");
-    execute.setEnabled(!transfer.ausgefuehrt());
-    
     Button store = new Button(i18n.tr("Speichern"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
       	control.handleStore();
@@ -114,7 +96,6 @@ public class UeberweisungNew extends AbstractView
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
     
-    buttonArea.addButton(execute);
     buttonArea.addButton(store);
     
     buttonArea.paint(getParent());

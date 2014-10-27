@@ -18,10 +18,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
-import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungImport;
-import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.gui.controller.UeberweisungControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisungList;
 import de.willuhn.jameica.system.Application;
@@ -53,29 +50,7 @@ public class UeberweisungList extends AbstractView
 		GUI.getView().setTitle(i18n.tr("Vorhandene Überweisungen"));
     GUI.getView().addPanelButton(print);
     
-    ButtonArea buttons = table.getButtons();
-    buttons.addButton(i18n.tr("Importieren..."),new UeberweisungImport(),null,false,"document-open.png");
-    buttons.addButton(i18n.tr("Neue Überweisung"),new UeberweisungNew(),null,false,"text-x-generic.png");
-		
 		table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
   }
 }
-
-
-/**********************************************************************
- * $Log: UeberweisungList.java,v $
- * Revision 1.16  2011/12/18 23:20:20  willuhn
- * @N GUI-Politur
- *
- * Revision 1.15  2011-09-12 15:28:00  willuhn
- * @N Enabled-State live uebernehmen - nicht erst beim Mouse-Over
- *
- * Revision 1.14  2011-04-08 17:41:45  willuhn
- * @N Erster Druck-Support fuer Ueberweisungslisten
- *
- * Revision 1.13  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- **********************************************************************/

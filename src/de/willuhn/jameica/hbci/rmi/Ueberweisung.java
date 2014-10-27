@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
 /**
  * Bildet eine Ueberweisung ab.
  */
-public interface Ueberweisung extends BaseUeberweisung, Duplicatable
+public interface Ueberweisung extends BaseUeberweisung
 {
   /**
    * Prueft, ob es sich um einen bankseitige Termin-Ueberweisung handelt.

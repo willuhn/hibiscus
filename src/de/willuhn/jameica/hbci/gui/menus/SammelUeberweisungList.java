@@ -22,12 +22,8 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
-import de.willuhn.jameica.hbci.gui.action.Duplicate;
-import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExport;
-import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
-import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Terminable;
@@ -51,13 +47,7 @@ public class SammelUeberweisungList extends ContextMenu
 	public SammelUeberweisungList()
 	{
 		addItem(new SingleItem(i18n.tr("Öffnen"), new SammelUeberweisungNew(),"document-open.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neue Sammel-Überweisung..."), new SNeu(),"text-x-generic.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
-    addItem(ContextMenuItem.SEPARATOR);
-    addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
-    addItem(ContextMenuItem.SEPARATOR);
-		addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SammelUeberweisungExecute(),"emblem-important.png"));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Drucken..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -66,7 +56,6 @@ public class SammelUeberweisungList extends ContextMenu
       }
     },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport(),"document-save.png"));
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SammelUeberweisungImport(),"document-open.png"));
 		
 	}
 

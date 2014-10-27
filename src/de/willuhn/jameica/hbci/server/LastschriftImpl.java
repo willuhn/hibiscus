@@ -14,7 +14,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 
 /**
@@ -42,57 +41,4 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
   {
     return "lastschrift";
   }
-
-	/**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
-	public Duplicatable duplicate() throws RemoteException {
-		Lastschrift u = (Lastschrift) getService().createObject(Lastschrift.class,null);
-		u.setBetrag(getBetrag());
-		u.setGegenkontoBLZ(getGegenkontoBLZ());
-		u.setGegenkontoNummer(getGegenkontoNummer());
-		u.setGegenkontoName(getGegenkontoName());
-		u.setKonto(getKonto());
-		u.setZweck(getZweck());
-		u.setZweck2(getZweck2());
-    u.setWeitereVerwendungszwecke(getWeitereVerwendungszwecke());
-    u.setTextSchluessel(getTextSchluessel());
-		return u;
-	}
 }
-
-
-/**********************************************************************
- * $Log: LastschriftImpl.java,v $
- * Revision 1.10  2010/11/21 23:55:47  willuhn
- * @C Uebernahme des Termins beim Duplizieren war nicht konsistent. Jetzt wird er nur noch bei Bank-gefuehrten Termin-Ueberweisungen uebernommen
- *
- * Revision 1.9  2010/04/27 11:02:32  willuhn
- * @R Veralteten Verwendungszweck-Code entfernt
- *
- * Revision 1.8  2010/03/04 09:39:40  willuhn
- * @B BUGZILLA 829
- *
- * Revision 1.7  2008/08/01 11:05:14  willuhn
- * @N BUGZILLA 587
- *
- * Revision 1.6  2008/02/15 17:39:10  willuhn
- * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
- * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
- *
- * Revision 1.5  2005/03/02 17:59:30  web0
- * @N some refactoring
- *
- * Revision 1.4  2005/02/28 16:28:24  web0
- * @N first code for "Sammellastschrift"
- *
- * Revision 1.3  2005/02/19 16:49:32  willuhn
- * @B bugs 3,8,10
- *
- * Revision 1.2  2005/02/04 18:27:54  willuhn
- * @C Refactoring zwischen Lastschrift und Ueberweisung
- *
- * Revision 1.1  2005/01/19 00:16:05  willuhn
- * @N Lastschriften
- *
- **********************************************************************/

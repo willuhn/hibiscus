@@ -26,9 +26,6 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
-import de.willuhn.jameica.hbci.gui.action.Duplicate;
-import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungBuchungNew;
-import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.SammelUeberweisungControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelUeberweisung;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -41,7 +38,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Bearbeitung der Sammel-Lastschriften.
+ * Bearbeitung der Sammel-Ueberweisungen.
  */
 public class SammelUeberweisungNew extends AbstractView
 {
@@ -88,30 +85,6 @@ public class SammelUeberweisungNew extends AbstractView
         }
       }
     },control.getTransfer(),false,"user-trash-full.png");
-    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (control.handleStore()) // BUGZILLA 1181
-          new Duplicate().handleAction(transfer);
-      }
-    },null,false,"edit-copy.png");
-    
-    Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
-        if (control.handleStore())
-          new SammelUeberweisungBuchungNew().handleAction(transfer);
-      }
-    },null,false,"text-x-generic.png");
-    add.setEnabled(!transfer.ausgefuehrt());
-    
-		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
-			public void handleAction(Object context) throws ApplicationException {
-        if (control.handleStore())
-  				new SammelUeberweisungExecute().handleAction(transfer);
-			}
-		},null,false,"emblem-important.png");
-    execute.setEnabled(!transfer.ausgefuehrt());
-    
     Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
@@ -119,8 +92,6 @@ public class SammelUeberweisungNew extends AbstractView
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
     
-    buttons.addButton(add);
-    buttons.addButton(execute);
     buttons.addButton(store);
     
     buttons.paint(getParent());

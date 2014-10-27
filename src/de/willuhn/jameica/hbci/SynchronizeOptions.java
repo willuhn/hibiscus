@@ -90,7 +90,6 @@ public class SynchronizeOptions implements Serializable
     return getSyncSaldo() ||
            getSyncKontoauszuege() ||
            getSyncSepaDauerauftraege() ||
-           getSyncUeberweisungen() ||
            getSyncAuslandsUeberweisungen() ||
            getSyncSepaLastschriften();
   }
@@ -104,7 +103,6 @@ public class SynchronizeOptions implements Serializable
     this.setSyncSaldo(status);
     this.setSyncKontoauszuege(status);
     this.setSyncSepaDauerauftraege(status);
-    this.setSyncUeberweisungen(status);
     this.setSyncAuslandsUeberweisungen(status);
     this.setSyncSepaLastschriften(status);
   }
@@ -132,15 +130,6 @@ public class SynchronizeOptions implements Serializable
     return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
   }
   
-  /**
-   * Prueft, ob offene und ueberfaellige Ueberweisungen abgesendet werden sollen.
-   * @return true, wenn sie synchronisiert werden sollen.
-   */
-  public boolean getSyncUeberweisungen()
-  {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".ueb",false);
-  }
-
   /**
    * Prueft, ob die SEPA-Dauerauftraege synchronisiert werden sollen.
    * @return true, wenn sie synchronisiert werden sollen.
@@ -218,15 +207,6 @@ public class SynchronizeOptions implements Serializable
   public void setSyncSaldo(boolean b)
   {
     settings.setAttribute("sync.konto." + id + ".saldo",b);
-  }
-
-  /**
-   * Legt fest, ob offene und ueberfaellige Ueberweisungen abgesendet werden sollen.
-   * @param b true, wenn sie synchronisiert werden sollen.
-   */
-  public void setSyncUeberweisungen(boolean b)
-  {
-    settings.setAttribute("sync.konto." + id + ".ueb",b);
   }
 
   /**

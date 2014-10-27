@@ -16,7 +16,6 @@ import java.util.Date;
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -31,7 +30,7 @@ import de.willuhn.util.I18N;
  * Abstrakte Basis-Implementierung des Containers fuer Sammel-Transfers.
  * @author willuhn
  */
-public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObject implements SammelTransfer, Duplicatable, Terminable
+public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObject implements SammelTransfer, Terminable
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -339,42 +338,6 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     }
     return sum;
   }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
-  public Duplicatable duplicate() throws RemoteException
-  {
-    // BUGZILLA 115 http://www.willuhn.de/bugzilla/show_bug.cgi?id=115
-    SammelTransfer l = null;
-    try
-    {
-      l = (SammelTransfer) getService().createObject(this.getClass(),null);
-      l.transactionBegin();
-      l.setBezeichnung(this.getBezeichnung());
-      l.setKonto(this.getKonto());
-      l.setTermin(new Date());
-      l.store();
-      DBIterator list = this.getBuchungen();
-      while (list.hasNext())
-      {
-        SammelTransferBuchung b = (SammelTransferBuchung) list.next();
-        SammelTransferBuchung b2 = (SammelTransferBuchung) ((Duplicatable)b).duplicate();
-        b2.setSammelTransfer(l);
-        b2.store();
-      }
-      l.transactionCommit();
-      return (Duplicatable) l;
-    }
-    catch (Exception e)
-    {
-      if (l != null)
-        l.transactionRollback();
-      Logger.error("unable to duplicate sammeltransfer",e);
-      throw new RemoteException(i18n.tr("Fehler beim Duplizieren des Sammel-Auftrages"),e);
-    }
-  }
-
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getBuchungenAsArray()

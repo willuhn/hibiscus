@@ -20,7 +20,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Interface fuer Sammellastschriften und -ueberweisungen.
  */
-public interface SammelTransfer extends HibiscusDBObject, Terminable, Duplicatable
+public interface SammelTransfer extends HibiscusDBObject, Terminable
 {
 	/**
 	 * Liefert eine Liste der Buchungen fuer diesen Transfer.

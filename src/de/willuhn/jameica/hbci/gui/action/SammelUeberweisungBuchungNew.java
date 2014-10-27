@@ -12,11 +12,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.util.ApplicationException;
 
@@ -41,31 +38,7 @@ public class SammelUeberweisungBuchungNew implements Action
 		{
 			u = (SammelUeberweisungBuchung) context;
 		}
-		else
-		{
-			try {
-        SammelUeberweisung s = (SammelUeberweisung) context;
-        u = (SammelUeberweisungBuchung) s.createBuchung();
-			}
-			catch (RemoteException e)
-			{
-				// Dann halt nicht
-			}
-		}
-
   	GUI.startView(de.willuhn.jameica.hbci.gui.views.SammelUeberweisungBuchungNew.class,u);
   }
 
 }
-
-
-/**********************************************************************
- * $Log: SammelUeberweisungBuchungNew.java,v $
- * Revision 1.2  2006/08/07 14:31:59  willuhn
- * @B misc bugfixing
- * @C Redesign des DTAUS-Imports fuer Sammeltransfers
- *
- * Revision 1.1  2005/09/30 00:08:50  willuhn
- * @N SammelUeberweisungen (merged with SammelLastschrift)
- *
- **********************************************************************/

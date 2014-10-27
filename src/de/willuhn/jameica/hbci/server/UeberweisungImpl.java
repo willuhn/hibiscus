@@ -13,12 +13,10 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.TextSchluessel;
-import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -44,27 +42,6 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
    */
   protected String getTableName() {
     return "ueberweisung";
-  }
-
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
-  public Duplicatable duplicate() throws RemoteException {
-    Ueberweisung u = (Ueberweisung) getService().createObject(Ueberweisung.class,null);
-    u.setBetrag(getBetrag());
-    u.setGegenkontoBLZ(getGegenkontoBLZ());
-    u.setGegenkontoNummer(getGegenkontoNummer());
-    u.setGegenkontoName(getGegenkontoName());
-    u.setKonto(getKonto());
-    u.setZweck(getZweck());
-    u.setZweck2(getZweck2());
-    u.setWeitereVerwendungszwecke(getWeitereVerwendungszwecke());
-    u.setTextSchluessel(getTextSchluessel());
-    
-    u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
-    u.setTerminUeberweisung(isTerminUeberweisung());
-    u.setUmbuchung(isUmbuchung());
-    return u;
   }
 
   /**
@@ -173,13 +150,3 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
     setAttribute("umbuchung",b ? new Integer(1) : null);
   }
 }
-
-
-/**********************************************************************
- * $Log: UeberweisungImpl.java,v $
- * Revision 1.49  2011/05/12 08:08:27  willuhn
- * @N BUGZILLA 591
- *
- * Revision 1.48  2011-04-06 08:19:19  willuhn
- * @R UNDO
- **********************************************************************/

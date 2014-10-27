@@ -26,7 +26,6 @@ import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
-import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.controller.SammelLastschriftControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelLastschrift;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -87,14 +86,6 @@ public class SammelLastschriftNew extends AbstractView
         }
       }
     },transfer,false,"user-trash-full.png");
-    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (control.handleStore()) // BUGZILLA 1181
-          new Duplicate().handleAction(transfer);
-      }
-    },null,false,"edit-copy.png");
-
     Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
