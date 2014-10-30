@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0295 Alten IZV-Zahlungsverkehr in Archiv verschoben
   * NEW: 0294 Optional konfigurierbares Zugangsverfahren (SynchronizeBackend) pro Konto
 
 2014-10-18 Version 2.6.10
