@@ -215,6 +215,7 @@ public class HBCI extends AbstractPlugin
       
       Version v = getManifest().getVersion(); // client.product.name darf hoechstens 25 Zeichen lang sein
       this.hbciProps.put("client.product.name","HBCI4Java (Hibiscus " + v.getMajor() + "." + v.getMinor() + ")");
+      this.hbciProps.put("client.product.version",v.getMajor() + "." + v.getMinor()); // Maximal 5 Zeichen
       
       // Wir aktivieren das Infopoint-Feature erstmal. Ob wir das Senden
       // dann zulassen entscheiden wir erst, wenn der Callback aufgerufen
