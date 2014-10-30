@@ -313,7 +313,14 @@ public class DialogFactory
       
     // Chipkarte
     else if (passport instanceof HBCIPassportChipcard)
+    {
       key = ((HBCIPassportChipcard)passport).getFileName();
+      if (key == null)
+      {
+        Logger.info("have no passport filename for type [" + passport.getClass().getName() + "], pin cannot be cached");
+        return null;
+      }
+    }
 
     if (key != null)
     {
