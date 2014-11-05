@@ -1,27 +1,28 @@
 HEAD 2.7 (nightly)
 
-  * CHG: 0295 Alten IZV-Zahlungsverkehr in Archiv verschoben
-  * NEW: 0294 Optional konfigurierbares Zugangsverfahren (SynchronizeBackend) pro Konto
+  * NEW: 0396 Neue obantoo-Version 2.1.8
+  * CHG: 0395 Alten IZV-Zahlungsverkehr in Archiv verschoben
+  * NEW: 0394 Optional konfigurierbares Zugangsverfahren (SynchronizeBackend) pro Konto
 
 2014-10-18 Version 2.6.10
 
-  * CHG: 0293 Im Adressbuch die Sammel-Aufträgen von/an diese Adresse auf Anzeige der SEPA-Aufträge umgestellt
-  * BUG: 0292 ChipTAN-Dialog wurde zu breit angezeigt und konnte nicht verkleinert werden
-  * BUG: 0291 Datenbank-Update 0055 konnte auf Postgres nicht ausgeführt werden
-  * BUG: 0290 BUGZILLA 1569 - IBANs aus unbekannten Ländern tolerieren
+  * CHG: 0393 Im Adressbuch die Sammel-Aufträgen von/an diese Adresse auf Anzeige der SEPA-Aufträge umgestellt
+  * BUG: 0392 ChipTAN-Dialog wurde zu breit angezeigt und konnte nicht verkleinert werden
+  * BUG: 0391 Datenbank-Update 0055 konnte auf Postgres nicht ausgeführt werden
+  * BUG: 0390 BUGZILLA 1569 - IBANs aus unbekannten Ländern tolerieren
 
 2014-10-07 Version 2.6.9
 
-  * BUG: 0289 BUGZILLA 1567 - BPD-Auto-Expiry konnte zu Problemen bei Banken führen, die keinen anonymen BPD-Abruf unterstützen
-  * NEW: 0288 BUGZILLA 1565 - DPI-Zahl jetzt per Customizing konfigurierbar, maximale Breite von Flicker-Code verdreifacht
-  * BUG: 0287 Verwendungszweck wurde nicht vervollständigt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18087&page=last#last_post 
-  * CHG: 0286 Bei der Erstellung von INI-Briefen nur noch das HBCI4Java/Hibiscus-Format anbieten. Das
+  * BUG: 0389 BUGZILLA 1567 - BPD-Auto-Expiry konnte zu Problemen bei Banken führen, die keinen anonymen BPD-Abruf unterstützen
+  * NEW: 0388 BUGZILLA 1565 - DPI-Zahl jetzt per Customizing konfigurierbar, maximale Breite von Flicker-Code verdreifacht
+  * BUG: 0387 Verwendungszweck wurde nicht vervollständigt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18087&page=last#last_post 
+  * CHG: 0386 Bei der Erstellung von INI-Briefen nur noch das HBCI4Java/Hibiscus-Format anbieten. Das
               RDH2-Format unterstützen wir nicht komplett. 
-  * NEW: 0285 Automatische Vervollständigung der BIC bei Eingabe der IBAN 
-  * NEW: 0284 Umfangreichere Prüfung der IBAN bei der Eingabe mittels obantoo. Detailliertere Fehlermeldungen.
-  * NEW: 0283 GV-spezifische PAIN-Versionen berücksichtigen. Siehe
+  * NEW: 0385 Automatische Vervollständigung der BIC bei Eingabe der IBAN 
+  * NEW: 0384 Umfangreichere Prüfung der IBAN bei der Eingabe mittels obantoo. Detailliertere Fehlermeldungen.
+  * NEW: 0383 GV-spezifische PAIN-Versionen berücksichtigen. Siehe
               http://www.onlinebanking-forum.de/forum/topic.php?t=18038&page=last#last_post
-  * NEW: 0282 Beim Import eines Datenbank-Backups die Meldungen der Protokolle nur mit DEBUG-Level
+  * NEW: 0382 Beim Import eines Datenbank-Backups die Meldungen der Protokolle nur mit DEBUG-Level
               loggen. Dort dürfen Fehler auftreten, denn beim Import der Datei werden vorher die Konten
               importiert. Und deren Anlage führt auch bereits zur Erstellung von Protokollen, deren
               IDs dann im Konflikt zu diesen hier stehen. 
