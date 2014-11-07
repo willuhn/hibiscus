@@ -7,6 +7,7 @@
 
 package de.willuhn.jameica.hbci.gui.parts;
 
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -128,6 +129,25 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
   
+  /**
+   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#calculateSum(java.lang.Object[])
+   */
+  protected BigDecimal calculateSum(Object[] selected) throws RemoteException
+  {
+    // Keine Ahnung, wie das zu berechnen ist
+    if (!(selected instanceof SepaSammelTransfer[]))
+      return null;
+    
+    BigDecimal sum = new BigDecimal(0);
+    
+    SepaSammelTransfer[] list = (SepaSammelTransfer[]) selected;
+    for (SepaSammelTransfer u:list)
+    {
+      sum = sum.add(u.getSumme());
+    }
+    return sum;
+  }
+
   /**
    * Liefert eine Checkbox mit der festgelegt werden kann, ob nur offene Auftraege angezeigt werden sollen.
    * @return Checkbox.
