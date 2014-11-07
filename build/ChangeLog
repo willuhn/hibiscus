@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0397 Logik des Lastschrift-Merge in separate Klasse ausgelagert, damit das von JVerein besser genutzt werden kann.
   * NEW: 0396 Neue obantoo-Version 2.1.8
   * CHG: 0395 Alten IZV-Zahlungsverkehr in Archiv verschoben
   * NEW: 0394 Optional konfigurierbares Zugangsverfahren (SynchronizeBackend) pro Konto
