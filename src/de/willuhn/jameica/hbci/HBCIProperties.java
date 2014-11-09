@@ -356,7 +356,7 @@ public class HBCIProperties
    */
   public final static String formatIban(String s)
   {
-    return StringUtils.capitalize(group(s,4," "));
+    return group(s,4," ").toUpperCase();
   }
   
   /**
