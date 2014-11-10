@@ -130,6 +130,7 @@ public class KontoNew extends AbstractView
       Container left = new SimpleContainer(columns.getComposite());
       left.addLabelPair(i18n.tr("Gruppe"),                   control.getKategorie());
       left.addLabelPair(i18n.tr("Bezeichnung des Kontos"),   control.getBezeichnung());
+      left.addInput(control.getAccountType());
       left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
       left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
       

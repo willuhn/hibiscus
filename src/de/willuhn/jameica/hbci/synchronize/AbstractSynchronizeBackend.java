@@ -11,16 +11,15 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.KontoType;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -40,7 +39,6 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private Map<Class<? extends SynchronizeJob>,Class<? extends SynchronizeJob>> jobTypes = new HashMap<Class<? extends SynchronizeJob>,Class<? extends SynchronizeJob>>();
   private List<SynchronizeJobProvider> providers = null;
   private SynchronizeSession session = null;
   protected Worker worker = null;
@@ -57,7 +55,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
    * @param k das Konto.
    * @return die Liste der Konten.
    */
-  protected List<Konto> getSynchronizeKonten(Konto k)
+  public List<Konto> getSynchronizeKonten(Konto k)
   {
     List<Konto> list = k == null ? SynchronizeOptions.getSynchronizeKonten() : Arrays.asList(k);
     List<Konto> result = new ArrayList<Konto>();
@@ -150,29 +148,37 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
   /**
    * Liefert die passende Implementierung fuer den angegebenen Job.
    * @param type der Typ des Jobs.
+   * @param konto das Konto, fuer das der Job gesucht wird.
    * @return die passende Implementierung oder null, wenn keine Implementierung gefunden wurde.
    */
-  private Class<? extends SynchronizeJob> getImplementor(Class<? extends SynchronizeJob> type)
+  protected Class<? extends SynchronizeJob> getImplementor(final Class<? extends SynchronizeJob> type, final Konto konto)
   {
-    if (this.jobTypes.containsKey(type))
-      return this.jobTypes.get(type);
-    
-    Logger.debug("searching for implementation for synchronize job " + type.getSimpleName() + " for backend " + getName());
+    KontoType kt = null;
+    String id = null;
+    try
+    {
+      kt = KontoType.find(konto != null ? konto.getAccountType() : null);
+      id = konto != null ? konto.getID() : null;
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine id/account-type for konto",re);
+    }
+
+    Logger.debug("searching for implementation for synchronize job " + type.getSimpleName() + " for backend " + getName() + " [account-type " + kt + ", konto ID: " + id + "]");
     for (SynchronizeJobProvider p:this.getJobProviders())
     {
       List<Class<? extends SynchronizeJob>> classes = p.getJobTypes();
       for (Class<? extends SynchronizeJob> c:classes)
       {
-        if (type.isAssignableFrom(c))
+        if (type.isAssignableFrom(c) && p.supports(c,konto))
         {
           Logger.debug("    found " + c.getSimpleName());
-          this.jobTypes.put(type,c);
           return c;
         }
       }
     }
     Logger.debug("no implementation found");
-    this.jobTypes.put(type,null);
     return null;
   }
   
@@ -193,7 +199,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
       throw new ApplicationException(i18n.tr("Der Geschäftsvorfall konnte nicht erstellt werden: {0}",re.getMessage()));
     }
 
-    Class<? extends SynchronizeJob> job = this.getImplementor(type);
+    Class<? extends SynchronizeJob> job = this.getImplementor(type, konto);
     if (job == null)
       throw new ApplicationException(i18n.tr("Der Geschäftsvorfall \"{0}\" wird für {1} nicht unterstützt",type.getSimpleName(),this.getName()));
     
@@ -216,7 +222,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
       if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
         return false;
       
-      return this.getImplementor(type) != null;
+      return this.getImplementor(type, konto) != null;
     }
     catch (RemoteException re)
     {

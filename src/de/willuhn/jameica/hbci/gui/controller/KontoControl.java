@@ -50,6 +50,7 @@ import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.BackendInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
+import de.willuhn.jameica.hbci.gui.input.KontoartInput;
 import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
 import de.willuhn.jameica.hbci.gui.parts.SaldoChart;
@@ -92,6 +93,7 @@ public class KontoControl extends AbstractControl
 	private Input passportAuswahl         = null;
   private Input kundennummer 		        = null;
   private Input kommentar               = null;
+  private Input accountType             = null;
   
   private TextInput bic                 = null;
   private TextInput iban                = null;
@@ -433,6 +435,20 @@ public class KontoControl extends AbstractControl
   }
   
   /**
+   * Liefert ein Auswahlfeld fuer die Kontoart.
+   * @return Auswahlfeld fuer die Kontoart.
+   * @throws RemoteException
+   */
+  public Input getAccountType() throws RemoteException
+  {
+    if (this.accountType != null)
+      return this.accountType;
+    
+    this.accountType = new KontoartInput(this.getKonto().getAccountType());
+    return this.accountType;
+  }
+  
+  /**
    * Aktualisiert die Auswahlmoeglichkeiten des Kontos.
    */
   private void updateStatus()
@@ -708,6 +724,8 @@ public class KontoControl extends AbstractControl
       getKonto().setIban((String)getIban().getValue());
       getKonto().setBic((String)getBic().getValue());
       getKonto().setKategorie((String)getKategorie().getValue());
+      
+      getKonto().setAccountType((Integer) getAccountType().getValue());
       
       // und jetzt speichern wir.
 			getKonto().store();

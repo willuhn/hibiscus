@@ -14,6 +14,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.structures.Konto;
@@ -25,12 +26,14 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.rmi.KontoType;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -197,6 +200,9 @@ public class Converter {
     k.subnumber  = konto.getUnterkonto(); // BUGZILLA 355
     k.iban       = konto.getIban();
     k.bic        = konto.getBic();
+    
+    Integer accType = konto.getAccountType();
+    k.acctype    = accType != null ? accType.toString() : null;
 		return k;  	
 	}
 
@@ -226,8 +232,44 @@ public class Converter {
     if (konto.type != null && konto.type.length() > 0)
       list.addFilter("bezeichnung = ?", new Object[]{konto.type});
 
+    // Wir vervollstaendigen gleich noch die Kontoart, wenn wir eine haben und im Konto noch
+    // keine hinterlegt ist.
+    String type = StringUtils.trimToNull(konto.acctype);
+    Integer accType = null;
+    if (type != null)
+    {
+      try
+      {
+        accType = Integer.parseInt(type);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unknown account type: " + type,e);
+      }
+    }
+
     if (list.hasNext())
-			return (de.willuhn.jameica.hbci.rmi.Konto) list.next(); // Konto gibts schon
+    {
+      // Konto gibts schon
+      de.willuhn.jameica.hbci.rmi.Konto result = (de.willuhn.jameica.hbci.rmi.Konto) list.next();
+      Integer current = result.getAccountType();
+      if ((current == null && accType != null) || (current != null && accType != null && !current.equals(accType))) // Neu oder hat sich geaendert
+      {
+        try
+        {
+          KontoType kt = KontoType.find(accType);
+          Logger.info("auto-completing account type (value: " + accType + " - " + kt + ", old value: " + current + ") for account ID: " + result.getID());
+          result.setAccountType(accType);
+          result.store();
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to auto-complete account type (value: " + accType + ") for account ID: " + result.getID(),e);
+        }
+      }
+      
+      return result;
+    }
 
 		// Ne, wir erstellen ein neues
 		de.willuhn.jameica.hbci.rmi.Konto k = (de.willuhn.jameica.hbci.rmi.Konto) Settings.getDBService().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,null);
@@ -239,6 +281,7 @@ public class Converter {
 		k.setBezeichnung(konto.type);
 		k.setWaehrung(konto.curr);
 		k.setIban(konto.iban);
+		k.setAccountType(accType);
 		k.setBic(konto.bic);
 		if (passportClass != null)
 		  k.setPassportClass(passportClass.getName());

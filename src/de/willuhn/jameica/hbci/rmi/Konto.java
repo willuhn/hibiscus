@@ -110,6 +110,13 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
    * @throws RemoteException
    */
   public String getBackendClass() throws RemoteException;
+  
+  /**
+   * Liefert die Kontoart. Kann NULL sein.
+   * @return die Kontoart.
+   * @throws RemoteException
+   */
+  public Integer getAccountType() throws RemoteException;
 
 	/**
 	 * Liefert die Waehrungs-Bezeichnung der Bankverbindung.
@@ -176,6 +183,13 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
    * @throws RemoteException
    */
   public void setBackendClass(String backend) throws RemoteException;
+  
+  /**
+   * Speichert die Kontoart. Kann NULL sein.
+   * @param i die Kontoart.
+   * @throws RemoteException
+   */
+  public void setAccountType(Integer i) throws RemoteException;
 
 	/**
 	 * Speichert die Kundennummer.

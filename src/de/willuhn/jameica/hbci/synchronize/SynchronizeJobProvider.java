@@ -33,6 +33,14 @@ public interface SynchronizeJobProvider extends Comparable
    * @return Liste der implementierenden Klassen der Jobs des Providers.
    */
   public List<Class<? extends SynchronizeJob>> getJobTypes();
+  
+  /**
+   * Prueft, ob der Job-Provider diesen Job fuer das angegebene Konto beherrscht.
+   * @param type der Job-Typ.
+   * @param k das konkrete Konto.
+   * @return true, wenn er es beherrscht.
+   */
+  public boolean supports(Class<? extends SynchronizeJob> type, Konto k);
 }
 
 

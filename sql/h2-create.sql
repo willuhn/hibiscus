@@ -17,6 +17,7 @@ CREATE TABLE konto (
   saldo_available double,
   kategorie varchar(255) NULL,
   backend_class varchar(1000),
+  acctype int(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -407,6 +408,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',56);
+INSERT INTO version (name,version) values ('db',57);
   
 COMMIT;

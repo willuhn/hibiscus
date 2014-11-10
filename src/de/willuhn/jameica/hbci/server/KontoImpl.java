@@ -184,6 +184,15 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     return (String) getAttribute("backend_class");
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getAccountType()
+   */
+  @Override
+  public Integer getAccountType() throws RemoteException
+  {
+    return (Integer) getAttribute("acctype");
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#setKontonummer(java.lang.String)
@@ -224,6 +233,15 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   public void setBackendClass(String backend) throws RemoteException
   {
     setAttribute("backend_class", backend);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#setAccountType(java.lang.Integer)
+   */
+  @Override
+  public void setAccountType(Integer i) throws RemoteException
+  {
+    setAttribute("acctype",i);
   }
 
   /**

@@ -16,7 +16,8 @@ CREATE TABLE konto (
   flags integer NULL,
   saldo_available float,
   kategorie varchar(255) NULL,
-  backend_class varchar(1000)
+  backend_class varchar(1000),
+  acctype integer NULL
 );
 
 CREATE TABLE empfaenger (
@@ -356,4 +357,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',56);
+INSERT INTO version (name,version) values ('db',57);

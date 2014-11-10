@@ -93,6 +93,15 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung implements HBCISynch
 
     return jobs;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
+   */
+  @Override
+  public boolean supports(Class<? extends SynchronizeJob> type, Konto k)
+  {
+    return true;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getJobTypes()
