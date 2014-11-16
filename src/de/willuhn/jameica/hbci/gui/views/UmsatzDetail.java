@@ -19,7 +19,7 @@ import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
-import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
+import de.willuhn.jameica.hbci.gui.action.UmsatzMarkChecked;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -52,7 +52,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        new FlaggableChange(Umsatz.FLAG_CHECKED,true).handleAction(context);
+        new UmsatzMarkChecked(Umsatz.FLAG_CHECKED,true).handleAction(context);
         checked.setEnabled(false); // nur einmal moeglich
       }
     },u,false,"emblem-default.png");

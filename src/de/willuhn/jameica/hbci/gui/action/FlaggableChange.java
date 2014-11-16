@@ -27,6 +27,8 @@ import de.willuhn.util.I18N;
  */
 public class FlaggableChange implements Action
 {
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   private int flags   = 0;
   private boolean add = true;
   
@@ -47,8 +49,6 @@ public class FlaggableChange implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
 		if (context == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Datensätze aus"));
 
@@ -76,7 +76,10 @@ public class FlaggableChange implements Action
           objects[i].setFlags(current | this.flags);
         else if (!this.add && have)
           objects[i].setFlags(current ^ this.flags);
+        
+        this.postProcess(objects[i]);
         objects[i].store();
+        
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(objects[i]));
       }
       objects[0].transactionCommit();
@@ -98,18 +101,32 @@ public class FlaggableChange implements Action
 			throw new ApplicationException(i18n.tr("Fehler beim Speichern der Änderungen"));
 		}
   }
+  
+  /**
+   * Optionales Postprocessing.
+   * Kann von abgeleiteten Klassen ueberschrieben werden.
+   * @param o das Objekt.
+   * @throws Exception
+   */
+  protected void postProcess(Flaggable o) throws Exception
+  {
+  }
+  
+  /**
+   * Liefert die zu setzenden Flags.
+   * @return flags
+   */
+  protected int getFlags()
+  {
+    return flags;
+  }
+  
+  /**
+   * Liefert true, wenn die Flags gesetzt werden sollen.
+   * @return true, wenn die Flags gesetzt werden sollen.
+   */
+  protected boolean getAdd()
+  {
+    return this.add;
+  }
 }
-
-
-/**********************************************************************
- * $Log: FlaggableChange.java,v $
- * Revision 1.1  2009/09/15 00:23:34  willuhn
- * @N BUGZILLA 745
- *
- * Revision 1.2  2009/04/05 21:00:36  willuhn
- * @B BUGZILLA 715
- *
- * Revision 1.1  2009/02/04 23:06:24  willuhn
- * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
- *
- **********************************************************************/
