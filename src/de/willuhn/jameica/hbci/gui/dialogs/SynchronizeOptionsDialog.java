@@ -85,31 +85,28 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     this.options = new SynchronizeOptions(konto);
     this.offline = konto.hasFlag(Konto.FLAG_OFFLINE);
     
-    if (this.offline)
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    SynchronizeEngine engine = service.get(SynchronizeEngine.class);
+    this.syncAvail = engine.supports(SynchronizeJobKontoauszug.class,konto);
+    
+    // checken, ob wir Addon-Properties haben
+    if (this.syncAvail)
     {
-      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      SynchronizeEngine engine = service.get(SynchronizeEngine.class);
-      this.syncAvail = engine.supports(SynchronizeJobKontoauszug.class,konto);
-      
-      // checken, ob wir Addon-Properties haben
-      if (this.syncAvail)
+      try
       {
-        try
+        SynchronizeBackend backend = engine.getBackend(SynchronizeJobKontoauszug.class,konto);
+        List<String> names = backend.getPropertyNames(konto);
+        if (names != null && names.size() > 0)
         {
-          SynchronizeBackend backend = engine.getBackend(SynchronizeJobKontoauszug.class,konto);
-          List<String> names = backend.getPropertyNames(konto);
-          if (names != null && names.size() > 0)
+          for (String name:names)
           {
-            for (String name:names)
-            {
-              this.createCustomProperty(name);
-            }
+            this.createCustomProperty(name);
           }
         }
-        catch (ApplicationException ae)
-        {
-          Logger.error(ae.getMessage());
-        }
+      }
+      catch (ApplicationException ae)
+      {
+        Logger.error(ae.getMessage());
       }
     }
   }
