@@ -468,6 +468,9 @@ public class KontoControl extends AbstractControl
       SynchronizeBackend backend = (SynchronizeBackend) getBackendAuswahl().getValue();
       // Den Passport gibts erstmal nur bei HBCI-Konten - und nur bei !offline
       getPassportAuswahl().setEnabled(!offline && backend != null && backend.equals(hbci));
+
+      // Kein Backend bei Offline-Konten
+      getBackendAuswahl().setEnabled(!offline);
     }
     catch (Exception e)
     {
