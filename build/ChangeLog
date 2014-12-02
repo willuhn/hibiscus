@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0402 Fehler in Prüfziffern-Methode 51c - siehe https://github.com/willuhn/hbci4java/commit/ba4a91c7064ba6d4f6e30767cc93d2a977768da4
   * NEW: 0401 Beim "als geprüft markieren" eine Option anbieten, um dynamische Umsatzkategorien hierbei fest zuzuordnen
   * NEW: 0400 Support für alternative Synchronize-Jobs im selben Backend mittels Account-Types.
   * NEW: 0399 Bei der Auto-Formatierung einer IBAN wurde nur der erste Buchstabe groß geschrieben
