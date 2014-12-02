@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import javax.annotation.Resource;
+
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.manager.HBCIHandler;
 
@@ -33,6 +35,8 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob;
 import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
@@ -54,7 +58,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
    * Queue, ueber die die rohen HBCI-Nachrichten getraced werden koennen.
    */
   public final static String HBCI_TRACE = "hibiscus.sync.hbci.trace";
-  
+
+  @Resource
+  private SynchronizeEngine engine = null;
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getName()
    */
@@ -90,15 +97,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
     // Wir wollen nur die Online-Konten haben
     for (Konto konto:list)
     {
-      try
-      {
-        if (!konto.hasFlag(Konto.FLAG_OFFLINE))
-          result.add(konto);
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to determine flags of konto",re);
-      }
+      if (this.supports(konto))
+        result.add(konto);
     }
 
     return result;
@@ -131,16 +131,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
    */
   public boolean supports(Class<? extends SynchronizeJob> type, Konto konto)
   {
-    try
-    {
-      if (konto == null || konto.hasFlag(Konto.FLAG_OFFLINE) || konto.hasFlag(Konto.FLAG_DISABLED))
-        return false;
-    }
-    catch (RemoteException re)
-    {
-      Logger.error("unable to determine support for job type " + type,re);
+    if (!this.supports(konto))
       return false;
-    }
 
     return super.supports(type,konto);
   }
@@ -155,8 +147,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
       for (SynchronizeJob job:jobs)
       {
         Konto konto = job.getKonto();
-        if (konto.hasFlag(Konto.FLAG_OFFLINE))
-          throw new ApplicationException(i18n.tr("Das Konto ist ein Offline-Konto: {0}",konto.getLongName()));
+        if (!this.supports(konto))
+          throw new ApplicationException(i18n.tr("Das Konto ist ein Offline-Konto oder das Zugangsverfahren {0} wurde nicht ausgewählt: {1}",this.getName(),konto.getLongName()));
       }
     }
     catch (RemoteException re)
@@ -167,6 +159,29 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
 
     return super.execute(jobs);
   }
+  
+  /**
+   * Prueft, ob das Konto prinzipiell unterstuetzt wird.
+   * @param konto das Konto.
+   * @return true, wenn es prinzipiell unterstuetzt wird.
+   */
+  private boolean supports(Konto konto)
+  {
+    try
+    {
+      if (konto == null || konto.hasFlag(Konto.FLAG_OFFLINE) || konto.hasFlag(Konto.FLAG_DISABLED))
+        return false;
+      
+      SynchronizeBackend backend = engine.getBackend(konto);
+      return (backend == null || backend.equals(this));
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine synchronization support for konto",re);
+    }
+    return false;
+  }
+
 
 
   /**
