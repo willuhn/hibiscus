@@ -7,6 +7,10 @@
 
 package de.willuhn.jameica.hbci.rmi;
 
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.I18N;
+
 /**
  * Definition der verschiedenen Konto-Arten.
  * Siehe FinTS_3.0_Formals_2011-06-14_final_version.pdf - Data Dictionary "Kontoart",
@@ -66,6 +70,8 @@ public enum KontoType
   
   ;
   
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   /**
    * Die Default-Kontoart.
    */
@@ -94,7 +100,7 @@ public enum KontoType
    */
   public String getName()
   {
-    return this.name;
+    return i18n.tr(this.name);
   }
   
   /**
