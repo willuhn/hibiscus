@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0404 Support für erweiterte Sync-Optionen jetzt auch im HBCI-Backend
   * NEW: 0403 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/a98560e03816bf8ad2399111506d1c7585d282ae
   * NEW: 0402 Fehler in Prüfziffern-Methode 51c - siehe https://github.com/willuhn/hbci4java/commit/ba4a91c7064ba6d4f6e30767cc93d2a977768da4
   * NEW: 0401 Beim "als geprüft markieren" eine Option anbieten, um dynamische Umsatzkategorien hierbei fest zuzuordnen

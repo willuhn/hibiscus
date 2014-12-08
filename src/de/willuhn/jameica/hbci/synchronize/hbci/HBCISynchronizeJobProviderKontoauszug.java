@@ -29,7 +29,7 @@ import de.willuhn.logging.Logger;
  * Implementierung eines Job-Providers fuer das Abrufen von Saldo und/oder Kontoauszug.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderKontoauszug implements HBCISynchronizeJobProvider
+public class HBCISynchronizeJobProviderKontoauszug extends AbstractHBCISynchronizeJobProvider
 {
   @Resource
   private HBCISynchronizeBackend backend = null;
@@ -45,7 +45,7 @@ public class HBCISynchronizeJobProviderKontoauszug implements HBCISynchronizeJob
     add(KontoType.FONDSDEPOT);
     add(KontoType.WERTPAPIERDEPOT);
   }};
-
+  
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */

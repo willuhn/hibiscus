@@ -29,7 +29,7 @@ import de.willuhn.logging.Logger;
  * Implementierung eines Job-Providers fuer SEPA-Lastschriften.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderSepaLastschrift implements HBCISynchronizeJobProvider
+public class HBCISynchronizeJobProviderSepaLastschrift extends AbstractHBCISynchronizeJobProvider
 {
   @Resource
   private HBCISynchronizeBackend backend = null;

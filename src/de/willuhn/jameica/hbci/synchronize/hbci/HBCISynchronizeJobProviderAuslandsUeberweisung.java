@@ -29,7 +29,7 @@ import de.willuhn.logging.Logger;
  * Implementierung eines Job-Providers fuer Auslandsueberweisungen.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderAuslandsUeberweisung implements HBCISynchronizeJobProvider
+public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCISynchronizeJobProvider
 {
   @Resource
   private HBCISynchronizeBackend backend = null;

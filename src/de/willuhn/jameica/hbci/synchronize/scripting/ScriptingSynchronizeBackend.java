@@ -22,7 +22,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
-import de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.messaging.QueryMessage;
@@ -36,7 +35,7 @@ import de.willuhn.util.ProgressMonitor;
  * Backend, welches Konten via Scripting anbindet.
  */
 @Lifecycle(Type.CONTEXT)
-public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
+public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<ScriptingSynchronizeJobProvider>
 {
   /**
    * Der Context-Name fuer den Javascript-Funktionsnamen.
@@ -57,7 +56,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getJobProviderInterface()
    */
-  protected Class<? extends SynchronizeJobProvider> getJobProviderInterface()
+  protected Class<ScriptingSynchronizeJobProvider> getJobProviderInterface()
   {
     return ScriptingSynchronizeJobProvider.class;
   }

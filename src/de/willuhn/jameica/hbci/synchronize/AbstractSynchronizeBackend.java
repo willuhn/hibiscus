@@ -34,12 +34,13 @@ import de.willuhn.util.ProgressMonitor;
 
 /**
  * Abstrakte Basis-Implementierung fuer ein Synchronize-Backend.
+ * @param <T> der konkrete Typ des JobProviders.
  */
-public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
+public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvider> implements SynchronizeBackend
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private List<SynchronizeJobProvider> providers = null;
+  private List<T> providers = null;
   private SynchronizeSession session = null;
   protected Worker worker = null;
   
@@ -80,7 +81,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
    * Liefert das Marker-Interface der Job-Provider des Backends.
    * @return das Marker-Interface der Job-Provider des Backends.
    */
-  protected abstract Class<? extends SynchronizeJobProvider> getJobProviderInterface();
+  protected abstract Class<T> getJobProviderInterface();
   
   /**
    * Muss ueberschrieben werden, um dort eine Instanz der JobGroup zurueckzuliefern,
@@ -94,19 +95,19 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
    * Liefert unsere Job-Provider.
    * @return unsere Job-Provider.
    */
-  private synchronized List<SynchronizeJobProvider> getJobProviders()
+  protected synchronized List<T> getJobProviders()
   {
     if (this.providers != null)
       return this.providers;
     
-    this.providers = new ArrayList<SynchronizeJobProvider>();
+    this.providers = new ArrayList<T>();
 
     try
     {
       Logger.info("loading synchronize providers for backend " + getName());
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       Class[] found = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder().findImplementors(this.getJobProviderInterface());
-      for (Class<SynchronizeJobProvider> c:found)
+      for (Class<T> c:found)
       {
         try
         {
@@ -122,13 +123,13 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
       // Sortieren der Jobs
       Logger.info("  found " + this.providers.size() + " provider(s)");
       Logger.debug("provider order before sorting:");
-      for (SynchronizeJobProvider p:this.providers)
+      for (T p:this.providers)
       {
         Logger.debug("  " + p.getClass().getSimpleName());
       }
       Collections.sort(this.providers);
       Logger.debug("provider order after sorting:");
-      for (SynchronizeJobProvider p:this.providers)
+      for (T p:this.providers)
       {
         Logger.debug("  " + p.getClass().getSimpleName());
       }
@@ -166,7 +167,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
     }
 
     Logger.debug("searching for implementation for synchronize job " + type.getSimpleName() + " for backend " + getName() + " [account-type " + kt + ", konto ID: " + id + "]");
-    for (SynchronizeJobProvider p:this.getJobProviders())
+    for (T p:this.getJobProviders())
     {
       List<Class<? extends SynchronizeJob>> classes = p.getJobTypes();
       for (Class<? extends SynchronizeJob> c:classes)
@@ -186,7 +187,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#create(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren oder weitere Context-Properties im Job zu setzen.
    */
-  public <T> T create(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
+  public <R> R create(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
   {
     try
     {
@@ -208,7 +209,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
     SynchronizeJob instance = service.get(job);
     instance.setKonto(konto);
     
-    return (T) instance;
+    return (R) instance;
   }
   
   /**
@@ -243,7 +244,7 @@ public abstract class AbstractSynchronizeBackend implements SynchronizeBackend
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
     for (Konto konto:this.getSynchronizeKonten(k))
     {
-      for (SynchronizeJobProvider provider:this.getJobProviders())
+      for (T provider:this.getJobProviders())
       {
         List<SynchronizeJob> list = provider.getSynchronizeJobs(konto);
         if (list == null || list.size() == 0)

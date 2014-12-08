@@ -11,11 +11,14 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -37,7 +40,6 @@ import de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob;
 import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
-import de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.messaging.QueryMessage;
@@ -52,7 +54,7 @@ import de.willuhn.util.ProgressMonitor;
  * Synchronize-Backend fuer HBCI.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
+public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynchronizeJobProvider>
 {
   /**
    * Queue, ueber die die rohen HBCI-Nachrichten getraced werden koennen.
@@ -81,7 +83,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getJobProviderInterface()
    */
-  protected Class<? extends SynchronizeJobProvider> getJobProviderInterface()
+  protected Class<HBCISynchronizeJobProvider> getJobProviderInterface()
   {
     return HBCISynchronizeJobProvider.class;
   }
@@ -158,6 +160,39 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend
     }
 
     return super.execute(jobs);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
+   */
+  @Override
+  public List<String> getPropertyNames(Konto konto)
+  {
+    try
+    {
+      if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
+        return null;
+      
+      Set<String> set = new HashSet<String>();
+      // Wir fragen mal die Job-Provider
+      List<HBCISynchronizeJobProvider> providers = this.getJobProviders();
+      for (HBCISynchronizeJobProvider p:providers)
+      {
+        List<String> props = p.getPropertyNames(konto);
+        if (props != null)
+          set.addAll(props);
+      }
+      
+      List<String> result = new ArrayList<String>();
+      result.addAll(set);
+      Collections.sort(result);
+      return result;
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine property-names",re);
+      return null;
+    }
   }
   
   /**

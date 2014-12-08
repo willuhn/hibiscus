@@ -28,7 +28,7 @@ import de.willuhn.logging.Logger;
  * Implementierung eines Job-Providers zum Abrufen und Ausfuehren von SEPA-Dauerauftraegen.
  */
 @Lifecycle(Type.CONTEXT)
-public class HBCISynchronizeJobProviderSepaDauerauftrag implements HBCISynchronizeJobProvider
+public class HBCISynchronizeJobProviderSepaDauerauftrag extends AbstractHBCISynchronizeJobProvider
 {
   @Resource
   private HBCISynchronizeBackend backend = null;
