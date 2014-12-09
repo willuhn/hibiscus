@@ -55,6 +55,7 @@ public class SepaLastschriftImporter extends AbstractSepaImporter
 
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));
     u.setPmtInfId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PMTINFID.getValue())));
+    u.setPurposeCode(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PURPOSECODE.getValue())));
 
     u.setCreditorId(prop.getProperty(ISEPAParser.Names.CREDITORID.getValue()));
     u.setMandateId(prop.getProperty(ISEPAParser.Names.MANDATEID.getValue()));

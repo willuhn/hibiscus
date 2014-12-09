@@ -105,6 +105,10 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
       setJobParamUsage(dauerauftrag);
 			setJobParam("firstdate",dauerauftrag.getErsteZahlung());
 
+			String purp = dauerauftrag.getPurposeCode();
+			if (purp != null && purp.length() > 0)
+			  setJobParam("purposecode",purp);
+
 			Date letzteZahlung = dauerauftrag.getLetzteZahlung();
 			if (letzteZahlung != null)
 				setJobParam("lastdate",letzteZahlung);

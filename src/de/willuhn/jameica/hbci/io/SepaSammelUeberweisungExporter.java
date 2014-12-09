@@ -63,6 +63,7 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       props.setProperty(SepaUtil.insertIndex("btg.curr",count),     k.getWaehrung() != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE);
       props.setProperty(SepaUtil.insertIndex("usage",count),        StringUtils.trimToEmpty(b.getZweck()));
       props.setProperty(SepaUtil.insertIndex("endtoendid",count),   StringUtils.trimToEmpty(b.getEndtoEndId()));
+      props.setProperty(SepaUtil.insertIndex("purposecode",count),  StringUtils.trimToEmpty(b.getPurposeCode()));
       count++;
     }
     

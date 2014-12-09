@@ -96,6 +96,7 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
     props.setProperty(SepaUtil.insertIndex("creditorid",idx),    StringUtils.trimToEmpty(u.getCreditorId()));
     props.setProperty(SepaUtil.insertIndex("mandateid",idx),     StringUtils.trimToEmpty(u.getMandateId()));
     props.setProperty(SepaUtil.insertIndex("manddateofsig",idx), ISO_DATE.format(u.getSignatureDate()));
+    props.setProperty(SepaUtil.insertIndex("purposecode",idx),   StringUtils.trimToEmpty(u.getPurposeCode()));
     props.setProperty("pmtinfid",StringUtils.trimToEmpty(u.getPmtInfId()));
   }
 

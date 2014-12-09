@@ -63,6 +63,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setTerminUeberweisung(isTerminUeberweisung());
     u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
     u.setUmbuchung(isUmbuchung());
+    u.setPurposeCode(getPurposeCode());
     
     return u;
   }
@@ -117,6 +118,9 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
+      HBCIProperties.checkLength(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_MAXLENGTH);
+      HBCIProperties.checkChars(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_VALIDCHARS);
+      
       if (isUmbuchung() && isTerminUeberweisung())
         throw new ApplicationException(i18n.tr("Eine Umbuchung kann nicht als Termin-Auftrag gesendet werden"));
       
@@ -236,7 +240,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#getEndtoEndId()
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
   public String getEndtoEndId() throws RemoteException
   {
@@ -244,7 +248,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setEndtoEndId(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */
   public void setEndtoEndId(String id) throws RemoteException
   {
@@ -252,7 +256,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#getPmtInfId()
+   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
    */
   public String getPmtInfId() throws RemoteException
   {
@@ -260,11 +264,28 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setPmtInfId(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
    */
   public void setPmtInfId(String id) throws RemoteException
   {
     setAttribute("pmtinfid",id);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
+   */
+  @Override
+  public String getPurposeCode() throws RemoteException
+  {
+    return (String) getAttribute("purposecode");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
+   */
+  @Override
+  public void setPurposeCode(String code) throws RemoteException
+  {
+    setAttribute("purposecode",code);
+  }
 }

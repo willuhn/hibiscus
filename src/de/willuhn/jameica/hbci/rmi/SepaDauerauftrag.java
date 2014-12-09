@@ -11,22 +11,8 @@ import java.rmi.RemoteException;
 /**
  * Bildet einen SEPA-Dauerauftrag in Hibiscus ab.
  */
-public interface SepaDauerauftrag extends HibiscusTransfer, Checksum, BaseDauerauftrag
+public interface SepaDauerauftrag extends HibiscusTransfer, Checksum, BaseDauerauftrag, SepaPayment, SepaBooking
 {
-  /**
-   * Liefert die optionale End2End-ID fuer SEPA.
-   * @return die optionale End2End-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public String getEndtoEndId() throws RemoteException;
-  
-  /**
-   * Speichert die optionale End2End-ID fuer SEPA.
-   * @param id die optionale End2End-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public void setEndtoEndId(String id) throws RemoteException;
-  
   /**
    * Liefert true, wenn die Bank mitgeteilt hat, dass der Auftrag aenderbar ist.
    * @return true, wenn die Bank mitgeteilt hat, dass der Auftrag aenderbar ist.

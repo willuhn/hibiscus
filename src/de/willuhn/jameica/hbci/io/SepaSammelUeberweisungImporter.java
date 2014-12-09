@@ -69,6 +69,7 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
     u.setZweck(prop.getProperty(ISEPAParser.Names.USAGE.getValue()));
     u.setBetrag(Double.valueOf(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));
+    u.setPurposeCode(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PURPOSECODE.getValue())));
 
     u.store();
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueb));

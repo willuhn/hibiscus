@@ -170,6 +170,9 @@ public class Converter {
     
     auftrag.setChangable(d.can_change);
     auftrag.setDeletable(d.can_delete);
+    
+    auftrag.setPmtInfId(d.pmtinfid);
+    auftrag.setPurposeCode(d.purposecode);
 
     // Verwendungszweck
     VerwendungszweckUtil.apply(auftrag,d.usage);

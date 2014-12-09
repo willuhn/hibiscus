@@ -95,6 +95,10 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       if (pmtInfId != null && pmtInfId.trim().length() > 0)
         setJobParam("pmtinfid", pmtInfId);
 
+      String purp = lastschrift.getPurposeCode();
+      if (purp != null && purp.length() > 0)
+        setJobParam("purposecode",purp);
+
       setJobParam("mandateid",lastschrift.getMandateId());
       setJobParam("manddateofsig",lastschrift.getSignatureDate());
       setJobParam("creditorid",lastschrift.getCreditorId());

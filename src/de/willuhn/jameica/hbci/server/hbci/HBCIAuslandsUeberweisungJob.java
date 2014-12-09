@@ -94,6 +94,10 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       if (pmtInfId != null && pmtInfId.trim().length() > 0)
         setJobParam("pmtinfid", pmtInfId);
 
+      String purp = ueberweisung.getPurposeCode();
+      if (purp != null && purp.length() > 0)
+        setJobParam("purposecode",purp);
+
 		}
 		catch (RemoteException e)
 		{

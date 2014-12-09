@@ -7,7 +7,10 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.List;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
@@ -28,34 +31,36 @@ public class PurposeCodeInput extends SelectInput
    */
   public PurposeCodeInput(String value)
   {
-    super(PurposeCode.codes(),value);
+    super(getCodes(),value);
     this.setName(i18n.tr("SEPA Purpose-Code"));
-    this.setPleaseChoose(i18n.tr("<Nicht angegeben>"));
     this.setEditable(true); // Man kann auch selbst Werte eingeben
+    this.setComment("");
+    
+    final Listener l = new Listener() {
+      @Override
+      public void handleEvent(Event event)
+      {
+        String value = (String) getValue();
+        PurposeCode c = PurposeCode.find(value);
+        setComment(c != null ? c.getName() : "");
+      }
+    };
+    this.addListener(l);
+    
+    // Einmal initial ausloesen
+    l.handleEvent(null);
   }
   
   /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#format(java.lang.Object)
+   * Liefert eine Liste der moeglichen Purpose-Codes inclusive leerem Code.
+   * @return Liste der moeglichen Purpose-Codes.
    */
-  @Override
-  protected String format(Object bean)
+  private static List<String> getCodes()
   {
-    // Wenn wir einen Namen fuer den Code haben, liefern wir den formatiert zurueck
-    if (bean == null)
-      return super.format(bean);
-    
-    String s = StringUtils.trimToNull(bean.toString());
-    if (s == null)
-      return super.format(bean);
-    
-    PurposeCode pc = PurposeCode.find(s);
-    if (pc != null)
-      return pc.getCode() + " (" + pc.getName() + ")"; // Den Code kennen wir
-    
-    // kennen wir nicht
-    return s;
+    List<String> codes = PurposeCode.codes();
+    codes.add(0,"");
+    return codes;
   }
-  
 }
 
 

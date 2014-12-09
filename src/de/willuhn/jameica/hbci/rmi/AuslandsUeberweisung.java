@@ -14,36 +14,8 @@ import java.rmi.RemoteException;
 /**
  * Bildet eine Auslands-Ueberweisung ab.
  */
-public interface AuslandsUeberweisung extends BaseUeberweisung, Duplicatable
+public interface AuslandsUeberweisung extends BaseUeberweisung, Duplicatable, SepaPayment, SepaBooking
 {
-  /**
-   * Liefert die optionale End2End-ID fuer SEPA.
-   * @return die optionale End2End-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public String getEndtoEndId() throws RemoteException;
-  
-  /**
-   * Speichert die optionale End2End-ID fuer SEPA.
-   * @param id die optionale End2End-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public void setEndtoEndId(String id) throws RemoteException;
-
-  /**
-   * Liefert die optionale PmtInf-ID fuer SEPA.
-   * @return die optionale PmtInf-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public String getPmtInfId() throws RemoteException;
-  
-  /**
-   * Speichert die optionale PmtInf-ID fuer SEPA.
-   * @param id die optionale PmtInf-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public void setPmtInfId(String id) throws RemoteException;
-
   /**
    * Prueft, ob es sich um einen bankseitige Termin-Ueberweisung handelt.
    * @return true, wenn es eine bankseitige Termin-Ueberweisung ist.

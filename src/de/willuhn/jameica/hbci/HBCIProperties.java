@@ -92,7 +92,12 @@ public class HBCIProperties
    */
   public final static String HBCI_BIC_VALIDCHARS = settings.getString("hbci.bic.validchars", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 
 
-	/**
+  /**
+   * Liste der in Purpose-Codes erlaubten Zeichen.
+   */
+  public final static String HBCI_SEPA_PURPOSECODE_VALIDCHARS = settings.getString("hbci.sepa.purposecode.validchars", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); 
+
+  /**
    * Liste der in Bankleitzahlen erlaubten Zeichen.
    */
   public final static String HBCI_BLZ_VALIDCHARS = settings.getString("hbci.blz.validchars","0123456789"); 
@@ -202,6 +207,11 @@ public class HBCIProperties
    */
   public final static int HBCI_SEPA_ENDTOENDID_MAXLENGTH = settings.getInt("hbci.sepa.endtoendid.maxlength",35);
   
+  /**
+   * Maximale Laenge des Purpose-Codes bei SEPA.
+   */
+  public final static int HBCI_SEPA_PURPOSECODE_MAXLENGTH = settings.getInt("hbci.sepa.purposecode.maxlength",4);
+
   /**
    * Maximale Laenge der Mandate-ID bei SEPA.
    */

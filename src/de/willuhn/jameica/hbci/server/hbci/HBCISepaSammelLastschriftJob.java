@@ -56,6 +56,10 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
       setJobParam("mandateid",     idx, b.getMandateId());
       setJobParam("manddateofsig", idx, b.getSignatureDate());
       setJobParam("creditorid",    idx, b.getCreditorId());
+      
+      String purp = b.getPurposeCode();
+      if (purp != null && purp.length() > 0)
+        setJobParam("purposecode",idx, purp);
     }
     
     setJobParam("sequencetype",lastschrift.getSequenceType().name());

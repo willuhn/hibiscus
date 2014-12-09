@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.PurposeCodeInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList;
@@ -75,6 +76,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private TextInput bic                      = null;
   private TextInput endToEndId               = null;
   private TextInput pmtInfId                 = null;
+  private PurposeCodeInput purposeCode       = null;
 
   private TerminInput termin                 = null;
   private SelectInput typ                    = null;
@@ -239,6 +241,21 @@ public class AuslandsUeberweisungControl extends AbstractControl
     return this.pmtInfId;
   }
 
+  /**
+   * Liefert das Eingabe-Feld fuer den Purpose-Code.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getPurposeCode() throws RemoteException
+  {
+    if (this.purposeCode != null)
+      return this.purposeCode;
+
+    this.purposeCode = new PurposeCodeInput(getTransfer().getPurposeCode());
+    this.purposeCode.setEnabled(!getTransfer().ausgefuehrt());
+    this.purposeCode.setMandatory(false);
+    return this.purposeCode;
+  }
 
   /**
    * Liefert das Eingabe-Feld fuer den Verwendungszweck.
@@ -436,6 +453,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
       t.setPmtInfId((String) getPmtInfId().getValue());
+      t.setPurposeCode((String)getPurposeCode().getValue());
 
       Typ typ = (Typ) getTyp().getValue();
       t.setTerminUeberweisung(typ.termin);

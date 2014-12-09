@@ -71,6 +71,10 @@ public class AuslandsUeberweisungNew extends AbstractView
       container.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
       container.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
       container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+      
+      container.addHeadline(i18n.tr("Auftragswiederholung (nur Hibiscus-intern)"));
+      container.addText(i18n.tr("Diese Information wird nicht an die Bank übertragen."),true);
+      container.addInput(control.getReminderInterval());
     }
     
     // Rechte Seite
@@ -79,13 +83,10 @@ public class AuslandsUeberweisungNew extends AbstractView
       container.addHeadline(i18n.tr("SEPA"));
       container.addInput(control.getEndToEndId());
       container.addInput(control.getPmtInfId());
+      container.addInput(control.getPurposeCode());
       container.addHeadline(i18n.tr("Sonstige Informationen"));
       container.addInput(control.getTyp());
       container.addInput(control.getTermin());
-
-      container.addHeadline(i18n.tr("Auftragswiederholung (nur Hibiscus-intern)"));
-      container.addText(i18n.tr("Diese Information wird nicht an die Bank übertragen."),true);
-      container.addInput(control.getReminderInterval());
     }
 
     Container container = new SimpleContainer(getParent());

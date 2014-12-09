@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
  * Interface fuer eine einzelne Buchung eines SEPA-Sammel-Transfers.
  * @param <T> der konkrete Typ des Sammel-Auftrages.
  */
-public interface SepaSammelTransferBuchung<T extends SepaSammelTransfer> extends Transfer, HibiscusDBObject
+public interface SepaSammelTransferBuchung<T extends SepaSammelTransfer> extends SepaBooking, HibiscusDBObject
 {
 	/**
 	 * Liefert den zugeordneten Sammel-Transfer.
@@ -63,17 +63,4 @@ public interface SepaSammelTransferBuchung<T extends SepaSammelTransfer> extends
 	 */
 	public void setZweck(String zweck) throws RemoteException;
 	
-  /**
-   * Liefert die optionale End2End-ID fuer SEPA.
-   * @return die optionale End2End-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public String getEndtoEndId() throws RemoteException;
-  
-  /**
-   * Speichert die optionale End2End-ID fuer SEPA.
-   * @param id die optionale End2End-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public void setEndtoEndId(String id) throws RemoteException;
 }

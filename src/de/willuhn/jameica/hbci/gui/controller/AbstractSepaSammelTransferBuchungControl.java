@@ -28,6 +28,7 @@ import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
+import de.willuhn.jameica.hbci.gui.input.PurposeCodeInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
@@ -55,6 +56,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   private TextInput empfkto                  = null;
   private TextInput bic                      = null;
   private TextInput endToEndId               = null;
+  private PurposeCodeInput purposeCode       = null;
 
 
   private CheckboxInput storeEmpfaenger      = null;
@@ -153,6 +155,25 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   }
 
   /**
+   * Liefert das Eingabe-Feld fuer den Purpose-Code.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getPurposeCode() throws RemoteException
+  {
+    if (this.purposeCode != null)
+      return this.purposeCode;
+
+    SepaSammelTransferBuchung s = this.getBuchung();
+
+    this.purposeCode = new PurposeCodeInput(getBuchung().getPurposeCode());
+    this.purposeCode.setEnabled(!s.getSammelTransfer().ausgefuehrt());
+    this.purposeCode.setMandatory(false);
+    return this.purposeCode;
+  }
+
+
+  /**
    * Liefert das Eingabe-Feld fuer den Verwendungszweck.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -232,6 +253,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     
     s.setZweck((String)getZweck().getValue());
     s.setEndtoEndId((String) getEndToEndId().getValue());
+    s.setPurposeCode((String) getPurposeCode().getValue());
 
     String kto  = (String)getEmpfaengerKonto().getValue();
     String name = getEmpfaengerName().getText();

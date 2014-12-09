@@ -77,6 +77,9 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
       
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      HBCIProperties.checkLength(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_MAXLENGTH);
+      HBCIProperties.checkChars(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_VALIDCHARS);
     }
     catch (RemoteException e)
     {
@@ -207,6 +210,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
     b.setSammelTransfer(getSammelTransfer());
     b.setZweck(getZweck());
     b.setEndtoEndId(getEndtoEndId());
+    b.setPurposeCode(getPurposeCode());
     return (Duplicatable) b;
   }
 
@@ -219,7 +223,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#getEndtoEndId()
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
   public String getEndtoEndId() throws RemoteException
   {
@@ -227,11 +231,29 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#setEndtoEndId(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */
   public void setEndtoEndId(String id) throws RemoteException
   {
     setAttribute("endtoendid",id);
   }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
+   */
+  @Override
+  public String getPurposeCode() throws RemoteException
+  {
+    return (String) getAttribute("purposecode");
+  }
   
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
+   */
+  @Override
+  public void setPurposeCode(String code) throws RemoteException
+  {
+    setAttribute("purposecode",code);
+  }
+
 }

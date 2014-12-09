@@ -110,6 +110,11 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
         String endToEndId = b.getEndtoEndId();
         if (endToEndId != null && endToEndId.trim().length() > 0)
           setJobParam("endtoendid", idx, endToEndId);
+        
+        String purp = b.getPurposeCode();
+        if (purp != null && purp.length() > 0)
+          setJobParam("purposecode",idx, purp);
+        
       }
 		}
 		catch (RemoteException e)

@@ -64,7 +64,8 @@ CREATE TABLE aueberweisung (
   ausgefuehrt integer NOT NULL,
   ausgefuehrt_am timestamp,
   endtoendid varchar(35) NULL,
-  pmtinfid varchar(35) NULL
+  pmtinfid varchar(35) NULL,
+  purposecode varchar(10) NULL
 );
 
 CREATE TABLE sepalastschrift (
@@ -86,7 +87,8 @@ CREATE TABLE sepalastschrift (
   sepatype varchar(8),
   targetdate date,
   orderid varchar(255),
-  pmtinfid varchar(35)
+  pmtinfid varchar(35),
+  purposecode varchar(10)
 );
 
 CREATE TABLE sepaslast (
@@ -114,7 +116,8 @@ CREATE TABLE sepaslastbuchung (
   endtoendid varchar(35),
   creditorid varchar(35) NOT NULL,
   mandateid varchar(35) NOT NULL,
-  sigdate date NOT NULL
+  sigdate date NOT NULL,
+  purposecode varchar(10)
 );
 
 CREATE TABLE sepasueb (
@@ -135,7 +138,8 @@ CREATE TABLE sepasuebbuchung (
   empfaenger_bic varchar(15),
   betrag float NOT NULL,
   zweck varchar(140),
-  endtoendid varchar(35)
+  endtoendid varchar(35),
+  purposecode varchar(10)
 );
 
 CREATE TABLE protokoll (
@@ -218,7 +222,8 @@ CREATE TABLE sepadauerauftrag (
   tag integer NOT NULL,
   canchange integer NULL,
   candelete integer NULL,
-  pmtinfid varchar(35)
+  pmtinfid varchar(35),
+  purposecode varchar(10) NULL
 );
 
 CREATE TABLE turnus (
@@ -357,4 +362,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',57);
+INSERT INTO version (name,version) values ('db',58);

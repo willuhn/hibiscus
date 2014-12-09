@@ -65,6 +65,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setTargetDate(getTargetDate());
     u.setType(getType());
     u.setOrderId(getOrderId());
+    u.setPurposeCode(getPurposeCode());
     return u;
   }
 
@@ -116,6 +117,9 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
 
       HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      HBCIProperties.checkLength(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_MAXLENGTH);
+      HBCIProperties.checkChars(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_VALIDCHARS);
 
       String creditorId = getCreditorId();
       if (creditorId == null || creditorId.length() == 0)
@@ -208,7 +212,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#getEndtoEndId()
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
   public String getEndtoEndId() throws RemoteException
   {
@@ -216,7 +220,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setEndtoEndId(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */
   public void setEndtoEndId(String id) throws RemoteException
   {
@@ -360,7 +364,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getPmtInfId()
+   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
    */
   public String getPmtInfId() throws RemoteException
   {
@@ -368,11 +372,29 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setPmtInfId(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
    */
   public void setPmtInfId(String id) throws RemoteException
   {
     setAttribute("pmtinfid",id);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
+   */
+  @Override
+  public String getPurposeCode() throws RemoteException
+  {
+    return (String) getAttribute("purposecode");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
+   */
+  @Override
+  public void setPurposeCode(String code) throws RemoteException
+  {
+    setAttribute("purposecode",code);
   }
 
 }

@@ -67,6 +67,7 @@ public class SepaSammelUeberweisungBuchungNew extends AbstractView
       Container container = new SimpleContainer(cols.getComposite());
       container.addHeadline(i18n.tr("SEPA"));
       container.addInput(control.getEndToEndId());
+      container.addInput(control.getPurposeCode());
     }
 
     Container container = new SimpleContainer(getParent());

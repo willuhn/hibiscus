@@ -16,7 +16,7 @@ import de.willuhn.util.ApplicationException;
  * Interface fuer SEPA-Sammellastschriften und -ueberweisungen.
  * @param <T> der konkrete Typ der enthaltenen Buchungen.
  */
-public interface SepaSammelTransfer<T extends SepaSammelTransferBuchung> extends HibiscusDBObject, Terminable, Duplicatable
+public interface SepaSammelTransfer<T extends SepaSammelTransferBuchung> extends HibiscusDBObject, Terminable, Duplicatable, SepaPayment
 {
 	/**
 	 * Liefert eine Liste der Buchungen fuer diesen Transfer.
@@ -68,17 +68,4 @@ public interface SepaSammelTransfer<T extends SepaSammelTransferBuchung> extends
    */
   public T createBuchung() throws RemoteException, ApplicationException;
   
-  /**
-   * Liefert die optionale PmtInf-ID fuer SEPA.
-   * @return die optionale PmtInf-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public String getPmtInfId() throws RemoteException;
-  
-  /**
-   * Speichert die optionale PmtInf-ID fuer SEPA.
-   * @param id die optionale PmtInf-ID fuer SEPA.
-   * @throws RemoteException
-   */
-  public void setPmtInfId(String id) throws RemoteException;
 }

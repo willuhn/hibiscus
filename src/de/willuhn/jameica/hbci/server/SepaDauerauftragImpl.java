@@ -117,6 +117,12 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
     
+      HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+
+      HBCIProperties.checkLength(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_MAXLENGTH);
+      HBCIProperties.checkChars(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_VALIDCHARS);
+
     }
     catch (RemoteException e)
     {
@@ -156,7 +162,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaDauerauftrag#getEndtoEndId()
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
   public String getEndtoEndId() throws RemoteException
   {
@@ -164,7 +170,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaDauerauftrag#setEndtoEndId(java.lang.String)
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */
   public void setEndtoEndId(String id) throws RemoteException
   {
@@ -208,4 +214,39 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     setAttribute("candelete", new Integer(b ? 1 : 0));
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
+   */
+  public String getPmtInfId() throws RemoteException
+  {
+    return (String) getAttribute("pmtinfid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
+   */
+  public void setPmtInfId(String id) throws RemoteException
+  {
+    setAttribute("pmtinfid",id);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
+   */
+  @Override
+  public String getPurposeCode() throws RemoteException
+  {
+    return (String) getAttribute("purposecode");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
+   */
+  @Override
+  public void setPurposeCode(String code) throws RemoteException
+  {
+    setAttribute("purposecode",code);
+  }
+
 }
