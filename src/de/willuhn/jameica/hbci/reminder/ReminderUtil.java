@@ -23,6 +23,7 @@ import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.reminder.ReminderStorageProvider;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -89,7 +90,7 @@ public class ReminderUtil
         if (dates.size() < 2)
           throw new ApplicationException(i18n.tr("Kein Datum für die nächste Wiederholung ermittelbar"));
         reminder.setDate(dates.get(1));
-        reminder.setEnd(end);
+        reminder.setEnd(DateUtil.endOfDay(end)); // BUGZILLA 1585 - Datum auf Ende des Tages setzen, um sicherzustellen, dass der Termin im Laufe des Tages noch gilt
         reminder.setData(Reminder.KEY_EXPIRED,null); // expired date resetten. Wird vom Service bei Bedarf neu gesetzt
         reminder.setQueue("hibiscus.reminder.order");
         reminder.setData("order.class",order.getClass().getName());

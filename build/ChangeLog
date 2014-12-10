@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0406 BUGZILLA 1585 - Ende-Datum einer Wiederholung auf Tagesende setzen, um sicherzustellen, dass der Termin im Laufe dieses Tages noch gilt
   * NEW: 0405 BUGZILLA 1470 - Support für SEPA Purpose-Codes
   * NEW: 0404 Support für erweiterte Sync-Optionen jetzt auch im HBCI-Backend
   * NEW: 0403 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/a98560e03816bf8ad2399111506d1c7585d282ae
