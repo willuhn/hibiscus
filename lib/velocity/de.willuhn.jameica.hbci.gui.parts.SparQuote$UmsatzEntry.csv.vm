@@ -1,0 +1,4 @@
+"Monat";"Einnahmen";"Ausgaben";"Sparquote"
+#foreach($o in $objects)
+"${o.text}";"$!{decimalformat.format(${o.einnahmen})}";"$!{decimalformat.format(${o.ausgaben})}";"$!{decimalformat.format(${o.sparquote})}";
+#end

@@ -33,7 +33,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
@@ -44,6 +43,7 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
+import de.willuhn.jameica.hbci.gui.action.SparQuoteExport;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
@@ -246,6 +246,25 @@ public class SparQuote implements Part
     }
 
     ButtonArea topButtons = new ButtonArea();
+    topButtons.addButton(i18n.tr("Exportieren..."),new SparQuoteExport()
+    {
+      /**
+       * @see de.willuhn.jameica.hbci.gui.action.SparQuoteExport#handleAction(java.lang.Object)
+       */
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          super.handleAction(table.getItems()); // Wir exportieren pauschal alles
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to export data",re);
+          throw new ApplicationException(i18n.tr("Export fehlgeschlagen: {}",re.getMessage()));
+        }
+      }
+    },null,false,"document-save.png");
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
 
       public void handleAction(Object context) throws ApplicationException
@@ -257,14 +276,7 @@ public class SparQuote implements Part
 
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data,null);
-    this.table.addColumn(i18n.tr("Monat"), "monat", new Formatter() {
-      public String format(Object o)
-      {
-        if (o == null)
-          return "";
-        return DATEFORMAT.format((Date)o);
-      }
-    });
+    this.table.addColumn(i18n.tr("Monat"), "text");
     this.table.addColumn(i18n.tr("Einnahmen"), "einnahmen", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.addColumn(i18n.tr("Ausgaben"),  "ausgaben", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.addColumn(i18n.tr("Sparquote"), "sparquote", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
@@ -358,6 +370,9 @@ public class SparQuote implements Part
         // Wir haben das Limit erreicht. Also beginnen wir einen neuen Block
         currentEntry = new UmsatzEntry();
         currentEntry.monat = date;
+        if (currentEntry.monat != null)
+          currentEntry.text = DATEFORMAT.format(currentEntry.monat);
+        
         this.data.add(currentEntry);
 
         // BUGZILLA 337
@@ -410,7 +425,11 @@ public class SparQuote implements Part
         ue.ausgaben  += current.ausgaben;
         ue.einnahmen += current.einnahmen;
         if (i == 0) // Als Monat verwenden wir genau den aus der Mitte
+        {
           ue.monat = current.monat;
+          if (ue.monat != null)
+            ue.text = DATEFORMAT.format(ue.monat);
+        }
       }
       catch (IndexOutOfBoundsException e)
       {
@@ -431,6 +450,7 @@ public class SparQuote implements Part
     private double einnahmen = 0d;
     private double ausgaben  = 0d;
     private Date monat       = null;
+    private String text      = null;
 
     /**
      * Liefert die Einnahmen.
@@ -457,6 +477,15 @@ public class SparQuote implements Part
     public Date getMonat()
     {
       return this.monat;
+    }
+    
+    /**
+     * Liefert den Text.
+     * @return der Text.
+     */
+    public String getText()
+    {
+      return this.text;
     }
 
     /**

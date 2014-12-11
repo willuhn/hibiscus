@@ -149,7 +149,8 @@ public class VelocityExporter implements Exporter
     
     File dir = new File(Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getPluginDir() + File.separator + "lib","velocity");
     FileFinder finder = new FileFinder(dir);
-    String cn = type.getName().replaceAll("\\.","\\\\."); // "." gegen "\." ersetzen (Escaping fuer folgenden Regex)
+    String cn = type.getName().replace(".","\\."); // "." gegen "\." ersetzen (Escaping fuer folgenden Regex)
+    cn = cn.replace("$","\\$"); // Fuer Inner Classes
     finder.matches(cn + ".*?\\.vm$");
 
     File[] found = finder.findRecursive();
