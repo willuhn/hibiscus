@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -123,11 +121,6 @@ public class EmpfaengerAdd implements Action
       HashMap seen = new HashMap();
       AddressbookService book = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
 
-      String q1 = i18n.tr("Eine Adresse mit dem Namen {0} (Kto. {1}, BLZ {2}) existiert bereits im Adressbuch.\n" +
-                          "Möchten Sie die Adresse dennoch hinzufügen?");
-      String q2 = i18n.tr("Eine Adresse mit dem Namen {0} (IBAN {1}) existiert bereits im Adressbuch.\n" +
-                          "Möchten Sie die Adresse dennoch hinzufügen?");
-
       int count = 0;
       for (int i=0;i<items.size();++i)
       {
@@ -147,16 +140,8 @@ public class EmpfaengerAdd implements Action
 
         if (book.contains(e) != null)
         {
-          if (StringUtils.trimToNull(e.getKontonummer()) != null)
-          {
-            if (!Application.getCallback().askUser(q1,new String[]{e.getName(),e.getKontonummer(),e.getBlz()}))
-              continue;
-          }
-          else
-          {
-            if (!Application.getCallback().askUser(q2,new String[]{e.getName(),e.getIban()}))
-              continue;
-          }
+          Logger.debug("address [iban. " + e.getIban() + ", bic " + e.getBic() + " already exists, skipping");
+          continue;
         }
         
         // OK, speichern

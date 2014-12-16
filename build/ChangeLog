@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0409 Nicht mehr nachfragen, wenn eine Adresse bereits im Adressbuch ist sondern diese überspringen
   * NEW: 0408 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/5febbbba6d780c6a11f7bcf64e066a2b3cb6bb68
   * NEW: 0407 BUGZILLA 1587 - Export der Sparquote als CSV-Datei
   * BUG: 0406 BUGZILLA 1585 - Ende-Datum einer Wiederholung auf Tagesende setzen, um sicherzustellen, dass der Termin im Laufe dieses Tages noch gilt
