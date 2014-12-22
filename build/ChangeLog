@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+2014-12-22 Version 2.6.11
+
   * NEW: 0411 Neue obantoo-Version 2.1.9
   * BUG: 0410 Sortierung nach Monat in Sparquote korrigiert (war seit BUGZILLA 1587 falsch) 
   * NEW: 0409 Nicht mehr nachfragen, wenn eine Adresse bereits im Adressbuch ist sondern diese überspringen
