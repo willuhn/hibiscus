@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0412 Methoden-Signaturen in AbstractHBCIJob von Package-private auf protected geändert, damit Sync-Plugins von
+              Dritt-Anbietern von der Klasse ableiten können.
+
 2014-12-22 Version 2.6.11
 
   * NEW: 0411 Neue obantoo-Version 2.1.9

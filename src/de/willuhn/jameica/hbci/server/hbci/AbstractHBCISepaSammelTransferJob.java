@@ -144,7 +144,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
-  void markExecuted() throws RemoteException, ApplicationException
+  protected void markExecuted() throws RemoteException, ApplicationException
   {
     transfer.setAusgefuehrt(true);
 
@@ -156,7 +156,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
-  String markFailed(String error) throws RemoteException, ApplicationException
+  protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Ausführen des SEPA-Sammelauftrages [Bezeichnung: {0}]: {1}",new String[]{transfer.getBezeichnung(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
@@ -166,7 +166,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
    */
-  void markCancelled() throws RemoteException, ApplicationException
+  protected void markCancelled() throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Ausführung des SEPA-Sammelauftrages [Bezeichnung: {0}] abgebrochen",transfer.getBezeichnung());
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);

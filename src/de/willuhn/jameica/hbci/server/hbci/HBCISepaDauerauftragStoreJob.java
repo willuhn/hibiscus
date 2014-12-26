@@ -171,7 +171,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
-  void markExecuted() throws RemoteException, ApplicationException
+  protected void markExecuted() throws RemoteException, ApplicationException
   {
     String empfName = dauerauftrag.getGegenkontoName();
 
@@ -204,7 +204,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
-  String markFailed(String error) throws RemoteException, ApplicationException
+  protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Ausführen des SEPA-Dauerauftrages an {0}: {1}",new String[]{dauerauftrag.getGegenkontoName(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);

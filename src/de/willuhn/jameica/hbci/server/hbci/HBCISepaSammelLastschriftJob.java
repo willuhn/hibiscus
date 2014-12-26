@@ -94,7 +94,7 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCISepaSammelTransferJob#markExecuted()
    */
-  void markExecuted() throws RemoteException, ApplicationException
+  protected void markExecuted() throws RemoteException, ApplicationException
   {
     super.markExecuted();
     

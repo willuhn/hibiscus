@@ -149,7 +149,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
-  void markExecuted() throws RemoteException, ApplicationException
+  protected void markExecuted() throws RemoteException, ApplicationException
   {
     // Order-ID uebernehmen, wenn erhalten
     AbstractGVRLastSEPA result = (AbstractGVRLastSEPA) this.getJobResult();
@@ -201,7 +201,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
-  String markFailed(String error) throws ApplicationException, RemoteException
+  protected String markFailed(String error) throws ApplicationException, RemoteException
   {
     String msg = i18n.tr("Fehler beim Einziehen der SEPA-Lastschrift von {0}: {1}",lastschrift.getGegenkontoName(),error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
@@ -211,7 +211,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
    */
-  void markCancelled() throws RemoteException, ApplicationException
+  protected void markCancelled() throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Ausführung der SEPA-Lastschrift {0} abgebrochen",lastschrift.getGegenkontoName());
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);

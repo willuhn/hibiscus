@@ -75,7 +75,7 @@ public abstract class AbstractHBCIJob
    * @throws RemoteException
    * @throws ApplicationException
    */
-  abstract void markExecuted() throws RemoteException, ApplicationException;
+  protected abstract void markExecuted() throws RemoteException, ApplicationException;
   
   /**
    * Markiert den Auftrag als fehlerhaft.
@@ -85,7 +85,7 @@ public abstract class AbstractHBCIJob
    * @throws RemoteException
    * @throws ApplicationException
    */
-  abstract String markFailed(String error) throws RemoteException, ApplicationException;
+  protected abstract String markFailed(String error) throws RemoteException, ApplicationException;
 
   /**
    * Wird aufgerufen, wenn der User den Vorgang abgebrochen hat.
@@ -97,7 +97,7 @@ public abstract class AbstractHBCIJob
    * @throws ApplicationException
    * BUGZILLA 690
    */
-  void markCancelled() throws RemoteException, ApplicationException
+  protected void markCancelled() throws RemoteException, ApplicationException
   {
   }
   
@@ -108,7 +108,7 @@ public abstract class AbstractHBCIJob
    * @throws RemoteException
    * @throws ApplicationException
    */
-  void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
+  protected void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
   {
   }
   
@@ -180,7 +180,7 @@ public abstract class AbstractHBCIJob
    * Liefert das Job-Resultat.
    * @return Job-Resultat.
    */
-  final HBCIJobResult getJobResult()
+  protected final HBCIJobResult getJobResult()
 	{
 		return job.getJobResult();
 	}
@@ -297,7 +297,7 @@ public abstract class AbstractHBCIJob
 	 * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
    * @return Status-Text oder <code>Unbekannter Fehler</code> wenn dieser nicht ermittelbar ist.
    */
-  final String getStatusText()
+  protected final String getStatusText()
 	{
     String sr = "";
 		try
@@ -346,7 +346,7 @@ public abstract class AbstractHBCIJob
    * @param name Name des Parameters.
    * @param value Wert des Parameters.
    */
-  final void setJobParam(String name, String value)
+  protected final void setJobParam(String name, String value)
 	{
     this.setJobParam(name,null,value);
 	}
@@ -358,7 +358,7 @@ public abstract class AbstractHBCIJob
    * @param index optionaler Index des Parameters.
    * @param value Wert des Parameters.
    */
-  final void setJobParam(String name, Integer index, String value)
+  protected final void setJobParam(String name, Integer index, String value)
   {
     if (name == null || value == null)
     {
@@ -373,7 +373,7 @@ public abstract class AbstractHBCIJob
 	 * @param name Name des Parameters.
 	 * @param konto das Konto.
 	 */
-	final void setJobParam(String name, org.kapott.hbci.structures.Konto konto)
+	protected final void setJobParam(String name, org.kapott.hbci.structures.Konto konto)
 	{
 	  this.setJobParam(name,null,konto);
 	}
@@ -384,7 +384,7 @@ public abstract class AbstractHBCIJob
    * @param index optionaler Index des Parameters.
    * @param konto das Konto.
    */
-  final void setJobParam(String name, Integer index, org.kapott.hbci.structures.Konto konto)
+  protected final void setJobParam(String name, Integer index, org.kapott.hbci.structures.Konto konto)
   {
     if (name == null || konto == null)
     {
@@ -402,7 +402,7 @@ public abstract class AbstractHBCIJob
    * @param name Name des Parameters.
    * @param i Wert.
    */
-  final void setJobParam(String name, int i)
+  protected final void setJobParam(String name, int i)
 	{
 		if (name == null)
 		{
@@ -421,7 +421,7 @@ public abstract class AbstractHBCIJob
    * @param value Geldbetrag.
    * @param currency Waehrung.
 	 */
-	final void setJobParam(String name, double value, String currency)
+	protected final void setJobParam(String name, double value, String currency)
 	{
 	  this.setJobParam(name,null,value,currency);
 	}
@@ -436,7 +436,7 @@ public abstract class AbstractHBCIJob
    * @param value Geldbetrag.
    * @param currency Waehrung.
    */
-  final void setJobParam(String name, Integer index, double value, String currency)
+  protected final void setJobParam(String name, Integer index, double value, String currency)
   {
     if (name == null)
     {
@@ -456,7 +456,7 @@ public abstract class AbstractHBCIJob
 	 * @param name Name des Parameters.
 	 * @param date Datum.
 	 */
-	final void setJobParam(String name, Date date)
+	protected final void setJobParam(String name, Date date)
 	{
 	  this.setJobParam(name,null,date);
 	}
@@ -470,7 +470,7 @@ public abstract class AbstractHBCIJob
    * @param index optionaler Index des Parameters.
    * @param date Datum.
    */
-  final void setJobParam(String name, Integer index, Date date)
+  protected final void setJobParam(String name, Integer index, Date date)
   {
     if (name == null || date == null)
     {
@@ -488,7 +488,7 @@ public abstract class AbstractHBCIJob
 	 * @param t der Auftrag.
 	 * @throws RemoteException
 	 */
-	void setJobParamUsage(Transfer t) throws RemoteException
+	protected void setJobParamUsage(Transfer t) throws RemoteException
 	{
 	  if (t == null)
 	    return;

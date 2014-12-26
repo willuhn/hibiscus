@@ -105,7 +105,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
-  void markExecuted() throws RemoteException, ApplicationException
+  protected void markExecuted() throws RemoteException, ApplicationException
   {
     transfer.setAusgefuehrt(true);
 
@@ -117,7 +117,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
-  String markFailed(String error) throws RemoteException, ApplicationException
+  protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Ausführen des Sammel-Auftrages [Bezeichnung: {0}]: {1}",new String[]{transfer.getBezeichnung(),error});
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
@@ -127,7 +127,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
    */
-  void markCancelled() throws RemoteException, ApplicationException
+  protected void markCancelled() throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Ausführung des Sammel-Auftrages [Bezeichnung: {0}] abgebrochen",transfer.getBezeichnung());
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
@@ -136,7 +136,7 @@ public abstract class AbstractHBCISammelTransferJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#hasWarnings(org.kapott.hbci.status.HBCIRetVal[])
    */
-  void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
+  protected void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
   {
     // BUGZILLA 899
     // Wir checken, ob eventuell eine der enthaltenen Buchungen nicht ausgefuehrt wurde

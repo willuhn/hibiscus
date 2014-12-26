@@ -93,7 +93,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
-  void markExecuted() throws RemoteException, ApplicationException
+  protected void markExecuted() throws RemoteException, ApplicationException
   {
     GVRSaldoReq result = (GVRSaldoReq) getJobResult();
     konto.addToProtokoll(i18n.tr("Saldo abgerufen"),Protokoll.TYP_SUCCESS);
@@ -117,7 +117,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
-  String markFailed(String error) throws RemoteException, ApplicationException
+  protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Abrufen das Saldos: {0}",error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
