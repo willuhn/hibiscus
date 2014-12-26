@@ -282,7 +282,7 @@ public class KontoAuswahlDialog extends AbstractDialog
    * Liefert den Uebernehmen-Button.
    * @return der Uebernehmen-Button.
    */
-  private Button getApplyButton()
+  public Button getApplyButton()
   {
     if (this.apply != null)
       return this.apply;

@@ -178,7 +178,7 @@ public class SynchronizeList extends TablePart
     this.init();
     
     ButtonArea b = new ButtonArea();
-    b.addButton(i18n.tr("Optionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
+    b.addButton(i18n.tr("Synchronisierungsoptionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
     b.addButton(start);
     b.paint(parent);
   }
@@ -228,7 +228,19 @@ public class SynchronizeList extends TablePart
         // Konto erfragen
         if (k == null)
         {
-          KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.SYNCED,KontoAuswahlDialog.POSITION_CENTER);
+          KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.SYNCED,KontoAuswahlDialog.POSITION_CENTER)
+          {
+            /**
+             * @see de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog#getApplyButton()
+             */
+            @Override
+            public Button getApplyButton()
+            {
+              Button b = super.getApplyButton();
+              b.setText(i18n.tr("Synchronisationsoptionen anzeigen..."));
+              return b;
+            }
+          };
           d1.setText(i18n.tr("Bitte wählen Sie das Konto, für welches Sie die " +
                              "Synchronisierungsoptionen ändern möchten."));
           k = (Konto) d1.open();
