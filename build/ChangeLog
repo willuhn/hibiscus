@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0416 Zeilenumbruch zuviel in MT940-Export - führte zu Fehler bei erneutem Import
   * NEW: 0415 Aktualisierte obantoo-Version 2.1.9 (Mail von Heiner vom 05.01.2015)
   * NEW: 0414 Automatisches Mitwandern des Zeitraumes (insofern Von/Bis-Datum nicht manuell vom Benutzer geändert werden) - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=113598#real113598
   * NEW: 0413 Automatisches Abrufen der TAN-Medienbezeichnungen von der Bank und Auswahldialog entsprechend vorbefüllen.

@@ -100,7 +100,10 @@ public class MT940UmsatzExporter implements Exporter
     		Konto k     = u.getKonto();
     		String curr = k.getWaehrung();
 
-        out.write(NL + ":20:Hibiscus" + NL);
+    		if (i > 0)
+    		  out.write(NL);
+    		
+        out.write(":20:Hibiscus" + NL);
     		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + curr + NL);
     		
     		if (showSaldo)
@@ -168,7 +171,7 @@ public class MT940UmsatzExporter implements Exporter
           out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(schlussSaldo).replace("-","") + NL);
         }
     		
-    		out.write("-" + NL);
+        out.write("-");
       }
     }
     catch (IOException e)
