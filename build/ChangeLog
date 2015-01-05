@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0413 Automatisches Abrufen der TAN-Medienbezeichnungen von der Bank und Auswahldialog entsprechend vorbefüllen.
+              Wenn zum Bankzugang nur eine TAN-Medienbezeichnung hinterlegt ist, wird diese automatisch und ohne weitere
+              Rückfrage verwenden. Neue HBCI-Version https://github.com/willuhn/hbci4java/commit/6d6831cfa7e4230fb64f90cf89abc688423fa276
   * NEW: 0412 Methoden-Signaturen in AbstractHBCIJob von Package-private auf protected geändert, damit Sync-Plugins von
               Dritt-Anbietern von der Klasse ableiten können.
 

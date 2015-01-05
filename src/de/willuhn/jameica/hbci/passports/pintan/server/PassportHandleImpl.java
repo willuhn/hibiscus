@@ -347,18 +347,32 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       // BUGZILLA 827
       case HBCICallback.NEED_PT_TANMEDIA:
       {
+        // Wenn wir eine Medienbezeichnung von HBCI4Java gekriegt haben und das genau
+        // eine einzige ist. Dann uebernehmen wir diese ohne Rueckfrage. Der User
+        // hat hier sonst eh keine andere Wahl.
+        String media = retData.toString();
+        if (media.length() > 0 && !media.contains("|"))
+        {
+          Logger.info("having exactly one TAN media name (provided by institute) - automatically using this: " + media);
+          retData.replace(0,retData.length(),media);
+          return true;
+        }
+
+        // Falls wir eine PIN/TAN-Config haben, in der die Medienbezeichnung
+        // hinterlegt ist, dann nehmen wir die.
         if (config != null)
         {
-          String media =  config.getTanMedia();
+          media =  config.getTanMedia();
           if (media != null && media.length() > 0)
           {
-            // OK, die nehmen wir
+            Logger.info("having a stored TAN media name (provided by user) - automatically using this: " + media);
             retData.replace(0,retData.length(),media);
             return true;
           }
         }
 
-        TanMediaDialog tmd = new TanMediaDialog(config);
+        Logger.info("asking user for TAN media (options provided by institute: " + media + ")");
+        TanMediaDialog tmd = new TanMediaDialog(config,retData.toString());
         retData.replace(0,retData.length(),(String) tmd.open());
         return true;
       }

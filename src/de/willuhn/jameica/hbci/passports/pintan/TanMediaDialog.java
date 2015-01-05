@@ -14,6 +14,11 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -48,17 +53,20 @@ public class TanMediaDialog extends AbstractDialog
   private SelectInput media   = null;
   private CheckboxInput save  = null;
   private PinTanConfig config = null;
-  
+
+  private String options      = null;
   private String choosen      = null;
   
   /**
    * ct.
    * @param config die PINTAN-Config.
+   * @param options Mit Pipe-Symbol getrennte Liste der Medien-Bezeichnungen, wie sie von der Bank kam.
    */
-  public TanMediaDialog(PinTanConfig config)
+  public TanMediaDialog(PinTanConfig config, String options)
   {
     super(TanMediaDialog.POSITION_CENTER);
     this.config = config;
+    this.options = options;
     
     String s = null;
     try
@@ -180,12 +188,28 @@ public class TanMediaDialog extends AbstractDialog
     if (this.media != null)
       return this.media;
 
-    String[] list = new String[0];
+    Set<String> set = new HashSet<String>();
+    
+    // Die Namen von der Bank
+    if (this.options != null)
+    {
+      String[] names = this.options.split("\\|");
+      for (String s:names)
+      {
+        set.add(s);
+      }
+    }
+
+    // Und jetzt noch die gespeicherten reinmergen.
     if (this.config != null)
     {
       try
       {
-        list = this.config.getTanMedias();
+        String[] names = this.config.getTanMedias();
+        for (String s:names)
+        {
+          set.add(s);
+        }
       }
       catch (Exception e)
       {
@@ -193,22 +217,12 @@ public class TanMediaDialog extends AbstractDialog
       }
     }
     
-    this.media = new SelectInput(list,null);
+    List<String> result = new ArrayList<String>();
+    result.addAll(set);
+    Collections.sort(result);
+    
+    this.media = new SelectInput(result,null);
     this.media.setEditable(true);
     return this.media;
   }
 }
-
-
-/*********************************************************************
- * $Log: TanMediaDialog.java,v $
- * Revision 1.3  2011/12/06 22:22:19  willuhn
- * @N BUGZILLA 1151 - Name des aktuellen Kontos anzeigen
- *
- * Revision 1.2  2011-07-25 07:57:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2011-05-09 09:35:15  willuhn
- * @N BUGZILLA 827
- *
- **********************************************************************/
