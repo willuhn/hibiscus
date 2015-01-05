@@ -42,6 +42,25 @@ public abstract class Range
   }};
   
   /**
+   * Versucht den Range anhand des Identifiers zu ermitteln.
+   * @param name der Name des Range.
+   * @return der Range oder NULL, wenn er nicht gefunden wurde.
+   */
+  public static Range byId(String name)
+  {
+    if (name == null)
+      return null;
+    
+    for (Range r:KNOWN)
+    {
+      if (r.getId().equals(name))
+        return r;
+    }
+    
+    return null;
+  }
+  
+  /**
    * Berechnet das Start-Datum.
    * @return das Start-Datum.
    */
@@ -52,6 +71,15 @@ public abstract class Range
    * @return das End-Datum.
    */
   public abstract Date getEnd();
+  
+  /**
+   * Liefert einen Identifier fuer den Range.
+   * @return Identifier fuer den Range.
+   */
+  public String getId()
+  {
+    return this.getClass().getSimpleName();
+  }
   
   /**
    * Erzeugt einen neuen Kalender, der als Basis fuer die Berechnung dient.

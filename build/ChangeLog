@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0414 Automatisches Mitwandern des Zeitraumes (insofern Von/Bis-Datum nicht manuell vom Benutzer geändert werden) - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=113598#real113598
   * NEW: 0413 Automatisches Abrufen der TAN-Medienbezeichnungen von der Bank und Auswahldialog entsprechend vorbefüllen.
               Wenn zum Bankzugang nur eine TAN-Medienbezeichnung hinterlegt ist, wird diese automatisch und ohne weitere
               Rückfrage verwenden. Neue HBCI-Version https://github.com/willuhn/hbci4java/commit/6d6831cfa7e4230fb64f90cf89abc688423fa276

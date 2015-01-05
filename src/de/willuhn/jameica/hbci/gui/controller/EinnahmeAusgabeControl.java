@@ -123,7 +123,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd());
+    this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
     this.range.addListener(new Listener()
     {
       public void handleEvent(Event event)
