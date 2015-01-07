@@ -165,11 +165,11 @@ public class KontoauszugList extends UmsatzList
     
     {
       TabGroup tab = new TabGroup(folder,i18n.tr("Gegenkonto/Betrag"));
-      tab.addLabelPair(i18n.tr("Kontonummer enthält"), this.getGegenkontoNummer());
+      tab.addLabelPair(i18n.tr("IBAN oder Kontonummer enthält"), this.getGegenkontoNummer());
 
       ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
       Container left = new SimpleContainer(columns.getComposite());
-      left.addLabelPair(i18n.tr("BLZ enthält"),                    this.getGegenkontoBLZ());
+      left.addLabelPair(i18n.tr("BIC oder BLZ enthält"),           this.getGegenkontoBLZ());
       left.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"), this.getGegenkontoName());
 
       Container right = new SimpleContainer(columns.getComposite());
