@@ -11,14 +11,11 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -173,19 +170,23 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
         return null;
       
-      Set<String> set = new HashSet<String>();
+      List<String> result = new ArrayList<String>();
+      
       // Wir fragen mal die Job-Provider
       List<HBCISynchronizeJobProvider> providers = this.getJobProviders();
       for (HBCISynchronizeJobProvider p:providers)
       {
         List<String> props = p.getPropertyNames(konto);
-        if (props != null)
-          set.addAll(props);
+        if (props != null && props.size() > 0)
+        {
+          for (String s:props)
+          {
+            if (!result.contains(s))
+              result.add(s);
+          }
+        }
       }
       
-      List<String> result = new ArrayList<String>();
-      result.addAll(set);
-      Collections.sort(result);
       return result;
     }
     catch (RemoteException re)
