@@ -380,7 +380,7 @@ public class KontoauszugList extends UmsatzList
     AdresseAuswahlDialog d = new AdresseAuswahlDialog(AdresseAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new AddressListener());
     this.gegenkontoNummer = new DialogInput((String) cache.get("kontoauszug.list.gegenkonto.nummer"),d);
-    this.gegenkontoNummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
+    this.gegenkontoNummer.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     this.gegenkontoNummer.addListener(this.listener);
     return this.gegenkontoNummer;
   }
@@ -396,6 +396,7 @@ public class KontoauszugList extends UmsatzList
       return this.gegenkontoBLZ;
     
     this.gegenkontoBLZ = new BLZInput((String)cache.get("kontoauszug.list.gegenkonto.blz"));
+    this.gegenkontoBLZ.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS); // nicht BIC sondern IBAN - dort sind auch die Kleinbuchstaben mit drin 
     this.gegenkontoBLZ.setComment(null);
     this.gegenkontoBLZ.addListener(this.listener);
     return this.gegenkontoBLZ;
@@ -535,8 +536,8 @@ public class KontoauszugList extends UmsatzList
     if (end != null)   umsaetze.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
-    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("empfaenger_blz like ?","%" + gkBLZ + "%");this.hasFilter = true;}
-    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("empfaenger_konto like ?","%" + gkNummer + "%");this.hasFilter = true;}
+    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("LOWER(empfaenger_blz) like ?","%" + gkBLZ.toLowerCase() + "%");this.hasFilter = true;}
+    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("LOWER(empfaenger_konto) like ?","%" + gkNummer.toLowerCase() + "%");this.hasFilter = true;}
     if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?","%" + gkName.toLowerCase() + "%");hasFilter = true;}
     /////////////////////////////////////////////////////////////////
 
