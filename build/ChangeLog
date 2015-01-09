@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0418 Nullpointer-Exception, wenn man in Einnahmen/Ausgaben das Start- oder End-Datum entfernt hat
   * NEW: 0417 BUGZILLA 1599 - Alphanumerische Zeichen in Auswertungen->Umsätze bei Gegenkonto Nummer und BIC/BLZ zulassen
   * BUG: 0416 Zeilenumbruch zuviel in MT940-Export - führte zu Fehler bei erneutem Import
   * NEW: 0415 Aktualisierte obantoo-Version 2.1.9 (Mail von Heiner vom 05.01.2015)

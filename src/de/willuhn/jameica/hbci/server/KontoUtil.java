@@ -179,11 +179,13 @@ public class KontoUtil
     // denen der Saldo 0 ist, duerfen wir das nicht als Filterkriterium nehmen sondern
     // das NOTBOOKED-Flag pruefen. Leider gibts in SQL keinen standardisierten
     // Binary-AND-Operator, sodass wir das manuell machen muessen.
-    java.sql.Date start = new java.sql.Date(DateUtil.startOfDay(datum).getTime());
+    java.sql.Date start = datum != null ? new java.sql.Date(DateUtil.startOfDay(datum).getTime()) : null;
 
     DBIterator list = UmsatzUtil.getUmsaetze();
     list.addFilter("konto_id = " + konto.getID());
-    list.addFilter("datum >= ?", new Object[] {start});
+    
+    if (start != null)
+      list.addFilter("datum >= ?", new Object[] {start});
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
@@ -196,7 +198,10 @@ public class KontoUtil
     // frühere Umsätze.
     list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
-    list.addFilter("datum < ?", new Object[] {start});
+    
+    if (start != null)
+      list.addFilter("datum < ?", new Object[] {start});
+    
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
@@ -219,7 +224,8 @@ public class KontoUtil
   {
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
-    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(DateUtil.endOfDay(datum).getTime())});
+    if (datum != null)
+      list.addFilter("datum <= ?", new Object[] { new java.sql.Date(DateUtil.endOfDay(datum).getTime())});
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
