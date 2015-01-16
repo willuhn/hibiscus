@@ -8,6 +8,8 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
@@ -65,7 +67,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
         throw new ApplicationException(i18n.tr("Bitte geben Sie die BIC des Gegenkontos ein"));
       HBCIProperties.checkBIC(getGegenkontoBLZ());
 
-      if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
+      if (StringUtils.trimToNull(getGegenkontoName()) == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS);

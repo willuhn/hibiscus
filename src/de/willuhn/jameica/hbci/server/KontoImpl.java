@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.zip.CRC32;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
@@ -83,7 +85,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     try
     {
-      if (getName() == null || getName().length() == 0)
+      if (StringUtils.trimToNull(getName()) == null)
         throw new ApplicationException(i18n.tr("Bitten geben Sie den Namen des Kontoinhabers ein."));
 
       HBCIProperties.checkLength(getName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);

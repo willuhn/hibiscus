@@ -10,6 +10,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.zip.CRC32;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -100,7 +102,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
         throw new ApplicationException(i18n.tr("Bitte geben Sie die BIC des Gegenkontos ein"));
       HBCIProperties.checkBIC(getGegenkontoBLZ());
 
-      if (getGegenkontoName() == null || getGegenkontoName().length() == 0)
+      if (StringUtils.trimToNull(getGegenkontoName()) == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS_RELAX);
