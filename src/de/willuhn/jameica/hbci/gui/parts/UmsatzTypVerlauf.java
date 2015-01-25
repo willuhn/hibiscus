@@ -170,7 +170,11 @@ public class UmsatzTypVerlauf implements Part
       calendar.set(Calendar.DAY_OF_MONTH, 1);
       Date monat = calendar.getTime();
 
-      while(monat.before(stop)) {
+      // BUGZILLA 1604 - wir wollen im End-Datum kein oberes Jahr fest vorgeben.
+      // Daher beenden wir hier die Iteration stattdessen nach maximal 1200 Monaten.
+      // Das sind 100 Jahre.
+      int limit = 0;
+      while(monat.before(stop) && limit++ < 1200) {
         Entry aktuellerMonatswert = new Entry();
         aktuellerMonatswert.monat = monat;
         if (verteilung.containsKey(monat)) {

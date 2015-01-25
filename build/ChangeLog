@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0421 BUGZILLA 1604 - Anzahl der Monate in "Umsätze nach Kategorien" auf 1200 (=100 Jahre) begrenzen
   * NEW: 0420 Purpose-Code "NOWS" hinzugefügt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18571
   * CHG: 0419 Prüfen, dass in Name des Auftraggebers und Auftragnehmers nicht nur ein Leerzeichen steht.
               Siehe Mail vom Bank-Verlag vom 16.01. - denen war das bei einigen Kunden aufgefallen
