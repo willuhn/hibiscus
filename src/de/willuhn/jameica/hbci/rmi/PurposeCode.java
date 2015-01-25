@@ -46,6 +46,11 @@ public enum PurposeCode
    */
   RINP("RINP","Wiederkehrende Zahlungen / Dauerauftrag"),
 
+  /**
+   * Nicht anders vorgeschrieben 
+   */
+  NOWS("NOWS","Nicht näher definiert"),
+  
   ;
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
