@@ -152,7 +152,8 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     
     this.endInput = new DateInput(this.end,HBCI.DATEFORMAT);
     this.endInput.setName(i18n.tr("Letzte Ausführung"));
-    this.endInput.addListener(new Listener() {
+    
+    final Listener endCheck = new Listener() {
       public void handleEvent(Event event)
       {
         Date myEnd = (Date) endInput.getValue();
@@ -168,8 +169,14 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
           apply.setEnabled(true);
         }
       }
-    });
+    };
+    
+    this.endInput.addListener(endCheck);
     this.endInput.addListener(listener);
+    
+    // einmal initial ausloesen
+    endCheck.handleEvent(null);
+
     ////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////
