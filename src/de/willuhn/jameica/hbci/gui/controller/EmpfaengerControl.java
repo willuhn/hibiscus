@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
+import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
+import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -305,11 +307,50 @@ public class EmpfaengerControl extends AbstractControl
    */
   public Input getIban() throws RemoteException
   {
-    if (this.iban == null)
+    if (this.iban != null)
+      return this.iban;
+    
+    boolean enabled = this.isHibiscusAdresse();
+    this.iban = new IBANInput(getAddress().getIban(),this.getBic());
+    this.iban.setEnabled(enabled);
+    if (enabled)
     {
-      this.iban = new IBANInput(getAddress().getIban(),this.getBic());
-      this.iban.setEnabled(isHibiscusAdresse());
+      this.iban.addListener(new Listener() {
+        public void handleEvent(Event event)
+        {
+          // BUGZILLA 1605 Wenn wir eine IBAN haben aber noch keine
+          // Kontonummer/BLZ, dann vervollstaendigen wir diese
+          try
+          {
+            String iban = (String) getIban().getValue();
+            String konto = (String) getKontonummer().getValue();
+            String blz = (String) getBlz().getValue();
+            
+            if (StringUtils.trimToNull(iban) != null)
+            {
+              IBAN i = new IBAN(iban);
+              
+              // Kontonummer vervollstaendigen
+              if (StringUtils.trimToNull(konto) == null)
+              {
+                getKontonummer().setValue(i.getKonto());
+              }
+              
+              // BLZ vervollstaendigen
+              if (StringUtils.trimToNull(blz) == null)
+              {
+                getBlz().setValue(i.getBLZ());
+              }
+            }
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to auto-complete account number",e);
+          }
+        }
+      });      
     }
+    
     return this.iban;
   }
 
@@ -320,11 +361,38 @@ public class EmpfaengerControl extends AbstractControl
    */
   public Input getBic() throws RemoteException
   {
-    if (this.bic == null)
+    if (this.bic != null)
+      return this.bic;
+    
+    boolean enabled = this.isHibiscusAdresse();
+    this.bic = new BICInput(getAddress().getBic());
+    this.bic.setEnabled(enabled);
+    if (enabled)
     {
-      this.bic = new BICInput(getAddress().getBic());
-      this.bic.setEnabled(isHibiscusAdresse());
+      this.bic.addListener(new Listener() {
+        public void handleEvent(Event event)
+        {
+          // BUGZILLA 1605 Wenn wir eine BIC haben aber noch keine
+          // BLZ, dann vervollstaendigen wir diese
+          try
+          {
+            String bic = (String) getBic().getValue();
+            String blz = (String) getBlz().getValue();
+            
+            if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
+            {
+              Bank bank = Banken.getBankByBIC(bic);
+              getBlz().setValue(bank.getBLZ());
+            }
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to auto-complete BLZ",e);
+          }
+        }
+      });
     }
+    
     return this.bic;
   }
 
