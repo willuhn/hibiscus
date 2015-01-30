@@ -26,6 +26,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
+import de.jost_net.OBanToo.SEPA.Land.SEPALand;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -322,25 +323,28 @@ public class EmpfaengerControl extends AbstractControl
           // Kontonummer/BLZ, dann vervollstaendigen wir diese
           try
           {
-            String iban = (String) getIban().getValue();
-            String konto = (String) getKontonummer().getValue();
-            String blz = (String) getBlz().getValue();
+            String iban      = (String) getIban().getValue();
+            boolean haveIban = StringUtils.trimToNull(iban) != null;
+            boolean haveKto  = StringUtils.trimToNull((String) getKontonummer().getValue()) != null;
+            boolean haveBlz  = StringUtils.trimToNull((String) getBlz().getValue()) != null;
             
-            if (StringUtils.trimToNull(iban) != null)
+            if (haveIban && (!haveKto || !haveBlz))
             {
               IBAN i = new IBAN(iban);
+              SEPALand land = i.getLand();
+              if (land.getBankIdentifierLength() == null)
+              {
+                Logger.info("length of bank identifier unknown for this country");
+                return;
+              }
               
               // Kontonummer vervollstaendigen
-              if (StringUtils.trimToNull(konto) == null)
-              {
+              if (!haveKto)
                 getKontonummer().setValue(i.getKonto());
-              }
               
               // BLZ vervollstaendigen
-              if (StringUtils.trimToNull(blz) == null)
-              {
+              if (!haveBlz)
                 getBlz().setValue(i.getBLZ());
-              }
             }
           }
           catch (Exception e)
@@ -382,6 +386,11 @@ public class EmpfaengerControl extends AbstractControl
             if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
             {
               Bank bank = Banken.getBankByBIC(bic);
+              if (bank == null)
+              {
+                Logger.info("blz unknown for bic " + bic);
+                return;
+              }
               getBlz().setValue(bank.getBLZ());
             }
           }
