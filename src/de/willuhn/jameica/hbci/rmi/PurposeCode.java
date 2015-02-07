@@ -22,14 +22,39 @@ import de.willuhn.util.I18N;
 public enum PurposeCode
 {
   /**
+   * Miete
+   */
+  RENT("RENT","Miete"),
+  
+  /**
+   * Einzahlung
+   */
+  DEPT("DEPT","Einzahlung"),
+  
+  /**
+   * Gutschrift/Rücküberweisung
+   */
+  REFU("REFU","Gutschrift/Rücküberweisung"),
+  
+  /**
    * Gehaltszahlungen
    */
   SALA("SALA","Gehaltszahlungen"),
   
   /**
-   * Spendenzahlungen.
+   * Lohn
    */
-  CHAR("CHAR","Spendenzahlungen"),
+  PAYR("PAYR","Lohn"),
+  
+  /**
+   * Sozialleistung
+   */
+  SSBE("SSBE","Sozialleistung"),
+  
+  /**
+   * Zahlung an öffentl. Kassen
+   */
+  GOWT("GOWT","Zahlung an öffentl. Kassen"),
   
   /**
    * Vermögenswirksame Leistungen
@@ -42,14 +67,29 @@ public enum PurposeCode
   BONU("BONU","Bonuszahlungen"),
   
   /**
+   * Spendenzahlungen.
+   */
+  CHAR("CHAR","Spendenzahlungen"),
+  
+  /**
    * Wiederkehrende Zahlungen / Dauerauftrag
    */
   RINP("RINP","Wiederkehrende Zahlungen / Dauerauftrag"),
 
   /**
+   * Cash Management Transfer
+   */
+  CASH("CASH","Cash Management Transfer"),
+  
+  /**
    * Nicht anders vorgeschrieben 
    */
   NOWS("NOWS","Nicht näher definiert"),
+
+  /**
+   * Andere
+   */
+  OTHR("OTHR","Andere"),
   
   ;
   

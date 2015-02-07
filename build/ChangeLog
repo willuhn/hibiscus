@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0425 Weitere Purpose-Codes hinzugefügt - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=114627#real114627
+  * NEW: 0424 SEPA Purpose Codes jetzt auch bei Daueraufträgen
   * NEW: 0423 Automatische Vervollständigung von Konto/BLZ nach Eingabe von IBAN/BIC auch im Adressbuch
   * NEW: 0422 BUGZILLA 1605 - Automatische Vervollständigung von Konto/BLZ in Kontodetails nach Eingabe von IBAN/BIC
   * BUG: 0421 BUGZILLA 1604 - Anzahl der Monate in "Umsätze nach Kategorien" auf 1200 (=100 Jahre) begrenzen

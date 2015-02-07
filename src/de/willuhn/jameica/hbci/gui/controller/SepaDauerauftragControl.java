@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.PurposeCodeInput;
 import de.willuhn.jameica.hbci.gui.parts.SepaDauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -70,6 +71,7 @@ public class SepaDauerauftragControl extends AbstractControl
   private AddressInput empfName      = null;
   private TextInput empfkto          = null;
   private TextInput bic              = null;
+  private PurposeCodeInput purposeCode = null;
 
   private CheckboxInput storeEmpfaenger      = null;
 	
@@ -400,6 +402,21 @@ public class SepaDauerauftragControl extends AbstractControl
   }
 
   /**
+   * Liefert das Eingabe-Feld fuer den Purpose-Code.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getPurposeCode() throws RemoteException
+  {
+    if (this.purposeCode != null)
+      return this.purposeCode;
+
+    this.purposeCode = new PurposeCodeInput(getTransfer().getPurposeCode());
+    this.purposeCode.setMandatory(false);
+    return this.purposeCode;
+  }
+
+  /**
    * Liefert das Eingabe-Feld fuer den Verwendungszweck.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -440,6 +457,7 @@ public class SepaDauerauftragControl extends AbstractControl
       t.setLetzteZahlung((Date)getLetzteZahlung().getValue());
       t.setTurnus((Turnus)getTurnus().getValue());
       t.setZweck((String)getZweck().getValue());
+      t.setPurposeCode((String)getPurposeCode().getValue());
 
       String kto  = (String)getEmpfaengerKonto().getValue();
       String name = getEmpfaengerName().getText();

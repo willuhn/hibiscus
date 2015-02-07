@@ -71,6 +71,7 @@ public class SepaDauerauftragNew extends AbstractView
     details.addLabelPair(i18n.tr("Verwendungszweck"),          control.getZweck());
 	  details.addLabelPair(i18n.tr("Betrag"),                    control.getBetrag());
 	  details.addSeparator();
+    details.addInput(control.getPurposeCode());
 	  details.addLabelPair(i18n.tr("Auftragsnummer"),            control.getOrderID());
     
 		ButtonArea buttonArea = new ButtonArea();
