@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0427 BUGZILLA 1611 - Zeilenumbrüche aus Umsatz-Attributen entfernen, die da nicht enthalten sein sollten
+  * BUG: 0426 BUGZILLA 1610 - Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/7d858fc4b383dcca5937aa6dc1280ed1ebf8949d
   * NEW: 0425 Weitere Purpose-Codes hinzugefügt - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=114627#real114627
   * NEW: 0424 SEPA Purpose Codes jetzt auch bei Daueraufträgen
   * NEW: 0423 Automatische Vervollständigung von Konto/BLZ nach Eingabe von IBAN/BIC auch im Adressbuch

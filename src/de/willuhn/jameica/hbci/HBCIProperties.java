@@ -229,6 +229,12 @@ public class HBCIProperties
   public final static String[][] TEXT_REPLACEMENTS_SEPA = new String[][] {new String[]{"&","*","%","$","ü", "ö", "ä", "Ü", "Ö", "Ä", "ß"},
                                                                           new String[]{"+",".",".",".","ue","oe","ae","Ue","Oe","Ae","ss"}};
 
+  /**
+   * Text-Replacements fuer Umsatz-Properties.
+   */
+  public final static String[][] TEXT_REPLACEMENTS_UMSATZ = new String[][] {new String[]{"\n","\r"},
+                                                                            new String[]{""  ,""}};
+  
   private final static Map<Fehler,String> obantooCodes = new HashMap<Fehler,String>()
   {{
     put(Fehler.BLZ_LEER,                                    i18n.tr("Keine BLZ angegeben"));

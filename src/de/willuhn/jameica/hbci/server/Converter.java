@@ -23,6 +23,7 @@ import org.kapott.hbci.structures.Value;
 import org.kapott.hbci.swift.DTAUS;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -40,8 +41,8 @@ import de.willuhn.util.ApplicationException;
  * Hilfeklasse, welche Objekte aus HBCI4Java in unsere Datenstrukturen konvertiert
  * und umgekehrt.
  */
-public class Converter {
-
+public class Converter
+{
 
 	/**
 	 * Konvertiert einen einzelnen Umsatz von HBCI4Java nach Hibiscus.
@@ -56,9 +57,9 @@ public class Converter {
 	{
 		Umsatz umsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class,null);
 
-		umsatz.setArt(u.text);
-		umsatz.setCustomerRef(u.customerref);
-		umsatz.setPrimanota(u.primanota);
+		umsatz.setArt(clean(u.text));
+		umsatz.setCustomerRef(clean(u.customerref));
+		umsatz.setPrimanota(clean(u.primanota));
 
     double kurs = 1.95583;
 
@@ -139,6 +140,18 @@ public class Converter {
 		}
 		return umsatz;
 	}
+  
+  /**
+   * Entfernt Zeichen, die in den Strings nicht enthalten sein sollten.
+   * Typischerweise Zeilenumbrueche.
+   * @param s der String.
+   * @return der bereinigte String.
+   * BUGZILLA 1611
+   */
+  private static String clean(String s)
+  {
+    return HBCIProperties.replace(s,HBCIProperties.TEXT_REPLACEMENTS_UMSATZ);
+  }
 
   /**
    * Konvertiert eine Zeile aus der Liste der abgerufenen SEPA-Dauerauftraege.
