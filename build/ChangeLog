@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0429 Neue obantoo-Version 2.1.11
   * BUG: 0428 Fehler beim Parsen von MT940-Dateien - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18677
   * BUG: 0427 BUGZILLA 1611 - Zeilenumbrüche aus Umsatz-Attributen entfernen, die da nicht enthalten sein sollten
   * BUG: 0426 BUGZILLA 1610 - Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/7d858fc4b383dcca5937aa6dc1280ed1ebf8949d
