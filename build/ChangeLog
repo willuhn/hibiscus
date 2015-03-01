@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+2015-03-01 Version 2.6.12
+
   * NEW: 0429 Neue obantoo-Version 2.1.11
   * BUG: 0428 Fehler beim Parsen von MT940-Dateien - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18677
   * BUG: 0427 BUGZILLA 1611 - Zeilenumbrüche aus Umsatz-Attributen entfernen, die da nicht enthalten sein sollten
