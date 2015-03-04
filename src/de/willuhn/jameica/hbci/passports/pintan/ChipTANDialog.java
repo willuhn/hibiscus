@@ -239,7 +239,7 @@ public class ChipTANDialog extends TANDialog
         if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
         gd.widthHint = settings.getInt("width",width);
 
-        int height = SWTUtil.mm2px(40);
+        int height = SWTUtil.mm2px(50);
         if (height == -1) width = 140;
         gd.heightHint = height;
         
