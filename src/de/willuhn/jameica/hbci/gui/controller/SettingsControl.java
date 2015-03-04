@@ -196,8 +196,6 @@ public class SettingsControl extends AbstractControl
             d.setText(i18n.tr("Mit der permanenten Speicherung der PIN verstoﬂen Sie unter Umst‰nden\n" +
                               "gegen die Onlinebanking-AGB Ihres Geldinstitutes. Bitte wenden Sie sich\n" +
                               "an Ihre Bank und fragen Sie diese, ob das Speichern der PIN zul‰ssig ist.\n\n" +
-                              "Nach Aktivierung dieser Funktion erhalten Sie vom Programm-Autor von\n" +
-                              "Hibiscus keine Hilfe mehr bei Fragen oder Problemen.\n\n" +
                               "PIN-Speicherung wirklich aktivieren?"));
             b = ((Boolean) d.open()).booleanValue();
           }
