@@ -23,8 +23,8 @@ import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
-import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.controller.AuslandsUeberweisungControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisung;
@@ -95,7 +95,7 @@ public class AuslandsUeberweisungNew extends AbstractView
     container.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
 
 		ButtonArea buttonArea = new ButtonArea();
-		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
+		buttonArea.addButton(i18n.tr("Löschen"),new AuslandsUeberweisungDelete(),transfer,false,"user-trash-full.png");
     buttonArea.addButton(i18n.tr("Duplizieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {

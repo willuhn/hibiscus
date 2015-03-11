@@ -20,11 +20,11 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
-import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.SepaUeberweisungMerge;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
@@ -51,7 +51,7 @@ public class AuslandsUeberweisungList extends ContextMenu
 	{
 		addItem(new SingleItem(i18n.tr("Öffnen"), new AuslandsUeberweisungNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neue SEPA-Überweisung..."), new UNeu(),"text-x-generic.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new AuslandsUeberweisungDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammelaufträgen zusammenfassen..."), new SepaUeberweisungMerge(),"stock_navigator-shift-right.png"));
