@@ -58,17 +58,6 @@ public class KontoColumn extends Column
           return null;
         }
       }
-    });
+    },false,Column.ALIGN_AUTO,Column.SORT_BY_DISPLAY); // Sortierung nach Anzeige, nicht nur nach Kontonummer
   }
 }
-
-
-/**********************************************************************
- * $Log: KontoColumn.java,v $
- * Revision 1.2  2011/04/29 15:33:28  willuhn
- * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
- *
- * Revision 1.1  2009/02/17 00:00:02  willuhn
- * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
- *
- **********************************************************************/
