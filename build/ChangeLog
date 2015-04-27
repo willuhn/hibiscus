@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0432 Neue obantoo-Version 2.1.12
   * NEW: 0431 Warnhinweis anzeigen, wenn SEPA-Termin-Überweisungen gelöscht werden sollen, die bereits an die Bank übertragen wurden
   * NEW: 0430 chipTAN-Tester (zu finden im Menu unter Erweitert->chipTAN-Generator testen...)
 
