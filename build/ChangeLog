@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0434 Alte Ansicht "Alle Umsätze des Kontos" entfernt - leitet jetzt auf "Auswertungen->Umsätze" mit Filter
+              auf dieses Konto weiter. Die Auswertung ist erheblich flexibler als die alte Ansicht 
+  * NEW: 0433 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/45cdf716c997865f049e99c34d53eeaef4748218
   * NEW: 0432 Neue obantoo-Version 2.1.12
   * NEW: 0431 Warnhinweis anzeigen, wenn SEPA-Termin-Überweisungen gelöscht werden sollen, die bereits an die Bank übertragen wurden
   * NEW: 0430 chipTAN-Tester (zu finden im Menu unter Erweitert->chipTAN-Generator testen...)

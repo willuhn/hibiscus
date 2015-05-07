@@ -31,9 +31,9 @@ import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoImport;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.KontoResetAuszugsdatum;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugRpt;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
-import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Flaggable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -61,7 +61,7 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"system-file-manager.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new UmsatzList(),"text-x-generic.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new KontoauszugRpt(),"text-x-generic.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png")
     {
 

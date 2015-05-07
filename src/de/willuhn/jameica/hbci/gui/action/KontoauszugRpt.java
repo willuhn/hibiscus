@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/action/KontoauszugRpt.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/05/14 19:49:24 $
- * $Author: jost $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by Heiner Jostkleigrewe
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -26,15 +20,6 @@ public class KontoauszugRpt implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    GUI
-        .startView(de.willuhn.jameica.hbci.gui.views.KontoauszugList.class,
-            null);
+    GUI.startView(de.willuhn.jameica.hbci.gui.views.KontoauszugList.class,context);
   }
 }
-
-/*******************************************************************************
- * $Log: KontoauszugRpt.java,v $
- * Revision 1.1  2006/05/14 19:49:24  jost
- * Prerelease Kontoauszug-Report
- *
- ******************************************************************************/

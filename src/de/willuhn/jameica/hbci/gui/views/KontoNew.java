@@ -36,8 +36,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoSyncViaScripting;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugRpt;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
-import de.willuhn.jameica.hbci.gui.action.UmsatzList;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
@@ -216,7 +216,7 @@ public class KontoNew extends AbstractView
     fetch.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));
     buttons.addButton(fetch);
     
-    buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),new UmsatzList(),konto,false,"text-x-generic.png");
+    buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),new KontoauszugRpt(),konto,false,"text-x-generic.png");
     buttons.paint(getParent());
   }
   
