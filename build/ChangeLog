@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0435 Element "Umsätze" in der Navigation in die oberste Ebene verschoben, damit das besser gefunden wird. 
   * NEW: 0434 Alte Ansicht "Alle Umsätze des Kontos" entfernt - leitet jetzt auf "Auswertungen->Umsätze" mit Filter
               auf dieses Konto weiter. Die Auswertung ist erheblich flexibler als die alte Ansicht 
   * NEW: 0433 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/45cdf716c997865f049e99c34d53eeaef4748218
