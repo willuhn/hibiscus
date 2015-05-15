@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/messaging/MarkerUmsatzmessageConsumer.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/06/30 16:29:42 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -81,7 +77,7 @@ public class MarkerUmsatzmessageConsumer implements MessageConsumer
       {
         GenericIterator i = NeueUmsaetze.getNeueUmsaetze();
         final int size = i.size();
-        GUI.getNavigation().setUnreadCount("hibiscus.navi.reporting.kontoauszug",size);
+        GUI.getNavigation().setUnreadCount("hibiscus.navi.kontoauszug",size);
       }
       catch (Throwable t) // wir fangen hier alles - fuer den Fall, dass die Jameica-Version noch kein "setUnreadCount" hat
       {
@@ -90,14 +86,4 @@ public class MarkerUmsatzmessageConsumer implements MessageConsumer
     }
     
   }
-
 }
-
-
-
-/**********************************************************************
- * $Log: MarkerUmsatzmessageConsumer.java,v $
- * Revision 1.1  2011/06/30 16:29:42  willuhn
- * @N Unterstuetzung fuer neues UnreadCount-Feature
- *
- **********************************************************************/
