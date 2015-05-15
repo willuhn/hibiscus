@@ -89,7 +89,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
         try
         {
           Date termin = l.getTermin();
-          boolean faellig = (termin.before(new Date()) && !l.ausgefuehrt());
+          boolean faellig = l.ueberfaellig() && !l.ausgefuehrt();
           item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           if (l.hasWarnings())
             item.setForeground(Color.ERROR.getSWTColor());

@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractHibiscusDBObject.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/12/31 13:55:38 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -84,6 +80,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     try
     {
       // Delete-Message schicken
+      // Muss synchron gemacht werden, damit die Aktionen innerhalb der Transaktion stattfinden
       Application.getMessagingFactory().getMessagingQueue("hibiscus.dbobject.delete").sendSyncMessage(new QueryMessage(this));
 
       // Meta-Daten loeschen - muss NACH der Message erfolgen - sonst fehlen uns dort die Meta-Daten schon
@@ -103,19 +100,17 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
       throw e2;
     }
   }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  @Override
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    
+    // Store-Message schicken
+    // Das wird asynchron gemacht, damit es das speichern nicht bremst
+    Application.getMessagingFactory().getMessagingQueue("hibiscus.dbobject.store").sendMessage(new QueryMessage(this));
+  }
 }
-
-
-
-/**********************************************************************
- * $Log: AbstractHibiscusDBObject.java,v $
- * Revision 1.3  2011/12/31 13:55:38  willuhn
- * @N Beim Loeschen eines Reminder-faehigen Auftrages wird der Reminder jetzt via Messaging automatisch gleich mit geloescht
- *
- * Revision 1.2  2011/10/20 16:20:05  willuhn
- * @N BUGZILLA 182 - Erste Version von client-seitigen Dauerauftraegen fuer alle Auftragsarten
- *
- * Revision 1.1  2011/10/18 09:28:14  willuhn
- * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
- *
- **********************************************************************/

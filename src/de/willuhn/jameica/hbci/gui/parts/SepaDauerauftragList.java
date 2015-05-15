@@ -26,6 +26,7 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -65,6 +66,9 @@ public class SepaDauerauftragList extends TablePart implements Part
           if (item == null || item.getData() == null)
             return;
           SepaDauerauftrag d = (SepaDauerauftrag) item.getData();
+
+          item.setFont(!d.isActive() ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
+          
           if (d.getLetzteZahlung() != null && new Date().after(d.getLetzteZahlung()))
             item.setForeground(Color.COMMENT.getSWTColor());
         }
