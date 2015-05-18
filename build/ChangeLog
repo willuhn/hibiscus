@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0440 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/9b15c05dbbf370fd4659dc235ef443ae80e9ea78
   * NEW: 0439 BUGZILLA 1093 - Ungelesen-Markierung in der Navigation endlich auch für überfällige Aufträge
   * NEW: 0438 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/06341e2cf42cd1d74553a7707c561fd67a6ecdaa
   * BUG: 0437 Ungelesen-Markierung funktionierte durch Änderung 0435 nicht mehr
