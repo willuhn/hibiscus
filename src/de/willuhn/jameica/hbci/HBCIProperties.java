@@ -119,6 +119,16 @@ public class HBCIProperties
   public final static int HBCI_TRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.transfer.usage.maxlength",27);
 
   /**
+   * Maximale Laenge eines GV-Code.
+   */
+  public final static int HBCI_GVCODE_MAXLENGTH = settings.getInt("hbci.gvcode.maxlength",3);
+
+  /**
+   * Maximale Laenge eines Textschluessels.
+   */
+  public final static int HBCI_ADDKEY_MAXLENGTH = settings.getInt("hbci.addkey.maxlength",3);
+
+  /**
    * Laenge der Pruefziffern bei BZÜ-Ueberweisung.
    */
   public final static int HBCI_TRANSFER_BZU_LENGTH = settings.getInt("hbci.transfer.bzu.length",13);

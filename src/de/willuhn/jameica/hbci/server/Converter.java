@@ -93,10 +93,11 @@ public class Converter
 
 		// Wir uebernehmen den GV-Code nur, wenn was sinnvolles drin steht.
 		// "999" steht hierbei fuer unstrukturiert aka unbekannt.
-		if (u.gvcode != null && !u.gvcode.equals("999"))
+		// 
+		if (u.gvcode != null && !u.gvcode.equals("999") && u.gvcode.length() <= HBCIProperties.HBCI_GVCODE_MAXLENGTH)
   		umsatz.setGvCode(u.gvcode);
 
-		if (u.addkey != null && u.addkey.length() > 0)
+		if (u.addkey != null && u.addkey.length() > 0 && u.addkey.length() <= HBCIProperties.HBCI_ADDKEY_MAXLENGTH)
       umsatz.setAddKey(u.addkey);
 
 		////////////////////////////////////////////////////////////////////////////

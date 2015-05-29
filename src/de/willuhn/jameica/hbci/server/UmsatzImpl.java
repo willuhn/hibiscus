@@ -90,15 +90,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
           HBCIProperties.checkLength(ewz[i],35);
         }
       }
-      
-      String gvCode = this.getGvCode();
-      if (gvCode != null && gvCode.length() > 3)
-        throw new ApplicationException(i18n.tr("Geschäftsvorfallcode {0} darf maximal 3 Zeichen lang sein",gvCode));
 
-      String addKey = this.getAddKey();
-      if (addKey != null && addKey.length() > 3)
-        throw new ApplicationException(i18n.tr("Textschlüssel-Zusatz {0} darf maximal 3 Zeichen lang sein",addKey));
-      
+      HBCIProperties.checkLength(this.getGvCode(),HBCIProperties.HBCI_GVCODE_MAXLENGTH);
+      HBCIProperties.checkLength(this.getAddKey(),HBCIProperties.HBCI_ADDKEY_MAXLENGTH);
 		}
 		catch (RemoteException e)
 		{
