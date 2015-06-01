@@ -632,20 +632,20 @@ public class HBCIProperties
     }
     catch (SEPAException e)
     {
-      // Checken, ob wir einen Fehlertext haben
-      String msg = e.getMessage();
-      if (msg != null)
-        throw new ApplicationException(msg);
-      
-      // Dann halt anhand des Fehlercodes
+      // Haben wir einen Fehlercode?
       Fehler f = e.getFehler();
       if (f != null)
       {
-        msg = obantooCodes.get(f);
+        String msg = obantooCodes.get(f);
         if (msg != null)
           throw new ApplicationException(msg);
       }
-      
+
+      // Oder alternativ einen Fehlertext?
+      String msg = e.getMessage();
+      if (msg != null)
+        throw new ApplicationException(msg);
+
       Logger.error("unable to generate IBAN",e);
       throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
     }
