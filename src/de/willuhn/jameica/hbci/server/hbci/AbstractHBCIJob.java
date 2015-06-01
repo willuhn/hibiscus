@@ -101,17 +101,6 @@ public abstract class AbstractHBCIJob
   {
   }
   
-  /**
-   * Wird aufgerufen, wenn Warnungen gefunden wurden.
-   * Kann von abgeleiteten Klassen ueberschrieben werden.
-   * @param warnings die aufgetretenen Warnungen.
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  protected void hasWarnings(HBCIRetVal[] warnings) throws RemoteException, ApplicationException
-  {
-  }
-  
 	/**
 	 * Diese Funktion wird vom HBCISynchronizeBackend intern aufgerufen.
 	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
@@ -206,17 +195,18 @@ public abstract class AbstractHBCIJob
     // steht "0030" fuer "Auftrag empfangen - Sicherheitsfreigabe erforderlich". Wir machen hier also einen
     // Sonderfall fuer diesen einen Code.
     
-    // TODO Das koennte man vermutlich auch direkt in HBCI4Java implementieren
+    // Das koennte man vermutlich auch direkt in HBCI4Java implementieren
     boolean tanNeeded = false;
+    boolean executed  = false;
     HBCIRetVal[] values = status.getSuccess();
     if (values != null && values.length > 0)
     {
       for (HBCIRetVal val:values)
       {
-        if (val.code != null && val.code.equals("0030"))
+        if (val.code != null)
         {
-          tanNeeded = true;
-          break;
+          tanNeeded |= val.code.equals("0030");
+          executed  |= (val.code.equals("0010") || val.code.equals("0020"));
         }
       }
     }
@@ -224,13 +214,6 @@ public abstract class AbstractHBCIJob
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
     
-    if ((tanNeeded || status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN) && session.getStatus() == ProgressMonitor.STATUS_CANCEL) // BUGZILLA 690
-    {
-      Logger.warn("hbci session cancelled by user, mark job as cancelled");
-      markCancelled();
-      return;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Warnungen ausgeben, falls vorhanden - BUGZILLA 899
     HBCIRetVal[] warnings = status.getWarnings();
@@ -242,39 +225,57 @@ public abstract class AbstractHBCIJob
       for (HBCIRetVal val:warnings)
         monitor.log("  " + val.code + ": " + val.text);
       monitor.log(" ");
-      
-      // Auftrag informieren
-      hasWarnings(warnings);
     }
     ////////////////////////////////////////////////////////////////////////////
+
+    final String statusText = getStatusText();
+
+    // BUGZILLA 1283 - Job wurde zweifelsfrei ausgefuehrt
+    // Bei meinem Test war es so, dass beim Abbruch bei der zweiten TAN-Eingabe auch bei dem ersten
+    // Auftrag der "0030" enthalten war. Sah dann so aus:
     
+    // HBCISynchronizeBackend$HBCIJobGroup.sync] executing check for job UebSEPA
+    // ..
+    // AbstractHBCIJob.getStatusText] retval[ 0]: Auftrag empfangen - Bitte die empfangene Tan eingeben.
+    // AbstractHBCIJob.getStatusText] retval[ 1]: Der Auftrag wurde entgegengenommen.
+    // AbstractHBCIJob.handleResult] hbci session cancelled by user, mark job as cancelled
+    // HBCISynchronizeBackend$HBCIJobGroup.sync] executing check for job UebSEPA
+    // ..
+    // AbstractHBCIJob.getStatusText] retval[ 0]: Auftrag empfangen - Bitte die empfangene Tan eingeben.
+    // AbstractHBCIJob.handleResult] hbci session cancelled by user, mark job as cancelled
+    
+    // Bei dem abgebrochenen fehlte das "Der Auftrag wurde entgegengenommen.". Bei beiden war aber der "0030"
+    // enthalten. Daher pruefen wir hier nach Vorhandensein von 0010/0020
+    if (executed && status.isOK())
+    {
+      markExecutedInternal(statusText);
+      return;
+    }
+    
+    if ((tanNeeded || status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN) && session.getStatus() == ProgressMonitor.STATUS_CANCEL) // BUGZILLA 690
+    {
+      Logger.warn("hbci session cancelled by user, mark job as cancelled");
+      markCancelled();
+      return;
+    }
+
+    // Globaler Status ist OK - Job wurde zweifelsfrei erfolgreich ausgefuehrt
+    // Wir markieren die Ueberweisung als "ausgefuehrt"
     if (result.isOK())
     {
-      // Globaler Status ist OK - Job wurde zweifelsfrei erfolgreich ausgefuehrt
-      // Wir markieren die Ueberweisung als "ausgefuehrt"
-      markExecuted();
+      markExecutedInternal(statusText);
       return;
     }
 
     // Globaler Status ist nicht OK. Mal schauen, was der Job-Status sagt
-    String statusText = getStatusText();
-    if (status.getStatusCode() == HBCIStatus.STATUS_OK)
+    if (status.isOK())
     {
       // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
       // als ausgefuehrt (damit er nicht mehrfach ausgefuhert wird), melden
       // den globalen Fehler aber trotzdem weiter
-      try
-      {
-        markExecuted();
-      }
-      catch (Exception e)
-      {
-        // Das ist ein Folge-Fehler. Den loggen wir. Wir werfen aber die originale
-        // Fehlermeldung weiter
-        Logger.error("unable to mark job as executed",e);
-      }
-      throw new ApplicationException(statusText);
+      markExecutedInternal(statusText);
+      return;
     }
 
     // Nichts hat geklappt. Weder der globale Status ist in Ordnung
@@ -291,6 +292,34 @@ public abstract class AbstractHBCIJob
       Logger.error("unable to mark job as failed",e);
     }
     throw new ApplicationException(error != null && error.length() > 0 ? error : statusText);
+  }
+  
+  /**
+   * Markiert den Auftrag als ausgefuehrt und uebernimmt das Fehlerhandling.
+   * @param statusText der Status-Text.
+   * @throws ApplicationException
+   */
+  private void markExecutedInternal(final String statusText) throws ApplicationException
+  {
+    // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
+    // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
+    // als ausgefuehrt (damit er nicht mehrfach ausgefuhert wird), melden
+    // den globalen Fehler aber trotzdem weiter
+    try
+    {
+      markExecuted();
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (Exception e)
+    {
+      // Das ist ein Folge-Fehler. Den loggen wir. Wir werfen aber die originale
+      // Fehlermeldung weiter
+      Logger.error("unable to mark job as executed",e);
+    }
+    throw new ApplicationException(statusText);
   }
   
 	/**
@@ -312,7 +341,7 @@ public abstract class AbstractHBCIJob
       StringBuffer sb = new StringBuffer();
       for (int i=0;i<retValues.length;++i)
       {
-        Logger.info("retval[ " + i + "]: " + retValues[i].text);
+        Logger.info("retval[" + i + "]: " + retValues[i].code + " - " + retValues[i].text);
         sb.append(retValues[i].code + " - " + retValues[i].text);
         if (i < (retValues.length - 1))
           sb.append(", ");

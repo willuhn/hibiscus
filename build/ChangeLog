@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0442 BUGZILLA 1283 - Beim Sync-Abbruch mittendrin konnte es passieren, dass die bis dahin ausgeführten
+              Aufträge nicht als ausgeführt markiert wurden.
   * CHG: 0441 Überlange Textschlüssel (über 3 Zeichen) beim Umsatzabruf ignorieren (die OLB liefert bei einigen Konten sowas)
   * NEW: 0440 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/9b15c05dbbf370fd4659dc235ef443ae80e9ea78
   * NEW: 0439 BUGZILLA 1093 - Ungelesen-Markierung in der Navigation endlich auch für überfällige Aufträge
