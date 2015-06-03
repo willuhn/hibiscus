@@ -228,7 +228,7 @@ public abstract class AbstractHBCIJob
     }
     ////////////////////////////////////////////////////////////////////////////
 
-    final String statusText = getStatusText();
+    final String errorText = this.getErrorText();
 
     // BUGZILLA 1283 - Job wurde zweifelsfrei ausgefuehrt
     // Bei meinem Test war es so, dass beim Abbruch bei der zweiten TAN-Eingabe auch bei dem ersten
@@ -248,7 +248,7 @@ public abstract class AbstractHBCIJob
     // enthalten. Daher pruefen wir hier nach Vorhandensein von 0010/0020
     if (executed && status.isOK())
     {
-      markExecutedInternal(statusText);
+      markExecutedInternal(errorText);
       return;
     }
     
@@ -263,7 +263,7 @@ public abstract class AbstractHBCIJob
     // Wir markieren die Ueberweisung als "ausgefuehrt"
     if (result.isOK())
     {
-      markExecutedInternal(statusText);
+      markExecutedInternal(errorText);
       return;
     }
 
@@ -274,7 +274,7 @@ public abstract class AbstractHBCIJob
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
       // als ausgefuehrt (damit er nicht mehrfach ausgefuhert wird), melden
       // den globalen Fehler aber trotzdem weiter
-      markExecutedInternal(statusText);
+      markExecutedInternal(errorText);
       return;
     }
 
@@ -284,22 +284,22 @@ public abstract class AbstractHBCIJob
     String error = null;
     try
     {
-      error = markFailed(statusText);
+      error = markFailed(errorText);
     }
     catch (Exception e)
     {
       // Folge-Fehler. Loggen. Aber originale Meldung weiterwerfen
       Logger.error("unable to mark job as failed",e);
     }
-    throw new ApplicationException(error != null && error.length() > 0 ? error : statusText);
+    throw new ApplicationException(error != null && error.length() > 0 ? error : errorText);
   }
   
   /**
    * Markiert den Auftrag als ausgefuehrt und uebernimmt das Fehlerhandling.
-   * @param statusText der Status-Text.
+   * @param errorText der anzuzeigende Fehlertext.
    * @throws ApplicationException
    */
-  private void markExecutedInternal(final String statusText) throws ApplicationException
+  private void markExecutedInternal(final String errorText) throws ApplicationException
   {
     // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
     // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
@@ -318,15 +318,14 @@ public abstract class AbstractHBCIJob
       // Das ist ein Folge-Fehler. Den loggen wir. Wir werfen aber die originale
       // Fehlermeldung weiter
       Logger.error("unable to mark job as executed",e);
+      throw new ApplicationException(errorText);
     }
-    throw new ApplicationException(statusText);
   }
   
 	/**
-	 * Liefert den Status-Text, der vom HBCI-Kernel nach Ausfuehrung des Jobs zurueckgeliefert wurde.
-   * @return Status-Text oder <code>Unbekannter Fehler</code> wenn dieser nicht ermittelbar ist.
+	 * Liefert den Fehler-Text, der die Rueckemldungen der Bank enthaelt.
    */
-  protected final String getStatusText()
+  private final String getErrorText()
 	{
     String sr = "";
 		try

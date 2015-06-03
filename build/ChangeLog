@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0443 Folgefehler von BUGZILLA 1283 - unabhängig vom Auftragsstatus wurde immer mit Fehler abgebrochen
   * BUG: 0442 BUGZILLA 1283 - Beim Sync-Abbruch mittendrin konnte es passieren, dass die bis dahin ausgeführten
               Aufträge nicht als ausgeführt markiert wurden.
   * CHG: 0441 Überlange Textschlüssel (über 3 Zeichen) beim Umsatzabruf ignorieren (die OLB liefert bei einigen Konten sowas)
