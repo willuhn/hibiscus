@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0444 BUGZILLA 1633 - ALT+S als Shortcut zum Speichern in allen Dialogen mit "Speichern"-Button
   * BUG: 0443 Folgefehler von BUGZILLA 1283 - unabhängig vom Auftragsstatus wurde immer mit Fehler abgebrochen
   * BUG: 0442 BUGZILLA 1283 - Beim Sync-Abbruch mittendrin konnte es passieren, dass die bis dahin ausgeführten
               Aufträge nicht als ausgeführt markiert wurden.

@@ -121,7 +121,7 @@ public class SepaSammelUeberweisungNew extends AbstractView
 		},null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
     
-    Button store = new Button(i18n.tr("Speichern"),new Action() {
+    Button store = new Button(i18n.tr("&Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
       }

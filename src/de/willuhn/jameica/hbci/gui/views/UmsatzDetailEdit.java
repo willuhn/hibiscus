@@ -34,7 +34,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
     super.bind();
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Speichern"),new Action()
+    buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {

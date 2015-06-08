@@ -78,7 +78,7 @@ public class Settings extends AbstractView implements Extendable
     umsatztypes.addButtonArea(umsatzButtons);
 
     ButtonArea buttons = new ButtonArea();
-		buttons.addButton(i18n.tr("Speichern"),new Action()
+		buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {

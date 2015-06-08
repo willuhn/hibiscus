@@ -88,7 +88,7 @@ public class SepaDauerauftragNew extends AbstractView
 					new SepaDauerauftragExecute().handleAction(da);
       }
     },null,false,"emblem-important.png");
-		buttonArea.addButton(i18n.tr("Speichern"), new Action()
+		buttonArea.addButton(i18n.tr("&Speichern"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException
 			{

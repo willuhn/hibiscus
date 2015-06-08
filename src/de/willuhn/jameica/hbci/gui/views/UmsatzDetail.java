@@ -81,7 +81,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     edit.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
     buttons.addButton(edit);
     
-    Button store = new Button(i18n.tr("Speichern"),new Action()
+    Button store = new Button(i18n.tr("&Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {

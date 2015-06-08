@@ -77,7 +77,7 @@ public class UmsatzTypDetail extends AbstractView
         }
       }
     },null,false,"edit-copy.png");
-    buttons.addButton(i18n.tr("Speichern"), new Action()
+    buttons.addButton(i18n.tr("&Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {

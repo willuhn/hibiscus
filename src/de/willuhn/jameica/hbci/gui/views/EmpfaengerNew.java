@@ -72,7 +72,7 @@ public class EmpfaengerNew extends AbstractView
     delete.setEnabled(control.isHibiscusAdresse());
     buttonArea.addButton(delete);
     
-    Button store = new Button(i18n.tr("Speichern"), new Action()
+    Button store = new Button(i18n.tr("&Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {

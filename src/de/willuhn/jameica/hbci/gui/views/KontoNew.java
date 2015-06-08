@@ -167,7 +167,7 @@ public class KontoNew extends AbstractView
     
     buttonArea.addButton(control.getProtoButton());
 		buttonArea.addButton(control.getDelButton());
-		buttonArea.addButton(i18n.tr("Speichern"),new Action()
+		buttonArea.addButton(i18n.tr("&Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
