@@ -39,7 +39,9 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
    */
   public boolean autoRegister()
   {
-    return true;
+    // Wird manuell per Manifest registriert, um die Reihenfolge festzulegen. Muss NACH OfflineSaldoMessageConsumer passieren,
+    // damit sichergestellt ist, dass der Saldo des Kontos aktualisiert wurde, wenn wir dran sind.
+    return false;
   }
 
   /**

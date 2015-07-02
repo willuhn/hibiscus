@@ -101,6 +101,11 @@
     
     <consumer queue="hibiscus.sync.hbci.trace"             class="de.willuhn.jameica.hbci.synchronize.hbci.HBCITraceMessageConsumer" />
     <consumer queue="hibiscus.syncengine.status"           class="de.willuhn.jameica.hbci.messaging.SyncEngineStatusMessageConsumer" />
+
+    <!-- werden manuell registriert, um die Reihenfolge festzulegen. Damit ist sichergestellt, dass der Saldo des Kontos
+         aktualisiert wurde, wenn die Auto-Buchung erzeugt wird -->
+    <consumer queue="" class="de.willuhn.jameica.hbci.messaging.OfflineSaldoMessageConsumer" />
+    <consumer queue="" class="de.willuhn.jameica.hbci.messaging.CheckOfflineUmsatzMessageConsumer" />
     
   </messaging>
   
