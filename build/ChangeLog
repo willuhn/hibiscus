@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0447 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/6dec132ce507c54243d96cb1256e025ff57dd645
+              Die Sparkassen haben offensichtlich alle auf FinTS3 umgestellt!
   * NEW: 0446 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/baf3cdfc55e02146c3734ba3c864094eb22f088a (Neue Consors-URL)
   * NEW: 0445 Sicherstellen, dass CheckOfflineUmsatzMessageConsumer NACH OfflineSaldoMessageConsumer ausgefuehrt wird
   * NEW: 0444 BUGZILLA 1633 - ALT+S als Shortcut zum Speichern in allen Dialogen mit "Speichern"-Button
