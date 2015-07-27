@@ -209,7 +209,9 @@ public class KontoUtil
       if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
         return u.getSaldo();
     }
-    return 0.0d;
+    
+    // Keine Umsaetze gefunden. Wir nehmen den Saldo des Kontos selbst
+    return konto.getSaldo();
   }
 
   /**
@@ -234,7 +236,9 @@ public class KontoUtil
       if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
         return u.getSaldo();
     }
-    return 0.0d;
+    
+    // Keine Umsaetze gefunden. Wir nehmen den Saldo des Kontos selbst
+    return konto.getSaldo();
   }
 
   /**
