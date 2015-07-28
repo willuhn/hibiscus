@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0450 Aktualisiertes englisches Sprach-Bundle von Christian
   * NEW: 0449 Saldo des Kontos als Start-/Endwert in Einnahmen/Ausgaben verwenden, wenn keine Buchungen vorhanden sind - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=19225
   * NEW: 0448 Englisches Sprach-Bundle von Christian
   * NEW: 0447 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/6dec132ce507c54243d96cb1256e025ff57dd645
