@@ -382,7 +382,20 @@ public class HBCIProperties
    */
   public final static String formatIban(String s)
   {
-    return group(s,4," ").toUpperCase();
+    if (s == null)
+      return "";
+
+    // Wenn der Text irgendwas ausser Zahlen, Buchstaben und Leerzeichen enthaelt,
+    // formatieren wir es nicht. Dann ist es keine IBAN
+    try
+    {
+      checkChars(s,HBCI_IBAN_VALIDCHARS + " ");
+      return group(s,4," ").toUpperCase();
+    }
+    catch (ApplicationException ae)
+    {
+      return s;
+    }
   }
   
   /**
