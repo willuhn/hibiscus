@@ -1,0 +1,14 @@
+<form>
+	<p>
+		<span color="header" font="header">Neuer FinTS/HBCI-Bankzugang</span>
+	</p>
+	
+	<p>
+		Bitte wählen Sie die Art des FinTS/HBCI-Verfahrens.
+	</p>
+	
+	<p>
+		Wenn Sie nicht sicher sind, wählen Sie "PIN/TAN".
+    Dieses Verfahren wird von den meisten Banken unterstützt.
+	</p>
+</form>

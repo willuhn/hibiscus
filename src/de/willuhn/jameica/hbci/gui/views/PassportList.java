@@ -51,6 +51,7 @@ public class PassportList extends AbstractView
     buttons.addButton(new Button(i18n.tr("Neuer Bank-Zugang..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
+        // new AccountNew().handleAction(null);
         new PassportDetail().handleAction(tree.getPassport());
       }
     },null,false,"seahorse-preferences.png"));

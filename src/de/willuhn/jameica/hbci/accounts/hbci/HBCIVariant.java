@@ -5,31 +5,30 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.accounts;
+package de.willuhn.jameica.hbci.accounts.hbci;
 
 import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Interface fuer einen Account-Provider.
- * Wird typischerweise einmal pro SynchronizeBackend implementiert.
+ * Interface fuer eine HBCI-Zugangsvariante.
  */
-public interface AccountProvider
+public interface HBCIVariant
 {
   /**
-   * Liefert einen sprechenden Namen fuer den Provider.
-   * @return sprechender Name fuer den Provider.
+   * Liefert einen sprechenden Namen fuer die HBCI-Variante.
+   * @return sprechender Name fuer die HBCI-Variante.
    */
   public String getName();
   
   /**
-   * Liefert ein vorausgefuelltes Info-Panel fuer den Bankzugang.
-   * @return ein vorausgefuelltes Info-Panel fuer den Bankzugang.
+   * Liefert ein vorausgefuelltes Info-Panel fuer die HBCI-Variante.
+   * @return ein vorausgefuelltes Info-Panel fuer die HBCI-Variante.
    */
   public InfoPanel getInfo();
   
   /**
-   * Startet den Assistenten zur Erzeugung eines neuen Bankzugangs.
+   * Startet den Assistenten zur Erzeugung eines Bankzugangs mit der Variante.
    * @throws ApplicationException
    */
   public void create() throws ApplicationException;

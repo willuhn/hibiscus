@@ -15,7 +15,7 @@ import java.util.List;
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.synchronize.hbci.HBCIAccountProvider;
+import de.willuhn.jameica.hbci.accounts.hbci.HBCIAccountProvider;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -86,7 +86,7 @@ public class AccountService
     }
     catch (Exception e)
     {
-      Logger.error("error while searching vor account providers",e);
+      Logger.error("error while searching for account providers",e);
     }
     return this.providers;
   }
