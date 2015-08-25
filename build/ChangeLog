@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0454 HBCI-Passports nur bei Auswahl des HBCI-Backends anbieten
   * NEW: 0453 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/e3b6bb9b6e64b7549175f579451ba4f46708357e
   * CHG: 0452 IBAN-Formatierung nur durchführen, wenn Text wie IBAN aussieht
   * NEW: 0451 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/203df0528dca0be48f39f415ef86b298ce4e07d8

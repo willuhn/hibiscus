@@ -23,7 +23,10 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
+import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -68,7 +71,35 @@ public class PassportInput extends SelectInput
     
     this.setPleaseChoose("Bitte wählen...");
     this.setAttribute("name");
-    this.setName(i18n.tr("HBCI-Verfahren"));
+    this.setName(i18n.tr("Verfahren"));
+  }
+  
+  /**
+   * Aktualisiert die Liste der verfuegbaren Passports abhaengig vom ausgewaehlten Backend.
+   * Derzeit werden hier erstmal hart alle HBCI-Passports entfernt, wenn nicht das HBCI-Backend ausgewaehlt ist.
+   * @param backend das Backend.
+   */
+  public void update(SynchronizeBackend backend)
+  {
+    List<Passport> all = init();
+    List<Passport> result = new ArrayList<Passport>();
+    
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    boolean hb = backend != null && service.get(HBCISynchronizeBackend.class).equals(backend);
+    
+    for (Passport p:all)
+    {
+      boolean hp = (p instanceof de.willuhn.jameica.hbci.passports.ddv.rmi.Passport) ||
+                   (p instanceof de.willuhn.jameica.hbci.passports.rdh.rmi.Passport) ||
+                   (p instanceof de.willuhn.jameica.hbci.passports.pintan.rmi.Passport);
+
+      // Nur hinzufuegen, wenn entweder beide true oder beide false sind.
+      // Sprich: HBCI-Passports nur bei HBCI-Backend. Nicht-HBCI-Passports nur bei Nicht-HBCI-Backends
+      if (hb == hp)
+        result.add(p);
+    }
+    
+    this.setList(result);
   }
   
   /**

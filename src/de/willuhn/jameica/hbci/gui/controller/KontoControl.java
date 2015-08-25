@@ -63,11 +63,9 @@ import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
-import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
-import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -93,7 +91,7 @@ public class KontoControl extends AbstractControl
 	private Input name				 		        = null;
 	private Input bezeichnung	 		        = null;
   private Input backendAuswahl          = null;
-	private Input passportAuswahl         = null;
+	private PassportInput passportAuswahl = null;
   private Input kundennummer 		        = null;
   private Input kommentar               = null;
   private Input accountType             = null;
@@ -403,7 +401,7 @@ public class KontoControl extends AbstractControl
    * @throws RemoteException
    * @throws ApplicationException
    */
-  public Input getPassportAuswahl() throws RemoteException, ApplicationException
+  public PassportInput getPassportAuswahl() throws RemoteException, ApplicationException
 	{
 		if (passportAuswahl != null)
 			return passportAuswahl;
@@ -458,9 +456,6 @@ public class KontoControl extends AbstractControl
   {
     try
     {
-      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      SynchronizeBackend hbci = service.get(HBCISynchronizeBackend.class);
-      
       boolean offline = ((Boolean) getOffline().getValue()).booleanValue();
       getSaldo().setEnabled(offline);
       
@@ -469,8 +464,8 @@ public class KontoControl extends AbstractControl
       applyOfflineState(offline);
 
       SynchronizeBackend backend = (SynchronizeBackend) getBackendAuswahl().getValue();
-      // Den Passport gibts erstmal nur bei HBCI-Konten - und nur bei !offline
-      getPassportAuswahl().setEnabled(!offline && backend != null && backend.equals(hbci));
+      getPassportAuswahl().setEnabled(!offline && backend != null);
+      getPassportAuswahl().update(backend);
 
       // Kein Backend bei Offline-Konten
       getBackendAuswahl().setEnabled(!offline);
@@ -765,14 +760,11 @@ public class KontoControl extends AbstractControl
         SynchronizeBackend backend = (SynchronizeBackend) getBackendAuswahl().getValue();
         getKonto().setBackendClass(backend != null ? backend.getClass().getName() : null);
         
-        BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-        final SynchronizeBackend hbci = service.get(HBCISynchronizeBackend.class);
-
 	      Passport p = (Passport) getPassportAuswahl().getValue();
-	      if (backend != null && backend.equals(hbci)) // Passport gibts nur bei Scripting
+	      if (backend != null)
 	      {
 	        if (p == null)
-	          throw new ApplicationException(i18n.tr("Bitte wählen Sie ein FinTS-Sicherheitsverfahren aus"));
+	          throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Sicherheitsverfahren aus"));
 	        getKonto().setPassportClass(p.getClass().getName());
 	      }
 	      else

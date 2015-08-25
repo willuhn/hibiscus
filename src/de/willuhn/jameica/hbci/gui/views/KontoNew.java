@@ -148,12 +148,12 @@ public class KontoNew extends AbstractView
     {
       ColumnLayout columns = new ColumnLayout(account.getComposite(),2);
       Container left = new SimpleContainer(columns.getComposite());
-      left.addLabelPair(i18n.tr("Kundenkennung"),              control.getKundennummer());
-      left.addLabelPair(i18n.tr("Kontonummer"),                control.getKontonummer());
-      left.addLabelPair(i18n.tr("Bankleitzahl"),               control.getBlz());
-      left.addLabelPair(i18n.tr("Unterkontonummer"),           control.getUnterkonto());
-      left.addLabelPair(i18n.tr("Zugangsverfahren"),           control.getBackendAuswahl());
-      left.addLabelPair(i18n.tr("FinTS-Sicherheitsverfahren"), control.getPassportAuswahl());
+      left.addLabelPair(i18n.tr("Kundenkennung"),        control.getKundennummer());
+      left.addLabelPair(i18n.tr("Kontonummer"),          control.getKontonummer());
+      left.addLabelPair(i18n.tr("Bankleitzahl"),         control.getBlz());
+      left.addLabelPair(i18n.tr("Unterkontonummer"),     control.getUnterkonto());
+      left.addInput(control.getBackendAuswahl());
+      left.addInput(control.getPassportAuswahl());
 
       Container right = new SimpleContainer(columns.getComposite());
       right.addLabelPair(i18n.tr("IBAN"),                     control.getIban());

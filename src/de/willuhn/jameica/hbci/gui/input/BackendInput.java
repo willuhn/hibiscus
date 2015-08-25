@@ -53,7 +53,7 @@ public class BackendInput extends SelectInput
     this.setPreselected(current != null ? current : engine.getPrimary());
     
     this.setAttribute("name");
-    this.setName(i18n.tr("Zugangsverfahren"));
+    this.setName(i18n.tr("Zugangsweg"));
   }
   
   /**
