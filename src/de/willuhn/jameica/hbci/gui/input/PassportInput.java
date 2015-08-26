@@ -100,6 +100,7 @@ public class PassportInput extends SelectInput
     }
     
     this.setList(result);
+    this.setEnabled(result.size() > 0);
   }
   
   /**
