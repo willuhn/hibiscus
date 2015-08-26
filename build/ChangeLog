@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0457 HBCI-Medium in Verfahren umbenannt
   * NEW: 0456 Aktualisierte englische Sprach-Bundles von Christian
   * BUG: 0455 Passport-Auswahl war auch bei Nicht-HBCI-Backend Pflicht
   * NEW: 0454 HBCI-Passports nur bei Auswahl des HBCI-Backends anbieten

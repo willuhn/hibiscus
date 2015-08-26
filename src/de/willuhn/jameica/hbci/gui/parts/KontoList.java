@@ -108,7 +108,7 @@ public class KontoList extends TablePart implements Part
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
     addColumn(i18n.tr("Gruppe"),"kategorie");
     addColumn(i18n.tr("Notiz"),"kommentar");
-    addColumn(i18n.tr("HBCI-Medium"),"passport_class", new Formatter() {
+    addColumn(i18n.tr("Verfahren"),"passport_class", new Formatter() {
       public String format(Object o)
       {
         if (o == null || !(o instanceof String))
@@ -122,7 +122,7 @@ public class KontoList extends TablePart implements Part
         catch (Exception e)
         {
           Logger.error("error while loading hbci passport for konto",e);
-          return i18n.tr("Fehler beim Ermitteln des HBCI-Mediums");
+          return i18n.tr("Fehler beim Ermitteln des Verfahrens");
         }
       }
     });
