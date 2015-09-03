@@ -13,9 +13,16 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
@@ -28,6 +35,7 @@ import de.willuhn.util.I18N;
  */
 public class BLZInput extends AccountInput
 {
+  private List<Listener> blzListener = new ArrayList<Listener>();
   private Listener listener = null;
   private I18N i18n         = null;
 
@@ -49,6 +57,31 @@ public class BLZInput extends AccountInput
     
     // und einmal ausloesen
     this.listener.handleEvent(null);
+  }
+  
+  /**
+   * Registriert einen Listener, der ausgeloest wird, sobald eine bekannte BLZ eingegeben wurde.
+   * Das passiert sofort nach Eingabe, nicht erst bei Focus-Wechsel.
+   * @param l der Listener.
+   */
+  public void addBLZListener(Listener l)
+  {
+    this.blzListener.add(l);
+    
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.input.TextInput#getControl()
+   */
+  @Override
+  public Control getControl()
+  {
+    Control c = super.getControl();
+    
+    // wir haengen noch einen Keyup-Listener an, um sofort bei Eingabe der BLZ ausloesen zu koennen
+    c.addListener(SWT.KeyUp, new DelayedListener(this.listener));
+    
+    return c;
   }
 
   /**
@@ -79,16 +112,27 @@ public class BLZInput extends AccountInput
           // Wir schnipseln gleich noch Leerzeichen raus - aber nur, wenn welche drin stehen
           if (b.indexOf(' ') != -1)
             b = b.replaceAll(" ","");
-          setComment(HBCIProperties.getNameForBank(b));
+          
+          if (b.length() == HBCIProperties.HBCI_BLZ_LENGTH)
+          {
+            String name = HBCIProperties.getNameForBank(b);
+            setComment(name);
+            if (StringUtils.trimToNull(name) != null)
+            {
+              arg0.data = b;
+              for (Listener l:blzListener)
+              {
+                l.handleEvent(arg0);
+              }
+            }
+            return;
+          }
         }
-        else
-        {
-          setComment("");
-        }
+        setComment("");
       }
       catch (Exception e)
       {
-        // ignore
+        setComment("");
       }
     }
   }

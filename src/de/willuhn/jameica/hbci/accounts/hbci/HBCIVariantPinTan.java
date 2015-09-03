@@ -9,8 +9,10 @@ package de.willuhn.jameica.hbci.accounts.hbci;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.accounts.hbci.views.HBCIVariantPinTanNew;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -53,7 +55,7 @@ public class HBCIVariantPinTan implements HBCIVariant
   @Override
   public void create() throws ApplicationException
   {
-    
+    GUI.startView(HBCIVariantPinTanNew.class,null);
   }
 
 }
