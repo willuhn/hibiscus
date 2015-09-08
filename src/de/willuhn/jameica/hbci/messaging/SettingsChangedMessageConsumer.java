@@ -56,8 +56,7 @@ public class SettingsChangedMessageConsumer implements MessageConsumer
       HBCIUtils.setParam("log.loglevel.default",""+ ll);
 
       // Wir aktivieren/deaktivieren das SSL-Logging abhaengig vom Log-Level
-      boolean b = Logger.getLevel().getValue() == Level.DEBUG.getValue();
-      HBCIUtils.setParam("log.ssl.enable",b ? "1" : "0");
+      HBCIUtils.setParam("log.ssl.enable",Logger.isLogging(Level.DEBUG) ? "1" : "0");
     }
     catch (Exception e)
     {

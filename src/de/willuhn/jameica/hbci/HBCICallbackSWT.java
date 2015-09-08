@@ -33,6 +33,7 @@ import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.Base64;
 import de.willuhn.util.I18N;
@@ -355,7 +356,12 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   protected void status(String text)
 	{
     Logger.info(text);
-    
+
+    // Im Progress-Monitor brauchen wir die ganzen Daten aber nur bei DEBUG
+    // oder hoeher
+    if (!Logger.isLogging(Level.DEBUG))
+      return;
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
 

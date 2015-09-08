@@ -239,8 +239,8 @@ public class HBCI extends AbstractPlugin
       this.hbciProps.put("log.loglevel.default",""+logLevel);
       this.hbciProps.put("client.errors.ignoreWrongDataSyntaxErrors","yes"); // BUGZILLA 1129
       
-      // Wenn das Jameica-Loglevel auf DEBUG steht, aktivieren wir per Default das SSL-Logging von HBCI4Java
-      if (Logger.getLevel().getValue() == Level.DEBUG.getValue())
+      // Wenn das Jameica-Loglevel auf DEBUG oder hoeher steht, aktivieren wir per Default das SSL-Logging von HBCI4Java
+      if (Logger.isLogging(Level.DEBUG))
         this.hbciProps.put("log.ssl.enable","1");
         
       //////////////////////////////////
