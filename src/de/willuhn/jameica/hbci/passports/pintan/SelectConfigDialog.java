@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/pintan/SelectConfigDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/10/11 20:58:51 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -15,15 +9,17 @@ package de.willuhn.jameica.hbci.passports.pintan;
 
 import org.eclipse.swt.widgets.Composite;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.internal.buttons.Cancel;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -37,14 +33,20 @@ public class SelectConfigDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private PinTanConfig selected = null;
+  private GenericIterator list  = null;
   private String text           = null;
 
   /**
-   * @param position
+   * ct.
+   * @param position Position des Dialogs.
+   * @param list optionale Liste der anzuzeigenden Konfigurationen.
+   * Wenn keine angegeben ist, werden alle verfuegbaren angezeigt.
    */
-  public SelectConfigDialog(int position)
+  public SelectConfigDialog(int position, GenericIterator list)
   {
     super(position);
+    this.list = list;
+    this.setSize(470,300);
     setTitle(i18n.tr("Auswahl der PIN/TAN-Konfiguration"));
   }
 
@@ -53,10 +55,13 @@ public class SelectConfigDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Konfiguration"));
+    Container group = new SimpleContainer(parent,true);
     group.addText(text == null ? i18n.tr("Bitte wählen Sie die zu verwendende PIN/TAN-Konfiguration aus") : text,true);
     
-    final TablePart table = new TablePart(PinTanConfigFactory.getConfigs(), new Action() {
+    if (list != null)
+      list.begin();
+    
+    final TablePart table = new TablePart(list != null ? list : PinTanConfigFactory.getConfigs(), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof PinTanConfig))
@@ -71,9 +76,9 @@ public class SelectConfigDialog extends AbstractDialog
     table.addColumn(i18n.tr("Kundenkennung"),"customerid");
     table.setMulti(false);
     table.setSummary(false);
-    table.paint(parent);
-    
-    ButtonArea buttons = new ButtonArea(parent,2);
+    group.addPart(table);
+
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -82,13 +87,10 @@ public class SelectConfigDialog extends AbstractDialog
           return;
         close();
       }
-    },null,true);
-    buttons.addButton(i18n.tr("Abbrechen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        throw new OperationCanceledException();
-      }
-    });
+    },null,true,"ok.png");
+    buttons.addButton(new Cancel());
+    
+    group.addButtonArea(buttons);
   }
 
   /**
@@ -109,32 +111,3 @@ public class SelectConfigDialog extends AbstractDialog
   }
 
 }
-
-
-/*********************************************************************
- * $Log: SelectConfigDialog.java,v $
- * Revision 1.4  2010/10/11 20:58:51  willuhn
- * @N BUGZILLA 927
- *
- * Revision 1.3  2010-09-07 15:17:07  willuhn
- * @N GUI-Cleanup
- *
- * Revision 1.2  2010-07-22 12:37:41  willuhn
- * @N GUI poliert
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.4  2005/07/26 22:56:48  web0
- * *** empty log message ***
- *
- * Revision 1.3  2005/07/18 12:53:30  web0
- * @B bug 96
- *
- * Revision 1.2  2005/06/27 15:30:17  web0
- * *** empty log message ***
- *
- * Revision 1.1  2005/06/23 21:52:49  web0
- * @B Bug 80
- *
- **********************************************************************/

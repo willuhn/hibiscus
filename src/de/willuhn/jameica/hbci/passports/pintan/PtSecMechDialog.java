@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -33,7 +34,6 @@ import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -139,12 +139,7 @@ public class PtSecMechDialog extends AbstractDialog
         }
       }
     },null,true,"ok.png");
-    buttons.addButton(i18n.tr("Abbrechen"),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        throw new OperationCanceledException();
-      }
-    },null,false,"process-stop.png");
+    buttons.addButton(new Cancel());
     
     group.addButtonArea(buttons);
   }

@@ -106,7 +106,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         }
         else
         {
-          SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER);
+          SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER,list);
           try
           {
             config = (PinTanConfig) d.open();

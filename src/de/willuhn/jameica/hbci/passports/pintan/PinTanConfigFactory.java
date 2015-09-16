@@ -219,7 +219,8 @@ public class PinTanConfigFactory
     }
     
     // Wir haben mehrere zur Auswahl. Lassen wir den User entscheiden.
-    SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER);
+    GenericIterator list = PseudoIterator.fromArray((PinTanConfig[]) found.toArray(new PinTanConfig[found.size()]));
+    SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER,list);
     d.setText(text);
     try
     {
