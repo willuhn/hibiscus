@@ -20,17 +20,17 @@ public enum BatchBookType
   /**
    * BatchBooking-Flag gar nicht mitschicken.
    */
-  NONE(null,"","Vorgabewert der Bank verwenden (Standard)"),
+  NONE(null,"","nach Vorgabewert der Bank ausweisen (Standard)"),
   
   /**
    * BatchBooking-Flag als true senden.
    */
-  TRUE(Boolean.TRUE,"1","Als Stapelbuchung senden"),
+  TRUE(Boolean.TRUE,"1","als Sammelbuchung ausweisen"),
   
   /**
    * BatchBooking-Flag als false senden.
    */
-  FALSE(Boolean.FALSE,"0","Als Einzelbuchungen senden (erfordert ggf. Bankvereinbarung)"),
+  FALSE(Boolean.FALSE,"0","als Einzelbuchungen ausweisen (erfordert ggf. Bankvereinbarung)"),
   
   ;
   

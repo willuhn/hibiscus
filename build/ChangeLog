@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0460 Auswahlfeld für Batch-Booking umbenannt  
   * NEW: 0459 Bei mehreren möglichen PIN/TAN-Konfigurationen nur die plausiblen (gleiche BLZ) anzeigen
   * NEW: 0458 Im Fortschrittsfenster bei der Synchronisierung in Loglevel INFO weniger Ausgaben loggen
   * NEW: 0457 HBCI-Medium in Verfahren umbenannt

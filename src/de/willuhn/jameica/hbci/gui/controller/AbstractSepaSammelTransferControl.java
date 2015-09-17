@@ -129,6 +129,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     
     T t = this.getTransfer();
     this.batchbook = new BatchBookInput(t.getKonto(),t);
+    this.batchbook.setEnabled(!getTransfer().ausgefuehrt());
     return this.batchbook;
   }
 

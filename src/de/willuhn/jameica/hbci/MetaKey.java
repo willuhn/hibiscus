@@ -44,7 +44,7 @@ public enum MetaKey
   /**
    * Batch-Book-Flag.
    */
-  SEPA_BATCHBOOK("sepa.batchbook", "Als Stapelbuchung senden",null),
+  SEPA_BATCHBOOK("sepa.batchbook", "Umsätze dieses Sammelauftrages",null),
 
   ;
 
