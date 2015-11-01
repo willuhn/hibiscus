@@ -38,6 +38,7 @@ import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -81,7 +82,7 @@ public class UmsatzList extends ContextMenu implements Extendable
         new Print().handleAction(new PrintSupportUmsatzList(context));
       }
     },"document-print.png"));
-    addItem(new UmsatzItem(i18n.tr("Exportieren..."),new UmsatzExport(),"document-save.png"));
+    addItem(new UmsatzOrGroupItem(i18n.tr("Exportieren..."),new UmsatzExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzImport()
     {
 
@@ -172,7 +173,41 @@ public class UmsatzList extends ContextMenu implements Extendable
         return super.isEnabledFor(o);
       return false;
     }
-    
+  }
+  
+  /**
+   * Akzeptiert Umsaetze oder eine einzelne Umsatzgruppe.
+   * Die Gruppe allerdings nur, wenn sie direkt Umsaetze enthaelt.
+   * Indirekte Umsaetze ueber Unterkategorien sind nicht moeglich.
+   */
+  private class UmsatzOrGroupItem extends CheckedContextMenuItem
+  {
+    /**
+     * ct.
+     * @param text Label.
+     * @param action Action.
+     * @param icon optionales Icon.
+     */
+    public UmsatzOrGroupItem(String text, Action action, String icon)
+    {
+      super(text,action,icon);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
+        return super.isEnabledFor(o);
+      
+      if (o instanceof UmsatzTreeNode)
+      {
+        UmsatzTreeNode node = (UmsatzTreeNode) o;
+        return node.getUmsaetze().size() > 0 && super.isEnabledFor(o);
+      }
+      return false;
+    }
   }
 
   /**

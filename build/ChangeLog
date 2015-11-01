@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0464 BUGZILLA 1661 - Export der Umsätze einer Kategorie
   * NEW: 0463 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/a9132895c1fa9c5da59a572ffa254c8a000e2847
   * NEW: 0462 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/efbea86e815361fff1cb7a9c2b0ff7d5ad7a87a1
 

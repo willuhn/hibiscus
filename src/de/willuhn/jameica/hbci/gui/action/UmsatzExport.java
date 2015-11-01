@@ -12,11 +12,14 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
+import java.util.List;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -41,12 +44,8 @@ public class UmsatzExport implements Action
 		if (context == null)
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens einen Umsatz aus"));
 
-		if (!(context instanceof Umsatz) && !(context instanceof Umsatz[]))
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsätze aus"));
-
     Umsatz[] u = null;
 		try {
-
 			if (context instanceof Umsatz)
 			{
 				u = new Umsatz[1];
@@ -56,6 +55,15 @@ public class UmsatzExport implements Action
       {
         u = (Umsatz[]) context;
       }
+      else if (context instanceof UmsatzTreeNode)
+      {
+        UmsatzTreeNode node = (UmsatzTreeNode) context;
+        List<Umsatz> result = node.getUmsaetze();
+        u = result.toArray(new Umsatz[result.size()]);
+      }
+
+		   if (u == null || u.length == 0)
+		      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsätze aus"));
 
       ExportDialog d = new ExportDialog(u, Umsatz.class);
       d.open();
