@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -68,39 +69,66 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     
     // wir haben einen Umsatz, den es zu bearbeiten gilt...
     Umsatz u = (Umsatz) o;
-    
+
+    Logger.debug("imported umsatz, checking if counter entry can be created [id: " + u.getID() + "]");
     // Vormerkbuchungen ignorieren wir. Zum einen, weil wir sie in dem
     // Offline-Konto nicht wieder automatisch loeschen, zum anderen, weil
     // der User sie auch nicht loeschen kann
     if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+    {
+      Logger.debug("skip, is not-booked entry");
       return;
+    }
     
     // Wenn der Umsatz schon von einem Offline-Konto kommt, legen
     // wir keine Gegenbuchung mehr an. Das fuehrt sonst zu einem Ping-Pong-Spiel ;)
     Konto k = u.getKonto();
     if (k.hasFlag(Konto.FLAG_OFFLINE))
+    {
+      Logger.debug("skip, source account is an offline account");
       return;
+    }
 
     // Checken, ob wir ein lokal passendes Offline-Konto haben
     Konto gegenkonto = null;
-    if (StringUtils.trimToEmpty(u.getGegenkontoNummer()).length() > 10)
+    String s = StringUtils.trimToNull(u.getGegenkontoNummer());
+    if (s == null)
+    {
+      Logger.debug("skip, have no account number for counter entry");
+      return;
+    }
+    
+    if (s.length() > 10)
     {
       // Das ist eine IBAN
-      gegenkonto = KontoUtil.findByIBAN(u.getGegenkontoNummer(),Konto.FLAG_OFFLINE);
+      Logger.debug("searching for offline account with iban: " + s);
+      gegenkonto = KontoUtil.findByIBAN(s,Konto.FLAG_OFFLINE);
     }
     else
     {
       // Konto mit Kto und BLZ
-      gegenkonto = KontoUtil.find(u.getGegenkontoNummer(), u.getGegenkontoBLZ(),Konto.FLAG_OFFLINE);
+      String blz = u.getGegenkontoBLZ();
+      Logger.debug("searching for offline account with kto: " + s + ", blz: " + blz);
+      gegenkonto = KontoUtil.find(s, blz,Konto.FLAG_OFFLINE);
     }
     
     if (gegenkonto == null)
+    {
+      Logger.debug("skip, no matching account found");
       return; // Das Konto haben wir nicht
+    }
+    
+    Logger.debug("found account [id: " + gegenkonto.getID() + "]");
     
     // Checken, ob fuer das Konto automatisch Umsaetze angelegt werden sollen
     SynchronizeOptions options = new SynchronizeOptions(gegenkonto);
     if (!options.getSyncOffline())
+    {
+      Logger.debug("skip, sync option disabled");
       return;
+    }
+
+    Logger.info("creating counter entry");
 
     // Kopie der Buchung erzeugen
     Umsatz gegenbuchung = u.duplicate();
