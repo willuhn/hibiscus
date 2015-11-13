@@ -230,7 +230,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoNummer(java.lang.String)
    */
   public void setGegenkontoNummer(String konto) throws RemoteException {
-		setAttribute("empfaenger_konto",konto);
+		setAttribute("empfaenger_konto",konto != null ? konto.toUpperCase() : null);
   }
 
   /**

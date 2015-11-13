@@ -137,7 +137,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
    */
   public void setGegenkontoNummer(String kontonummer) throws RemoteException
   {
-    setAttribute("empfaenger_konto",kontonummer);
+    setAttribute("empfaenger_konto",kontonummer != null ? kontonummer.toUpperCase() : null);
   }
 
   /**
