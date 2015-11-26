@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -25,7 +23,6 @@ import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -57,8 +54,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   private TablePart table          = null;
 
-  private Listener listener        = null;
-
   /**
    * ct.
    * @param view
@@ -66,16 +61,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
   public EinnahmeAusgabeControl(AbstractView view)
   {
     super(view);
-    
-    // bei Ausloesungen ueber SWT-Events verzoegern wir
-    // das Reload, um schnell aufeinanderfolgende Updates
-    // zu buendeln.
-    this.listener = new DelayedListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        handleReload();
-      }
-    });
   }
 
   /**
@@ -93,7 +78,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setComment(null);
     this.kontoAuswahl.setRememberSelection("auswertungen.einnahmeausgabe");
-    this.kontoAuswahl.addListener(this.listener);
     
     return this.kontoAuswahl;
   }
@@ -110,7 +94,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
-    this.start.addListener(this.listener);
     return this.start;
   }
   
@@ -124,15 +107,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
       return this.range;
     
     this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
-    this.range.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        if (range.getValue() != null)
-          handleReload();
-      }
-    });
-    
     return this.range;
   }
 
@@ -148,7 +122,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     this.end = new DateToInput(null,"umsatzlist.filter.to");
     this.end.setName(i18n.tr("bis"));
     this.end.setComment(null);
-    this.end.addListener(this.listener);
     return this.end;
   }
 

@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0466 BUGZILLA 1672 - Einnahmen/Ausgaben: Von/Bis Cursor springt unter Windows an Anfang des Eingabefeldes
   * NEW: 0465 IBAN beim Speichern immer in Grossbuchstaben umwandeln, damit auch bei importierten Aufträgen immer gültige Buchstaben drin stehen.
   * NEW: 0464 BUGZILLA 1661 - Export der Umsätze einer Kategorie
   * NEW: 0463 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/a9132895c1fa9c5da59a572ffa254c8a000e2847
