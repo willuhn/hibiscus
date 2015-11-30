@@ -206,6 +206,15 @@ public class UmsatzList extends ContextMenu implements Extendable
         UmsatzTreeNode node = (UmsatzTreeNode) o;
         return node.getUmsaetze().size() > 0 && super.isEnabledFor(o);
       }
+      if (o instanceof UmsatzTreeNode[])
+      {
+        for (UmsatzTreeNode node:(UmsatzTreeNode[])o)
+        {
+          if (node.getUmsaetze().size() > 0)
+            return super.isEnabledFor(o);
+        }
+        return false;
+      }
       return false;
     }
   }

@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0467 BUGZILLA 1661 - Export der Umsätze mehrerer Kategorien
   * BUG: 0466 BUGZILLA 1672 - Einnahmen/Ausgaben: Von/Bis Cursor springt unter Windows an Anfang des Eingabefeldes
   * NEW: 0465 IBAN beim Speichern immer in Grossbuchstaben umwandeln, damit auch bei importierten Aufträgen immer gültige Buchstaben drin stehen.
   * NEW: 0464 BUGZILLA 1661 - Export der Umsätze einer Kategorie

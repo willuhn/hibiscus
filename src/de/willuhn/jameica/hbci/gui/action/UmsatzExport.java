@@ -12,6 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.willuhn.jameica.gui.Action;
@@ -59,6 +60,15 @@ public class UmsatzExport implements Action
       {
         UmsatzTreeNode node = (UmsatzTreeNode) context;
         List<Umsatz> result = node.getUmsaetze();
+        u = result.toArray(new Umsatz[result.size()]);
+      }
+      else if (context instanceof UmsatzTreeNode[])
+      {
+        List<Umsatz> result = new ArrayList<Umsatz>();
+        for (UmsatzTreeNode node:(UmsatzTreeNode[])context)
+        {
+          result.addAll(node.getUmsaetze());
+        }
         u = result.toArray(new Umsatz[result.size()]);
       }
 
