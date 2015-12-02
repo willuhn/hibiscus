@@ -15,6 +15,7 @@ import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.BatchBookType;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
@@ -131,6 +132,15 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
+   */
+  @Override
+  protected HibiscusDBObject getContext()
+  {
+    return this.getSammelTransfer();
+  }
 
   /**
    * Liefert den Sammel-Transfer.

@@ -21,6 +21,7 @@ import org.kapott.hbci.structures.Value;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
@@ -73,6 +74,15 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
+   */
+  @Override
+  protected HibiscusDBObject getContext()
+  {
+    return this.konto;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()

@@ -21,7 +21,9 @@ import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.hbci.HBCIContext;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.services.BeanService;
@@ -41,6 +43,7 @@ public class TANDialog extends PasswordDialog
   protected final static int WINDOW_WIDTH = 550;
 
   private PinTanConfig config = null;
+  private HibiscusDBObject context = null;
   
   /**
    * ct.
@@ -109,6 +112,24 @@ public class TANDialog extends PasswordDialog
 		}
 		return true;
 	}
+  
+  /**
+   * Speichert den zugehoerigen Auftrag, insofrn ermittelbar.
+   * @param context der zugehoerige Auftrag.
+   */
+  public void setContext(HibiscusDBObject context)
+  {
+    this.context = context;
+  }
+  
+  /**
+   * Liefert den zugehoerigen Auftrag, insofern ermittelbar.
+   * @return transfer der zugehoerige Auftrag.
+   */
+  public HibiscusDBObject getContext()
+  {
+    return context;
+  }
 
   /**
    * BUGZILLA 150
@@ -116,28 +137,6 @@ public class TANDialog extends PasswordDialog
    */
   public void setText(String text)
   {
-    ////////////////////////////////////////////////////////////////////////////
-    // Bezeichnung des Kontos ermitteln
-    String s = null;
-    try
-    {
-      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
-      Konto konto = session != null ? session.getKonto() : null;
-      
-      if (konto != null)
-      {
-        s = konto.getBezeichnung();
-        String name = HBCIProperties.getNameForBank(konto.getBLZ());
-        if (name != null && name.length() > 0)
-          s += " [" + name + "]";
-      }
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to determine current konto",e);
-    }
-
     if (text == null || text.length() == 0)
     {
       text = i18n.tr("Bitte geben Sie eine TAN-Nummer ein.");
@@ -172,10 +171,38 @@ public class TANDialog extends PasswordDialog
       text = text.replaceAll("<u>","");
       text = text.replaceAll("</u>","");
     }
-    
-    if (s != null)
-      text += ("\n" + i18n.tr("Konto: {0}",s));
-    
+
+    String ctx = HBCIContext.toString(this.context);
+    if (ctx != null)
+    {
+      text += ("\n\n" + i18n.tr("Auftrag:\n{0}",ctx));
+    }
+    else
+    {
+      String s = null;
+      try
+      {
+        BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+        SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+        Konto konto = session != null ? session.getKonto() : null;
+        
+        if (konto != null)
+        {
+          s = konto.getBezeichnung();
+          String name = HBCIProperties.getNameForBank(konto.getBLZ());
+          if (name != null && name.length() > 0)
+            s += " [" + name + "]";
+        }
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to determine current konto",e);
+      }
+
+      if (s != null)
+        text += ("\n\n" + i18n.tr("Konto:\n{0}",s));
+    }
+
     super.setText(text);
   }
   

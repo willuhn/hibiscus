@@ -13,7 +13,7 @@ import java.util.Map;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Open;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.server.hbci.HBCIContext;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -65,6 +65,15 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
   public void configure() throws ApplicationException
   {
     new Open().handleAction(this.getContext(SynchronizeJob.CTX_ENTITY));
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getName()
+   */
+  @Override
+  public String getName() throws ApplicationException
+  {
+    return HBCIContext.toString(this.getContext(SynchronizeJob.CTX_ENTITY));
   }
 
 }

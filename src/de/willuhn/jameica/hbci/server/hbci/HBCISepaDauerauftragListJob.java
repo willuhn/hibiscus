@@ -19,6 +19,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.BaseDauerauftrag;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
@@ -78,6 +79,15 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
   public String getIdentifier()
   {
     return "DauerSEPAList";
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
+   */
+  @Override
+  protected HibiscusDBObject getContext()
+  {
+    return this.konto;
   }
 
   /**

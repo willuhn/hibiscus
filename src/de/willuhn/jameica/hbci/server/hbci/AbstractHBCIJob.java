@@ -28,6 +28,7 @@ import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
@@ -86,6 +87,12 @@ public abstract class AbstractHBCIJob
    * @throws ApplicationException
    */
   protected abstract String markFailed(String error) throws RemoteException, ApplicationException;
+  
+  /**
+   * Liefert den zugehoerigen Auftrag von Hibiscus - insofern verfuegbar.
+   * @return der zugehoerige Auftrag von Hibiscus - insofern verfuegbar.
+   */
+  protected abstract HibiscusDBObject getContext();
 
   /**
    * Wird aufgerufen, wenn der User den Vorgang abgebrochen hat.
@@ -111,6 +118,15 @@ public abstract class AbstractHBCIJob
   public void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException, ApplicationException
   {
   	this.job = job;
+  	
+  	HibiscusDBObject t = this.getContext();
+  	this.job.setExternalId(HBCIContext.serialize(t));
+  	
+  	if (t != null)
+  	{
+  	  
+  	}
+  	
   	Iterator i = params.keySet().iterator();
   	while (i.hasNext())
   	{
