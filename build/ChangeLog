@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0469 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0468 Anzeige des zugehörigen Auftrages im TAN-Dialog
   * NEW: 0467 BUGZILLA 1661 - Export der Umsätze mehrerer Kategorien
   * BUG: 0466 BUGZILLA 1672 - Einnahmen/Ausgaben: Von/Bis Cursor springt unter Windows an Anfang des Eingabefeldes
