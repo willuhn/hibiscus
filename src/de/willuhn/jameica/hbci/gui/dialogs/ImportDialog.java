@@ -32,6 +32,7 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -59,6 +60,7 @@ public class ImportDialog extends AbstractDialog
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private Input importerListe     = null;
+  private CheckboxInput forceBox  = null;
   private GenericObject context   = null;	
   private Class type              = null;
   
@@ -93,6 +95,13 @@ public class ImportDialog extends AbstractDialog
 
     Input formats = getImporterList();
 		group.addLabelPair(i18n.tr("Verfügbare Formate:"),formats);
+
+    if (this.forceBox == null) {
+      String newName = i18n.tr("Import erzwingen");
+      this.forceBox = new CheckboxInput(false);
+      this.forceBox.setName(newName);
+    }
+    group.addInput(this.forceBox);
 
 		ButtonArea buttons = new ButtonArea();
 		Button button = new Button(i18n.tr("Import starten"),new Action()
@@ -138,6 +147,8 @@ public class ImportDialog extends AbstractDialog
 
     settings.setAttribute("lastformat",imp.format.getName());
 
+    final boolean useForce = ((Boolean)this.forceBox.getValue()).booleanValue();
+
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.OPEN);
     fd.setText(i18n.tr("Bitte wählen Sie die Datei aus, welche für den Import verwendet werden soll."));
     fd.setFilterNames(imp.format.getFileExtensions());
@@ -174,7 +185,7 @@ public class ImportDialog extends AbstractDialog
         try
         {
           InputStream is = new BufferedInputStream(new FileInputStream(file));
-          importer.doImport(context,format,is,monitor);
+          importer.doImport(context,format,is,monitor,useForce);
           monitor.setPercentComplete(100);
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           GUI.getStatusBar().setSuccessText(i18n.tr("Daten importiert aus {0}",s));
