@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
 
@@ -68,9 +69,9 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     PainVersion version = PainVersion.autodetect(new ByteArrayInputStream(bos.toByteArray()));
     if (version == null)
       throw new ApplicationException(i18n.tr("SEPA-Version der XML-Datei nicht ermittelbar"));
- 
+    
     monitor.log(i18n.tr("SEPA-Version: {0}",version.getURN()));
-
+    
     // Überprüfe PAIN Typ
     PainVersion.Type[] types = this.getSupportedPainTypes();
     PainVersion.Type type = version.getType();
@@ -80,9 +81,14 @@ public abstract class AbstractSepaImporter extends AbstractImporter
         found = true;
       }
     }
-    if (!found)
-      throw new ApplicationException(i18n.tr("Unzulässige SEPA-Version in der XML-Datei - Überweisung und Lastschrift verwechselt?"));
-    
+    if (!found) {
+      Logger.error("invalid file PAIN type");
+      monitor.log(i18n.tr("Ungültiger PAIN Typ: {0}",type.getName()));
+      if (!this.useForce) {
+        throw new ApplicationException(i18n.tr("Unzulässige SEPA-Version in der XML-Datei - Überweisung und Lastschrift verwechselt?"));
+      }
+    }
+
     List<Properties> props = new ArrayList<Properties>();
     ISEPAParser parser = SEPAParserFactory.get(version);
     parser.parse(new ByteArrayInputStream(bos.toByteArray()),props);

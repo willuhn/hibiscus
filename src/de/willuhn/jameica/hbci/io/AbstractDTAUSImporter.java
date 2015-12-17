@@ -45,10 +45,10 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
   private Hashtable kontenCache = new Hashtable();
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, boolean)
    */
   public void doImport(Object context, IOFormat format, InputStream is,
-      ProgressMonitor monitor) throws RemoteException, ApplicationException
+      ProgressMonitor monitor, boolean force) throws RemoteException, ApplicationException
   {
     // Wir merken uns die Konten, die der User schonmal ausgewaehlt
     // hat, um ihn nicht fuer jede Buchung mit immer wieder dem

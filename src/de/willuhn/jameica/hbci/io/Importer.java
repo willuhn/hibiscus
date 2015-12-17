@@ -33,11 +33,12 @@ public interface Importer extends IO
    * @param is der Stream, aus dem die Daten gelesen werden.
    * @param monitor ein Monitor, an den der Importer Ausgaben ueber seinen
    * Bearbeitungszustand ausgeben kann.
+   * @param force Ob nicht-fatale Fehler übersprungen werden.
    * Der Importer muss den Import-Stream selbst schliessen!
    * @throws RemoteException
    * @throws ApplicationException 
    */
-  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException;
+  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, boolean force) throws RemoteException, ApplicationException;
 
 }
 

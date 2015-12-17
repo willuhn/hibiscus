@@ -28,13 +28,16 @@ import de.willuhn.util.ProgressMonitor;
 public abstract class AbstractImporter implements Importer
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  protected boolean useForce = false;
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, boolean)
    */
   @Override
-  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, boolean force) throws RemoteException, ApplicationException
   {
+    this.useForce = force;
+
     try
     {
       Object[] objects = this.setup(context,format,is,monitor);
