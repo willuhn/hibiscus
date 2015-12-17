@@ -68,8 +68,20 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     PainVersion version = PainVersion.autodetect(new ByteArrayInputStream(bos.toByteArray()));
     if (version == null)
       throw new ApplicationException(i18n.tr("SEPA-Version der XML-Datei nicht ermittelbar"));
-    
+ 
     monitor.log(i18n.tr("SEPA-Version: {0}",version.getURN()));
+
+    // Überprüfe PAIN Typ
+    PainVersion.Type[] types = this.getSupportedPainTypes();
+    PainVersion.Type type = version.getType();
+    boolean found = false;
+    for (int i = 0; types != null && i < types.length; i++) {
+      if (types[i] == type) {
+        found = true;
+      }
+    }
+    if (!found)
+      throw new ApplicationException(i18n.tr("Unzulässige SEPA-Version in der XML-Datei - Überweisung und Lastschrift verwechselt?"));
     
     List<Properties> props = new ArrayList<Properties>();
     ISEPAParser parser = SEPAParserFactory.get(version);
@@ -139,5 +151,12 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     }
     throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
   }
+
+  /**
+   * Liste der zulässigen XML Daten
+   * Wird benötigt, damit eine Lastschrift nicht als Überweisung importiert werden kann.
+   * @return erlaubte PAIN Typen
+   */
+  abstract PainVersion.Type[] getSupportedPainTypes();
 
 }
