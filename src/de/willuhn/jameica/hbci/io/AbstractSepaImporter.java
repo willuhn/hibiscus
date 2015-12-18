@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
@@ -70,6 +71,18 @@ public abstract class AbstractSepaImporter extends AbstractImporter
       throw new ApplicationException(i18n.tr("SEPA-Version der XML-Datei nicht ermittelbar"));
     
     monitor.log(i18n.tr("SEPA-Version: {0}",version.getURN()));
+    
+    // PAIN-Typ nicht kompatibel. User fragen, ob er trotzdem importieren  moechte
+    PainVersion.Type type = this.getSupportedPainType();
+    if (type != null && type != version.getType())
+    {
+      String l = i18n.tr("Lastschrift");
+      String u = i18n.tr("Überweisung");
+      String q = i18n.tr("Sie versuchen, eine {0} als {1} zu importieren.\nVorgang wirklich fortsetzen?");
+      boolean b = type == PainVersion.Type.PAIN_001;
+      if (!Application.getCallback().askUser(q,new String[]{b ? l : u, b ? u : l}))
+        throw new OperationCanceledException();
+    }
     
     List<Properties> props = new ArrayList<Properties>();
     ISEPAParser parser = SEPAParserFactory.get(version);
@@ -139,5 +152,12 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     }
     throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
   }
+  
+  /**
+   * Der zulässige SEPA PAIN-Typ.
+   * Wird benötigt, damit eine Lastschrift nicht versehentlich als Überweisung importiert wird.
+   * @return erlaubter SEPA PAIN-Typ.
+   */
+  abstract PainVersion.Type getSupportedPainType(); 
 
 }

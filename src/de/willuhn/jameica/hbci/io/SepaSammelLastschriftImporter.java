@@ -16,6 +16,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.SepaUtil;
 import org.kapott.hbci.GV.parsers.ISEPAParser;
+import org.kapott.hbci.sepa.PainVersion;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
@@ -94,6 +95,15 @@ public class SepaSammelLastschriftImporter extends AbstractSepaImporter
   Class[] getSupportedObjectTypes()
   {
     return new Class[]{SepaSammelLastschrift.class};
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.io.AbstractSepaImporter#getSupportedPainType()
+   */
+  @Override
+  PainVersion.Type getSupportedPainType()
+  {
+    return PainVersion.Type.PAIN_008;
   }
 
 }

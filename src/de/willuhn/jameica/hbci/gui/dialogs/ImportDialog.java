@@ -180,6 +180,12 @@ public class ImportDialog extends AbstractDialog
           GUI.getStatusBar().setSuccessText(i18n.tr("Daten importiert aus {0}",s));
           GUI.getCurrentView().reload();
         }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info("operation cancelled");
+          monitor.setStatusText(i18n.tr("Export abgebrochen"));
+          monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
+        }
         catch (ApplicationException ae)
         {
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
