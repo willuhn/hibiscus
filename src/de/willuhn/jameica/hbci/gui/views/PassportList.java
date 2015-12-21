@@ -52,7 +52,7 @@ public class PassportList extends AbstractView
       public void handleAction(Object context) throws ApplicationException
       {
         // new de.willuhn.jameica.hbci.gui.action.AccountNew().handleAction(null);
-        new PassportDetail().handleAction(tree.getPassport());
+        new PassportDetail().handleAction(null);
       }
     },null,false,"seahorse-preferences.png"));
     buttons.paint(getParent());
@@ -60,10 +60,3 @@ public class PassportList extends AbstractView
     tree.paint(getParent());
   }
 }
-
-/**********************************************************************
- * $Log: PassportList.java,v $
- * Revision 1.1  2011/04/29 11:38:57  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- **********************************************************************/
