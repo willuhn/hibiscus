@@ -64,6 +64,7 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -682,9 +683,9 @@ public class KontoauszugList extends UmsatzList
   {
     try
     {
-      getStart().setValue(null);
-      getEnd().setValue(null);
-      getRange().setValue(null);
+      Range range = (Range) getRange().getValue();
+      getStart().setValue(range != null ? range.getStart() : null);
+      getEnd().setValue(range != null ? range.getEnd() : null);
       getMindestBetrag().setValue(Double.NaN);
       getHoechstBetrag().setValue(Double.NaN);
       getKontoAuswahl().setValue(null);
