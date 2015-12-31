@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0472 Zeitraum wurde bei Klick auf "Zurücksetzen" nicht zurückgesetzt, Start/Ende aber schon
   * CHG: 0471 Keine Vorauswahl des Verfahrens mehr bei der Erstellung eines neuen Bankzugangs. Irritierte User.
   * NEW: 0470 Prüfung des SEPA PAIN-Typs beim Import von SEPA-XML-Dateien. Siehe https://github.com/willuhn/hibiscus/pull/11
   * NEW: 0469 Aktualisierte englische Sprach-Bundles von Christian

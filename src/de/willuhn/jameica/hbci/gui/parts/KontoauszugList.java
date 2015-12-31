@@ -684,6 +684,7 @@ public class KontoauszugList extends UmsatzList
     {
       getStart().setValue(null);
       getEnd().setValue(null);
+      getRange().setValue(null);
       getMindestBetrag().setValue(Double.NaN);
       getHoechstBetrag().setValue(Double.NaN);
       getKontoAuswahl().setValue(null);
