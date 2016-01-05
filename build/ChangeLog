@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0474 BUGZILLA 1682 - Einnahmen/Ausgaben: Endsaldo falsch berechnet, wenn keine Umsätze im Auswertungszeitraum
   * NEW: 0473 BUGZILLA 1679 - Zeitraum nicht mehr zurücksetzen, stattdessen Start/Ende auf den den ausgewählten Zeitraum zurücksetzen. Sonst werden ALLE Umsätze geladen
   * BUG: 0472 BUGZILLA 1679 - Zeitraum wurde bei Klick auf "Zurücksetzen" nicht zurückgesetzt, Start/Ende aber schon
   * CHG: 0471 Keine Vorauswahl des Verfahrens mehr bei der Erstellung eines neuen Bankzugangs. Irritierte User.

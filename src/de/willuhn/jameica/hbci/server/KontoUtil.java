@@ -185,12 +185,13 @@ public class KontoUtil
     list.addFilter("konto_id = " + konto.getID());
     
     if (start != null)
-      list.addFilter("datum >= ?", new Object[] {start});
+      list.addFilter("datum >= ?", start);
+    
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
         return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
     }
 
@@ -200,13 +201,13 @@ public class KontoUtil
     list.addFilter("konto_id = " + konto.getID());
     
     if (start != null)
-      list.addFilter("datum < ?", new Object[] {start});
+      list.addFilter("datum < ?", start);
     
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
         return u.getSaldo();
     }
     
@@ -224,17 +225,40 @@ public class KontoUtil
    */
   public static double getEndSaldo(Konto konto, Date datum) throws RemoteException
   {
+    java.sql.Date end = datum != null ? new java.sql.Date(DateUtil.endOfDay(datum).getTime()) : null;
+
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
-    if (datum != null)
-      list.addFilter("datum <= ?", new Object[] { new java.sql.Date(DateUtil.endOfDay(datum).getTime())});
+    
+    if (end != null)
+      list.addFilter("datum <= ?", end);
+    
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
       
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
         return u.getSaldo();
+    }
+    
+    // BUGZILLA 1682 Wir checken mal, ob wir eine Buchung direkt dahinter finden. Dann nehmen
+    // wir diese und generieren aus Zwischensumme und Betrag den Endsaldo
+    list = UmsatzUtil.getUmsaetze();
+    list.addFilter("konto_id = " + konto.getID());
+    
+    if (end != null)
+      list.addFilter("datum > ?", end);
+    
+    while (list.hasNext())
+    {
+      Umsatz u = (Umsatz) list.next();
+      
+      // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
+      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+      {
+        return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
+      }
     }
     
     // Keine Umsaetze gefunden. Wir nehmen den Saldo des Kontos selbst
