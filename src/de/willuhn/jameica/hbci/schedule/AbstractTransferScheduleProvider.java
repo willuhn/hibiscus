@@ -111,7 +111,7 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
             // Wenn wir Termine haben, fuegen wir sie hinzu
             for (Date date:dates)
             {
-              if (last != null && !last.after(end)) // bereits abgelaufen
+              if (last != null && date.after(last)) // bereits abgelaufen
                 continue;
               
               // wir zeigen nur die kuenftigen an. Die vergangenen im

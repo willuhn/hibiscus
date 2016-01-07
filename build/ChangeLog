@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0477 Im Kalender wurde bei wiederholten Aufträgen ggf. die letzte Wiederholung nicht angezeigt, wenn das Intervall in diesem Monat endete
   * NEW: 0476 Leerzeichen im Verwendungszweck bei der Suche ignorieren - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17348
   * NEW: 0475 IBAN von fälligen Aufträgen in Synchronisationsaufgaben und im TAN-Dialog anzeigen
   * BUG: 0474 BUGZILLA 1682 - Einnahmen/Ausgaben: Endsaldo falsch berechnet, wenn keine Umsätze im Auswertungszeitraum
