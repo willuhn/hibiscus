@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0476 Leerzeichen im Verwendungszweck bei der Suche ignorieren - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17348
   * NEW: 0475 IBAN von fälligen Aufträgen in Synchronisationsaufgaben und im TAN-Dialog anzeigen
   * BUG: 0474 BUGZILLA 1682 - Einnahmen/Ausgaben: Endsaldo falsch berechnet, wenn keine Umsätze im Auswertungszeitraum
   * NEW: 0473 BUGZILLA 1679 - Zeitraum nicht mehr zurücksetzen, stattdessen Start/Ende auf den den ausgewählten Zeitraum zurücksetzen. Sonst werden ALLE Umsätze geladen
