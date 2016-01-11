@@ -569,7 +569,7 @@ public class KontoauszugList extends UmsatzList
     if (zk != null && zk.length() > 0)
     {
       zk = "%" + zk.toLowerCase() + "%";
-      umsaetze.addFilter("(LOWER(CONCAT(REPLACE(COALESCE(zweck,''),' ',''),REPLACE(COALESCE(zweck2,''),' ',''),REPLACE(COALESCE(zweck3,''),' ',''))) LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
+      umsaetze.addFilter("(LOWER(REPLACE(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,'')),' ','')) LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
     }
     /////////////////////////////////////////////////////////////////
 
