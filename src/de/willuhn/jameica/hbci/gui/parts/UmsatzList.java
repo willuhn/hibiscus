@@ -73,6 +73,7 @@ import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -190,7 +191,7 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn("#","id-int");
     addColumn(i18n.tr("Flags"),                     "flags");
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
-    addColumn(i18n.tr("Verwendungszweck"),          "mergedzweck");
+    addColumn(i18n.tr("Verwendungszweck"),          Tag.SVWZ.name());
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);

@@ -9,7 +9,11 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -19,6 +23,7 @@ import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.TypedProperties;
@@ -31,6 +36,66 @@ import de.willuhn.util.TypedProperties;
  */
 public class VerwendungszweckUtil
 {
+  /**
+   * Liste der bekannten Tags.
+   */
+  public static enum Tag
+  {
+    /**
+     * Ende-zu-Ende Referenz.
+     */
+    EREF,
+    
+    /**
+     * Kundenreferenz.
+     */
+    KREF,
+    
+    /**
+     * Mandatsreferenz.
+     */
+    MREF,
+    
+    /**
+     * Creditor-ID.
+     */
+    CRED,
+    
+    /**
+     * Debitor-ID.
+     */
+    DBET,
+    
+    /**
+     * Verwendungszweck.
+     */
+    SVWZ,
+    
+    /**
+     * Abweichender Auftraggeber.
+     */
+    ABWA,
+    
+    ;
+    
+    /**
+     * Sucht das Tag mit dem angegebenen Namen.
+     * @param s der Name des Tag.
+     * @return das Tag oder NULL, wenn es nicht gefunden wurde.
+     */
+    public static Tag byName(String s)
+    {
+      if (s == null)
+        return null;
+      for (Tag t:Tag.values())
+      {
+        if (t.name().equals(s))
+          return t;
+      }
+      return null;
+    }
+  }
+  
   /**
    * Splittet die Verwendungszweck-Zeilen am Zeilenumbruch.
    * @param lines die Zeilen.
@@ -60,6 +125,109 @@ public class VerwendungszweckUtil
     // eigenen String und verwenden den dann zum Splitten.
     String s = line.replaceAll("(.{27})","$1--##--##");
     return s.split("--##--##");
+  }
+  
+  /**
+   * Liefert den Wert des angegebenen Tag oder NULL, wenn er nicht gefunden wurde.
+   * @param t der Auftrag.
+   * @param tag das Tag.
+   * @return der Wert des Tag oder NULL, wenn es nicht gefunden wurde.
+   * @throws RemoteException
+   */
+  public static String getTag(Transfer t, Tag tag) throws RemoteException
+  {
+    if (tag == null)
+      return null;
+    Map<Tag,String> result = parse(t);
+
+    // Sonderrolle SVWZ.
+    // Bei den alten Buchungen gab es die Tags ja noch gar nicht.
+    // Heisst: Wenn SVWZ angefordert wurde, der Auftrag aber gar keine
+    // Tags enthaelt, wird der komplette originale Verwendungszweck zurueckgeliefert
+    if (result.size() == 0)
+    {
+      if (tag == Tag.SVWZ)
+        return toString(t);
+      
+      return null;
+    }
+      
+    return result.get(tag);
+  }
+
+  /**
+   * Parst die SEPA-Tags aus den Verwendungszwecken des Auftrages.
+   * @param t
+   * @return Map mit den geparsten Infos. Niemals NULL sondern hoechstens eine leere Map.
+   * @throws RemoteException
+   */
+  public static Map<Tag,String> parse(Transfer t) throws RemoteException
+  {
+    if (t == null)
+      return  new HashMap<Tag,String>();
+    
+    return parse(toArray(t));
+  }
+
+  /**
+   * Parst die SEPA-Tags aus den Verwendungszweck-Zeilen.
+   * @param lines die Verwendungszweck-Zeilen.
+   * @return Map mit den geparsten Infos. Niemals NULL sondern hoechstens eine leere Map.
+   * @throws RemoteException
+   */
+  public static Map<Tag,String> parse(String... lines) throws RemoteException
+  {
+    Map<Tag,String> result = new HashMap<Tag,String>();
+
+    if (lines == null || lines.length == 0)
+      return result;
+
+    String line = merge(lines);
+    
+    try
+    {
+
+      // Jetzt iterieren wir ueber die bekannten Tags. Wenn wir eines im Text finden, extrahieren
+      // wir alles bis zum naechsten Tag.
+      for (Tag tag:Tag.values())
+      {
+        int start = line.indexOf(tag.name());
+        if (start == -1)
+          continue; // Nicht gefunden
+
+        int next = 0;
+        
+        while (next < line.length()) // Wir suchen solange, bis wir am Ende angekommen sind.
+        {
+          // OK, wir haben das Tag. Jetzt suchen wir bis zum naechsten Tag.
+          next = line.indexOf("+",start + 5 + next); // "5" = 4 Zeichen Kuerzel und "+" und Offset
+          if (next == -1)
+          {
+            // Kein weiteres Tag mehr da. Gehoert alles zum Tag.
+            result.put(tag,StringUtils.trimToEmpty(line.substring(start+5).replace("\n","")));
+            break;
+          }
+          else
+          {
+            // Checken, ob vor dem "+" ein bekanntes Tag steht
+            String s = line.substring(next-4,next);
+            Tag found = Tag.byName(s);
+            
+            // Ist ein bekanntes Tag. Also uebernehmen wir den Text genau bis dahin
+            if (found != null)
+            {
+              result.put(tag,StringUtils.trimToEmpty(line.substring(start+5,next-4).replace("\n","")));
+              break;
+            }
+          }
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to parse line: " + line,e);
+    }
+    return result;
   }
   
   /**

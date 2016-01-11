@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -131,7 +132,7 @@ public class UmsatzTree extends TreePart
     
     });
     this.addColumn(i18n.tr("Bezeichnung"),      "name");
-    this.addColumn(i18n.tr("Verwendungszweck"), "mergedzweck");
+    this.addColumn(i18n.tr("Verwendungszweck"), Tag.SVWZ.name());
     this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.addColumn(i18n.tr("Notiz"),            "kommentar");

@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -460,6 +461,10 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
     if ("mergedzweck".equals(arg0))
       return VerwendungszweckUtil.toString(this);
+
+    Tag tag = Tag.byName(arg0);
+    if (tag != null)
+      return VerwendungszweckUtil.getTag(this,tag);
 
     // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
     if ("empfaenger".equals(arg0))

@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -54,6 +55,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
 
     if ("mergedzweck".equals(arg0))
       return VerwendungszweckUtil.toString(this);
+
+    Tag tag = Tag.byName(arg0);
+    if (tag != null)
+      return VerwendungszweckUtil.getTag(this,tag);
 
     return super.getAttribute(arg0);
   }
