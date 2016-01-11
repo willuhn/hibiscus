@@ -21,6 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
@@ -32,6 +34,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -43,6 +46,7 @@ import de.willuhn.util.I18N;
 public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Duplicatable
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static transient Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   
   private final static transient Map<String,Pattern> patternCache = new HashMap<String,Pattern>();
 
@@ -245,6 +249,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       return typ.equals(this);
     }
     
+    
     // BUGZILLA 614 - wenn die Kategorie gar nicht passt, koennen wir gleich abbrechen
     double betrag = umsatz.getBetrag();
     int typ       = this.getTyp();
@@ -279,6 +284,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       kto   = kto.toLowerCase();
       kom   = kom.toLowerCase();
       art   = art.toLowerCase();
+
+      if (settings.getBoolean("search.ignore.whitespace",true))
+        zweck = StringUtils.deleteWhitespace(zweck);
 
       String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 

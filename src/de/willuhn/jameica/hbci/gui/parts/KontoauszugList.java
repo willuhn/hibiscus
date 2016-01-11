@@ -83,6 +83,7 @@ public class KontoauszugList extends UmsatzList
   private final static Settings settings = new Settings(KontoauszugList.class);
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Settings syssettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   
   // Konto/Zeitraum/Suchbegriff/nur geprueft
   private TextInput text               = null;
@@ -569,7 +570,8 @@ public class KontoauszugList extends UmsatzList
     if (zk != null && zk.length() > 0)
     {
       zk = "%" + zk.toLowerCase() + "%";
-      umsaetze.addFilter("(LOWER(REPLACE(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,'')),' ','')) LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
+      final boolean iw = syssettings.getBoolean("search.ignore.whitespace",true);
+      umsaetze.addFilter("(LOWER(REPLACE(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,'')),' ','" + (iw ? "" : " ")+ "')) LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
     }
     /////////////////////////////////////////////////////////////////
 
