@@ -61,7 +61,7 @@ public class SelectConfigDialog extends AbstractDialog
     if (list != null)
       list.begin();
     
-    final TablePart table = new TablePart(list != null ? list : PinTanConfigFactory.getConfigs(), new Action() {
+    final TablePart table = new TablePart(list != null && list.size() > 0 ? list : PinTanConfigFactory.getConfigs(), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof PinTanConfig))
