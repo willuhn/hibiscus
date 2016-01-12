@@ -570,8 +570,12 @@ public class KontoauszugList extends UmsatzList
     if (zk != null && zk.length() > 0)
     {
       zk = "%" + zk.toLowerCase() + "%";
-      final boolean iw = syssettings.getBoolean("search.ignore.whitespace",true);
-      umsaetze.addFilter("(LOWER(REPLACE(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,'')),' ','" + (iw ? "" : " ")+ "')) LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
+      String q = "CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))";
+      if (syssettings.getBoolean("search.ignore.whitespace",true))
+      {
+        q = "REPLACE(REPLACE(REPLACE(" + q + ",' ',''),'\n',''),'\r','')";
+      }
+      umsaetze.addFilter("(LOWER(" + q + ") LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
     }
     /////////////////////////////////////////////////////////////////
 

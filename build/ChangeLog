@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0480 Zeilenumbrüche im Verwendungszweck bei der Suche ignorieren - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17348
   * NEW: 0479 BUGZILLA 1510 - Parser fuer SEPA-Tags und Tag SVWZ on-the-fly extrahieren und als Verwendungszweck anzeigen, wenn es gefunden wird
   * NEW: 0478 Leerzeichen im Verwendungszweck auch bei Suchbegriff in Kategorie ignorieren (aber nur, wenn es kein Regex ist)
   * BUG: 0477 Im Kalender wurde bei wiederholten Aufträgen ggf. die letzte Wiederholung nicht angezeigt, wenn das Intervall in diesem Monat endete
