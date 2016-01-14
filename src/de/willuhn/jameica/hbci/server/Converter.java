@@ -13,6 +13,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerList;
@@ -34,6 +35,7 @@ import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -139,6 +141,27 @@ public class Converter
 		    a.setBlz(a.getBic());
 		  umsatz.setGegenkonto(a);
 		}
+		
+		// Wenn wir noch keine Gegenkonto-Infos haben, versuchen wir mal, sie aus
+		// dem Verwendungszweck zu extrahieren
+		boolean haveIban = StringUtils.trimToNull(umsatz.getGegenkontoNummer()) != null;
+		boolean haveBic  = StringUtils.trimToNull(umsatz.getGegenkontoBLZ()) != null;
+		
+		if (!haveIban || !haveBic)
+		{
+	    Map<Tag,String> tags = VerwendungszweckUtil.parse(umsatz);
+	    String iban = tags.get(Tag.IBAN);
+      String bic  = tags.get(Tag.BIC);
+      
+	    if (!haveIban && StringUtils.trimToNull(iban) != null)
+	      umsatz.setGegenkontoNummer(iban);
+	    
+      if (!haveBic && StringUtils.trimToNull(bic) != null)
+        umsatz.setGegenkontoBLZ(bic);
+		}
+		  
+		//
+    ////////////////////////////////////////////////////////////////////////////
 		return umsatz;
 	}
   

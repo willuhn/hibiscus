@@ -76,6 +76,16 @@ public class VerwendungszweckUtil
      */
     ABWA,
     
+    /**
+     * IBAN des Gegenkontos.
+     */
+    IBAN,
+    
+    /**
+     * BIC des Gegenkontos.
+     */
+    BIC,
+    
     ;
     
     /**
@@ -183,6 +193,10 @@ public class VerwendungszweckUtil
       return result;
 
     String line = merge(lines);
+    int first = -1;
+
+    final String sep1 = "+";
+    final String sep2 = ":"; // Es gibt tatsaechlich einige Banken, die ":" als Trenner verwenden
     
     try
     {
@@ -191,16 +205,30 @@ public class VerwendungszweckUtil
       // wir alles bis zum naechsten Tag.
       for (Tag tag:Tag.values())
       {
-        int start = line.indexOf(tag.name());
+        int start = line.indexOf(tag.name()+sep1); // Trenner dahinter, um sicherzustellen, dass sowas wie "EREF" nicht mitten im Text steht
+        if (start == -1)
+        {
+          // Fallback mit sep2
+          start = line.indexOf(tag.name()+sep2);
+        }
         if (start == -1)
           continue; // Nicht gefunden
 
+        // Position des ersten Tag merken - brauchen wir weiter unten eventuell noch
+        if (first == -1 || start < first)
+          first = start;
+        
         int next = 0;
         
         while (next < line.length()) // Wir suchen solange, bis wir am Ende angekommen sind.
         {
           // OK, wir haben das Tag. Jetzt suchen wir bis zum naechsten Tag.
-          next = line.indexOf("+",start + 5 + next); // "5" = 4 Zeichen Kuerzel und "+" und Offset
+          int newNext = line.indexOf(sep1,start + 5 + next); // "5" = 4 Zeichen Kuerzel und "+" und Offset
+          if (newNext == -1) // Fallback auf sep2
+            newNext = line.indexOf(sep2,start + 5 + next);
+          
+          next = newNext; // Erst jetzt uebernehmen, denn "next" wird oben in indexOf als Offset verwendet
+          
           if (next == -1)
           {
             // Kein weiteres Tag mehr da. Gehoert alles zum Tag.
@@ -222,10 +250,22 @@ public class VerwendungszweckUtil
           }
         }
       }
+      
+      // Noch eine Sonderrolle bei SVWZ. Es gibt Buchungen, die so aussehen:
+      // "Das ist eine Zeile ohne Tag\nKREF+Und hier kommt noch ein Tag".
+      // Sprich: Der Verwendungszweck enthaelt zwar Tags, der Verwendungszweck selbst hat aber keines
+      // sondern steht nur vorn dran.
+      
+      // Wenn wir Tags haben, SVWZ aber fehlt, nehmen wir als SVWZ den Text bis zum ersten Tag
+      if (result.size() > 0 && !result.containsKey(Tag.SVWZ) && first > 0)
+      {
+        result.put(Tag.SVWZ,StringUtils.trimToEmpty(line.substring(0,first).replace("\n","")));
+      }
     }
     catch (Exception e)
     {
       Logger.error("unable to parse line: " + line,e);
+      e.printStackTrace();
     }
     return result;
   }

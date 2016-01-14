@@ -171,6 +171,64 @@ public class TestVerwendungszweckUtil
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("Map falsch",0,map.size());
   }
+
+  /**
+   * Testet das Parsen der Tags.
+   * @throws Exception
+   */
+  @Test
+  public void testParse008() throws Exception
+  {
+    String [] test =
+    {
+        "Das ist eine Zeile ohne Tag",
+        "Fooo",
+        "KREF+Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck"
+    };
+    
+    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
+    Assert.assertEquals("SVWZ falsch","Das ist eine Zeile ohne TagFooo",map.get(Tag.SVWZ));
+    Assert.assertEquals("KREF falsch","Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck",map.get(Tag.KREF));
+  }
+
+  /**
+   * Testet das Parsen der Tags.
+   * @throws Exception
+   */
+  @Test
+  public void testParse009() throws Exception
+  {
+    String [] test =
+    {
+        "Wir koennen auch",
+        "mit",
+        "KREF: Doppelpunkt als Separatur umgehen"
+    };
+    
+    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
+    Assert.assertEquals("SVWZ falsch","Wir koennen auchmit",map.get(Tag.SVWZ));
+    Assert.assertEquals("KREF falsch","Doppelpunkt als Separatur umgehen",map.get(Tag.KREF));
+  }
+
+  /**
+   * Testet das Parsen der Tags.
+   * @throws Exception
+   */
+  @Test
+  public void testParse010() throws Exception
+  {
+    String [] test =
+    {
+        "SVWZ+ Das geht sogar",
+        "gemischt",
+        "IBAN: DE1234567890 "
+    };
+    
+    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
+    Assert.assertEquals("SVWZ falsch","Das geht sogargemischt",map.get(Tag.SVWZ));
+    Assert.assertEquals("IBAN falsch","DE1234567890",map.get(Tag.IBAN));
+  }
+
 }
 
 
