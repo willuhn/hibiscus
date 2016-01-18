@@ -23,6 +23,7 @@ import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 import org.kapott.hbci.swift.DTAUS;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -152,12 +153,44 @@ public class Converter
 	    Map<Tag,String> tags = VerwendungszweckUtil.parse(umsatz);
 	    String iban = tags.get(Tag.IBAN);
       String bic  = tags.get(Tag.BIC);
+      IBAN i = null;
       
 	    if (!haveIban && StringUtils.trimToNull(iban) != null)
-	      umsatz.setGegenkontoNummer(iban);
+	    {
+	      // Nur uebernehmen, wenn es eine gueltige IBAN ist
+	      try
+	      {
+	        i = HBCIProperties.getIBAN(iban);
+	        if (i != null)
+	          umsatz.setGegenkontoNummer(i.getIBAN());
+	      }
+	      catch (Exception e)
+	      {
+	        Logger.error("invalid IBAN - ignoring: " + iban,e);
+	      }
+	    }
 	    
-      if (!haveBic && StringUtils.trimToNull(bic) != null)
-        umsatz.setGegenkontoBLZ(bic);
+      if (!haveBic)
+      {
+        bic = StringUtils.trimToNull(bic);
+        if (bic != null)
+        {
+          try
+          {
+            bic = HBCIProperties.checkBIC(bic);
+            if (bic != null)
+              umsatz.setGegenkontoBLZ(bic);
+          }
+          catch (Exception e)
+          {
+            Logger.error("invalid BIC - ignoring: " + bic,e);
+          }
+        }
+        else if (i != null)
+        {
+          umsatz.setGegenkontoBLZ(i.getBIC());
+        }
+      }
 		}
 		  
 		//

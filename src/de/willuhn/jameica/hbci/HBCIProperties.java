@@ -597,6 +597,11 @@ public class HBCIProperties
   {
     if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
       return null;
+
+    if (StringUtils.trimToNull(iban) == null)
+      return null;
+    
+    iban = StringUtils.deleteWhitespace(iban);
     
     try
     {

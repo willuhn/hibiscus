@@ -222,17 +222,19 @@ public class VerwendungszweckUtil
         
         while (next < line.length()) // Wir suchen solange, bis wir am Ende angekommen sind.
         {
+          int tagLen = tag.name().length() + 1; // Laenge des Tag + Trennzeichen
+          
           // OK, wir haben das Tag. Jetzt suchen wir bis zum naechsten Tag.
-          int newNext = line.indexOf(sep1,start + 5 + next); // "5" = 4 Zeichen Kuerzel und "+" und Offset
+          int newNext = line.indexOf(sep1,start + tagLen + next); // Laenge Kuerzel und "+" und Offset
           if (newNext == -1) // Fallback auf sep2
-            newNext = line.indexOf(sep2,start + 5 + next);
+            newNext = line.indexOf(sep2,start + tagLen + next);
           
           next = newNext; // Erst jetzt uebernehmen, denn "next" wird oben in indexOf als Offset verwendet
           
           if (next == -1)
           {
             // Kein weiteres Tag mehr da. Gehoert alles zum Tag.
-            result.put(tag,StringUtils.trimToEmpty(line.substring(start+5).replace("\n","")));
+            result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen).replace("\n","")));
             break;
           }
           else
@@ -240,11 +242,16 @@ public class VerwendungszweckUtil
             // Checken, ob vor dem "+" ein bekanntes Tag steht
             String s = line.substring(next-4,next);
             Tag found = Tag.byName(s);
+            if (found == null)
+            {
+              // Sonderfall BIC - nur 3 Zeichen lang?
+              found = Tag.byName(line.substring(next-3,next));
+            }
             
             // Ist ein bekanntes Tag. Also uebernehmen wir den Text genau bis dahin
             if (found != null)
             {
-              result.put(tag,StringUtils.trimToEmpty(line.substring(start+5,next-4).replace("\n","")));
+              result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen,next - found.name().length()).replace("\n","")));
               break;
             }
           }

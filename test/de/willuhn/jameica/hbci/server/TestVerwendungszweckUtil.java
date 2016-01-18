@@ -229,6 +229,22 @@ public class TestVerwendungszweckUtil
     Assert.assertEquals("IBAN falsch","DE1234567890",map.get(Tag.IBAN));
   }
 
+  /**
+   * Testet das Parsen der Tags.
+   * @throws Exception
+   */
+  @Test
+  public void testParse011() throws Exception
+  {
+    String [] test =
+    {
+        "IBAN: DE49390500000000021527 BIC: AACSDE33 ABWA: NetAachen"
+    };
+    
+    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
+    Assert.assertEquals("IBAN falsch","DE49390500000000021527",map.get(Tag.IBAN));
+    Assert.assertEquals("ABWA falsch","NetAachen",map.get(Tag.ABWA));
+  }
 }
 
 
