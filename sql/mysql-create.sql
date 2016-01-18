@@ -64,7 +64,7 @@ CREATE TABLE empfaenger (
        id int(10) AUTO_INCREMENT
      , kontonummer VARCHAR(15) NULL
      , blz VARCHAR(15) NULL
-     , name VARCHAR(27) NOT NULL
+     , name VARCHAR(255) NOT NULL
      , iban VARCHAR(40) NULL
      , bic VARCHAR(15) NULL
      , bank VARCHAR(140) NULL
@@ -421,4 +421,4 @@ ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
 
-INSERT INTO version (name,version) values ('db',58);
+INSERT INTO version (name,version) values ('db',59);

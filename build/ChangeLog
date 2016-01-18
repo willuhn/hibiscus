@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0485 BUGZILLA 1533 - Verlängerung des Namens (Adressbuch und Gegenkonto-Inhaber) von 27 auf 70 Zeichen 
   * BUG: 0484 Wenn Whitespaces im Verwendungszweck bei der Suche ignoriert werden, müssen sie auch im Suchbegriff selbst ignoriert werden
   * BUG: 0483 Überlange Namen von Gegenkonto-Inhabern auf 27 Zeichen kürzen, damit die Umsätze gespeichert werden können. - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=121802#real121802
   * NEW: 0482 Weitere Verbesserungen im SEPA-Tag Parser. Geht jetzt auch mit ":" als Trenner und kann IBAN/BIC extrahieren

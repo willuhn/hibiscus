@@ -187,7 +187,7 @@ public class HBCIProperties
 	/**
 	 * Maximale Text-Laenge fuer Namen.
 	 */
-	public final static int HBCI_TRANSFER_NAME_MAXLENGTH = settings.getInt("hbci.transfer.name.maxlength",27);
+	public final static int HBCI_TRANSFER_NAME_MAXLENGTH = settings.getInt("hbci.transfer.name.maxlength",70);
 
   // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
   /**

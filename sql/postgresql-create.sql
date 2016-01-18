@@ -24,7 +24,7 @@ CREATE TABLE empfaenger (
   id serial primary key,
   kontonummer varchar(15) NULL,
   blz varchar(15) NULL,
-  name varchar(27) NOT NULL,
+  name varchar(255) NOT NULL,
   iban varchar(40) NULL,
   bic varchar(15) NULL,
   bank varchar(140) NULL,
@@ -362,4 +362,4 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',58);
+INSERT INTO version (name,version) values ('db',59);
