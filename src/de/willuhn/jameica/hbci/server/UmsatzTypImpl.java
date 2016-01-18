@@ -286,7 +286,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       art   = art.toLowerCase();
 
       if (settings.getBoolean("search.ignore.whitespace",true))
+      {
         zweck = StringUtils.deleteWhitespace(zweck);
+        s = StringUtils.deleteWhitespace(s);
+      }
 
       String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 

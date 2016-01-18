@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -570,12 +571,14 @@ public class KontoauszugList extends UmsatzList
     if (zk != null && zk.length() > 0)
     {
       zk = "%" + zk.toLowerCase() + "%";
+      String zkStripped = zk;
       String q = "CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))";
       if (syssettings.getBoolean("search.ignore.whitespace",true))
       {
         q = "REPLACE(REPLACE(REPLACE(" + q + ",' ',''),'\n',''),'\r','')";
+        zkStripped = StringUtils.deleteWhitespace(zk);
       }
-      umsaetze.addFilter("(LOWER(" + q + ") LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zk,zk,zk);
+      umsaetze.addFilter("(LOWER(" + q + ") LIKE ? OR LOWER(kommentar) like ? OR LOWER(art) like ?)",zkStripped,zk,zk);
     }
     /////////////////////////////////////////////////////////////////
 
