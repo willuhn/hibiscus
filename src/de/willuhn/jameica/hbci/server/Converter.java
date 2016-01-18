@@ -372,6 +372,9 @@ public class Converter
 		String name = konto.name;
 		if (konto.name2 != null && konto.name2.length() > 0)
 			name += (" " + konto.name2);
+		
+		if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
+		  name = name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 		e.setName(name);
 		return e;  	
 	}

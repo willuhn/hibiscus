@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0483 Überlange Namen von Gegenkonto-Inhabern auf 27 Zeichen kürzen, damit die Umsätze gespeichert werden können. - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=121802#real121802
   * NEW: 0482 Weitere Verbesserungen im SEPA-Tag Parser. Geht jetzt auch mit ":" als Trenner und kann IBAN/BIC extrahieren
   * NEW: 0481 HVB-Problematik (siehe auch Change-Id 0459) - alle PIN/TAN-Konfigurationen anzeigen, wenn keine passende gefunden wurde - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=121430#real121430
   * NEW: 0480 Zeilenumbrüche im Verwendungszweck bei der Suche ignorieren - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17348
