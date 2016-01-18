@@ -243,6 +243,7 @@ public class TestVerwendungszweckUtil
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("IBAN falsch","DE49390500000000021527",map.get(Tag.IBAN));
+    Assert.assertEquals("BIC falsch","AACSDE33",map.get(Tag.BIC));
     Assert.assertEquals("ABWA falsch","NetAachen",map.get(Tag.ABWA));
   }
 }
