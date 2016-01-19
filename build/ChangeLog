@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0488 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0487 SEPA Tag-Parser: Sonderfall "SVWZ+BIC:...."
   * BUG: 0486 SEPA Tag-Parser: Sonderfall "BIC" - das Tag ist nur 3 Zeichen lang. Ausserdem IBAN nur übernehmen, wenn sie gültig ist
   * NEW: 0485 BUGZILLA 1533 - Verlängerung des Namens (Adressbuch und Gegenkonto-Inhaber) von 27 auf 70 Zeichen 
