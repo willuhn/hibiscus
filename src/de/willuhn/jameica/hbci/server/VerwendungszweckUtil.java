@@ -187,6 +187,32 @@ public class VerwendungszweckUtil
    */
   public static Map<Tag,String> parse(String... lines) throws RemoteException
   {
+    // Wir parsen erstmal alles mit "+".
+    Map<Tag,String> result = parse(true,'+',lines);
+    if (result == null || result.size() == 0)
+    {
+      // Vielleicht enthaelt es ja nur Tags mit Doppelpunkt?
+      return parse(true,':',lines);
+    }
+    
+    // Jetzt schauen wir, ob wir den Verwendungszweck per ":" noch weiter zerlegen koennen
+    String svwz = result.get(Tag.SVWZ);
+    if (StringUtils.trimToNull(svwz) != null)
+      result.putAll(parse(false,':',svwz));
+    
+    return result;
+  }
+  
+  /**
+   * Parst die SEPA-Tags aus den Verwendungszweck-Zeilen.
+   * @param leadingSvwz true, wenn ein fuehrerender Verwendungszweck ohne dediziertes Tag beachtet werden soll.
+   * @param sep das zu verwendende Trennzeichen.
+   * @param lines die Verwendungszweck-Zeilen.
+   * @return Map mit den geparsten Infos. Niemals NULL sondern hoechstens eine leere Map.
+   * @throws RemoteException
+   */
+  private static Map<Tag,String> parse(boolean leadingSvwz, char sep, String... lines) throws RemoteException
+  {
     Map<Tag,String> result = new HashMap<Tag,String>();
 
     if (lines == null || lines.length == 0)
@@ -195,9 +221,6 @@ public class VerwendungszweckUtil
     String line = merge(lines);
     int first = -1;
 
-    final String sep1 = "+";
-    final String sep2 = ":"; // Es gibt tatsaechlich einige Banken, die ":" als Trenner verwenden
-    
     try
     {
 
@@ -205,12 +228,7 @@ public class VerwendungszweckUtil
       // wir alles bis zum naechsten Tag.
       for (Tag tag:Tag.values())
       {
-        int start = line.indexOf(tag.name()+sep1); // Trenner dahinter, um sicherzustellen, dass sowas wie "EREF" nicht mitten im Text steht
-        if (start == -1)
-        {
-          // Fallback mit sep2
-          start = line.indexOf(tag.name()+sep2);
-        }
+        int start = line.indexOf(tag.name()+sep); // Trenner dahinter, um sicherzustellen, dass sowas wie "EREF" nicht mitten im Text steht
         if (start == -1)
           continue; // Nicht gefunden
 
@@ -225,16 +243,11 @@ public class VerwendungszweckUtil
           int tagLen = tag.name().length() + 1; // Laenge des Tag + Trennzeichen
           
           // OK, wir haben das Tag. Jetzt suchen wir bis zum naechsten Tag.
-          int newNext = line.indexOf(sep1,start + tagLen + next); // Laenge Kuerzel und "+" und Offset
-          if (newNext == -1) // Fallback auf sep2
-            newNext = line.indexOf(sep2,start + tagLen + next);
-          
-          next = newNext; // Erst jetzt uebernehmen, denn "next" wird oben in indexOf als Offset verwendet
-          
+          next = line.indexOf(sep,start + tagLen + next);
           if (next == -1)
           {
             // Kein weiteres Tag mehr da. Gehoert alles zum Tag.
-            result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen).replace("\n","")));
+            result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen).replace("\n"," ")));
             break;
           }
           else
@@ -251,7 +264,7 @@ public class VerwendungszweckUtil
             // Ist ein bekanntes Tag. Also uebernehmen wir den Text genau bis dahin
             if (found != null)
             {
-              result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen,next - found.name().length()).replace("\n","")));
+              result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen,next - found.name().length()).replace("\n"," ")));
               break;
             }
           }
@@ -262,11 +275,20 @@ public class VerwendungszweckUtil
       // "Das ist eine Zeile ohne Tag\nKREF+Und hier kommt noch ein Tag".
       // Sprich: Der Verwendungszweck enthaelt zwar Tags, der Verwendungszweck selbst hat aber keines
       // sondern steht nur vorn dran.
-      
       // Wenn wir Tags haben, SVWZ aber fehlt, nehmen wir als SVWZ den Text bis zum ersten Tag
-      if (result.size() > 0 && !result.containsKey(Tag.SVWZ) && first > 0)
+      if (leadingSvwz && result.size() > 0 && !result.containsKey(Tag.SVWZ) && first > 0)
       {
-        result.put(Tag.SVWZ,StringUtils.trimToEmpty(line.substring(0,first).replace("\n","")));
+        result.put(Tag.SVWZ,StringUtils.trimToEmpty(line.substring(0,first).replace("\n"," ")));
+      }
+      
+      // Sonderrolle IBAN. Wir entfernen alles bis zum ersten Leerzeichen. Siehe "testParse012". Da hinter der
+      // IBAN kein vernuenftiges Tag mehr kommt, wuerde sonst der ganze Rest da mit reinfallen
+      String iban = StringUtils.trimToNull(result.get(Tag.IBAN));
+      if (iban != null)
+      {
+        int space = iban.indexOf(" ");
+        if (space > 0)
+          result.put(Tag.IBAN,StringUtils.trimToEmpty(iban.substring(0,space)));
       }
     }
     catch (Exception e)
