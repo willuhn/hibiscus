@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/input/UmsatzTypInput.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/06/03 13:54:02 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -21,8 +15,8 @@ import java.util.List;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -40,6 +34,8 @@ public class UmsatzTypInput extends SelectInput
 {
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private List<UmsatzTyp> all  = null;
+  private List<UmsatzTyp> root = new ArrayList<UmsatzTyp>();
 
   /**
    * ct.
@@ -70,7 +66,8 @@ public class UmsatzTypInput extends SelectInput
    */
   public UmsatzTypInput(UmsatzTyp preselected, UmsatzTyp skip, int typ) throws RemoteException
   {
-    super(init(skip,typ), preselected);
+    super((List) null, preselected);
+    this.setList(init(skip,typ));
     this.setAttribute("name");
     this.setName(i18n.tr("Umsatz-Kategorie"));
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
@@ -94,25 +91,44 @@ public class UmsatzTypInput extends SelectInput
    * @return korrigierte Liste.
    * @throws RemoteException
    */
-  private static List init(UmsatzTyp skip, int typ) throws RemoteException
+  private List<UmsatzTyp> init(UmsatzTyp skip, int typ) throws RemoteException
   {
-    List l = new ArrayList();
-    DBIterator list = UmsatzTypUtil.getRootElements();
-    while (list.hasNext())
+    this.all = PseudoIterator.asList(UmsatzTypUtil.getAll());
+    
+    // Wir ermitteln erstmal nur die Root-Elemente und verarbeiten die dann alle einzeln
+    // Im Prinzip koennte man das alles auch bequemer ueber die passenden Methoden von UmsatzTypUtil
+    // und GenericObjectNode machen. Das wuerde aber rekursiv eine ganze Reihe von SQL-Queries
+    // ausloesen. Bei 50 verschachtelten Kategorien koennen da schnell 200 SQL-Abfragen zusammenkommen,
+    // die jedesmal aufgerufen werden, wenn die Selectbox eingeblendet wird. Daher laden wir mit einem
+    // einzelnen Query alle Kategorien und erzeugen den Baum dann komplett im Speicher. Das ist erheblich
+    // schneller.
+    for (UmsatzTyp t:this.all)
     {
-      add((UmsatzTyp)list.next(),skip,l,typ);
+      String pid = this.getParentId(t);
+      if (pid == null || this.find(pid) == null)
+        this.root.add(t);
     }
-    return l;
+
+
+    List<UmsatzTyp> result = new ArrayList<UmsatzTyp>();
+
+    // Jetzt ueber die Root-Elemente iterieren
+    for (UmsatzTyp t:this.root)
+    {
+      add(t,skip,result,typ);
+    }
+    return result;
   }
   
   /**
-   * @param t
-   * @param skip
-   * @param l
-   * @param typ
+   * Fuegt die Kategorie und dessen Kinder zur Ergebnisliste hinzu, insofern sie zum Typ passen.
+   * @param t die Kategorie.
+   * @param skip optionale Ausschluss-Kategorie. Wenn t=skip ist, wird nichts zur Ergebnisliste hinzugefuegt.
+   * @param result die Ergebnisliste, zu der die Kategorien hinzugefuegt werden sollen.
+   * @param typ der gesuchte Typ, on dem die Kategorien sein muessen.
    * @throws RemoteException
    */
-  private static void add(UmsatzTyp t, UmsatzTyp skip, List l, int typ) throws RemoteException
+  private void add(UmsatzTyp t, UmsatzTyp skip, List<UmsatzTyp> result, int typ) throws RemoteException
   {
     if (skip != null && skip.equals(t))
       return;
@@ -125,14 +141,78 @@ public class UmsatzTypInput extends SelectInput
     int ti = t.getTyp();
     if (typ == UmsatzTyp.TYP_EGAL || (ti == UmsatzTyp.TYP_EGAL || ti == typ))
     {
-      l.add(t);
+      result.add(t);
       
-      GenericIterator children = t.getChildren();
-      while (children.hasNext())
+      List<UmsatzTyp> children = this.getChildren(t);
+      for (UmsatzTyp c:children)
       {
-        add((UmsatzTyp) children.next(),skip,l,typ);
+        add(c,skip,result,typ);
       }
     }
+  }
+  
+  /**
+   * Liefert alle direkten Kinder der Kategorie.
+   * @param t die Kategorie.
+   * @return die Liste der Kinder. Niemals NULL sondern hoechstens eine leere Liste.
+   * @throws RemoteException
+   */
+  private List<UmsatzTyp> getChildren(UmsatzTyp t) throws RemoteException
+  {
+    List<UmsatzTyp> result = new ArrayList<UmsatzTyp>();
+    if (t == null || this.all == null)
+      return result;
+    
+    String id = t.getID();
+    if (id == null) // Neue ungespeicherte Kategorie?
+      return result;
+    
+    for (UmsatzTyp c:this.all)
+    {
+      String pid = this.getParentId(c);
+      if (pid != null && pid.equals(id))
+        result.add(c);
+    }
+
+    return result;
+  }
+  
+  /**
+   * Liefert die Parent-ID.
+   * @param t die Kategorie.
+   * @return die Parent-ID oder NULL, wenn keine existiert.
+   * @throws RemoteException
+   */
+  private String getParentId(UmsatzTyp t) throws RemoteException
+  {
+    Object o = t.getAttribute("parent_id");
+    if (o == null)
+      return null;
+    
+    if ((o instanceof GenericObject))
+      return ((GenericObject)o).getID();
+    
+    return o.toString();
+  }
+  
+  /**
+   * Sucht die Kategorie mit der angegebenen ID in der Liste aller Kategorien.
+   * @param id die ID.
+   * @return die Kategorie oder NULL, wenn sie nicht existiert.
+   * @throws RemoteException
+   */
+  private UmsatzTyp find(String id) throws RemoteException
+  {
+    if (this.all == null || id == null)
+      return null;
+    
+    for (UmsatzTyp t:this.all)
+    {
+      if (t.getID().equals(id))
+        return t;
+    }
+    
+    return null;
   }
 
   /**
@@ -144,7 +224,24 @@ public class UmsatzTypInput extends SelectInput
     try
     {
       UmsatzTyp t = (UmsatzTyp) bean;
-      int depth = t.getPath().size();
+      
+      int depth = 0;
+      
+      // Maximal 100 Level in der Tiefe
+      for (int i=0;i<100;++i)
+      {
+        String pid = this.getParentId(t);
+        if (pid == null)
+          break; // Oben angekommen
+
+        t = find(pid);
+        if (t == null) // Parent gibts nicht mehr, oben angekommen
+          break;
+        
+        // Ansonsten naechstes Level laden
+        depth++;
+      }
+      
       for (int i=0;i<depth;++i)
       {
         name = "    " + name;
@@ -181,36 +278,3 @@ public class UmsatzTypInput extends SelectInput
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: UmsatzTypInput.java,v $
- * Revision 1.15  2010/06/03 13:54:02  willuhn
- * @N UmsatzTypInput setzt jetzt auch gleich Name und Attribut
- *
- * Revision 1.14  2010/06/02 15:32:03  willuhn
- * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
- * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste
- *
- * Revision 1.13  2010/03/09 12:34:03  willuhn
- * @N Jetzt mit korrekten Einrueckungen
- *
- * Revision 1.12  2010/03/06 00:03:23  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2010/03/05 23:59:31  willuhn
- * @C Code-Cleanup
- *
- * Revision 1.10  2010/03/05 23:52:27  willuhn
- * @C Code-Cleanup
- * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
- *
- * Revision 1.9  2010/03/05 23:29:18  willuhn
- * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
- *
- * Revision 1.8  2010/03/05 18:29:26  willuhn
- * @B Einrueckung nochmal entfernt - das kann dazu fuehren, dass Kinder falsch einsortiert werden (ein einfaches order by parent_id reicht nicht)
- *
- * Revision 1.7  2010/03/05 18:07:26  willuhn
- * @N Unterkategorien in Selectbox einruecken
- **********************************************************************/
