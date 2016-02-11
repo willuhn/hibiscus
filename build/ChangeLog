@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0490 SEPA-Tag ABWA bei Bedarf in Gegenkontoname übernehmen
   * NEW: 0489 Schnelleres Laden der Kategorien in der Auswahlbox (Tree wird jetzt komplett im Speicher aufgebaut statt durch rekursive DB-Abfragen erzeugt)
   * NEW: 0488 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0487 SEPA Tag-Parser: Sonderfall "SVWZ+BIC:...."

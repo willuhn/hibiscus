@@ -147,12 +147,16 @@ public class Converter
 		// dem Verwendungszweck zu extrahieren
 		boolean haveIban = StringUtils.trimToNull(umsatz.getGegenkontoNummer()) != null;
 		boolean haveBic  = StringUtils.trimToNull(umsatz.getGegenkontoBLZ()) != null;
+    boolean haveName = StringUtils.trimToNull(umsatz.getGegenkontoName()) != null;
 		
-		if (!haveIban || !haveBic)
+		if (!haveIban || !haveBic || !haveName)
 		{
 	    Map<Tag,String> tags = VerwendungszweckUtil.parse(umsatz);
 	    String iban = tags.get(Tag.IBAN);
       String bic  = tags.get(Tag.BIC);
+
+      umsatz.setGegenkontoName(tags.get(Tag.ABWA));
+
       IBAN i = null;
       
 	    if (!haveIban && StringUtils.trimToNull(iban) != null)
