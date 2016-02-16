@@ -269,6 +269,28 @@ public class TestVerwendungszweckUtil
     Assert.assertEquals("SVWZ","BIC:GENODED1SAM IBAN:DE12345678901234567890 Datum: 14.01.16 Zeit: 08:00 KD 00012345 TAN 12345 Beleg 12345  Kunde 12345",map.get(Tag.SVWZ));
   }
 
+  /**
+   * Testet das Parsen der Tags.
+   * @throws Exception
+   */
+  @Test
+  public void testParse013() throws Exception
+  {
+    String [] test =
+    {
+        "Verwendungszweck EREF: 1234",
+        "567890123456789 IBAN: DE123",
+        "45678901234567890 BIC: ABCD",
+        "EFGH"
+    };
+    
+    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
+    Assert.assertEquals("SVWZ falsch","Verwendungszweck",map.get(Tag.SVWZ));
+    Assert.assertEquals("EREF falsch","1234 567890123456789",map.get(Tag.EREF)); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
+    Assert.assertEquals("IBAN falsch","DE12345678901234567890",map.get(Tag.IBAN)); // Hier muss das Leerzeichen raus
+    Assert.assertEquals("BIC falsch" ,"ABCDEFGH",map.get(Tag.BIC)); // Hier auch ohne Leerzeichen
+  }
+
 }
 
 

@@ -282,14 +282,24 @@ public class VerwendungszweckUtil
       }
       
       // Sonderrolle IBAN. Wir entfernen alles bis zum ersten Leerzeichen. Siehe "testParse012". Da hinter der
-      // IBAN kein vernuenftiges Tag mehr kommt, wuerde sonst der ganze Rest da mit reinfallen
+      // IBAN kein vernuenftiges Tag mehr kommt, wuerde sonst der ganze Rest da mit reinfallen. Aber nur, wenn
+      // es erst nach 22 Zeichen kommt. Sonst steht es mitten in der IBAN drin. In dem Fall entfernen wir die
+      // Leerzeichen aus der IBAN (siehe "testParse013")
       String iban = StringUtils.trimToNull(result.get(Tag.IBAN));
       if (iban != null)
       {
         int space = iban.indexOf(" ");
-        if (space > 0)
+        if (space > 21) // Wir beginnen ja bei 0 mit dem Zaehlen
           result.put(Tag.IBAN,StringUtils.trimToEmpty(iban.substring(0,space)));
+        else if (space != -1)
+          result.put(Tag.IBAN,StringUtils.deleteWhitespace(iban));
       }
+      
+      // testParse013: Leerzeichen aus der BIC entfernen
+      String bic = StringUtils.trimToNull(result.get(Tag.BIC));
+      if (bic != null)
+        result.put(Tag.BIC,StringUtils.deleteWhitespace(bic));
+        
     }
     catch (Exception e)
     {
