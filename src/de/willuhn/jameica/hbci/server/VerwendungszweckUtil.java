@@ -247,7 +247,7 @@ public class VerwendungszweckUtil
           if (next == -1)
           {
             // Kein weiteres Tag mehr da. Gehoert alles zum Tag.
-            result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen).replace("\n"," ")));
+            result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen).replace("\n","")));
             break;
           }
           else
@@ -264,7 +264,7 @@ public class VerwendungszweckUtil
             // Ist ein bekanntes Tag. Also uebernehmen wir den Text genau bis dahin
             if (found != null)
             {
-              result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen,next - found.name().length()).replace("\n"," ")));
+              result.put(tag,StringUtils.trimToEmpty(line.substring(start + tagLen,next - found.name().length()).replace("\n","")));
               break;
             }
           }
@@ -278,7 +278,7 @@ public class VerwendungszweckUtil
       // Wenn wir Tags haben, SVWZ aber fehlt, nehmen wir als SVWZ den Text bis zum ersten Tag
       if (leadingSvwz && result.size() > 0 && !result.containsKey(Tag.SVWZ) && first > 0)
       {
-        result.put(Tag.SVWZ,StringUtils.trimToEmpty(line.substring(0,first).replace("\n"," ")));
+        result.put(Tag.SVWZ,StringUtils.trimToEmpty(line.substring(0,first).replace("\n","")));
       }
       
       // Sonderrolle IBAN. Wir entfernen alles bis zum ersten Leerzeichen. Siehe "testParse012". Da hinter der
@@ -320,7 +320,7 @@ public class VerwendungszweckUtil
     if (t == null || lines == null || lines.length == 0)
       return;
     
-    List<String> l = clean(lines);
+    List<String> l = clean(true,lines);
     if (l.size() > 0) t.setZweck(l.remove(0));  // Zeile 1
     if (l.size() > 0) t.setZweck2(l.remove(0)); // Zeile 2
     if (l.size() > 0) t.setWeitereVerwendungszwecke(l.toArray(new String[l.size()])); // Zeile 3 - x
@@ -351,7 +351,7 @@ public class VerwendungszweckUtil
     if (!found)
       return lines;
 
-    List<String> l = clean(lines);
+    List<String> l = clean(true,lines);
     
     // Zu einem String mergen
     StringBuffer sb = new StringBuffer();
@@ -378,7 +378,7 @@ public class VerwendungszweckUtil
     if (lines == null || lines.length == 0)
       return null;
     
-    List<String> cleaned = clean(lines);
+    List<String> cleaned = clean(false,lines);
     StringBuffer sb = new StringBuffer();
     for (String line:cleaned)
     {
@@ -409,7 +409,7 @@ public class VerwendungszweckUtil
     }
     
     String[] list = lines.toArray(new String[lines.size()]);
-    List<String> result = clean(list);
+    List<String> result = clean(false,list);
     return result.toArray(new String[result.size()]);
   }
 
@@ -464,10 +464,11 @@ public class VerwendungszweckUtil
    * Bereinigt die Verwendungszweck-Zeilen.
    * Hierbei werden leere Zeilen oder NULL-Elemente entfernt.
    * Ausserdem werden alle Zeilen getrimt.
+   * @param trim wenn die Zeilen-Enden getrimmt werden sollen.
    * @param lines die zu bereinigenden Zeilen.
    * @return die bereinigten Zeilen.
    */
-  private static List<String> clean(String... lines)
+  private static List<String> clean(boolean trim, String... lines)
   {
     List<String> result = new ArrayList<String>();
     if (lines == null || lines.length == 0)
@@ -477,7 +478,9 @@ public class VerwendungszweckUtil
     {
       if (line == null)
         continue;
-      line = line.trim();
+      
+      if (trim)
+        line = line.trim();
       if (line.length() > 0)
         result.add(line);
     }

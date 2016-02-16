@@ -55,10 +55,10 @@ public class TestVerwendungszweckUtil
   {
     String [] test =
     {
-        "SVWZ+Ein komischer.Verwendungszweck",
-        "auf mehreren Zeilen",
+        "SVWZ+Ein komischer.Verwendungszweck ",
+        "auf mehreren Zeilen ",
         "Hier kommt nochwas",
-        "ABWA+Das ist ein..Test//Text",
+        "ABWA+Das ist ein..Test//Text ",
         "mit Zeilen-Umbruch"
     };
     
@@ -82,7 +82,7 @@ public class TestVerwendungszweckUtil
     };
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nicht Fooo ABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ));
+    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nichtFoooABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ));
   }
 
   /**
@@ -95,13 +95,13 @@ public class TestVerwendungszweckUtil
     String [] test =
     {
         "SVWZ+Das folgende Tag gibts nicht",
-        "Fooo",
+        "Fooo ",
         "ABCD+Gehoert zum Verwendungszweck",
         "EREF+Aber hier kommt noch was"
     };
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nicht Fooo ABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ));
+    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nichtFooo ABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ));
     Assert.assertEquals("EREF falsch","Aber hier kommt noch was",map.get(Tag.EREF));
   }
 
@@ -115,13 +115,13 @@ public class TestVerwendungszweckUtil
     String [] test =
     {
         "SVWZ+Das folgende Tag gibts nicht",
-        "Fooo",
+        "Fooo ",
         "ABCD+ Leerzeichen hinter dem Tag stoeren nicht",
         "KREF+ und hier stoeren sie auch nicht, sind aber nicht teil des Value "
     };
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nicht Fooo ABCD+ Leerzeichen hinter dem Tag stoeren nicht",map.get(Tag.SVWZ));
+    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nichtFooo ABCD+ Leerzeichen hinter dem Tag stoeren nicht",map.get(Tag.SVWZ));
     Assert.assertEquals("KREF falsch","und hier stoeren sie auch nicht, sind aber nicht teil des Value",map.get(Tag.KREF));
   }
   
@@ -181,7 +181,7 @@ public class TestVerwendungszweckUtil
   {
     String [] test =
     {
-        "Das ist eine Zeile ohne Tag",
+        "Das ist eine Zeile ohne Tag ",
         "Fooo",
         "KREF+Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck"
     };
@@ -206,7 +206,7 @@ public class TestVerwendungszweckUtil
     };
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Wir koennen auch mit",map.get(Tag.SVWZ));
+    Assert.assertEquals("SVWZ falsch","Wir koennen auchmit",map.get(Tag.SVWZ));
     Assert.assertEquals("KREF falsch","Doppelpunkt als Separatur umgehen",map.get(Tag.KREF));
   }
 
@@ -220,7 +220,7 @@ public class TestVerwendungszweckUtil
     String [] test =
     {
         "SVWZ+ Das geht sogar",
-        "gemischt",
+        " gemischt ",
         "IBAN: DE1234567890 "
     };
     
@@ -256,10 +256,10 @@ public class TestVerwendungszweckUtil
   {
     String [] test =
     {
-        "SVWZ+BIC:GENODED1SAM",
-        "IBAN:DE12345678901234567890",
-        "Datum: 14.01.16 Zeit: 08:00",
-        "KD 00012345 TAN 12345",
+        "SVWZ+BIC:GENODED1SAM ",
+        "IBAN:DE12345678901234567890 ",
+        "Datum: 14.01.16 Zeit: 08:00 ",
+        "KD 00012345 TAN 12345 ",
         "Beleg 12345  Kunde 12345"
     };
     
@@ -286,11 +286,29 @@ public class TestVerwendungszweckUtil
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","Verwendungszweck",map.get(Tag.SVWZ));
-    Assert.assertEquals("EREF falsch","1234 567890123456789",map.get(Tag.EREF)); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
+    Assert.assertEquals("EREF falsch","1234567890123456789",map.get(Tag.EREF)); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
     Assert.assertEquals("IBAN falsch","DE12345678901234567890",map.get(Tag.IBAN)); // Hier muss das Leerzeichen raus
     Assert.assertEquals("BIC falsch" ,"ABCDEFGH",map.get(Tag.BIC)); // Hier auch ohne Leerzeichen
   }
 
+  /**
+   * Testet das Parsen der Tags.
+   * @throws Exception
+   */
+  @Test
+  public void testParse014() throws Exception
+  {
+    // Entfernen von Zeilenumbruechen im Verwendungszweck
+    String [] test =
+    {
+        "SVWZ+Das ist Zeile 1",
+        "2",
+        "3"
+    };
+    
+    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
+    Assert.assertEquals("SVWZ falsch","Das ist Zeile 123",map.get(Tag.SVWZ));
+  }
 }
 
 
