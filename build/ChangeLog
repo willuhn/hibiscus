@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0493 Parameter "hbci.sepa.parsetags=false" in .jameica/cfg/de.willuhn.jameica.hbci.HBCIProperties.properties) zum Deaktivieren des SEPA-Tag-Parser
+  * BUG: 0492 Gegenkonto-Name wurde mit Wert aus ABWA überschrieben (auch wenn dort nichts drin stand)
   * NEW: 0491 SEPA-Tag-Parser: Leerzeichen in IBAN und BIC entfernen 
   * NEW: 0490 SEPA-Tag ABWA bei Bedarf in Gegenkontoname übernehmen
   * NEW: 0489 Schnelleres Laden der Kategorien in der Auswahlbox (Tree wird jetzt komplett im Speicher aufgebaut statt durch rekursive DB-Abfragen erzeugt)

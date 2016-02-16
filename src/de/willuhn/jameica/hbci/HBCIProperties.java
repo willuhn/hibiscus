@@ -233,6 +233,11 @@ public class HBCIProperties
   public final static int HBCI_SEPA_CREDITORID_MAXLENGTH = settings.getInt("hbci.sepa.creditorid.maxlength",35);
 
   /**
+   * SEPA-Tags parsen?
+   */
+  public final static boolean HBCI_SEPA_PARSE_TAGS = settings.getBoolean("hbci.sepa.parsetags",true);
+
+  /**
    * Text-Replacements fuer SEPA.
    * Die in SEPA nicht zulaessigen Zeichen "&*%$üöäÜÖÄß" werden ersetzt.
    */

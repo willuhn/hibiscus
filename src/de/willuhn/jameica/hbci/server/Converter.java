@@ -143,6 +143,9 @@ public class Converter
 		  umsatz.setGegenkonto(a);
 		}
 		
+		if (!HBCIProperties.HBCI_SEPA_PARSE_TAGS)
+		  return umsatz;
+		
 		// Wenn wir noch keine Gegenkonto-Infos haben, versuchen wir mal, sie aus
 		// dem Verwendungszweck zu extrahieren
 		boolean haveIban = StringUtils.trimToNull(umsatz.getGegenkontoNummer()) != null;
@@ -152,10 +155,12 @@ public class Converter
 		if (!haveIban || !haveBic || !haveName)
 		{
 	    Map<Tag,String> tags = VerwendungszweckUtil.parse(umsatz);
-	    String iban = tags.get(Tag.IBAN);
-      String bic  = tags.get(Tag.BIC);
 
-      umsatz.setGegenkontoName(tags.get(Tag.ABWA));
+      if (!haveName)
+        umsatz.setGegenkontoName(tags.get(Tag.ABWA));
+
+      String iban = tags.get(Tag.IBAN);
+      String bic  = tags.get(Tag.BIC);
 
       IBAN i = null;
       
