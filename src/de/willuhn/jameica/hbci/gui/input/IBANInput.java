@@ -61,7 +61,7 @@ public class IBANInput extends TextInput
   @Override
   public void setValue(Object value)
   {
-    super.setValue(value);
+    super.setValue(value != null ? HBCIProperties.formatIban(value.toString()) : null);
     
     if (value == null)
       return;

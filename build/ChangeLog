@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0496 BUGZILLA 1696 - IBAN auch beim Einfügen aus Adressbuch formatieren
   * NEW: 0495 Ausgewählte Kategorie als Parent beim Anlegen einer neuen Kategorie in "Umsätze nach Kategorien" vorauswählen
   * CHG: 0494 Keine Leerzeichen mehr als Zeilentrenner im Verwendungszweck
   * NEW: 0493 Parameter "hbci.sepa.parsetags=false" in .jameica/cfg/de.willuhn.jameica.hbci.HBCIProperties.properties) zum Deaktivieren des SEPA-Tag-Parser
