@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0497 Höhe der Box mit den Bank-Nachrichten reduziert und konfigurierbar gemacht
   * NEW: 0496 BUGZILLA 1696 - IBAN auch beim Einfügen aus Adressbuch formatieren
   * NEW: 0495 Ausgewählte Kategorie als Parent beim Anlegen einer neuen Kategorie in "Umsätze nach Kategorien" vorauswählen
   * CHG: 0494 Keine Leerzeichen mehr als Zeilentrenner im Verwendungszweck

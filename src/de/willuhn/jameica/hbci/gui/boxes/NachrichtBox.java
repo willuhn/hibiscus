@@ -178,4 +178,13 @@ public class NachrichtBox extends AbstractBox implements Box
       });
     }
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
+   */
+  @Override
+  public int getHeight()
+  {
+    return 120;
+  }
 }
