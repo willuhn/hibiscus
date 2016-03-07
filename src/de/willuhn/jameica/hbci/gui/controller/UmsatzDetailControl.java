@@ -1,10 +1,4 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailControl.java,v $
- * $Revision: 1.46 $
- * $Date: 2012/04/23 21:03:41 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
  * Copyright (c) by willuhn.webdesign
  * All rights reserved
@@ -16,10 +10,14 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -42,6 +40,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -51,9 +50,11 @@ import de.willuhn.util.I18N;
 /**
  * Controller fuer die Detailansicht eines Umsatzes.
  */
-public class UmsatzDetailControl extends AbstractControl {
-
-  I18N i18n = null;
+public class UmsatzDetailControl extends AbstractControl
+{
+  private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+  
+  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   // Fachobjekte
   private Umsatz umsatz = null;
@@ -77,6 +78,8 @@ public class UmsatzDetailControl extends AbstractControl {
   private Input kommentar       = null;
   
   private SelectInput umsatzTyp = null;
+  
+  private CheckboxInput zweckSwitch = null;
 
   /**
    * ct.
@@ -84,7 +87,6 @@ public class UmsatzDetailControl extends AbstractControl {
    */
   public UmsatzDetailControl(AbstractView view) {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
   /**
@@ -376,10 +378,57 @@ public class UmsatzDetailControl extends AbstractControl {
 	{
 	  if (this.zweck == null)
 	  {
-      this.zweck = new TextAreaInput(VerwendungszweckUtil.toString(getUmsatz(),"\n"));
+      this.zweck = new TextAreaInput("");
       this.zweck.setEnabled(false);
 	  }
 	  return this.zweck;
+	}
+	
+	/**
+	 * Liefert den Wert des Settings.
+	 * @return der Wert des Settings.
+	 */
+	protected boolean getZweckSwitchValue()
+	{
+    return settings.getBoolean("usage.display.all",true);
+	}
+	
+	/**
+	 * Liefert eine Checkbox, mit der man umschalten kann, ob man die vereinfachte
+	 * Version des Verwendungszwecks angezeigt bekommt oder die ausfuehrliche.
+	 * @return Checkbox.
+	 * @throws RemoteException
+	 */
+	public CheckboxInput getZweckSwitch() throws RemoteException
+	{
+	  if (this.zweckSwitch != null)
+	    return this.zweckSwitch;
+	  
+	  this.zweckSwitch = new CheckboxInput(getZweckSwitchValue());
+	  this.zweckSwitch.setName(i18n.tr("Alle Daten des Verwendungszwecks anzeigen"));
+	  
+	  Listener l = new Listener() {
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          boolean b = ((Boolean) zweckSwitch.getValue()).booleanValue();
+          settings.setAttribute("usage.display.all",b);
+          Umsatz u = getUmsatz();
+          getZweck().setValue(b ? VerwendungszweckUtil.toString(u,"\n") : (String) BeanUtil.get(u,Tag.SVWZ.name()));
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to display usage text",re);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Verwendungszweck: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    };
+	  this.zweckSwitch.addListener(l);
+	  l.handleEvent(null); // einmal initial ausloesen
+	  
+    return this.zweckSwitch;
 	}
 
   /**
@@ -407,78 +456,3 @@ public class UmsatzDetailControl extends AbstractControl {
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: UmsatzDetailControl.java,v $
- * Revision 1.46  2012/04/23 21:03:41  willuhn
- * @N BUGZILLA 1227
- *
- * Revision 1.45  2011-07-25 17:17:19  willuhn
- * @N BUGZILLA 1065 - zusaetzlich noch addkey
- *
- * Revision 1.44  2011-07-25 14:42:40  willuhn
- * @N BUGZILLA 1065
- *
- * Revision 1.43  2011-06-07 10:07:50  willuhn
- * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
- *
- * Revision 1.42  2010-09-27 11:51:38  willuhn
- * @N BUGZILLA 804
- *
- * Revision 1.41  2010/03/05 23:52:27  willuhn
- * @C Code-Cleanup
- * @C Liste der Kategorien kann jetzt nicht mehr von aussen an UmsatzTypInput uebergeben werden
- *
- * Revision 1.40  2010/03/05 23:29:18  willuhn
- * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
- *
- * Revision 1.39  2009/02/24 22:42:33  willuhn
- * @N Da vorgemerkte Umsaetze jetzt komplett geloescht werden, wenn sie neu abgerufen werden, duerfen sie auch nicht mehr geaendert werden (also auch keine Kategorie und kein Kommentar)
- *
- * Revision 1.38  2009/02/12 23:55:57  willuhn
- * @N Erster Code fuer Unterstuetzung von Auslandsueberweisungen: In Tabelle "umsatz" die Spalte "empfaenger_konto" auf 40 Stellen erweitert und Eingabefeld bis max. 34 Stellen, damit IBANs gespeichert werden koennen
- *
- * Revision 1.37  2009/01/19 22:45:26  willuhn
- * *** empty log message ***
- *
- * Revision 1.36  2009/01/04 14:47:53  willuhn
- * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
- *
- * Revision 1.35  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- * Revision 1.34  2008/11/17 23:29:59  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.33  2008/08/29 16:46:23  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.32  2007/12/14 17:06:36  willuhn
- * @B Bug 518
- *
- * Revision 1.31  2007/12/03 10:00:27  willuhn
- * @N Umsatz-Kategorien nach Name sortieren, wenn keine Nummer angegeben
- *
- * Revision 1.30  2007/06/15 11:20:32  willuhn
- * @N Saldo in Kontodetails via Messaging sofort aktualisieren
- * @N Mehr Details in den Namen der Synchronize-Jobs
- * @N Layout der Umsatzdetail-Anzeige ueberarbeitet
- *
- * Revision 1.29  2007/04/24 17:52:17  willuhn
- * @N Bereits in den Umsatzdetails erkennen, ob die Adresse im Adressbuch ist
- * @C Gross-Kleinschreibung in Adressbuch-Suche
- *
- * Revision 1.28  2007/04/23 18:07:15  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.27  2007/04/09 22:45:12  willuhn
- * @N Bug 380
- *
- * Revision 1.26  2007/03/18 08:13:28  jost
- * Sortierte Anzeige der Umsatz-Kategorien.
- **********************************************************************/

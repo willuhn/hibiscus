@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzDetailEditControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2012/05/03 21:50:47 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -21,6 +15,7 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.hbci.HBCI;
@@ -233,6 +228,27 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       input.setEnabled(true);
     return input;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweckSwitchValue()
+   */
+  @Override
+  protected boolean getZweckSwitchValue()
+  {
+    // Hier wird grundsaetzlich alles angezeigt.
+    return true;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweckSwitch()
+   */
+  @Override
+  public CheckboxInput getZweckSwitch() throws RemoteException
+  {
+    CheckboxInput input = super.getZweckSwitch();
+    input.setEnabled(false);
+    return input;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#handleStore()
@@ -390,51 +406,3 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: UmsatzDetailEditControl.java,v $
- * Revision 1.14  2012/05/03 21:50:47  willuhn
- * @B BUGZILLA 1232 - Saldo des Kontos bei Offline-Konten nur bei neuen Umsaetzen uebernehmen - nicht beim Bearbeiten existierender
- *
- * Revision 1.13  2012/04/05 21:44:18  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.12  2011-07-25 17:17:19  willuhn
- * @N BUGZILLA 1065 - zusaetzlich noch addkey
- *
- * Revision 1.11  2011-07-25 14:42:40  willuhn
- * @N BUGZILLA 1065
- *
- * Revision 1.10  2011-06-07 10:07:50  willuhn
- * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
- *
- * Revision 1.9  2011-04-07 17:52:06  willuhn
- * @N BUGZILLA 1014
- *
- * Revision 1.8  2010-11-08 10:46:33  willuhn
- * @B BUGZILLA 945 - Quatsch - der Saldo wird immer uebernommen
- *
- * Revision 1.7  2010-11-08 10:45:21  willuhn
- * @B BUGZILLA 945 - die Uhrzeit muss noch entfernt werden, damit das passt
- *
- * Revision 1.6  2010/05/15 20:01:39  willuhn
- * @N BUGZILLA 701
- *
- * Revision 1.5  2010/04/22 16:48:15  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2010/04/22 16:47:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2009/12/10 17:29:08  willuhn
- * @B ClassCastException
- *
- * Revision 1.2  2009/01/04 14:47:53  willuhn
- * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
- *
- * Revision 1.1  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- **********************************************************************/
