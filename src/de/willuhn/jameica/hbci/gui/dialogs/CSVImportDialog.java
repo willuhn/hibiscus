@@ -35,6 +35,7 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -193,6 +194,8 @@ public class CSVImportDialog extends AbstractDialog
    */
   private void reload()
   {
+    ICsvListReader csv = null;
+    
     try
     {
       SWTUtil.disposeChildren(this.parent);
@@ -206,13 +209,8 @@ public class CSVImportDialog extends AbstractDialog
 
       ////////////////////////////////////////////////////////////////////////////
       // CSV-Datei einlesen
-      CsvPreference prefs = CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
-      String sep = p.getSeparatorChar();
-      String quo = p.getQuotingChar();
-      if (sep != null && sep.length() == 1) prefs.setDelimiterChar(sep.charAt(0));
-      if (quo != null && quo.length() == 1) prefs.setQuoteChar(quo.charAt(0));
-      
-      ICsvListReader csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),p.getFileEncoding()),prefs);
+      CsvPreference prefs = p.createCsvPreference();
+      csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),p.getFileEncoding()),prefs);
       List<String> line = null;
       while ((line = csv.read()) != null)
       {
@@ -281,6 +279,10 @@ public class CSVImportDialog extends AbstractDialog
     {
       Logger.error("unable to read file",e);
       this.getError().setValue(i18n.tr("Fehler beim Lesen der Datei: {0}",e.getMessage()));
+    }
+    finally
+    {
+      IOUtil.close(csv);
     }
   }
   
@@ -535,36 +537,3 @@ public class CSVImportDialog extends AbstractDialog
     return this.skipLines;
   }
 }
-
-
-/*********************************************************************
- * $Log: CSVImportDialog.java,v $
- * Revision 1.11  2011/06/01 21:19:16  willuhn
- * @B Scroll-Fixes
- *
- * Revision 1.10  2011-05-06 12:35:24  willuhn
- * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
- *
- * Revision 1.9  2011-05-03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.8  2010/04/25 22:14:32  willuhn
- * @N BUGZILLA 851 - CSV-Datei live neu laden
- *
- * Revision 1.7  2010/03/16 13:43:56  willuhn
- * @N CSV-Import von Ueberweisungen und Lastschriften
- * @N Versionierbarkeit von serialisierten CSV-Profilen
- *
- * Revision 1.6  2010/03/16 00:44:17  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- * Revision 1.5  2008/04/24 11:37:21  willuhn
- * @N BUGZILLA 304
- **********************************************************************/

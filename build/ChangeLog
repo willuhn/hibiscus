@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0499 Update auf SuperCSV 2.4.0 (braucht Heiner in JVerein)
   * NEW: 0498 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/aee96b80c244d49312894b853c03102ba2ee9685
   * NEW: 0497 Höhe der Box mit den Bank-Nachrichten reduziert und konfigurierbar gemacht
   * NEW: 0496 BUGZILLA 1696 - IBAN auch beim Einfügen aus Adressbuch formatieren

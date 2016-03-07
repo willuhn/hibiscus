@@ -5,7 +5,7 @@
 	<classpathentry including="*.java" kind="src" output="updates" path="updates"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry exported="true" kind="src" path="/jameica"/>
-	<classpathentry kind="lib" path="lib/supercsv-1.31.jar"/>
+	<classpathentry kind="lib" path="lib/super-csv-2.4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hbci4java-2.5.12.jar" sourcepath="lib.src/hbci4java-2.5.12-src.zip"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart_0.7.0.v20110128.jar"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart.ext_0.7.0.v20110128.jar"/>

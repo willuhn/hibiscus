@@ -32,6 +32,7 @@ import org.supercsv.prefs.CsvPreference;
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.io.IOFormat;
@@ -58,6 +59,8 @@ public class CsvImporter implements Importer
    */
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
+    ICsvListReader csv = null;
+    
     try
     {
       if (is == null)
@@ -88,12 +91,8 @@ public class CsvImporter implements Importer
       CSVImportDialog d = new CSVImportDialog(data,f,CSVImportDialog.POSITION_CENTER);
       Profile p = (Profile) d.open();
 
-      CsvPreference prefs = CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
-      String sep = p.getSeparatorChar();
-      String quo = p.getQuotingChar();
-      if (sep != null && sep.length() == 1) prefs.setDelimiterChar(sep.charAt(0));
-      if (quo != null && quo.length() == 1) prefs.setQuoteChar(quo.charAt(0));
-      ICsvListReader csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(data),p.getFileEncoding()),prefs);
+      CsvPreference prefs = p.createCsvPreference();
+      csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(data),p.getFileEncoding()),prefs);
 
       List<String> line = csv.read();
       
@@ -269,6 +268,10 @@ public class CsvImporter implements Importer
       }
       Logger.error("error while reading file",e);
       throw new ApplicationException(i18n.tr("Fehler beim Lesen der CSV-Datei"));
+    }
+    finally
+    {
+      IOUtil.close(csv);
     }
   }
 
