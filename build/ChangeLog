@@ -2,6 +2,7 @@ HEAD 2.7 (nightly)
 
 2016-03-XX Version 2.6.15
 
+  * NEW: 0502 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0501 Leerzeichen am Anfang und Ende vom Namen des Gegenkonto-Inhabers bei Umsatzbuchungen entfernen
   * NEW: 0500 BUGZILLA 1701 - Umschaltmöglichkeit zur Anzeige aller oder der geparsten Verwendungszweck-Infos in der Detailansicht
   * NEW: 0499 Update auf SuperCSV 2.4.0 (braucht Heiner in JVerein)
