@@ -411,9 +411,12 @@ public class Converter
 		e.setKontonummer(konto.number);
 		e.setBic(konto.bic);
 		e.setIban(konto.iban);
-		String name = konto.name;
-		if (konto.name2 != null && konto.name2.length() > 0)
-			name += (" " + konto.name2);
+		
+		String name  = StringUtils.trimToEmpty(konto.name);
+    String name2 = StringUtils.trimToEmpty(konto.name2);
+		
+		if (name2 != null && name2.length() > 0)
+			name += (" " + name2);
 		
 		if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
 		  name = name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
