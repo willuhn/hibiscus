@@ -79,19 +79,22 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
 
       monitor.log(i18n.tr("Aktualisiere BPD"));
       Logger.info("got new " + prefix + " version. old: " + cv + ", new: " + nv + ", updating cache");
-      int deleted = DBPropertyUtil.deleteAll(DBPropertyUtil.PREFIX_BPD);
-      Logger.info("deleted " + deleted + " old entries");
       String[] customerID = getCustomerIDs(passport);
       
       int count = 0;
-      for (Enumeration keys = data.keys();keys.hasMoreElements();)
+      
+      for (int i=0;i<customerID.length;++i)
       {
-        for (int i=0;i<customerID.length;++i)
+        final String localPrefix = prefix + "." + customerID[i];
+        int deleted = DBPropertyUtil.deleteAll(localPrefix);
+        Logger.info("deleted " + deleted + " old entries");
+        
+        for (Enumeration keys = data.keys();keys.hasMoreElements();)
         {
           String name = (String) keys.nextElement();
           if (updateBPD(name))
           {
-            DBPropertyUtil.insert(prefix + "." + customerID[i] + "." + name,data.getProperty(name));
+            DBPropertyUtil.insert(localPrefix + "." + name,data.getProperty(name));
             count++;
             
             if (count % 20 == 0)
