@@ -1,12 +1,9 @@
 /*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/rmi/HBCIDBService.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/11/02 12:02:20 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+ * 
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
  *
-****************************************************************************/
+ ****************************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
@@ -54,33 +51,14 @@ public interface HBCIDBService extends DBService
    * @throws RemoteException
    */
   public String getSQLTimestamp(String content) throws RemoteException;
+  
+  /**
+   * Fuehrt ein Update/Delete-Statement durch.
+   * @param query das Query.
+   * @param params die Parameter.
+   * @return die Anzahl der betroffenen Datensaetze.
+   * @throws RemoteException
+   */
+  public int executeUpdate(String query, String... params) throws RemoteException;
 
 }
-
-/*****************************************************************************
- * $Log: HBCIDBService.java,v $
- * Revision 1.8  2010/11/02 12:02:20  willuhn
- * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
- *
- * Revision 1.7  2010-11-02 11:32:09  willuhn
- * @R Alten SQL-Update-Mechanismus komplett entfernt. Wir haben das jetzt seit Hibiscus 1.8 (2008) aus Migrationsgruenden mit uns herumgetragen. Das ist jetzt lange genug her. User, die noch Hibiscus < 1.8 nutzen, muessen jetzt erst auf 1.8 updaten, damit noch die letzten sql/update_x.y-x.y.sql ausgefuehrt werden und dann erst auf die aktuelle Version
- *
- * Revision 1.6  2008/12/30 15:21:40  willuhn
- * @N Umstellung auf neue Versionierung
- *
- * Revision 1.5  2008/05/06 10:10:56  willuhn
- * @N Diagnose-Dialog, mit dem man die JDBC-Verbindungsdaten (u.a. auch das JDBC-Passwort) ausgeben kann
- *
- * Revision 1.4  2007/04/19 18:12:21  willuhn
- * @N MySQL-Support (GUI zum Konfigurieren fehlt noch)
- *
- * Revision 1.3  2006/12/27 11:52:36  willuhn
- * @C ResultsetExtractor moved into datasource
- *
- * Revision 1.2  2006/04/25 23:25:12  willuhn
- * @N bug 81
- *
- * Revision 1.1  2005/01/05 15:17:50  willuhn
- * @N Neues Service-System in Jameica
- *
-*****************************************************************************/

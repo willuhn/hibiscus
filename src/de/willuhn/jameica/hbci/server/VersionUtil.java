@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/VersionUtil.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/08/05 11:21:59 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -16,8 +10,8 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -37,7 +31,7 @@ public class VersionUtil
    * @throws RemoteException
    * @throws ApplicationException
    */
-  public static Version getVersion(DBService service, String name) throws RemoteException, ApplicationException
+  public static Version getVersion(HBCIDBService service, String name) throws RemoteException, ApplicationException
   {
     if (name == null || name.length() == 0)
     {
@@ -55,17 +49,23 @@ public class VersionUtil
     v.store();
     return v;
   }
+
+  /**
+   * Loescht alle Parameter, deren Namen mit dem angegebenen Prefix beginnt.
+   * @param service der Datenbank-Service.
+   * @param prefix der prefix.
+   * @return die Anzahl der geloeschten Datensaetze.
+   * @throws RemoteException
+   */
+  public static int deleteAll(HBCIDBService service, String prefix) throws RemoteException
+  {
+    if (prefix == null || prefix.length() == 0)
+      throw new RemoteException("no parameter prefix given");
+
+    if (prefix.indexOf("%") != -1 || prefix.indexOf("_") != -1)
+      throw new RemoteException("no wildcards allowed in parameter prefix");
+    
+    return service.executeUpdate("delete from version where name like ?",prefix + ".%");
+  }
+
 }
-
-
-/*********************************************************************
- * $Log: VersionUtil.java,v $
- * Revision 1.4  2011/08/05 11:21:59  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.3  2008/05/30 14:23:48  willuhn
- * @N Vollautomatisches und versioniertes Speichern der BPD und UPD in der neuen Property-Tabelle
- *
- **********************************************************************/

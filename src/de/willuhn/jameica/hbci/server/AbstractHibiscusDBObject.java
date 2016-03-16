@@ -65,7 +65,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     if (id == null)
       throw new RemoteException("entity has no id");
     
-    return "meta." + this.getTableName() + "." + id + ".";
+    return DBPropertyUtil.PREFIX_META + "." + this.getTableName() + "." + id + ".";
   }
 
   /**

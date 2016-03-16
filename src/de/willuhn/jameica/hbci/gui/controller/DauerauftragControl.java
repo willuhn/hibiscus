@@ -36,7 +36,6 @@ import de.willuhn.jameica.hbci.gui.parts.DauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Turnus;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -82,15 +81,8 @@ public class DauerauftragControl extends AbstractTransferControl {
 	 */
 	private TypedProperties getBPD() throws RemoteException
 	{
-	  if (this.bpd != null)
-	    return this.bpd;
-	  
-	  Dauerauftrag auftrag = (Dauerauftrag) this.getTransfer();
-	  if (auftrag.isActive())
-      this.bpd = DBPropertyUtil.getBPD(auftrag.getKonto(),DBPropertyUtil.BPD_QUERY_DAUER_EDIT);
-	  else
-	    this.bpd = new TypedProperties(); // Der Auftrag ist noch nicht aktiv - dann gibt es noch keine Einschraenkungen
-	  
+	  if (this.bpd == null)
+	    this.bpd = new TypedProperties();
 	  return this.bpd;
 	}
 

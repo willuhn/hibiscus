@@ -10,6 +10,8 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
@@ -27,19 +29,34 @@ import de.willuhn.util.TypedProperties;
 public class DBPropertyUtil
 {
   /**
-   * Query-Parameter fuer die BPD fuer "Ueberweisung absenden".
+   * Der Prefix fuer die BPD.
    */
-  public final static String BPD_QUERY_UEB = "Params%.UebPar%.ParUeb.%";
-
+  public final static String PREFIX_BPD = "bpd";
+  
   /**
-   * Query-Parameter fuer die BPD fuer "Dauerauftrag aendern".
+   * Der Prefix fuer die UPD.
    */
-  public final static String BPD_QUERY_DAUER_EDIT = "Params%.DauerEditPar%.ParDauerEdit.%";
-
+  public final static String PREFIX_UPD = "upd";
+  
+  /**
+   * Der Prefix fuer Meta-Daten.
+   */
+  public final static String PREFIX_META = "meta";
+  
+  
   /**
    * Query-Parameter fuer die BPD fuer "SEPA-Dauerauftrag aendern".
    */
   public final static String BPD_QUERY_SEPADAUER_EDIT = "Params%.DauerSEPAEditPar%.ParDauerSEPAEdit.%";
+  
+  /**
+   * Filter fuer die BPD-Eintraege, die in den Cache uebernommen werden sollen.
+   * Es werden nur jene Eintraege in die Datenbank uebernommen, deren Namen einen der folgenden String enthaelt.
+   */
+  public final static List<String> BPD_UPDATE_FILTER = new ArrayList<String>()
+  {{
+    add("ParDauerSEPAEdit");
+  }};
 
   /**
    * Liefert die BPD fuer das Konto und den angegebenen Suchfilter.
@@ -65,7 +82,7 @@ public class DBPropertyUtil
       return props;
 
     // Wir haengen noch unseren Prefix vorn dran. Der wurde vom Callback hinzugefuegt
-    query = "bpd." + kd.trim() + "." + query;
+    query = PREFIX_BPD + "." + kd.trim() + "." + query;
 
     // Wir sortieren aufsteigend, da es pro BPD-Set (z.Bsp. in "%UebPar%") mehrere
     // gibt (jeweils pro Segment-Version). HBCI4Java nimmt bei Geschaeftsvorfaellen
@@ -91,7 +108,39 @@ public class DBPropertyUtil
     
     return props;
   }
+
+  /**
+   * Legt ein Property neu an. Es wird vorher nicht gesucht, ob es bereits existiert.
+   * @param name Name des Property.
+   * @param value Wert des Property.
+   * @throws RemoteException
+   */
+  public static void insert(String name, String value) throws RemoteException
+  {
+    if (value == null)
+      return;
+    
+    if (name == null)
+    {
+      Logger.warn("parameter name missing");
+      return;
+    }
+    
+    try
+    {
+      DBService service = Settings.getDBService();
+      DBProperty prop = (DBProperty) service.createObject(DBProperty.class,null);
+      prop.setName(name);
+      prop.setValue(value);
+      prop.store();
+    }
+    catch (ApplicationException ae)
+    {
+      throw new RemoteException(ae.getMessage(),ae);
+    }
+  }
   
+
   /**
    * Speichert ein Property.
    * @param name Name des Property.
@@ -149,9 +198,10 @@ public class DBPropertyUtil
   /**
    * Loescht alle Parameter, deren Namen mit dem angegebenen Prefix beginnt.
    * @param prefix der prefix.
+   * @return die Anzahl der geloeschten Datensaetze.
    * @throws RemoteException
    */
-  public static void deleteAll(String prefix) throws RemoteException
+  public static int deleteAll(String prefix) throws RemoteException
   {
     if (prefix == null || prefix.length() == 0)
       throw new RemoteException("no parameter prefix given");
@@ -159,20 +209,7 @@ public class DBPropertyUtil
     if (prefix.indexOf("%") != -1 || prefix.indexOf("_") != -1)
       throw new RemoteException("no wildcards allowed in parameter prefix");
     
-    DBIterator i = Settings.getDBService().createList(DBProperty.class);
-    i.addFilter("name like ?",prefix + "%");
-    try
-    {
-      while (i.hasNext())
-      {
-        DBProperty p = (DBProperty) i.next();
-        p.delete();
-      }
-    }
-    catch (ApplicationException ae)
-    {
-      throw new RemoteException(ae.getMessage(),ae);
-    }
+    return Settings.getDBService().executeUpdate("delete from property where name like ?",prefix + ".%");
   }
 
   /**

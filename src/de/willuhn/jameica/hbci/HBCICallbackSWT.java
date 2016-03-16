@@ -138,8 +138,6 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
    */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
     
-    cacheData(passport);
-
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
 

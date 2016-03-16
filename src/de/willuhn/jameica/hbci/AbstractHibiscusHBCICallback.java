@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
@@ -20,11 +21,15 @@ import org.kapott.hbci.structures.Konto;
 import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil;
 import de.willuhn.jameica.hbci.server.VersionUtil;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCITraceMessage;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCITraceMessage.Type;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Abstrakte Basis-Implementierung des HBCI-Callback.
@@ -32,91 +37,98 @@ import de.willuhn.logging.Logger;
  */
 public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   /**
    * Speichert die BPD/UPD des Passports in der Hibiscus-Datenbank zwischen und aktualisiert sie automatisch bei Bedarf.
    * Dadurch stehen sie in Hibiscus zur Verfuegung, ohne dass hierzu ein Passport geoeffnet werden muss.
    * @param passport der betreffende Passport.
    */
-  protected void cacheData(HBCIPassport passport)
+  protected void updateBPD(HBCIPassport passport)
   {
-    if (passport == null)
-      return;
-    
     try
     {
-      updateBPD(passport);
-      updateUPD(passport);
+      final Properties data = passport.getBPD();
+      final String version  = passport.getBPDVersion();
+      final String prefix   = DBPropertyUtil.PREFIX_BPD;
+  
+      String user = passport.getUserId();
+      if (version == null || version.length() == 0 || user == null || user.length() == 0 || data == null || data.size() == 0)
+      {
+        Logger.debug("[" + prefix + "] no version, no userid or no data found, skipping update");
+        return;
+      }
+      
+      int nv = Integer.parseInt(version);
+      Version v = VersionUtil.getVersion(Settings.getDBService(),prefix + "." + user);
+      int cv = v.getVersion();
+      
+      // Keine neue Version
+      if (nv == cv)
+        return;
+      
+      if (cv < 0 || nv < 0)
+      {
+        Logger.warn("SUSPECT - " + prefix + " version smaller than zero. new: " + nv + ", current: " + cv);
+        return;
+      }
+  
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+      ProgressMonitor monitor = session.getProgressMonitor();
+
+      monitor.log(i18n.tr("Aktualisiere BPD"));
+      Logger.info("got new " + prefix + " version. old: " + cv + ", new: " + nv + ", updating cache");
+      int deleted = DBPropertyUtil.deleteAll(DBPropertyUtil.PREFIX_BPD);
+      Logger.info("deleted " + deleted + " old entries");
+      String[] customerID = getCustomerIDs(passport);
+      
+      int count = 0;
+      for (Enumeration keys = data.keys();keys.hasMoreElements();)
+      {
+        for (int i=0;i<customerID.length;++i)
+        {
+          String name = (String) keys.nextElement();
+          if (updateBPD(name))
+          {
+            DBPropertyUtil.insert(prefix + "." + customerID[i] + "." + name,data.getProperty(name));
+            count++;
+            
+            if (count % 20 == 0)
+              monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
+          }
+        }
+      }
+      Logger.info("created " + count + " new entries");
+      
+      // Speichern der neuen Versionsnummer
+      v.setVersion(nv);
+      v.store();
     }
     catch (Exception e)
     {
-      Logger.error("error while updating bpd/upd - will be ignored",e);
+      Logger.error("error while updating bpd - will be ignored",e);
     }
   }
   
   /**
-   * Aktualisiert die BPD.
-   * @param bpd
+   * Liefert true, wenn der BPD-Parameter in den Cache uebernommen werden soll.
+   * @param name der zu pruefende Name.
+   * @return true, wenn der Parameter uebernommen werden soll.
    */
-  private void updateBPD(HBCIPassport passport) throws Exception
+  private boolean updateBPD(String name)
   {
-    update(passport,passport.getBPD(),passport.getBPDVersion(),"bpd");
-  }
-
-  /**
-   * Aktualisiert die UPD.
-   * @param upd
-   */
-  private void updateUPD(HBCIPassport passport) throws Exception
-  {
-    update(passport,passport.getUPD(),passport.getUPDVersion(),"upd");
-  }
-
-  /**
-   * Aktualisiert die genannten Daten.
-   * @param passport Passport.
-   * @param data die Daten.
-   * @param version Version der Daten.
-   * @param prefix Prefix.
-   * @throws Exception
-   */
-  private void update(HBCIPassport passport, Properties data, String version, String prefix) throws Exception
-  {
-    String user = passport.getUserId();
-    if (version == null || version.length() == 0 ||
-        user == null || user.length() == 0 ||
-        data == null || data.size() == 0)
+    name = StringUtils.trimToNull(name);
+    if (name == null)
+      return false;
+    
+    for (String s:DBPropertyUtil.BPD_UPDATE_FILTER)
     {
-      Logger.debug("[" + prefix + "] no version, no userid or no data found, skipping update");
-      return;
+      if (name.contains(s))
+        return true;
     }
     
-    int nv = Integer.parseInt(version);
-    Version v = VersionUtil.getVersion(Settings.getDBService(),prefix + "." + user);
-    int cv = v.getVersion();
-    
-    // Keine neue Version
-    if (nv == cv)
-      return;
-    
-    if (cv < 0 || nv < 0)
-    {
-      Logger.warn("SUSPECT - " + prefix + " version smaller than zero. new: " + nv + ", current: " + cv);
-      return;
-    }
-
-    Logger.info("got new " + prefix + " version. old: " + cv + ", new: " + nv + ", updating cache");
-    String[] customerID = getCustomerIDs(passport);
-    for (Enumeration keys = data.keys();keys.hasMoreElements();)
-    {
-      for (int i=0;i<customerID.length;++i)
-      {
-        String name = (String) keys.nextElement();
-        DBPropertyUtil.set(prefix + "." + customerID[i] + "." + name,data.getProperty(name));
-      }
-    }
-    // Speichern der neuen Versionsnummer
-    v.setVersion(nv);
-    v.store();
+    return false;
   }
   
   /**
@@ -164,6 +176,7 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
   
       case STATUS_INST_BPD_INIT_DONE:
         status(HBCIUtilsInternal.getLocMsg("STATUS_REC_INST_DATA_DONE",passport.getBPDVersion()));
+        updateBPD(passport);
         break;
   
       case STATUS_INST_GET_KEYS:

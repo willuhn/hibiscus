@@ -2,6 +2,7 @@ HEAD 2.7 (nightly)
 
 2016-03-XX Version 2.6.15
 
+  * NEW: 0503 BPD/UPD Caching überarbeitet, Cleanup alle 14 Tage, UPD-Cache gelöscht, bei BPD nur noch die wirklich verwendeten Properties cachen
   * NEW: 0502 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0501 Leerzeichen am Anfang und Ende vom Namen des Gegenkonto-Inhabers bei Umsatzbuchungen entfernen
   * NEW: 0500 BUGZILLA 1701 - Umschaltmöglichkeit zur Anzeige aller oder der geparsten Verwendungszweck-Infos in der Detailansicht

@@ -26,7 +26,6 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.TypedProperties;
 
 
 
@@ -496,8 +495,7 @@ public class VerwendungszweckUtil
    */
   public final static int getMaxUsageUeb(Konto konto) throws RemoteException
   {
-    TypedProperties bpd = DBPropertyUtil.getBPD(konto,DBPropertyUtil.BPD_QUERY_UEB);
-    return bpd.getInt("maxusage",HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM);
+    return HBCIProperties.HBCI_TRANSFER_USAGE_MAXNUM;
   }
 
   /**
