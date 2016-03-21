@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.server.AuslandsUeberweisungImpl;
+import de.willuhn.jameica.hbci.server.DBPropertyImpl;
 import de.willuhn.jameica.hbci.server.DBReminderImpl;
 import de.willuhn.jameica.hbci.server.DauerauftragImpl;
 import de.willuhn.jameica.hbci.server.HibiscusAddressImpl;
@@ -168,6 +169,10 @@ public class BackupCreate implements Action
           backup(SepaSammelUeberweisungImpl.class,writer,monitor);
           backup(SepaSammelUeberweisungBuchungImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
+
+          monitor.setStatusText(i18n.tr("Speichere Properties"));
+          backup(DBPropertyImpl.class,writer,monitor);
+          monitor.addPercentComplete(10);
 
           monitor.setStatusText(i18n.tr("Speichere Reminder"));
           backup(DBReminderImpl.class,writer,monitor);
