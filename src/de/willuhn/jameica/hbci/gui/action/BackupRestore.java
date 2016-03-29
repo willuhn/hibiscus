@@ -115,7 +115,7 @@ public class BackupRestore implements Action
           
             public GenericObject create(String type, String id, Map values) throws Exception
             {
-              AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject(loader.loadClass(type),null);
+              AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
               object.setID(id);
               Iterator i = values.keySet().iterator();
               while (i.hasNext())

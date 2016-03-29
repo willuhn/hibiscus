@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.serialize.ObjectFactory;
 import de.willuhn.datasource.serialize.Reader;
@@ -58,7 +59,7 @@ public class XMLUmsatzTypImporter implements Importer
       reader = new XmlReader(is, new ObjectFactory() {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
-          AbstractDBObjectNode object = (AbstractDBObjectNode) Settings.getDBService().createObject(loader.loadClass(type),null);
+          AbstractDBObjectNode object = (AbstractDBObjectNode) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
           object.setID(id);
           Iterator i = values.keySet().iterator();
           while (i.hasNext())

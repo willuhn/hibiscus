@@ -55,7 +55,7 @@ public class XMLUmsatzImporter extends XMLImporter
       reader = new XmlReader(is, new ObjectFactory() {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
-          AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject(loader.loadClass(type),null);
+          AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
           Iterator i = values.keySet().iterator();
           while (i.hasNext())
           {

@@ -56,7 +56,7 @@ public class HBCIContext
       // OK, den ersten Teil nehmen wir als Klasse an, den zweiten als ID.
       HBCIDBService service = Settings.getDBService();
       ClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
-      DBObject o = service.createObject(loader.loadClass(className),id);
+      DBObject o = service.createObject((Class<DBObject>)loader.loadClass(className),id);
       if (o instanceof HibiscusDBObject)
         return (HibiscusDBObject) o;
     }

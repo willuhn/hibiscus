@@ -60,7 +60,7 @@ public class XMLImporter implements Importer
       reader = new XmlReader(is, new ObjectFactory() {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
-          AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject(loader.loadClass(type),null);
+          AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
           // object.setID(id); // Keine ID angeben, da wir die Daten neu anlegen wollen
           Iterator i = values.keySet().iterator();
           while (i.hasNext())
