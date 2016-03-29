@@ -1,6 +1,6 @@
 HEAD 2.7 (nightly)
 
-2016-03-XX Version 2.6.15
+2016-03-29 Version 2.6.15
 
   * NEW: 0506 Gegenkonten alter Überweisungen und Lastschriften aus Archiv per Kontextmenu in Adressbuch übernehmen
   * NEW: 0505 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/5bd4eda98283a6b37e2ee78ea6da3094ef4a0494
