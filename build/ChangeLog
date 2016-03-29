@@ -2,6 +2,7 @@ HEAD 2.7 (nightly)
 
 2016-03-XX Version 2.6.15
 
+  * NEW: 0505 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/5bd4eda98283a6b37e2ee78ea6da3094ef4a0494
   * NEW: 0504 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/195e2729395774e9b1dd42882f961bfd1645cfe2
   * NEW: 0503 BPD/UPD Caching überarbeitet, Cleanup alle 14 Tage, UPD-Cache gelöscht, bei BPD nur noch die wirklich verwendeten Properties cachen
   * NEW: 0502 Aktualisierte englische Sprach-Bundles von Christian
