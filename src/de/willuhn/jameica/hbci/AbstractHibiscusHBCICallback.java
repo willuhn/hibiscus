@@ -46,6 +46,9 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
    */
   protected void updateBPD(HBCIPassport passport)
   {
+    if (passport == null)
+      return;
+    
     try
     {
       final Properties data = passport.getBPD();
