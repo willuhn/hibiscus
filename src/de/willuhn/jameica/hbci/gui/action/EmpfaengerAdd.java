@@ -150,6 +150,8 @@ public class EmpfaengerAdd implements Action
       }
       if (count > 0)
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Adresse{0} gespeichert",(count > 1 ? "n" : "")), StatusBarMessage.TYPE_SUCCESS));
+      else
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Adresse existiert bereits"), StatusBarMessage.TYPE_INFO));
 		}
 		catch (ApplicationException ae)
 		{

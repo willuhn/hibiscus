@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.UeberweisungNew;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisungList;
@@ -41,6 +42,9 @@ public class UeberweisungList extends ContextMenu
 	public UeberweisungList()
 	{
 		addItem(new SingleItem(i18n.tr("Öffnen"), new UeberweisungNew(),"document-open.png"));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new SingleItem(i18n.tr("In Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
+    addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Drucken..."),new Action() {
