@@ -395,6 +395,7 @@ public class HBCIProperties
     try
     {
       checkChars(s,HBCI_IBAN_VALIDCHARS + " ");
+      s = s.replaceAll(" ", "");
       return group(s,4," ").toUpperCase();
     }
     catch (ApplicationException ae)

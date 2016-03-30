@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0507 BUGZILLA 1696 - Formatierung wurde u.U. doppelt durchgeführt
+
 2016-03-29 Version 2.6.15
 
   * NEW: 0506 Gegenkonten alter Überweisungen und Lastschriften aus Archiv per Kontextmenu in Adressbuch übernehmen
