@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0508 BUGZILLA 1705 - Ignorieren der Leerzeichen in der Kategorie-Suche auch im Namen des Gegenkonto-Inhabers
   * NEW: 0507 BUGZILLA 1696 - Formatierung wurde u.U. doppelt durchgeführt
 
 2016-03-29 Version 2.6.15

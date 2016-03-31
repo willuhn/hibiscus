@@ -288,6 +288,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       if (settings.getBoolean("search.ignore.whitespace",true))
       {
         zweck = StringUtils.deleteWhitespace(zweck);
+        name = StringUtils.deleteWhitespace(name); // BUGZILLA 1705 - auch im Namen koennen Leerzeichen sein
         s = StringUtils.deleteWhitespace(s);
       }
 
