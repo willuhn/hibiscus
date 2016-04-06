@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0519 BUGZILLA 1707 - Zeichen ß°§üÜöäÖÄ nicht mehr in dem Passworten von Schluesseldateien erlauben
   * NEW: 0509 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/5753ef50acf5e1ebba42b41964d867f656f2053d
   * BUG: 0508 BUGZILLA 1705 - Ignorieren der Leerzeichen in der Kategorie-Suche auch im Namen des Gegenkonto-Inhabers
   * NEW: 0507 BUGZILLA 1696 - Formatierung wurde u.U. doppelt durchgeführt

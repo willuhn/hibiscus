@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/KeyPasswordSaveDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/09/08 07:06:12 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -21,11 +15,26 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
- * Dialog für die Eingabe des Passwortes beim Speichern eines Schluessels.
+ * Dialog fÃ¼r die Eingabe des Passwortes beim Speichern eines Schluessels.
  */
 public class KeyPasswordSaveDialog extends NewPasswordDialog
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	
+	// BUGZILLA 1707
+  private final static char[] INVALID_CHARS = new char[]
+  {
+      167, // §
+      176, // °
+      180, // <Forward Tick> (links neben der Backspace-Taste), habs nicht hingeschrieben, weil es nicht in Latin1 enthalten ist, die Java-Datei aber das Encoding verwendet
+      196, // Ä
+      214, // Ö
+      220, // Ü
+      223, // ß
+      228, // ä
+      246, // ö
+      252, // ü
+  };
 	
   /**
    * ct.
@@ -40,22 +49,38 @@ public class KeyPasswordSaveDialog extends NewPasswordDialog
     setLabelText(i18n.tr("Ihr Passwort"));
     
     String text = i18n.tr("Bitte vergeben Sie ein Passwort, mit dem der zu speichernde\nSchlüssel geschützt werden soll.");
+    
     if (passport instanceof HBCIPassportRDHXFile)
-      text += "\nGeben Sie bitte mindestens 8 Zeichen ein.";
-    setText(text);
+      text += "\n\n" + i18n.tr("Geben Sie bitte mindestens 8 Zeichen ein.");
+    else
+      text += "\n\n" + i18n.tr("Die folgenden Zeichen dürfen nicht enthalten sein: {0}",String.copyValueOf(INVALID_CHARS));
+    setText(text + "\n");
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.dialogs.NewPasswordDialog#checkPassword(java.lang.String, java.lang.String)
+   */
+  @Override
+  protected boolean checkPassword(String password, String password2)
+  {
+    // Erstmal checken, ob die Passwoerter grundsaetzlich ok sind.
+    if (!super.checkPassword(password, password2))
+      return false;
+    
+    // Jetzt checken wir noch, ob eines der unerlaubten Zeichen enthalten ist.
+    for (char c:password.toCharArray())
+    {
+      for (char test:INVALID_CHARS)
+      {
+        if (test == c)
+        {
+          this.setErrorText(i18n.tr("Das folgende Zeichen darf nicht enthalten sein: {0}",String.valueOf(test)));
+          return false;
+        }
+      }
+    }
+    
+    return true;
+  }
+  
 }
-
-
-/**********************************************************************
- * $Log: KeyPasswordSaveDialog.java,v $
- * Revision 1.2  2011/09/08 07:06:12  willuhn
- * @N Mindestens 8 Zeichen Passwort-Laenge bei RDH2 siehe Mail von "silentspeak" vom 08.09.2011
- *
- * Revision 1.1  2011-05-24 09:06:11  willuhn
- * @C Refactoring und Vereinfachung von HBCI-Callbacks
- *
- * Revision 1.6  2010-11-22 11:30:51  willuhn
- * @C Cleanup
- *
- **********************************************************************/
