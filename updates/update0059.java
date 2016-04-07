@@ -42,7 +42,7 @@ public class update0059 implements Update
     statements.put(DBSupportMySqlImpl.class.getName(),"ALTER TABLE empfaenger CHANGE name name varchar(255) NOT NULL;\n");
 
     // Update fuer PostGreSQL
-    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE empfaenger ALTER COLUMN name TYPE varchar(255) NOT NULL;\n");
+    statements.put(DBSupportPostgreSQLImpl.class.getName(),"ALTER TABLE empfaenger ALTER COLUMN name TYPE varchar(255), ALTER COLUMN name SET NOT NULL;\n");
   }
 
   /**
