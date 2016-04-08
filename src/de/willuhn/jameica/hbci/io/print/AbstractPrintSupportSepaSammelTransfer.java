@@ -11,14 +11,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 
-import net.sf.paperclips.DefaultGridLook;
-import net.sf.paperclips.EmptyPrint;
-import net.sf.paperclips.GridPrint;
-import net.sf.paperclips.LineBorder;
-import net.sf.paperclips.LineBreakPrint;
-import net.sf.paperclips.Print;
-import net.sf.paperclips.TextPrint;
-
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -29,6 +21,13 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import net.sf.paperclips.DefaultGridLook;
+import net.sf.paperclips.EmptyPrint;
+import net.sf.paperclips.GridPrint;
+import net.sf.paperclips.LineBorder;
+import net.sf.paperclips.LineBreakPrint;
+import net.sf.paperclips.Print;
+import net.sf.paperclips.TextPrint;
 
 /**
  * Abstrakter Druck-Support fuer SEPA-Sammelauftraege.
@@ -151,7 +150,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
 
     // Termin
     Date termin = a.getTermin();
-    table.add(new TextPrint(i18n.tr("Fällig am"),fontNormal));
+    table.add(new TextPrint(i18n.tr("Erinnerungstermin"),fontNormal));
     table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
 
     // Summe

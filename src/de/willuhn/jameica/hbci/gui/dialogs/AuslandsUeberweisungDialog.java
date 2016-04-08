@@ -66,7 +66,7 @@ public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
     if (ueb.isTerminUeberweisung())
     {
       Input termin = new LabelInput(HBCI.DATEFORMAT.format(ueb.getTermin()));
-      group.addLabelPair(i18n.tr("Fällig am"),termin);
+      group.addLabelPair(i18n.tr("Erinnerungstermin"),termin);
     }
 
     group.addHeadline(i18n.tr("Verwendungszweck"));

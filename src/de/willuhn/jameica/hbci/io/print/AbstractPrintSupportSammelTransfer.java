@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/print/AbstractPrintSupportSammelTransfer.java,v $
- * $Revision: 1.5 $
- * $Date: 2011/06/24 07:55:41 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -13,13 +9,6 @@ package de.willuhn.jameica.hbci.io.print;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-
-import net.sf.paperclips.DefaultGridLook;
-import net.sf.paperclips.GridPrint;
-import net.sf.paperclips.LineBorder;
-import net.sf.paperclips.LineBreakPrint;
-import net.sf.paperclips.Print;
-import net.sf.paperclips.TextPrint;
 
 import org.eclipse.swt.graphics.RGB;
 
@@ -33,6 +22,12 @@ import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import net.sf.paperclips.DefaultGridLook;
+import net.sf.paperclips.GridPrint;
+import net.sf.paperclips.LineBorder;
+import net.sf.paperclips.LineBreakPrint;
+import net.sf.paperclips.Print;
+import net.sf.paperclips.TextPrint;
 
 /**
  * Abstrakter Druck-Support fuer Sammel-Auftraege.
@@ -89,7 +84,7 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
 
         // Termin
         Date termin = a.getTermin();
-        table.add(new TextPrint(i18n.tr("Fällig am"),fontNormal));
+        table.add(new TextPrint(i18n.tr("Erinnerungstermin"),fontNormal));
         table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
 
         // Summe
@@ -162,24 +157,3 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
     }
   }
 }
-
-
-
-/**********************************************************************
- * $Log: AbstractPrintSupportSammelTransfer.java,v $
- * Revision 1.5  2011/06/24 07:55:41  willuhn
- * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
- *
- * Revision 1.4  2011-05-11 09:12:06  willuhn
- * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
- *
- * Revision 1.3  2011-05-02 11:16:44  willuhn
- * @N Ausfuehrungsdatum mit drucken
- *
- * Revision 1.2  2011-04-13 17:35:46  willuhn
- * @N Druck-Support fuer Kontoauszuege fehlte noch
- *
- * Revision 1.1  2011-04-11 16:48:33  willuhn
- * @N Drucken von Sammel- und Dauerauftraegen
- *
- **********************************************************************/

@@ -95,7 +95,7 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     Container ct = new SimpleContainer(parent,true);
     ct.addText(i18n.tr("Bei einer regelmäßigen Wiederholung wird der Auftrag " +
                        "im angegebenen Intervall (beginnend mit dem ersten " +
-                       "Fälligkeitstermin) automatisch durch Hibiscus " +
+                       "Erinnerungstermin) automatisch durch Hibiscus " +
                        "dupliziert"),true);
 
     final Listener listener = new Listener() {

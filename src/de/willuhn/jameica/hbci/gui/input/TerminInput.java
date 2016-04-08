@@ -54,9 +54,9 @@ public class TerminInput extends DateInput
     if (auftrag != null)
       this.setEnabled(!auftrag.ausgefuehrt());
     
-    this.setName(i18n.tr("Fällig am"));
-    this.setTitle(i18n.tr("Fälligkeit"));
-    this.setText(i18n.tr("Bitte wählen Sie ein Datum aus, zu dem\nHibiscus den Auftrag als fällig markieren soll."));
+    this.setName(i18n.tr("Erinnerungstermin"));
+    this.setTitle(i18n.tr("Erinnerung"));
+    this.setText(i18n.tr("Bitte wählen Sie ein Datum aus, zu dem\nHibiscus Sie an den Auftrag erinnern soll."));
     this.setComment("");
     this.setMandatory(true);
     

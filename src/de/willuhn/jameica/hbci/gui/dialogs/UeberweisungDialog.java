@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/UeberweisungDialog.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/06/24 07:55:41 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -69,7 +63,7 @@ public class UeberweisungDialog extends AbstractExecuteDialog
     if (ueb.isTerminUeberweisung())
     {
       Input termin = new LabelInput(HBCI.DATEFORMAT.format(ueb.getTermin()));
-      group.addLabelPair(i18n.tr("Fällig am"),termin);
+      group.addLabelPair(i18n.tr("Erinnerungstermin"),termin);
     }
 
     group.addHeadline(i18n.tr("Verwendungszweck"));
@@ -80,16 +74,3 @@ public class UeberweisungDialog extends AbstractExecuteDialog
   }
 
 }
-
-
-/**********************************************************************
- * $Log: UeberweisungDialog.java,v $
- * Revision 1.18  2011/06/24 07:55:41  willuhn
- * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
- *
- * Revision 1.17  2011-05-11 10:05:23  willuhn
- * @N Bestaetigungsdialoge ueberarbeitet (Buttons mit Icons, Verwendungszweck-Anzeige via VerwendungszweckUtil, keine Labelgroups mehr, gemeinsame Basis-Klasse)
- *
- * Revision 1.16  2010-10-05 21:57:21  willuhn
- * *** empty log message ***
- **********************************************************************/

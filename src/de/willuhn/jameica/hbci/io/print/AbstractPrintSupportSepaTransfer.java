@@ -10,13 +10,6 @@ package de.willuhn.jameica.hbci.io.print;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import net.sf.paperclips.DefaultGridLook;
-import net.sf.paperclips.EmptyPrint;
-import net.sf.paperclips.GridPrint;
-import net.sf.paperclips.LineBreakPrint;
-import net.sf.paperclips.PagePrint;
-import net.sf.paperclips.Print;
-import net.sf.paperclips.TextPrint;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
@@ -24,6 +17,13 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import net.sf.paperclips.DefaultGridLook;
+import net.sf.paperclips.EmptyPrint;
+import net.sf.paperclips.GridPrint;
+import net.sf.paperclips.LineBreakPrint;
+import net.sf.paperclips.PagePrint;
+import net.sf.paperclips.Print;
+import net.sf.paperclips.TextPrint;
 
 /**
  * Abstrakter Druck-Support fuer einzelne SEPA-Ueberweisungen und -Lastschriften.
@@ -101,7 +101,7 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       // Der Rest
       {
         Date termin = a.getTermin();
-        table.add(new TextPrint(i18n.tr("Fällig am"),fontNormal));
+        table.add(new TextPrint(i18n.tr("Erinnerungstermin"),fontNormal));
         table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
         
         Date ausgefuehrt = a.getAusfuehrungsdatum();

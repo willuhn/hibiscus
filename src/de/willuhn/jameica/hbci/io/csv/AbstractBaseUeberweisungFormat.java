@@ -1,10 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/AbstractBaseUeberweisungFormat.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/06/24 07:55:41 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -67,7 +63,7 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
       list.add(new Column("gegenkontoBLZ",   i18n.tr("Gegenkonto BLZ"),i++,ts));
       list.add(new Column("gegenkontoName",  i18n.tr("Gegenkonto Inhaber"),i++,ts));
       list.add(new Column("betrag",i18n.tr("Betrag"),i++,new ValueSerializer()));
-      list.add(new Column("termin",i18n.tr("Fällig am"),i++,new DateSerializer()));
+      list.add(new Column("termin",i18n.tr("Erinnerungstermin"),i++,new DateSerializer()));
       list.add(new Column("zweck",i18n.tr("Verwendungszweck"),i++,ts));
       list.add(new Column("zweck2",i18n.tr("Verwendungszweck 2"),i++,ts));
       list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,new ExtendedUsageSerializer()));
@@ -161,16 +157,3 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
     return this.listener;
   }
 }
-
-
-
-/**********************************************************************
- * $Log: AbstractBaseUeberweisungFormat.java,v $
- * Revision 1.2  2011/06/24 07:55:41  willuhn
- * @C Bei Hibiscus-verwalteten Terminen besser "Fällig am" verwenden - ist nicht so missverstaendlich - der User denkt sonst ggf. es sei ein bankseitig terminierter Auftrag
- *
- * Revision 1.1  2010/03/16 13:43:56  willuhn
- * @N CSV-Import von Ueberweisungen und Lastschriften
- * @N Versionierbarkeit von serialisierten CSV-Profilen
- *
- **********************************************************************/
