@@ -56,8 +56,8 @@ public class HBCIAccountProvider implements AccountProvider
   {
     InfoPanel info = new InfoPanel();
     info.setTitle(this.getName());
-    info.setText(i18n.tr("Verwenden Sie diese Option für die Anlage von Bank-Zugängen mit PIN/TAN-Verfahren, Schlüsseldatei oder Chipkarte."));
-    info.setComment(i18n.tr("HBCI/FinTS ist der in Hibiscus hauptsächlich verwendete Bank-Zugang."));
+    info.setText(i18n.tr("Verwenden Sie diese Option für die Anlage von Bankzugängen mit PIN/TAN-Verfahren, Schlüsseldatei oder Chipkarte."));
+    info.setComment(i18n.tr("HBCI/FinTS ist der in Hibiscus hauptsächlich verwendete Bankzugang."));
     info.setUrl("http://www.willuhn.de/wiki/doku.php?id=support:list:banken");
     info.setIcon("hibiscus-icon-64x64.png");
     return info;

@@ -30,16 +30,16 @@ public class AccountNew extends AbstractView
   @Override
   public void bind() throws Exception
   {
-    GUI.getView().setTitle(i18n.tr("Neuer Bank-Zugang..."));
+    GUI.getView().setTitle(i18n.tr("Neuer Bankzugang..."));
     AccountNewController control = new AccountNewController(this);
     
     Container c = new SimpleContainer(this.getParent());
-    c.addHeadline(i18n.tr("Schritt 1: Art des Bank-Zugangs"));
+    c.addHeadline(i18n.tr("Schritt 1: Art des Bankzugangs"));
     c.addText(i18n.tr("Bitte wählen Sie die Art des anzulegenden Bankzugangs."),true);
     
-    for (InfoPanel panels:control.getAccountProviders())
+    for (InfoPanel panel:control.getAccountProviders())
     {
-      panels.paint(this.getParent());
+      c.addPart(panel);
     }
   }
 

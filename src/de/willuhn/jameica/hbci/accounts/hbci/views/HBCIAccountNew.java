@@ -37,9 +37,9 @@ public class HBCIAccountNew extends AbstractView
     c.addHeadline(i18n.tr("Schritt 2: Auswahl des Verfahrens"));
     c.addText(i18n.tr("Bitte wählen Sie die Art des FinTS/HBCI-Verfahrens."),true);
     
-    for (InfoPanel panels:control.getVariants())
+    for (InfoPanel panel:control.getVariants())
     {
-      panels.paint(this.getParent());
+      c.addPart(panel);
     }
   }
 
