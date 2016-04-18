@@ -78,9 +78,10 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
   
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
-      ProgressMonitor monitor = session.getProgressMonitor();
+      ProgressMonitor monitor = session != null ? session.getProgressMonitor() : null;
 
-      monitor.log(i18n.tr("Aktualisiere BPD"));
+      if (monitor != null)
+        monitor.log(i18n.tr("Aktualisiere BPD"));
       Logger.info("got new " + prefix + " version. old: " + cv + ", new: " + nv + ", updating cache");
       String[] customerID = getCustomerIDs(passport);
       
@@ -100,7 +101,7 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
             DBPropertyUtil.insert(localPrefix + "." + name,data.getProperty(name));
             count++;
             
-            if (count % 20 == 0)
+            if (count % 20 == 0 && monitor != null)
               monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
           }
         }

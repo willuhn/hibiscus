@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0522 Weitere unnoetige NPE entfernt, wenn die Session noch nicht existiert
   * CHG: 0521 Begriff "Fällig am" überall gegen "Erinnerungstermin" ersetzt, um Missverständnisse zu vermeiden. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=20006&page=last#last_post
   * BUG: 0520 BUGZILLA 1708 - SQL-Fehler bei Postgres
   * BUG: 0519 BUGZILLA 1707 - Zeichen ß°§üÜöäÖÄ nicht mehr in dem Passworten von Schluesseldateien erlauben
