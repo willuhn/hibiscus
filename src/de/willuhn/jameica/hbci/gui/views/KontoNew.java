@@ -33,7 +33,6 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoSyncViaScripting;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugRpt;
@@ -180,7 +179,7 @@ public class KontoNew extends AbstractView
     TabFolder folder = new TabFolder(getParent(), SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-    TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze der letzten {0} Tage",""+HBCIProperties.UMSATZ_DEFAULT_DAYS), false,1);
+    TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze"), false,1);
     control.getUmsatzList().paint(tab.getComposite());
 
     TabGroup tab2 = new TabGroup(folder,i18n.tr("Saldo im Verlauf"),false,1);

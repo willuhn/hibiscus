@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/NeueUmsaetze.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/04/29 15:33:28 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -86,34 +80,3 @@ public class NeueUmsaetze extends AbstractBox
     return 180;
   }
 }
-
-
-/*********************************************************************
- * $Log: NeueUmsaetze.java,v $
- * Revision 1.8  2011/04/29 15:33:28  willuhn
- * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
- *
- * Revision 1.7  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.6  2009/08/27 11:48:09  willuhn
- * @N Eigenes Konto in Box "Neue Umsaetze" mit anzeigen
- *
- * Revision 1.5  2008/03/04 10:36:41  willuhn
- * @N Default-Hoehe vergroessert
- *
- * Revision 1.4  2007/12/29 18:45:37  willuhn
- * @N Hoehe von Boxen explizit konfigurierbar
- *
- * Revision 1.3  2007/12/18 17:10:22  willuhn
- * @N Neues ExpandPart
- * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
- *
- * Revision 1.2  2007/03/02 14:49:14  willuhn
- * @R removed old firststart view
- * @C do not show boxes on first start
- *
- * Revision 1.1  2007/01/30 18:25:33  willuhn
- * @N Bug 302
- *
- **********************************************************************/

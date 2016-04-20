@@ -134,6 +134,7 @@ public class SaldoChart implements Part
       return this.range;
 
     this.range = new UmsatzDaysInput();
+    this.range.setRememberSelection("days.saldochart");
     this.range.addListener(new DelayedListener(300,this.reloadListener));
     return this.range;
   }

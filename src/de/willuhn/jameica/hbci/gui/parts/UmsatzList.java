@@ -23,26 +23,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -50,21 +43,18 @@ import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
-import de.willuhn.jameica.gui.input.ButtonInput;
-import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.TableChangeListener;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.gui.util.SWTUtil;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
-import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
@@ -72,13 +62,10 @@ import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -97,9 +84,6 @@ public class UmsatzList extends TablePart implements Extendable
   private MessageConsumer mcChanged = null;
   private MessageConsumer mcNew     = null;
 
-  private SearchInput search        = null;
-  private CheckboxInput regex       = null;
-  
   private UmsatzDaysInput days      = null;
 
   private Konto konto               = null;
@@ -335,9 +319,8 @@ public class UmsatzList extends TablePart implements Extendable
     {
       if (this.kl == null)
         this.kl = new KL();
-
-      LabelGroup group = new LabelGroup(parent,i18n.tr("Anzeige einschränken"));
-
+  
+      Container c = new SimpleContainer(parent);
       this.days = new UmsatzDaysInput();
       this.days.addListener(new DelayedListener(300, new Listener() {
         public void handleEvent(Event event)
@@ -345,26 +328,10 @@ public class UmsatzList extends TablePart implements Extendable
           kl.process();
         }
       }));
-      group.addInput(this.days);
-
-      // Eingabe-Feld fuer die Suche mit Button hinten dran.
-      this.search = new SearchInput();
-      group.addLabelPair(i18n.tr("Zweck, Konto oder Kommentar enthält"), this.search);
-
-      // Checkbox zur Aktivierung von regulaeren Ausdruecken
-      Boolean b = (Boolean) cache.get("regex");
-      this.regex = new CheckboxInput(b != null && b.booleanValue());
-      this.regex.addListener(new Listener() {
-        public void handleEvent(Event event)
-        {
-          cache.put("regex",regex.getValue());
-          kl.process();
-        }
-      });
-      group.addCheckbox(this.regex,i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+      c.addInput(this.days);
     }
-
     super.paint(parent);
+    
 
     // Und einmal starten bitte
     if (this.filter)
@@ -375,171 +342,14 @@ public class UmsatzList extends TablePart implements Extendable
   }
 
 
-  /**
-   * Hilfsklasse fuer das Suchfeld.
-   * @author willuhn
-   */
-  private class SearchInput extends ButtonInput
-  {
-    private Text text = null;
-
-    /**
-     * ct.
-     */
-    private SearchInput()
-    {
-      // Listener fuer den Button
-      this.addButtonListener(new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-          Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
-          MenuItem item = new MenuItem(menu, SWT.PUSH);
-          item.setText(i18n.tr("Suchbegriff als Umsatz-Kategorie speichern..."));
-          item.addListener(SWT.Selection, new Listener()
-          {
-            public void handleEvent (Event e)
-            {
-              try
-              {
-                String text = (String) search.getValue();
-                if (text == null || text.length() == 0)
-                  return;
-                
-                // Mal schauen, obs den Typ schon gibt
-                DBIterator existing = Settings.getDBService().createList(UmsatzTyp.class);
-                existing.addFilter("pattern = ?", new Object[]{text});
-                UmsatzTyp typ = null; 
-                if (existing.size() > 0)
-                {
-                  if (!Application.getCallback().askUser(i18n.tr("Eine Umsatz-Kategorie mit diesem Suchbegriff existiert bereits. Überschreiben?")))
-                    return;
-                  
-                  // OK, ueberschreiben
-                  typ = (UmsatzTyp) existing.next();
-                }
-                else
-                {
-                  UmsatzTypNewDialog d = new UmsatzTypNewDialog(UmsatzTypNewDialog.POSITION_MOUSE);
-                  typ = (UmsatzTyp) d.open();
-                }
-                typ.setPattern(text);
-                typ.setRegex(((Boolean)regex.getValue()).booleanValue());
-                typ.store();
-                GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz-Kategorie gespeichert"));
-              }
-              catch (ApplicationException ae)
-              {
-                Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(), StatusBarMessage.TYPE_ERROR));
-              }
-              catch (OperationCanceledException oce)
-              {
-                Logger.info("operation cancelled");
-                return;
-              }
-              catch (Exception ex)
-              {
-                Logger.error("unable to store umsatz filter",ex);
-                GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"));
-              }
-            }
-          });
-          
-          new MenuItem(menu, SWT.SEPARATOR);
-          try
-          {
-            DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
-            i.addFilter("pattern is not null and pattern != ''"); // Wir wollen nur die mit Suchbegriff haben
-            while (i.hasNext())
-            {
-              final UmsatzTyp ut = (UmsatzTyp) i.next();
-              final String s    = ut.getName();
-              final String p    = ut.getPattern();
-              final boolean ir  = ut.isRegex();
-              final MenuItem mi = new MenuItem(menu, SWT.PUSH);
-              mi.setText(s);
-              mi.addListener(SWT.Selection, new Listener()
-              {
-                public void handleEvent(Event event)
-                {
-                  Logger.debug("applying filter " + p);
-                  regex.setValue(Boolean.valueOf(ir));
-                  search.setValue(p);
-                  search.focus();
-                  kl.process();
-                }
-              });
-            }
-            
-          }
-          catch (Exception ex)
-          {
-            Logger.error("unable to load umsatz filter",ex);
-            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Kategorien"));
-          }
-
-          menu.setLocation(GUI.getDisplay().getCursorLocation());
-          menu.setVisible(true);
-          while (!menu.isDisposed() && menu.isVisible())
-          {
-            if (!GUI.getDisplay().readAndDispatch()) GUI.getDisplay().sleep();
-          }
-          menu.dispose();
-        }
-      });
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
-     */
-    public Control getClientControl(Composite parent)
-    {
-      if (text != null)
-        return text;
-
-      text = GUI.getStyleFactory().createText(parent);
-      // BUGZILLA 258
-      
-      String s = (String) cache.get("search");
-      this.text.setText(s != null ? s : "");
-      this.text.addKeyListener(kl);
-      return this.text;
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.input.Input#getValue()
-     */
-    public Object getValue()
-    {
-      String s = text == null ? null : text.getText();
-      cache.put("search",s);
-      return s;
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
-     */
-    public void setValue(Object value)
-    {
-      if (text == null || value == null || text.isDisposed())
-        return;
-      text.setText(value.toString());
-    }
-    
-  }
-  
-  // BUGZILLA 5
   private class KL extends KeyAdapter
   {
     private boolean sleep = true;
     private Thread timeout = null;
-    private UmsatzTyp typ = null;
     private Calendar cal = null;
    
     private KL() throws RemoteException
     {
-      DBService service = Settings.getDBService();
-      this.typ = (UmsatzTyp) service.createObject(UmsatzTyp.class,null);
       this.cal = Calendar.getInstance();
     }
     
@@ -615,9 +425,6 @@ public class UmsatzList extends TablePart implements Extendable
             // Erstmal alle rausschmeissen
             UmsatzList.this.removeAll();
 
-            // Wir holen uns den aktuellen Text
-            String text = (String) search.getValue();
-
             Umsatz u  = null;
             Date date = null;
 
@@ -635,14 +442,6 @@ public class UmsatzList extends TablePart implements Extendable
               limit = cal.getTime();
             }
             
-            boolean empty = text == null || text.length() == 0;
-
-            if (!empty)
-            {
-              typ.setPattern(text);
-              typ.setRegex(((Boolean)regex.getValue()).booleanValue());
-            }
-            
             for (int i=0;i<umsaetze.size();++i)
             {
               u = (Umsatz) umsaetze.get(i);
@@ -658,18 +457,7 @@ public class UmsatzList extends TablePart implements Extendable
               if (date != null && limit != null && date.before(limit))
                 continue;
 
-              // Steht ein Suchwort drin?
-              // Nein? Dann sofort uebernehmen
-              if (empty)
-              {
-                UmsatzList.this.addItem(u);
-                continue;
-              }
-
-              if (typ.matches(u,true))
-              {
-                UmsatzList.this.addItem(u);
-              }
+              UmsatzList.this.addItem(u);
             }
             UmsatzList.this.sort();
           }
@@ -686,8 +474,6 @@ public class UmsatzList extends TablePart implements Extendable
     }
   }
 
-  private String lastSearch = "";
-  private Boolean lastRegex = Boolean.FALSE;
   private Integer lastDays = null;
   
   /**
@@ -697,20 +483,16 @@ public class UmsatzList extends TablePart implements Extendable
   private boolean hasChanged()
   {
     // Such-Filter ist ueberhaupt nicht aktiv
-    if (!this.filter || this.search == null || this.regex == null || this.days == null)
+    if (!this.filter || this.days == null)
       return false;
     
-    String s  = (String) this.search.getValue(); // liefert nie null
-    Boolean r = (Boolean) this.regex.getValue(); // liefert nie null
     Integer i = (Integer) this.days.getValue();  // liefert nie null
     try
     {
-      return !r.equals(this.lastRegex) || !s.equals(this.lastSearch) || !i.equals(this.lastDays);
+      return !i.equals(this.lastDays);
     }
     finally
     {
-      this.lastSearch = s;
-      this.lastRegex = r;
       this.lastDays = i;
     }
   }

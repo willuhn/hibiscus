@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/EmpfaengerControl.java,v $
- * $Revision: 1.51 $
- * $Date: 2010/04/15 10:30:07 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -172,7 +166,6 @@ public class EmpfaengerControl extends AbstractControl
     }
 
     this.umsatzList = new UmsatzList(list,new UmsatzDetail());
-    ((UmsatzList)this.umsatzList).setFilterVisible(false);
     return this.umsatzList;
   }
 

@@ -17,15 +17,21 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 
@@ -33,6 +39,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
@@ -51,6 +58,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -69,6 +77,7 @@ import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -86,6 +95,10 @@ public class KontoauszugList extends UmsatzList
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings syssettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   
+  private UmsatzTyp searchTyp          = null;
+  private SearchInput search           = null;
+  private CheckboxInput regex          = null;
+
   // Konto/Zeitraum/Suchbegriff/nur geprueft
   private TextInput text               = null;
   private CheckboxInput unchecked      = null;
@@ -107,7 +120,7 @@ public class KontoauszugList extends UmsatzList
   
   private boolean disposed             = false; // BUGZILLA 462
   private boolean changed              = false;
-  private boolean hasFilter            = false;
+  private int filterCount              = 0;
 
   /**
    * ct.
@@ -116,13 +129,14 @@ public class KontoauszugList extends UmsatzList
   public KontoauszugList() throws RemoteException
   {
     super((GenericIterator)null,new UmsatzDetail());
-
     this.setFilterVisible(false);
+    
+    this.searchTyp = de.willuhn.jameica.hbci.Settings.getDBService().createObject(UmsatzTyp.class,null);
 
     // bei Ausloesungen ueber SWT-Events verzoegern wir
     // das Reload, um schnell aufeinanderfolgende Updates
     // zu buendeln.
-    this.listener = new DelayedListener(new Listener() {
+    this.listener = new DelayedListener(700,new Listener() {
       public void handleEvent(Event event)
       {
         handleReload(false);
@@ -147,37 +161,44 @@ public class KontoauszugList extends UmsatzList
     folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     {
-      TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Zeitraum/Suchbegriff"));
+      TabGroup tab = new TabGroup(folder,i18n.tr("Suchbegriff"));
+
+      Container c = new SimpleContainer(tab.getComposite());
+      c.addInput(this.getSearch());
+      c.addCheckbox(this.getRegex(),i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+      c.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
+    }
+
+    {
+      TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Kategorie/Zeitraum"));
 
       ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
       
       Container left = new SimpleContainer(columns.getComposite());
-      left.addLabelPair(i18n.tr("Zweck/Notiz/Art enthält"), this.getText());
       left.addLabelPair(i18n.tr("Konto"),                   this.getKontoAuswahl());
       left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorie());
-      left.addCheckbox(this.getUnChecked(),i18n.tr("Nur ungeprüfte Umsätze"));
+      left.addCheckbox(this.getSubKategorien(),i18n.tr("Untergeordnete Kategorien einbeziehen"));
       
       Container right = new SimpleContainer(columns.getComposite());
 
       right.addInput(this.getRange());
       MultiInput range = new MultiInput(this.getStart(),this.getEnd());
       right.addInput(range);
-      
-      right.addCheckbox(this.getSubKategorien(),i18n.tr("Untergeordnete Kategorien einbeziehen"));
     }
     
     {
-      TabGroup tab = new TabGroup(folder,i18n.tr("Gegenkonto/Betrag"));
-      tab.addLabelPair(i18n.tr("IBAN oder Kontonummer enthält"), this.getGegenkontoNummer());
+      TabGroup tab = new TabGroup(folder,i18n.tr("Gegenkonto/Zweck/Betrag"));
 
       ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
       Container left = new SimpleContainer(columns.getComposite());
-      left.addLabelPair(i18n.tr("BIC oder BLZ enthält"),           this.getGegenkontoBLZ());
-      left.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"), this.getGegenkontoName());
+      left.addLabelPair(i18n.tr("Zweck/Notiz/Art enthält"), this.getText());
+      left.addLabelPair(i18n.tr("Mindest-Betrag"), this.getMindestBetrag());
+      left.addLabelPair(i18n.tr("Höchst-Betrag"),        this.getHoechstBetrag());
 
       Container right = new SimpleContainer(columns.getComposite());
-      right.addLabelPair(i18n.tr("Mindest-Betrag"), this.getMindestBetrag());
-      right.addLabelPair(i18n.tr("Höchst-Betrag"),        this.getHoechstBetrag());
+      right.addLabelPair(i18n.tr("IBAN oder Kontonummer enthält"), this.getGegenkontoNummer());
+      right.addLabelPair(i18n.tr("BIC oder BLZ enthält"),           this.getGegenkontoBLZ());
+      right.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"), this.getGegenkontoName());
     }
     
     // Wir merken uns das aktive Tab.
@@ -228,6 +249,37 @@ public class KontoauszugList extends UmsatzList
 
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
     restoreState();
+  }
+  
+  /**
+   * Liefert ein Eingabefeld fuer eine generische Suche.
+   * @return Eingabefeld fuer eine generische Suche.
+   * @throws RemoteException
+   */
+  private SearchInput getSearch() throws RemoteException
+  {
+    if (this.search != null)
+      return this.search;
+    
+    this.search = new SearchInput();
+    return this.search;
+  }
+  
+  /**
+   * Liefert eine Checkbox zur Entscheidung, ob der Suchbegriff ein regulaerer Ausdruck ist.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  private CheckboxInput getRegex() throws RemoteException
+  {
+    if (this.regex != null)
+      return this.regex;
+    
+    Boolean b = (Boolean) cache.get("kontoauszug.list.regex");
+    this.regex = new CheckboxInput(b != null && b.booleanValue());
+    this.regex.setName(i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+    this.regex.addListener(this.listener);
+    return this.regex;
   }
 
   /**
@@ -509,9 +561,11 @@ public class KontoauszugList extends UmsatzList
     Double min        = (Double) getMindestBetrag().getValue();
     Double max        = (Double) getHoechstBetrag().getValue();
     String zk         = (String) getText().getValue();
+    String search     = (String) getSearch().getValue();
     UmsatzTyp typ     = (UmsatzTyp) getKategorie().getValue();
     boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
     boolean subKategorien = ((Boolean) getSubKategorien().getValue()).booleanValue();
+    boolean regex         = ((Boolean) getRegex().getValue()).booleanValue();
     
     // Aktuelle Werte speichern
     cache.put("kontoauszug.list.gegenkonto.nummer",gkNummer);
@@ -522,6 +576,9 @@ public class KontoauszugList extends UmsatzList
     cache.put("kontoauszug.list.betrag.from",      min);
     cache.put("kontoauszug.list.betrag.to",        max);
     cache.put("kontoauszug.list.subkategorien",    subKategorien);
+    cache.put("kontoauszug.list.regex",            regex);
+    cache.put("kontoauszug.list.search",           search);
+    
     
     // geprueft/ungeprueft Flag speichern wir permanent
     settings.setAttribute("kontoauszug.list.unchecked",unchecked);
@@ -529,7 +586,7 @@ public class KontoauszugList extends UmsatzList
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
     
     // BUGZILLA 449
-    this.hasFilter = false;
+    this.filterCount = 0;
 
     /////////////////////////////////////////////////////////////////
     // Zeitraum
@@ -539,30 +596,32 @@ public class KontoauszugList extends UmsatzList
     if (end != null)   umsaetze.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
-    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("LOWER(empfaenger_blz) like ?","%" + gkBLZ.toLowerCase() + "%");this.hasFilter = true;}
-    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("LOWER(empfaenger_konto) like ?","%" + gkNummer.toLowerCase() + "%");this.hasFilter = true;}
-    if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?","%" + gkName.toLowerCase() + "%");hasFilter = true;}
+    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("LOWER(empfaenger_blz) like ?","%" + gkBLZ.toLowerCase() + "%");this.filterCount++;}
+    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("LOWER(empfaenger_konto) like ?","%" + gkNummer.toLowerCase() + "%");this.filterCount++;}
+    if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?","%" + gkName.toLowerCase() + "%");this.filterCount++;}
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
     // Konto oder Kontogruppe
-    if (o != null && (o instanceof Konto))
-      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
-    else if (o != null && (o instanceof String))
-      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
+    if (o != null && (o instanceof Konto))         {umsaetze.addFilter("konto_id = " + ((Konto) o).getID());this.filterCount++;}
+    else if (o != null && (o instanceof String))   {umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);this.filterCount++;}
     /////////////////////////////////////////////////////////////////
 
+    if (search != null) this.filterCount++;
+    if (typ != null) this.filterCount++;
+    if (unchecked) this.filterCount++;
+    
     /////////////////////////////////////////////////////////////////
     // Betrag
     if (min != null && !(Double.isNaN(min.doubleValue())))
     {
       umsaetze.addFilter("betrag >= ?",min);
-      this.hasFilter = true;
+      this.filterCount++;
     }
     if (max != null && (!Double.isNaN(max.doubleValue())))
     {
       umsaetze.addFilter("betrag <= ?",max);
-      this.hasFilter = true;
+      this.filterCount++;
     }
     /////////////////////////////////////////////////////////////////
     
@@ -570,6 +629,7 @@ public class KontoauszugList extends UmsatzList
     // Zweck/Kommentar
     if (zk != null && zk.length() > 0)
     {
+      this.filterCount++;
       zk = "%" + zk.toLowerCase() + "%";
       String zkStripped = zk;
       String q = "CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))";
@@ -583,7 +643,15 @@ public class KontoauszugList extends UmsatzList
     /////////////////////////////////////////////////////////////////
 
 
-    GUI.getView().setLogoText(this.hasFilter ? i18n.tr("Hinweis: Aufgrund von Suchkriterien werden möglicherweise nicht alle Umsätze angezeigt") : "");
+    GUI.getView().setLogoText(this.filterCount > 0 ? i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)) : "");
+    
+    if (search != null)
+    {
+      this.searchTyp.setPattern(search);
+      this.searchTyp.setRegex(regex);
+    }
+    
+    boolean logged = false;
     
     List<Umsatz> result = new LinkedList<Umsatz>();
     while (umsaetze.hasNext())
@@ -591,6 +659,20 @@ public class KontoauszugList extends UmsatzList
       Umsatz u = (Umsatz) umsaetze.next();
       if (typ != null && !matches(typ, u, subKategorien))
         continue;
+      
+      try
+      {
+        if (search != null && !this.searchTyp.matches(u,true))
+          continue;
+      }
+      catch (PatternSyntaxException pe)
+      {
+        if (!logged)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(pe.getLocalizedMessage(),StatusBarMessage.TYPE_ERROR));
+          logged = true;
+        }
+      }
       
       if (unchecked)
       {
@@ -667,7 +749,7 @@ public class KontoauszugList extends UmsatzList
       }
       
       // Start- und End-Datum als Contextparameter an Exporter uebergeben
-      Exporter.SESSION.put("filtered",this.hasFilter);
+      Exporter.SESSION.put("filtered",this.filterCount > 0);
       Exporter.SESSION.put("pdf.start",getStart().getValue());
       Exporter.SESSION.put("pdf.end",getEnd().getValue());
 
@@ -704,6 +786,8 @@ public class KontoauszugList extends UmsatzList
       getGegenkontoBLZ().setValue(null);
       getGegenkontoName().setValue(null);
       getText().setValue(null);
+      getSearch().setValue(null);
+      getRegex().setValue(Boolean.FALSE);
       getUnChecked().setValue(Boolean.FALSE);
       this.changed = true;
       handleReload(true);
@@ -767,6 +851,8 @@ public class KontoauszugList extends UmsatzList
       return b || getStart().hasChanged() ||
                 getEnd().hasChanged() ||
                 getUnChecked().hasChanged() ||
+                getSearch().hasChanged() || 
+                getRegex().hasChanged() ||
                 getKontoAuswahl().hasChanged() ||
                 getGegenkontoName().hasChanged() ||
                 getGegenkontoNummer().hasChanged() ||
@@ -813,4 +899,167 @@ public class KontoauszugList extends UmsatzList
     }
   }
 
+  /**
+   * Hilfsklasse fuer das Suchfeld.
+   * @author willuhn
+   */
+  private class SearchInput extends ButtonInput
+  {
+    private Text text = null;
+
+    /**
+     * ct.
+     */
+    private SearchInput()
+    {
+      this.setName(i18n.tr("Suchbegriff"));
+
+      // Listener fuer den Button
+      this.addButtonListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
+          MenuItem item = new MenuItem(menu, SWT.PUSH);
+          item.setText(i18n.tr("Suchbegriff als Umsatz-Kategorie speichern..."));
+          item.addListener(SWT.Selection, new Listener()
+          {
+            public void handleEvent (Event e)
+            {
+              try
+              {
+                String text = (String) search.getValue();
+                if (text == null || text.length() == 0)
+                  return;
+                
+                // Mal schauen, obs den Typ schon gibt
+                DBIterator existing = de.willuhn.jameica.hbci.Settings.getDBService().createList(UmsatzTyp.class);
+                existing.addFilter("pattern = ?", new Object[]{text});
+                UmsatzTyp typ = null; 
+                if (existing.size() > 0)
+                {
+                  if (!Application.getCallback().askUser(i18n.tr("Eine Umsatz-Kategorie mit diesem Suchbegriff existiert bereits. Überschreiben?")))
+                    return;
+                  
+                  // OK, ueberschreiben
+                  typ = (UmsatzTyp) existing.next();
+                }
+                else
+                {
+                  UmsatzTypNewDialog d = new UmsatzTypNewDialog(UmsatzTypNewDialog.POSITION_MOUSE);
+                  typ = (UmsatzTyp) d.open();
+                }
+                typ.setPattern(text);
+                typ.setRegex(((Boolean)regex.getValue()).booleanValue());
+                typ.store();
+                Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz-Kategorie gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+              }
+              catch (ApplicationException ae)
+              {
+                Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(), StatusBarMessage.TYPE_ERROR));
+              }
+              catch (OperationCanceledException oce)
+              {
+                Logger.info("operation cancelled");
+                return;
+              }
+              catch (Exception ex)
+              {
+                Logger.error("unable to store umsatz filter",ex);
+                GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"));
+              }
+            }
+          });
+          
+          new MenuItem(menu, SWT.SEPARATOR);
+          try
+          {
+            DBIterator i = de.willuhn.jameica.hbci.Settings.getDBService().createList(UmsatzTyp.class);
+            i.addFilter("pattern is not null and pattern != ''"); // Wir wollen nur die mit Suchbegriff haben
+            while (i.hasNext())
+            {
+              final UmsatzTyp ut = (UmsatzTyp) i.next();
+              final String s    = ut.getName();
+              final String p    = ut.getPattern();
+              final boolean ir  = ut.isRegex();
+              final MenuItem mi = new MenuItem(menu, SWT.PUSH);
+              mi.setText(s);
+              mi.addListener(SWT.Selection, new Listener()
+              {
+                public void handleEvent(Event event)
+                {
+                  Logger.debug("applying filter " + p);
+                  regex.setValue(Boolean.valueOf(ir));
+                  search.setValue(p);
+                  search.focus();
+                  handleReload(false);
+                }
+              });
+            }
+            
+          }
+          catch (Exception ex)
+          {
+            Logger.error("unable to load umsatz filter",ex);
+            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden der Umsatz-Kategorien"));
+          }
+
+          menu.setLocation(GUI.getDisplay().getCursorLocation());
+          menu.setVisible(true);
+          while (!menu.isDisposed() && menu.isVisible())
+          {
+            if (!GUI.getDisplay().readAndDispatch()) GUI.getDisplay().sleep();
+          }
+          menu.dispose();
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
+     */
+    public Control getClientControl(Composite parent)
+    {
+      if (text != null)
+        return text;
+
+      text = GUI.getStyleFactory().createText(parent);
+      // BUGZILLA 258
+      
+      String s = (String) cache.get("kontoauszug.list.search");
+      this.text.setText(s != null ? s : "");
+      this.text.addKeyListener(new KeyAdapter() {
+        /**
+         * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+         */
+        @Override
+        public void keyReleased(KeyEvent e)
+        {
+          listener.handleEvent(null);
+        }
+      });
+      return this.text;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#getValue()
+     */
+    public Object getValue()
+    {
+      return text != null && !text.isDisposed() ? StringUtils.trimToNull(text.getText()) : null;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
+     */
+    public void setValue(Object value)
+    {
+      if (text == null || value == null || text.isDisposed())
+        return;
+      text.setText(value != null ? value.toString() : "");
+    }
+    
+  }
+  
+  
 }

@@ -39,7 +39,10 @@ public class UmsatzDaysInput extends ScaleInput
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings settings = new Settings(UmsatzDaysInput.class);
   
+  private final static String TOKEN_DEFAULT = "days";
   private Listener listener = new RangeListener();
+  private String token = null;
+  private Control c = null;
 
   /**
    * ct.
@@ -53,7 +56,6 @@ public class UmsatzDaysInput extends ScaleInput
     this.setComment(""); // Damit wir das Datum noch hinzufuegen koennen
     this.setScaling(1,1000,1,10);
     this.addListener(this.listener);
-    this.listener.handleEvent(null); // einmal initial ausloesen
   }
   
   /**
@@ -61,14 +63,46 @@ public class UmsatzDaysInput extends ScaleInput
    */
   public Control getControl()
   {
-    Control c = super.getControl();
-    c.addDisposeListener(new DisposeListener() {
+    if (c != null)
+      return c;
+    
+    this.c = super.getControl();
+    this.c.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
-        settings.setAttribute("days",(Integer) getValue());
+        settings.setAttribute(getToken(),(Integer) getValue());
       }
     });
-    return c;
+    
+    this.listener.handleEvent(null); // einmal initial ausloesen
+    return this.c;
+  }
+  
+  /**
+   * Das Auswahlfeld kann sich den letzten Zeitraum merken.
+   * Damit dann aber nicht auf allen Dialogen der gleiche zeitraum vorausgewaehlt ist,
+   * kann man hier einen individuellen Freitext-Token uebergeben, der als Key fuer
+   * das Speichern des zuletzt ausgewaehlten Zeitraumes verwendet wird. Ueberall dort,
+   * wo also der gleiche Token verwendet wird, wird auch der gleiche Zeitraum
+   * vorausgewaehlt. Der Text kann z.Bsp. "auswertungen" heissen. Wenn dieser
+   * auf allen Dialogen der Auswertungen verwendet wird, wird dort dann auch ueberall
+   * der gleiche Zeitraum vorausgewaehlt sein.
+   * @param s der Restore-Token.
+   */
+  public void setRememberSelection(String s)
+  {
+    this.token = s;
+    int value = settings.getInt(this.token,HBCIProperties.UMSATZ_DEFAULT_DAYS);
+    this.setValue(value == -1 ? 1000 : value);
+  }
+  
+  /**
+   * Liefert den Store-Token.
+   * @return der Store-Token.
+   */
+  private String getToken()
+  {
+    return this.token != null ? this.token : TOKEN_DEFAULT;
   }
 
   /**
@@ -89,7 +123,7 @@ public class UmsatzDaysInput extends ScaleInput
    */
   public final static int getDefaultDays()
   {
-    return settings.getInt("days",HBCIProperties.UMSATZ_DEFAULT_DAYS);
+    return settings.getInt(TOKEN_DEFAULT,HBCIProperties.UMSATZ_DEFAULT_DAYS);
   }
 
   /**
