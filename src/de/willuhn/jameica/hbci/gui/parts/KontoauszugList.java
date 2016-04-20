@@ -812,27 +812,36 @@ public class KontoauszugList extends UmsatzList
     if (!force && !hasChanged())
       return;
     
-    GUI.startSync(new Runnable() // Sanduhr einblenden
-    {
+    GUI.getView().setLogoText(i18n.tr("Lade..."));
+    GUI.getDisplay().asyncExec(new Runnable() {
+      
+      @Override
       public void run()
       {
-        try
-        {
-          removeAll();
-          
-          List<Umsatz> list = getUmsaetze();
-          for(Umsatz u:list)
-            addItem(u);
+        GUI.startSync(new Runnable() // Sanduhr einblenden
+            {
+              public void run()
+              {
+                try
+                {
+                  
+                  removeAll();
+                  
+                  List<Umsatz> list = getUmsaetze();
+                  for(Umsatz u:list)
+                    addItem(u);
 
-          
-          // Zum Schluss Sortierung aktualisieren
-          sort();
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while reloading table",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
-        }
+                  
+                  // Zum Schluss Sortierung aktualisieren
+                  sort();
+                }
+                catch (Exception e)
+                {
+                  Logger.error("error while reloading table",e);
+                  Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
+                }
+              }
+            });
       }
     });
   }
@@ -1027,7 +1036,8 @@ public class KontoauszugList extends UmsatzList
       // BUGZILLA 258
       
       String s = (String) cache.get("kontoauszug.list.search");
-      this.text.setText(s != null ? s : "");
+      this.setValue(s);
+      this.hasChanged(); // Einmal initial triggern, damit bereits die erste Text-Eingabe als Aenderung erkannt wird
       this.text.addKeyListener(new KeyAdapter() {
         /**
          * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
@@ -1054,9 +1064,10 @@ public class KontoauszugList extends UmsatzList
      */
     public void setValue(Object value)
     {
-      if (text == null || value == null || text.isDisposed())
+      if (text == null || text.isDisposed())
         return;
       text.setText(value != null ? value.toString() : "");
+      
     }
     
   }
