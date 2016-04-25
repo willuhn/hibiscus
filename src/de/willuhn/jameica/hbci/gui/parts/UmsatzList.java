@@ -43,6 +43,7 @@ import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TableChangeListener;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
@@ -177,10 +178,10 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
     addColumn(i18n.tr("Verwendungszweck"),          Tag.SVWZ.name());
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
-    addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
-    addColumn(i18n.tr("Zwischensumme"),             "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Zwischensumme"),             "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Notiz"),                     "kommentar",null,true);
 
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84

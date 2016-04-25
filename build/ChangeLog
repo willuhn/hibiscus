@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0526 Umsatzliste: Automatische Erkennung der Rechtsbündigkeit funktionierte nicht mehr, für Betrag und Zwischensumme fest auf rechtsbündig gestellt.
   * NEW: 0525 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/34ea928ea475dae9afb6a909895c07a531c4cb96
   * NEW: 0524 Neuen Reiter "Suchbegriff" in Hibiscus->Umsätze eingefügt, um die alte Suche (Suchbegriff komplett übergreifend und Regex-Support) auch hier zu haben.
   * NEW: 0523 Alle Umsatzlisten mit Zeitschieber versehen (vorher wurden dort immer nur die letzten 30 Tage angezeigt)
