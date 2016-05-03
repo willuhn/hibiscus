@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -88,7 +87,7 @@ public class UmsatzList extends TablePart implements Extendable
   private UmsatzDaysInput days      = null;
 
   private Konto konto               = null;
-  private List umsaetze             = null;
+  private List<Umsatz> umsaetze     = null;
   
   private KL kl                     = null;
   private boolean filter            = true;
@@ -102,18 +101,7 @@ public class UmsatzList extends TablePart implements Extendable
    */
   public UmsatzList(Konto konto, Action action) throws RemoteException
   {
-    this(konto,0,action);
-  }
-
-  /**
-   * @param konto
-   * @param days
-   * @param action
-   * @throws RemoteException
-   */
-  public UmsatzList(Konto konto, int days, Action action) throws RemoteException
-  {
-    this(konto.getUmsaetze(days), action);
+    this((GenericIterator) null, action);
     this.konto = konto;
   }
 
@@ -122,13 +110,13 @@ public class UmsatzList extends TablePart implements Extendable
    * @param action
    * @throws RemoteException
    */
-  public UmsatzList(GenericIterator list, Action action) throws RemoteException
+  public UmsatzList(GenericIterator<Umsatz> list, Action action) throws RemoteException
   {
     super(list,action);
     if (list != null)
       this.umsaetze = PseudoIterator.asList(list);
     else
-      this.umsaetze = new ArrayList();
+      this.umsaetze = new ArrayList<Umsatz>();
     
     this.addFeature(new FeatureShortcut()); // Wir unterstuetzen Shortcuts
     
@@ -334,9 +322,10 @@ public class UmsatzList extends TablePart implements Extendable
     super.paint(parent);
     
 
-    // Und einmal starten bitte
-    if (this.filter)
-      kl.process();
+    // Und einmal starten bitte, wenn wir entweder einen Filter
+    // haben oder ein Konto angegeben ist, von dem wir die Umsaetze on-the-fly laden 
+    if (this.filter || this.konto != null)
+      kl.process(true);
     
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
     restoreState();
@@ -426,45 +415,54 @@ public class UmsatzList extends TablePart implements Extendable
             // Erstmal alle rausschmeissen
             UmsatzList.this.removeAll();
 
-            Umsatz u  = null;
-            Date date = null;
-
-            // BUGZILLA 217
-            Date limit = null;
             int t = ((Integer) days.getValue()).intValue();
-            if (t > 0)
+
+            if (konto != null)
             {
-              cal.setTime(new Date());
-              cal.add(Calendar.DAY_OF_YEAR,-t);
-              cal.set(Calendar.HOUR_OF_DAY,0);
-              cal.set(Calendar.MINUTE,0);
-              cal.set(Calendar.SECOND,0);
-              cal.set(Calendar.MILLISECOND,0);
-              limit = cal.getTime();
+              // Umsaetze vom Konto neu laden
+              umsaetze.clear();
+              umsaetze.addAll(PseudoIterator.asList(konto.getUmsaetze(t)));
+              for (Umsatz u:umsaetze)
+              {
+                UmsatzList.this.addItem(u);
+              }
+            }
+            else
+            {
+              Umsatz u  = null;
+              Date date = null;
+              Date limit = null;
+              if (t > 0)
+              {
+                cal.setTime(new Date());
+                cal.add(Calendar.DAY_OF_YEAR,-t);
+                cal.set(Calendar.HOUR_OF_DAY,0);
+                cal.set(Calendar.MINUTE,0);
+                cal.set(Calendar.SECOND,0);
+                cal.set(Calendar.MILLISECOND,0);
+                limit = cal.getTime();
+              }
+              
+              for (int i=0;i<umsaetze.size();++i)
+              {
+                u = (Umsatz) umsaetze.get(i);
+                if (u.getID() == null) // Wurde zwischenzeitlich geloescht
+                {
+                  umsaetze.remove(i);
+                  i--;
+                  continue;
+                }
+                date = u.getDatum();
+
+                // Wenn der Umsatz ein Datum hat, welches vor dem Limit liegt. Dann raus damit
+                if (date != null && limit != null && date.before(limit))
+                  continue;
+
+                UmsatzList.this.addItem(u);
+              }
             }
             
-            for (int i=0;i<umsaetze.size();++i)
-            {
-              u = (Umsatz) umsaetze.get(i);
-              if (u.getID() == null) // Wurde zwischenzeitlich geloescht
-              {
-                umsaetze.remove(i);
-                i--;
-                continue;
-              }
-              date = u.getDatum();
-
-              // Wenn der Umsatz ein Datum hat, welches vor dem Limit liegt. Dann raus damit
-              if (date != null && limit != null && date.before(limit))
-                continue;
-
-              UmsatzList.this.addItem(u);
-            }
             UmsatzList.this.sort();
-          }
-          catch (PatternSyntaxException pe)
-          {
-            GUI.getView().setErrorText(pe.getLocalizedMessage());
           }
           catch (Exception e)
           {
@@ -612,7 +610,7 @@ public class UmsatzList extends TablePart implements Extendable
                 return;
             }
             
-            // Checken, ob er Umsatz ueberhaupt zum Konto passt
+            // Checken, ob der Umsatz ueberhaupt zum Konto passt
             // Wenn man waehrend der Synchronisierung in ein anderes Konto klickt, koennte es sonst
             // passieren, dass ein Umsatz hier temporaer in der Liste landet, weil halt zufaellig grad
             // diese View offen ist.
@@ -623,6 +621,7 @@ public class UmsatzList extends TablePart implements Extendable
             }
 
             umsaetze.add(newUmsatz);
+            
             if (filter && kl != null)
               kl.process(true);
             else

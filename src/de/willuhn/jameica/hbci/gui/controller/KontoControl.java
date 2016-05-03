@@ -182,7 +182,7 @@ public class KontoControl extends AbstractControl
     if (umsatzList != null)
       return umsatzList;
 
-    umsatzList = new UmsatzList(getKonto(),HBCIProperties.UMSATZ_DEFAULT_DAYS,new UmsatzDetail());
+    umsatzList = new UmsatzList(getKonto(),new UmsatzDetail());
     return umsatzList;
   }
 

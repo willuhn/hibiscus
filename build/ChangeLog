@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0518 Unter Konto-Details->Umsätze wurden nur maximal die letzten 30 Tage angezeigt, auch wenn mit dem Schieberegler ein größerer Zeitraum gewählt wurde 
+
 2016-05-02 Version 2.6.16
 
   * BUG: 0517 Umsatzliste: Automatische Erkennung der Rechtsbündigkeit funktionierte nicht mehr, für Betrag und Zwischensumme fest auf rechtsbündig gestellt.
