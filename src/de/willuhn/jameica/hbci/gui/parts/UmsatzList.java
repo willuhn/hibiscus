@@ -75,6 +75,7 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzList extends TablePart implements Extendable
 {
+  private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   // Cache fuer die Filter-Einstellungen des Users fuer die Dauer der Sitzung.
@@ -164,7 +165,12 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn("#","id-int");
     addColumn(i18n.tr("Flags"),                     "flags");
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
-    addColumn(i18n.tr("Verwendungszweck"),          Tag.SVWZ.name());
+    
+    if (settings.getBoolean("usage.list.all",false))
+      addColumn(i18n.tr("Verwendungszweck"),        "mergedzweck");
+    else
+      addColumn(i18n.tr("Verwendungszweck"),        Tag.SVWZ.name());
+    
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);
@@ -326,6 +332,8 @@ public class UmsatzList extends TablePart implements Extendable
     // haben oder ein Konto angegeben ist, von dem wir die Umsaetze on-the-fly laden 
     if (this.filter || this.konto != null)
       kl.process(true);
+    
+    sort();
     
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
     restoreState();

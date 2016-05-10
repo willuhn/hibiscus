@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0519 BUGZILLA 1726 - mit dem neuen Parameter "usage.list.all=true" in ".jameica/cfg/de.willuhn.jameica.hbci.HBCI.properties" kann man jetzt auch
+              in der Umsatzliste wieder auf die alte Ansicht der Verwendungszwecke (unformatierte Anzeige der "rohen Verwendungszwecke") zurückschalten 
   * BUG: 0518 Unter Konto-Details->Umsätze wurden nur maximal die letzten 30 Tage angezeigt, auch wenn mit dem Schieberegler ein größerer Zeitraum gewählt wurde 
 
 2016-05-02 Version 2.6.16
