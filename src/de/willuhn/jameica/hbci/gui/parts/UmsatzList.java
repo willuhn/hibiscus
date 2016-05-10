@@ -325,16 +325,14 @@ public class UmsatzList extends TablePart implements Extendable
       }));
       c.addInput(this.days);
     }
-    super.paint(parent);
     
-
     // Und einmal starten bitte, wenn wir entweder einen Filter
     // haben oder ein Konto angegeben ist, von dem wir die Umsaetze on-the-fly laden 
     if (this.filter || this.konto != null)
       kl.process(true);
-    
-    sort();
-    
+
+    super.paint(parent);
+
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
     restoreState();
   }

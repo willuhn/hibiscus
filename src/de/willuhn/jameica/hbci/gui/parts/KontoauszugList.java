@@ -236,8 +236,6 @@ public class KontoauszugList extends UmsatzList
     
     buttons.paint(parent);
     
-    handleReload(true);
-    
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
@@ -245,6 +243,8 @@ public class KontoauszugList extends UmsatzList
         disposed = true;
       }
     });
+
+    reload();
     super.paint(parent);
 
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
@@ -819,31 +819,38 @@ public class KontoauszugList extends UmsatzList
       public void run()
       {
         GUI.startSync(new Runnable() // Sanduhr einblenden
-            {
-              public void run()
-              {
-                try
-                {
-                  
-                  removeAll();
-                  
-                  List<Umsatz> list = getUmsaetze();
-                  for(Umsatz u:list)
-                    addItem(u);
-
-                  
-                  // Zum Schluss Sortierung aktualisieren
-                  sort();
-                }
-                catch (Exception e)
-                {
-                  Logger.error("error while reloading table",e);
-                  Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
-                }
-              }
-            });
+        {
+          public void run()
+          {
+            reload();
+          }
+        });
       }
     });
+  }
+  
+  /**
+   * Laedt die Daten.
+   */
+  private void reload()
+  {
+    try
+    {
+      removeAll();
+      
+      List<Umsatz> list = getUmsaetze();
+      for(Umsatz u:list)
+        addItem(u);
+
+      
+      // Zum Schluss Sortierung aktualisieren
+      sort();
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while reloading table",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
+    }
   }
   
   /**
