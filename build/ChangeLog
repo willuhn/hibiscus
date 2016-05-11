@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0521 Reihenfolge der Felder "Suchbegriff" und "Konto" in Auftragslisten getauscht, damit es einheitlich zu den Auswertungen ist
   * BUG: 0520 BUGZILLA 1724 - Die Sortier-Reihenfolge in der Umsatzliste wurde nicht mehr gespeichert (das asynchrone initiale Laden führte dazu, dass es nach dem pain() stattfand)
   * CHG: 0519 BUGZILLA 1726 - mit dem neuen Parameter "usage.list.all=true" in ".jameica/cfg/de.willuhn.jameica.hbci.HBCI.properties" kann man jetzt auch
               in der Umsatzliste wieder auf die alte Ansicht der Verwendungszwecke (unformatierte Anzeige der "rohen Verwendungszwecke") zurückschalten 

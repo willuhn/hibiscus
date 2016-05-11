@@ -261,6 +261,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     
     {
       this.left = new SimpleContainer(cols.getComposite());
+      this.left.addInput(this.getKonto());
       
       Input t = this.getText();
       this.left.addInput(t);
@@ -268,7 +269,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
       // Duerfen wir erst nach dem Zeichnen
       t.getControl().addKeyListener(new DelayedAdapter());
       
-      this.left.addInput(this.getKonto());
     }
     
     {
