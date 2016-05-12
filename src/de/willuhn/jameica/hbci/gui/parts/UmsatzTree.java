@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTree.java,v $
- * $Revision: 1.9 $
- * $Date: 2012/04/23 21:03:41 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by Heiner Jostkleigrewe
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -54,6 +48,7 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTree extends TreePart
 {
+  private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
@@ -132,7 +127,10 @@ public class UmsatzTree extends TreePart
     
     });
     this.addColumn(i18n.tr("Bezeichnung"),      "name");
-    this.addColumn(i18n.tr("Verwendungszweck"), Tag.SVWZ.name());
+    if (settings.getBoolean("usage.list.all",false))
+      addColumn(i18n.tr("Verwendungszweck"),    "mergedzweck");
+    else
+      addColumn(i18n.tr("Verwendungszweck"),    Tag.SVWZ.name());
     this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.addColumn(i18n.tr("Notiz"),            "kommentar");
@@ -220,34 +218,3 @@ public class UmsatzTree extends TreePart
     return node;
   }
 }
-
-/*******************************************************************************
- * $Log: UmsatzTree.java,v $
- * Revision 1.9  2012/04/23 21:03:41  willuhn
- * @N BUGZILLA 1227
- *
- * Revision 1.8  2011-08-08 07:37:27  willuhn
- * @B BUGZILLA 1115
- *
- * Revision 1.7  2011-04-29 07:41:56  willuhn
- * @N BUGZILLA 781
- *
- * Revision 1.6  2011-04-26 12:15:51  willuhn
- * @B Potentielle Bugs gemaess Code-Checker
- *
- * Revision 1.5  2011-01-05 11:20:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2011-01-05 11:19:10  willuhn
- * @N Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt auch in "Umsaetze nach Kategorien"
- * @N NeueUmsaetze.isNew(Umsatz) zur Pruefung, ob ein Umsatz neu ist
- *
- * Revision 1.3  2010-10-10 21:57:19  willuhn
- * @N BUGZILLA 926
- *
- * Revision 1.2  2010/05/30 23:29:31  willuhn
- * @N Alle Verwendungszweckzeilen in Umsatzlist und -tree anzeigen (BUGZILLA 782)
- *
- * Revision 1.1  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- ******************************************************************************/
