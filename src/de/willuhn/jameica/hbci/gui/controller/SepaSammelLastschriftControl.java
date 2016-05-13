@@ -32,6 +32,8 @@ import de.willuhn.jameica.hbci.gui.parts.SepaSammelTransferBuchungList;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaSammelLastschrift;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -176,6 +178,15 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
 
     transfer = (SepaSammelLastschrift) Settings.getDBService().createObject(SepaSammelLastschrift.class,null);
     return transfer;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getSynchronizeJobType()
+   */
+  @Override
+  public Class<? extends SynchronizeJob> getSynchronizeJobType()
+  {
+    return SynchronizeJobSepaSammelLastschrift.class;
   }
 
   /**

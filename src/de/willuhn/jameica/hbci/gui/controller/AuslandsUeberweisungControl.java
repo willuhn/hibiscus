@@ -47,6 +47,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaUeberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
@@ -520,10 +521,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
   /**
    * Eigener ueberschriebener Kontofilter.
    */
-  private class MyKontoFilter implements KontoFilter
+  private class MyKontoFilter extends KontoFilter
   {
     // Wir leiten die Anfrage an den weiter
-    private KontoFilter foreign = KontoFilter.FOREIGN;
+    private KontoFilter foreign = KontoFilter.createForeign(SynchronizeJobSepaUeberweisung.class);
 
     private boolean found = false;
 

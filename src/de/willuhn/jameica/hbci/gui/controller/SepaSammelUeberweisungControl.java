@@ -28,6 +28,8 @@ import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.parts.SepaSammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.SepaSammelUeberweisungList;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaSammelUeberweisung;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -92,6 +94,15 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
 
     table = new SepaSammelUeberweisungList(new SepaSammelUeberweisungNew());
     return table;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getSynchronizeJobType()
+   */
+  @Override
+  public Class<? extends SynchronizeJob> getSynchronizeJobType()
+  {
+    return SynchronizeJobSepaSammelUeberweisung.class;
   }
 
   /**

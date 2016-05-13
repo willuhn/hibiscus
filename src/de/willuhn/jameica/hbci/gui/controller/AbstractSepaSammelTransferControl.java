@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.rmi.BatchBookType;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.system.Application;
@@ -74,6 +75,12 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
    * @throws RemoteException
    */
   public abstract T getTransfer() throws RemoteException;
+  
+  /**
+   * Liefert die Synchronize-Job-Art.
+   * @return die Synchronize-Job-Art.
+   */
+  public abstract Class<? extends SynchronizeJob> getSynchronizeJobType();
 
   /**
    * Liefert eine Tabelle mit den existierenden Sammel-Auftraegen.
@@ -253,16 +260,15 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
       }
     }
     return false;
-
   }
 
   /**
    * Eigener ueberschriebener Kontofilter.
    */
-  private class MyKontoFilter implements KontoFilter
+  private class MyKontoFilter extends KontoFilter
   {
     // Wir leiten die Anfrage an den weiter
-    private KontoFilter foreign = KontoFilter.FOREIGN;
+    private KontoFilter foreign = KontoFilter.createForeign(getSynchronizeJobType());
 
     private boolean found = false;
 

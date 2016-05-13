@@ -11,10 +11,13 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 
 /**
  * Mit diesem Filter koennen einzelne Konten bei der Suche
@@ -22,12 +25,12 @@ import de.willuhn.jameica.system.Application;
  * Auslandsueberweisungen nur jene Konten anzuzeigen, die
  * eine IBAN besitzen.
  */
-public interface KontoFilter extends Filter<Konto>
+public abstract class KontoFilter implements Filter<Konto>
 {
   /**
    * @see de.willuhn.jameica.hbci.gui.filter.Filter#accept(java.lang.Object)
    */
-  public boolean accept(Konto konto) throws RemoteException;
+  public abstract boolean accept(Konto konto) throws RemoteException;
   
   /**
    * Filter, der alle Konten zulaesst.
@@ -124,5 +127,48 @@ public interface KontoFilter extends Filter<Konto>
       return engine.supports(SynchronizeJobKontoauszug.class,konto);
     }
   }; 
+  
+  /**
+   * Erzeugt einen Konto-Filter basierend auf {@link KontoFilter#FOREIGN}, welcher jedoch nur jene Konten
+   * zulaesst, die den angegebenen Synchronize-Job unterstuetzen (insofern das Backend ermittelbar ist).
+   * @param type der Typ des Synchronize-Jobs.
+   * @return der Konto-Filter.
+   */
+  public static KontoFilter createForeign(final Class<? extends SynchronizeJob> type)
+  {
+    return new KontoFilter() {
+      
+      /**
+       * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
+       */
+      @Override
+      public boolean accept(Konto konto) throws RemoteException
+      {
+        boolean b = FOREIGN.accept(konto);
+        if (!b)
+          return false;
+
+        // brauchen wir gar nicht weiter checken
+        if (type == null)
+          return true;
+        
+        try
+        {
+          // OK, jetzt checken wir noch den Sync-Job.
+          BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+          SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
+          SynchronizeBackend backend = engine.getBackend(type,konto);
+          return backend == null || backend.supports(type,konto);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to determine if account is supported, will rather accept it",e);
+        }
+        
+        return true;
+      }
+    };
+    
+  }
 
 }

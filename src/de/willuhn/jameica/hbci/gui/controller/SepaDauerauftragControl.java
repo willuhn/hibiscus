@@ -45,6 +45,7 @@ import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragStore;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -549,10 +550,10 @@ public class SepaDauerauftragControl extends AbstractControl
   /**
    * Eigener ueberschriebener Kontofilter.
    */
-  private class MyKontoFilter implements KontoFilter
+  private class MyKontoFilter extends KontoFilter
   {
     // Wir leiten die Anfrage an den weiter
-    private KontoFilter foreign = KontoFilter.FOREIGN;
+    private KontoFilter foreign = KontoFilter.createForeign(SynchronizeJobSepaDauerauftragStore.class);
 
     private boolean found = false;
 

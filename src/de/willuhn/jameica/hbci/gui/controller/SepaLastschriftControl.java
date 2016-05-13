@@ -56,6 +56,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaLastschrift;
 import de.willuhn.jameica.messaging.MessageBus;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
@@ -589,10 +590,10 @@ public class SepaLastschriftControl extends AbstractControl
   /**
    * Eigener ueberschriebener Kontofilter.
    */
-  private class MyKontoFilter implements KontoFilter
+  private class MyKontoFilter extends KontoFilter
   {
     // Wir leiten die Anfrage an den weiter
-    private KontoFilter foreign = KontoFilter.FOREIGN;
+    private KontoFilter foreign = KontoFilter.createForeign(SynchronizeJobSepaLastschrift.class);
 
     private boolean found = false;
 

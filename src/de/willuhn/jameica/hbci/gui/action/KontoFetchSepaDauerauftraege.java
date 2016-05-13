@@ -44,7 +44,7 @@ public class KontoFetchSepaDauerauftraege implements Action
 		if (!(context instanceof Konto))
 		{
 			// 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
-			KontoAuswahlDialog d = new KontoAuswahlDialog(null,KontoFilter.FOREIGN,KontoAuswahlDialog.POSITION_CENTER);
+			KontoAuswahlDialog d = new KontoAuswahlDialog(null,KontoFilter.createForeign(SynchronizeJobSepaDauerauftragList.class),KontoAuswahlDialog.POSITION_CENTER);
 			try
 			{
 				context = d.open();
