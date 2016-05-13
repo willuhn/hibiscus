@@ -324,7 +324,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mName = pattern.matcher(name);
       Matcher mKto = pattern.matcher(kto);
       Matcher mKom = pattern.matcher(kom);
-      Matcher mArt = pattern.matcher(kom);
+      Matcher mArt = pattern.matcher(art);
       Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art);
 
       return (mZweck.matches() ||
