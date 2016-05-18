@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/UmsatzTypUtil.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/04/16 12:46:40 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -14,7 +8,11 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
 
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -55,9 +53,9 @@ public class UmsatzTypUtil
    * @return Liste aller Umsatz-Kategorien.
    * @throws RemoteException
    */
-  public static DBIterator getAll() throws RemoteException
+  public static DBIterator<UmsatzTyp> getAll() throws RemoteException
   {
-    DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
+    DBIterator<UmsatzTyp> list = Settings.getDBService().createList(UmsatzTyp.class);
     list.setOrder("ORDER BY nummer,name");
     return list;
   }
@@ -67,33 +65,58 @@ public class UmsatzTypUtil
    * @return Liste der Umsatz-Kategorien oberster Ebene.
    * @throws RemoteException
    */
-  public static DBIterator getRootElements() throws RemoteException
+  public static DBIterator<UmsatzTyp> getRootElements() throws RemoteException
   {
-    DBIterator list = getAll();
+    DBIterator<UmsatzTyp> list = getAll();
     // die mit ungueltiger Parent-ID sind quasi Leichen - steht nur sicherheitshalber
     // mit hier drin. Eigentlich sollte die DB sowas via Constraint verhindern
     list.addFilter("parent_id is null or parent_id not in (select id from umsatztyp)");
     return list;
   }
+  
+  /**
+   * Liefert einen Tree mit den gesuchten Umsatz-Kategorien.
+   * @param skip einzelner Umsatz-Typ, der nicht enthalten sein soll.
+   * Damit ist es zum Beispiel moeglich, eine Endlos-Rekursion zu erzeugen,
+   * wenn ein Parent ausgewaehlt werden soll, der User aber die Kategorie
+   * sich selbst als Parent zuordnet. Das kann hiermit ausgefiltert werden.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @return der Tree mit den Umsatz-Kategorien.
+   * @throws RemoteException
+   */
+  public static GenericIterator<UmsatzTypBean> getTree(UmsatzTyp skip, int typ) throws RemoteException
+  {
+    
+    // Wir laden erstmal alle Kategorien in einem einzelnen Query
+    final List<UmsatzTypBean> all = PseudoIterator.asList(UmsatzTypUtil.getAll());
 
+    DBIterator<UmsatzTyp> it = getAll();
+    while (it.hasNext())
+    {
+      UmsatzTyp t = it.next();
+      all.add(new UmsatzTypBean(t));
+    }
+
+    // Wir ermitteln erstmal nur die Root-Elemente und verarbeiten die dann alle einzeln
+    // Im Prinzip koennte man das alles auch bequemer ueber die passenden Methoden von UmsatzTypUtil
+    // und GenericObjectNode machen. Das wuerde aber rekursiv eine ganze Reihe von SQL-Queries
+    // ausloesen. Bei 50 verschachtelten Kategorien koennen da schnell 200 SQL-Abfragen zusammenkommen,
+    // die jedesmal aufgerufen werden, wenn die Selectbox eingeblendet wird. Daher laden wir mit einem
+    // einzelnen Query alle Kategorien und erzeugen den Baum dann komplett im Speicher. Das ist erheblich
+    // schneller.
+    final List<UmsatzTypBean> root = new LinkedList<UmsatzTypBean>();
+    for (UmsatzTypBean t:all)
+    {
+      if (t.getAttribute("parent_id") == null)
+      {
+        t.collectChildren(all,skip,typ);
+        root.add(t);
+      }
+    }
+    
+    return PseudoIterator.fromArray(root.toArray(new UmsatzTypBean[root.size()]));
+  }
 }
-
-
-/*********************************************************************
- * $Log: UmsatzTypUtil.java,v $
- * Revision 1.5  2010/04/16 12:46:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2010/04/16 12:46:03  willuhn
- * @B Parent-ID beim Import von Kategorien beruecksichtigen und neu mappen - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=66546#66546
- *
- * Revision 1.3  2010/03/05 23:59:31  willuhn
- * @C Code-Cleanup
- *
- * Revision 1.2  2010/03/05 23:29:18  willuhn
- * @N Statische Basis-Funktion zum Laden der Kategorien in der richtigen Reihenfolge
- *
- * Revision 1.1  2008/08/29 16:46:24  willuhn
- * @N BUGZILLA 616
- *
- **********************************************************************/

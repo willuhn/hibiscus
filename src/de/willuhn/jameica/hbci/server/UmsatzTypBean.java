@@ -1,0 +1,244 @@
+/**********************************************************************
+ *
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.jameica.hbci.server;
+
+import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
+import de.willuhn.datasource.BeanUtil;
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.GenericObjectNode;
+import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+
+/**
+ * Hilfsklasse zur formatierten Anzeige der Umsatz-Kategorien.
+ */
+public class UmsatzTypBean implements GenericObjectNode
+{
+  private UmsatzTypBean parent = null;
+  private List<UmsatzTypBean> children = new LinkedList<UmsatzTypBean>();
+  private UmsatzTyp typ = null;
+  private Integer level = null;
+  
+  /**
+   * ct.
+   * @param parent
+   * @param typ
+   */
+  UmsatzTypBean(UmsatzTyp typ)
+  {
+    this.typ = typ;
+  }
+  
+  /**
+   * Sammelt die Kinder aus der Liste aller Umsatz-Kategorien ein.
+   * @param all Liste aller Umsatz-Kategorien.
+   * @param skip einzelner Umsatz-Typ, der nicht enthalten sein soll.
+   * Damit ist es zum Beispiel moeglich, eine Endlos-Rekursion zu erzeugen,
+   * wenn ein Parent ausgewaehlt werden soll, der User aber die Kategorie
+   * sich selbst als Parent zuordnet. Das kann hiermit ausgefiltert werden.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @throws RemoteException
+   */
+  void collectChildren(List<UmsatzTypBean> all,UmsatzTyp skip, int typ) throws RemoteException
+  {
+    for (UmsatzTypBean child:all)
+    {
+      if (skip != null && BeanUtil.equals(skip,child.typ))
+        continue;
+
+      int ti = child.typ.getTyp();
+      if (typ == UmsatzTyp.TYP_EGAL || (ti == UmsatzTyp.TYP_EGAL || ti == typ))
+      {
+        String pid = (String) child.typ.getAttribute("parent_id");
+        if (pid != null && pid.equals(this.typ.getID()))
+        {
+          child.parent = this;
+          this.children.add(child);
+          
+          // Rekursion nach unten
+          child.collectChildren(all,skip,typ);
+        }
+      }
+    }
+  }
+  
+  /**
+   * Liefert das Eltern-Element oder NULL, wenn es ein Root-Element ist.
+   * @return das Eltern-Element oder NULL, wenn es ein Root-Element ist.
+   */
+  public UmsatzTypBean getParent()
+  {
+    return parent;
+  }
+  
+  /**
+   * Liefert den Umsatz-Typ.
+   * @return typ der Umsatz-Typ.
+   */
+  public UmsatzTyp getTyp()
+  {
+    return typ;
+  }
+  
+  /**
+   * Liefert das Level des Umsatzes in der Hierarchie.
+   * Level 0 entspricht den Root-Elementen.
+   * @return level das Level in der Hierarchie.
+   */
+  public int getLevel()
+  {
+    if (this.level != null)
+      return this.level.intValue();
+
+    int depth = 0;
+    UmsatzTypBean parent = this.getParent();
+    
+    // Maximal 100 Level nach oben
+    for (int i=0;i<100;++i)
+    {
+      if (parent == null)
+        break; // Oben angekommen
+
+      depth++;
+      parent = parent.getParent();
+    }
+    
+    this.level = Integer.valueOf(depth);
+    return this.level.intValue();
+  }
+  
+  /**
+   * Liefert den formatierten Namen der Umsatzkategorie mit passender Einrueckung.
+   * @return der formatierte Name der Umsatzkategorie mit passender Einrueckung.
+   * @throws RemoteException
+   */
+  public String getIndented() throws RemoteException
+  {
+    return StringUtils.leftPad(this.typ.getName(),this.getLevel(),"  ");
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+   */
+  @Override
+  public boolean equals(GenericObject arg0) throws RemoteException
+  {
+    return this.typ.equals(arg0);
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  @Override
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if (arg0 != null && arg0.equals("indented"))
+      return this.getIndented();
+    
+    return this.typ.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+   */
+  @Override
+  public String[] getAttributeNames() throws RemoteException
+  {
+    return this.typ.getAttributeNames();
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getID()
+   */
+  @Override
+  public String getID() throws RemoteException
+  {
+    return this.typ.getID();
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+   */
+  @Override
+  public String getPrimaryAttribute() throws RemoteException
+  {
+    return this.typ.getPrimaryAttribute();
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
+   */
+  @Override
+  public GenericIterator getChildren() throws RemoteException
+  {
+    return PseudoIterator.fromArray(this.children.toArray(new UmsatzTypBean[this.children.size()]));
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getPath()
+   */
+  @Override
+  public GenericIterator getPath() throws RemoteException
+  {
+    List<UmsatzTypBean> result = new LinkedList<UmsatzTypBean>();
+    
+    UmsatzTypBean parent = this.getParent();
+    // Maximal 100 Level nach oben
+    for (int i=0;i<100;++i)
+    {
+      if (parent == null)
+        break; // Oben angekommen
+
+      result.add(parent);
+      parent = parent.getParent();
+    }
+    
+    return PseudoIterator.fromArray(result.toArray(new UmsatzTypBean[result.size()]));
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
+   */
+  @Override
+  public GenericIterator getPossibleParents() throws RemoteException
+  {
+    throw new UnsupportedOperationException("not implemented");
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
+   */
+  @Override
+  public boolean hasChild(GenericObjectNode node) throws RemoteException
+  {
+    if (node == null)
+      return false;
+    
+    for (UmsatzTypBean child:this.children)
+    {
+      // Ist es das Kind selbst?
+      if (BeanUtil.equals(child,node))
+        return true;
+      
+      // Ist es in den Enkeln?
+      if (child.hasChild(node))
+        return true;
+    }
+    
+    return false;
+  }
+}
