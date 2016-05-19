@@ -15,7 +15,6 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.swt.events.KeyAdapter;
@@ -27,9 +26,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.BeanUtil;
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -44,6 +40,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.UmsatzTypBean;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -61,7 +58,7 @@ public class UmsatzTypListDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
-  private List<FormattedType> list = null;
+  private List<UmsatzTypBean> list = null;
   private UmsatzTyp choosen        = null;
   private int typ                  = UmsatzTyp.TYP_EGAL;
   
@@ -84,6 +81,8 @@ public class UmsatzTypListDialog extends AbstractDialog
     super(position);
     this.choosen = preselected;
     this.typ = typ;
+    
+    this.list =  UmsatzTypUtil.getList(null,this.typ);
 
     this.setTitle(i18n.tr("Auswahl der Kategorie"));
     this.setSize(370,500);
@@ -102,8 +101,6 @@ public class UmsatzTypListDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    this.list = this.init(this.typ);
-    
     Container group = new SimpleContainer(parent,true);
     
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
@@ -114,7 +111,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     ////////////////
     // geht erst nach dem Paint
     if (this.choosen != null)
-      this.getTable().select(new FormattedType(this.choosen));
+      this.getTable().select(new UmsatzTypBean(this.choosen));
     
     
     text.getControl().addKeyListener(new DelayedAdapter());
@@ -177,10 +174,10 @@ public class UmsatzTypListDialog extends AbstractDialog
   {
     if (this.table != null)
       return this.table;
-    
+
     this.table = new TablePart(this.list,new Apply());
     this.table.setSummary(false);
-    this.table.addColumn(i18n.tr("Bezeichnung"),"name");
+    this.table.addColumn(i18n.tr("Bezeichnung"),"indented");
     this.table.setFormatter(new TableFormatter()
     {
       /**
@@ -193,11 +190,11 @@ public class UmsatzTypListDialog extends AbstractDialog
 
         try
         {
-          FormattedType ft = (FormattedType) item.getData();
-          if (ft == null)
+          UmsatzTypBean b = (UmsatzTypBean) item.getData();
+          if (b == null)
             return;
           
-          UmsatzTyp ut = ft.type;
+          UmsatzTyp ut = b.getTyp();
           if (ut == null)
             return;
           
@@ -253,121 +250,10 @@ public class UmsatzTypListDialog extends AbstractDialog
   {
     public void handleAction(Object context) throws ApplicationException
     {
-      FormattedType ft = (FormattedType) getTable().getSelection();
-      choosen = ft != null ? ft.type : null;
+      UmsatzTypBean b = (UmsatzTypBean) getTable().getSelection();
+      choosen = b != null ? b.getTyp() : null;
       if (choosen != null)
         close();
-    }
-  }
-  
-  /**
-   * Initialisiert die Liste der anzuzeigenden Kategorien.
-   * @param typ der Kategorie-Typ.
-   * @return initialisierte Liste.
-   * @throws RemoteException
-   */
-  private List<FormattedType> init(int typ) throws RemoteException
-  {
-    List<FormattedType> l = new LinkedList<FormattedType>();
-    DBIterator list = UmsatzTypUtil.getRootElements();
-    while (list.hasNext())
-    {
-      add((UmsatzTyp)list.next(),l,typ);
-    }
-    return l;
-  }
-  
-  /**
-   * Fuegt die Kinder der Kategorie hinzu.
-   * @param t die Kategorie.
-   * @param l die Liste, wo die Kinder drin landen sollen.
-   * @param typ Typ-Filter.
-   * @throws RemoteException
-   */
-  private void add(UmsatzTyp t, List<FormattedType> l, int typ) throws RemoteException
-  {
-    // Wir filtern hier zwei Faelle:
-    
-    // a) typ == TYP_EGAL -> es wird nichts gefiltert
-    // b) typ != TYP_EGAL -> es werden nur die angezeigt, bei denen TYP_EGAL oder Typ passt
-    
-    int ti = t.getTyp();
-    if (typ == UmsatzTyp.TYP_EGAL || (ti == UmsatzTyp.TYP_EGAL || ti == typ))
-    {
-      l.add(new FormattedType(t));
-      
-      GenericIterator children = t.getChildren();
-      while (children.hasNext())
-      {
-        add((UmsatzTyp) children.next(),l,typ);
-      }
-    }
-  }
-  
-  
-  /**
-   * Hilfsklasse, um die Einrueckungen anzuzeigen.
-   * Wir berechnen das vor, damit es schneller geht. Ginge
-   * auch per Formatter live - aber das wuerde unnoetig Rechenzeit
-   * verbrauchen.
-   */
-  public class FormattedType
-  {
-    private UmsatzTyp type = null;
-    private String name    = null;
-    private String lower   = null;
-    
-    /**
-     * ct.
-     * @param type der Umsatz-Typ.
-     * @throws RemoteException
-     */
-    private FormattedType(UmsatzTyp type) throws RemoteException
-    {
-      this.type  = type;
-      this.name  = this.type.getName();
-      this.lower = this.name.toLowerCase();
-      
-      try
-      {
-        int depth = type.getPath().size();
-        for (int i=0;i<depth;++i)
-        {
-          this.name = "    " + this.name;
-        }
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to indent category name",e);
-      }
-    }
-    
-    /**
-     * Liefert den Namen der Kategorie.
-     * @return der Name der Kategorie.
-     */
-    public String getName()
-    {
-      return this.name;
-    }
-    
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object other)
-    {
-      if (!(other instanceof FormattedType))
-        return false;
-
-      try
-      {
-        return BeanUtil.equals(this.type,((FormattedType)other).type);
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("error while comparing categories",re);
-        return false;
-      }
     }
   }
   
@@ -392,7 +278,7 @@ public class UmsatzTypListDialog extends AbstractDialog
         text = text.trim().toLowerCase();
         try
         {
-          for (FormattedType t:list)
+          for (UmsatzTypBean t:list)
           {
             if (text.length() == 0)
             {
@@ -400,7 +286,7 @@ public class UmsatzTypListDialog extends AbstractDialog
               continue;
             }
             
-            if (t.lower.contains(text))
+            if (t.getTyp().getName().toLowerCase().contains(text))
               table.addItem(t);
           }
         }

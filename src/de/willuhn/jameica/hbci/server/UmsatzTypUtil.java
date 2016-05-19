@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -89,14 +90,15 @@ public class UmsatzTypUtil
    */
   public static GenericIterator<UmsatzTypBean> getTree(UmsatzTyp skip, int typ) throws RemoteException
   {
-    
     // Wir laden erstmal alle Kategorien in einem einzelnen Query
-    final List<UmsatzTypBean> all = PseudoIterator.asList(UmsatzTypUtil.getAll());
-
     DBIterator<UmsatzTyp> it = getAll();
+
+    final List<UmsatzTypBean> all = new LinkedList<UmsatzTypBean>();
     while (it.hasNext())
     {
       UmsatzTyp t = it.next();
+      if (filtered(t,skip,typ))
+        continue;
       all.add(new UmsatzTypBean(t));
     }
 
@@ -112,11 +114,83 @@ public class UmsatzTypUtil
     {
       if (t.getAttribute("parent_id") == null)
       {
-        t.collectChildren(all,skip,typ);
+        t.collectChildren(all);
         root.add(t);
       }
     }
-    
     return PseudoIterator.fromArray(root.toArray(new UmsatzTypBean[root.size()]));
+  }
+
+  /**
+   * Liefert eine Liste mit den gesuchten Umsatz-Kategorien.
+   * Die Reihenfolge entspricht der von <code>UmsatzTypUtil{@link #getTree(UmsatzTyp, int)}</code>.
+   * Die Kategorien koennen also 1:1 in einer Liste angezeigt werden, wenn zur Anzeige
+   * <code>UmsatzTypBean#getIndented()</code> verwendet wird.
+   * @param skip einzelner Umsatz-Typ, der nicht enthalten sein soll.
+   * Damit ist es zum Beispiel moeglich, eine Endlos-Rekursion zu erzeugen,
+   * wenn ein Parent ausgewaehlt werden soll, der User aber die Kategorie
+   * sich selbst als Parent zuordnet. Das kann hiermit ausgefiltert werden.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @return der Tree mit den Umsatz-Kategorien.
+   * @throws RemoteException
+   */
+  public static List<UmsatzTypBean> getList(UmsatzTyp skip, int typ) throws RemoteException
+  {
+    GenericIterator<UmsatzTypBean> tree = getTree(skip,typ);
+    
+    // Jetzt rekursiv in Liste uebertragen
+    List<UmsatzTypBean> result = new LinkedList<UmsatzTypBean>();
+    while (tree.hasNext())
+    {
+      collect(tree.next(),result);
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Traegt die Kategorie und alle Kinder rekursiv in die Liste ein.
+   * @param bean die Kategorie.
+   * @param target die Ziel-Liste.
+   * @throws RemoteException
+   */
+  private static void collect(UmsatzTypBean bean, List<UmsatzTypBean> target) throws RemoteException
+  {
+    target.add(bean);
+    GenericIterator<UmsatzTypBean> children = bean.getChildren();
+    while (children.hasNext())
+    {
+      collect(children.next(),target);
+    }
+  }
+
+  /**
+   * Prueft, ob die Umsatz-Kategorie gefiltert werden sollte, wenn sie entweder identisch
+   * zu <code>skip</code> ist oder weil der angegebene Typ nicht passt.
+   * @param ut die zu testende Umsatz-Kategorie.
+   * @param skip die optionale zu ueberspringende Umsatz-Kategorie.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @return true, wenn der Umsatz gefiltert werden soll.
+   * @throws RemoteException
+   */
+  private static boolean filtered(UmsatzTyp ut, UmsatzTyp skip, int typ) throws RemoteException
+  {
+    if (ut == null)
+      return true;
+    
+    if (skip != null && BeanUtil.equals(skip,ut))
+      return true;
+
+    int ti = ut.getTyp();
+    if (typ == UmsatzTyp.TYP_EGAL || ti == UmsatzTyp.TYP_EGAL)
+      return false;
+        
+    return ti != typ;
   }
 }

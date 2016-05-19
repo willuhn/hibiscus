@@ -32,10 +32,9 @@ public class UmsatzTypBean implements GenericObjectNode
   
   /**
    * ct.
-   * @param parent
    * @param typ
    */
-  UmsatzTypBean(UmsatzTyp typ)
+  public UmsatzTypBean(UmsatzTyp typ)
   {
     this.typ = typ;
   }
@@ -43,35 +42,23 @@ public class UmsatzTypBean implements GenericObjectNode
   /**
    * Sammelt die Kinder aus der Liste aller Umsatz-Kategorien ein.
    * @param all Liste aller Umsatz-Kategorien.
-   * @param skip einzelner Umsatz-Typ, der nicht enthalten sein soll.
-   * Damit ist es zum Beispiel moeglich, eine Endlos-Rekursion zu erzeugen,
-   * wenn ein Parent ausgewaehlt werden soll, der User aber die Kategorie
-   * sich selbst als Parent zuordnet. Das kann hiermit ausgefiltert werden.
-   * @param typ Filter auf Kategorie-Typen.
-   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
-   * @see UmsatzTyp#TYP_AUSGABE
-   * @see UmsatzTyp#TYP_EINNAHME
    * @throws RemoteException
    */
-  void collectChildren(List<UmsatzTypBean> all,UmsatzTyp skip, int typ) throws RemoteException
+  void collectChildren(List<UmsatzTypBean> all) throws RemoteException
   {
     for (UmsatzTypBean child:all)
     {
-      if (skip != null && BeanUtil.equals(skip,child.typ))
-        continue;
-
-      int ti = child.typ.getTyp();
-      if (typ == UmsatzTyp.TYP_EGAL || (ti == UmsatzTyp.TYP_EGAL || ti == typ))
+      Object parent = (Object) child.typ.getAttribute("parent_id");
+      if (parent == null)
+        continue; // Ist ein Root-Element
+      String pid = (parent instanceof GenericObject) ? ((GenericObject)parent).getID() : parent.toString();
+      if (pid != null && pid.equals(this.typ.getID()))
       {
-        String pid = (String) child.typ.getAttribute("parent_id");
-        if (pid != null && pid.equals(this.typ.getID()))
-        {
-          child.parent = this;
-          this.children.add(child);
-          
-          // Rekursion nach unten
-          child.collectChildren(all,skip,typ);
-        }
+        child.parent = this;
+        this.children.add(child);
+        
+        // Rekursion nach unten
+        child.collectChildren(all);
       }
     }
   }
@@ -128,7 +115,7 @@ public class UmsatzTypBean implements GenericObjectNode
    */
   public String getIndented() throws RemoteException
   {
-    return StringUtils.leftPad(this.typ.getName(),this.getLevel(),"  ");
+    return StringUtils.repeat("    ",this.getLevel()) + this.typ.getName();
   }
 
   /**
@@ -137,7 +124,11 @@ public class UmsatzTypBean implements GenericObjectNode
   @Override
   public boolean equals(GenericObject arg0) throws RemoteException
   {
-    return this.typ.equals(arg0);
+    if (arg0 == null || !(arg0 instanceof UmsatzTypBean))
+      return false;
+    
+    UmsatzTypBean other = (UmsatzTypBean) arg0;
+    return this.typ.equals(other.typ);
   }
 
   /**
