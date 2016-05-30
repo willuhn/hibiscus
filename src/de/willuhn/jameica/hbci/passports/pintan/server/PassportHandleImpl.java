@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.PassportProcessCode3072;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.pintan.ChipTANDialog;
+import de.willuhn.jameica.hbci.passports.pintan.PhotoTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMechDialog;
@@ -296,7 +297,15 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         return true;
       }
 
-      // BUGZILLA 62
+      case HBCICallback.NEED_PT_PHOTOTAN:
+      {
+        TANDialog dialog = new PhotoTANDialog(config,retData.toString());
+        dialog.setContext(this.getContext(passport));
+        dialog.setText(msg);
+        retData.replace(0,retData.length(),(String)dialog.open());
+        return true;
+      }
+
       case HBCICallback.NEED_PT_TAN:
       {
         TANDialog dialog = null;

@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0525 BUGZILLA 1592 - erster Code für photoTAN-Support
   * NEW: 0524 Umsatz-Kategorien effizienter laden, ebenfalls performance-relevant: Monatssummen der Kategorie nur dann laden, wenn Kommentar an Kategorie-Auswahl sichtbar
   * NEW: 0523 Bei der Erstellung von SEPA-Aufträgen in der Kontoliste nur noch Konten anzeigen, deren Sync-Backend den angegebenen Job unterstützt. Das filtert
               Konten aus 3rd-Party-Plugins (Scripting/Mashup) aus
