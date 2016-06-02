@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -143,6 +144,12 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
       if (getSequenceType() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den Sequenz-Typ aus"));
       
+      if (this.getTargetDate() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Zieltermin ein"));
+
+      if (!this.getTargetDate().after(DateUtil.startOfDay(new Date())))
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Zieltermin ein, der sich in der Zukunft befindet"));
+
       if (this.getType() == null)
         this.setType(SepaLastType.DEFAULT);
       

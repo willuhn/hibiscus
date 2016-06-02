@@ -19,6 +19,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -57,7 +58,13 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     try {
       if (getSequenceType() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den Sequenz-Typ aus"));
-      
+
+      if (this.getTargetDate() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Zieltermin ein"));
+
+      if (!this.getTargetDate().after(DateUtil.startOfDay(new Date())))
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Zieltermin ein, der sich in der Zukunft befindet"));
+
       if (this.getType() == null)
         this.setType(SepaLastType.DEFAULT);
     }

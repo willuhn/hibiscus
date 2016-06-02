@@ -380,6 +380,7 @@ public class SepaLastschriftControl extends AbstractControl
       this.targetDate = new DateInput(getTransfer().getTargetDate(),DateUtil.DEFAULT_FORMAT);
       this.targetDate.setName(i18n.tr("Zieltermin"));
       this.targetDate.setEnabled(!getTransfer().ausgefuehrt());
+      this.targetDate.setMandatory(true);
     }
     return this.targetDate;
   }
