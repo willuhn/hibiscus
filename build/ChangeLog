@@ -1,7 +1,7 @@
 HEAD 2.7 (nightly)
 
   * BUG: 0527 BUGZILLA 1736 - Zieltermin in Lastschriften ist jetzt Pflichtfeld
-  * NEW: 0526 Neue HBCI4Java-Vrsion https://github.com/willuhn/hbci4java/commit/88e04a5c81e81a452d6300c74e4fc50f4c7c8012
+  * NEW: 0526 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/88e04a5c81e81a452d6300c74e4fc50f4c7c8012
   * NEW: 0525 BUGZILLA 1592 - erster Code für photoTAN-Support
   * NEW: 0524 Umsatz-Kategorien effizienter laden, ebenfalls performance-relevant: Monatssummen der Kategorie nur dann laden, wenn Kommentar an Kategorie-Auswahl sichtbar
   * NEW: 0523 Bei der Erstellung von SEPA-Aufträgen in der Kontoliste nur noch Konten anzeigen, deren Sync-Backend den angegebenen Job unterstützt. Das filtert
