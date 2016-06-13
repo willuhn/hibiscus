@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragExecute;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
@@ -434,6 +435,42 @@ public class SepaDauerauftragControl extends AbstractControl
     if (t.isActive())
       zweck.setEnabled(getBPD().getBoolean("usageeditable",true));
     return zweck;
+  }
+  
+  /**
+   * Fuehrt den Dauerauftrag aus.
+   */
+  public synchronized void handleExecute()
+  {
+    try
+    {
+      SepaDauerauftrag t = this.getTransfer();
+      
+      if (this.handleStore())
+      {
+        // BUGZILLA 1740 - Beim Aendern das Datum der ersten Zahlung auf den naechsten Zahlungstermin basierend auf heute setzen
+        if (t.isActive())
+        {
+          Date next = TurnusHelper.getNaechsteZahlung(new Date(),t.getLetzteZahlung(),t.getTurnus(),new Date());
+          if (next != null)
+          {
+            t.setErsteZahlung(next);
+            t.store();
+            getErsteZahlung().setValue(next);
+          }
+        }
+        new SepaDauerauftragExecute().handleAction(t);
+      }
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while executing order",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
   }
 
   /**

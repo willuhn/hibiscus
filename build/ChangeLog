@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0528 BUGZILLA 1740 - Beim Aktualisieren eines existierenden Dauerauftrages das Datum der ersten Zahlung automatisch auf den nächsten Termin setzen
+
 2016-06-03 Version 2.6.17
 
   * BUG: 0527 BUGZILLA 1736 - Zieltermin in Lastschriften ist jetzt Pflichtfeld

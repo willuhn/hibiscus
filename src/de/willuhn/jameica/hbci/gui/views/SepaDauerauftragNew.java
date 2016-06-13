@@ -16,7 +16,6 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragDelete;
-import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragExecute;
 import de.willuhn.jameica.hbci.gui.controller.SepaDauerauftragControl;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
@@ -84,8 +83,7 @@ public class SepaDauerauftragNew extends AbstractView
     {
       public void handleAction(Object context) throws ApplicationException
       {
-      	if (control.handleStore())
-					new SepaDauerauftragExecute().handleAction(da);
+        control.handleExecute();
       }
     },null,false,"emblem-important.png");
 		buttonArea.addButton(i18n.tr("&Speichern"), new Action()
