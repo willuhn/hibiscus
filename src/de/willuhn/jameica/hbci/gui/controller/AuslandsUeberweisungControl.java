@@ -85,6 +85,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
   private CheckboxInput storeEmpfaenger      = null;
   
+  private Listener terminListener            = new TerminListener();
+  
   
   /**
    * ct.
@@ -417,9 +419,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
         {
           Typ t = (Typ) getTyp().getValue();
           u.setTerminUeberweisung(t.termin);
-
-          // Kommentar vom Termin-Eingabefeld aktualisieren.
-          getTermin().updateComment();
         }
         catch (Exception e)
         {
@@ -427,6 +426,9 @@ public class AuslandsUeberweisungControl extends AbstractControl
         }
       }
     });
+    
+    this.typ.addListener(this.terminListener);
+    this.terminListener.handleEvent(null); // einmal initial ausloesen
     return this.typ;
   }
 
@@ -623,6 +625,37 @@ public class AuslandsUeberweisungControl extends AbstractControl
         Logger.error("error while choosing empfaenger",er);
         GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Empfängers"));
       }
+    }
+  }
+  
+  /**
+   * Listener, der das Label vor dem Termin aendert, wenn es eine Bank-seitig gefuehrte Termin-Ueberweisung ist.
+   */
+  private class TerminListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    @Override
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        TerminInput input = getTermin();
+        Typ typ = (Typ) getTyp().getValue();
+        if (typ != null && typ.termin)
+          input.setName(i18n.tr("Ausführungstermin"));
+        else
+          input.setName(i18n.tr("Erinnerungstermin"));
+        
+        // Kommentar vom Termin-Eingabefeld aktualisieren.
+        input.updateComment();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to update label",e);
+      }
+      
     }
   }
   

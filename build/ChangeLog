@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0529 Label "Erinnerungstermin" bei Erfassung einer Überweisung in "Ausführungstermin" ändern, wenn als Auftragstyp "Bankseitige SEPA-Terminüberweisung" gewählt wird
   * NEW: 0528 BUGZILLA 1740 - Beim Aktualisieren eines existierenden Dauerauftrages das Datum der ersten Zahlung automatisch auf den nächsten Termin setzen
 
 2016-06-03 Version 2.6.17
