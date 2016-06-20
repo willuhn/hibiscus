@@ -65,10 +65,26 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setSignatureDate(getSignatureDate());
     u.setCreditorId(getCreditorId());
     u.setSequenceType(getSequenceType());
-    u.setTargetDate(getTargetDate());
     u.setType(getType());
     u.setOrderId(getOrderId());
     u.setPurposeCode(getPurposeCode());
+
+    // Wenn sich das Target-Date in der Vergangenheit befindet, muessen wir ein neues erzeugen.
+    // Andernfalls wuerde das Speichern fehlschlagen, weil bei insertCheck geprueft wird, ob sich
+    // das Ziel-Datum in der Zukunft befindet
+    Date target = this.getTargetDate();
+    Date now = new Date();
+    if (target != null && !target.after(now))
+    {
+      // Wir nehmen morgen.
+      target = DateUtil.endOfDay(new Date(now.getTime() + (24 * 60 * 60 * 1000L)));
+      u.setTargetDate(target);
+    }
+    else
+    {
+      u.setTargetDate(target);
+    }
+
     return u;
   }
 

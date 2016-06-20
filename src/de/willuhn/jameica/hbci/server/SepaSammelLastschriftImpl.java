@@ -201,10 +201,26 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
       l.setKonto(this.getKonto());
       l.setTermin(new Date());
       l.setSequenceType(getSequenceType());
-      l.setTargetDate(getTargetDate());
       l.setType(getType());
       l.setOrderId(getOrderId());
       l.setPmtInfId(getPmtInfId());
+
+      // Wenn sich das Target-Date in der Vergangenheit befindet, muessen wir ein neues erzeugen.
+      // Andernfalls wuerde das Speichern fehlschlagen, weil bei insertCheck geprueft wird, ob sich
+      // das Ziel-Datum in der Zukunft befindet
+      Date target = this.getTargetDate();
+      Date now = new Date();
+      if (target != null && target.before(new Date()))
+      {
+        // Wir nehmen morgen.
+        target = DateUtil.endOfDay(new Date(now.getTime() + (24 * 60 * 60 * 1000L)));
+        l.setTargetDate(target);
+      }
+      else
+      {
+        l.setTargetDate(target);
+      }
+      
       l.store();
       
       List<SepaSammelLastBuchung> list = this.getBuchungen();

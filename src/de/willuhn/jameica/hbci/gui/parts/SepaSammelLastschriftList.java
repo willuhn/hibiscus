@@ -11,6 +11,9 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.parts.Column;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 
 /**
@@ -26,6 +29,7 @@ public class SepaSammelLastschriftList extends AbstractSepaSammelTransferList im
   public SepaSammelLastschriftList(Action action) throws RemoteException
   {
     super(action);
+    addColumn(i18n.tr("Zieltermin"),"targetdate", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Art"),"sepatype");
     addColumn(i18n.tr("Sequenz"),"sequencetype");
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SepaSammelLastschriftList());
