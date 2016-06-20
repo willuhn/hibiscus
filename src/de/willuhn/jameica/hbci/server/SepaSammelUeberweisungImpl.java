@@ -100,7 +100,12 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
       if (u != null)
         u.transactionRollback();
       Logger.error("unable to duplicate sepa sammeltransfer",e);
-      throw new RemoteException(i18n.tr("Fehler beim Duplizieren des SEPA-Sammelauftrages"),e);
+
+      String text = i18n.tr("Fehler beim Duplizieren des SEPA-Sammelauftrages");
+      if (e instanceof ApplicationException)
+        text = e.getMessage();
+      
+      throw new RemoteException(text,e);
     }
   }
 }
