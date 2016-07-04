@@ -61,6 +61,8 @@ public class SynchronizeList extends TablePart
   private MessageConsumer mcSync  = new SyncMessageConsumer();
   private MessageConsumer mcCache = new CacheMessageConsumer();
   private List<Synchronization> syncList = new ArrayList<Synchronization>();
+  private Button syncButton = null;
+  private Listener syncButtonListener = new SyncButtonListener();
 
   /**
    * ct.
@@ -136,6 +138,9 @@ public class SynchronizeList extends TablePart
       }
       this.syncList.add(sync);
     }
+
+    // Sync-Button-Status aktualisieren
+    syncButtonListener.handleEvent(null);
   }
 
   /**
@@ -143,6 +148,9 @@ public class SynchronizeList extends TablePart
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
+    if (this.syncButton != null)
+      return;
+    
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mcSync);
     Application.getMessagingFactory().getMessagingQueue("jameica.gui.view.unbind").registerMessageConsumer(this.mcCache);
     parent.addDisposeListener(new DisposeListener() {
@@ -153,24 +161,10 @@ public class SynchronizeList extends TablePart
       }
     });
 
-    final Button start = new Button(i18n.tr("S&ynchronisierung starten"),new SyncStart(),null,true,"mail-send-receive.png");
+    this.syncButton = new Button(i18n.tr("S&ynchronisierung starten"),new SyncStart(),null,true,"mail-send-receive.png");
     
-    // Button deaktivieren, wenn alle Sync-Aufgaben abgeschaltet sind
-    this.addSelectionListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        try
-        {
-          List<SynchronizeJob> selected = getItems(true);
-          start.setEnabled(selected != null && selected.size() > 0);
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to determine selected items",e);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ermitteln der Synchronisierungsaufgaben"),StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    });
+    // Aktualisieren den Button-Status je nach Auswahl
+    this.addSelectionListener(this.syncButtonListener);
     
     super.paint(parent);
     
@@ -179,7 +173,7 @@ public class SynchronizeList extends TablePart
     
     ButtonArea b = new ButtonArea();
     b.addButton(i18n.tr("Synchronisierungsoptionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
-    b.addButton(start);
+    b.addButton(this.syncButton);
     b.paint(parent);
   }
   
@@ -388,9 +382,14 @@ public class SynchronizeList extends TablePart
             if (status == null)
               return;
 
-            if (status.intValue() == ProgressMonitor.STATUS_RUNNING)
-              return; // laeuft noch
+            int i = status.intValue();
             
+            if (i == ProgressMonitor.STATUS_RUNNING)
+            {
+              syncButton.setEnabled(false); // Sync-Button deaktivieren
+              return;
+            }
+
             // Liste der Jobs aktualisieren
             init();
           }
@@ -431,6 +430,33 @@ public class SynchronizeList extends TablePart
     public void handleMessage(Message message) throws Exception
     {
       cacheUnchecked();
+    }
+  }
+  
+  /**
+   * Aktualisiert den Status des Sync-Buttons.
+   */
+  private class SyncButtonListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    @Override
+    public void handleEvent(Event event)
+    {
+      if (syncButton == null)
+        return;
+      
+      try
+      {
+        List<SynchronizeJob> selected = getItems(true);
+        syncButton.setEnabled(selected != null && selected.size() > 0);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to determine selected items",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ermitteln der Synchronisierungsaufgaben"),StatusBarMessage.TYPE_ERROR));
+      }
     }
   }
 
