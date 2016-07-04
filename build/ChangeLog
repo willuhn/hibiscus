@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0532 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0531 Button "Synchronisierung starten" während der Synchronisierung deaktivieren
   * BUG: 0530 Beim Duplizieren von Lastschriften den Ziel-Termin in die Zukunft (morgen) verschieben, wenn er sich in der Vergangenheit befindet. Duplizieren schlägt sonst wegen BUGZILLA 1736 fehl
   * NEW: 0529 Label "Erinnerungstermin" bei Erfassung einer Überweisung in "Ausführungstermin" ändern, wenn als Auftragstyp "Bankseitige SEPA-Terminüberweisung" gewählt wird
