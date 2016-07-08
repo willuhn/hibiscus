@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0533 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/c06e43a56ef365e83e2c9d333b27a1564c7c46bd
   * NEW: 0532 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0531 Button "Synchronisierung starten" während der Synchronisierung deaktivieren
   * BUG: 0530 Beim Duplizieren von Lastschriften den Ziel-Termin in die Zukunft (morgen) verschieben, wenn er sich in der Vergangenheit befindet. Duplizieren schlägt sonst wegen BUGZILLA 1736 fehl
