@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0534 Beim Export von bankseitig terminierten Überweisungen nach SEPA-XML den Zieltermin als "requested execution date" mit exportieren
   * NEW: 0533 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/c06e43a56ef365e83e2c9d333b27a1564c7c46bd
   * NEW: 0532 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0531 Button "Synchronisierung starten" während der Synchronisierung deaktivieren

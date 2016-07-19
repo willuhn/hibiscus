@@ -7,6 +7,7 @@
 
 package de.willuhn.jameica.hbci.io;
 
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,6 +44,12 @@ public class SepaUeberweisungExporter extends AbstractSepaExporter
     props.setProperty(SepaUtil.insertIndex("endtoendid",idx), StringUtils.trimToEmpty(u.getEndtoEndId()));
     props.setProperty(SepaUtil.insertIndex("purposecode",idx),   StringUtils.trimToEmpty(u.getPurposeCode()));
     props.setProperty("pmtinfid",StringUtils.trimToEmpty(u.getPmtInfId()));
+    
+    if (u.isTerminUeberweisung())
+    {
+      SimpleDateFormat df = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
+      props.setProperty("date",StringUtils.trimToNull(df.format(u.getTermin())));
+    }
   }
 
   /**
