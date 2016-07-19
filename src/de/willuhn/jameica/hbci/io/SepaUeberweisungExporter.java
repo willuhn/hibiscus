@@ -48,7 +48,9 @@ public class SepaUeberweisungExporter extends AbstractSepaExporter
     if (u.isTerminUeberweisung())
     {
       SimpleDateFormat df = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
-      props.setProperty("date",StringUtils.trimToNull(df.format(u.getTermin())));
+      String date = StringUtils.trimToNull(df.format(u.getTermin()));
+      if (date != null)
+        props.setProperty("date",date);
     }
   }
 
