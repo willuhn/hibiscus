@@ -75,7 +75,6 @@ public class UmsatzAssign implements Action
     }
     catch (OperationCanceledException oce)
     {
-      Logger.info(oce.getMessage());
       return;
     }
     catch (ApplicationException ae)
