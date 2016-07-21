@@ -68,7 +68,6 @@ public class UmsatzList extends ContextMenu implements Extendable
 	public UmsatzList(final Konto konto)
 	{
 		addItem(new OpenItem());
-    addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("In Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new AuslandsUeberweisungNew(),"stock_next.png"));
@@ -94,8 +93,11 @@ public class UmsatzList extends ContextMenu implements Extendable
     }
     ,"document-open.png"));
     
-    // BUGZILLA 512 / 1115
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
+    addItem(ContextMenuItem.SEPARATOR);
+    
+    // BUGZILLA 512 / 1115
     addItem(new UmsatzBookedItem(i18n.tr("Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png","ALT+K"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew(),"document-open.png")
     {
