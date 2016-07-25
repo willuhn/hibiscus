@@ -59,7 +59,8 @@ public class UmsatzExport implements Action
       else if (context instanceof UmsatzTreeNode)
       {
         UmsatzTreeNode node = (UmsatzTreeNode) context;
-        List<Umsatz> result = node.getUmsaetze();
+        List<Umsatz> result = new ArrayList<Umsatz>();
+        collect(node,result);
         u = result.toArray(new Umsatz[result.size()]);
       }
       else if (context instanceof UmsatzTreeNode[])
@@ -67,7 +68,7 @@ public class UmsatzExport implements Action
         List<Umsatz> result = new ArrayList<Umsatz>();
         for (UmsatzTreeNode node:(UmsatzTreeNode[])context)
         {
-          result.addAll(node.getUmsaetze());
+          collect(node,result);
         }
         u = result.toArray(new Umsatz[result.size()]);
       }
@@ -93,22 +94,24 @@ public class UmsatzExport implements Action
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Exportieren der Umsätze"));
 		}
   }
-
+  
+  /**
+   * Sammelt rekursiv alle Umsaetze aus der Kategorie ein.
+   * Unterkategorien werden mit beruecksichtigt.
+   * BUGZILLA 1750.
+   * @param node die Kategorie.
+   * @param target die Liste, in der die Umsaetze gesammelt werden sollen.
+   */
+  private void collect(UmsatzTreeNode node, List<Umsatz> target)
+  {
+    target.addAll(node.getUmsaetze());
+    List<UmsatzTreeNode> children = node.getSubGroups();
+    if (children == null || children.size() == 0)
+      return;
+    
+    for (UmsatzTreeNode c:children)
+    {
+      collect(c,target);
+    }
+  }
 }
-
-
-/**********************************************************************
- * $Log: UmsatzExport.java,v $
- * Revision 1.4  2011/05/11 10:20:28  willuhn
- * @N OCE fangen
- *
- * Revision 1.3  2006/01/18 00:51:01  willuhn
- * @B bug 65
- *
- * Revision 1.2  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.1  2005/06/02 22:57:34  web0
- * @N Export von Konto-Umsaetzen
- *
- **********************************************************************/
