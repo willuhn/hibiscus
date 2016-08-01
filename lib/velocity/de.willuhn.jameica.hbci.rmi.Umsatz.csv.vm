@@ -1,9 +1,9 @@
 #set($hs        = $session.get("saldo.hide"))
 #set($hideSaldo = $!hs.booleanValue())
-"Kontonummer";"BLZ";"Konto";"Gegenkonto";"Gegenkonto BLZ";"Gegenkonto Inhaber";"Betrag";"Valuta";"Datum";"Verwendungszweck";"Verwendungszweck 2";#if(!$hideSaldo)"Zwischensumme";#end"Primanota";"Kundenreferenz";"Kategorie";"Notiz";"Weitere Verwendungszwecke";"Art";"Vormerkbuchung"
+"#";"Kontonummer";"BLZ";"Konto";"Gegenkonto";"Gegenkonto BLZ";"Gegenkonto Inhaber";"Betrag";"Valuta";"Datum";"Verwendungszweck";"Verwendungszweck 2";#if(!$hideSaldo)"Zwischensumme";#end"Primanota";"Kundenreferenz";"Kategorie";"Notiz";"Weitere Verwendungszwecke";"Art";"Vormerkbuchung"
 #foreach($umsatz in $objects)
 #set($konto = $umsatz.Konto)
 #set($kat = "")
 #set($kat = $!{umsatz.UmsatzTyp.Name})
-"$!{konto.Kontonummer}";"$!{konto.BLZ}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{umsatz.GegenkontoName}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";"$!{filter.escape($!{umsatz.Zweck})}";"$!{filter.escape($!{umsatz.Zweck2})}";#if(!$hideSaldo)"$!{decimalformat.format(${umsatz.Saldo})}";#end"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{filter.escape($!{umsatz.Kommentar})}";"#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{filter.escape($!{ewz})} #end";"$!{umsatz.Art}";#if($umsatz.hasFlag(2))"ja"#end;
+"$!{umsatz.ID}";"$!{konto.Kontonummer}";"$!{konto.BLZ}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{umsatz.GegenkontoName}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";"$!{filter.escape($!{umsatz.Zweck})}";"$!{filter.escape($!{umsatz.Zweck2})}";#if(!$hideSaldo)"$!{decimalformat.format(${umsatz.Saldo})}";#end"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{filter.escape($!{umsatz.Kommentar})}";"#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{filter.escape($!{ewz})} #end";"$!{umsatz.Art}";#if($umsatz.hasFlag(2))"ja"#end;
 #end
