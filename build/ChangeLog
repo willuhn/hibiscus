@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0537 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/84397df6e9ad0442173ca32f0afed37108afa299
   * NEW: 0536 Spalte "#" beim CSV-Export von Umsätzen mit exportieren
   * NEW: 0535 BUGZILLA 1750 - Beim Export von Umsätzen aus "Umsätze nach Kategorien" auch rekursiv Umsätze aus Kind-Kategorien exportieren
   * BUG: 0534 Beim Export von bankseitig terminierten Überweisungen nach SEPA-XML den Zieltermin als "requested execution date" mit exportieren
