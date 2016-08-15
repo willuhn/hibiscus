@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.security.SecureRandom;
 import java.sql.Connection;
-import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
@@ -77,9 +76,8 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
         // hier nicht mit, wenn sich das Passwort geaendert hat.
         // Daher erzeugen wir ein selbst ein Passwort.
         Logger.info("generating new random password for database");
-        byte[] data = new byte[8];
+        byte[] data = new byte[20];
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        random.setSeed((long) (new Date().getTime()));
         random.nextBytes(data);
         
         // Jetzt noch verschluesselt abspeichern
