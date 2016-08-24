@@ -10,6 +10,17 @@ package de.willuhn.jameica.hbci.io.print;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.graphics.RGB;
+
+import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.LineBorder;
@@ -17,17 +28,6 @@ import net.sf.paperclips.PagePrint;
 import net.sf.paperclips.Print;
 import net.sf.paperclips.TextPrint;
 import net.sf.paperclips.TextStyle;
-
-import org.eclipse.swt.graphics.RGB;
-
-import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
-import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
-import de.willuhn.logging.Logger;
-import de.willuhn.util.ApplicationException;
 
 /**
  * Abstrakter Druck-Support fuer eine Liste von SEPA-Ueberweisungen oder -Lastschriften.
@@ -99,7 +99,7 @@ public abstract class AbstractPrintSupportSepaTransferList extends AbstractPrint
         
         table.add(new TextPrint(HBCI.DATEFORMAT.format(u.getTermin()),style));
         table.add(new TextPrint(k.getLongName(),style));
-        table.add(new TextPrint(i18n.tr("{0}\nIBAN {1}, BIC {2}",u.getGegenkontoName(),u.getGegenkontoNummer(),u.getGegenkontoBLZ()),style));
+        table.add(new TextPrint(i18n.tr("{0}\nIBAN {1}, BIC {2}",u.getGegenkontoName(),HBCIProperties.formatIban(u.getGegenkontoNummer()),u.getGegenkontoBLZ()),style));
         table.add(new TextPrint(usage,style));
         table.add(new TextPrint(HBCI.DECIMALFORMAT.format(u.getBetrag()) + " " + k.getWaehrung(),style));
         if (ausgefuehrt != null)

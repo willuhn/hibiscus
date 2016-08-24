@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0539 BUGZILLA 1760 - IBAN beim Druck von Aufträgen formatieren
   * NEW: 0538 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/f963d54d9cb0cc11948c9f7531c36437b6f2e108
   * NEW: 0537 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/84397df6e9ad0442173ca32f0afed37108afa299
   * NEW: 0536 Spalte "#" beim CSV-Export von Umsätzen mit exportieren

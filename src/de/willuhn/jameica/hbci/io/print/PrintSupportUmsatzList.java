@@ -19,15 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.paperclips.DefaultGridLook;
-import net.sf.paperclips.GridPrint;
-import net.sf.paperclips.LineBorder;
-import net.sf.paperclips.LineBreakPrint;
-import net.sf.paperclips.NoBreakPrint;
-import net.sf.paperclips.Print;
-import net.sf.paperclips.TextPrint;
-import net.sf.paperclips.TextStyle;
-
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -39,6 +30,14 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import net.sf.paperclips.DefaultGridLook;
+import net.sf.paperclips.GridPrint;
+import net.sf.paperclips.LineBorder;
+import net.sf.paperclips.LineBreakPrint;
+import net.sf.paperclips.NoBreakPrint;
+import net.sf.paperclips.Print;
+import net.sf.paperclips.TextPrint;
+import net.sf.paperclips.TextStyle;
 
 /**
  * Druck-Support fuer eine Liste von Umsaetzen.
@@ -159,7 +158,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
             if (name != null && name.length() > 0)
               sb.append(name + "\n");
             
-            String kto = u.getGegenkontoNummer();
+            String kto = HBCIProperties.formatIban(u.getGegenkontoNummer());
             String blz = u.getGegenkontoBLZ();
             if (kto != null && kto.length() > 0 && blz != null && blz.length() > 0)
             {
