@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0541 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/632bd88ce462037a5f82e087bc6bb9b01180f403
   * BUG: 0540 NPE, wenn man in einer PIN/TAN-Config Benutzer- oder Kundenkennung ändern wollte, bevor UPD vorlagen
   * NEW: 0539 BUGZILLA 1760 - IBAN beim Druck von Aufträgen formatieren
   * NEW: 0538 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/f963d54d9cb0cc11948c9f7531c36437b6f2e108
