@@ -86,32 +86,35 @@ public class PassportChange implements Action
       // 2) User/Customer in den UPD
       {
         Properties upd = pcr.passport.getUPD();
-        Enumeration e = upd.keys();
-        int count = 0;
-        while (e.hasMoreElements())
+        if (upd != null)
         {
-          String key = (String) e.nextElement();
-          String value = upd.getProperty(key);
-          if (value == null || value.length() == 0)
-            continue;
-          
-          if (changeCustId && value.equals(custOld))
+          Enumeration e = upd.keys();
+          int count = 0;
+          while (e.hasMoreElements())
           {
-            Logger.info("updating UPD entry " + key + " with new customerId");
-            upd.setProperty(key,pcr.custId);
-            count++;
-            continue;
+            String key = (String) e.nextElement();
+            String value = upd.getProperty(key);
+            if (value == null || value.length() == 0)
+              continue;
+            
+            if (changeCustId && value.equals(custOld))
+            {
+              Logger.info("updating UPD entry " + key + " with new customerId");
+              upd.setProperty(key,pcr.custId);
+              count++;
+              continue;
+            }
+            
+            if (changeUserId && value.equals(userOld))
+            {
+              Logger.info("updating UPD entry " + key + " with new userId");
+              upd.setProperty(key,pcr.userId);
+              count++;
+            }
           }
-          
-          if (changeUserId && value.equals(userOld))
-          {
-            Logger.info("updating UPD entry " + key + " with new userId");
-            upd.setProperty(key,pcr.userId);
-            count++;
-          }
+          Logger.info("updated " + count + " entries in UPD");
+          changed |= count > 0;
         }
-        Logger.info("updated " + count + " entries in UPD");
-        changed |= count > 0;
       }
       
       if (changed)
