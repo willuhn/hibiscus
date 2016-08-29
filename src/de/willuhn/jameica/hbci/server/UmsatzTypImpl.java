@@ -584,7 +584,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   public GenericIterator getPossibleParents() throws RemoteException
   {
     DBIterator list = (DBIterator) super.getPossibleParents();
-    list.setOrder("order by nummer, name");
+    list.setOrder("order by COALESCE(nummer,''), name");
     return list;
   }
 
@@ -594,7 +594,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   public GenericIterator getTopLevelList() throws RemoteException
   {
     DBIterator list = (DBIterator) super.getTopLevelList();
-    list.setOrder("order by nummer, name");
+    list.setOrder("order by COALESCE(nummer,''), name");
     return list;
   }
 
@@ -625,7 +625,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       return i;
     
     DBIterator di = (DBIterator) i;
-    di.setOrder("order by nummer,name");
+    di.setOrder("order by COALESCE(nummer,''),name");
     return di;
   }
 

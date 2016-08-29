@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0543 BUGZILLA 1762 - Sortierreihenfolge von Umsatzkategorien konnte falsch sein, wenn die Nummer NULL- und Leer-Werte enthielt 
   * NEW: 0542 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/30319d7dba86e53117084de47fd0e5a410de1158
   * NEW: 0541 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/632bd88ce462037a5f82e087bc6bb9b01180f403
   * BUG: 0540 NPE, wenn man in einer PIN/TAN-Config Benutzer- oder Kundenkennung ändern wollte, bevor UPD vorlagen

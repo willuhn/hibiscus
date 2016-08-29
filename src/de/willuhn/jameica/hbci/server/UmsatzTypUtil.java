@@ -57,7 +57,7 @@ public class UmsatzTypUtil
   public static DBIterator<UmsatzTyp> getAll() throws RemoteException
   {
     DBIterator<UmsatzTyp> list = Settings.getDBService().createList(UmsatzTyp.class);
-    list.setOrder("ORDER BY nummer,name");
+    list.setOrder("ORDER BY COALESCE(nummer,''),name");
     return list;
   }
 
