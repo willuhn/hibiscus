@@ -186,11 +186,12 @@ public class HBCI extends AbstractPlugin
       // Callback erzeugen
       this.callback = null;
       
+      final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+
       if (callbackClass != null && callbackClass.length() > 0)
       {
         try
         {
-          BeanService service = Application.getBootLoader().getBootable(BeanService.class);
           Class c = Class.forName(callbackClass);
           this.callback = (HBCICallback) service.get(c);
           Logger.info("callback: " + this.callback.getClass().getName());
@@ -206,7 +207,7 @@ public class HBCI extends AbstractPlugin
         if (Application.inServerMode())
           this.callback = new HBCICallbackConsole();
         else
-          this.callback = new HBCICallbackSWT();
+          this.callback = service.get(HBCICallbackSWT.class);
       }
       //////////////////////////////////
 

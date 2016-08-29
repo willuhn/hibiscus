@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.eclipse.swt.SWTException;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
@@ -19,6 +21,8 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
+import de.willuhn.annotation.Lifecycle;
+import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
@@ -30,7 +34,6 @@ import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.security.Wallet;
-import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Level;
@@ -43,6 +46,7 @@ import de.willuhn.util.ProgressMonitor;
  * Dieser HBCICallbackSWT implementiert den HBCICallbackSWT des HBCI-Systems und
  * schreibt die Log-Ausgaben in das Jameica-Log.
  */
+@Lifecycle(Type.CONTEXT)
 public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -50,21 +54,14 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 	private Map<HBCIPassport,AccountContainer> accountCache = new HashMap<HBCIPassport,AccountContainer>();
   private PassportHandle currentHandle = null;
   
-  /**
-   * ct.
-   */
-  public HBCICallbackSWT()
-  {
-		super();
-  }
-
+  @Resource private HBCISynchronizeBackend backend = null;
+  
   /**
    * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
    */
   public void log(String msg, int level, Date date, StackTraceElement trace)
   {
-    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+    SynchronizeSession session = this.backend.getCurrentSession();
 
     boolean log = true;
     String type = null;
@@ -138,8 +135,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
    */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
     
-    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+    SynchronizeSession session = this.backend.getCurrentSession();
 
     try {
       
@@ -360,8 +356,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     if (!Logger.isLogging(Level.DEBUG))
       return;
 
-    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+    SynchronizeSession session = this.backend.getCurrentSession();
 
     if (session != null)
     {
