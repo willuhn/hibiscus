@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0547 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/476d6459050f1e483590686c014d59922d986da1
+  
 2016-09-06 Version 2.6.18
 
   * NEW: 0546 Noch eine Exception beim UPD-Abruf gefixt - neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/8ba77ee8761930dd15810674f70bd4e23beb1fca
