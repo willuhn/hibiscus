@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -134,7 +135,9 @@ public class UmsatzTypTreeControl extends AbstractControl
     {
       public void handleEvent(Event event)
       {
-        if (range.getValue() != null)
+        //TODO maybe add addSetValueListener method to RangeInput wrapping this check
+        //because the typical usecase will be a reload on value change
+        if (event.type==SWT.Selection && range.getValue() != null)
           handleReload();
       }
     });
