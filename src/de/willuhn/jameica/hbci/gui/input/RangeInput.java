@@ -7,6 +7,7 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -98,6 +99,22 @@ public class RangeInput extends SelectInput
         
         settings.setAttribute(param,choosen != null ? choosen.getId() : null);
         applyRange(choosen);
+      }
+    });
+  }
+
+  /**
+   * Delegiert an listener, wenn es sich um ein Selection-Event handelt und die Auswahl nicht null ist
+   * @param listener Listener, an den das Selection-Event weitergegeben wird
+   * */ 
+  public void addRangeValueListener(final Listener listener){
+    addListener(new Listener(){
+      @Override
+      public void handleEvent(Event event)
+      {
+        if(event.type==SWT.Selection && getValue()!=null){
+          listener.handleEvent(event);
+        }
       }
     });
   }

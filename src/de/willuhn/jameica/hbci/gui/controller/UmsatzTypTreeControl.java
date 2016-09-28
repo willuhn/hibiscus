@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.EventUtil;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -81,7 +82,9 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.listener = new DelayedListener(new Listener() {
       public void handleEvent(Event event)
       {
-        handleReload();
+        if(!EventUtil.isFocusEvent(event)){
+          handleReload();
+        }
       }
     });
   }
@@ -130,11 +133,10 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.range;
     
     this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
-    this.range.addListener(new Listener()
+    range.addRangeValueListener(new Listener()
     {
       public void handleEvent(Event event)
       {
-        if (range.getValue() != null)
           handleReload();
       }
     });
