@@ -37,6 +37,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.EventUtil;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -87,7 +88,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
         // forciertes Update - ohne zu beruecksichtigen,
         // ob in den Eingabe-Feldern wirklich was geaendert
         // wurde
-        handleReload(event == null);
+        if(!EventUtil.isFocusEvent(event)){
+          handleReload(event == null);
+        }
       }
     };
     

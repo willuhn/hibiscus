@@ -356,12 +356,11 @@ public class KontoauszugList extends UmsatzList
       return this.range;
     
     this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
-    this.range.addListener(new Listener()
+    this.range.addRangeValueListener(new Listener()
     {
       public void handleEvent(Event event)
       {
-        if (range.getValue() != null)
-          handleReload(true);
+        handleReload(true);
       }
     });
     

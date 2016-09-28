@@ -44,6 +44,7 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
+import de.willuhn.jameica.hbci.gui.EventUtil;
 import de.willuhn.jameica.hbci.gui.action.SparQuoteExport;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
@@ -99,10 +100,12 @@ public class SparQuote implements Part
       {
         try
         {
-          load();
-          redraw();
-          if (chart != null)
-            chart.redraw();
+          if(!EventUtil.isFocusEvent(event)){
+            load();
+            redraw();
+            if (chart != null)
+              chart.redraw();
+          }
         }
         catch (Exception e)
         {
