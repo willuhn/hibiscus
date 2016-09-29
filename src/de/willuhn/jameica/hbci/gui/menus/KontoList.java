@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoResetAuszugsdatum;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugRpt;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.rmi.Flaggable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -62,41 +63,56 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new KontoauszugRpt(),"text-x-generic.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png")
-    {
-
-      /**
-       * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
-       */
-      public boolean isEnabledFor(Object o)
-      {
-        try
-        {
-          if (o == null || !(o instanceof Konto))
-            return false;
-
-          Konto k = (Konto)o;
-          return super.isEnabledFor(o) && ((k.getFlags() & Konto.FLAG_DISABLED) != Konto.FLAG_DISABLED) && ((k.getFlags() & Konto.FLAG_OFFLINE) != Konto.FLAG_OFFLINE);
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("error while checking flags",re);
-          return false;
-        }
-      }
-
-    }); // BUGZILLA 473
+    addItem(new AccountItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png"));
     addItem(ContextMenuItem.SEPARATOR);
 
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"stock_next.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"stock_previous.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"stock_form-time-field.png"));
+    addItem(new AccountItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"stock_next.png"));
+    addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"stock_previous.png"));
+    addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"stock_form-time-field.png"));
+    addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png"). offlineAccount());
 
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new KontoExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new KontoImport(),"document-open.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addMenu(new ExtendedMenu());
+  }
+
+  private class AccountItem extends CheckedSingleContextMenuItem{
+
+    private boolean offline=false;
+    public AccountItem(String text, Action a, String icon)
+    {
+      super(text, a, icon);
+    }
+
+    public AccountItem offlineAccount(){
+      offline=true;
+      return this;
+    }
+    /**
+     * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      try
+      {
+        if (o == null || !(o instanceof Konto || !super.isEnabledFor(o)))
+          return false;
+
+        Konto k = (Konto)o;
+        return !isFlagEnabled(k, Konto.FLAG_DISABLED) && isFlagEnabled(k, Konto.FLAG_OFFLINE) == offline;
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("error while checking flags",re);
+        return false;
+      }
+    } // BUGZILLA 473
+
+    private boolean isFlagEnabled(Konto k, int flag) throws RemoteException{
+      return (k.getFlags() & flag) == flag;
+    }
   }
 
   /**
