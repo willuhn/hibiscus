@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0549 Im Kontextmenu von Konten nur für Online/Offline-Konten erlaubte Aktionen aktivieren
   * NEW: 0548 Reload in Range-Input nur auslösen, wenn etwas geändert wurde
   * NEW: 0547 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/476d6459050f1e483590686c014d59922d986da1
   

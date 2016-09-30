@@ -69,7 +69,7 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new AccountItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"stock_next.png"));
     addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"stock_previous.png"));
     addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"stock_form-time-field.png"));
-    addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png"). offlineAccount());
+    addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png").offlineAccount());
 
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new KontoExport(),"document-save.png"));
@@ -78,18 +78,34 @@ public class KontoList extends ContextMenu implements Extendable
     addMenu(new ExtendedMenu());
   }
 
-  private class AccountItem extends CheckedSingleContextMenuItem{
-
-    private boolean offline=false;
+  /**
+   * Erlaubt die Auswahl des Elements nur fuer Online-Kontos oder nur fuer Offline-Kontos.
+   */
+  private class AccountItem extends CheckedSingleContextMenuItem
+  {
+    private boolean offline = false;
+    
+    /**
+     * ct.
+     * @param text
+     * @param a
+     * @param icon
+     */
     public AccountItem(String text, Action a, String icon)
     {
       super(text, a, icon);
     }
 
-    public AccountItem offlineAccount(){
-      offline=true;
+    /**
+     * Erlaubt die Verwendung nur fuer Offline-Konten.
+     * @return das modifizierte Objekt.
+     */
+    public AccountItem offlineAccount()
+    {
+      this.offline = true;
       return this;
     }
+    
     /**
      * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -101,17 +117,13 @@ public class KontoList extends ContextMenu implements Extendable
           return false;
 
         Konto k = (Konto)o;
-        return !isFlagEnabled(k, Konto.FLAG_DISABLED) && isFlagEnabled(k, Konto.FLAG_OFFLINE) == offline;
+        return !k.hasFlag(Konto.FLAG_DISABLED) && k.hasFlag(Konto.FLAG_OFFLINE) == offline;
       }
       catch (RemoteException re)
       {
         Logger.error("error while checking flags",re);
         return false;
       }
-    } // BUGZILLA 473
-
-    private boolean isFlagEnabled(Konto k, int flag) throws RemoteException{
-      return (k.getFlags() & flag) == flag;
     }
   }
 
