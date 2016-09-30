@@ -99,6 +99,9 @@ public class SparQuote implements Part
       {
         try
         {
+          if (event != null && (event.type==SWT.FocusIn || event.type==SWT.FocusOut))
+            return;
+          
           load();
           redraw();
           if (chart != null)

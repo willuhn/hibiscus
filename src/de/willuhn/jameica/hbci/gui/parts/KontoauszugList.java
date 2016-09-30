@@ -360,7 +360,7 @@ public class KontoauszugList extends UmsatzList
     {
       public void handleEvent(Event event)
       {
-        if (range.getValue() != null)
+        if (range.getValue() != null && range.hasChanged())
           handleReload(true);
       }
     });

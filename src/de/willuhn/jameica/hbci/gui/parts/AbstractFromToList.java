@@ -238,7 +238,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     {
       public void handleEvent(Event event)
       {
-        if (range.getValue() != null)
+        if (range.getValue() != null && range.hasChanged())
           handleReload(true);
       }
     });
