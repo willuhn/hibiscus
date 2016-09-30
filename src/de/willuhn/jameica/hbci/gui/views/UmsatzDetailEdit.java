@@ -13,10 +13,16 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailEditControl;
+import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -34,14 +40,37 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
     super.bind();
     
     ButtonArea buttons = new ButtonArea();
+    final Button newBooking=getNewBookingButton();
+    if(newBooking!=null){
+      buttons.addButton(newBooking);
+    }
     buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         getControl().handleStore();
+        if(newBooking!=null){
+          newBooking.setEnabled(true);
+        }
       }
     },null,true,"document-save.png");
     buttons.paint(getParent());
+  }
+
+  private Button getNewBookingButton(){
+    Umsatz umsatz = getControl().getUmsatz();
+    try
+    {
+      if(umsatz.isNewObject() && umsatz.getKonto().hasFlag(Konto.FLAG_OFFLINE)){
+        Button button=new Button(i18n.tr("weiteren Umsatz anlegen"), new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(), umsatz.getKonto(), false, "emblem-documents.png");
+        button.setEnabled(false);
+        return button;
+      }
+    } catch (RemoteException e)
+    {
+      Logger.error("error while checking checking whether to add 'New Booking' button",e);
+    }
+    return null;
   }
 
   /**
