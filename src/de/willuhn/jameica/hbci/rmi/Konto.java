@@ -38,6 +38,11 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
   public final static int FLAG_OFFLINE = 1 << 1;
 
   /**
+   * Flag "Valuta-Datum automatisch mit Buchungsdatum belegen".
+   */
+  public final static int FLAG_AUTO_VALUTA_DATE = 1 << 2;
+
+  /**
 	 * Liefert die Kontonummer fuer diese Bankverbindung.
 	 * 
 	 * @return Kontonummer.
