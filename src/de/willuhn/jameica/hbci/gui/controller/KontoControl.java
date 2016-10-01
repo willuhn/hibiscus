@@ -109,6 +109,7 @@ public class KontoControl extends AbstractControl
   private SaldoChart saldoChart         = null;
   
   private CheckboxInput offline         = null;
+  private CheckboxInput autoValutaDate  = null;
 
   private SelectInput kategorie         = null;
   
@@ -247,6 +248,21 @@ public class KontoControl extends AbstractControl
     this.updateStatus();
 
     return this.offline;
+  }
+
+  /**
+   * Liefert eine Checkbox, mit der festgelegt werden kann, ob das Valutadatum automatisch mit dem Buchungsdatum belegt wird.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getSynchDates() throws RemoteException
+  {
+    if (this.autoValutaDate != null)
+      return this.autoValutaDate;
+    
+    this.autoValutaDate = new CheckboxInput(this.getKonto().hasFlag(Konto.FLAG_AUTO_VALUTA_DATE));
+    this.autoValutaDate.setName(i18n.tr("automatisches Valutadatum"));
+    return this.autoValutaDate;
   }
 
   /**
@@ -456,14 +472,19 @@ public class KontoControl extends AbstractControl
       
       // Wir muessen die Aenderung sofort ins Konto uebernehmen, damit
       // der richtige Sync-Options-Dialog angezeigt wird.
-      applyOfflineState(offline);
+      applyKontoState(Konto.FLAG_OFFLINE, offline);
 
       SynchronizeBackend backend = (SynchronizeBackend) getBackendAuswahl().getValue();
       getPassportAuswahl().setEnabled(!offline && backend != null);
       getPassportAuswahl().update(backend);
 
+      if(!offline){
+        getSynchDates().setValue(false);
+      }
+      getSynchDates().setEnabled(offline);
       // Kein Backend bei Offline-Konten
       getBackendAuswahl().setEnabled(!offline);
+      getPassportAuswahl().setEnabled(!offline);
     }
     catch (Exception e)
     {
@@ -772,7 +793,8 @@ public class KontoControl extends AbstractControl
 			}
 			
 			
-			applyOfflineState(offline);
+			applyKontoState(Konto.FLAG_OFFLINE, offline);
+			applyKontoState(Konto.FLAG_AUTO_VALUTA_DATE, ((Boolean)getSynchDates().getValue()).booleanValue());
 
 			getKonto().setKontonummer((String)getKontonummer().getValue());
       getKonto().setUnterkonto((String)getUnterkonto().getValue());
@@ -811,18 +833,19 @@ public class KontoControl extends AbstractControl
   }
   
   /**
-   * Uebernimmt den Offline-Status in das Konto.
-   * @param offline true, wenn es offline ist.
+   * Uebernimmt den Status des Flags in das Konto.
+   * @param flag zu setzendes Flag.
+   * @param state zu setzender Status des Flags.
    * @throws RemoteException
    */
-  private void applyOfflineState(boolean offline) throws RemoteException
+  private void applyKontoState(int flag, boolean state) throws RemoteException
   {
     int flags = getKonto().getFlags();
-    boolean have = getKonto().hasFlag(Konto.FLAG_OFFLINE);
-    if (offline && !have)
-      getKonto().setFlags(flags | Konto.FLAG_OFFLINE);
-    else if (!offline && have)
-      getKonto().setFlags(flags ^ Konto.FLAG_OFFLINE);
+    boolean have = getKonto().hasFlag(flag);
+    if (state && !have)
+      getKonto().setFlags(flags | flag);
+    else if (!state && have)
+      getKonto().setFlags(flags ^ flag);
   }
 
 	/**

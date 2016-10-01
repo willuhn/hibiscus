@@ -158,6 +158,7 @@ public class KontoNew extends AbstractView
       right.addLabelPair(i18n.tr("IBAN"),                     control.getIban());
       right.addLabelPair(i18n.tr("BIC"),                      control.getBic());
       right.addInput(control.getOffline());
+      right.addInput(control.getSynchDates());
     }
     
     // und noch die Abschicken-Knoepfe

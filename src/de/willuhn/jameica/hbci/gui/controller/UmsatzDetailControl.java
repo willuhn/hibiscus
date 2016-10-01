@@ -264,8 +264,25 @@ public class UmsatzDetailControl extends AbstractControl
     {
       this.datum = new DateInput(getUmsatz().getDatum(),HBCI.DATEFORMAT);
       this.datum.setEnabled(false);
+      adaptValutaInput(this.datum);
     }
     return this.datum;
+  }
+
+  //Wenn das Valuta-Datum automtisch angepasst werden soll, wird ein entsprechender Listener hinzugefügt
+  private void adaptValutaInput(final Input datum) throws RemoteException{
+    if(umsatz!=null && umsatz.getKonto().hasFlag(Konto.FLAG_AUTO_VALUTA_DATE)){
+      final Input valuta = getValuta();
+      datum.addListener(new Listener() {
+        @Override
+        public void handleEvent(Event event)
+        {
+          if(datum.hasChanged()){
+            valuta.setValue(datum.getValue());
+          }
+        }
+      });
+    }
   }
 
   /**

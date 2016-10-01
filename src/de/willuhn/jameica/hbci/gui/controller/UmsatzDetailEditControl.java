@@ -173,7 +173,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   public Input getValuta() throws RemoteException
   {
     Input input = super.getValuta();
-    if (!input.isEnabled())
+    boolean suppressEnablement=getUmsatz().getKonto().hasFlag(Konto.FLAG_AUTO_VALUTA_DATE);
+    if (!input.isEnabled() && !suppressEnablement)
     {
       input.setMandatory(true);
       input.setEnabled(true);
