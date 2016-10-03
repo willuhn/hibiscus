@@ -15,8 +15,8 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailEditControl;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -24,7 +24,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class UmsatzDetailEdit extends AbstractUmsatzDetail
 {
-  private UmsatzDetailControl control = null;
+  private UmsatzDetailEditControl control = null;
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -33,21 +33,36 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
   {
     super.bind();
     
+    final UmsatzDetailEditControl control = this.getControl();
+    
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        getControl().handleStore();
+        control.handleStore();
       }
     },null,true,"document-save.png");
+    
+    Konto k = control.getUmsatz().getKonto();
+    if (k != null && k.hasFlag(Konto.FLAG_OFFLINE))
+    {
+      buttons.addButton(i18n.tr("Speichern und &weiteren Umsatz anlegen"),new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleNext();
+        }
+      },null,false,"go-next.png");
+    }
+    
     buttons.paint(getParent());
   }
 
   /**
    * @see de.willuhn.jameica.hbci.gui.views.AbstractUmsatzDetail#getControl()
    */
-  protected UmsatzDetailControl getControl()
+  protected UmsatzDetailEditControl getControl()
   {
     if (this.control == null)
       this.control = new UmsatzDetailEditControl(this);

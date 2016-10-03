@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
@@ -433,17 +432,18 @@ public class UmsatzDetailControl extends AbstractControl
 
   /**
    * Speichert die editierbaren Properties.
+   * @return true, wenn das Speichern erfolgreich war.
    */
-  public synchronized void handleStore()
+  public boolean handleStore()
   {
-
     Umsatz u = getUmsatz();
-    try {
-      
+    try
+    {
       u.setKommentar((String)getKommentar().getValue());
       u.setUmsatzTyp((UmsatzTyp)getUmsatzTyp().getValue());
       getUmsatz().store();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz gespeichert"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+      return true;
     }
     catch (ApplicationException e2)
     {
@@ -454,5 +454,6 @@ public class UmsatzDetailControl extends AbstractControl
       Logger.error("error while storing umsatz",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern des Umsatzes: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
+    return false;
   }
 }

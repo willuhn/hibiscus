@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -28,6 +29,7 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -253,8 +255,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#handleStore()
    */
-  public synchronized void handleStore() {
-
+  public boolean handleStore()
+  {
     Umsatz u = getUmsatz();
     try {
 
@@ -269,7 +271,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       u.setZweck((String) getZweck().getValue());
       u.setArt((String)getArt().getValue());
       
-      u.setBetrag((Double)getBetrag().getValue());
+      Double betrag = (Double) getBetrag().getValue();
+      u.setBetrag(betrag != null ? betrag : 0.0d);
       
       Date du = (Date)getDatum().getValue();
       Double su = (Double)getSaldo().getValue();
@@ -346,7 +349,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       }
 
       u.transactionCommit();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Umsatz gespeichert"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+      return true;
     }
     catch (ApplicationException e2)
     {
@@ -358,7 +362,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       {
         Logger.error("unable to rollback transaction",e1);
       }
-      GUI.getView().setErrorText(e2.getMessage());
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e2.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
     catch (RemoteException e)
     {
@@ -371,7 +375,34 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
         Logger.error("unable to rollback transaction",e1);
       }
       Logger.error("error while storing umsatz",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern des Umsatzes"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern des Umsatzes: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+    return false;
+  }
+
+  /**
+   * Speichert den Umsatz und erstellt die naechste neue Buchung.
+   */
+  public void handleNext()
+  {
+    Umsatz u = getUmsatz();
+    try
+    {
+      if (this.handleStore())
+      {
+        new UmsatzDetailEdit().handleAction(u.getKonto());
+        // Wir muessen die Message nach dem Wechsel des Dialogs nochmal schicken, weil die Notifications nach dem Wechsel des Dialogs resettet werden
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz gespeichert, neuer Umsatz angelegt"),StatusBarMessage.TYPE_SUCCESS));
+      }
+    }
+    catch (ApplicationException e2)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e2.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while storing umsatz",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern des Umsatzes: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
 
