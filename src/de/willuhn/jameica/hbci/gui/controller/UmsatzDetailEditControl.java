@@ -274,7 +274,6 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       Double betrag = (Double) getBetrag().getValue();
       u.setBetrag(betrag != null ? betrag : 0.0d);
       
-      Date du = (Date)getDatum().getValue();
       Double su = (Double)getSaldo().getValue();
       
       // BUGZILLA 586
@@ -288,9 +287,24 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       }
       
       u.setCustomerRef((String)getCustomerRef().getValue());
-      u.setDatum(du);
       u.setPrimanota((String)getPrimanota().getValue());
-      u.setValuta((Date)getValuta().getValue());
+      
+      Date valuta = (Date) getValuta().getValue();
+      Date datum  = (Date) getDatum().getValue();
+      
+      if (valuta == null)
+      {
+        valuta = datum;
+        getValuta().setValue(valuta);
+      }
+      if (datum == null)
+      {
+        datum = valuta;
+        getDatum().setValue(datum);
+      }
+      
+      u.setValuta(valuta);
+      u.setDatum(datum);
       
       String gvcode = (String) getGvCode().getValue();
       String add = null;

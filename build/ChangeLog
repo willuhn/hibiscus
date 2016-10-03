@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0052 Automatische Vervollständigung von Valuta/Datum mit dem jeweils anderen Datum beim Bearbeiten von Buchungen, wenn das jeweils andere Datum fehlt
   * NEW: 0551 Funktion "Salden neu berechnen..." im Kontextmenu von Offline-Konten
   * NEW: 0550 Neuer Button "Speichern und weiteren Umsatz anlegen" bei Offline-Konten 
   * NEW: 0549 Im Kontextmenu von Konten nur für Online/Offline-Konten erlaubte Aktionen aktivieren
