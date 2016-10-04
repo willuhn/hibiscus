@@ -10,6 +10,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -105,10 +106,11 @@ public class KontoRecalculateOfflineSaldo implements Action
   {
     if (newer == null)
       return;
+
+    Date dc = (Date) current.getAttribute("datum_pseudo");
+    Date dn = (Date) newer.getAttribute("datum_pseudo");
     
-    // Die IDs vergleichen wir nicht, weil der User sonst keine Chance mehr hat, nachtraeglich
-    // Buchungen mittendrin einzufuegen. Denn deren IDs sind ja hoeher.
-    if (newer.getDatum().before(current.getDatum()))
+    if (dn.before(dc))
       throw new ApplicationException(i18n.tr("Reihenfolge der Buchungsdaten falsch. Buchung Nr. {0} befindet sich vor Buchung Nr. {1}",newer.getID(),current.getID()));
   }
 
