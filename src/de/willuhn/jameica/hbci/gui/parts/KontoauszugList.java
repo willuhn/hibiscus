@@ -381,7 +381,7 @@ public class KontoauszugList extends UmsatzList
     UmsatzTyp preset = (UmsatzTyp) cache.get("kontoauszug.list.kategorie");
     if (preset == null || preset.getID() == null)
       preset = null; // wurde zwischenzeitlich geloescht
-    this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL);
+    this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL, true);
     this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
     this.kategorie.setComment(null);
     this.kategorie.addListener(this.listener);
