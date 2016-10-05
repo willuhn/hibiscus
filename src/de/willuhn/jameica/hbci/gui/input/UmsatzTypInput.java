@@ -21,7 +21,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypBean;
-import de.willuhn.jameica.hbci.server.UmsatzTypImpl;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -34,8 +33,9 @@ import de.willuhn.util.I18N;
 public class UmsatzTypInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private boolean haveComment = false;
 
+  private boolean haveComment = false;
+  
   /**
    * ct.
    * @param preselected der vorselectierte Umsatz-Typ.
@@ -62,29 +62,17 @@ public class UmsatzTypInput extends SelectInput
    * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
    * @see UmsatzTyp#TYP_AUSGABE
    * @see UmsatzTyp#TYP_EINNAHME
-   * @param includeUnassignedType der fiktive Typ "nicht zugeordnet" soll mit angeboten werden
+   * @param unassigned der fiktive Typ "nicht zugeordnet" soll mit angeboten werden
    * @throws RemoteException
    */
-  public UmsatzTypInput(UmsatzTyp preselected, UmsatzTyp skip, int typ, boolean includeUnassignedType) throws RemoteException
+  public UmsatzTypInput(UmsatzTyp preselected, UmsatzTyp skip, int typ, boolean unassigned) throws RemoteException
   {
     super((List) null, preselected != null ? new UmsatzTypBean(preselected) : null);
     List<Object> choices=new ArrayList<Object>(UmsatzTypUtil.getList(skip,typ));
-    if(includeUnassignedType){
-      choices.add(new UmsatzTypBean(new UmsatzTypImpl(){
-        @Override
-        public Object getAttribute(String attribute) throws RemoteException
-        {
-          if("indented".equals(attribute) || "name".equals(attribute)){
-            return "<"+i18n.tr("Nicht zugeordnet")+">";
-          }else{
-            throw new UnsupportedOperationException(attribute);
-          }
-        }
-        public boolean matches(de.willuhn.jameica.hbci.rmi.Umsatz umsatz) throws RemoteException {
-          return umsatz.getUmsatzTyp()==null;
-        };
-      }));
-    }
+    
+    if (unassigned)
+      choices.add(0,new UmsatzTypBean(UmsatzTypUtil.UNASSIGNED));
+    
     this.setList(choices);
     this.setAttribute("indented");
     this.setName(i18n.tr("Umsatz-Kategorie"));
