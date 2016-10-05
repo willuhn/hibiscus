@@ -10,11 +10,13 @@ package de.willuhn.jameica.hbci.io;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -25,38 +27,20 @@ import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Exportiert Umsaetze im MT940-Format.
+ * Exportiert Umsaetze im MT940-Format, fasst hierbei jedoch alle Buchungen zu einer logischen MT940-Datei zusammen.
  */
-public class MT940UmsatzExporter implements Exporter
+public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
 {
-  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
-  protected final static String NL            = "\r\n";
-  protected final static DateFormat DF_YYMMDD = new SimpleDateFormat("yyMMdd");
-  protected final static DateFormat DF_MMDD   = new SimpleDateFormat("MMdd");
-  
   /**
-   * MT940-Zeichensatz.
-   * Ist eigentlich nicht noetig, weil Swift nur ein Subset von ISO-8859
-   * zulaesst, welches so klein ist, dass es im Wesentlichen US-ASCII ist
-   * und damit der Zeichensatz so ziemlich egal ist. Aber wir tolerieren
-   * die Umlaute wenigstens beim Import.
-   */
-  public final static String CHARSET  = "iso-8859-1";
-
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.MT940UmsatzExporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
-    // BUGZILLA 1250
     DecimalFormat df = (DecimalFormat) HBCI.DECIMALFORMAT.clone();
     df.setGroupingUsed(false);
     
@@ -73,43 +57,84 @@ public class MT940UmsatzExporter implements Exporter
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
 
-      Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
-      boolean showSaldo = (b == null || !b.booleanValue());
-      
+      //////////////////////////////////////////////////////////////////////////
+      // Wir sortieren die Buchungen vorher noch chronologisch. Und checken bei
+      // der Gelegenheit auch gleich, dass die Buchungen alle vom selben Konto
+      // stammen
+      Konto k = null;
+      List<Umsatz> list = new LinkedList<Umsatz>();
       for (int i=0;i<objects.length;++i)
+      {
+        if (objects[i] == null || !(objects[i] instanceof Umsatz))
+          continue;
+        
+        Umsatz u = (Umsatz) objects[i];
+        Konto konto = u.getKonto();
+        
+        if (k == null)
+          k = konto;
+        else if (!k.getID().equals(konto.getID()))
+          throw new ApplicationException(i18n.tr("Die zu exportierenden Umsätze müssen vom selben Konto stammen"));
+        list.add(u);
+      }
+      Collections.sort(list,new Comparator<Umsatz>() {
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        public int compare(Umsatz o1, Umsatz o2)
+        {
+          try
+          {
+            Date d1 = (Date) o1.getAttribute("datum_pseudo");
+            Date d2 = (Date) o2.getAttribute("datum_pseudo");
+            if (d1 == d2)
+              return 0;
+            if (d1 == null)
+              return -1;
+            if (d2 == null)
+              return 1;
+            return d1.compareTo(d2);
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("unable to sort data",re);
+            return 0;
+          }
+        }
+      });
+      //////////////////////////////////////////////////////////////////////////
+
+      String curr         = k.getWaehrung();
+      Boolean b           = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
+      boolean showSaldo   = (b == null || !b.booleanValue());
+
+      out.write(":20:Hibiscus" + NL);
+      out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + curr + NL);
+
+      for (int i=0;i<list.size();++i)
       {
         if (monitor != null)  
         	monitor.setPercentComplete((int)((i) * factor));
         
-        if (objects[i] == null || !(objects[i] instanceof Umsatz))
-          continue;
-
-        Object name = BeanUtil.toString(objects[i]);
+        Umsatz u = list.get(i);
+        Object name = BeanUtil.toString(u);
         
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
         
-    		Umsatz u    = (Umsatz) objects[i];
-    		Konto k     = u.getKonto();
-    		String curr = k.getWaehrung();
-
-    		if (i > 0)
-    		  out.write(NL);
-    		
-        out.write(":20:Hibiscus" + NL);
-    		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + curr + NL);
-    		
-    		if (showSaldo)
+        // Anfangssaldo
+    		if (showSaldo && i == 0)
     		{
           //(Schlusssaldo - Umsatzbetrag) > 0 -> Soll-Haben-Kennung für den Anfangssaldo = C
           //(Credit), sonst D (Debit)
-          double anfangsSaldo = u.getSaldo() - u.getBetrag();
+          double saldo = u.getSaldo() - u.getBetrag();
           
           //Anfangssaldo aus dem Schlusssaldo ermitteln sowie Soll-Haben-Kennung
           //Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
           out.write(":60F:");
-          out.write(anfangsSaldo >= 0.0d ? "C" : "D");
-          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(anfangsSaldo).replace("-","") + NL);
+          out.write(saldo >= 0.0d ? "C" : "D");
+          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(saldo).replace("-","") + NL);
     		}
 
         out.write(":61:" + DF_YYMMDD.format(u.getValuta()) + DF_MMDD.format(u.getDatum()));
@@ -155,7 +180,8 @@ public class MT940UmsatzExporter implements Exporter
         out.write(NL);
     		
 
-        if (showSaldo)
+        // Schluss-Saldo
+        if (showSaldo && i >= list.size() - 1)
         {
           out.write(":62F:");
           //Soll-Haben-Kennung für den Schlusssaldo ermitteln
@@ -164,8 +190,9 @@ public class MT940UmsatzExporter implements Exporter
           out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(schlussSaldo).replace("-","") + NL);
         }
     		
-        out.write("-");
       }
+      
+      out.write("-");
       out.write(NL);
     }
     catch (IOException e)
@@ -180,70 +207,10 @@ public class MT940UmsatzExporter implements Exporter
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
-  public IOFormat[] getIOFormats(Class objectType)
-  {
-    if (!Umsatz.class.equals(objectType))
-      return null;
-
-    return new IOFormat[]{new IOFormat() {
-      public String getName()
-      {
-        return MT940UmsatzExporter.this.getName();
-      }
-    
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
-      public String[] getFileExtensions()
-      {
-        return new String[]{"sta"};
-      }
-    }};
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
   public String getName()
   {
-    return i18n.tr("Swift MT940-Format (pro Buchungen eine logische Datei)");
-  }
-
-  
-  /**
-   * Ableitung von OutputStreamWriter, um die Umlaute umzuschreiben.
-   */
-  protected class MyOutputStreamWriter extends OutputStreamWriter
-  {
-    private String[] search  = new String[]{"Ü", "Ö", "Ä", "ü", "ö", "ä", "ß"};
-    private String[] replace = new String[]{"UE","OE","AE","ue","oe","ae","ss"};
-    private boolean doReplace = true;
-    
-    /**
-     * ct.
-     * @param out
-     * @throws UnsupportedEncodingException
-     */
-    public MyOutputStreamWriter(OutputStream out) throws UnsupportedEncodingException
-    {
-      super(out,CHARSET);
-      
-      // Umlaute ersetzen. Sind gemaess "FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf"
-      // in SWIFT nicht zulaessig. Wir machen das mal konfigurierbar. Dann kann es
-      // der User bei Bedarf deaktivieren
-      doReplace = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings().getBoolean("export.mt940.replaceumlauts",true);
-    }
-
-    /**
-     * @see java.io.Writer#write(java.lang.String)
-     */
-    public void write(String str) throws IOException
-    {
-      if (doReplace)
-        str = StringUtils.replaceEach(str,search,replace);
-      super.write(str);
-    }
+    return i18n.tr("Swift MT940-Format (alle Buchungen in einer logischen Datei)");
   }
 }
