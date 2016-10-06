@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0555 Umsätze nach Kategorien nur dann neu laden, wenn an Konto-Auswahl, Suchbegriff oder Zeitraum etwas geändert wurde
   * NEW: 0554 BUGZILLA 1180 - MT940-Export um die Möglichkeit ergänzt, alle Umsätze in einer logischen MT940-Datei zu exportieren (u.a. für Import in Collmex)
   * NEW: 0553 BUGZILLA 1513 - Umsaetze: Kategorie-Filter "Nicht zugeordnet"
   * NEW: 0552 Automatische Vervollständigung von Valuta/Datum mit dem jeweils anderen Datum beim Bearbeiten von Buchungen, wenn das jeweils andere Datum fehlt

@@ -15,7 +15,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
@@ -28,7 +27,6 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -70,26 +68,14 @@ public class UmsatzTypTree extends AbstractView
       left.addInput(t);
       
       // Duerfen wir erst nach dem Zeichnen
+      final Listener l = control.changedListener(t);
       t.getControl().addKeyListener(new KeyAdapter(){
-        private Listener forward = new DelayedListener(400,new Listener()
-        {
-          /**
-           * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-           */
-          public void handleEvent(Event event)
-          {
-            // hier kommt dann das verzoegerte Event an.
-            control.handleReload();
-          }
-        
-        });
-
         /**
          * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
          */
         public void keyReleased(KeyEvent e)
         {
-          forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
+          l.handleEvent(null);
         }
       });
       

@@ -85,6 +85,27 @@ public class UmsatzTypTreeControl extends AbstractControl
       }
     });
   }
+  
+  /**
+   * Erzeugt einen Listener, der das Event nur dann weiterleitet, wenn an
+   * der Auswahl etwas geaendert wurde.
+   * @param input das Input-Feld, welches ueberwacht werden soll.
+   * @return der Listener.
+   */
+  public Listener changedListener(final Input input)
+  {
+    return new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        if (input.hasChanged())
+        {
+          listener.handleEvent(event);
+        }
+      }
+    };
+  }
 
   /**
    * Liefert eine Auswahlbox fuer das Konto.
@@ -102,7 +123,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setComment(null);
     this.kontoAuswahl.setRememberSelection("auswertungen.umsatztree");
-    this.kontoAuswahl.addListener(this.listener);
+    this.kontoAuswahl.addListener(this.changedListener(this.kontoAuswahl));
     return this.kontoAuswahl;
   }
   
@@ -130,16 +151,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.range;
     
     this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
-    this.range.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        if (range.getValue() != null && range.hasChanged())
-        {
-          handleReload();
-        }
-      }
-    });
+    this.range.addListener(this.changedListener(this.range));
     
     return this.range;
   }
@@ -157,7 +169,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
-    this.start.addListener(this.listener);
+    this.start.addListener(this.changedListener(this.start));
     return this.start;
   }
 
@@ -174,7 +186,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.end = new DateToInput(null,"umsatzlist.filter.to");
     this.end.setName(i18n.tr("bis"));
     this.end.setComment(null);
-    this.end.addListener(this.listener);
+    this.end.addListener(this.changedListener(this.end));
     return this.end;
   }
   
