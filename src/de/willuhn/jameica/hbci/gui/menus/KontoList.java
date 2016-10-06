@@ -114,7 +114,7 @@ public class KontoList extends ContextMenu implements Extendable
     {
       try
       {
-        if (o == null || !(o instanceof Konto || !super.isEnabledFor(o)))
+        if (o == null || !(o instanceof Konto) || !super.isEnabledFor(o))
           return false;
 
         Konto k = (Konto)o;
