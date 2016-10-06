@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.TreeItem;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
@@ -60,6 +61,15 @@ public class UmsatzTree extends TreePart
   public UmsatzTree(GenericIterator list) throws RemoteException
   {
     super(list, new UmsatzDetail());
+    
+    try
+    {
+      BeanUtil.invoke(this,"addFeature",new Object[]{"de.willuhn.jameica.gui.parts.table.FeatureShortcut"});
+    }
+    catch (Exception e)
+    {
+      Logger.warn("Shortcut feature not available in this jameica version");
+    }
     
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
