@@ -51,7 +51,6 @@ public class UmsatzDetailEdit implements Action
         Umsatz u = (Umsatz) Settings.getDBService().createObject(Umsatz.class,null);
         u.setKonto(k);
         Date d = new Date();
-        u.setValuta(d);
         u.setDatum(d);
         context = u;
       }
