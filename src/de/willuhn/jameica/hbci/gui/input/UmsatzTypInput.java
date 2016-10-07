@@ -35,7 +35,21 @@ public class UmsatzTypInput extends SelectInput
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private boolean haveComment = false;
-  
+
+  /**
+   * ct.
+   * @param preselected der vorselectierte Umsatz-Typ.
+   * @param typ Filter auf Kategorie-Typen.
+   * Kategorien vom Typ "egal" werden grundsaetzlich angezeigt.
+   * @see UmsatzTyp#TYP_AUSGABE
+   * @see UmsatzTyp#TYP_EINNAHME
+   * @throws RemoteException
+   */
+  public UmsatzTypInput(UmsatzTyp preselected, int typ) throws RemoteException
+  {
+    this(preselected, typ, false);
+  }
+
   /**
    * ct.
    * @param preselected der vorselectierte Umsatz-Typ.
