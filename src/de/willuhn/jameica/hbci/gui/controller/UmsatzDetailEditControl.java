@@ -177,14 +177,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     Input input = super.getValuta();
     if (!input.isEnabled())
     {
-      boolean mandatory=true;
-      Object current = getCurrentObject();
-      if(current instanceof Umsatz){
-        if(((Umsatz) current).getKonto().hasFlag(Konto.FLAG_OFFLINE)){
-          mandatory=false;
-        }
-      }
-      input.setMandatory(mandatory);
+      input.setMandatory(false);
       input.setEnabled(true);
     }
     return input;
