@@ -13,7 +13,11 @@
 package de.willuhn.jameica.hbci.gui.menus;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -22,6 +26,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
@@ -30,6 +35,7 @@ import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.gui.action.UmsatzAssign;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
+import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzMarkChecked;
@@ -74,6 +80,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzMarkChecked(Umsatz.FLAG_CHECKED,true),"emblem-default.png","ALT+G"));
     addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,false),"edit-undo.png","CTRL+ALT+G"));
+    addReverseBookItem();
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Drucken..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -162,7 +169,73 @@ public class UmsatzList extends ContextMenu implements Extendable
     ExtensionRegistry.extend(this);
 
 	}
-	
+
+	private void addReverseBookItem(){
+    try
+    {
+      final String icon="edit-copy.png";
+      DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
+      DBIterator konten = service.createList(Konto.class);
+
+      final List<Konto> allOffline= new ArrayList<Konto>();
+      while(konten.hasNext()){
+        Konto next = (Konto)konten.next();
+        if(next.hasFlag(Konto.FLAG_OFFLINE)){
+          allOffline.add(next);
+        }
+      }
+      switch(allOffline.size()){
+      case 0:break;
+      case 1: {
+        final Konto toBookTo=allOffline.get(0);
+        addItem(new UmsatzItem(i18n.tr("Gegenbuchung erzeugen auf")+": "+toBookTo.getName(),new UmsatzDetailEdit().asReverse(toBookTo), icon){
+          @Override
+          public boolean isEnabledFor(Object o)
+          {
+            return super.isEnabledFor(o) && isEnabledReverseBooking(toBookTo, o);
+          }
+        });
+        break;
+      }
+      default:
+      {
+        addMenu(new ContextMenu(){
+          {
+            setText(i18n.tr("Gegenbuchung erzeugen auf")+" ...");
+            setImage(SWTUtil.getImage(icon));
+            for (final Konto toBookTo : allOffline)
+            {
+              addItem(new ContextMenuItem(toBookTo.getName(), new UmsatzDetailEdit().asReverse(toBookTo)){
+                public boolean isEnabledFor(Object o) {
+                  return super.isEnabledFor(o) && isEnabledReverseBooking(toBookTo, o);
+                }
+              });
+            }
+          }
+        });
+      }
+      }
+    } catch (RemoteException e)
+    {
+      Logger.error("error while creating reverse booking context menu entry",e);
+    }
+	}
+
+  private boolean isEnabledReverseBooking(Konto toBookTo, Object context){
+    if(context instanceof Umsatz){
+      try
+      {
+        Konto origKonto = ((Umsatz)context).getKonto();
+        return !origKonto.equals(toBookTo);
+      } catch (RemoteException e)
+      {
+        Logger.error("error while creating reverse booking context menu entry",e);
+      }
+      
+    }
+    return false;
+  }
+
   /**
    * Pruefen, ob es sich wirklich um einen Umsatz handelt.
    */

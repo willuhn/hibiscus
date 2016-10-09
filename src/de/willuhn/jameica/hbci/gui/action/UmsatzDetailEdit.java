@@ -32,6 +32,20 @@ import de.willuhn.util.I18N;
 public class UmsatzDetailEdit implements Action
 {
 
+  private boolean createReverse=false;
+  private Konto toBookTo=null;
+
+  /**
+   * setzt ein flag, dass die Gegenbuchung des Kontext-Objects erstellt werden soll
+   * @param toBookTo Offline-Konto, auf das die Gegenbuchung erstellt werden soll
+   * @return das (modifizierte) Objekt selbst
+   * */
+  public UmsatzDetailEdit asReverse(Konto toBookTo){
+    this.createReverse=true;
+    this.toBookTo=toBookTo;
+    return this;
+  }
+
   /**
    * Erwartet ein Objekt vom Typ <code>Umsatz</code> im Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -61,8 +75,26 @@ public class UmsatzDetailEdit implements Action
         throw new ApplicationException(i18n.tr("Fehler beim Anlegen des Umsatzes: {0}",re.getMessage()));
       }
     }
-    else if (!(context instanceof Umsatz))
+    else if (!(context instanceof Umsatz)){
       return;
+    }else if(createReverse){
+      try
+      {
+        Umsatz orig=(Umsatz)context;
+        Umsatz u = orig.duplicate();
+        u.setKonto(toBookTo);
+        u.setBetrag(-orig.getBetrag());
+        Konto konto = orig.getKonto();
+        u.setGegenkontoBLZ(konto.getBLZ());
+        u.setGegenkontoName(konto.getName());
+        u.setGegenkontoNummer(konto.getKontonummer());
+        u.setUmsatzTyp(null);
+        context = u;
+      } catch (RemoteException e)
+      {
+        throw new ApplicationException(e);
+      } 
+    }
 		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzDetailEdit.class,context);
   }
 }
