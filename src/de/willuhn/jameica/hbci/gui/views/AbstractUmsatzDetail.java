@@ -7,6 +7,8 @@
 
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -14,6 +16,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -85,5 +88,24 @@ public abstract class AbstractUmsatzDetail extends AbstractView
     bottom.addHeadline(i18n.tr("Verwendungszweck"));
     bottom.addPart(control.getZweck());
     bottom.addInput(control.getZweckSwitch());
+
+    forceSaldoUpdateforReverseBooking();
+  }
+
+  private void forceSaldoUpdateforReverseBooking()
+  {
+    if(getCurrentObject() instanceof Umsatz){
+      Umsatz umsatz=(Umsatz)getCurrentObject();
+      try
+      {
+        if(umsatz.isNewObject() && umsatz.getKonto().hasFlag(Konto.FLAG_OFFLINE)){
+          getControl().getBetrag().getControl().forceFocus();//->Saldenberechnungslistener feuert
+          getControl().getUmsatzTyp().focus();
+        }
+      } catch (RemoteException e)
+      {
+        //einfach ignoriere, wir wollen ja nur ein Feld vorsorglich aktualisieren
+      }
+    }
   }
 }
