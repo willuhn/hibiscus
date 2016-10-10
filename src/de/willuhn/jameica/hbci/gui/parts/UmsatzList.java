@@ -238,6 +238,9 @@ public class UmsatzList extends TablePart implements Extendable
     try
     {
       Object o = this.getSelection();
+      if(o instanceof Umsatz){
+        o =new Umsatz[]{(Umsatz) o};
+      }
       int size = this.size();
 
       // nichts markiert oder nur einer, dann liefern wir nur die Anzahl der Umsaetze
