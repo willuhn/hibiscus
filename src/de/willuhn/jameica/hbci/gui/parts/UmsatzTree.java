@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
 import de.willuhn.datasource.BeanUtil;
@@ -28,6 +29,10 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
 import de.willuhn.jameica.gui.parts.TreePart;
+import de.willuhn.jameica.gui.parts.table.Feature;
+import de.willuhn.jameica.gui.parts.table.Feature.Context;
+import de.willuhn.jameica.gui.parts.table.Feature.Event;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -52,6 +57,7 @@ public class UmsatzTree extends TreePart
   private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
+  private boolean summary = false;
   
   /**
    * ct.
@@ -69,6 +75,15 @@ public class UmsatzTree extends TreePart
     catch (Exception e)
     {
       Logger.warn("Shortcut feature not available in this jameica version");
+    }
+    try
+    {
+      BeanUtil.invoke(this,"addFeature",new Object[]{"de.willuhn.jameica.gui.parts.table.FeatureSummary"});
+      this.summary = true;
+    }
+    catch (Exception e)
+    {
+      Logger.warn("Summary feature not available in this jameica version");
     }
     
     this.setRememberColWidths(true);
@@ -146,6 +161,17 @@ public class UmsatzTree extends TreePart
     this.addColumn(i18n.tr("Notiz"),            "kommentar");
 
     this.setContextMenu(new UmsatzList());
+    
+    if (this.summary)
+    {
+      this.addSelectionListener(new Listener() {
+        @Override
+        public void handleEvent(org.eclipse.swt.widgets.Event event)
+        {
+          featureEvent(Feature.Event.REFRESH,null);
+        }
+      });
+    }
   }
 
   
@@ -226,5 +252,64 @@ public class UmsatzTree extends TreePart
     }
     
     return node;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.parts.TreePart#createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event, java.lang.Object)
+   */
+  @Override
+  protected Context createFeatureEventContext(Event e, Object data)
+  {
+    Context ctx = super.createFeatureEventContext(e, data);
+    
+    if (this.hasEvent(FeatureSummary.class,e))
+      ctx.addon.put(FeatureSummary.CTX_KEY_TEXT,this.getSummary());
+    
+    return ctx;
+  }
+  
+  /**
+   * Liefert den Summen-Text.
+   * @return der Summen-Text.
+   */
+  private String getSummary()
+  {
+    try
+    {
+      Object o = this.getSelection();
+      int size = this.size();
+
+      // nichts markiert oder nur einer, dann liefern wir nur die Anzahl der Umsaetze
+      if (o == null || size == 1 || !(o instanceof Umsatz[]))
+      {
+        if (size == 1)
+          return i18n.tr("1 Umsatz");
+        else
+          return i18n.tr("{0} Umsätze",Integer.toString(size));
+      }
+      
+      // Andernfalls berechnen wir die Summe
+      double sum = 0.0d;
+      Umsatz[] list = (Umsatz[]) o;
+      String curr = null;
+      for (Umsatz u:list)
+      {
+        if (curr == null)
+          curr = u.getKonto().getWaehrung();
+        sum += u.getBetrag();
+      }
+      if (curr == null)
+        curr = HBCIProperties.CURRENCY_DEFAULT_DE;
+
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}",new String[]{Integer.toString(size),
+                                                                              Integer.toString(list.length),
+                                                                              HBCI.DECIMALFORMAT.format(sum),
+                                                                              curr});
+    }
+    catch (Throwable t)
+    {
+      Logger.error("error while updating summary",t);
+    }
+    return null;
   }
 }

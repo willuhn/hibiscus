@@ -134,11 +134,11 @@ public class UmsatzTypTree extends AbstractView
     });
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
     
-    TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarisch"));
+    TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarisch"),true,1);
     TreePart tree = control.getTree();
     tree.paint(tg1.getComposite());
     
-    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Im Verlauf"));
+    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Im Verlauf"),true,1);
     UmsatzTypVerlauf chart = control.getChart();
     chart.paint(tg2.getComposite());
 
