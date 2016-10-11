@@ -13,4 +13,12 @@
 	  Umsätze, die noch keiner Kategorie zugeordnet sind, werden
 	  unter <b>Nicht zugeordnet</b> aufgeführt.
 	</p>
+	
+  <p>
+    <b>Tipp:</b> Im Reiter &quot;Im Verlauf&quot; kann durch Doppelklick auf
+    einen Eintrag in der Legende die Datenreihe ein- oder ausgeblendet werden.
+    Mit einem Rechtsklick auf die Legende kann ein Kontext-Menü zum Ein- oder
+    Ausblenden aller Datenreihen geöffnet werden.
+  </p>
+  	
 </form>

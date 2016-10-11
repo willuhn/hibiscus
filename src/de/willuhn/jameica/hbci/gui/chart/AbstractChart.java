@@ -23,10 +23,10 @@ import java.util.Map;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -74,37 +74,55 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     return this.title;
   }
 
-  protected org.swtchart.Chart getChart(){
+  /**
+   * Liefert das eigentliche SWT-Chart-Objekt.
+   * @return das eigentliche SWT-Chart-Objekt.
+   */
+  protected org.swtchart.Chart getChart()
+  {
     return this.chart;
   }
 
-  protected void setChart(final org.swtchart.Chart chart){
-    this.chart=chart;
-    if(chart!=null){
-      final Legend l=(Legend)chart.getLegend();
-      l.addMouseListener(new MouseListener() {
-        
-        @Override
-        public void mouseUp(MouseEvent e){}
-        
-        @Override
-        public void mouseDown(MouseEvent e){}
-        
-        @Override
-        public void mouseDoubleClick(MouseEvent e)
+  /**
+   * Speichert das SWT-Chart-Objekt.
+   * @param chart
+   */
+  protected void setChart(final org.swtchart.Chart chart)
+  {
+    this.chart = chart;
+    if (this.chart == null)
+      return;
+    
+    final Legend l = (Legend) chart.getLegend();
+    l.addMouseListener(new MouseAdapter()
+    {
+      /**
+       * Schaltet die Sichtbarkeit der Series bei Doppelklick um.
+       * @see org.eclipse.swt.events.MouseAdapter#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
+       */
+      @Override
+      public void mouseDoubleClick(MouseEvent e)
+      {
+        ISeries s = getSeries(chart, l, e.x, e.y);
+        if (s != null)
         {
-          ISeries s=getSeries(chart, l, e.x, e.y);
-          if(s!=null){
-            s.setVisible(!s.isVisible());
-            chart.redraw();
-          }
+          // Sichtbarkeit umschalten
+          s.setVisible(!s.isVisible());
+          chart.redraw();
         }
-      });
-      l.setMenu(createLegentContextMenu(chart, l));
-    }
+      }
+    });
+    
+    l.setMenu(createLegendContextMenu(chart, l));
   }
 
-  private Menu createLegentContextMenu(final org.swtchart.Chart chart, Legend l)
+  /**
+   * Erzeugt ein Contextmenu fuer die Legende.
+   * @param chart das Chart-Objekt.
+   * @param l die Legende.
+   * @return das Contextmenu.
+   */
+  private Menu createLegendContextMenu(final org.swtchart.Chart chart, Legend l)
   {
     Menu m = new Menu(l.getParent().getShell(), SWT.POP_UP);
     addShowMenuItem(m, i18n.tr("alle anzeigen"), true);
@@ -112,11 +130,20 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     return m;
   }
 
-  private void addShowMenuItem(Menu m, String text, final boolean setVisibleValue){
+  /**
+   * Erzeugt einen Menu-Eintrag.
+   * @param m das zugehoerige Menu.
+   * @param text der anzuzeigende Text.
+   * @param setVisibleValue das Sichtbarkeitsflag, welches beim Klick auf den Menu-Eintrag ausgefuehrt werden soll.
+   */
+  private void addShowMenuItem(Menu m, String text, final boolean setVisibleValue)
+  {
     MenuItem item = new MenuItem(m, SWT.PUSH);
     item.setText(text);
-    item.addSelectionListener(new SelectionListener() {
-      
+    item.addSelectionListener(new SelectionAdapter() {
+      /**
+       * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+       */
       @Override
       public void widgetSelected(SelectionEvent e)
       {
@@ -127,20 +154,25 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
         }
         chart.redraw();
       }
-      
-      @Override
-      public void widgetDefaultSelected(SelectionEvent e){}
     });
   }
 
-  private ISeries getSeries(org.swtchart.Chart chart, Legend l, int x, int y){
+  /**
+   * Liefert die Datenreihe fuer die angegebene Position.
+   * @param chart das Chart.
+   * @param l die Legende.
+   * @param x die X-Position.
+   * @param y die Y-Position.
+   * @return
+   */
+  private ISeries getSeries(org.swtchart.Chart chart, Legend l, int x, int y)
+  {
     ISeriesSet seriesSet = chart.getSeriesSet();
-    for (ISeries s : seriesSet.getSeries())
+    for (ISeries s:seriesSet.getSeries())
     {
       Rectangle sbounds = l.getBounds(s.getId());
-      if(sbounds.contains(x, y)){
+      if(sbounds.contains(x, y))
         return s;
-      }
     }
     return null;
   }
