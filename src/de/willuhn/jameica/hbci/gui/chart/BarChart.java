@@ -26,10 +26,10 @@ import org.swtchart.IAxis;
 import org.swtchart.IAxisTick;
 import org.swtchart.IBarSeries;
 import org.swtchart.IGrid;
+import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesLabel;
 import org.swtchart.ITitle;
 import org.swtchart.LineStyle;
-import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ext.InteractiveChart;
 
 import de.willuhn.datasource.BeanUtil;
@@ -60,22 +60,22 @@ public class BarChart extends AbstractChart
     SWTUtil.disposeChildren(this.comp);
     this.comp.setLayout(SWTUtil.createGrid(1,false));
 
-    this.chart = new InteractiveChart(this.comp,SWT.BORDER);
-    this.chart.setLayoutData(new GridData(GridData.FILL_BOTH));
-    this.chart.getLegend().setVisible(false);
-    this.chart.setOrientation(SWT.VERTICAL);
+    setChart(new InteractiveChart(this.comp,SWT.BORDER));
+    getChart().setLayoutData(new GridData(GridData.FILL_BOTH));
+    getChart().getLegend().setVisible(false);
+    getChart().setOrientation(SWT.VERTICAL);
 
     ////////////////////////////////////////////////////////////////////////////
     // Farben des Charts
-    this.chart.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-    this.chart.setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+    getChart().setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+    getChart().setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
     //
     ////////////////////////////////////////////////////////////////////////////
     
     ////////////////////////////////////////////////////////////////////////////
     // Titel des Charts
     {
-      ITitle title = this.chart.getTitle();
+      ITitle title = getChart().getTitle();
       title.setText(this.getTitle());
       title.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       title.setFont(Font.BOLD.getSWTFont());
@@ -89,7 +89,7 @@ public class BarChart extends AbstractChart
     
     // X-Achse
     {
-      IAxis axis = this.chart.getAxisSet().getXAxis(0);
+      IAxis axis = getChart().getAxisSet().getXAxis(0);
       axis.getTitle().setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE)); // wenn wir den auch ausblenden, geht die initiale Skalierung kaputt. Scheint ein Bug zu sein
 
       IGrid grid = axis.getGrid();
@@ -101,7 +101,7 @@ public class BarChart extends AbstractChart
     
     // Y-Achse
     {
-      IAxis axis = this.chart.getAxisSet().getYAxis(0);
+      IAxis axis = getChart().getAxisSet().getYAxis(0);
       axis.getTitle().setVisible(false);
 
       IGrid grid = axis.getGrid();
@@ -155,11 +155,11 @@ public class BarChart extends AbstractChart
       if (dataLine.size() == 0)
         continue; // wir haben gar keine Werte
 
-      IAxis axis = this.chart.getAxisSet().getXAxis(0);
+      IAxis axis = getChart().getAxisSet().getXAxis(0);
       axis.setCategorySeries(labelLine.toArray(new String[labelLine.size()]));
       axis.enableCategory(true);
 
-      IBarSeries barSeries = (IBarSeries) this.chart.getSeriesSet().createSeries(SeriesType.BAR,Integer.toString(i));
+      IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,Integer.toString(i));
       barSeries.setYSeries(toArray(dataLine));
       
       //////////////////////////////////////////////////////////////////////////
@@ -177,11 +177,11 @@ public class BarChart extends AbstractChart
     }
 
     // Titel aktualisieren
-    ITitle title = this.chart.getTitle();
+    ITitle title = getChart().getTitle();
     title.setText(this.getTitle());
 
     this.comp.layout();
-    this.chart.getAxisSet().adjustRange();
+    getChart().getAxisSet().adjustRange();
   }
 
   /**
