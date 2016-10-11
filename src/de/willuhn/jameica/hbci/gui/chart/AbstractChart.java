@@ -20,13 +20,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.swtchart.ISeries;
+import org.swtchart.ISeriesSet;
 import org.swtchart.ext.Messages;
+import org.swtchart.internal.Legend;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -44,7 +54,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   private String title             = null;
   private Map<RGB,Color> colors    = new HashMap<RGB,Color>();
   private List<T> data             = new ArrayList<T>();
-  org.swtchart.Chart chart         = null;
+  private org.swtchart.Chart chart = null;
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#setTitle(java.lang.String)
@@ -62,6 +72,77 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   public String getTitle()
   {
     return this.title;
+  }
+
+  protected org.swtchart.Chart getChart(){
+    return this.chart;
+  }
+
+  protected void setChart(final org.swtchart.Chart chart){
+    this.chart=chart;
+    if(chart!=null){
+      final Legend l=(Legend)chart.getLegend();
+      l.addMouseListener(new MouseListener() {
+        
+        @Override
+        public void mouseUp(MouseEvent e){}
+        
+        @Override
+        public void mouseDown(MouseEvent e){}
+        
+        @Override
+        public void mouseDoubleClick(MouseEvent e)
+        {
+          ISeries s=getSeries(chart, l, e.x, e.y);
+          if(s!=null){
+            s.setVisible(!s.isVisible());
+            chart.redraw();
+          }
+        }
+      });
+      l.setMenu(createLegentContextMenu(chart, l));
+    }
+  }
+
+  private Menu createLegentContextMenu(final org.swtchart.Chart chart, Legend l)
+  {
+    Menu m = new Menu(l.getParent().getShell(), SWT.POP_UP);
+    addShowMenuItem(m, i18n.tr("alle anzeigen"), true);
+    addShowMenuItem(m, i18n.tr("alle ausblenden"), false);
+    return m;
+  }
+
+  private void addShowMenuItem(Menu m, String text, final boolean setVisibleValue){
+    MenuItem item = new MenuItem(m, SWT.PUSH);
+    item.setText(text);
+    item.addSelectionListener(new SelectionListener() {
+      
+      @Override
+      public void widgetSelected(SelectionEvent e)
+      {
+        ISeriesSet seriesSet = chart.getSeriesSet();
+        for (ISeries s : seriesSet.getSeries())
+        {
+          s.setVisible(setVisibleValue);
+        }
+        chart.redraw();
+      }
+      
+      @Override
+      public void widgetDefaultSelected(SelectionEvent e){}
+    });
+  }
+
+  private ISeries getSeries(org.swtchart.Chart chart, Legend l, int x, int y){
+    ISeriesSet seriesSet = chart.getSeriesSet();
+    for (ISeries s : seriesSet.getSeries())
+    {
+      Rectangle sbounds = l.getBounds(s.getId());
+      if(sbounds.contains(x, y)){
+        return s;
+      }
+    }
+    return null;
   }
 
   /**

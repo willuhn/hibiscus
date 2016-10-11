@@ -55,12 +55,12 @@ public class LineChart extends AbstractChart<LineChartData>
    */
   public void redraw() throws RemoteException
   {
-    if (this.chart == null || this.chart.isDisposed())
+    if (getChart() == null || getChart().isDisposed())
       return;
     
     // Cleanup, falls noetig
     {
-      ISeriesSet set = this.chart.getSeriesSet();
+      ISeriesSet set = getChart().getSeriesSet();
       ISeries[] series = set.getSeries();
       for (ISeries s:series)
         set.deleteSeries(s.getId());
@@ -104,7 +104,7 @@ public class LineChart extends AbstractChart<LineChartData>
       if (cd.getLabel() != null)
         id += " " + cd.getLabel();
       
-      ILineSeries lineSeries = (ILineSeries) this.chart.getSeriesSet().createSeries(SeriesType.LINE,id);
+      ILineSeries lineSeries = (ILineSeries) getChart().getSeriesSet().createSeries(SeriesType.LINE,id);
       lineSeries.setXDateSeries(labelLine.toArray(new Date[labelLine.size()]));
       lineSeries.setYSeries(toArray(dataLine));
       
@@ -131,7 +131,7 @@ public class LineChart extends AbstractChart<LineChartData>
       //////////////////////////////////////////////////////////////////////////
     }
     
-    this.chart.getAxisSet().adjustRange();
+    getChart().getAxisSet().adjustRange();
   }
 
   /**
@@ -139,23 +139,23 @@ public class LineChart extends AbstractChart<LineChartData>
    */
   public void paint(Composite parent) throws RemoteException
   {
-    if (this.chart != null)
+    if (getChart() != null)
       return;
     
-    this.chart = new InteractiveChart(parent,SWT.BORDER);
-    this.chart.setLayoutData(new GridData(GridData.FILL_BOTH));
+    setChart(new InteractiveChart(parent,SWT.BORDER));
+    getChart().setLayoutData(new GridData(GridData.FILL_BOTH));
 
     ////////////////////////////////////////////////////////////////////////////
     // Farben des Charts
-    this.chart.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-    this.chart.setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+    getChart().setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+    getChart().setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
     //
     ////////////////////////////////////////////////////////////////////////////
     
     ////////////////////////////////////////////////////////////////////////////
     // Titel des Charts
     {
-      ITitle title = this.chart.getTitle();
+      ITitle title = getChart().getTitle();
       title.setText(this.getTitle());
       title.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
       title.setFont(Font.BOLD.getSWTFont());
@@ -166,7 +166,7 @@ public class LineChart extends AbstractChart<LineChartData>
     ////////////////////////////////////////////////////////////////////////////
     // Legende
     {
-      ILegend legend = this.chart.getLegend();
+      ILegend legend = getChart().getLegend();
       legend.setFont(Font.SMALL.getSWTFont());
       legend.setPosition(SWT.RIGHT);
       legend.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -180,7 +180,7 @@ public class LineChart extends AbstractChart<LineChartData>
     
     // X-Achse
     {
-      IAxis axis = this.chart.getAxisSet().getXAxis(0);
+      IAxis axis = getChart().getAxisSet().getXAxis(0);
       axis.getTitle().setFont(Font.SMALL.getSWTFont());
       axis.getTitle().setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE)); // wenn wir den auch ausblenden, geht die initiale Skalierung kaputt. Scheint ein Bug zu sein
 
@@ -195,7 +195,7 @@ public class LineChart extends AbstractChart<LineChartData>
     
     // Y-Achse
     {
-      IAxis axis = this.chart.getAxisSet().getYAxis(0);
+      IAxis axis = getChart().getAxisSet().getYAxis(0);
       axis.getTitle().setVisible(false);
 
       IGrid grid = axis.getGrid();
