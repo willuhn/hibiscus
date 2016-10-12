@@ -42,4 +42,11 @@ public interface SepaBooking extends Transfer
    */
   public void setPurposeCode(String code) throws RemoteException;
 
+  /**
+   * Speichert die BLZ des Gegenkontos.
+   * @param blz
+   * @throws RemoteException
+   */
+  public void setGegenkontoBLZ(String blz) throws RemoteException;
+
 }

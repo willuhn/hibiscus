@@ -83,6 +83,8 @@ public class SepaSammelLastschriftImporter extends AbstractSepaImporter
     if (mandDate != null && !SepaUtil.DATE_UNDEFINED.equals(mandDate))
       u.setSignatureDate(ISO_DATE.parse(mandDate));
 
+    setBicFromIbanIfAbsent(u);
+
     u.store();
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueb));
 

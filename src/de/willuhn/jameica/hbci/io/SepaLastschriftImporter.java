@@ -68,6 +68,8 @@ public class SepaLastschriftImporter extends AbstractSepaImporter
     u.setSequenceType(SepaLastSequenceType.valueOf(prop.getProperty(ISEPAParser.Names.SEQUENCETYPE.getValue())));
     u.setType(SepaLastType.valueOf(prop.getProperty(ISEPAParser.Names.LAST_TYPE.getValue())));
 
+    setBicFromIbanIfAbsent(u);
+
     u.store();
     Application.getMessagingFactory().sendMessage(new ImportMessage(u));
   }

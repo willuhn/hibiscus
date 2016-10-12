@@ -56,6 +56,8 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
     u.setPmtInfId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PMTINFID.getValue())));
     u.setPurposeCode(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PURPOSECODE.getValue())));
 
+    setBicFromIbanIfAbsent(u);
+
     u.store();
     Application.getMessagingFactory().sendMessage(new ImportMessage(u));
   }
