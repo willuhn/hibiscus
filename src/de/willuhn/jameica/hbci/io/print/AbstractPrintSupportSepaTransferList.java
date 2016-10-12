@@ -99,7 +99,7 @@ public abstract class AbstractPrintSupportSepaTransferList extends AbstractPrint
         
         table.add(new TextPrint(HBCI.DATEFORMAT.format(u.getTermin()),style));
         table.add(new TextPrint(k.getLongName(),style));
-        table.add(new TextPrint(i18n.tr("{0}\nIBAN {1}, BIC {2}",u.getGegenkontoName(),HBCIProperties.formatIban(u.getGegenkontoNummer()),u.getGegenkontoBLZ()),style));
+        table.add(new TextPrint(i18n.tr("{0}\nIBAN {1}, BIC {2} ({3})",u.getGegenkontoName(),HBCIProperties.formatIban(u.getGegenkontoNummer()),u.getGegenkontoBLZ(),HBCIProperties.getNameForBank(u.getGegenkontoBLZ())),style));
         table.add(new TextPrint(usage,style));
         table.add(new TextPrint(HBCI.DECIMALFORMAT.format(u.getBetrag()) + " " + k.getWaehrung(),style));
         if (ausgefuehrt != null)

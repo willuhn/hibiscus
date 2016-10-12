@@ -107,7 +107,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
           String usage = VerwendungszweckUtil.toString(b,"\n");
 
           children.add(new TextPrint(Integer.toString(++count),fontTiny));
-          children.add(new TextPrint(i18n.tr("{0}, IBAN {1}, BIC {2}",b.getGegenkontoName(),HBCIProperties.formatIban(b.getGegenkontoNummer()),b.getGegenkontoBLZ()),fontTiny));
+          children.add(new TextPrint(i18n.tr("{0}, IBAN {1}, BIC {2} ({3})",b.getGegenkontoName(),HBCIProperties.formatIban(b.getGegenkontoNummer()),b.getGegenkontoBLZ(),HBCIProperties.getNameForBank(b.getGegenkontoBLZ())),fontTiny));
           children.add(new TextPrint(usage,fontTiny));
           children.add(new TextPrint(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + k.getWaehrung(),fontTiny));
         }

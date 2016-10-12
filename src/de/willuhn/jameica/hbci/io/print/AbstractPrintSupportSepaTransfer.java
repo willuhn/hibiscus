@@ -72,7 +72,7 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       // Gegenkonto
       {
         table.add(new TextPrint(i18n.tr("Gegenkonto"),fontNormal));
-        table.add(new TextPrint(i18n.tr("{0}\nIBAN: {1}\nBIC: {2}",a.getGegenkontoName(),HBCIProperties.formatIban(a.getGegenkontoNummer()),a.getGegenkontoBLZ()),fontNormal));
+        table.add(new TextPrint(i18n.tr("{0}\nIBAN: {1}\nBIC: {2}\nBank: {3}",a.getGegenkontoName(),HBCIProperties.formatIban(a.getGegenkontoNummer()),a.getGegenkontoBLZ(),HBCIProperties.getNameForBank(a.getGegenkontoBLZ())),fontNormal));
       }
 
       // Leerzeile

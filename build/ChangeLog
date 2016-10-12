@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0561 Anzeige des Banknamens hinter der BIC beim Druck von Aufträgen 
   * NEW: 0560 BUGZILLA 1279 - Ein- und Ausblenden einzelner Datenreihen in den Charts per Doppelklick in der Legende
   * NEW: 0559 BUGZILLA 1230 - Anzeige der Summenzeile auch in "Umsätze nach Kategorien"
   * NEW: 0558 BUGZILLA 1146 - Erzeugung von Gegenbuchungen bei Offline-Konten
