@@ -182,14 +182,10 @@ public class ImportDialog extends AbstractDialog
         }
         catch (OperationCanceledException oce)
         {
-          Logger.info("operation cancelled");
-          monitor.setStatusText(i18n.tr("Export abgebrochen"));
-          monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
+          throw oce;
         }
         catch (ApplicationException ae)
         {
-          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-          monitor.setStatusText(ae.getMessage());
           GUI.getStatusBar().setErrorText(ae.getMessage());
           throw ae;
         }

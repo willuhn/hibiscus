@@ -45,7 +45,7 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
     u.setGegenkontoBLZ(prop.getProperty(ISEPAParser.Names.DST_BIC.getValue()));
     u.setZweck(prop.getProperty(ISEPAParser.Names.USAGE.getValue()));
     
-    u.setBetrag(Double.valueOf(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
+    u.setBetrag(this.parseValue(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
 
     String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
     

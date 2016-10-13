@@ -12,9 +12,9 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -44,21 +44,30 @@ public abstract class AbstractImporter implements Importer
       
       double factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
       monitor.setStatusText(i18n.tr("Importiere Daten"));
-      
+
+      int success = 0;
+      int failed = 0;
       for (int i=0;i<objects.length;++i)
       {
         monitor.setPercentComplete((int)((i) * factor));
         monitor.log(i18n.tr("Lese Datensatz {0}",Integer.toString(i+1)));
-        try{
+        try
+        {
           this.importObject(objects[i],i,ctx);
-        }catch(ApplicationException ae){
-          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-          monitor.log(objects[i].toString());
-          monitor.log("Fehler: "+ae.getMessage());
+          success++;
+        }
+        catch (Exception e)
+        {
+          String msg = e.getMessage();
+          monitor.log("  " + i18n.tr("  Import fehlgeschlagen: {0}",msg != null ? msg : e.getClass().getSimpleName()));
+          monitor.log("  " + i18n.tr("  Fehlerhafter Datensatz: {0}",BeanUtil.toString(objects[i])));
+          failed++;
         }
       }
       this.commit(objects,format,is,monitor);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Daten importiert"),StatusBarMessage.TYPE_SUCCESS));
+      
+      String msg = i18n.tr("{0} importiert, {1} fehlerhaft",Integer.toString(success),Integer.toString(failed));
+      throw new ApplicationException(msg);
     }
     catch (OperationCanceledException oce)
     {

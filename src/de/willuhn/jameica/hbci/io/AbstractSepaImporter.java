@@ -28,6 +28,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
 
@@ -152,6 +153,27 @@ public abstract class AbstractSepaImporter extends AbstractImporter
       return k;
     }
     throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
+  }
+  
+  /**
+   * Versucht den Text als Double zu parsen.
+   * @param s der Text.
+   * @return das geparste Double oder NaN, wenn es nicht zu parsen ist.
+   */
+  protected double parseValue(String s)
+  {
+    if (s == null || s.trim().length() == 0)
+      return Double.NaN;
+    
+    try
+    {
+      return Double.parseDouble(s);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to parse as double: " + s,e);
+    }
+    return Double.NaN;
   }
   
   /**
