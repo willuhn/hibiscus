@@ -94,8 +94,9 @@ public abstract class AbstractSepaImporter extends AbstractImporter
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractImporter#commit(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
+  //final, damit Subklassen zukünftig nichts komisches machen können (siehe Exception-Handling in AbstractImporter#doImport)
   @Override
-  void commit(Object[] objects, IOFormat format, InputStream is, ProgressMonitor monitor) throws Exception
+  final void commit(Object[] objects, IOFormat format, InputStream is, ProgressMonitor monitor) throws Exception
   {
     kontenCache.clear();
     super.commit(objects,format,is,monitor);

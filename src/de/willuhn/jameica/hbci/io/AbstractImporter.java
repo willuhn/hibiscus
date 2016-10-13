@@ -49,8 +49,13 @@ public abstract class AbstractImporter implements Importer
       {
         monitor.setPercentComplete((int)((i) * factor));
         monitor.log(i18n.tr("Lese Datensatz {0}",Integer.toString(i+1)));
-        
-        this.importObject(objects[i],i,ctx);
+        try{
+          this.importObject(objects[i],i,ctx);
+        }catch(ApplicationException ae){
+          monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+          monitor.log(objects[i].toString());
+          monitor.log("Fehler: "+ae.getMessage());
+        }
       }
       this.commit(objects,format,is,monitor);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Daten importiert"),StatusBarMessage.TYPE_SUCCESS));
