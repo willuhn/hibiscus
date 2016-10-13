@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0562 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/31a2d26fdd931d67e94527b221a9c071156a2891
   * NEW: 0561 Anzeige des Banknamens hinter der BIC beim Druck von Aufträgen 
   * NEW: 0560 BUGZILLA 1279 - Ein- und Ausblenden einzelner Datenreihen in den Charts per Doppelklick in der Legende
   * NEW: 0559 BUGZILLA 1230 - Anzeige der Summenzeile auch in "Umsätze nach Kategorien"
