@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0564 Erster Code für optionale BIC. Ist bei Zahlungen nicht mehr Pflicht, wird aber noch automatisch aus der IBAN vervollständigt
   * NEW: 0563 Fehlerhafte Aufträge beim Import von SEPA-Dateien überspringen statt abzubrechen
   * NEW: 0562 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/31a2d26fdd931d67e94527b221a9c071156a2891
   * NEW: 0561 Anzeige des Banknamens hinter der BIC beim Druck von Aufträgen 

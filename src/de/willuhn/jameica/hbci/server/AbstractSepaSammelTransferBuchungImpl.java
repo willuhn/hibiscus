@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
@@ -58,21 +59,33 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
       if (betrag == 0.0 || Double.isNaN(betrag))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
 
-      if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
+      //////////////////////////////////////
+      // IBAN und BIC pruefen
+      String s = StringUtils.trimToNull(getGegenkontoNummer());
+      if (s == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die IBAN des Gegenkontos ein"));
-      HBCIProperties.checkChars(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_VALIDCHARS);
-      HBCIProperties.checkLength(getGegenkontoNummer(), HBCIProperties.HBCI_IBAN_MAXLENGTH);
 
-      if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
+      HBCIProperties.checkChars(s, HBCIProperties.HBCI_IBAN_VALIDCHARS);
+      HBCIProperties.checkLength(s, HBCIProperties.HBCI_IBAN_MAXLENGTH);
+
+      IBAN iban = HBCIProperties.getIBAN(s);
+
+      // Automatisch aus IBAN vervollstaendigen, wenn sie fehlt
+      if (StringUtils.trimToNull(getGegenkontoBLZ()) == null)
+        setGegenkontoBLZ(iban.getBIC());
+
+      if (StringUtils.trimToNull(getGegenkontoBLZ()) == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die BIC des Gegenkontos ein"));
+      
       HBCIProperties.checkBIC(getGegenkontoBLZ());
+      //
+      //////////////////////////////////////
 
       if (StringUtils.trimToNull(getGegenkontoName()) == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
-      HBCIProperties.getIBAN(getGegenkontoNummer());
 
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);

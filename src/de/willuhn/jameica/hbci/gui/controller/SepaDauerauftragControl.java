@@ -346,7 +346,6 @@ public class SepaDauerauftragControl extends AbstractControl
     
     SepaDauerauftrag t = getTransfer();
     this.bic = new BICInput(t.getGegenkontoBLZ());
-    this.bic.setMandatory(true);
     if (t.isActive())
       this.bic.setEnabled(getBPD().getBoolean("recktoeditable",true));
     return this.bic;

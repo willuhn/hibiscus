@@ -129,7 +129,6 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     
     this.bic = new BICInput(s.getGegenkontoBLZ());
     this.bic.setEnabled(!s.getSammelTransfer().ausgefuehrt());
-    this.bic.setMandatory(true);
     return this.bic;
   }
 

@@ -201,7 +201,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
     {
       this.bic = new BICInput(getTransfer().getGegenkontoBLZ());
       this.bic.setEnabled(!getTransfer().ausgefuehrt());
-      this.bic.setMandatory(true);
     }
     return this.bic;
   }
