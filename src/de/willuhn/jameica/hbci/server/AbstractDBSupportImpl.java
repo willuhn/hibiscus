@@ -85,14 +85,6 @@ public abstract class AbstractDBSupportImpl implements DBSupport
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#install()
-   */
-  public void install() throws RemoteException
-  {
-    // Leere Dummy-Implementierung
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getTransactionIsolationLevel()
    */
   public int getTransactionIsolationLevel() throws RemoteException

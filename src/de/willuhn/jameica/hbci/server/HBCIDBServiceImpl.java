@@ -18,10 +18,12 @@ import de.willuhn.datasource.db.DBServiceImpl;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.version.UpdateProvider;
 import de.willuhn.sql.version.Updater;
@@ -125,8 +127,41 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
    */
   public void checkConsistency() throws RemoteException, ApplicationException
   {
+    Logger.info("determine current database version");
+    Version version = null;
+    try
+    {
+      version = VersionUtil.getVersion(this,"db");
+      Logger.info("current database version: " + version.getVersion());
+    }
+    catch (RemoteException re)
+    {
+      Throwable cause = re.getCause();
+
+      // Checken, ob es eine SQL-Exception war
+      if (!(cause instanceof SQLException))
+        throw re;
+      
+      Logger.warn("unable to determine database version - database probably empty, recreating");
+      Logger.write(Level.DEBUG,"stacktrace for debugging purpose",re);
+      try
+      {
+        this.install();
+        
+        // Jetzt sollte sich die Version laden lassen
+        version = VersionUtil.getVersion(this,"db");
+        Logger.info("current database version: " + version.getVersion());
+      }
+      catch (RemoteException re2)
+      {
+        Logger.error("unable to recreate database",re2);
+        // Wir werfen die originale Exception
+        throw re;
+      }
+    }
+    
     Logger.info("init update provider");
-    UpdateProvider provider = new HBCIUpdateProvider(getConnection(),VersionUtil.getVersion(this,"db"));
+    UpdateProvider provider = new HBCIUpdateProvider(getConnection(),version);
     Updater updater = new Updater(provider,"iso-8859-1");
     updater.execute();
     Logger.info("updates finished");
@@ -209,7 +244,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
     monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
-    this.driver.install();
     
     Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
     File file = new File(mf.getPluginDir() + File.separator + "sql","create.sql");

@@ -57,12 +57,6 @@ public interface DBSupport extends Serializable
   public void checkConnection(Connection conn) throws RemoteException;
 
   /**
-   * Richtet ggf. die Datenbank ein.
-   * @throws RemoteException
-   */
-  public void install() throws RemoteException;
-  
-  /**
    * Fuehrt ein SQL-Update-Script auf der Datenbank aus.
    * @param conn die Datenbank-Connection.
    * @param sqlScript das SQL-Script.
