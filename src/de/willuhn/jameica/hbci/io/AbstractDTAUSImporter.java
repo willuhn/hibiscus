@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
@@ -45,10 +46,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
   private Hashtable kontenCache = new Hashtable();
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
    */
-  public void doImport(Object context, IOFormat format, InputStream is,
-      ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     // Wir merken uns die Konten, die der User schonmal ausgewaehlt
     // hat, um ihn nicht fuer jede Buchung mit immer wieder dem
@@ -119,6 +119,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
             // bis zum Ende der DTAUS-Datei genau auf 100% bewegen
             monitor.setPercentComplete((int)((++count) * factor));
             monitor.log(i18n.tr("Importiere Datensatz {0}",c.getNameEmpfaenger()));
+            
+            if (t != null && t.isInterrupted())
+              throw new OperationCanceledException();
            
             // Gewuenschtes Objekt erstellen
             final DBObject skel = service.createObject(((MyIOFormat)format).type,null);

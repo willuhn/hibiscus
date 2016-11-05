@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0566 Imports können jetzt abgebrochen werden
   * NEW: 0565 Hibiscus-Datenbank automatisch neu anlegen, wenn sie nicht existiert (auch wenn das Plugin schon installiert ist)
   * NEW: 0564 Erster Code für optionale BIC. Ist bei Zahlungen nicht mehr Pflicht, wird aber noch automatisch aus der IBAN vervollständigt
   * NEW: 0563 Fehlerhafte Aufträge beim Import von SEPA-Dateien überspringen statt abzubrechen

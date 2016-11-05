@@ -16,6 +16,7 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -30,10 +31,10 @@ public abstract class AbstractImporter implements Importer
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
    */
   @Override
-  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws RemoteException, ApplicationException
+  public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     try
     {
@@ -49,6 +50,9 @@ public abstract class AbstractImporter implements Importer
       int failed = 0;
       for (int i=0;i<objects.length;++i)
       {
+        if (t != null && t.isInterrupted())
+          throw new OperationCanceledException();
+
         monitor.setPercentComplete((int)((i) * factor));
         monitor.log(i18n.tr("Lese Datensatz {0}",Integer.toString(i+1)));
         try

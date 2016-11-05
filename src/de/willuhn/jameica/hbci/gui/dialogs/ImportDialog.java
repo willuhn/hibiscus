@@ -1,15 +1,10 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/ImportDialog.java,v $
- * $Revision: 1.16 $
- * $Date: 2011/05/03 16:44:23 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
+
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.io.BufferedInputStream;
@@ -63,6 +58,7 @@ public class ImportDialog extends AbstractDialog
   private Class type              = null;
   
   private Settings  settings      = null;
+  private BackgroundTask task     = null;
 
   /**
    * ct.
@@ -168,13 +164,19 @@ public class ImportDialog extends AbstractDialog
     final Importer importer = imp.importer;
     final IOFormat format = imp.format;
 
-    BackgroundTask t = new BackgroundTask() {
+    this.task = new BackgroundTask()
+    {
+      private boolean interrupted = false;
+      
+      /**
+       * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
+       */
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         try
         {
           InputStream is = new BufferedInputStream(new FileInputStream(file));
-          importer.doImport(context,format,is,monitor);
+          importer.doImport(context,format,is,monitor,task);
           monitor.setPercentComplete(100);
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           GUI.getStatusBar().setSuccessText(i18n.tr("Daten importiert aus {0}",s));
@@ -200,14 +202,24 @@ public class ImportDialog extends AbstractDialog
         }
       }
 
-      public void interrupt() {}
+      /**
+       * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
+       */
+      public void interrupt()
+      {
+        this.interrupted = true;
+      }
+      
+      /**
+       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
+       */
       public boolean isInterrupted()
       {
-        return false;
+        return this.interrupted;
       }
     };
 
-    Application.getController().start(t);
+    Application.getController().start(task);
   }
 
 	/**
@@ -345,65 +357,3 @@ public class ImportDialog extends AbstractDialog
     }
 	}
 }
-
-
-/**********************************************************************
- * $Log: ImportDialog.java,v $
- * Revision 1.16  2011/05/03 16:44:23  willuhn
- * @C GUI cleanup
- *
- * Revision 1.15  2011-01-12 18:23:04  willuhn
- * @N Letztes ausgewaehltes Import-Format merken
- *
- * Revision 1.14  2011-01-12 17:54:08  willuhn
- * @C Format-Namen sortieren
- *
- * Revision 1.13  2011-01-12 17:53:05  willuhn
- * @C Format-Namen sortieren
- *
- * Revision 1.12  2010/04/25 21:01:46  willuhn
- * @B BUGZILLA 851
- *
- * Revision 1.11  2010/03/16 00:44:18  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- * Revision 1.10  2006/08/07 21:51:43  willuhn
- * @N Erste Version des DTAUS-Exporters
- *
- * Revision 1.9  2006/08/07 14:45:18  willuhn
- * @B typos
- *
- * Revision 1.8  2006/06/08 22:29:47  willuhn
- * @N DTAUS-Import fuer Sammel-Lastschriften und Sammel-Ueberweisungen
- * @B Eine Reihe kleinerer Bugfixes in Sammeltransfers
- * @B Bug 197 besser geloest
- *
- * Revision 1.7  2006/05/25 13:47:03  willuhn
- * @N Skeleton for DTAUS-Import
- *
- * Revision 1.6  2006/04/21 09:26:35  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2006/04/20 08:44:21  willuhn
- * @C s/Childs/Children/
- *
- * Revision 1.4  2006/01/23 23:07:23  willuhn
- * @N csv import stuff
- *
- * Revision 1.3  2006/01/23 12:16:57  willuhn
- * @N Update auf HBCI4Java 2.5.0-rc5
- *
- * Revision 1.2  2006/01/23 00:36:29  willuhn
- * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
- *
- * Revision 1.1  2006/01/18 00:51:01  willuhn
- * @B bug 65
- *
- **********************************************************************/
