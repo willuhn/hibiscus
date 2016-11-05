@@ -8,7 +8,6 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,12 +81,13 @@ public class UmsatzList extends TablePart implements Extendable
   private UmsatzDaysInput days      = null;
 
   private Konto konto               = null;
-  private List<Umsatz> umsaetze     = null;
   
-  private KL kl                     = null;
+  private KL kl                     = new KL();
   private boolean filter            = true;
   
   private boolean disposed          = false;
+  
+  private List<Umsatz> umsaetze     = null;
   
   /**
    * @param konto
@@ -108,10 +108,10 @@ public class UmsatzList extends TablePart implements Extendable
   public UmsatzList(GenericIterator<Umsatz> list, Action action) throws RemoteException
   {
     super(list,action);
+    
+    // Wir arbeiten nur auf dieser Liste
     if (list != null)
       this.umsaetze = PseudoIterator.asList(list);
-    else
-      this.umsaetze = new ArrayList<Umsatz>();
     
     this.addFeature(new FeatureShortcut()); // Wir unterstuetzen Shortcuts
     
@@ -306,9 +306,6 @@ public class UmsatzList extends TablePart implements Extendable
     
     if (this.filter)
     {
-      if (this.kl == null)
-        this.kl = new KL();
-  
       Container c = new SimpleContainer(parent);
       this.days = new UmsatzDaysInput();
       this.days.addListener(new DelayedListener(300, new Listener() {
@@ -412,24 +409,21 @@ public class UmsatzList extends TablePart implements Extendable
             if (!force && !hasChanged())
               return;
               
-            // Erstmal alle rausschmeissen
-            UmsatzList.this.removeAll();
-
-            int t = ((Integer) days.getValue()).intValue();
+            int t = days != null ? ((Integer) days.getValue()).intValue() : 0;
 
             if (konto != null)
             {
               // Umsaetze vom Konto neu laden
-              umsaetze.clear();
-              umsaetze.addAll(PseudoIterator.asList(konto.getUmsaetze(t)));
-              for (Umsatz u:umsaetze)
+              removeAll();
+              GenericIterator<Umsatz> list = konto.getUmsaetze(t);
+              while (list.hasNext())
               {
-                UmsatzList.this.addItem(u);
+                addItem(list.next());
               }
             }
-            else
+            else if (umsaetze != null)
             {
-              Umsatz u  = null;
+              removeAll();
               Date date = null;
               Date limit = null;
               if (t > 0)
@@ -443,9 +437,10 @@ public class UmsatzList extends TablePart implements Extendable
                 limit = cal.getTime();
               }
               
+
               for (int i=0;i<umsaetze.size();++i)
               {
-                u = (Umsatz) umsaetze.get(i);
+                Umsatz u = (Umsatz) umsaetze.get(i);
                 if (u.getID() == null) // Wurde zwischenzeitlich geloescht
                 {
                   umsaetze.remove(i);
@@ -458,11 +453,11 @@ public class UmsatzList extends TablePart implements Extendable
                 if (date != null && limit != null && date.before(limit))
                   continue;
 
-                UmsatzList.this.addItem(u);
+                addItem(u);
               }
             }
             
-            UmsatzList.this.sort();
+            sort();
           }
           catch (Exception e)
           {
@@ -583,12 +578,13 @@ public class UmsatzList extends TablePart implements Extendable
       };
     }
 
-    DelayedListener updateKontoListListener=new DelayedListener(new Listener() {
+    DelayedListener updateKontoListListener = new DelayedListener(new Listener() {
       
       @Override
       public void handleEvent(Event event)
       {
-        kl.process(true);
+        if (kl != null)
+          kl.process(true);
       }
     });
 
@@ -613,10 +609,13 @@ public class UmsatzList extends TablePart implements Extendable
             Umsatz newUmsatz = (Umsatz) o;
             
             // BUGZILLA 692 haben wir den schon?
-            for (Object u:umsaetze)
+            if (umsaetze != null)
             {
-              if (BeanUtil.equals(u,newUmsatz))
-                return;
+              for (Object u:getItems())
+              {
+                if (BeanUtil.equals(u,newUmsatz))
+                  return;
+              }
             }
             
             // Checken, ob der Umsatz ueberhaupt zum Konto passt
@@ -629,15 +628,12 @@ public class UmsatzList extends TablePart implements Extendable
                 return;
             }
 
-            umsaetze.add(newUmsatz);
-            
-            if (filter && kl != null)
-              updateKontoListListener.handleEvent(null);
+            if (umsaetze != null)
+              umsaetze.add(newUmsatz);
             else
-            {
               addItem(newUmsatz);
-              sort();
-            }
+            
+            updateKontoListListener.handleEvent(null);
           }
           catch (Exception e)
           {
