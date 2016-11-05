@@ -583,6 +583,15 @@ public class UmsatzList extends TablePart implements Extendable
       };
     }
 
+    DelayedListener updateKontoListListener=new DelayedListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        kl.process(true);
+      }
+    });
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -623,7 +632,7 @@ public class UmsatzList extends TablePart implements Extendable
             umsaetze.add(newUmsatz);
             
             if (filter && kl != null)
-              kl.process(true);
+              updateKontoListListener.handleEvent(null);
             else
             {
               addItem(newUmsatz);
