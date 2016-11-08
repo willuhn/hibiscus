@@ -698,25 +698,37 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
     if ("longname".equals(arg0))
     {
-      String bez = getBezeichnung();
-      String blz = getBLZ();
-      String kto = getKontonummer();
+      String bez  = getBezeichnung();
+      String blz  = getBLZ();
+      String kto  = getKontonummer();
+      String iban = getIban();
+      String bic  = getBic();
+      
+      boolean haveBic = bic != null && bic.length() > 0;
+      boolean haveIban = iban != null && iban.length() > 0;
+      String name = null;
+      
       try
       {
-        String name = HBCIProperties.getNameForBank(blz);
-        if (name != null && name.length() > 0)
-          blz = name;
-        else
-          blz = i18n.tr("BLZ") + ": " + blz;
+        name = HBCIProperties.getNameForBank(haveBic ? bic : blz);
       }
       catch (Exception e)
       {
         // ignore
       }
+      
+      if (name == null)
+        name = haveBic ? (i18n.tr("BIC") + ": " + bic) : (i18n.tr("BLZ") + ": " + blz);
+        
+      // Wir muessen die IBAN etwas verkuerzt anzeigen. Das passt sonst nicht hin.
+      if (haveIban)
+        kto = StringUtils.abbreviateMiddle(iban,"...",14);
+      
+      String k = i18n.tr(haveIban ? "IBAN" : "Kto.");
 
       if (bez != null && bez.length() > 0)
-        return i18n.tr("{0}, Kto. {1} [{2}]", new String[] { bez, kto, blz });
-      return i18n.tr("Kto. {0} [{1}]", new String[] { kto, blz });
+        return bez + ", " + k + " " + kto + " [" + name + "]";
+      return k + " " + kto + " [" + name + "]";
     }
 
     return super.getAttribute(arg0);
