@@ -722,7 +722,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         
       // Wir muessen die IBAN etwas verkuerzt anzeigen. Das passt sonst nicht hin.
       if (haveIban)
-        kto = StringUtils.abbreviateMiddle(iban,"...",14);
+        kto = StringUtils.abbreviateMiddle(iban,"..",14);
       
       String k = i18n.tr(haveIban ? "IBAN" : "Kto.");
 
