@@ -259,8 +259,8 @@ public class SynchronizeList extends TablePart
       }
       catch (Exception e)
       {
-        Logger.error("unable to configure synchronize options");
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen: {0}",e.getMessage()));
+        Logger.error("unable to configure synchronize options",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
       }
     }
   }

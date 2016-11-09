@@ -294,8 +294,8 @@ public class KontoControl extends AbstractControl
         }
         catch (Exception e)
         {
-          Logger.error("unable to configure synchronize options");
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen"),StatusBarMessage.TYPE_ERROR));
+          Logger.error("unable to configure synchronize options",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Konfigurieren der Synchronisierungsoptionen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
         }
         
       }
