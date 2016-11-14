@@ -71,13 +71,11 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
       IBAN iban = HBCIProperties.getIBAN(s);
 
       // Automatisch aus IBAN vervollstaendigen, wenn sie fehlt
-      if (StringUtils.trimToNull(getGegenkontoBLZ()) == null)
+      if (iban != null && StringUtils.trimToNull(getGegenkontoBLZ()) == null)
         setGegenkontoBLZ(iban.getBIC());
 
-      if (StringUtils.trimToNull(getGegenkontoBLZ()) == null)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie die BIC des Gegenkontos ein"));
-      
-      HBCIProperties.checkBIC(getGegenkontoBLZ());
+      if (StringUtils.trimToNull(getGegenkontoBLZ()) != null)
+        HBCIProperties.checkBIC(getGegenkontoBLZ());
       //
       //////////////////////////////////////
 
