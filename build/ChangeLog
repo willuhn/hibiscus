@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0569 Saldo-Chart: Trend nur noch basierend auf den letzten 30 Tagen berechnen (nicht mehr 15 Vergangenheit + 15 Zukunft)
   * NEW: 0568 BIC bei der Erfassung von Aufträgen jetzt optional
   * NEW: 0567 BUGZILLA 1771 - Anzeige der IBAN des eigenen Kontos im TAN-Dialog beim Löschen eines Dauerauftrages
   * NEW: 0566 Imports können jetzt abgebrochen werden

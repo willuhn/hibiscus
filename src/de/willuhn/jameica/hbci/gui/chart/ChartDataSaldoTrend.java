@@ -97,7 +97,7 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
 
     int found = 0;
     Date first = null;
-    for (int i=-15;i<=15;++i)
+    for (int i=-30;i<=0;++i)
     {
       try
       {
