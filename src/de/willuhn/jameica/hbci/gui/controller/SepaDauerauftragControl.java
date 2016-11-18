@@ -49,6 +49,7 @@ import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragStore;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -448,9 +449,15 @@ public class SepaDauerauftragControl extends AbstractControl
       if (this.handleStore())
       {
         // BUGZILLA 1740 - Beim Aendern das Datum der ersten Zahlung auf den naechsten Zahlungstermin basierend auf heute setzen
+        // Aber nur, wenn als Termin nicht ohnehin bereits ein zukuenftiger Termin angegeben ist
         if (t.isActive())
         {
-          Date next = TurnusHelper.getNaechsteZahlung(new Date(),t.getLetzteZahlung(),t.getTurnus(),new Date());
+          Date ersteZahlung = t.getErsteZahlung();
+          Date now = DateUtil.endOfDay(new Date());
+          if (ersteZahlung == null || !ersteZahlung.after(now))
+            ersteZahlung = now;
+            
+          Date next = TurnusHelper.getNaechsteZahlung(ersteZahlung,t.getLetzteZahlung(),t.getTurnus(),ersteZahlung);
           if (next != null)
           {
             t.setErsteZahlung(next);
@@ -503,7 +510,7 @@ public class SepaDauerauftragControl extends AbstractControl
       t.setGegenkontoNummer(kto);
       t.setGegenkontoName(name);
       t.setGegenkontoBLZ(bic);
-      
+
       t.store();
 
       Boolean store = (Boolean) getStoreEmpfaenger().getValue();
