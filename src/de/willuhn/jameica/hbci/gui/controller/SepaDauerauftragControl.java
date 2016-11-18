@@ -455,14 +455,15 @@ public class SepaDauerauftragControl extends AbstractControl
           Date ersteZahlung = t.getErsteZahlung();
           Date now = DateUtil.endOfDay(new Date());
           if (ersteZahlung == null || !ersteZahlung.after(now))
-            ersteZahlung = now;
-            
-          Date next = TurnusHelper.getNaechsteZahlung(ersteZahlung,t.getLetzteZahlung(),t.getTurnus(),ersteZahlung);
-          if (next != null)
           {
-            t.setErsteZahlung(next);
-            t.store();
-            getErsteZahlung().setValue(next);
+            String msg = i18n.tr("Das Datum der ersten Zahlung befindet sich in der Vergangenheit.\n" +
+                                 "Manche Banken verlangen auch bei der Änderung existierender Daueraufträge\n" +
+                                 "die Angabe eines zukünftigen Datums für die erste (nächste) Zahlung.\n\n" +
+                                 "Der Auftrag könnte von der Bank eventuell abgelehnt werden.\n\n" +
+                                 "Möchten Sie den Vorgang dennoch fortsetzen?\n" +
+                                 "Klicken Sie alternativ auf \"Nein\" und ändern Sie das Datum der ersten Zahlung.");
+            if (!Application.getCallback().askUser(msg))
+              return;
           }
         }
         new SepaDauerauftragExecute().handleAction(t);
@@ -512,7 +513,7 @@ public class SepaDauerauftragControl extends AbstractControl
       t.setGegenkontoBLZ(bic);
 
       t.store();
-
+      
       Boolean store = (Boolean) getStoreEmpfaenger().getValue();
       if (store.booleanValue())
       {
