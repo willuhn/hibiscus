@@ -69,9 +69,7 @@ public abstract class AbstractImporter implements Importer
         }
       }
       this.commit(objects,format,is,monitor);
-      
-      String msg = i18n.tr("{0} importiert, {1} fehlerhaft",Integer.toString(success),Integer.toString(failed));
-      throw new ApplicationException(msg);
+      monitor.log(i18n.tr("{0} importiert, {1} fehlerhaft",Integer.toString(success),Integer.toString(failed)));
     }
     catch (OperationCanceledException oce)
     {
