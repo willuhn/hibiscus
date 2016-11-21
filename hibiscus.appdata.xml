@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>hibiscus.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0</project_license>
+  <name>Hibiscus</name>
+  <summary>Java online banking client using the HBCI standard</summary>
+  <description>
+    <p>
+      A free Java homebanking application that uses the HBCI4Java implementation
+      and runs as a plugin inside the Jameica framework. Support chipcards
+      key files and PIN/TAN including chipTAN and smsTAN for authentification.
+      Supported file formats include MT940, DTAUS, CSV, Moneyplex and PDF/HTML.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://www.willuhn.de/products/hibiscus/screenshots/13.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://www.willuhn.de/products/hibiscus/screenshots/16.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://www.willuhn.de/products/hibiscus/screenshots/10.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://www.willuhn.de/products/hibiscus/</url>
+</component>
