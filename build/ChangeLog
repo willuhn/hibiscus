@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0572 Default-HBCI-Version beim Suchen nach Kartenlesern von HBCI 2.1 auf FinTS3 erhöht 
   * BUG: 0571 BUGZILLA 1740 - Nachtrag: Datum der ersten Zahlung beim Ändern nur dann auf nächstes Datum setzen, wenn es in der Vergangenheit liegt
   * NEW: 0570 Unterstützung für SEPA 3.0 - siehe https://github.com/willuhn/hbci4java/commit/2f6e3d19373fc0e18be5d05e9193a1e2628932e9
   * NEW: 0569 Saldo-Chart: Trend nur noch basierend auf den letzten 30 Tagen berechnen (nicht mehr 15 Vergangenheit + 15 Zukunft)

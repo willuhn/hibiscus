@@ -9,6 +9,8 @@ package de.willuhn.jameica.hbci.passports.ddv.server;
 import java.io.File;
 import java.io.IOException;
 
+import org.kapott.hbci.manager.HBCIVersion;
+
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;
 import de.willuhn.jameica.system.Application;
@@ -131,7 +133,7 @@ public abstract class AbstractReader implements Reader
    */
   public String getDefaultHBCIVersion()
   {
-    return "210";
+    return HBCIVersion.HBCI_300.getId();
   }
 
   /**
