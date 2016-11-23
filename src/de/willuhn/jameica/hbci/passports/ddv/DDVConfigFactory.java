@@ -246,26 +246,15 @@ public class DDVConfigFactory
               CardTerminal terminal = terminals.get(0);
               String name = terminal.getName();
               temp.setPCSCName(name);
-              PassportHandle handle = new PassportHandleImpl(temp);
-              handle.open();
-              handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
-
-              // Passport liess sich oeffnen und schliessen. Dann haben
-              // wir den Kartenleser gefunden.
-              monitor.log("  " + name + " " + i18n.tr("gefunden"));
-              monitor.setStatusText(i18n.tr("OK. Kartenleser \"{0}\" gefunden",name));
-              monitor.setStatus(ProgressMonitor.STATUS_DONE);
-              monitor.setPercentComplete(100);
               
-              // Wir kopieren die temporaere Config noch in eine richtige
-              DDVConfig config = temp.copy();
-              config.setName(name);
-              return config;
+              if (testConfig(monitor,temp))
+              {
+                // Wir kopieren die temporaere Config noch in eine richtige
+                DDVConfig config = temp.copy();
+                config.setName(name);
+                return config;
+              }
             }
-          }
-          catch (ApplicationException ae)
-          {
-            monitor.log("  " + ae.getMessage());
           }
           catch (Exception e)
           {
@@ -275,9 +264,6 @@ public class DDVConfigFactory
           {
             temp.setPCSCName(null); // muessen wir wieder zuruecksetzen
           }
-          
-          // Wir haben wohl nichts via PC/SC gefunden
-          monitor.log("  " + i18n.tr("  nicht gefunden"));
           continue;
         }
 
@@ -292,32 +278,12 @@ public class DDVConfigFactory
                 
           temp.setPort(port);
 
-          try
+          if (testConfig(monitor,temp))
           {
-            PassportHandle handle = new PassportHandleImpl(temp);
-            handle.open();
-            handle.close(); // nein, nicht im finally, denn wenn das Oeffnen
-                            // fehlschlaegt, ist nichts zum Schliessen da ;)
-
-            // Passport liess sich oeffnen und schliessen. Dann haben
-            // wir den Kartenleser gefunden.
-            monitor.log("  " + i18n.tr("gefunden"));
-            monitor.setStatusText(i18n.tr("OK. Kartenleser gefunden"));
-            monitor.setStatus(ProgressMonitor.STATUS_DONE);
-            monitor.setPercentComplete(100);
-            
             // Wir kopieren die temporaere Config noch in eine richtige
             DDVConfig config = temp.copy();
             config.setName(i18n.tr("Neue Kartenleser-Konfiguration"));
             return config;
-          }
-          catch (ApplicationException ae)
-          {
-            monitor.log("  " + ae.getMessage());
-          }
-          catch (Exception e)
-          {
-            monitor.log("  " + i18n.tr("  nicht gefunden"));
           }
         }
       }
@@ -345,6 +311,66 @@ public class DDVConfigFactory
         Logger.error("unable to delete temp-config",e);
       }
     }
+  }
+  
+  /**
+   * Testet eine Kartenleser-Konfiguration.
+   * @param monitor der Progress-Monitor.
+   * @param config die Config.
+   * @return true, wenn sie erfolgreich getestet wurde.
+   */
+  private static boolean testConfig(ProgressMonitor monitor, DDVConfig config)
+  {
+    PassportHandle handle = null;
+    try
+    {
+      handle = new PassportHandleImpl(config);
+      handle.open();
+      handle.close();
+      handle = null;
+
+      // Passport liess sich oeffnen und schliessen. Dann haben wir den Kartenleser gefunden.
+      monitor.log("  " + i18n.tr("gefunden"));
+      monitor.setStatusText(i18n.tr("OK. Kartenleser gefunden"));
+      monitor.setStatus(ProgressMonitor.STATUS_DONE);
+      monitor.setPercentComplete(100);
+      return true;
+    }
+    catch (ApplicationException ae)
+    {
+      monitor.log("  " + ae.getMessage());
+    }
+    catch (Exception e)
+    {
+      monitor.log("  " + i18n.tr("  nicht gefunden"));
+    }
+    finally
+    {
+      if (handle != null)
+      {
+        try
+        {
+          handle.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("closing of passport handle failed",t);
+        }
+      }
+    }
+    
+    // Wir warten noch kurz. Fuer den Fall, dass in den Layern darunter irgendwas
+    // asynchron stattfindet, koennte es sonst eventuell passieren, dass wir
+    // versuchen, die Verbindung neu zu oeffnen, bevor die andere sauber geschlossen
+    // wurde. Hatte in einem Log "SCARD_E_SHARING_VIOLATION" gesehen. Konnte nicht
+    // beurteilen, ob der Scan zu schnell probiert hat oder ob das close() im finally
+    // fehlte. Schaden koennen ein paar Millisekunden Wartezeit aber nicht.
+    try
+    {
+      Thread.sleep(250L);
+    } catch (Exception e) { /* ignore */}
+    
+    return false;
   }
   
   /**
