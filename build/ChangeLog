@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0574 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/d142fafccfea7154824c4839f5ed91d3d6604b1e
   * NEW: 0573 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig vom 05.12.2016 bis 05.03.2017
   * NEW: 0572 Default-HBCI-Version beim Suchen nach Kartenlesern von HBCI 2.1 auf FinTS3 erhöht 
   * BUG: 0571 BUGZILLA 1740 - Nachtrag: Datum der ersten Zahlung beim Ändern nur dann auf nächstes Datum setzen, wenn es in der Vergangenheit liegt
