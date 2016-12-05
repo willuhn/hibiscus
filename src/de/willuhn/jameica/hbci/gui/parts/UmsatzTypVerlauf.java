@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/UmsatzTypVerlauf.java,v $
- * $Revision: 1.11 $
- * $Date: 2012/04/05 21:44:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -84,13 +79,24 @@ public class UmsatzTypVerlauf implements Part
 
     this.chart.removeAllData();
 
+    int count = 0;
+      
     for (int i=0;i<this.data.size();++i)
     {
       UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i); 
       ChartDataUmsatz cd = new ChartDataUmsatz(group);
       if (cd.hasData)
+      {
         this.chart.addData(cd);
+        count = cd.entries.size();
+      }
     }
+    
+    if (count <= 1)
+      this.chart.setTitle(i18n.tr("Bitte wählen Sie einen größeren Zeitraum (mindestens zwei Monate)"));
+    else
+      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach Monat)"));
+    
     this.chart.redraw();
   }
 
@@ -103,7 +109,7 @@ public class UmsatzTypVerlauf implements Part
     {
       this.chart = new LineChart();
       this.chart.setStacked(false); // TODO Stacked Graph für "Umsätze nach Kategorieren" BUGZILLA 749
-      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im zeitlichen Verlauf"));
+      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach Monat)"));
       for (int i=0;i<this.data.size();++i)
       {
         UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i);
@@ -311,45 +317,3 @@ public class UmsatzTypVerlauf implements Part
     
   }
 }
-
-
-/*********************************************************************
- * $Log: UmsatzTypVerlauf.java,v $
- * Revision 1.11  2012/04/05 21:44:18  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.10  2011/05/10 11:52:32  willuhn
- * @R Marker geaendert
- *
- * Revision 1.9  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.8  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- * Revision 1.7  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.6  2010/03/22 10:00:48  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- * Revision 1.4  2009/08/27 13:37:28  willuhn
- * @N Der grafische Saldo-Verlauf zeigt nun zusaetzlich  eine Trendkurve an
- *
- * Revision 1.3  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.2  2008/02/26 01:12:30  willuhn
- * @R nicht mehr benoetigte Funktion entfernt
- *
- * Revision 1.1  2008/02/26 01:01:16  willuhn
- * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
- * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
- * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
- *
- **********************************************************************/
