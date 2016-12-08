@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+2016-12-08 Version 2.6.19
+
   * NEW: 0576 SWTChart aktualisiert auf 0.10.0
   * NEW: 0575 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/4db3326abef3a30d9e3f3193f49f8082d7af9c5b (Support für neues Sparda chipTAN)
   * NEW: 0574 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/d142fafccfea7154824c4839f5ed91d3d6604b1e
