@@ -188,7 +188,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       case 0:break;
       case 1: {
         final Konto toBookTo=allOffline.get(0);
-        addItem(new UmsatzItem(i18n.tr("Gegenbuchung erzeugen auf")+": "+toBookTo.getName(),new UmsatzDetailEdit().asReverse(toBookTo), icon){
+        addItem(new UmsatzItem(i18n.tr("Gegenbuchung erzeugen auf")+": " + toBookTo.getLongName(),new UmsatzDetailEdit().asReverse(toBookTo), icon){
           @Override
           public boolean isEnabledFor(Object o)
           {
@@ -205,7 +205,7 @@ public class UmsatzList extends ContextMenu implements Extendable
             setImage(SWTUtil.getImage(icon));
             for (final Konto toBookTo : allOffline)
             {
-              addItem(new ContextMenuItem(toBookTo.getName(), new UmsatzDetailEdit().asReverse(toBookTo)){
+              addItem(new ContextMenuItem(toBookTo.getLongName(), new UmsatzDetailEdit().asReverse(toBookTo)){
                 public boolean isEnabledFor(Object o) {
                   return super.isEnabledFor(o) && isEnabledReverseBooking(toBookTo, o);
                 }
