@@ -118,7 +118,7 @@ public class SynchronizeOptions implements Serializable
     // war, nehmen wir als Default-Wert auch den von dort.
     // Damit wird beim ersten mal der Vorwert uebernommen.
     // (Sanfte Migration)
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".saldo",true);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".saldo",settings.getBoolean("sync.konto.default.saldo",true));
   }
 
   /**
@@ -127,7 +127,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncKontoauszuege()
   {
-    return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszug",true);
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszug",settings.getBoolean("sync.konto.default.kontoauszug",true));
   }
   
   /**
@@ -136,7 +136,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncSepaDauerauftraege()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepadauer",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepadauer",settings.getBoolean("sync.konto.default.sepadauer",false));
   }
 
   /**
@@ -145,7 +145,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncAuslandsUeberweisungen()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".uebforeign",settings.getBoolean("sync.konto.default.uebforeign",false));
   }
 
   /**
@@ -154,7 +154,7 @@ public class SynchronizeOptions implements Serializable
    */
   public boolean getSyncSepaLastschriften()
   {
-    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepalast",false);
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".sepalast",settings.getBoolean("sync.konto.default.sepalast",false));
   }
 
   /**
