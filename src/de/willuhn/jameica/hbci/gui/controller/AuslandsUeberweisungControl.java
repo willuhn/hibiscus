@@ -638,23 +638,30 @@ public class AuslandsUeberweisungControl extends AbstractControl
     @Override
     public void handleEvent(Event event)
     {
-      try
-      {
-        TerminInput input = getTermin();
-        Typ typ = (Typ) getTyp().getValue();
-        if (typ != null && typ.termin)
-          input.setName(i18n.tr("Ausführungstermin"));
-        else
-          input.setName(i18n.tr("Erinnerungstermin"));
-        
-        // Kommentar vom Termin-Eingabefeld aktualisieren.
-        input.updateComment();
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to update label",e);
-      }
-      
+      // BUGZILLA 1778 - Das Label wurde unter Ubuntu nicht sofort aktualisiert.
+      // Eventuell hilft die asynchrone Ausfuehrung.
+      GUI.getDisplay().asyncExec(new Runnable() {
+        @Override
+        public void run()
+        {
+          try
+          {
+            TerminInput input = getTermin();
+            Typ typ = (Typ) getTyp().getValue();
+            if (typ != null && typ.termin)
+              input.setName(i18n.tr("Ausführungstermin"));
+            else
+              input.setName(i18n.tr("Erinnerungstermin"));
+            
+            // Kommentar vom Termin-Eingabefeld aktualisieren.
+            input.updateComment();
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to update label",e);
+          }
+        }
+      });
     }
   }
   

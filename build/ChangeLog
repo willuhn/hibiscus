@@ -1,6 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0578 BUGZILLA 1778 - Das Label "Erinnerungstermin/Ausführungstermin" wurde auf manchen Systemen nicht sofort aktualisiert (siehe Change-ID 529)
   * NEW: 0577 BUGZILLA 1779 - Sync-Defaults per Konfig-Datei vorkonfigurierbar
+  
 2016-12-08 Version 2.6.19
 
   * NEW: 0576 SWTChart aktualisiert auf 0.10.0
