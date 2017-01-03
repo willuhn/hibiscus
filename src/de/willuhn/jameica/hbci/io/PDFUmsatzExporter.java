@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -124,7 +125,7 @@ public class PDFUmsatzExporter implements Exporter
         String id = (String) konten.nextElement();
         Konto konto = (Konto) Settings.getDBService().createObject(Konto.class,id);
         
-        PdfPCell cell = reporter.getDetailCell(konto.getLongName(), Element.ALIGN_CENTER,BaseColor.LIGHT_GRAY);
+        PdfPCell cell = reporter.getDetailCell(KontoUtil.toString(konto), Element.ALIGN_CENTER,BaseColor.LIGHT_GRAY);
         cell.setColspan(showSaldo ? 5 : 4);
         reporter.addColumn(cell);
 

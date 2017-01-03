@@ -355,5 +355,17 @@ public class KontoUtil
     Double d = (Double) service.execute(sql, params.toArray(), rs);
     return d == null ? 0.0d : Math.abs(d.doubleValue());
   }
+  
+  /**
+   * Liefert eine ausfuehrliche String-Repraesentation des Kontos.
+   * Sie enthaelt Name, IBAN und BIC.
+   * @param k das Konto.
+   * @return die ausfuehrliche String-Repraesentation. 
+   * @throws RemoteException
+   */
+  public static String toString(Konto k) throws RemoteException
+  {
+    return k != null ? (String) k.getAttribute("extralongname") : "";
+  }
 
 }

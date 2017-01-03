@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0580 IBAN des eigenen Kontos im PDG-Umsatz-Exports ungekürzt anzeigen
   * BUG: 0579 Im Bestätigungsdialog zur Ausführung einer Termin-Überweisung stand "Erinnerungstermin" statt "Ausführungstermin"
   * BUG: 0578 BUGZILLA 1778 - Das Label "Erinnerungstermin/Ausführungstermin" wurde auf manchen Systemen nicht sofort aktualisiert (siehe Change-ID 529)
   * NEW: 0577 BUGZILLA 1779 - Sync-Defaults per Konfig-Datei vorkonfigurierbar

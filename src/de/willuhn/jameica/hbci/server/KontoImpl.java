@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/KontoImpl.java,v $
- * $Revision: 1.113 $
- * $Date: 2012/05/03 21:50:47 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -696,7 +690,8 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     if ("numumsaetze".equals(arg0))
       return new Integer(getNumUmsaetze());
 
-    if ("longname".equals(arg0))
+    final boolean extralong = "extralongname".equals(arg0);
+    if ("longname".equals(arg0) || extralong)
     {
       String bez  = getBezeichnung();
       String blz  = getBLZ();
@@ -721,7 +716,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         name = haveBic ? (i18n.tr("BIC") + ": " + bic) : (i18n.tr("BLZ") + ": " + blz);
         
       // Wir muessen die IBAN etwas verkuerzt anzeigen. Das passt sonst nicht hin.
-      if (haveIban)
+      if (haveIban && !extralong)
         kto = StringUtils.abbreviateMiddle(iban,"..",14);
       
       String k = i18n.tr(haveIban ? "IBAN" : "Kto.");
