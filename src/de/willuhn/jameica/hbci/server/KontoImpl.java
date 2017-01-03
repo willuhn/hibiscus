@@ -716,8 +716,8 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         name = haveBic ? (i18n.tr("BIC") + ": " + bic) : (i18n.tr("BLZ") + ": " + blz);
         
       // Wir muessen die IBAN etwas verkuerzt anzeigen. Das passt sonst nicht hin.
-      if (haveIban && !extralong)
-        kto = StringUtils.abbreviateMiddle(iban,"..",14);
+      if (haveIban)
+        kto = extralong ? HBCIProperties.formatIban(iban) : StringUtils.abbreviateMiddle(iban,"..",14);
       
       String k = i18n.tr(haveIban ? "IBAN" : "Kto.");
 
