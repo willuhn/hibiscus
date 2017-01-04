@@ -233,6 +233,7 @@ public class UmsatzList extends TablePart implements Extendable
   /**
    * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
    */
+  @Override
   protected String getSummary()
   {
     try

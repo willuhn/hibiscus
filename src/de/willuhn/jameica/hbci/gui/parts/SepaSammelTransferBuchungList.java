@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -30,7 +29,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.messaging.Message;
@@ -50,10 +48,22 @@ public class SepaSammelTransferBuchungList extends TablePart
 
   /**
    * ct.
+   * @param t
+   * @param action
+   * @throws RemoteException
+   */
+  public SepaSammelTransferBuchungList(final SepaSammelTransfer t, Action action) throws RemoteException
+  {
+    this(t.getBuchungen(),action);
+  }
+
+  /**
+   * ct.
    * @param list Liste von Buchungen (SammelTransferBuchung).
    * @param action Aktion, die beim Klick ausgefuehrt werden soll.
+   * @throws RemoteException
    */
-  public SepaSammelTransferBuchungList(final GenericIterator list, Action action)
+  public SepaSammelTransferBuchungList(final List<SepaSammelTransfer> list, Action action) throws RemoteException
   {
     super(list,action);
     addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
@@ -124,53 +134,8 @@ public class SepaSammelTransferBuchungList extends TablePart
         refreshSummary();
       }
     });
-
   }
  
-  /**
-   * ct.
-   * @param a der Sammel-Auftrag, fuer den die Buchungen angezeigt werden sollen.
-   * @param action Aktion, die beim Klick ausgefuehrt werden soll.
-   * @throws RemoteException
-   */
-  public SepaSammelTransferBuchungList(final SepaSammelTransfer a, Action action) throws RemoteException
-  {
-    super(a.getBuchungen(), action);
-    addColumn(i18n.tr("Verwendungszweck"),"zweck");
-    addColumn(i18n.tr("Kontoinhaber"),"empfaenger_name");
-    addColumn(i18n.tr("IBAN"),"empfaenger_konto", new IbanFormatter());
-    addColumn(i18n.tr("BIC"),"empfaenger_bic");
-    Konto k = a.getKonto();
-    String curr = k != null ? k.getWaehrung() : "";
-    addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(curr,HBCI.DECIMALFORMAT));
-
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-        try {
-          if (a.ausgefuehrt())
-            item.setForeground(Color.COMMENT.getSWTColor());
-        }
-        catch (RemoteException e) { /*ignore */}
-      }
-    });
-    
-    setRememberColWidths(true);
-    setRememberOrder(true);
-    setMulti(true); // BUGZILLA 1118
-    // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
-    // Buchungen informiert werden.
-    this.mc = new STMessageConsumer();
-    Application.getMessagingFactory().registerMessageConsumer(this.mc);
-    
-    this.addSelectionListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        refreshSummary();
-      }
-    });
-  }
-
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
@@ -189,6 +154,7 @@ public class SepaSammelTransferBuchungList extends TablePart
   /**
    * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
    */
+  @Override
   protected String getSummary()
   {
     try

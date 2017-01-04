@@ -17,7 +17,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 public abstract class AbstractHBCISynchronizeJobProvider implements HBCISynchronizeJobProvider
 {
   /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJobProvider#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
    */
   @Override
   public List<String> getPropertyNames(Konto k)

@@ -11,16 +11,12 @@ import java.util.zip.CRC32;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Dauerauftrags.
  */
 public class DauerauftragImpl extends AbstractBaseDauerauftragImpl implements Dauerauftrag
 {
-  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
    * ct.
    * @throws RemoteException

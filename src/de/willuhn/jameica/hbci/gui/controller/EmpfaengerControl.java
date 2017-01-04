@@ -21,6 +21,7 @@ import de.jost_net.OBanToo.SEPA.IBAN;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
 import de.jost_net.OBanToo.SEPA.Land.SEPALand;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -185,7 +186,7 @@ public class EmpfaengerControl extends AbstractControl
     list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelList = new SepaSammelTransferBuchungList(list,new SepaSammelLastBuchungNew());
+    this.sammelList = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelLastBuchungNew());
     return this.sammelList;
   }
 
@@ -204,7 +205,7 @@ public class EmpfaengerControl extends AbstractControl
     list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelList2 = new SepaSammelTransferBuchungList(list,new SepaSammelUeberweisungBuchungNew());
+    this.sammelList2 = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelUeberweisungBuchungNew());
     return this.sammelList2;
   }
 

@@ -12,8 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.internal.action.Print;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -26,10 +24,7 @@ import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.SammelUeberweisungNew;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
-import de.willuhn.jameica.hbci.rmi.Terminable;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -58,21 +53,6 @@ public class SammelUeberweisungList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport(),"document-save.png"));
 		
 	}
-
-	/**
-	 * Ueberschreiben wir, um <b>grundsaetzlich</b> eine neue Sammel-Lastschrift
-	 * anzulegen - auch wenn der Focus auf einer existierenden liegt.
-   */
-  private class SNeu extends SammelUeberweisungNew
-	{
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
-    public void handleAction(Object context) throws ApplicationException
-    {
-    	super.handleAction(null);
-    }
-	} 
 	
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
@@ -98,90 +78,4 @@ public class SammelUeberweisungList extends ContextMenu
       return super.isEnabledFor(o);
     }
   }
-
-	/**
-	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
-	 * Sammel-Ueberweisung noch nicht ausgefuehrt wurde.
-   */
-  private class NotActiveMenuItem extends ContextMenuItem
-	{
-		
-    /**
-     * ct.
-     * @param text anzuzeigender Text.
-     * @param a auszufuehrende Action.
-     * @param icon optionales Icon.
-     */
-    public NotActiveMenuItem(String text, Action a, String icon)
-    {
-      super(text, a, icon);
-    }
-
-	  /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
-    public boolean isEnabledFor(Object o)
-    {
-    	if (o == null || !(o instanceof SammelUeberweisung))
-    		return false;
-    	try
-    	{
-				SammelUeberweisung u = (SammelUeberweisung) o;
-    		return !u.ausgefuehrt();
-    	}
-    	catch (Exception e)
-    	{
-    		Logger.error("error while enable check in menu item",e);
-    	}
-    	return false;
-    }
-	}
-
-  /**
-   * Liefert nur dann true, wenn alle uebergebenen Auftraege noch nicht
-   * ausgefuehrt wurden.
-   */
-  private class NotActiveMultiMenuItem extends CheckedContextMenuItem
-  {
-    
-    /**
-     * ct.
-     * @param text anzuzeigender Text.
-     * @param a auszufuehrende Action.
-     * @param icon optionales Icon.
-     */
-    public NotActiveMultiMenuItem(String text, Action a, String icon)
-    {
-      super(text, a, icon);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
-    public boolean isEnabledFor(Object o)
-    {
-      if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))
-        return false;
-      try
-      {
-        if (o instanceof Terminable)
-          return !((Terminable)o).ausgefuehrt();
-
-        Terminable[] t = (Terminable[]) o;
-        for (int i=0;i<t.length;++i)
-        {
-          if (t[i].ausgefuehrt())
-            return false;
-        }
-        return true;
-      }
-      catch (RemoteException e)
-      {
-        Logger.error("unable to check if terminable is already executed",e);
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob Auftrag bereits ausgeführt wurde"),StatusBarMessage.TYPE_ERROR));
-      }
-      return false;
-    }
-  }
-
 }
