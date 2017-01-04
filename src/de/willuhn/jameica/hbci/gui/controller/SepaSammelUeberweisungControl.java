@@ -15,7 +15,6 @@ import org.apache.commons.lang.StringUtils;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -121,6 +120,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     };
     
     this.buchungen = new SepaSammelTransferBuchungList(getTransfer(),a);
+    this.buchungen.setMulti(true);
 
     ContextMenu ctx = new ContextMenu();
     ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("Buchung öffnen"), new SepaSammelUeberweisungBuchungNew(),"document-open.png"));
@@ -128,7 +128,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CreateMenuItem(new SepaSammelUeberweisungBuchungNew()));
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("In Einzelüberweisung duplizieren"), new AuslandsUeberweisungNew(),"stock_next.png"));
+    ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("In Einzelüberweisung duplizieren"), new AuslandsUeberweisungNew(),"stock_next.png"));
     this.buchungen.setContextMenu(ctx);
     return this.buchungen;
   }

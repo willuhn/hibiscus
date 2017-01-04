@@ -8,6 +8,7 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.events.DisposeEvent;
@@ -159,15 +160,18 @@ public class SepaSammelTransferBuchungList extends TablePart
   {
     try
     {
-      List items = getItems(false);
-      int size = items.size();
+      Object o = this.getSelection();
+      int size = this.size();
+      boolean selective = (o != null && (o instanceof Object[]));
+      
+      List items = selective ? Arrays.asList((Object[])o) : this.getItems(false);
 
       double sum = 0.0d;
 
       String curr = null;
-      for (int i=0;i<size;++i)
+      for (Object item:items)
       {
-        SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) items.get(i);
+        SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) item;
         
         if (curr == null)
           curr = t.getSammelTransfer().getKonto().getWaehrung();
@@ -177,6 +181,8 @@ public class SepaSammelTransferBuchungList extends TablePart
       if (curr == null)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
+      if (selective)
+        return i18n.tr("{0} Buchungen, {1} markiert, Summe: {2} {3}",Integer.toString(size),Integer.toString(items.size()),HBCI.DECIMALFORMAT.format(sum),curr);
       return i18n.tr("{0} Buchungen, Summe: {1} {2}",Integer.toString(size),HBCI.DECIMALFORMAT.format(sum),curr);
     }
     catch (Exception e)

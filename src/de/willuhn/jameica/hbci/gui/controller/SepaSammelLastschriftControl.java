@@ -17,7 +17,6 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -218,6 +217,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     };
     
     this.buchungen = new SepaSammelTransferBuchungList(getTransfer(),a);
+    this.buchungen.setMulti(true);
 
     ContextMenu ctx = new ContextMenu();
     ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("Buchung öffnen"), new SepaSammelLastBuchungNew(),"document-open.png"));
@@ -225,7 +225,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CreateMenuItem(new SepaSammelLastBuchungNew()));
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("In Einzellastschrift duplizieren"), new SepaLastschriftNew(),"stock_previous.png"));
+    ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("In Einzellastschrift duplizieren"), new SepaLastschriftNew(),"stock_previous.png"));
     this.buchungen.setContextMenu(ctx);
     return this.buchungen;
   }
