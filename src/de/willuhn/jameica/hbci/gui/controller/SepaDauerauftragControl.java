@@ -227,11 +227,21 @@ public class SepaDauerauftragControl extends AbstractControl
     ersteZahlung.addListener(this.nextDate);
     
     if (t.isActive())
-      ersteZahlung.setEnabled(getBPD().getBoolean("firstexeceditable",true));
+      ersteZahlung.setEnabled(this.canEditErsteZahlung());
     
     this.nextDate.handleEvent(null); // einmal ausloesen fuer initialen Text
 		return ersteZahlung;
 	}
+  
+  /**
+   * Prueft, ob das Datum der ersten Zahlung beim Aendern von Dauerauftraegen geaendert werden darf.
+   * @return true, wenn es geaendert werden darf.
+   * BUGZILLA 1783
+   */
+  private boolean canEditErsteZahlung() throws RemoteException
+  {
+    return getBPD().getBoolean("firstexeceditable",true);
+  }
 
 	/**
 	 * Liefert ein Datums-Feld fuer die letzte Zahlung.
@@ -450,7 +460,8 @@ public class SepaDauerauftragControl extends AbstractControl
       {
         // BUGZILLA 1740 - Beim Aendern das Datum der ersten Zahlung auf den naechsten Zahlungstermin basierend auf heute setzen
         // Aber nur, wenn als Termin nicht ohnehin bereits ein zukuenftiger Termin angegeben ist
-        if (t.isActive())
+        // BUGZILLA 1783 - und auch nur dann, wenn es der User ueberhaupt aendern darf.
+        if (t.isActive() && this.canEditErsteZahlung())
         {
           Date ersteZahlung = t.getErsteZahlung();
           Date now = DateUtil.endOfDay(new Date());

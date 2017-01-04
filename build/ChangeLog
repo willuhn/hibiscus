@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0582 BUGZILLA 1783 - Daueraufträge: Hinweis zur ersten Zahlung beim Ändern existierender DA nur anzeigen, wenn in BPD erlaubt
   * NEW: 0581 Summe der selektiv markierten Buchungen in Sammelaufträgen anzeigen, siehe Kommentar 23 in https://www.willuhn.de/bugzilla/show_bug.cgi?id=1097 
   * NEW: 0580 IBAN des eigenen Kontos im PDG-Umsatz-Exports ungekürzt anzeigen
   * BUG: 0579 Im Bestätigungsdialog zur Ausführung einer Termin-Überweisung stand "Erinnerungstermin" statt "Ausführungstermin"
