@@ -364,9 +364,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
 
           monitor.addPercentComplete(3);
 
-          if (haveError || HBCISynchronizeBackend.this.worker.isInterrupted())
+          final boolean interrupted = HBCISynchronizeBackend.this.worker.isInterrupted();
+          if (haveError || interrupted)
           {
-            Logger.warn("found errors or synchronization cancelled, clear PIN cache");
+            Logger.warn("found errors or synchronization cancelled, clear PIN cache [have error: " + haveError + ", interrupted: " + interrupted + "]");
             DialogFactory.clearPINCache(this.handler != null ? this.handler.getPassport() : null);
           }
 
@@ -376,7 +377,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
             // werfen die handleResult-Funktionen naemlich ohnehin Fehler. Die
             // interessieren beim Abbruch aber nicht.
             // Der Abbruch-Check kommt unten drunter
-            if (haveError && !HBCISynchronizeBackend.this.worker.isInterrupted())
+            if (haveError && !interrupted)
               throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
             //
             // //////////////////////////////////////////////////////////////////////

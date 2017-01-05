@@ -27,6 +27,7 @@ import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -391,12 +392,18 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
           }
           catch (OperationCanceledException oce)
           {
+            Logger.warn("operation cancelled");
+            Logger.write(Level.DEBUG,"stacktrace for debugging purpose",oce);
             this.updateStatus(ProgressMonitor.STATUS_CANCEL,i18n.tr("Synchronisierung via {0} abgebrochen",getName()));
             break; // expliziter User-Wunsch - egal, ob getCancelSyncOnError true ist oder nicht
           }
           catch (Exception e)
           {
-            if (!(e instanceof ApplicationException))
+            if (e instanceof ApplicationException)
+            {
+              Logger.write(Level.INFO,e.getMessage(),e);
+            }
+            else
             {
               Logger.error("error while synchronizing",e);
               
