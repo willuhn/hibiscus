@@ -340,13 +340,17 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
             catch (Throwable t)
             {
               haveError = true;
-
+              final boolean interrupted = HBCISynchronizeBackend.this.worker.isInterrupted();
+              
               // Nur loggen, wenn wir nicht abgebrochen wurden. Waeren sonst nur Folgefehler
-              if (!HBCISynchronizeBackend.this.worker.isInterrupted())
+              // Im Debug-Log erscheint es aber trotzdem
+              Logger.write(Level.DEBUG,"error while processing job result, have error: " + haveError + ", interrupted: " + interrupted,t);
+              if (!interrupted)
               {
                 if (t instanceof ApplicationException)
                 {
                   monitor.setStatusText(t.getMessage());
+                  Logger.write(Level.INFO,t.getMessage(),t);
                 }
                 else
                 {
