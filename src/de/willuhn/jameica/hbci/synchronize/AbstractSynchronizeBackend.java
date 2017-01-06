@@ -247,10 +247,17 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       for (T provider:this.getJobProviders())
       {
-        List<SynchronizeJob> list = provider.getSynchronizeJobs(konto);
-        if (list == null || list.size() == 0)
-          continue;
-        jobs.addAll(list);
+        try
+        {
+          List<SynchronizeJob> list = provider.getSynchronizeJobs(konto);
+          if (list == null || list.size() == 0)
+            continue;
+          jobs.addAll(list);
+        }
+        catch (Throwable t)
+        {
+          Logger.error("unable to determine synchronize jobs for provider " + provider.getClass().getName(),t);
+        }
       }
     }
 
