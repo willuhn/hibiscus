@@ -67,7 +67,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 
     left.addHeadline(i18n.tr("Datum und Betrag"));
     left.addLabelPair(i18n.tr("Datum"),                         control.getDatum());
-    left.addLabelPair(i18n.tr("Valuta"),                        control.getValuta());
+    left.addLabelPair(i18n.tr("Wertstellung"),                  control.getValuta());
     left.addSeparator();
     left.addLabelPair(i18n.tr("Betrag"),                        control.getBetrag());
     left.addLabelPair(i18n.tr("Neuer Saldo"),                   control.getSaldo());
