@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0584 Ziel-Termin nur checken, wenn der Auftrag nicht schon als ausgefuehrt markiert ist - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=20874&page=last#last_post
   * NEW: 0583 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/62569a8cc0a2aa408c36d72e3f408ae3041e9f8b
   * BUG: 0582 BUGZILLA 1783 - Daueraufträge: Hinweis zur ersten Zahlung beim Ändern existierender DA nur anzeigen, wenn in BPD erlaubt
   * NEW: 0581 Summe der selektiv markierten Buchungen in Sammelaufträgen anzeigen, siehe Kommentar 23 in https://www.willuhn.de/bugzilla/show_bug.cgi?id=1097 

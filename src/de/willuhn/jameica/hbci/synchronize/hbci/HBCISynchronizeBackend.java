@@ -350,7 +350,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
                 if (t instanceof ApplicationException)
                 {
                   monitor.setStatusText(t.getMessage());
-                  Logger.write(Level.INFO,t.getMessage(),t);
+                  Logger.warn(t.getMessage());
+                  Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
                 }
                 else
                 {

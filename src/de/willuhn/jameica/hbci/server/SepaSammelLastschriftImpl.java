@@ -62,7 +62,8 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
       if (this.getTargetDate() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Zieltermin ein"));
 
-      if (!this.getTargetDate().after(DateUtil.startOfDay(new Date())))
+      // Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=20874&page=last#last_post - Ziel-Termin nur checken, wenn der Auftrag nicht schon als ausgefuehrt markiert ist
+      if (this.getTargetDate().before(DateUtil.startOfDay(new Date())) && !ausgefuehrt())
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Zieltermin ein, der sich in der Zukunft befindet"));
 
       if (this.getType() == null)
