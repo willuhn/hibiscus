@@ -69,13 +69,7 @@ public class HBCIProperties
    * Siehe http://www.ebics.de/fileadmin/unsecured/anlage3/anlage3_spec/Anlage_3_DatenformateV2.6.pdf
    * Absatz 2.1, BUGZILLA 1244
    */
-  public final static String HBCI_SEPA_VALIDCHARS = settings.getString("hbci.sepa.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789':?,- (+.)/");
-
-  /**
-   * Liste der in SEPA erlaubten Zeichen. Jedoch erweitert um die im Inland extra erlaubten Zeichen - insbesondere die Umlaute.
-   * Siehe Anlage3_Datenformate_V2.7.pdf Seite 23
-   */
-  public final static String HBCI_SEPA_VALIDCHARS_RELAX = HBCI_SEPA_VALIDCHARS + settings.getString("hbci.sepa.validchars.add", "‹÷ƒ¸ˆ‰ﬂ&*$%");
+  public final static String HBCI_SEPA_VALIDCHARS = settings.getString("hbci.sepa.validchars", "abcdefghijklmnopqrstuvwxyz¸ˆ‰ﬂABCDEFGHIJKLMNOPQRSTUVWXYZ‹÷ƒ0123456789':?,- (+.)/&*$%");
 
   /**
    * Liste der fuer die Mandate-ID gueltigen Zeichen. RestrictedIdentificationSEPA2.

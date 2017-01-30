@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0586 Deutsche Umlaute in SEPA-Aufträgen freigegeben
   * BUG: 0585 BUGZILLA 1792 - Beim Kopieren von Überweisungsdaten aus der Zwischenablage wurden Windows-Zeilenumbrüche nicht korrekt erkannt
   * BUG: 0584 Ziel-Termin nur checken, wenn der Auftrag nicht schon als ausgefuehrt markiert ist - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=20874&page=last#last_post
   * NEW: 0583 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/62569a8cc0a2aa408c36d72e3f408ae3041e9f8b

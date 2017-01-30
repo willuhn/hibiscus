@@ -316,7 +316,7 @@ public class SepaDauerauftragControl extends AbstractControl
     SepaDauerauftrag t = getTransfer();
 
     empfName = new AddressInput(t.getGegenkontoName(), AddressFilter.FOREIGN);
-    empfName.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS_RELAX);
+    empfName.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     empfName.setMandatory(true);
     empfName.addListener(new EmpfaengerListener());
     if (t.isActive())
@@ -440,7 +440,7 @@ public class SepaDauerauftragControl extends AbstractControl
     
     SepaDauerauftrag t = getTransfer();
     zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
-    zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS_RELAX);
+    zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     zweck.setMandatory(true);
     if (t.isActive())
       zweck.setEnabled(getBPD().getBoolean("usageeditable",true));
