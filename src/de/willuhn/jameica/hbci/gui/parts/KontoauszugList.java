@@ -293,8 +293,8 @@ public class KontoauszugList extends UmsatzList
       return this.kontoAuswahl;
 
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
-    this.kontoAuswahl.setRememberSelection("auswertungen.kontoauszug");
     this.kontoAuswahl.setSupportGroups(true);
+    this.kontoAuswahl.setRememberSelection("auswertungen.kontoauszug");
     this.kontoAuswahl.setComment(null);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.addListener(this.listener);

@@ -114,8 +114,8 @@ public class SaldoChart implements Part
       return this.kontoauswahl;
 
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
-    this.kontoauswahl.setRememberSelection("auswertungen.saldochart");
     this.kontoauswahl.setSupportGroups(true);
+    this.kontoauswahl.setRememberSelection("auswertungen.saldochart");
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     if (tiny)
       this.kontoauswahl.setComment(null); // Keinen Kommentar anzeigen
