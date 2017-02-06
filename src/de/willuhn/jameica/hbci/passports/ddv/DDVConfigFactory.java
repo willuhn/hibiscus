@@ -516,6 +516,8 @@ public class DDVConfigFactory
     Logger.info("  entry index: " + config.getEntryIndex());
     HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.ENTRYIDX), Integer.toString(config.getEntryIndex()));
 
+    Logger.info("  hbci version: " + config.getHBCIVersion());
+
     String id = type.getIdentifier();
     Logger.info("  passport type: " + id);
     return (HBCIPassportChipcard) AbstractHBCIPassport.getInstance(id);
