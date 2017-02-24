@@ -135,8 +135,11 @@ public class SynchronizeList extends TablePart
 
           sync.getJobs().add(job);
         }
+        
+        // Die Synchronisation brauchen wir nur dann zur Liste tun, wenn Jobs vorhanden sind
+        if (jobs.size() > 0)
+          this.syncList.add(sync);
       }
-      this.syncList.add(sync);
     }
 
     // Sync-Button-Status aktualisieren
