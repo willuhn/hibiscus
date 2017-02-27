@@ -14,7 +14,9 @@ import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -42,6 +44,13 @@ public class MT940UmsatzExporter implements Exporter
   protected final static DateFormat DF_YYMMDD = new SimpleDateFormat("yyMMdd");
   protected final static DateFormat DF_MMDD   = new SimpleDateFormat("MMdd");
   
+  protected final static DecimalFormat DECF = new DecimalFormat("###,###,##0.00",new DecimalFormatSymbols(Locale.GERMANY));
+  
+  static
+  {
+    DECF.setGroupingUsed(false);
+  }
+  
   /**
    * MT940-Zeichensatz.
    * Ist eigentlich nicht noetig, weil Swift nur ein Subset von ISO-8859
@@ -56,10 +65,6 @@ public class MT940UmsatzExporter implements Exporter
    */
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
-    // BUGZILLA 1250
-    DecimalFormat df = (DecimalFormat) HBCI.DECIMALFORMAT.clone();
-    df.setGroupingUsed(false);
-    
     OutputStreamWriter out = null;
     
     try
@@ -109,7 +114,7 @@ public class MT940UmsatzExporter implements Exporter
           //Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
           out.write(":60F:");
           out.write(anfangsSaldo >= 0.0d ? "C" : "D");
-          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(anfangsSaldo).replace("-","") + NL);
+          out.write(DF_YYMMDD.format(u.getDatum()) + curr + DECF.format(anfangsSaldo).replace("-","") + NL);
     		}
 
         out.write(":61:" + DF_YYMMDD.format(u.getValuta()) + DF_MMDD.format(u.getDatum()));
@@ -117,7 +122,7 @@ public class MT940UmsatzExporter implements Exporter
         // Soll-Haben-Kennung für den Betrag ermitteln
     		double betrag = u.getBetrag();
         out.write(betrag >= 0.0d ? "CR" : "DR");
-        out.write(df.format(betrag).replace("-",""));
+        out.write(DECF.format(betrag).replace("-",""));
     		
         String ref = StringUtils.trimToNull(u.getCustomerRef());
     		out.write("NTRF" + (ref != null ? ref : "NONREF") + NL);
@@ -161,7 +166,7 @@ public class MT940UmsatzExporter implements Exporter
           //Soll-Haben-Kennung für den Schlusssaldo ermitteln
           double schlussSaldo = u.getSaldo();
           out.write(schlussSaldo >= 0.0d ? "C" : "D");
-          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(schlussSaldo).replace("-","") + NL);
+          out.write(DF_YYMMDD.format(u.getDatum()) + curr + DECF.format(schlussSaldo).replace("-","") + NL);
         }
     		
         out.write("-");

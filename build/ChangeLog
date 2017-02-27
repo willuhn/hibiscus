@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0588 MT940 immer mit deutsch formatierten Dezimalzahlen exportieren, auch wenn ein anderes Locale eingestellt ist.
   * BUG: 0587 Wenn man eine Konto-Gruppe in den Umsaetzen ausgewaehlt, einen Umsatz oeffnet und dann zurueckkehrt, war die Gruppe nicht mehr ausgewaehlt
   * NEW: 0586 Deutsche Umlaute in SEPA-Aufträgen freigegeben
   * BUG: 0585 BUGZILLA 1792 - Beim Kopieren von Überweisungsdaten aus der Zwischenablage wurden Windows-Zeilenumbrüche nicht korrekt erkannt

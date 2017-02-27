@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -22,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.io.IOUtil;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -41,9 +39,6 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
    */
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
-    DecimalFormat df = (DecimalFormat) HBCI.DECIMALFORMAT.clone();
-    df.setGroupingUsed(false);
-    
     OutputStreamWriter out = null;
     
     try
@@ -134,7 +129,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
           //Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
           out.write(":60F:");
           out.write(saldo >= 0.0d ? "C" : "D");
-          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(saldo).replace("-","") + NL);
+          out.write(DF_YYMMDD.format(u.getDatum()) + curr + DECF.format(saldo).replace("-","") + NL);
     		}
 
         out.write(":61:" + DF_YYMMDD.format(u.getValuta()) + DF_MMDD.format(u.getDatum()));
@@ -142,7 +137,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
         // Soll-Haben-Kennung für den Betrag ermitteln
     		double betrag = u.getBetrag();
         out.write(betrag >= 0.0d ? "CR" : "DR");
-        out.write(df.format(betrag).replace("-",""));
+        out.write(DECF.format(betrag).replace("-",""));
     		
         String ref = StringUtils.trimToNull(u.getCustomerRef());
     		out.write("NTRF" + (ref != null ? ref : "NONREF") + NL);
@@ -187,7 +182,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
           //Soll-Haben-Kennung für den Schlusssaldo ermitteln
           double schlussSaldo = u.getSaldo();
           out.write(schlussSaldo >= 0.0d ? "C" : "D");
-          out.write(DF_YYMMDD.format(u.getDatum()) + curr + df.format(schlussSaldo).replace("-","") + NL);
+          out.write(DF_YYMMDD.format(u.getDatum()) + curr + DECF.format(schlussSaldo).replace("-","") + NL);
         }
     		
       }
