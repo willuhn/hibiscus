@@ -63,7 +63,7 @@ public class DonateView extends AbstractView
                                 "Neben der Zeit, die ich für die Weiterentwicklung von Hibiscus investiere, " +
                                 "benötige ich natürlich auch Geld für die Miete des Webservers, für zu testende Chipkarten-Leser " +
                                 "und auch für die Computer und Betriebssysteme, auf denen Hibiscus laufen soll. Leider " +
-                                "konnte ich bisher kein Unternehmen finden, welches mich sponsored."),true);
+                                "konnte ich bisher kein Unternehmen finden, welches mich sponsert."),true);
       
       Canvas c = SWTUtil.getCanvas(comp,SWTUtil.getImage("hibiscus-donate.png"),SWT.TOP | SWT.LEFT);
       ((GridData)c.getLayoutData()).minimumWidth = 157;
