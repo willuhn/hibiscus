@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
@@ -82,6 +83,7 @@ public class About extends AbstractDialog
       "Copyright by Olaf Willuhn [<a href=\"mailto:hibiscus@willuhn.de\">hibiscus@willuhn.de</a>]<br/>" +
       "<a href=\"http://www.willuhn.de/products/hibiscus/\">www.willuhn.de/products/hibiscus/</a></p>" +
       "<p>Software-Version: " + plugin.getManifest().getVersion() + "<br/>" +
+      "HBCI4Java-Version: " + HBCIUtils.version() + "<br/>" +
       "Datenbank-Version: " + version.getVersion() + "<br/>" +
       "Build: " + plugin.getManifest().getBuildnumber() + " [Datum " + plugin.getManifest().getBuildDate() + "]</p>" +
       "</form>");
