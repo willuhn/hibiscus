@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/11/02 12:02:19 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -22,6 +17,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -29,12 +25,22 @@ import de.willuhn.util.I18N;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 {
+  private final static String DRIVER_OLD = "com.mysql.jdbc.Driver";
+  private final static String DRIVER_NEW = "com.mysql.cj.jdbc.Driver";
+  
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
   public String getJdbcDriver()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver","com.mysql.jdbc.Driver");
+    String driver = HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver",DRIVER_NEW);
+    if (DRIVER_OLD.equals(driver))
+    {
+      Logger.info("migrating driver class from " + DRIVER_OLD + " to " + DRIVER_NEW);
+      driver = DRIVER_NEW;
+      HBCIDBService.SETTINGS.setAttribute("database.driver.mysql.jdbcdriver",driver);
+    }
+    return driver;
   }
 
   /**
@@ -124,16 +130,3 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
   }
 
 }
-
-
-/*********************************************************************
- * $Log: DBSupportMySqlImpl.java,v $
- * Revision 1.11  2010/11/02 12:02:19  willuhn
- * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
- *
- * Revision 1.10  2010/02/10 14:32:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2009/04/05 21:40:56  willuhn
- * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
- **********************************************************************/
