@@ -119,7 +119,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
 
     ////////////////////////////////////////////////////////////////////////////
     // 1. Nach neuen und geaenderten Dauerauftraegen suchen
-    Logger.info("checking for new and changed entries");
+    Logger.info("checking for new and changed entries [received lines: " + lines.length + "]");
     for (int i=0;i<lines.length;++i)
     {
       try

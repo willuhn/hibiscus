@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0592 Neuer HBCI4Java-Snapshot 3.0.9
   * CHG: 0591 Migration des MySQL-Treibers von com.mysql.jdbc.Driver auf com.mysql.cj.jdbc.Driver
   * NEW: 0590 Umstellung auf neue HBCI4Java-Version von https://github.com/hbci4j/hbci4java
   * NEW: 0589 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 07.03.2017
