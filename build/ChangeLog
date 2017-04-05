@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0594 BUGZILLA 1806 - Abrufen der Daueraufträge kann fehlschlagen, wenn die Bank die SEPA-Daten mit einer anderen PAIN-Version sendet, als im SEPA-Deskriptor angegeben - siehe https://github.com/hbci4j/hbci4java/commit/23246977919502faf5a93d705266dd2ce9971f7f 
   * CHG: 0593 Der MySQL-JDBC-Treiber verlangt jetzt die explizite Angabe der Zeitzone per "&serverTimezone=Europe/Paris" in der JDBC-URL, wenn der Server mit Zeitzone CEST läuft - siehe http://stackoverflow.com/questions/26515700/mysql-jdbc-driver-5-1-33-time-zone-issue
   * CHG: 0592 Neuer HBCI4Java-Snapshot 3.0.9
   * CHG: 0591 Migration des MySQL-Treibers von com.mysql.jdbc.Driver auf com.mysql.cj.jdbc.Driver
