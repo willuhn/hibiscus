@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Event;
@@ -33,6 +34,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.KontoSyncViaScripting;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugRpt;
@@ -190,6 +192,12 @@ public class KontoNew extends AbstractView
     Button fetch = null;
 
     Konto konto = control.getKonto();
+    
+    if (StringUtils.trimToNull(konto.getIban()) != null)
+    {
+      buttons.addButton(i18n.tr("Neue Überweisung"),new AuslandsUeberweisungNew(),konto,false,"stock_next.png");
+    }
+    
     if (konto.hasFlag(Konto.FLAG_OFFLINE))
     {
       fetch = new Button(i18n.tr("Umsatz anlegen"), new UmsatzDetailEdit(),konto,false,"emblem-documents.png");
