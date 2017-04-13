@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
@@ -124,6 +125,12 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       String newName = name.replace("(true/false)","").trim();
       String value = konto.getMeta(newName,null);
       t = new CheckboxInput(value != null && Boolean.valueOf(value).booleanValue());
+      t.setName(newName);
+    }
+    else if (name.endsWith("(pwd)") || name.endsWith("(password"))
+    {
+      String newName = name.replace("(pwd)","").replace("(password)","").trim();
+      t = new PasswordInput(konto.getMeta(newName,null));
       t.setName(newName);
     }
     else
