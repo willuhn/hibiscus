@@ -127,7 +127,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       t = new CheckboxInput(value != null && Boolean.valueOf(value).booleanValue());
       t.setName(newName);
     }
-    else if (name.endsWith("(pwd)") || name.endsWith("(password"))
+    else if (name.endsWith("(pwd)") || name.endsWith("(password)"))
     {
       String newName = name.replace("(pwd)","").replace("(password)","").trim();
       t = new PasswordInput(konto.getMeta(newName,null));
