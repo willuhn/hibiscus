@@ -151,9 +151,9 @@ public class KontoauszugList extends UmsatzList
   public synchronized void paint(Composite parent) throws RemoteException
   {
     addColumn(new KontoColumn()); // BUGZILLA 723
-    addColumn(i18n.tr("GK Konto"), "empfaenger_konto",new IbanFormatter());
-    addColumn(i18n.tr("GK BLZ"),   "empfaenger_blz");
-    addColumn(i18n.tr("Art"),      "art");
+    addColumn(i18n.tr("GK IBAN"), "empfaenger_konto",new IbanFormatter());
+    addColumn(i18n.tr("GK BIC"),  "empfaenger_blz");
+    addColumn(i18n.tr("Art"),     "art");
 
     /////////////////////////////////////////////////////////////////
     // Tab-Container
