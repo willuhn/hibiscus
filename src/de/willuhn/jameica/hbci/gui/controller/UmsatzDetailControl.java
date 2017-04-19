@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
@@ -206,17 +207,23 @@ public class UmsatzDetailControl extends AbstractControl
    */
   public Input getEmpfaengerKonto() throws RemoteException
   {
-    if (this.empfaengerKonto == null)
+    if (this.empfaengerKonto != null)
+      return this.empfaengerKonto;
+    
+    String s = getUmsatz().getGegenkontoNummer();
+    
+    if (StringUtils.trimToEmpty(s).length() > 10)
     {
-      String s = getUmsatz().getGegenkontoNummer();
-      
-      if (StringUtils.trimToEmpty(s).length() > 10)
-        this.empfaengerKonto = new IBANInput(s,null);
-      else
-        this.empfaengerKonto = new TextInput(s,HBCIProperties.HBCI_IBAN_MAXLENGTH);
-      
-      this.empfaengerKonto.setEnabled(false);
+      this.empfaengerKonto = new IBANInput(s,null);
+      this.empfaengerKonto.setName(i18n.tr("IBAN"));
     }
+    else
+    {
+      this.empfaengerKonto = new TextInput(s,HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      this.empfaengerKonto.setName(i18n.tr("Konto/IBAN"));
+    }
+    
+    this.empfaengerKonto.setEnabled(false);
     return this.empfaengerKonto;
   }
   
@@ -227,11 +234,24 @@ public class UmsatzDetailControl extends AbstractControl
    */
   public Input getEmpfaengerBLZ() throws RemoteException
   {
-    if (this.empfaengerBlz == null)
+    if (this.empfaengerBlz != null)
+      return this.empfaengerBlz;
+    
+    String value = getUmsatz().getGegenkontoBLZ();
+    boolean isBic = value == null || value.trim().length() == 0; // Per Default ist es eine BIC
+    try
     {
-      this.empfaengerBlz = new BLZInput(getUmsatz().getGegenkontoBLZ());
-      this.empfaengerBlz.setEnabled(false);
+      HBCIProperties.checkChars(value,HBCIProperties.HBCI_BLZ_VALIDCHARS); // Wenn das keine Exception wirft, muss es eine BLZ sein
+      isBic = false;
     }
+    catch (Exception e)
+    {
+      isBic = true;
+    }
+    
+    this.empfaengerBlz = isBic ? new BICInput(value) : new BLZInput(value);
+    this.empfaengerBlz.setName(i18n.tr(isBic ? "BIC" : "BLZ"));
+    this.empfaengerBlz.setEnabled(false);
     return this.empfaengerBlz;
   }
 

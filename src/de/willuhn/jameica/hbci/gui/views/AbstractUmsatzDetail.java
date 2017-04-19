@@ -62,8 +62,8 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 		// BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
     left.addHeadline(i18n.tr("Gegenkonto"));
     left.addLabelPair(i18n.tr("Inhaber"),                       control.getEmpfaengerName());
-    left.addLabelPair(i18n.tr("Konto/IBAN"),                    control.getEmpfaengerKonto());
-    left.addLabelPair(i18n.tr("BLZ/BIC"),                       control.getEmpfaengerBLZ());
+    left.addInput(control.getEmpfaengerKonto());
+    left.addInput(control.getEmpfaengerBLZ());
 
     left.addHeadline(i18n.tr("Datum und Betrag"));
     left.addLabelPair(i18n.tr("Datum"),                         control.getDatum());
