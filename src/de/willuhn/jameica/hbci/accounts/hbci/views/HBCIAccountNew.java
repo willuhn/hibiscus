@@ -7,23 +7,17 @@
 
 package de.willuhn.jameica.hbci.accounts.hbci.views;
 
-import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.accounts.hbci.controller.HBCIAccountNewController;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
  * View zum Erstellen eines neuen HBCI-Bankzugangs.
  */
-public class HBCIAccountNew extends AbstractView
+public class HBCIAccountNew extends AbstractHBCIAccountView
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */

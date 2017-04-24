@@ -25,13 +25,23 @@ public class BankInfoInput extends SearchInput
   
   /**
    * ct.
+   * @param query der initiale Suchbegriff.
    */
-  public BankInfoInput()
+  public BankInfoInput(String query)
   {
     this.setName(i18n.tr("Bank"));
     this.setSearchString(i18n.tr("BLZ, BIC, Name oder Ort der Bank..."));
     this.setStartAt(3);
     this.setDelay(700);
+    
+    if (query != null && query.length() > 0)
+    {
+      List result = startSearch(query);
+      if (result != null && result.size() > 0)
+      {
+        this.setValue(result.get(0));
+      }
+    }
   }
   
   /**
