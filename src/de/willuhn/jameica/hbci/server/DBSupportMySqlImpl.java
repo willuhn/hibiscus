@@ -17,7 +17,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -25,22 +24,14 @@ import de.willuhn.util.I18N;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 {
-  private final static String DRIVER_OLD = "com.mysql.jdbc.Driver";
-  private final static String DRIVER_NEW = "com.mysql.cj.jdbc.Driver";
+  private final static String DRIVER = "com.mysql.jdbc.Driver";
   
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
   public String getJdbcDriver()
   {
-    String driver = HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver",DRIVER_NEW);
-    if (DRIVER_OLD.equals(driver))
-    {
-      Logger.info("migrating driver class from " + DRIVER_OLD + " to " + DRIVER_NEW);
-      driver = DRIVER_NEW;
-      HBCIDBService.SETTINGS.setAttribute("database.driver.mysql.jdbcdriver",driver);
-    }
-    return driver;
+    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver",DRIVER);
   }
 
   /**
