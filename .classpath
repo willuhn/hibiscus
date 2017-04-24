@@ -11,6 +11,6 @@
 	<classpathentry kind="lib" path="lib/itextpdf-5.3.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="lib" path="lib/obantoo-bin-2.1.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.0.10.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.0.11-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

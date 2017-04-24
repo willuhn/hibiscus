@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0599 HBCI4Java neu compiliert wegen http://www.onlinebanking-forum.de/forum/topic.php?t=21163&page=last#last_post
   * CHG: 0598 MySQL-Treiber wieder zurueck von  com.mysql.cj.jdbc.Driver auf com.mysql.jdbc.Driver migriert 
   * NEW: 0597 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.0.10
   * CHG: 0596 Beim Bearbeiten eines Umsatzes je nach Kontext im Eingabefeld automatisch zwischen BLZ und BIC umschalten 
