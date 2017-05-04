@@ -199,11 +199,26 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 	/**
 	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkonto(de.willuhn.jameica.hbci.rmi.Address)
 	 */
-	public void setGegenkonto(Address empf) throws RemoteException
+	public void setGegenkonto(Address e) throws RemoteException
 	{
-		setGegenkontoBLZ(empf.getBlz());
-		setGegenkontoNummer(empf.getKontonummer());
-		setGegenkontoName(empf.getName());
+    if (e == null)
+      return;
+    
+    // IBAN und BIC haben Vorrang.
+    String kto = e.getIban();
+    String blz  = e.getBic();
+    
+    // Fallback auf alte Kontonummer, wenn die IBAN fehlt
+    if (kto == null || kto.length() == 0)
+      kto = e.getKontonummer();
+    
+    // Fallback auf alte BLZ, wenn die BIC fehlt.
+    if (blz == null || blz.length() == 0)
+      blz = e.getBlz();
+    
+    this.setGegenkontoNummer(kto);
+    this.setGegenkontoBLZ(blz);
+    this.setGegenkontoName(e.getName());
 	}
 
   /**

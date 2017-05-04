@@ -289,9 +289,12 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   {
   	if (e == null)
   		return;
-    setGegenkontoBLZ(e.getBlz());
-  	setGegenkontoNummer(e.getKontonummer());
-  	setGegenkontoName(e.getName());
+  	
+    // Bei den Auftraegen wird generell nur noch IBAN und BIC verwendet.
+  	// Kontonummer und BLZ gibt es bei denen ja nicht mehr
+    this.setGegenkontoNummer(e.getIban());
+    this.setGegenkontoBLZ(e.getBic());
+  	this.setGegenkontoName(e.getName());
   }
 
   /**

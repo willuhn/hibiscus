@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
@@ -214,20 +213,6 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     return (String) getAttribute("empfaenger_bic");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setGegenkonto(de.willuhn.jameica.hbci.rmi.Address)
-   */
-  public void setGegenkonto(Address e) throws RemoteException
-  {
-    if (e == null)
-      return;
-
-    // BUGZILLA 1437 - wir uebernehmen hier stattdessen BIC und IBAN
-    setGegenkontoBLZ(e.getBic());
-    setGegenkontoNummer(e.getIban());
-    setGegenkontoName(e.getName());
-  }
-  
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setWeitereVerwendungszwecke(java.lang.String[])
    */

@@ -127,15 +127,7 @@ public class Converter
     // Gegenkonto
     // und jetzt noch der Empfaenger (wenn er existiert)
     if (u.other != null) 
-    {
-      HibiscusAddress a = HBCIKonto2Address(u.other);
-      // Wenn keine Kontonummer/BLZ angegeben ist, versuchen wir es mit BIC/IBAN
-      if (a.getKontonummer() == null || a.getKontonummer().length() == 0)
-        a.setKontonummer(a.getIban());
-      if (a.getBlz() == null || a.getBlz().length() == 0)
-        a.setBlz(a.getBic());
-      umsatz.setGegenkonto(a);
-    }
+      umsatz.setGegenkonto(HBCIKonto2Address(u.other));
 
     if (!HBCIProperties.HBCI_SEPA_PARSE_TAGS)
       return umsatz;
