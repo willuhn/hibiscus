@@ -368,8 +368,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           final boolean interrupted = HBCISynchronizeBackend.this.worker.isInterrupted();
           if (haveError || interrupted)
           {
-            Logger.warn("found errors or synchronization cancelled, clear PIN cache [have error: " + haveError + ", interrupted: " + interrupted + "]");
-            DialogFactory.clearPINCache(this.handler != null ? this.handler.getPassport() : null);
+            Logger.warn("found errors or synchronization cancelled, mark PIN cache dirty [have error: " + haveError + ", interrupted: " + interrupted + "]");
+            DialogFactory.dirtyPINCache(this.handler != null ? this.handler.getPassport() : null);
           }
 
           if (!inCatch)

@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0601 BUGZILLA 1809 - PIN-Cache nicht mehr leeren sondern als dirty markieren. PIN-Abfrage erscheint nach Fehler zwar immer noch, PIN ist dann aber bereits vorbelegt und muss nicht neu eingegeben werden 
   * CHG: 0600 Wenn in den Umsaetzen IBAN/BIC vorhanden sind, dann Kontonummer/BLZ ignorieren (bisher wurden IBAN/BIC nur verwendet, wenn Kontonummer/BLZ fehlten - was in aller Regel auch zutraf) 
   * NEW: 0599 HBCI4Java neu compiliert wegen http://www.onlinebanking-forum.de/forum/topic.php?t=21163&page=last#last_post
   * CHG: 0598 MySQL-Treiber wieder zurueck von  com.mysql.cj.jdbc.Driver auf com.mysql.jdbc.Driver migriert 

@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PINDialog.java,v $
- * $Revision: 1.24 $
- * $Date: 2011/08/05 11:21:59 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
@@ -18,6 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.JameicaCompat;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
@@ -37,12 +33,25 @@ public class PINDialog extends PasswordDialog
 
   /**
    * ct.
+   * @param pin die Vorgabe-PIN.
    */
-  public PINDialog()
+  public PINDialog(String pin)
   {
     super(PINDialog.POSITION_CENTER);
     this.setSize(550,SWT.DEFAULT);
     this.setLabelText(i18n.tr("Ihre PIN"));
+
+    if (pin != null && pin.length() > 0)
+    {
+      try
+      {
+        JameicaCompat.set(this,pin,"setPassword","enteredPassword");
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to apply pin",e);
+      }
+    }
 
     String s = null;
 
@@ -114,16 +123,3 @@ public class PINDialog extends PasswordDialog
 		return (i18n.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
 	}
 }
-
-
-/**********************************************************************
- * $Log: PINDialog.java,v $
- * Revision 1.24  2011/08/05 11:21:59  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.23  2011-05-24 09:06:11  willuhn
- * @C Refactoring und Vereinfachung von HBCI-Callbacks
- *
- **********************************************************************/

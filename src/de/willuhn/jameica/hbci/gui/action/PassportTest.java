@@ -110,7 +110,7 @@ public class PassportTest implements Action
           // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
-          DialogFactory.clearPINCache(handler != null ? handler.getPassport() : null);
+          DialogFactory.dirtyPINCache(handler != null ? handler.getPassport() : null);
           
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(), StatusBarMessage.TYPE_ERROR));
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
@@ -131,7 +131,7 @@ public class PassportTest implements Action
           // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
-          DialogFactory.clearPINCache(handler != null ? handler.getPassport() : null);
+          DialogFactory.dirtyPINCache(handler != null ? handler.getPassport() : null);
 
           // Wir entfernen das Ding vor dem Ausgeben der Fehlermeldungen.
           // die kommen sonst alle doppelt.

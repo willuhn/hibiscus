@@ -299,6 +299,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
       case HBCICallback.NEED_PT_PHOTOTAN:
       {
+        Logger.debug("got phototan code, using phototan dialog");
         TANDialog dialog = new PhotoTANDialog(config,retData.toString());
         dialog.setContext(this.getContext(passport));
         dialog.setText(msg);

@@ -7,9 +7,6 @@
 
 package de.willuhn.jameica.hbci.accounts.hbci.views;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -19,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.JameicaCompat;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -55,25 +53,7 @@ public abstract class AbstractHBCIAccountView extends AbstractView
    */
   protected Composite getComposite(InfoPanel panel) throws Exception
   {
-    Class c = panel.getClass();
-    
-    Composite comp = null;
-    
-    try
-    {
-      // Jameica-Versionen nach 14.04.2016
-      Method m = c.getMethod("getComposite");
-      if (m != null)
-        comp = (Composite) m.invoke(panel);
-    }
-    catch (NoSuchMethodException e)
-    {
-      // Aeltere Jameica-Versionen
-      Field f = c.getDeclaredField("comp");
-      f.setAccessible(true);
-      comp = (Composite) f.get(panel);
-    }
-    
+    Composite comp = (Composite) JameicaCompat.get(panel,"getComposite","comp");
     Composite wrap = new Composite(comp,SWT.NONE);
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     wrap.setLayoutData(gd);

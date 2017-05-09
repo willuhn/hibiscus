@@ -39,12 +39,12 @@ public class DialogFactory
 {
 
   // BUGZILLA 185
-  private static Map<String,byte[]> pinCache = new HashMap<String,byte[]>();
+  private static Map<String,PINEntry> pinCache = new HashMap<String,PINEntry>();
 
   private static long lastTry = 0;
 
   /**
-	 * Erzeugt den PIN-Dialog.
+	 * Liefert die PIN.
    * @param passport Passport, fuer den die PIN-Abfrage gemacht wird.
 	 * @return die eingegebene PIN.
    * @throws Exception
@@ -55,12 +55,12 @@ public class DialogFactory
     if (secondTry)
     {
       Logger.warn("cached pin seems to be wrong, asking user, passport: " + passport.getClass().getName());
-      // wir waren grad eben schonmal hier. Das Passwort muss falsch sein. Wir loeschen es aus dem Cache
-      clearPINCache(passport);
+      dirtyPINCache(passport);
     }
 
-    String pin = getCachedPIN(passport);
-    if (pin != null && !secondTry)
+    PINEntry entry = getCachedPIN(passport);
+    String pin = entry != null ? entry.getPIN() : null;
+    if (pin != null && !secondTry && !entry.dirty)
     {
       Logger.info("using cached pin, passport: " + passport.getClass().getName());
       lastTry = System.currentTimeMillis();
@@ -68,14 +68,14 @@ public class DialogFactory
     }
     lastTry = 0;
 
-    PINDialog dialog = new PINDialog();
+    PINDialog dialog = new PINDialog(pin);
     pin = (String) dialog.open();
-    setCachedPIN(passport,pin);
+    setCachedPIN(passport,pin); // Das entfernt auch gleich die Dirty-Markierung
     return pin;
 	}
 
 	/**
-	 * Dialog zur Eingabe des Passworts fuer Schluesseldateien.
+	 * Liefert das Passwort fuer Schluesseldateien.
    * @param passport der HBCI-Passport.
    * @return eingegebenes Passwort.
    * @throws Exception
@@ -89,14 +89,16 @@ public class DialogFactory
     if (secondTry)
     {
       Logger.warn("cached key seems to be wrong, asking user, passport: " + passport.getClass().getName());
-      // wir waren grad eben schonmal hier. Das Passwort muss falsch sein. Wir loeschen es aus dem Cache
-      clearPINCache(passport);
+      dirtyPINCache(passport);
     }
+    
+    String pw = null;
     
     if (!forceAsk && !secondTry)
     {
-      String pw = getCachedPIN(passport);
-      if (pw != null)
+      PINEntry entry = getCachedPIN(passport);
+      pw = entry != null ? entry.getPIN() : null;
+      if (pw != null && !entry.dirty)
       {
         Logger.info("using cached password, passport: " + passport.getClass().getName());
         lastTry = System.currentTimeMillis();
@@ -106,8 +108,8 @@ public class DialogFactory
     lastTry = 0;
 
     // Wir haben nichts im Cache oder wurden explizit aufgefordert, nach dem Passwort zu fragen
-    KeyPasswordLoadDialog dialog = new KeyPasswordLoadDialog(passport);
-    String pw = (String) dialog.open();
+    KeyPasswordLoadDialog dialog = new KeyPasswordLoadDialog(passport,pw);
+    pw = (String) dialog.open();
     if (!forceAsk) // Nur cachen, wenn die Passwort-Abfrage nicht erzwungen war
       setCachedPIN(passport,pw);
     return pw;
@@ -131,10 +133,10 @@ public class DialogFactory
   /**
    * Prueft, ob eine gespeicherte PIN fuer diesen Passport vorliegt.
    * @param passport der Passport.
-   * @return die PIN oder null, wenn keine gefunden wurde.
+   * @return der PIN-Entry oder null, wenn keine gefunden wurde.
    * @throws Exception
    */
-  private static String getCachedPIN(HBCIPassport passport) throws Exception
+  private static PINEntry getCachedPIN(HBCIPassport passport) throws Exception
   {
     String key = getCacheKey(passport);
 
@@ -142,44 +144,31 @@ public class DialogFactory
     if (key == null)
       return null;
 
-    byte[] data = null;
+    PINEntry entry = null;
     
     // Cache checken
     if (Settings.getCachePin())
-    {
-      data = pinCache.get(key);
-    }
-
+      entry = pinCache.get(key);
+    
     // Wenn wir noch nichts im Cache haben, schauen wir im Wallet - wenn das erlaubt ist
-    if (data == null && Settings.getStorePin() && (passport instanceof HBCIPassportPinTan))
+    if (entry == null && Settings.getStorePin() && (passport instanceof HBCIPassportPinTan))
     {
       String s = (String) Settings.getWallet().get(key);
       if (s != null)
       {
-        data = Base64.decode(s);
+        byte[] data = Base64.decode(s);
         
-        // Wenn diese Meldung im Log erscheint, gibts keinen Support mehr von mir.
-        // Wer die PIN permament speichert, tut das auf eigenes Risiko
         Logger.info("pin loaded from wallet");
+
         // Uebernehmen wir gleich in den Cache, damit wir beim
         // naechsten Mal direkt im Cache schauen koennen und nicht
         // mehr im Wallet
-        pinCache.put(key,data);
+        entry = new PINEntry(data);
+        pinCache.put(key,entry);
       }
     }
-
-    // Haben wir Daten?
-    if (data != null)
-    {
-      ByteArrayInputStream bis  = new ByteArrayInputStream(data);
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      Application.getSSLFactory().decrypt(bis,bos);
-      String s = bos.toString();
-      if (s != null && s.length() > 0)
-        return s;
-    }
     
-    return null;
+    return entry;
   }
   
   /**
@@ -196,26 +185,24 @@ public class DialogFactory
     if (key == null)
       return;
     
-    ByteArrayInputStream bis  = new ByteArrayInputStream(pin.getBytes());
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    Application.getSSLFactory().encrypt(bis,bos);
-    byte[] crypted = bos.toByteArray();
+    PINEntry entry = null;
     
     if (Settings.getCachePin())
     {
-      pinCache.put(key,crypted);
+      entry = new PINEntry(pin);
+      pinCache.put(key,entry);
     }
     
     // Permanentes Speichern der PIN gibts nur bei PIN/TAN, da dort ueber
     // die TAN eine weitere Autorisierung bei der Ausfuehrung von Geschaeftsvorfaellen
     // mit Geldfluss stattfindet. Bei DDV/RDH koennte man sonst beliebig Geld
     // transferieren, ohne jemals wieder nach einem Passwort gefragt zu werden.
-    if (Settings.getStorePin() && (passport instanceof HBCIPassportPinTan))
+    if (entry != null && Settings.getStorePin() && (passport instanceof HBCIPassportPinTan))
     {
       // Nicht direkt das Byte-Array speichern sondern einen Base64-String.
       // Grund: Bei einem Byte-Array wuerde der XML-Serializer fuer jedes
       // Byte ein einzelnes XML-Element anlegen und damit das Wallet aufblasen
-      Settings.getWallet().set(key,Base64.encode(crypted));
+      Settings.getWallet().set(key,Base64.encode(entry.crypted));
     }
   }
   
@@ -232,13 +219,17 @@ public class DialogFactory
       // Wir loeschen nur das Passwort vom angegebenen Passport
       String key = getCacheKey(passport);
       if (key != null)
+      {
+        Logger.info("pin cache cleared for single passport");
         pinCache.remove(key);
+      }
       // Wenn kein Key existiert, haben wir auch nichts zu loeschen,
       // weil dann gar kein Passwort im Cache existieren kann
     }
     else
     {
       // Kompletten Cache loeschen
+      Logger.info("pin cache cleared for all passports");
       pinCache.clear();
     }
 
@@ -246,6 +237,40 @@ public class DialogFactory
     // Unabhaengig davon, ob das Feature gerade aktiviert ist oder nicht.
     // Denn ohne Cache gibts auch keinen Store.
     clearPINStore(passport);
+  }
+  
+  /**
+   * Markiert die PIN des Passports als Dirty - zum Beispiel aufgrund eines Fehlers.
+   * Das fuehrt dazu, dass die PIN beim naechsten Mal neu erfragt wird, aber im Passwort-Dialog
+   * bereits vorbefuellt ist.
+   * @param passport der Passport, dessen PIN invalidiert werden soll.
+   * Optional. Wird er weggelassen, werden alle PINs invalidiert.
+   */
+  public static void dirtyPINCache(HBCIPassport passport)
+  {
+    if (passport != null)
+    {
+      String key = getCacheKey(passport);
+      if (key == null)
+        return;
+
+      PINEntry entry = pinCache.get(key);
+      if (entry == null)
+        return;
+      
+      Logger.warn("mark pin cache dirty for single passport");
+      entry.dirty = true;
+      return;
+    }
+    else
+    {
+      // Alle PINs invalidieren
+      Logger.warn("mark pin cache dirty for all passports");
+      for (PINEntry e:pinCache.values())
+      {
+        e.dirty = true;
+      }
+    }
   }
   
   /**
@@ -265,6 +290,7 @@ public class DialogFactory
         {
           // Nur loeschen, wenn es den Key auch wirklich gibt. Das spart
           // den Schreibzugriff, wenn er nicht vorhanden ist
+          Logger.info("pin store cleared for single passport");
           Settings.getWallet().delete(key);
         }
         // Wenn kein Key existiert, haben wir auch nichts zu loeschen,
@@ -273,6 +299,7 @@ public class DialogFactory
       else
       {
         // Alles Keys beginnen mit "hibiscus.pin."
+        Logger.info("pin store cleared for all passports");
         Settings.getWallet().deleteAll("hibiscus.pin.");
       }
     }
@@ -333,35 +360,53 @@ public class DialogFactory
     return null;
   }
   
+  /**
+   * Kapselt einen PIN-Eintrag.
+   */
+  private static class PINEntry
+  {
+    private byte[] crypted;
+    private boolean dirty = false;
+    
+    /**
+     * ct.
+     * @param pin die PIN.
+     * @throws Exception
+     */
+    private PINEntry(String pin) throws Exception
+    {
+      ByteArrayInputStream bis  = new ByteArrayInputStream(pin.getBytes());
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      Application.getSSLFactory().encrypt(bis,bos);
+      this.crypted = bos.toByteArray();
+    }
+
+    /**
+     * ct.
+     * @param crypted die verschluesselte PIN.
+     * @throws Exception
+     */
+    private PINEntry(byte[] crypted) throws Exception
+    {
+      this.crypted = crypted;
+    }
+
+    /**
+     * Liefert die PIN.
+     * @return die PIN.
+     * @throws Exception
+     */
+    private String getPIN() throws Exception
+    {
+      if (this.crypted == null)
+        return null;
+      
+      ByteArrayInputStream bis  = new ByteArrayInputStream(this.crypted);
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      Application.getSSLFactory().decrypt(bis,bos);
+      String s = bos.toString();
+      return s != null && s.length() > 0 ? s : null;
+    }
+  }
   
 }
-
-
-/**********************************************************************
- * $Log: DialogFactory.java,v $
- * Revision 1.43  2011/08/05 11:21:59  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.42  2011-05-25 10:19:12  willuhn
- * @C PIN nur aus Wallet loeschen, wenn tatsaechlich vorhanden - das spart einen unnoetigen Schreibzugriff auf das Wallet, wenn die PIN gar nicht drin stand
- *
- * Revision 1.41  2011-05-25 10:05:49  willuhn
- * @N Im Fehlerfall nur noch die PINs/Passwoerter der betroffenen Passports aus dem Cache loeschen. Wenn eine PIN falsch ist, muss man jetzt nicht mehr alle neu eingeben
- *
- * Revision 1.40  2011-05-25 08:56:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.39  2011-05-24 10:45:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.38  2011-05-24 09:06:11  willuhn
- * @C Refactoring und Vereinfachung von HBCI-Callbacks
- *
- * Revision 1.37  2011-05-23 12:57:38  willuhn
- * @N optionales Speichern der PINs im Wallet. Ich announce das aber nicht. Ich hab das nur eingebaut, weil mir das Gejammer der User auf den Nerv ging und ich nicht will, dass sich User hier selbst irgendwelche Makros basteln, um die PIN dennoch zu speichern
- *
- * Revision 1.36  2010-07-24 00:22:48  willuhn
- * *** empty log message ***
- **********************************************************************/

@@ -29,6 +29,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.JameicaCompat;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
@@ -48,11 +49,24 @@ public class KeyPasswordLoadDialog extends PasswordDialog
   /**
    * ct.
    * @param passport optionale Angabe des Passports.
+   * @param password das Vorgabe-Passwort.
    */
-  public KeyPasswordLoadDialog(HBCIPassport passport)
+  public KeyPasswordLoadDialog(HBCIPassport passport, String password)
   {
     super(POSITION_CENTER);
     setSize(550,SWT.DEFAULT);
+    
+    if (password != null && password.length() > 0)
+    {
+      try
+      {
+        JameicaCompat.set(this,password,"setPassword","enteredPassword");
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to apply password",e);
+      }
+    }
 
     String s = null;
     try
