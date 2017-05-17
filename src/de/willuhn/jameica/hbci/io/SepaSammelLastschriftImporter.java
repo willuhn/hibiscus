@@ -51,8 +51,8 @@ public class SepaSammelLastschriftImporter extends AbstractSepaImporter
     if (ueb == null)
     {
       ueb = (SepaSammelLastschrift) service.createObject(SepaSammelLastschrift.class,null);
-      ueb.setSequenceType(SepaLastSequenceType.valueOf(prop.getProperty(ISEPAParser.Names.SEQUENCETYPE.getValue())));
-      ueb.setType(SepaLastType.valueOf(prop.getProperty(ISEPAParser.Names.LAST_TYPE.getValue())));
+      ueb.setSequenceType(SepaLastSequenceType.valueOf(prop.getProperty(ISEPAParser.Names.SEQUENCETYPE.getValue(),SepaLastSequenceType.FRST.name())));
+      ueb.setType(SepaLastType.valueOf(prop.getProperty(ISEPAParser.Names.LAST_TYPE.getValue(),SepaLastType.CORE.name())));
       ueb.setBezeichnung(i18n.tr("{0} {1} vom {2}",ueb.getSequenceType().getDescription(),ueb.getType().getDescription(), HBCI.LONGDATEFORMAT.format(new Date())));
       ueb.setKonto(this.findKonto(prop.getProperty(ISEPAParser.Names.SRC_IBAN.getValue())));
       ueb.setPmtInfId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PMTINFID.getValue())));

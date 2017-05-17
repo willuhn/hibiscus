@@ -65,8 +65,8 @@ public class SepaLastschriftImporter extends AbstractSepaImporter
     if (mandDate != null && !SepaUtil.DATE_UNDEFINED.equals(mandDate))
       u.setSignatureDate(ISO_DATE.parse(mandDate));
 
-    u.setSequenceType(SepaLastSequenceType.valueOf(prop.getProperty(ISEPAParser.Names.SEQUENCETYPE.getValue())));
-    u.setType(SepaLastType.valueOf(prop.getProperty(ISEPAParser.Names.LAST_TYPE.getValue())));
+    u.setSequenceType(SepaLastSequenceType.valueOf(prop.getProperty(ISEPAParser.Names.SEQUENCETYPE.getValue(),SepaLastSequenceType.FRST.name())));
+    u.setType(SepaLastType.valueOf(prop.getProperty(ISEPAParser.Names.LAST_TYPE.getValue(),SepaLastType.CORE.name())));
 
     u.store();
     Application.getMessagingFactory().sendMessage(new ImportMessage(u));
