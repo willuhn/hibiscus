@@ -20,11 +20,11 @@ import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.accounts.hbci.HBCIAccountPinTan;
+import de.willuhn.jameica.hbci.accounts.hbci.action.HBCIVariantPinTanTest;
 import de.willuhn.jameica.hbci.accounts.hbci.views.HBCIVariantPinTanStep2;
 import de.willuhn.jameica.hbci.gui.input.BankInfoInput;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -45,11 +45,11 @@ public class HBCIVariantPinTanController extends AbstractControl
   private URLInput url = null;
   private TextInput customer = null;
   private TextInput username = null;
-  private TextInput password = null;
   
   private Button step1 = null;
   private Button step2 = null;
   
+  private Listener step1Listener = new Step1Listener();
   private Listener step2Listener = new Step2Listener();
   
   /**
@@ -70,6 +70,8 @@ public class HBCIVariantPinTanController extends AbstractControl
       return this.bank;
     
     this.bank = new BankInfoInput(this.account.getBlz());
+    if (this.bank.getValue() == null) // Falls es keine bekannte BLZ war
+      this.bank.setValue(this.account.getBlz());
     this.bank.addListener(new Listener() {
       
       @Override
@@ -83,7 +85,7 @@ public class HBCIVariantPinTanController extends AbstractControl
             bank.setComment(i18n.tr("Bank gefunden, BIC: {0}",info.getBic()));
           else
             bank.setComment(i18n.tr("Bank gefunden"));
-          
+
           account.setBlz(info.getBlz());
         }
         else
@@ -95,12 +97,17 @@ public class HBCIVariantPinTanController extends AbstractControl
         String url = info.getPinTanAddress();
         if (url != null && url.length() > 0)
         {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Adresse des Bankservers gefunden"),StatusBarMessage.TYPE_SUCCESS));
           account.setUrl(url);
           getURL().setValue(url);
-          getStep1Button().setEnabled(true);
+        }
+        else
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie die Adresse des Bankservers manuell ein"),StatusBarMessage.TYPE_INFO));
         }
       }
     });
+    this.bank.addListener(this.step1Listener);
     this.bank.setComment("");
     this.bank.setMandatory(true);
     return this.bank;
@@ -116,16 +123,27 @@ public class HBCIVariantPinTanController extends AbstractControl
       return this.url;
     
     this.url = new URLInput(this.account.getUrl());
-    this.url.addListener(new Listener() {
-      
-      @Override
-      public void handleEvent(Event event)
-      {
-        String s = (String) url.getValue();
-        getStep1Button().setEnabled(s != null && s.length() > 0);
-      }
-    });
+    this.url.addListener(this.step1Listener);
+    this.url.setMandatory(true);
     return this.url;
+  }
+  
+  /**
+   * Liefert den Listener zur Freigabe des ersten Weiter-Buttons.
+   * @return der Listener zur Freigabe des ersten Weiter-Buttons.
+   */
+  public Listener getStep1Listener()
+  {
+    return this.step1Listener;
+  }
+  
+  /**
+   * Liefert den Listener zur Freigabe des zweiten Weiter-Buttons.
+   * @return der Listener zur Freigabe des zweiten Weiter-Buttons.
+   */
+  public Listener getStep2Listener()
+  {
+    return this.step2Listener;
   }
   
   /**
@@ -158,24 +176,8 @@ public class HBCIVariantPinTanController extends AbstractControl
     this.username.setComment(this.getBankText());
     this.username.setMandatory(true);
     this.username.addListener(this.step2Listener);
+    this.username.focus();
     return this.username;
-  }
-  
-  /**
-   * Liefert das Eingabefeld fuer die PIN.
-   * @return das Eingabefeld fuer die PIN.
-   */
-  public TextInput getPassword()
-  {
-    if (this.password != null)
-      return this.password;
-    
-    this.password = new PasswordInput(null);
-    this.password.setHint(i18n.tr("PIN"));
-    this.password.setComment("");
-    this.password.setMandatory(true);
-    this.password.addListener(this.step2Listener);
-    return this.password;
   }
   
   /**
@@ -195,7 +197,6 @@ public class HBCIVariantPinTanController extends AbstractControl
         url = null;
         username = null;
         customer = null;
-        password = null;
         GUI.startView(HBCIVariantPinTanStep2.class,HBCIVariantPinTanController.this);
       }
     },null,true,"go-next.png");
@@ -212,13 +213,7 @@ public class HBCIVariantPinTanController extends AbstractControl
     if (this.step2 != null)
       return this.step2;
     
-    this.step2 = new Button(i18n.tr("Übernehmen"),new Action() {
-      @Override
-      public void handleAction(Object context) throws ApplicationException
-      {
-        GUI.startView(HBCIVariantPinTanStep2.class,HBCIVariantPinTanController.this);
-      }
-    },null,true,"go-next.png");
+    this.step2 = new Button(i18n.tr("Bankzugang jetzt testen..."),new HBCIVariantPinTanTest(),this.account,true,"mail-send-receive.png");
     this.step2.setEnabled(false);
     return this.step2;
   }
@@ -289,19 +284,6 @@ public class HBCIVariantPinTanController extends AbstractControl
     {
       String s = this.cleanUrl((String) value);
       super.setValue(s);
-      
-      boolean found = StringUtils.trimToNull(s) != null;
-      this.setMandatory(!found);
-      if (found)
-      {
-        this.setComment(i18n.tr("Adresse des Bankservers gefunden"));
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Adresse des Bankservers gefunden"),StatusBarMessage.TYPE_SUCCESS));
-      }
-      else
-      {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte geben Sie die Adresse des Bankservers manuell ein"),StatusBarMessage.TYPE_INFO));
-        this.setComment(i18n.tr("Bitte geben Sie die Adresse des Bankservers ein"));
-      }
     }
 
     /**
@@ -322,7 +304,33 @@ public class HBCIVariantPinTanController extends AbstractControl
       return url;
     }
   }
-  
+
+  /**
+   * Listener zum Freischalten des ersten Weiter-Buttons.
+   */
+  private class Step1Listener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    @Override
+    public void handleEvent(Event event)
+    {
+      String url = (String) getURL().getValue();
+      boolean enabled = url != null && url.trim().length() > 0;
+      getStep1Button().setEnabled(enabled);
+      
+      if (enabled)
+      {
+        account.setUrl(url);
+
+        // Fallback, falls die Bank nicht bekannt ist
+        if (account.getBlz() == null)
+          account.setBlz(getBank().getText());
+      }
+    }
+  }
+
   /**
    * Listener zum Freischalten des zweiten Weiter-Buttons.
    */
@@ -334,11 +342,16 @@ public class HBCIVariantPinTanController extends AbstractControl
     @Override
     public void handleEvent(Event event)
     {
-      String s1 = (String) getUsername().getValue();
-      String s2 = (String) getPassword().getValue();
-      getStep2Button().setEnabled(s1 != null && s2 != null && s1.trim().length() > 0 && s2.trim().length() > 0);
+      String s = (String) getUsername().getValue();
+      boolean enabled = s != null && s.trim().length() > 0;
+      getStep2Button().setEnabled(enabled);
+      
+      if (enabled)
+      {
+        account.setUsername(s);
+        String customer = (String) getCustomer().getValue();
+        account.setCustomer(customer != null && customer.trim().length() > 0 ? customer : s);
+      }
     }
   }
 }
-
-

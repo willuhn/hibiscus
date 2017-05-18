@@ -34,7 +34,7 @@ public class AccountNew extends AbstractView
     AccountNewController control = new AccountNewController(this);
     
     Container c = new SimpleContainer(this.getParent());
-    c.addHeadline(i18n.tr("Schritt 1: Art des Bankzugangs"));
+    c.addHeadline(i18n.tr("Art des Bankzugangs"));
     c.addText(i18n.tr("Bitte wählen Sie die Art des anzulegenden Bankzugangs."),true);
     
     for (InfoPanel panel:control.getAccountProviders())

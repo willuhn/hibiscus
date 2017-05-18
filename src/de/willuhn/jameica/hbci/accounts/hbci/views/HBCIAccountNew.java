@@ -28,7 +28,7 @@ public class HBCIAccountNew extends AbstractHBCIAccountView
     HBCIAccountNewController control = new HBCIAccountNewController(this);
     
     Container c = new SimpleContainer(this.getParent());
-    c.addHeadline(i18n.tr("Schritt 2: Auswahl des Verfahrens"));
+    c.addHeadline(i18n.tr("Auswahl des Verfahrens"));
     c.addText(i18n.tr("Bitte wählen Sie die Art des FinTS/HBCI-Verfahrens."),true);
     
     for (InfoPanel panel:control.getVariants())

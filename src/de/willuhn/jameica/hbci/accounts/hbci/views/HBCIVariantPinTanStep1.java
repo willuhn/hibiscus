@@ -9,9 +9,11 @@ package de.willuhn.jameica.hbci.accounts.hbci.views;
 
 import javax.annotation.Resource;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.gui.util.Container;
@@ -37,7 +39,7 @@ public class HBCIVariantPinTanStep1 extends AbstractHBCIAccountView
     final HBCIVariantPinTanController control = this.getController(HBCIVariantPinTanController.class);
 
     Container c = new SimpleContainer(this.getParent());
-    c.addHeadline(i18n.tr("Schritt 3: Auswahl der Bank"));
+    c.addHeadline(i18n.tr("Auswahl der Bank"));
     c.addText(i18n.tr("Bitte wählen Sie die Bank aus, zu der Sie einen Zugang einrichten möchten."),true);
     
     InfoPanel panel = this.variant.getInfo();
@@ -47,8 +49,14 @@ public class HBCIVariantPinTanStep1 extends AbstractHBCIAccountView
     Composite comp = this.getComposite(panel);
     Container cs = new SimpleContainer(comp);
     cs.addText("\n" + i18n.tr("Bitte geben Sie die BLZ, BIC oder den Namen Ihrer Bank ein.\nHibiscus wird anschließend versuchen, die Adresse des Bankservers zu ermitteln."),true);
-    cs.addPart(control.getBank());
-    cs.addPart(control.getURL());
+    
+    final Input bank = control.getBank();
+    final Input url  = control.getURL();
+    cs.addPart(bank);
+    cs.addPart(url);
+    
+    bank.getControl().addListener(SWT.KeyUp,control.getStep1Listener());
+    url.getControl().addListener(SWT.KeyUp,control.getStep1Listener());
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(control.getStep1Button());
