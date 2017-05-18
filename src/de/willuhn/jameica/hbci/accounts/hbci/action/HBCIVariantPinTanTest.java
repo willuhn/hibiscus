@@ -28,7 +28,7 @@ import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
-import de.willuhn.logging.Level;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.logging.Message;
 import de.willuhn.logging.targets.Target;
@@ -56,8 +56,12 @@ public class HBCIVariantPinTanTest implements Action
     final HBCIAccountPinTan account = (HBCIAccountPinTan) context;
 
     BackgroundTask task = new BackgroundTask() {
+      
+      private boolean stop = false;
+      
       public void run(final ProgressMonitor monitor) throws ApplicationException
       {
+        PinTanConfig conf     = null;
         HBCIHandler handler   = null;
         HBCICallback callback = null;
         Target target         = null;
@@ -88,6 +92,12 @@ public class HBCIVariantPinTanTest implements Action
               @Override
               public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
               {
+                
+                if (stop)
+                  throw new OperationCanceledException(i18n.tr("Vorgang abgebrochen"));
+                
+                monitor.addPercentComplete(3);
+
                 switch (reason)
                 {
                   case HBCICallback.NEED_COUNTRY:
@@ -124,44 +134,53 @@ public class HBCIVariantPinTanTest implements Action
 
           f = PinTanConfigFactory.createFilename();
 
-          final PinTanConfig conf = new PinTanConfigImpl(PinTanConfigFactory.load(f),f);
+          conf = new PinTanConfigImpl(PinTanConfigFactory.load(f),f);
           conf.setBezeichnung(account.getBlz());
           
+          if (account.getVersion() != null)
+            conf.setHBCIVersion(account.getVersion());
+          
           PinTanConfigFactory.store(conf);
+          
+          if (stop)
+            throw new OperationCanceledException();
           
           PassportHandle handle = new PassportHandleImpl(conf);
           handler = handle.open();
           handle.close();
+          
+          // Test erfolgreich. Bankzugang uebernehmen
+          monitor.setStatus(ProgressMonitor.STATUS_DONE);
+          String text = i18n.tr("Bank-Zugang erfolgreich angelegt");
+          monitor.setStatusText(text);
+          monitor.setPercentComplete(100);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(text, StatusBarMessage.TYPE_SUCCESS));
         }
-        catch (Exception e)
+        catch (Throwable t)
         {
-          f.delete();
+          if (conf != null)
+            PinTanConfigFactory.delete(conf);
           
-          Throwable cause = HBCIProperties.getCause(e);
-          if (cause == null) cause = e; // NPE proof - man weiss ja nie ;)
-          Logger.info("test of passport failed: " + cause.getClass() + ": " + cause.getMessage());
+          if ( f != null && f.exists())
+            f.delete();
           
-          // Den kompletten Stacktrace loggen wir nur auf DEBUG, weil der beim Testen bzw. Suchen nach
-          // einem Kartenleser durchaus auftreten kann.
-          Logger.write(Level.DEBUG,"error while testing passport",e);
+          Throwable cause = HBCIProperties.getCause(t);
+          if (cause == null) cause = t; // NPE proof - man weiss ja nie ;)
+          Logger.error("account test failed: " + cause.getClass() + ": " + cause.getMessage(),t);
           
           // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
           DialogFactory.dirtyPINCache(handler != null ? handler.getPassport() : null);
 
-          // Wir entfernen das Ding vor dem Ausgeben der Fehlermeldungen.
-          // die kommen sonst alle doppelt.
-          removeTarget(target);
-
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-          String errorText = i18n.tr("Fehler beim Testen des Sicherheits-Mediums: {0}",cause.getMessage());
+          String errorText = i18n.tr("Fehler beim Testen des Bank-Zugangs: {0}",cause.getMessage());
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(errorText, StatusBarMessage.TYPE_ERROR));
           monitor.setStatusText(errorText);
 
           monitor.log(i18n.tr("Aufgetretene Fehlermeldungen:"));
           monitor.log("-----------------------------");
-          Throwable current = e;
+          Throwable current = t;
           for (int i=0;i<10;++i)
           {
             if (current == null)
@@ -177,15 +196,21 @@ public class HBCIVariantPinTanTest implements Action
         }
         finally
         {
+          // Wir entfernen das Ding vor dem Ausgeben der Fehlermeldungen.
+          // die kommen sonst alle doppelt.
+          removeTarget(target);
+
           if (callback != null && (callback instanceof HBCICallbackSWT))
             ((HBCICallbackSWT)callback).setCurrentHandle(null);
         }
       }
 
-      public void interrupt() {}
+      public void interrupt() {
+        this.stop = true;
+      }
       public boolean isInterrupted()
       {
-        return false;
+        return this.stop;
       }
     };
     

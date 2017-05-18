@@ -50,10 +50,14 @@ public class HBCIVariantPinTanStep1 extends AbstractHBCIAccountView
     Container cs = new SimpleContainer(comp);
     cs.addText("\n" + i18n.tr("Bitte geben Sie die BLZ, BIC oder den Namen Ihrer Bank ein.\nHibiscus wird anschlieﬂend versuchen, die Adresse des Bankservers zu ermitteln."),true);
     
-    final Input bank = control.getBank();
-    final Input url  = control.getURL();
+    final Input bank    = control.getBank();
+    final Input url     = control.getURL();
+    final Input version = control.getVersion();
     cs.addPart(bank);
     cs.addPart(url);
+    
+    if (version != null)
+      cs.addPart(version);
     
     bank.getControl().addListener(SWT.KeyUp,control.getStep1Listener());
     url.getControl().addListener(SWT.KeyUp,control.getStep1Listener());

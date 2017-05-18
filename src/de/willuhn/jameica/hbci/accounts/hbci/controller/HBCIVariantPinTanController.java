@@ -7,6 +7,7 @@
 
 package de.willuhn.jameica.hbci.accounts.hbci.controller;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.manager.HBCIVersion;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
@@ -27,8 +29,10 @@ import de.willuhn.jameica.hbci.accounts.hbci.HBCIAccountPinTan;
 import de.willuhn.jameica.hbci.accounts.hbci.action.HBCIVariantPinTanTest;
 import de.willuhn.jameica.hbci.accounts.hbci.views.HBCIVariantPinTanStep2;
 import de.willuhn.jameica.hbci.gui.input.BankInfoInput;
+import de.willuhn.jameica.hbci.gui.input.HBCIVersionInput;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -43,6 +47,7 @@ public class HBCIVariantPinTanController extends AbstractControl
   private HBCIAccountPinTan account = new HBCIAccountPinTan();
   private BankInfoInput bank = null;
   private URLInput url = null;
+  private HBCIVersionInput version = null;
   private TextInput customer = null;
   private TextInput username = null;
   
@@ -129,6 +134,30 @@ public class HBCIVariantPinTanController extends AbstractControl
   }
   
   /**
+   * Liefert ein Auswahl-Feld fuer die HBCI-Version.
+   * @return Auswahl-Feld fuer die HBCI-Version.
+   */
+  public HBCIVersionInput getVersion()
+  {
+    if (this.version != null)
+      return this.version;
+    
+    try
+    {
+      this.version = new HBCIVersionInput();
+      this.version.setPreselected(HBCIVersion.HBCI_300.getId());
+      this.version.setComment(i18n.tr("HBCI-Version (meist FinTS 3.0)"));
+      this.version.addListener(this.step1Listener);
+      return this.version;
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to create hbci-version input",re);
+    }
+    return null;
+  }
+  
+  /**
    * Liefert den Listener zur Freigabe des ersten Weiter-Buttons.
    * @return der Listener zur Freigabe des ersten Weiter-Buttons.
    */
@@ -173,6 +202,7 @@ public class HBCIVariantPinTanController extends AbstractControl
     
     this.username = new TextInput(null,50);
     this.username.setHint(i18n.tr("Benutzerkennung"));
+    
     this.username.setComment(this.getBankText());
     this.username.setMandatory(true);
     this.username.addListener(this.step2Listener);
@@ -197,6 +227,7 @@ public class HBCIVariantPinTanController extends AbstractControl
         url = null;
         username = null;
         customer = null;
+        version = null;
         GUI.startView(HBCIVariantPinTanStep2.class,HBCIVariantPinTanController.this);
       }
     },null,true,"go-next.png");
@@ -230,7 +261,7 @@ public class HBCIVariantPinTanController extends AbstractControl
 
     List<BankInfo> result = HBCIUtils.searchBankInfo(blz);
     if (result == null || result.size() == 0)
-      return null;
+      return i18n.tr("BLZ: {0}",blz);
     return result.get(0).getName();
   }
 
@@ -327,6 +358,8 @@ public class HBCIVariantPinTanController extends AbstractControl
         // Fallback, falls die Bank nicht bekannt ist
         if (account.getBlz() == null)
           account.setBlz(getBank().getText());
+        
+        account.setVersion((String) getVersion().getValue());
       }
     }
   }
