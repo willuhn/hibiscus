@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0604 HBCI-Protokolle können jetzt auch ohne Konto-Bezug exportiert werden - z.Bsp. nach dem Testen eines Bankzugangs (BPD-Abruf)
   * NEW: 0603 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.06.2017
   * NEW: 0602 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.0.11-SNAPSHOT
   * NEW: 0601 BUGZILLA 1809 - PIN-Cache nicht mehr leeren sondern als dirty markieren. PIN-Abfrage erscheint nach Fehler zwar immer noch, PIN ist dann aber bereits vorbelegt und muss nicht neu eingegeben werden 

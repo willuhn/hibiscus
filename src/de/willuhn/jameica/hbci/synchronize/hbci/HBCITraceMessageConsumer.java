@@ -43,6 +43,27 @@ public class HBCITraceMessageConsumer implements MessageConsumer
   {
     HBCITraceMessage msg = (HBCITraceMessage) message;
     
+    // Das sind Nachrichten ohne Konto-Bezug
+    // Das funktioniert nur, solange noch kein Kontobezug hergestellt
+    if (msg.getType() != HBCITraceMessage.Type.ID && this.current == null)
+    {
+      History anon = history.get(null);
+      if (anon == null)
+      {
+        anon = new History(100);
+        history.put(null,anon);
+      }
+      anon.push(msg);
+      return;
+    }
+
+    // Session geschlossen
+    if (msg.getType() == HBCITraceMessage.Type.CLOSE)
+    {
+      this.current = null;
+      return;
+    }
+    
     if (msg.getType() == HBCITraceMessage.Type.ID)
     {
       current = history.get(msg.getData());
@@ -51,7 +72,6 @@ public class HBCITraceMessageConsumer implements MessageConsumer
         current = new History(100);
         history.put(msg.getData(),current);
       }
-      
       return;
     }
     
@@ -66,7 +86,7 @@ public class HBCITraceMessageConsumer implements MessageConsumer
   
   /**
    * Liefert den HBCI-Trace zur angegebenen ID.
-   * @param id die ID. Typischerweise die des Konto.
+   * @param id die ID. Typischerweise die des Konto. Kann NULL sein, wenn Nachrichten ohne speziellen Konto-Bezug geliefert werden sollen.
    * @return der HBCI-Trace.
    */
   public List<HBCITraceMessage> getTrace(String id)

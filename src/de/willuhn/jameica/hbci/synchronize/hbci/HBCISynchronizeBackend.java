@@ -319,6 +319,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       {
         try
         {
+          Application.getMessagingFactory().getMessagingQueue(HBCI_TRACE).sendMessage(new HBCITraceMessage(HBCITraceMessage.Type.CLOSE,this.getKonto().getID()));
           String name = null;
 
           // Waehrend der Ergebnis-Auswertung findet KEIN "checkInterrupted" Check statt,

@@ -38,6 +38,11 @@ public class HBCITraceMessage implements Message
      * Identifier.
      */
     ID,
+    
+    /**
+     * Session fuer die ID geschlossen.
+     */
+    CLOSE,
   }
   
   private Type type = null;

@@ -19,9 +19,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.Action;
@@ -80,7 +78,7 @@ public class HBCITraceDialog extends AbstractDialog
   {
     this.panel = new NotificationPanel();
     this.panel.paint(parent);
-    this.panel.setText(Type.INFO,i18n.tr("Bitte wählen Sie ein Konto aus."));
+    this.panel.setText(Type.INFO,i18n.tr("Wählen Sie ein Konto aus, um nur dessen Protokoll zu speichern."));
     
     Container group = new SimpleContainer(parent);
     group.addHeadline(i18n.tr("Wichtiger Hinweis"));
@@ -128,13 +126,8 @@ public class HBCITraceDialog extends AbstractDialog
 
     this.auswahl = new KontoInput(null,KontoFilter.ONLINE);
     this.auswahl.setSupportGroups(false);
+    this.auswahl.setPleaseChoose("<" + i18n.tr("ohne Bezug zu einem Konto") + ">");
     this.auswahl.setComment(null);
-    auswahl.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        getApplyButton().setEnabled(auswahl.getValue() != null);
-      }
-    });
     return this.auswahl;
   }
   
@@ -186,14 +179,17 @@ public class HBCITraceDialog extends AbstractDialog
       settings.setAttribute("lastdir",dir.getPath());
       
       Konto konto = (Konto) getKontoAuswahl().getValue();
-      if (konto == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       HBCITraceMessageConsumer tracer = service.get(HBCITraceMessageConsumer.class);
-      List<HBCITraceMessage> messages = tracer.getTrace(konto.getID());
+      List<HBCITraceMessage> messages = tracer.getTrace(konto != null ? konto.getID() : null);
       if (messages == null || messages.size() == 0)
-        throw new ApplicationException(i18n.tr("Keine HBCI-Protokolle zu diesem Konto vorhanden"));
+      {
+        if (konto != null)
+          throw new ApplicationException(i18n.tr("Keine HBCI-Protokolle zu diesem Konto vorhanden"));
+        else
+          throw new ApplicationException(i18n.tr("Keine HBCI-Protokolle ohne Konto-Bezug vorhanden"));
+      }
       
       OutputStream os = null;
       String wrap = System.getProperty("line.separator","\n");
@@ -246,8 +242,6 @@ public class HBCITraceDialog extends AbstractDialog
           close();
       }
     },null,true,"document-save.png");
-    
-    apply.setEnabled(false);
     return this.apply;
   }
 }
