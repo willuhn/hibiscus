@@ -21,10 +21,13 @@ import org.kapott.hbci.GV.parsers.ISEPAParser;
 import org.kapott.hbci.GV.parsers.SEPAParserFactory;
 import org.kapott.hbci.sepa.PainVersion;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.io.IOUtil;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SepaBooking;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -56,6 +59,23 @@ public abstract class AbstractSepaImporter extends AbstractImporter
   String[] getFileExtensions()
   {
     return new String[]{"*.xml"};
+  }
+
+  protected void setBicFromIbanIfAbsent(SepaBooking booking)
+      throws RemoteException
+  {
+    if (booking.getGegenkontoBLZ() == null && booking.getGegenkontoNummer() != null)
+    {
+      try{
+        IBAN ibanObject = HBCIProperties.getIBAN(booking.getGegenkontoNummer());
+        if(ibanObject!=null){
+          String autoBic=ibanObject.getBIC();
+          booking.setGegenkontoBLZ(autoBic);
+        }
+      }catch(ApplicationException e){
+        Logger.error("error while trying to determine missing BIC", e);
+      }
+    }
   }
   
   /**

@@ -34,13 +34,6 @@ public interface SepaSammelTransferBuchung<T extends SepaSammelTransfer> extends
    * @throws RemoteException
    */
   public void setGegenkontoNummer(String kontonummer) throws RemoteException;
-	
-	/**
-	 * Speichert die BLZ des Gegenkontos.
-   * @param blz
-   * @throws RemoteException
-   */
-  public void setGegenkontoBLZ(String blz) throws RemoteException;
 
 	/**
 	 * Speichert den Namen des Kontoinhabers des Gegenkontos.
