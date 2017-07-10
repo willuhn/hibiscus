@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0605 Zwei neue Optionen im PDF-Export ("Im Verwendungszweck 'SVWZ+' extrahieren" und "Zeile 'Summe' in Export anfügen") - https://github.com/willuhn/hibiscus/pull/32
+  
 2017-06-27 Version 2.6.20
 
   * NEW: 0604 HBCI-Protokolle können jetzt auch ohne Konto-Bezug exportiert werden - z.Bsp. nach dem Testen eines Bankzugangs (BPD-Abruf)
