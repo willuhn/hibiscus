@@ -27,11 +27,14 @@ import com.itextpdf.text.pdf.PdfPCell;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ext.ExportAddSumRowExtension;
+import de.willuhn.jameica.hbci.gui.ext.ExportSVWZExtractorExtension;
 import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -100,6 +103,10 @@ public class PDFUmsatzExporter implements Exporter
     Boolean filter    = (Boolean) Exporter.SESSION.get("filtered");
     Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
     boolean showSaldo = (b == null || !b.booleanValue());
+    b                 = (Boolean) Exporter.SESSION.get(ExportAddSumRowExtension.KEY_SUMROW_ADD);
+    boolean addSumRow = (b != null && b.booleanValue());
+    b                 = (Boolean) Exporter.SESSION.get(ExportSVWZExtractorExtension.KEY_SVWZ_EXTRACT);
+    boolean extractSVWZ = (b != null && b.booleanValue());
     
     Reporter reporter = null;
     
@@ -122,6 +129,8 @@ public class PDFUmsatzExporter implements Exporter
       Enumeration konten = umsaetze.keys();
       while (konten.hasMoreElements())
       {
+        Double sumRow = 0.0d;
+
         String id = (String) konten.nextElement();
         Konto konto = (Konto) Settings.getDBService().createObject(Konto.class,id);
         
@@ -156,11 +165,22 @@ public class PDFUmsatzExporter implements Exporter
           
           reporter.addColumn(reporter.getDetailCell(valuta + "\n" + datum, Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT,null,color,style));
-          reporter.addColumn(reporter.getDetailCell(VerwendungszweckUtil.toString(u,"\n"), Element.ALIGN_LEFT,null,color,style));
+          String verwendungszweck = (extractSVWZ) ? VerwendungszweckUtil.getTag(u, Tag.SVWZ) : VerwendungszweckUtil.toString(u,"\n");
+          reporter.addColumn(reporter.getDetailCell(verwendungszweck, Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
+          sumRow += u.getBetrag();
           if (showSaldo)
             reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
           reporter.setNextRecord();
+        }
+        
+        if (addSumRow) {
+          reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
+          reporter.addColumn(reporter.getDetailCell(i18n.tr("Summe"), Element.ALIGN_LEFT));
+          reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
+          reporter.addColumn(reporter.getDetailCell(sumRow));
+          if (showSaldo)
+            reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
         }
       }
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
