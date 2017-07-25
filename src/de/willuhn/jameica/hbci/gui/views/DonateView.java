@@ -73,7 +73,7 @@ public class DonateView extends AbstractView
       Container container = new SimpleContainer(getParent());
       container.addHeadline(i18n.tr("Unterstützen"));
       container.addText(i18n.tr("Ich würde mich freuen, wenn Sie das Projekt mit unterstützen wollen. Durch Klick auf " +
-      		                      "\"Dauerauftrag erstellen\" können Sie eine einmalige Überweisung oder einen Dauerauftrag (z.Bsp. mit 1 oder 2 EUR) " +
+      		                      "\"Dauerauftrag erstellen\" bzw. \"...oder Überweisung\" können Sie eine einmalige Überweisung oder einen Dauerauftrag (z.Bsp. mit 1 oder 2 EUR) " +
       		                      "erstellen, in dem mein Konto bereits als Empfänger eingetragen ist.\n\n" +
       		                      "Nur wenn Sie wollen - es ist völlig freiwillig.\n\n" +
       		                      "Vielen Dank!\n" +
