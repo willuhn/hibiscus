@@ -10,3 +10,7 @@ Hibiscus runs as a plugin within the [Jameica framework](https://github.com/will
 
 * [Issue Tracker (Bugzilla)](http://www.willuhn.de/bugzilla)
 * [Developer Information (in german)](http://www.willuhn.de/products/hibiscus/dev.php)
+
+When developing with Eclipse, you can add the following project setup in the Eclipse installer for setting up a development workspace: `https://raw.githubusercontent.com/willuhn/hibiscus/master/Hibiscus.setup`
+
+It will clone the Jameica and Hibiscus repositories, adapt the swt classpath according to your system and create a launch config entry for starting the application.
