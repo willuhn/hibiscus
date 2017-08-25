@@ -63,6 +63,7 @@
   </setupTask>
   <setupTask
       xsi:type="setup:CompoundTask"
+      predecessor="//@setupTasks.2"
       filter=""
       name="SWT Classpath">
     <setupTask
@@ -95,7 +96,7 @@
       </modification>
       <modification
           pattern="lib.src/swt/(linux)">
-        <substitution>win32</substitution>
+        <substitution>win64</substitution>
       </modification>
       <description></description>
     </setupTask>
@@ -144,6 +145,7 @@
       xsi:type="setup:ResourceCreationTask"
       id="jameicaLaunchConfig"
       excludedTriggers="BOOTSTRAP"
+      predecessor="//@setupTasks.2"
       filter=""
       content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?>&#xA;&lt;launchConfiguration type=&quot;org.eclipse.jdt.launching.localJavaApplication&quot;>&#xA;&lt;listAttribute key=&quot;org.eclipse.debug.core.MAPPED_RESOURCE_PATHS&quot;>&#xA;&lt;listEntry value=&quot;/jameica/src/de/willuhn/jameica/Main.java&quot;/>&#xA;&lt;/listAttribute>&#xA;&lt;listAttribute key=&quot;org.eclipse.debug.core.MAPPED_RESOURCE_TYPES&quot;>&#xA;&lt;listEntry value=&quot;1&quot;/>&#xA;&lt;/listAttribute>&#xA;&lt;booleanAttribute key=&quot;org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD&quot; value=&quot;true&quot;/>&#xA;&lt;stringAttribute key=&quot;org.eclipse.jdt.launching.MAIN_TYPE&quot; value=&quot;de.willuhn.jameica.Main&quot;/>&#xA;&lt;stringAttribute key=&quot;org.eclipse.jdt.launching.PROGRAM_ARGUMENTS&quot; value=&quot;-f &amp;quot;${workspace.location|path}/jameica.test&amp;quot; -p test&quot;/>&#xA;&lt;stringAttribute key=&quot;org.eclipse.jdt.launching.PROJECT_ATTR&quot; value=&quot;jameica&quot;/>&#xA;&lt;/launchConfiguration>&#xA;"
       targetURL="${git.clone.hibiscus.location|uri}/Hibiscus.launch"
