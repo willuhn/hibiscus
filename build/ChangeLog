@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0606 Offene Aufträge ohne Ausführungsdatum bei Sortierung nach "Ausführungsdatum" oben vor den aktuellen Aufträgen einsortieren statt unten bei den alten
   * NEW: 0605 Zwei neue Optionen im PDF-Export ("Im Verwendungszweck 'SVWZ+' extrahieren" und "Zeile 'Summe' in Export anfügen") - https://github.com/willuhn/hibiscus/pull/32
   
 2017-06-27 Version 2.6.20

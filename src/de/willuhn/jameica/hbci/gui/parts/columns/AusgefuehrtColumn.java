@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/columns/AusgefuehrtColumn.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/10/20 16:19:13 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -16,6 +11,7 @@ package de.willuhn.jameica.hbci.gui.parts.columns;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.jameica.gui.parts.AbstractTablePart.AbstractTableItem;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Terminable;
@@ -68,19 +64,21 @@ public class AusgefuehrtColumn extends Column
     return super.getFormattedValue(value,context);
   }
   
-  
+  /**
+   * @see de.willuhn.jameica.gui.parts.Column#compare(de.willuhn.jameica.gui.parts.AbstractTablePart.AbstractTableItem, de.willuhn.jameica.gui.parts.AbstractTablePart.AbstractTableItem)
+   */
+  @Override
+  public int compare(AbstractTableItem i1, AbstractTableItem i2)
+  {
+    // Auftraege ohne Ausfuehrungsdatum sollen so behandelt werden, als wuerde das Ausfuehrungsdatum
+    // in der Zukunft liegen. Denn wenn man nach Ausfuehrungsdatum sortiert, landen die mit leerem
+    // Datum ganz unten hinter den aeltesten Auftraegen.
+    if (i1.sortValue == null)
+      return 1;
+    
+    if (i2.sortValue == null)
+      return -1;
+    
+    return super.compare(i1, i2);
+  }
 }
-
-
-/**********************************************************************
- * $Log: AusgefuehrtColumn.java,v $
- * Revision 1.3  2011/10/20 16:19:13  willuhn
- * @N Rechtsbuendige Ausrichtung des Termins
- *
- * Revision 1.2  2011-04-29 15:33:28  willuhn
- * @N Neue Spalte "ausgefuehrt_am", in der das tatsaechliche Ausfuehrungsdatum von Auftraegen vermerkt wird
- *
- * Revision 1.1  2009/02/17 00:00:02  willuhn
- * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
- *
- **********************************************************************/
