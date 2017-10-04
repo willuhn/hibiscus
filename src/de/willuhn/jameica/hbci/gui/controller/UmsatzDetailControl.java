@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -43,6 +44,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -397,10 +399,31 @@ public class UmsatzDetailControl extends AbstractControl
 	{
 	  if (this.zweck == null)
 	  {
-      this.zweck = new TextAreaInput("");
+      this.zweck = new TextAreaInput(""){
+        @Override
+        protected void update() throws OperationCanceledException
+        {
+          super.update();
+          checkZweckLineMaxLength(text);
+        }
+      };
       this.zweck.setEnabled(false);
 	  }
 	  return this.zweck;
+	}
+
+	private void checkZweckLineMaxLength(Text zweckTextWidget){
+	  String[] splitText = zweckTextWidget.getText().split("\n");
+	  for (int i = 0; i < splitText.length; i++)
+    {
+      String line = splitText[i];
+      if(line.length()>35){
+        zweckTextWidget.setBackground(Color.ERROR.getSWTColor());
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage("Jede Zeile des Verwendungszwecks darf maximal 35 Zeichen lang sein." ,StatusBarMessage.TYPE_ERROR));
+        return;
+      }
+    }
+	  zweckTextWidget.setBackground(Color.WHITE.getSWTColor());
 	}
 	
 	/**
