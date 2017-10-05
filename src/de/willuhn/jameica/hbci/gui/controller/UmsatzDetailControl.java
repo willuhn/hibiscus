@@ -413,17 +413,17 @@ public class UmsatzDetailControl extends AbstractControl
 	}
 
 	private void checkZweckLineMaxLength(Text zweckTextWidget){
-	  String[] splitText = zweckTextWidget.getText().split("\n");
+	  String[] splitText = VerwendungszweckUtil.split(zweckTextWidget.getText());
+	  int lineMaxLength=35;
 	  for (int i = 0; i < splitText.length; i++)
     {
-      String line = splitText[i];
-      if(line.length()>35){
-        zweckTextWidget.setBackground(Color.ERROR.getSWTColor());
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage("Jede Zeile des Verwendungszwecks darf maximal 35 Zeichen lang sein." ,StatusBarMessage.TYPE_ERROR));
-        return;
+        String line = splitText[i];
+        if(line.length()>lineMaxLength){
+          zweckTextWidget.setBackground(Color.MANDATORY_BG.getSWTColor());
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Jede Zeile des Verwendungszwecks darf maximal {0} Zeichen lang sein. Zeile {1} ist {2} Zeichen lang.", ""+lineMaxLength, ""+(i+1), ""+line.length()) ,StatusBarMessage.TYPE_ERROR));
+          return;
       }
     }
-	  zweckTextWidget.setBackground(Color.WHITE.getSWTColor());
 	}
 	
 	/**
