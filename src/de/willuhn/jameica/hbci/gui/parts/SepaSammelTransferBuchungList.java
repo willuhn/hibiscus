@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
@@ -67,6 +68,7 @@ public class SepaSammelTransferBuchungList extends TablePart
   public SepaSammelTransferBuchungList(final List<SepaSammelTransfer> list, Action action) throws RemoteException
   {
     super(list,action);
+    
     addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
       public String format(Object o)
       {
@@ -91,27 +93,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Kontoinhaber"),"empfaenger_name");
     addColumn(i18n.tr("IBAN"),"empfaenger_konto", new IbanFormatter());
     addColumn(i18n.tr("BIC"),"empfaenger_bic");
-    addColumn(i18n.tr("Betrag"),"this",new Formatter() {
-      public String format(Object o)
-      {
-        if (o == null || !(o instanceof SepaSammelTransferBuchung))
-          return null;
-        try
-        {
-          SepaSammelTransferBuchung b = (SepaSammelTransferBuchung) o;
-          SepaSammelTransfer s = b.getSammelTransfer();
-          String curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-          if (s != null)
-            curr = s.getKonto().getWaehrung();
-          return new CurrencyFormatter(curr,HBCI.DECIMALFORMAT).format(new Double(b.getBetrag()));
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to read sepasammeltransfer");
-          return i18n.tr("Betrag nicht ermittelbar");
-        }
-      }
-    });
+    addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
 
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {

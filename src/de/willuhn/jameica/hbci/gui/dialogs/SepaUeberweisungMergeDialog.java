@@ -49,7 +49,7 @@ public class SepaUeberweisungMergeDialog extends AbstractDialog
     this.count     = count;
     this.canDelete = canDelete;
     this.setTitle(i18n.tr("SEPA-Überweisungen zusammenführen"));
-    this.setSize(350,SWT.DEFAULT);
+    this.setSize(420,SWT.DEFAULT);
   }
 
   /**

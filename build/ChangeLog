@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0608 Enthaltene Buchungen von Sammelaufträgen liessen sich nicht nach Betrag sortieren (wurden stattdessen nach Auftrag sortiert)
   * NEW: 0607 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/b4311a4345c91cc84ddf835de9776d5997c11f46
   * NEW: 0606 Offene Aufträge ohne Ausführungsdatum bei Sortierung nach "Ausführungsdatum" oben vor den aktuellen Aufträgen einsortieren statt unten bei den alten
   * NEW: 0605 Zwei neue Optionen im PDF-Export ("Im Verwendungszweck 'SVWZ+' extrahieren" und "Zeile 'Summe' in Export anfügen") - https://github.com/willuhn/hibiscus/pull/32
