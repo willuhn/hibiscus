@@ -707,8 +707,8 @@ public class Controller extends AbstractControl {
       
       File newKey = new File(newFile);
       
-      RDHKeyFactory.createKey(newKey);
-      GUI.startView(View.class,null);
+      if (RDHKeyFactory.createKey(newKey))
+        GUI.startView(View.class,null);
     }
     catch (OperationCanceledException oce)
     {

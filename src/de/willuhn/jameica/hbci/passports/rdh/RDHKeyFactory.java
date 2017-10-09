@@ -108,6 +108,11 @@ public class RDHKeyFactory
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüsseldatei {0} nicht lesbar",f.getAbsolutePath()),StatusBarMessage.TYPE_ERROR));
       return;
     }
+    if (!f.canWrite())
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schreibrechte fehlen auf Schlüsseldatei {0}",f.getAbsolutePath()),StatusBarMessage.TYPE_ERROR));
+      return;
+    }
 
     try
     {
@@ -136,8 +141,9 @@ public class RDHKeyFactory
 	/**
 	 * Erstellt einen neuen Schluessel from Scratch.
    * @param f die Schluesseldatei.
+   * @return true, wenn die Datei korrekt registriert werden konnte.
    */
-  public static synchronized void createKey(File f)
+  public static synchronized boolean createKey(File f)
 	{
     try
     {
@@ -145,8 +151,27 @@ public class RDHKeyFactory
       if (f == null)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"),StatusBarMessage.TYPE_ERROR));
-        return;
+        return false;
       }
+
+      // Checken, ob sich der Ordner innerhalb des Programmordners befindet
+      try
+      {
+        String path = f.getCanonicalPath();
+        String systemPath = new File(".").getCanonicalPath();
+        if (path.startsWith(systemPath))
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Datei, die sich ausserhalb des Programm-Verzeichnisses befindet"),StatusBarMessage.TYPE_ERROR));
+          return false;
+        }
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to check canonical path",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Datei nicht auswählbar: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        return false;
+      }
+      
 
       final int ft = KeyFormat.FEATURE_CREATE;
       KeyFormat[] formats = RDHKeyFactory.getKeyFormats(ft);
@@ -166,6 +191,7 @@ public class RDHKeyFactory
       
       addKey(format.createKey(f));
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüsseldatei erfolgreich erstellt"),StatusBarMessage.TYPE_SUCCESS));
+      return true;
     }
     catch (OperationCanceledException oce)
     {
@@ -189,6 +215,7 @@ public class RDHKeyFactory
       Logger.error("error while creating key",t);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erzeugen des Schlüssels: {0}",t.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
+    return false;
 	}
 
   /**
