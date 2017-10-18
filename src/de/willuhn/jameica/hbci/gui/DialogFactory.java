@@ -146,9 +146,10 @@ public class DialogFactory
 
     PINEntry entry = null;
     
-    // Cache checken
-    if (Settings.getCachePin())
-      entry = pinCache.get(key);
+    // Cache checken - ob der fuer die ganze Sitzung stehen bleibt oder nur fuer die
+    // Dauer der Synchronisierung, das entscheiden wir nicht hier sondern am Ende der
+    // Synchronisierung
+    entry = pinCache.get(key);
     
     // Wenn wir noch nichts im Cache haben, schauen wir im Wallet - wenn das erlaubt ist
     if (entry == null && Settings.getStorePin() && (passport instanceof HBCIPassportPinTan))
@@ -184,14 +185,12 @@ public class DialogFactory
     // Kein Key, dann muessen wir nicht cachen
     if (key == null)
       return;
-    
-    PINEntry entry = null;
-    
-    if (Settings.getCachePin())
-    {
-      entry = new PINEntry(pin);
-      pinCache.put(key,entry);
-    }
+
+    // in Cache legen - ob der fuer die ganze Sitzung stehen bleibt oder nur fuer die
+    // Dauer der Synchronisierung, das entscheiden wir nicht hier sondern am Ende der
+    // Synchronisierung
+    PINEntry entry = new PINEntry(pin);
+    pinCache.put(key,entry);
     
     // Permanentes Speichern der PIN gibts nur bei PIN/TAN, da dort ueber
     // die TAN eine weitere Autorisierung bei der Ausfuehrung von Geschaeftsvorfaellen
@@ -323,9 +322,9 @@ public class DialogFactory
   private static String getCacheKey(HBCIPassport passport)
   {
     // Entweder das Cachen ist abgeschaltet oder wir haben keinen Passport
-    if (!Settings.getCachePin() || passport == null)
+    if (passport == null)
     {
-      Logger.debug("pin caching disabled or no passport set");
+      Logger.debug("no passport given - unable to generate cache key");
       return null;
     }
 

@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0610 BUGZILLA 1827 - Automatisches Cachen von PIN-Eingaben für die Dauer der Synchronisierung
   * NEW: 0609 BUGZILLA 1826 - Beim Erstellen eines INI-Briefes prüfen, dass sich dieser nicht im Programm-Ordner befindet 
   * BUG: 0608 Enthaltene Buchungen von Sammelaufträgen liessen sich nicht nach Betrag sortieren (wurden stattdessen nach Auftrag sortiert)
   * NEW: 0607 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/b4311a4345c91cc84ddf835de9776d5997c11f46

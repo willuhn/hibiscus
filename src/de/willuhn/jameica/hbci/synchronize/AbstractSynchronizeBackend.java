@@ -17,7 +17,9 @@ import java.util.List;
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
+import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.KontoType;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
@@ -341,6 +343,11 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       {
         Logger.error("error while performing synchronization",re);
         throw new ApplicationException(i18n.tr("Synchronisierung fehlgeschlagen: {0}",re.getMessage()));
+      }
+      finally
+      {
+        if (!Settings.getCachePin()) // BUGZILLA 1827 - Wir cachen der PINs zumindest fuer die Dauer der Synchronisation
+          DialogFactory.clearPINCache(null);
       }
     }
     
