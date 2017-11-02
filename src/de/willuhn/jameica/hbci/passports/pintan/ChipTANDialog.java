@@ -33,6 +33,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.system.Customizing;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -45,6 +46,7 @@ public class ChipTANDialog extends TANDialog
   private final static Settings settings = new Settings(ChipTANDialog.class);
   
   private String code = null;
+  private boolean smallDisplay = false;
   
   /**
    * ct.
@@ -58,6 +60,8 @@ public class ChipTANDialog extends TANDialog
     super(config);
     this.code = code;
     this.setSideImage(null); // den Platz haben wir hier nicht.
+    
+    this.smallDisplay = Customizing.SETTINGS.getBoolean("application.scrollview",false);
   }
 
 	/**
@@ -81,7 +85,8 @@ public class ChipTANDialog extends TANDialog
     if (width > 0)
       width +=10; // Wenigstens noch 10 Pixel Rand hinzufuegen.
     // Wir nehmen den groesseren von beiden Werten
-    getShell().setMinimumSize(getShell().computeSize(width > WINDOW_WIDTH ? width : WINDOW_WIDTH,SWT.DEFAULT));
+    
+    getShell().setMinimumSize(getShell().computeSize(width > WINDOW_WIDTH ? width : WINDOW_WIDTH,smallDisplay ? 520 : SWT.DEFAULT));
   }
 
   /**
@@ -239,8 +244,8 @@ public class ChipTANDialog extends TANDialog
         if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
         gd.widthHint = settings.getInt("width",width);
 
-        int height = SWTUtil.mm2px(50);
-        if (height == -1) width = 140;
+        int height = SWTUtil.mm2px(smallDisplay ? 40 : 50);
+        if (height == -1) width = smallDisplay ? 100 : 140;
         gd.heightHint = height;
         
         this.comp.setLayoutData(gd);

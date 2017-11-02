@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0612 Langen Text in ChipTAN-Dialog bei kleinen Displays scrollbar machen. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=21572&highlight=&page=last#last_post 
   * NEW: 0611 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/3c21011d52075c3d2afe0ce5043d187f432834cd
   * NEW: 0610 BUGZILLA 1827 - Automatisches Cachen von PIN-Eingaben für die Dauer der Synchronisierung
   * NEW: 0609 BUGZILLA 1826 - Beim Erstellen eines INI-Briefes prüfen, dass sich dieser nicht im Programm-Ordner befindet 
