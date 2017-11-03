@@ -12,6 +12,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.kapott.hbci.manager.HBCIVersion;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
@@ -177,7 +179,8 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public String getHBCIVersion() throws RemoteException
   {
-    return settings.getString(getID() + ".hbciversion",passport.getHBCIVersion());
+    String ppVersion = StringUtils.trimToNull(passport.getHBCIVersion());
+    return settings.getString(getID() + ".hbciversion",ppVersion != null ? ppVersion : HBCIVersion.HBCI_300.getId());
   }
 
   /**

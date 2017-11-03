@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.manager.HBCIVersion;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.AbstractPinTanPassport;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -153,7 +154,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 			String hbciVersion = config.getHBCIVersion();
 			if (hbciVersion == null || hbciVersion.length() == 0)
-				hbciVersion = "300";
+				hbciVersion = HBCIVersion.HBCI_300.getId();
 
       Logger.info("[PIN/TAN] url         : " + config.getURL());
       Logger.info("[PIN/TAN] blz         : " + config.getBLZ());

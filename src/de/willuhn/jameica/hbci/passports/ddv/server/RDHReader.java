@@ -7,6 +7,8 @@
 
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
+import org.kapott.hbci.manager.HBCIVersion;
+
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 
@@ -36,7 +38,7 @@ public class RDHReader extends PCSCReader
    */
   public String getDefaultHBCIVersion()
   {
-    return "300";
+    return HBCIVersion.HBCI_300.getId();
   }
 
 }

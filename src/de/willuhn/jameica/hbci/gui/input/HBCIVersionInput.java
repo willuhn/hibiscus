@@ -30,12 +30,12 @@ public class HBCIVersionInput extends SelectInput
 
   private final static List<HBCIVersion> VERSIONS = Collections.unmodifiableList(new ArrayList<HBCIVersion>()
   {{
-    add(new HBCIVersion("201", "HBCI 2.01",true));
-    add(new HBCIVersion("210", "HBCI 2.1",true));
-    add(new HBCIVersion("220", "HBCI 2.2",false));
-    add(new HBCIVersion("plus","HBCI 2.2 (HBCI+)",true));
-    add(new HBCIVersion("300", "FinTS 3.0",true));
-    add(new HBCIVersion("400", "FinTS 4.0",false));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_201,true));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_210,true));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_220,false));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_PLUS,true));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_300,true));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_400,false));
   }});
 
   /**
@@ -139,7 +139,7 @@ public class HBCIVersionInput extends SelectInput
       else
       {
         // Nicht aktiv. Dann nur, wenn sie gerade verwendet wird.
-        if (selected != null && selected.equals(v.id))
+        if (selected != null && selected.equals(v.getId()))
           result.add(v);
       }
     }
@@ -187,21 +187,17 @@ public class HBCIVersionInput extends SelectInput
    */
   private static class HBCIVersion
   {
-
-    private String id      = null;
-    private String name    = null;
+    private org.kapott.hbci.manager.HBCIVersion version = null;
     private boolean active = true;
 
     /**
      * ct.
-     * @param id ID der HBCI-Version.
-     * @param name Name der HBCI-Version.
+     * @param version die HBCI-Version.
      * @param active legt fest, ob die Version aktiv ist und angeboten werden soll.
      */
-    private HBCIVersion(String id, String name, boolean active)
+    private HBCIVersion(org.kapott.hbci.manager.HBCIVersion version, boolean active)
     {
-      this.id = id;
-      this.name = name;
+      this.version = version;
       this.active = active;
     }
     
@@ -211,7 +207,7 @@ public class HBCIVersionInput extends SelectInput
      */
     public String getId()
     {
-      return this.id;
+      return this.version.getId();
     }
 
     /**
@@ -220,7 +216,7 @@ public class HBCIVersionInput extends SelectInput
     @Override
     public String toString()
     {
-      return this.name;
+      return this.version.getName();
     }
   }
   
