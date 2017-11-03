@@ -95,6 +95,7 @@ public class RangeInput extends SelectInput
       public void handleEvent(Event event)
       {
         Range choosen = (Range) getValue();
+        System.out.println(choosen.getStart() + " - " + choosen.getEnd());
         
         settings.setAttribute(param,choosen != null ? choosen.getId() : null);
         applyRange(choosen);

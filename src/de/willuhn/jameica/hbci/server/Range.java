@@ -32,6 +32,8 @@ public abstract class Range
   {{
     add(new ThisWeek());
     add(new LastWeek());
+    add(new LastSevenDays());
+    add(new LastThirtyDays());
     add(new ThisMonth());
     add(new LastMonth());
     add(new SecondLastMonth());
@@ -121,6 +123,82 @@ public abstract class Range
     public String toString()
     {
       return i18n.tr("Diese Woche");
+    }
+  }
+  
+  /**
+   * Zeitraum fuer die letzten 7 Tage.
+   */
+  public static class LastSevenDays extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    @Override
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.add(Calendar.DATE,-7);
+      Date d = cal.getTime();
+      return DateUtil.startOfDay(d);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    @Override
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      Date d = cal.getTime();
+      return DateUtil.endOfDay(d);
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return i18n.tr("Letzte 7 Tage");
+    }
+  }
+
+  /**
+   * Zeitraum fuer die letzten 30 Tage.
+   */
+  public static class LastThirtyDays extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    @Override
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.add(Calendar.DATE,-30);
+      Date d = cal.getTime();
+      return DateUtil.startOfDay(d);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    @Override
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      Date d = cal.getTime();
+      return DateUtil.endOfDay(d);
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return i18n.tr("Letzte 30 Tage");
     }
   }
 
