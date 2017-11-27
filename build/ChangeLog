@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0617 BUGZILLA 1834 - Erzeugen von Gegenbuchungen auch auf dem selben Konto erlauben
   * BUG: 0616 BUGZILLA 1833 - Gegenbuchung erzeugen aktualisiert nicht Saldo
   * NEW: 0615 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2017
   * NEW: 0614 Zwei neue Zeiträume in der Auswahlliste (letzte 7 und letzte 30 Tage)

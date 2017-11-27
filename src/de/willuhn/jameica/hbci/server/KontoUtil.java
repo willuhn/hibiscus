@@ -24,6 +24,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -354,6 +355,28 @@ public class KontoUtil
 
     Double d = (Double) service.execute(sql, params.toArray(), rs);
     return d == null ? 0.0d : Math.abs(d.doubleValue());
+  }
+  
+  /**
+   * Liefert die Liste der Konten.
+   * @param filter optionaler Filter.
+   * @return Liste der KOnten.
+   * @throws RemoteException
+   */
+  public static List<Konto> getKonten(KontoFilter filter) throws RemoteException
+  {
+    DBIterator it = Settings.getDBService().createList(Konto.class);
+    it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
+    List<Konto> l = new ArrayList<Konto>();
+
+    while (it.hasNext())
+    {
+      Konto k = (Konto) it.next();
+
+      if (filter == null || filter.accept(k))
+        l.add(k);
+    }
+    return l;
   }
   
   /**

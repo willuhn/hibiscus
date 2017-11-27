@@ -65,6 +65,26 @@ public abstract class KontoFilter implements Filter<Konto>
     }
   };
 
+  
+  /**
+   * Filter, der nur Offline-Konten zulaesst.
+   */
+  public final static KontoFilter OFFLINE = new KontoFilter()
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
+     */
+    public boolean accept(Konto konto) throws RemoteException
+    {
+      // Es muss auf jeden Fall erstmal ein aktives Konto sein
+      if (!ACTIVE.accept(konto))
+        return false;
+
+      // Es darf kein Offline-Konto sein.
+      return konto.hasFlag(Konto.FLAG_OFFLINE);
+    }
+  };
+
   /**
    * Filter, der nur aktive Konten zulaesst.
    */

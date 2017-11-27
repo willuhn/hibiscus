@@ -13,11 +13,8 @@
 package de.willuhn.jameica.hbci.gui.menus;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -40,10 +37,12 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzMarkChecked;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -170,71 +169,43 @@ public class UmsatzList extends ContextMenu implements Extendable
 
 	}
 
-	private void addReverseBookItem(){
+	/**
+	 * Erzeugt den Menu-Eintrag fuer eine manuelle Gegenbuchung auf einem Offline-Konto.
+	 */
+	private void addReverseBookItem()
+	{
     try
     {
-      final String icon="edit-copy.png";
-      DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
-      DBIterator konten = service.createList(Konto.class);
+      final List<Konto> konten = KontoUtil.getKonten(KontoFilter.OFFLINE);
+      final int size = konten.size();
+      
+      // Wir haben gar keine Offline-Konten. Dann brauchen wir auch den Menu-Eintrag nicht.
+      if (size == 0)
+        return;
 
-      final List<Konto> allOffline= new ArrayList<Konto>();
-      while(konten.hasNext()){
-        Konto next = (Konto)konten.next();
-        if(next.hasFlag(Konto.FLAG_OFFLINE)){
-          allOffline.add(next);
-        }
-      }
-      switch(allOffline.size()){
-      case 0:break;
-      case 1: {
-        final Konto toBookTo=allOffline.get(0);
-        addItem(new UmsatzItem(i18n.tr("Gegenbuchung erzeugen auf")+": " + toBookTo.getLongName(),new UmsatzDetailEdit().asReverse(toBookTo), icon){
-          @Override
-          public boolean isEnabledFor(Object o)
-          {
-            return super.isEnabledFor(o) && isEnabledReverseBooking(toBookTo, o);
-          }
-        });
-        break;
-      }
-      default:
+      // Genau ein Konto. Dann brauchen wir kein Unter-Menu.
+      if (size == 1)
       {
-        addMenu(new ContextMenu(){
-          {
-            setText(i18n.tr("Gegenbuchung erzeugen auf")+" ...");
-            setImage(SWTUtil.getImage(icon));
-            for (final Konto toBookTo : allOffline)
-            {
-              addItem(new ContextMenuItem(toBookTo.getLongName(), new UmsatzDetailEdit().asReverse(toBookTo)){
-                public boolean isEnabledFor(Object o) {
-                  return super.isEnabledFor(o) && isEnabledReverseBooking(toBookTo, o);
-                }
-              });
-            }
-          }
-        });
+        final Konto k = konten.get(0);
+        addItem(new UmsatzItem(i18n.tr("Gegenbuchung erzeugen auf: {0}",KontoUtil.toString(k)),new UmsatzDetailEdit().asReverse(k), "edit-copy.png"));
+        return;
       }
+      
+      // Mehrere Konten. Dann mit Untermenu
+      final ContextMenu ctx = new ContextMenu();
+      ctx.setText(i18n.tr("Gegenbuchung erzeugen auf..."));
+      ctx.setImage(SWTUtil.getImage("edit-copy.png"));
+      for (final Konto ko:konten)
+      {
+        ctx.addItem(new ContextMenuItem(KontoUtil.toString(ko), new UmsatzDetailEdit().asReverse(ko)));
       }
-    } catch (RemoteException e)
+      addMenu(ctx);
+    }
+    catch (RemoteException e)
     {
       Logger.error("error while creating reverse booking context menu entry",e);
     }
 	}
-
-  private boolean isEnabledReverseBooking(Konto toBookTo, Object context){
-    if(context instanceof Umsatz){
-      try
-      {
-        Konto origKonto = ((Umsatz)context).getKonto();
-        return !origKonto.equals(toBookTo);
-      } catch (RemoteException e)
-      {
-        Logger.error("error while creating reverse booking context menu entry",e);
-      }
-      
-    }
-    return false;
-  }
 
   /**
    * Pruefen, ob es sich wirklich um einen Umsatz handelt.
