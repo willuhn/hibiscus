@@ -93,34 +93,38 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
    */
   public Input getBetrag() throws RemoteException
   {
-    if (this.betrag == null)
-    {
-      this.betrag = new DecimalInput(getUmsatz().getBetrag(),HBCI.DECIMALFORMAT);
-      this.betrag.setMandatory(true);
-      
-      final Konto konto = getUmsatz().getKonto();
-      
-      this.betrag.setComment(konto == null ? "" : konto.getWaehrung());
-      // Forciert das korrekte Formatieren des Betrages nach Focus-Wechsel
-      this.betrag.addListener(new Listener() {
-        public void handleEvent(Event event) {
-          try
-          {
-            Double value = (Double) betrag.getValue();
-            if (value == null)
-              return;
+    if (this.betrag != null)
+      return this.betrag;
+    
+    this.betrag = new DecimalInput(getUmsatz().getBetrag(),HBCI.DECIMALFORMAT);
+    this.betrag.setMandatory(true);
+    
+    final Konto konto = getUmsatz().getKonto();
+    
+    this.betrag.setComment(konto == null ? "" : konto.getWaehrung());
+    
+    final Listener l = new Listener() {
+      public void handleEvent(Event event) {
+        try
+        {
+          Double value = (Double) betrag.getValue();
+          if (value == null)
+            return;
 
-            if (konto.hasFlag(Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
-              getSaldo().setValue(konto.getSaldo() + value);
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to autoformat value",e);
-          }
+          if (konto.hasFlag(Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
+            getSaldo().setValue(konto.getSaldo() + value);
         }
-      
-      });
-    }
+        catch (Exception e)
+        {
+          Logger.error("unable to autoformat value",e);
+        }
+      }
+    };
+    this.betrag.addListener(l);
+    
+    // BUGZILLA 1833 - Einmal initial ausloesen
+    l.handleEvent(null);
+    
     return this.betrag;
   }
 

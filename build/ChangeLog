@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0616 BUGZILLA 1833 - Gegenbuchung erzeugen aktualisiert nicht Saldo
+  * NEW: 0615 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2017
   * NEW: 0614 Zwei neue Zeiträume in der Auswahlliste (letzte 7 und letzte 30 Tage)
   * NEW: 0613 FinTS 3 bei Erstellung eines neuen PIN/TAN-Bankzugangs per Default vorauswaehlen
   * NEW: 0612 Langen Text in ChipTAN-Dialog bei kleinen Displays scrollbar machen. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=21572&highlight=&page=last#last_post 
