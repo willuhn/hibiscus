@@ -31,7 +31,6 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
-import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.security.Wallet;
 import de.willuhn.jameica.system.Application;
@@ -269,13 +268,6 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
             Application.getCallback().notifyUser(msg);
           }
 					break;
-          
-        case NEED_INFOPOINT_ACK:
-          QueryMessage qm = new QueryMessage(msg,retData);
-          Application.getMessagingFactory().getMessagingQueue("hibiscus.infopoint").sendSyncMessage(qm);
-          retData.replace(0,retData.length(),qm.getData() == null ? "" : "false");
-          break;
-          
           
         case HAVE_IBAN_ERROR:
 				case HAVE_CRC_ERROR:

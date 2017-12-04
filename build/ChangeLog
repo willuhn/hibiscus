@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0618 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/5516eef788a5c69727f8b27473b00a707e619c43
   * NEW: 0617 BUGZILLA 1834 - Erzeugen von Gegenbuchungen auch auf dem selben Konto erlauben
   * BUG: 0616 BUGZILLA 1833 - Gegenbuchung erzeugen aktualisiert nicht Saldo
   * NEW: 0615 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2017

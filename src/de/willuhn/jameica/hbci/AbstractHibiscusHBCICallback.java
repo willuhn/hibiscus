@@ -290,10 +290,6 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
         status(HBCIUtilsInternal.getLocMsg("STATUS_MSG_VERIFY"));
         break;
   
-      case STATUS_SEND_INFOPOINT_DATA:
-        status(HBCIUtilsInternal.getLocMsg("STATUS_SEND_INFOPOINT_DATA"));
-        break;
-    
       case STATUS_MSG_RAW_SEND:
         Application.getMessagingFactory().getMessagingQueue(HBCISynchronizeBackend.HBCI_TRACE).sendMessage(new HBCITraceMessage(Type.SEND,o[0].toString()));
         break;

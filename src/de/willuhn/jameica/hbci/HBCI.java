@@ -218,12 +218,6 @@ public class HBCI extends AbstractPlugin
       this.hbciProps.put("client.product.name","HBCI4Java (Hibiscus " + v.getMajor() + "." + v.getMinor() + ")");
       this.hbciProps.put("client.product.version",v.getMajor() + "." + v.getMinor()); // Maximal 5 Zeichen
       
-      // Wir aktivieren das Infopoint-Feature erstmal. Ob wir das Senden
-      // dann zulassen entscheiden wir erst, wenn der Callback aufgerufen
-      // wird. Wir schicken in dem Fall eine QueryMessage an den Channel
-      // "hibiscus.infopoint".
-      this.hbciProps.put("infoPoint.enabled","1");
-
       //////////////////////////////////
       // Log-Level
       int logLevel = HBCIUtils.LOG_INFO; // Default

@@ -89,7 +89,6 @@
     <consumer queue="hibiscus.transfer.lastschrift"        class="de.willuhn.jameica.hbci.messaging.TransferLastschriftMessageConsumer" />
     <consumer queue="hibiscus.transfer.check"              class="de.willuhn.jameica.hbci.messaging.CheckLimitMessageConsumer" />
     <consumer queue="hibiscus.passport.rdh.hbciversion"    class="de.willuhn.jameica.hbci.messaging.QueryHBCIVersionMessageConsumer" />
-    <consumer queue="hibiscus.infopoint"                   class="de.willuhn.jameica.hbci.messaging.InfoPointMessageConsumer" />
     <consumer queue="hibiscus.reminder.order"              class="de.willuhn.jameica.hbci.messaging.OrderReminderMessageConsumer" />
     <consumer queue="hibiscus.sync.error"                  class="de.willuhn.jameica.hbci.messaging.SynchronizeErrorMessageConsumer" />
 
