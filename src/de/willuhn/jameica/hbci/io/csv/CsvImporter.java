@@ -1,11 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/CsvImporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2012/03/28 22:47:18 $
- * $Author: willuhn $
- *
- * Copyright (c) by willuhn - software & services
+ * 
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -252,6 +249,7 @@ public class CsvImporter implements Importer
       Logger.info("operation cancelled");
       monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
       monitor.setStatusText(i18n.tr("Import abgebrochen"));
+      throw oce;
     }
     catch (ApplicationException ae)
     {
@@ -394,33 +392,3 @@ public class CsvImporter implements Importer
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: CsvImporter.java,v $
- * Revision 1.5  2012/03/28 22:47:18  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.4  2011-06-12 22:10:06  willuhn
- * @B BUGZILLA 1053
- *
- * Revision 1.3  2010/03/16 13:43:56  willuhn
- * @N CSV-Import von Ueberweisungen und Lastschriften
- * @N Versionierbarkeit von serialisierten CSV-Profilen
- *
- * Revision 1.2  2010/03/16 11:14:53  willuhn
- * @B Format-Implementierungen nicht cachen
- *
- * Revision 1.1  2010/03/16 00:44:18  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- **********************************************************************/

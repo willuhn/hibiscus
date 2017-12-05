@@ -64,7 +64,7 @@ import de.willuhn.util.I18N;
 public class CSVImportDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static String[] CHARSETS = new String[]{"ISO-8859-1","ISO-8859-15","UTF-8"};
+  private final static String[] CHARSETS = new String[]{"UTF-8","ISO-8859-15","ISO-8859-1"};
 
   private Format format             = null;
   private Profile profile           = null;
@@ -97,7 +97,7 @@ public class CSVImportDialog extends AbstractDialog
     this.data   = data;
 
     this.setTitle(i18n.tr("Zuordnung der Spalten"));
-    this.setSize(620,500);
+    this.setSize(680,500);
 
   }
   
@@ -264,7 +264,7 @@ public class CSVImportDialog extends AbstractDialog
         } catch (Exception e) {} // Spalte gibts in der Zeile nicht
         
         final SelectInput s = new SelectInput(columns,getColumn(columns,i));
-        s.setName((i+1) + ". " + value);
+        s.setName((i+1) + ". " + (value != null ? value : "<" + i18n.tr("leer") + ">"));
         s.setPleaseChoose("<" + i18n.tr("Nicht zugeordnet") + ">");
         selects.add(s);
 
