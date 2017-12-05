@@ -104,21 +104,7 @@ public class AuslandsUeberweisungNew implements Action
       {
         try
         {
-          SepaSammelUeberweisungBuchung b = (SepaSammelUeberweisungBuchung) context;
-          SepaSammelUeberweisung st = (SepaSammelUeberweisung) b.getSammelTransfer();
-          u = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
-          u.setBetrag(b.getBetrag());
-          u.setGegenkontoBLZ(b.getGegenkontoBLZ());
-          u.setGegenkontoName(b.getGegenkontoName());
-          u.setGegenkontoNummer(b.getGegenkontoNummer());
-          u.setZweck(b.getZweck());
-          u.setEndtoEndId(b.getEndtoEndId());
-          
-          if (st != null)
-          {
-            u.setKonto(st.getKonto());
-            u.setTermin(st.getTermin());
-          }
+          u=cloneFromSammelUeberweisungBuchung((SepaSammelUeberweisungBuchung)context);
         }
         catch (RemoteException re)
         {
@@ -146,6 +132,26 @@ public class AuslandsUeberweisungNew implements Action
     }
 
     GUI.startView(de.willuhn.jameica.hbci.gui.views.AuslandsUeberweisungNew.class,u);
+  }
+
+  @SuppressWarnings("javadoc")
+  public static AuslandsUeberweisung cloneFromSammelUeberweisungBuchung(SepaSammelUeberweisungBuchung context) throws RemoteException{
+    SepaSammelUeberweisungBuchung b = (SepaSammelUeberweisungBuchung) context;
+    SepaSammelUeberweisung st = (SepaSammelUeberweisung) b.getSammelTransfer();
+    AuslandsUeberweisung u = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
+    u.setBetrag(b.getBetrag());
+    u.setGegenkontoBLZ(b.getGegenkontoBLZ());
+    u.setGegenkontoName(b.getGegenkontoName());
+    u.setGegenkontoNummer(b.getGegenkontoNummer());
+    u.setZweck(b.getZweck());
+    u.setEndtoEndId(b.getEndtoEndId());
+    
+    if (st != null)
+    {
+      u.setKonto(st.getKonto());
+      u.setTermin(st.getTermin());
+    }
+    return u;
   }
 
 }
