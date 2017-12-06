@@ -82,28 +82,7 @@ public class SepaLastschriftNew implements Action
       {
         try
         {
-          SepaSammelLastBuchung b = (SepaSammelLastBuchung) context;
-          SepaSammelLastschrift st = (SepaSammelLastschrift) b.getSammelTransfer();
-          u = (SepaLastschrift) Settings.getDBService().createObject(SepaLastschrift.class,null);
-          u.setBetrag(b.getBetrag());
-          u.setGegenkontoBLZ(b.getGegenkontoBLZ());
-          u.setGegenkontoName(b.getGegenkontoName());
-          u.setGegenkontoNummer(b.getGegenkontoNummer());
-          u.setZweck(b.getZweck());
-          u.setCreditorId(b.getCreditorId());
-          u.setEndtoEndId(b.getEndtoEndId());
-          u.setMandateId(b.getMandateId());
-          u.setSignatureDate(b.getSignatureDate());
-          
-          if (st != null)
-          {
-            u.setKonto(st.getKonto());
-            u.setTermin(st.getTermin());
-            
-            u.setSequenceType(st.getSequenceType());
-            u.setTargetDate(st.getTargetDate());
-            u.setType(st.getType());
-          }
+         u=cloneFromSammelLastBuchung((SepaSammelLastBuchung)context);
         }
         catch (RemoteException re)
         {
@@ -121,6 +100,33 @@ public class SepaLastschriftNew implements Action
     }
 
     GUI.startView(de.willuhn.jameica.hbci.gui.views.SepaLastschriftNew.class,u);
+  }
+
+  @SuppressWarnings("javadoc")
+  public static SepaLastschrift cloneFromSammelLastBuchung(SepaSammelLastBuchung context) throws RemoteException{
+    SepaSammelLastBuchung b = (SepaSammelLastBuchung) context;
+    SepaSammelLastschrift st = (SepaSammelLastschrift) b.getSammelTransfer();
+    SepaLastschrift u = (SepaLastschrift) Settings.getDBService().createObject(SepaLastschrift.class,null);
+    u.setBetrag(b.getBetrag());
+    u.setGegenkontoBLZ(b.getGegenkontoBLZ());
+    u.setGegenkontoName(b.getGegenkontoName());
+    u.setGegenkontoNummer(b.getGegenkontoNummer());
+    u.setZweck(b.getZweck());
+    u.setCreditorId(b.getCreditorId());
+    u.setEndtoEndId(b.getEndtoEndId());
+    u.setMandateId(b.getMandateId());
+    u.setSignatureDate(b.getSignatureDate());
+    
+    if (st != null)
+    {
+      u.setKonto(st.getKonto());
+      u.setTermin(st.getTermin());
+      
+      u.setSequenceType(st.getSequenceType());
+      u.setTargetDate(st.getTargetDate());
+      u.setType(st.getType());
+    }
+    return u;
   }
 
 }
