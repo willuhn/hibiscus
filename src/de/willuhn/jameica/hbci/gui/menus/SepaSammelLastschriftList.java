@@ -21,6 +21,7 @@ import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftExecute;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftExport;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftImport;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftNew;
+import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftSplit;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
@@ -49,6 +50,7 @@ public class SepaSammelLastschriftList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("In Einzelaufträge teilen..."), new SepaSammelLastschriftSplit(),"stock_previous.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SepaSammelLastschriftExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));

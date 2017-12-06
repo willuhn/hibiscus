@@ -21,6 +21,7 @@ import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungExport;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungImport;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew;
+import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungSplit;
 import de.willuhn.jameica.hbci.gui.action.TerminableMarkExecuted;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
@@ -49,6 +50,7 @@ public class SepaSammelUeberweisungList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("In Einzelaufträge teilen..."), new SepaSammelUeberweisungSplit(),"stock_next.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveMenuItem(i18n.tr("Jetzt ausführen..."), new SepaSammelUeberweisungExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));

@@ -21,12 +21,12 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Sicherheitsabfrage vor dem Zusammenfassen von SEPA-Einzellastschriften in ein
- * oder mehrere SEPA-Sammellastschriften.
+ * Sicherheitsabfrage vor dem Zusammenfassen von SEPA-Einzelauftraegen in ein
+ * oder mehrere SEPA-Sammelauftraege.
  */
-public class SepaLastschriftMergeDialog extends AbstractDialog
+public class SepaTransferMergeDialog extends AbstractDialog
 {
-	private final static I18N i18n    = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	
   private int count           = 1;
   private boolean canDelete   = false;
@@ -42,13 +42,13 @@ public class SepaLastschriftMergeDialog extends AbstractDialog
    * @param canDelete true, wenn eine Checkbox angezeigt werden soll, ob die
    * Einzel-Auftraege geloescht werden koennen.
    */
-  public SepaLastschriftMergeDialog(int position, int count, boolean canDelete)
+  public SepaTransferMergeDialog(int position, int count, boolean canDelete)
   {
     super(position);
 
     this.count     = count;
     this.canDelete = canDelete;
-    this.setTitle(i18n.tr("SEPA-Lastschriften zusammenführen"));
+    this.setTitle(i18n.tr("Zu SEPA-Sammelauftrag zusammenführen"));
     this.setSize(420,SWT.DEFAULT);
   }
 
@@ -67,14 +67,14 @@ public class SepaLastschriftMergeDialog extends AbstractDialog
   {
     SimpleContainer container = new SimpleContainer(parent);
     if (this.count > 1)
-      container.addText(i18n.tr("Die Lastschriften werden zu {0} Sammelaufträgen zusammengefasst.",String.valueOf(this.count)),true);
+      container.addText(i18n.tr("Die Einzelaufträge werden zu {0} Sammelaufträgen zusammengefasst.",String.valueOf(this.count)),true);
     else
-      container.addText(i18n.tr("Die Lastschriften werden zu einem Sammelauftrag zusammengefasst."),true);
+      container.addText(i18n.tr("Die Einzelaufträge werden zu einem Sammelauftrag zusammengefasst."),true);
 
     if (this.canDelete)
     {
       this.check = new CheckboxInput(false);
-      this.check.setName(i18n.tr("Einzelaufträge nach Übernahme in die Sammelaufträge löschen"));
+      this.check.setName(i18n.tr("Einzelaufträge nach der Übernahme löschen"));
       container.addInput(this.check);
     }
  

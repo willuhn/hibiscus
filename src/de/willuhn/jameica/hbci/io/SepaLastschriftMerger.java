@@ -16,7 +16,7 @@ import java.util.Map;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.dialogs.SepaLastschriftMergeDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.SepaTransferMergeDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectDeletedMessage;
@@ -85,7 +85,7 @@ public class SepaLastschriftMerger
       int count = map.size();
       if (count > 1 || inDb)
       {
-        SepaLastschriftMergeDialog dialog = new SepaLastschriftMergeDialog(SepaLastschriftMergeDialog.POSITION_CENTER,count,inDb);
+        SepaTransferMergeDialog dialog = new SepaTransferMergeDialog(SepaTransferMergeDialog.POSITION_CENTER,count,inDb);
         Object o = dialog.open();
         if (o != null)
           delete = ((Boolean)o).booleanValue();
