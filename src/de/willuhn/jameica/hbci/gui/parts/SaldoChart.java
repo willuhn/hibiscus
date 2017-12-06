@@ -214,9 +214,9 @@ public class SaldoChart implements Part
     {
       throw re;
     }
-    catch (Exception e)
+    catch (Throwable t)
     {
-      Logger.error("unable to paint chart",e);
+      Logger.error("unable to paint chart",t);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Saldo-Verlaufs"),StatusBarMessage.TYPE_ERROR));
     }
   }
