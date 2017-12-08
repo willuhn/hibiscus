@@ -419,7 +419,14 @@ public class HBCIProperties
     else
       bank = Banken.getBankByBIC(bic);
     
-    return bank != null ? bank.getBezeichnung() : null;
+    if (bank == null)
+      return null;
+
+    // Text einkuerzen, wenn er zu lang ist.
+    // Normalerweise nicht noetig. Es gibt aber einige Banken, die z.Bsp. folgenden
+    // Namen haben: "Landesbank Baden-Württemberg/Baden-Württembergische Bank"
+    // Das verzerrt sonst die Layouts an einigen Stellen
+    return StringUtils.abbreviateMiddle(bank.getBezeichnung(),"...",38);
   }
 
   /**
