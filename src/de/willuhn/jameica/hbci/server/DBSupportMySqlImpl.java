@@ -39,7 +39,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getJdbcPassword()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.password",null);
+    return this.getEncrypted("database.driver.mysql.password");
   }
 
   /**

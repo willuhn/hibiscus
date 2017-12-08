@@ -42,7 +42,7 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
    */
   public String getJdbcPassword()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.postgresql.password",null);
+    return this.getEncrypted("database.driver.postgresql.password");
   }
 
   /**
