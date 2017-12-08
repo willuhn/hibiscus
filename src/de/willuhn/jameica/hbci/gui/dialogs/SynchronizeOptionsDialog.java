@@ -66,6 +66,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private CheckboxInput syncAueb      = null;
   private CheckboxInput syncSepaLast  = null;
   private CheckboxInput syncSepaDauer = null;
+  private CheckboxInput syncMessages  = null;
   private LabelInput error            = null;
   private Button apply                = null;
   
@@ -162,13 +163,14 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           options.setSyncSaldo(((Boolean)getSyncSaldo().getValue()).booleanValue());
           options.setSyncKontoauszuege(((Boolean)getSyncUmsatz().getValue()).booleanValue());
         }
-
+        
         if (offline)
         {
           options.setSyncOffline(((Boolean)getSyncOffline().getValue()).booleanValue());
         }
         else
         {
+          options.setSyncMessages(((Boolean)getSyncMessages().getValue()).booleanValue());
           options.setSyncSepaDauerauftraege(((Boolean)getSyncSepaDauer().getValue()).booleanValue());
           options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
           options.setSyncSepaLastschriften(((Boolean)getSyncSepaLast().getValue()).booleanValue());
@@ -191,22 +193,30 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     
+    Input i1 = this.getSyncSaldo();
+    Input i2 = this.getSyncUmsatz();
+    Input i3 = this.getSyncOffline();
+    Input i4 = this.getSyncAueb();
+    Input i5 = this.getSyncSepaLast();
+    Input i6 = this.getSyncSepaDauer();
+    Input i7 = this.getSyncMessages();
     
     if (!offline || syncAvail)
     {
-      group.addInput(getSyncSaldo());
-      group.addInput(getSyncUmsatz());
+      group.addInput(i1);
+      group.addInput(i2);
     }
-
+    
     if (offline)
     {
-      group.addInput(getSyncOffline());
+      group.addInput(i3);
     }
     else
     {
-      group.addInput(getSyncAueb());
-      group.addInput(getSyncSepaLast());
-      group.addInput(getSyncSepaDauer());
+      group.addInput(i4);
+      group.addInput(i5);
+      group.addInput(i6);
+      group.addInput(i7);
     }
     
     if (this.properties.size() > 0)
@@ -303,6 +313,52 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       this.syncSepaLast.setName(i18n.tr("Fällige SEPA-Lastschriften einziehen"));
     }
     return this.syncSepaLast;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung des Abrufs der Banknachrichten.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncMessages()
+  {
+    if (this.syncMessages != null)
+      return this.syncMessages;
+    
+    this.syncMessages = new CheckboxInput(options.getSyncMessages());
+    this.syncMessages.setName(i18n.tr("Banknachrichten abrufen"));
+    
+    final Input i1 = getSyncSaldo();
+    final Input i2 = getSyncUmsatz();
+    final Input i3 = getSyncAueb();
+    final Input i4 = getSyncSepaLast();
+    final Input i5 = getSyncSepaDauer();
+    
+    // Wir haengen hier noch einen Listener dran, der bewirkt, dass die Option nur dann auswaehlbar ist,
+    // wenn wenigstens ein HBCI-Geschaeftsvorfall durchgefuehrt wird
+    final Listener l = new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        boolean b = ((Boolean) i1.getValue()).booleanValue();
+        b |= ((Boolean) i2.getValue()).booleanValue();
+        b |= ((Boolean) i3.getValue()).booleanValue();
+        b |= ((Boolean) i4.getValue()).booleanValue();
+        b |= ((Boolean) i5.getValue()).booleanValue();
+        syncMessages.setEnabled(b);
+      }
+    };
+
+    i1.addListener(l);
+    i2.addListener(l);
+    i3.addListener(l);
+    i4.addListener(l);
+    i5.addListener(l);
+    
+    // einmal initial ausloesen
+    l.handleEvent(null);
+    
+    return this.syncMessages;
   }
 
   /**

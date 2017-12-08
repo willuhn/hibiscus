@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0623 Abrufen der Banknachrichten in den Synchronisierungsoptionen pro Konto abschaltbar (Option "Banknachrichten abrufen")
   * NEW: 0622 Hinweis-Text anzeigen, wenn Ausführungsdatum einer Terminüberweisung in Vergangenheit liegt
   * NEW: 0621 Überlange Geldinstitut-Bezeichnungen verkürzt anzeigen
   * NEW: 0620 Möglichkeit, Sammelaufträge zurück in Einzelaufträge zu teilen (per Contextmenu)

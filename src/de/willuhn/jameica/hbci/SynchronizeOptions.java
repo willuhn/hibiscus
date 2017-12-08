@@ -122,6 +122,15 @@ public class SynchronizeOptions implements Serializable
   }
 
   /**
+   * Prueft, ob die Banknachrichten fuer das Konto abgerufen werden sollen.
+   * @return true, wenn die Banknachrichten fuer das Konto abgerufen werden sollen.
+   */
+  public boolean getSyncMessages()
+  {
+    return !this.disabled && !this.offline && settings.getBoolean("sync.konto." + id + ".messages",settings.getBoolean("sync.konto.default.messages",true));
+  }
+
+  /**
    * Prueft, ob die Kontoauszuege abgerufen werden sollen.
    * @return true, wenn sie synchronisiert werden sollen.
    */
@@ -189,6 +198,15 @@ public class SynchronizeOptions implements Serializable
   public void setAutoSaldo(boolean b)
   {
     settings.setAttribute("sync.konto." + id + ".autosaldo",b);
+  }
+  
+  /**
+   * Legt fest, ob die Banknachrichten abgerufen werden sollen.
+   * @param b true, wenn die Banknachrichten abgerufen werden sollen.
+   */
+  public void setSyncMessages(boolean b)
+  {
+    settings.setAttribute("sync.konto." + id + ".messages",b);
   }
   
   /**

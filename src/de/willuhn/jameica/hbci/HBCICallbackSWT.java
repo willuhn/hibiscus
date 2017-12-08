@@ -28,6 +28,7 @@ import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Nachricht;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
@@ -245,21 +246,29 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 	        }
 					break;
 
-				// Die folgenden beiden Callbacks duerfen nicht in den RDH-Passport verschoben
-			  // werden, weil sie auftreten koennen, wenn kein currentPassport hier hinterlegt ist
 				case HAVE_INST_MSG:
-          // BUGZILLA 68 http://www.willuhn.de/bugzilla/show_bug.cgi?id=68
           try
           {
-            Nachricht n = (Nachricht) Settings.getDBService().createObject(Nachricht.class,null);
-            n.setBLZ(passport.getBLZ());
-            n.setNachricht(msg);
-            n.setDatum(new Date());
-            n.store();
-            String text = i18n.tr("Neue Institutsnachricht empfangen");
-            Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
-            Application.getMessagingFactory().sendMessage(new ImportMessage(n));
-            session.getProgressMonitor().setStatusText(text);
+            Konto k = session.getKonto();
+            boolean sm = true;
+            if (k != null)
+            {
+              SynchronizeOptions o = new SynchronizeOptions(k);
+              sm = o.getSyncMessages();
+            }
+            
+            if (sm)
+            {
+              Nachricht n = (Nachricht) Settings.getDBService().createObject(Nachricht.class,null);
+              n.setBLZ(passport.getBLZ());
+              n.setNachricht(msg);
+              n.setDatum(new Date());
+              n.store();
+              String text = i18n.tr("Neue Institutsnachricht empfangen");
+              Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_INFO));
+              Application.getMessagingFactory().sendMessage(new ImportMessage(n));
+              session.getProgressMonitor().setStatusText(text);
+            }
           }
           catch (Exception e)
           {
