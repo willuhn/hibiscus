@@ -309,6 +309,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       return this.termin;
     
     this.termin = new TerminInput((Terminable) getTransfer());
+    this.termin.setName(this.termin.getName() + "  "); // ein kleines bisschen extra Platz lassen, damit auch "Ausführungstermin" hin passt
     this.termin.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -345,7 +346,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
         
       }
     });
-      
+    
     return termin;
   }
 
@@ -649,9 +650,22 @@ public class AuslandsUeberweisungControl extends AbstractControl
             TerminInput input = getTermin();
             Typ typ = (Typ) getTyp().getValue();
             if (typ != null && typ.termin)
+            {
               input.setName(i18n.tr("Ausführungstermin"));
+              
+              // Pruefen, ob es sich um eine Termin-Ueberweisung handelt. Wenn
+              // das Ausfuehrungsdatum in der Vergangenheit liegt, dann Hinweis-Text anzeigen
+              Date date = (Date) input.getValue();
+              if (date != null)
+              {
+                if (!DateUtil.startOfDay(date).after(DateUtil.startOfDay(new Date())))
+                  Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Ausführungstermin der Terminüberweisung liegt in der Vergangenheit"),StatusBarMessage.TYPE_INFO));
+              }
+            }
             else
+            {
               input.setName(i18n.tr("Erinnerungstermin"));
+            }
             
             // Kommentar vom Termin-Eingabefeld aktualisieren.
             input.updateComment();
