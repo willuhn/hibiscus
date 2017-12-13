@@ -108,14 +108,20 @@ public class SepaSammelUeberweisungSplit implements Action
         u.store();
         
         Application.getMessagingFactory().sendMessage(new ImportMessage(u));
-        
-        if (delete && !st.isNewObject())
-        {
-          st.delete();
-          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(st));
-        }
-        
         count++;
+      }
+      
+      // Jetzt noch die Sammelueberweisungen loeschen
+      if (delete)
+      {
+        for (SepaSammelUeberweisung s:source)
+        {
+          if (s.isNewObject())
+            continue;
+
+          s.delete();
+          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(s));
+        }
       }
 
       if (tx != null)
