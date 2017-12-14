@@ -78,7 +78,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     if (type == null)
       return;
     
-    final long currentValue = getCounter(type.getValue()).incrementAndGet();
+    final long currentValue = this.getCounter(type.getValue()).incrementAndGet();
     
     worker.schedule(new Runnable() {
       
@@ -101,10 +101,17 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     },300,TimeUnit.MILLISECONDS);
   }
 
-  private AtomicLong getCounter(String key){
-    AtomicLong result=counters.get(key);
-    if(result==null){
-      result=new AtomicLong(0);
+  /**
+   * Liefert den aktuellen Zaehlerstand fuer den Objekttyp.
+   * @param key der Objekttyp.
+   * @return der Zaehlerstand.
+   */
+  private AtomicLong getCounter(String key)
+  {
+    AtomicLong result = counters.get(key);
+    if(result == null)
+    {
+      result = new AtomicLong(0);
       counters.put(key, result);
     }
     return result;
