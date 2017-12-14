@@ -42,7 +42,7 @@ import de.willuhn.logging.Logger;
 public class MarkOverdueMessageConsumer implements MessageConsumer
 {
   private final static ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
-  private final static AtomicLong counter = new AtomicLong(0L);
+  private final static Map<String,AtomicLong> counters = new HashMap<String, AtomicLong>();
   
   private final static Map<Class,String> types = new HashMap<Class,String>()
   {{
@@ -78,26 +78,36 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     if (type == null)
       return;
     
-    final long currentValue = counter.incrementAndGet();
+    final long currentValue = getCounter(type.getValue()).incrementAndGet();
     
     worker.schedule(new Runnable() {
       
       @Override
       public void run()
       {
+        String typeId=type.getValue();
         // Zwischenzeitlich kam noch ein Aufruf rein. Dann soll der sich drum kuemmern
         // Das dient dazu, schnell aufeinander folgende Requests zu buendeln, damit
         // z.Bsp. beim Import von 100 Ueberweisungen nicht fuer jede Ueberweisung
         // 10 x pro Sekunde der Zaehler in der Navi angepasst werden muss.
-        if (counter.get() != currentValue)
+        if (getCounter(typeId).get() != currentValue)
         {
-          Logger.debug("ignoring frequent overdue counter updates for " + type.getValue());
+          Logger.debug("ignoring frequent overdue counter updates for " + typeId);
           return;
         }
         
-        update(type.getKey(),type.getValue());
+        update(type.getKey(), typeId);
       }
     },300,TimeUnit.MILLISECONDS);
+  }
+
+  private AtomicLong getCounter(String key){
+    AtomicLong result=counters.get(key);
+    if(result==null){
+      result=new AtomicLong(0);
+      counters.put(key, result);
+    }
+    return result;
   }
 
   /**
