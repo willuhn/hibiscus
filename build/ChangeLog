@@ -1,5 +1,8 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0627 Umbrechen langer Verwendungszwecke und Prüfen der Länge erst beim Bearbeiten von Umsätzen, nicht beim Anzeigen
+  * NEW: 0626 Beim Daten-Export nur die für das ausgewählte Format zulässigen Export-Optionen aktivieren
+  * NEW: 0625 Überlange Verwendungszweck-Zeilen beim CSV-Import neu umbrechen
   * NEW: 0624 BUGZILLA 1317 - MySQL-Datenbank-Passwort in Config-Datei automatisch verschluesseln
   * NEW: 0623 Abrufen der Banknachrichten in den Synchronisierungsoptionen pro Konto abschaltbar (Option "Banknachrichten abrufen")
   * NEW: 0622 Hinweis-Text anzeigen, wenn Ausführungsdatum einer Terminüberweisung in Vergangenheit liegt

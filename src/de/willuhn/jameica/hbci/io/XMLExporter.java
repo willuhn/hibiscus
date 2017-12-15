@@ -119,5 +119,14 @@ public class XMLExporter implements Exporter
   {
     return i18n.tr("Hibiscus-Format");
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return false;
+  }
 
 }

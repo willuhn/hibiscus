@@ -118,7 +118,7 @@ public class Converter
 
     // Es gibt eine erste Bank, die 40 Zeichen lange Verwendungszwecke lieferte.
     // Siehe Mail von Frank vom 06.02.2014
-    lines = VerwendungszweckUtil.rewrap(35,lines);
+    lines = VerwendungszweckUtil.rewrap(HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH,lines);
     VerwendungszweckUtil.apply(umsatz,lines);
     //
     ////////////////////////////////////////////////////////////////////////////

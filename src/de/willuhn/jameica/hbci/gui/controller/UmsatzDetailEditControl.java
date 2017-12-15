@@ -10,14 +10,18 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.TextAreaInput;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
@@ -29,8 +33,10 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -39,6 +45,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class UmsatzDetailEditControl extends UmsatzDetailControl
 {
+  private Input zweck  = null;
   private Input betrag = null;
   private Input saldo  = null;
   
@@ -151,12 +158,43 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweck()
    */
-  public Input getZweck() throws RemoteException
+  public Input getZweck()
   {
-    Input input = super.getZweck();
-    if (!input.isEnabled())
-      input.setEnabled(true);
-    return input;
+    if (this.zweck != null)
+      return this.zweck;
+
+    final int max = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
+
+    this.zweck = new TextAreaInput("")
+    {
+      /**
+       * @see de.willuhn.jameica.gui.input.TextAreaInput#update()
+       */
+      @Override
+      protected void update() throws OperationCanceledException
+      {
+        super.update();
+        
+        Control c = this.getControl();
+        if (c.isDisposed())
+          return;
+        
+        // Laenge des Verwendungszweck pruefen
+        String[] lines = VerwendungszweckUtil.split((String)zweck.getValue());
+        
+        for (int i = 0; i < lines.length; i++)
+        {
+          String line = lines[i];
+          if (line == null || line.length() <= max)
+            continue;
+          
+          c.setBackground(Color.MANDATORY_BG.getSWTColor());
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Jede Zeile des Verwendungszwecks darf maximal {0} Zeichen lang sein. Zeile {1} ist {2} Zeichen lang.", ""+max , ""+(i+1), ""+line.length()) ,StatusBarMessage.TYPE_INFO));
+          return;
+        }
+      }
+    };
+    return this.zweck;
   }
 
   /**
@@ -236,16 +274,6 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweckSwitchValue()
-   */
-  @Override
-  protected boolean getZweckSwitchValue()
-  {
-    // Hier wird grundsaetzlich alles angezeigt.
-    return true;
-  }
-  
-  /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweckSwitch()
    */
   @Override
@@ -254,6 +282,41 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     CheckboxInput input = super.getZweckSwitch();
     input.setEnabled(false);
     return input;
+  }
+  
+  /**
+   * Ueberschrieben, um den Verwendungszweck bei Bedarf umgebrochen anzuzeigen. 
+   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getUsage(boolean)
+   */
+  protected String getUsage(boolean showAll)
+  {
+    try
+    {
+      Umsatz u = this.getUmsatz();
+      
+      if (showAll)
+        return VerwendungszweckUtil.toString(u,"\n"); // Wir zeigen den rohen Verwendungszweck an
+
+      String usage = (String) BeanUtil.get(u,Tag.SVWZ.name());
+      
+      // Achtung: Das Extrahieren des Tags SVWZ hat ein integriertes Fallback. Wenn naemlich
+      // gar kein Tag vorhanden ist (das ist bei den alten Buchungen der Fall), dann wird
+      // der komplette Verwendungszweck in einer Zeile zurueckgeliefert, um das neue SEPA-Verhalten
+      // auch bei den alten Buchungen zu emulieren. Aus dem grund muss der Verwendungszweck
+      // hier ggf. neu umgebrochen werden
+      final int limit = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
+      if (usage == null || usage.length() <= limit)
+        return usage;
+      
+      return VerwendungszweckUtil.merge(VerwendungszweckUtil.rewrap(limit,usage));
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to display usage text",re);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Verwendungszweck: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+    
+    return "";
   }
 
   /**

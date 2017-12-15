@@ -1,13 +1,9 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/Exporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/04/23 18:07:14 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * 
+ * GPLv2
  *
  **********************************************************************/
 
@@ -46,40 +42,15 @@ public interface Exporter extends IO
    * @throws ApplicationException 
    */
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException;
+  
+  /**
+   * Liefert true, wenn der Exporter die angegebene Extension unterstuetzt.
+   * Hintergrund: Im Export-Dialog koennen verschiedene Optionen (wie etwa "Spalte Saldo ausblenden") angezeigt
+   * werden. Manche Export-Formate unterstuetzen diese Option jedoch gar nicht, sodass sie ignoriert werden wuerde.
+   * Aus dem Grund kann der Exporter selbst mitteilen, ob er die angegebene Option unterstuetzt.
+   * Unterstuetzt er sie nicht, wir die Option automatisch deaktiviert.
+   * @param ext der Name der Extension.
+   * @return true, wenn er die Extension unterstuetzt.
+   */
+  public boolean suppportsExtension(String ext);
 }
-
-
-/**********************************************************************
- * $Log: Exporter.java,v $
- * Revision 1.8  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.7  2006/10/16 12:51:32  willuhn
- * @B Uebernahme des originalen Datums aus dem Kontoauszug
- *
- * Revision 1.6  2006/01/23 00:36:29  willuhn
- * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
- *
- * Revision 1.5  2006/01/18 00:51:01  willuhn
- * @B bug 65
- *
- * Revision 1.4  2006/01/17 00:22:36  willuhn
- * @N erster Code fuer Swift MT940-Import
- *
- * Revision 1.3  2005/07/04 12:41:39  web0
- * @B bug 90
- *
- * Revision 1.2  2005/06/30 23:52:42  web0
- * @N export via velocity
- *
- * Revision 1.1  2005/06/08 16:48:54  web0
- * @N new Import/Export-System
- *
- * Revision 1.1  2005/06/02 21:48:44  web0
- * @N Exporter-Package
- * @N CSV-Exporter
- *
- **********************************************************************/

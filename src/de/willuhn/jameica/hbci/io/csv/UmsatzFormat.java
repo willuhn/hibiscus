@@ -1,11 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/csv/UmsatzFormat.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/03/16 13:43:56 $
- * $Author: willuhn $
  *
- * Copyright (c) by willuhn - software & services
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
@@ -15,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.io.ser.DateSerializer;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
 import de.willuhn.jameica.hbci.io.ser.ExtendedUsageSerializer;
@@ -23,6 +20,7 @@ import de.willuhn.jameica.hbci.io.ser.UmsatzTypSerializer;
 import de.willuhn.jameica.hbci.io.ser.ValueSerializer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -53,8 +51,8 @@ public class UmsatzFormat implements Format<Umsatz>
       Serializer ds = new DateSerializer();
       
       List<Column> list = this.profile.getColumns();
-      int i = 3; // wir fangen bei Spalte 4 an, weil die ersten 3 Spalten von Hibiscus
-                 // zwar exportiert werden (Kontonummer, BLZ, Name des eigenen Kontos),
+      int i = 4; // wir fangen bei Spalte 4 an, weil die ersten 3 Spalten von Hibiscus
+                 // zwar exportiert werden (#, Kontonummer, BLZ, Name des eigenen Kontos),
                  // diese Information beim Import aber nicht benoetigt wird (kriegen
                  // wir ueber den Kontext. Man koennte natuerlich auch bei Spalte
                  // 0 anfangen, wir wollen ja aber, dass wenigstens die von Hibiscus
@@ -127,6 +125,10 @@ public class UmsatzFormat implements Format<Umsatz>
             Object context = event.context;
             if (context != null && (context instanceof Konto))
               u.setKonto((Konto)context);
+            
+            // Wenn die Verwendungszweck-Zeilen laenger als 35 Zeichen sind, fuegen wir sie neu zusammen
+            String[] lines = VerwendungszweckUtil.rewrap(HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH,VerwendungszweckUtil.toArray(u));
+            VerwendungszweckUtil.apply(u,lines);
           }
           catch (Exception e)
           {
@@ -139,23 +141,3 @@ public class UmsatzFormat implements Format<Umsatz>
     return this.listener;
   }
 }
-
-
-
-/**********************************************************************
- * $Log: UmsatzFormat.java,v $
- * Revision 1.2  2010/03/16 13:43:56  willuhn
- * @N CSV-Import von Ueberweisungen und Lastschriften
- * @N Versionierbarkeit von serialisierten CSV-Profilen
- *
- * Revision 1.1  2010/03/16 00:44:18  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- **********************************************************************/

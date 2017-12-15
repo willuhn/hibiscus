@@ -134,18 +134,18 @@ public class ExportDialog extends AbstractDialog implements Extendable
 		
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-
+  
   /**
    * Exportiert die Daten.
    * @throws ApplicationException
    */
   private void export() throws ApplicationException
   {
-    Exp exp = null;
+    ExpotFormat exp = null;
 
     try
     {
-      exp = (Exp) getExporterList().getValue();
+      exp = (ExpotFormat) getExporterList().getValue();
     }
     catch (Exception e)
     {
@@ -274,17 +274,17 @@ public class ExportDialog extends AbstractDialog implements Extendable
    * @return Liste der Exporter.
 	 * @throws Exception
    */
-  private Input getExporterList() throws Exception
+  public Input getExporterList() throws Exception
 	{
 		if (this.exporterListe != null)
 			return this.exporterListe;
 
     Exporter[] exporters = IORegistry.getExporters();
 
-    int size          = 0;
-    ArrayList l       = new ArrayList();
-    String lastFormat = SETTINGS.getString("lastformat",null);
-    Exp selected      = null;
+    int size             = 0;
+    ArrayList l          = new ArrayList();
+    String lastFormat    = SETTINGS.getString("lastformat",null);
+    ExpotFormat selected = null;
 
     for (int i=0;i<exporters.length;++i)
 		{
@@ -300,7 +300,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       for (int j=0;j<formats.length;++j)
       {
         size++;
-        Exp e = new Exp(exp,formats[j]);
+        ExpotFormat e = new ExpotFormat(exp,formats[j]);
         l.add(e);
         
         String lf = e.format.getName();
@@ -316,7 +316,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
 		else
 		{
 	    Collections.sort(l);
-	    Exp[] exp = (Exp[]) l.toArray(new Exp[size]);
+	    ExpotFormat[] exp = (ExpotFormat[]) l.toArray(new ExpotFormat[size]);
 	    this.exporterListe = new SelectInput(PseudoIterator.fromArray(exp),selected);
 		}
 		this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
@@ -360,12 +360,12 @@ public class ExportDialog extends AbstractDialog implements Extendable
 	/**
 	 * Hilfsklasse zur Anzeige der Exporter.
    */
-  private class Exp implements GenericObject, Comparable
+  public class ExpotFormat implements GenericObject, Comparable
 	{
 		private Exporter exporter   = null;
     private IOFormat format = null;
 		
-		private Exp(Exporter exporter, IOFormat format)
+		private ExpotFormat(Exporter exporter, IOFormat format)
 		{
 			this.exporter = exporter;
       this.format = format;
@@ -412,17 +412,26 @@ public class ExportDialog extends AbstractDialog implements Extendable
 	      return false;
 	    return this.getID().equals(arg0.getID());
     }
+    
+    /**
+     * Liefert den zugehoerigen Exporter.
+     * @return der zugehoerige Exporter.
+     */
+    public Exporter getExporter()
+    {
+      return this.exporter;
+    }
 
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(Object o)
     {
-      if (o == null || !(o instanceof Exp))
+      if (o == null || !(o instanceof ExpotFormat))
         return -1;
       try
       {
-        return this.format.getName().compareTo(((Exp)o).format.getName());
+        return this.format.getName().compareTo(((ExpotFormat)o).format.getName());
       }
       catch (Exception e)
       {

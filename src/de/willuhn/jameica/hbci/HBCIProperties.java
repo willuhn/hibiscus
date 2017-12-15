@@ -112,6 +112,12 @@ public class HBCIProperties
    */
   public final static int HBCI_TRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.transfer.usage.maxlength",27);
 
+
+  /**
+   * Maximale Text-Laenge einer Verwendungszweck-Zeile.
+   */
+  public final static int HBCI_TRANSFER_USAGE_DB_MAXLENGTH = settings.getInt("hbci.transfer.usage.db.maxlength",35);
+
   /**
    * Maximale Laenge eines GV-Code.
    */

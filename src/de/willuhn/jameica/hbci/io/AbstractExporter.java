@@ -140,6 +140,15 @@ public abstract class AbstractExporter implements Exporter
     }
     return null;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return false;
+  }
 
   /**
    * Hilfsklasse, damit wir uns den Objekt-Typ merken koennen.

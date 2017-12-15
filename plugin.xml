@@ -110,7 +110,6 @@
   
   <extensions>
     <extension extends="de.willuhn.jameica.hbci.gui.dialogs.ExportDialog" class="de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension"/>
-    <extension extends="de.willuhn.jameica.hbci.gui.dialogs.ExportDialog" class="de.willuhn.jameica.hbci.gui.ext.ExportSVWZExtractorExtension"/>
     <extension extends="de.willuhn.jameica.hbci.gui.dialogs.ExportDialog" class="de.willuhn.jameica.hbci.gui.ext.ExportAddSumRowExtension"/>
   </extensions>
 

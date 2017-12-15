@@ -1,13 +1,9 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/EinnahmeAusgabeExporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/08/24 17:38:04 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
  * Copyright (c) by Heiner Jostkleigrewe
  * All rights reserved
+ * 
+ * GPLv2
  *
  **********************************************************************/
 
@@ -103,6 +99,15 @@ public class EinnahmeAusgabeExporter implements Exporter
         }
       }
     }
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return false;
   }
 
   /**

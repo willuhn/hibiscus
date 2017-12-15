@@ -1,13 +1,9 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/DTAUSSammelTransferExporter.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/06/07 10:07:50 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * 
+ * GPLv2
  *
  **********************************************************************/
 
@@ -188,58 +184,18 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
    */
   Class[] getSupportedObjectTypes()
   {
-//    return new Class[0];
     return new Class[]{
         SammelUeberweisung.class,
         SammelLastschrift.class
     };
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return false;
+  }
 }
-
-
-/**********************************************************************
- * $Log: DTAUSSammelTransferExporter.java,v $
- * Revision 1.11  2011/06/07 10:07:50  willuhn
- * @C Verwendungszweck-Handling vereinheitlicht/vereinfacht - geht jetzt fast ueberall ueber VerwendungszweckUtil
- *
- * Revision 1.10  2008/12/17 23:24:23  willuhn
- * @N Korrektes Mapping der Textschluessel beim Export/Import von Sammelauftraegen von/nach DTAUS
- *
- * Revision 1.9  2008/12/01 23:54:42  willuhn
- * @N BUGZILLA 188 Erweiterte Verwendungszwecke in Exports/Imports und Sammelauftraegen
- *
- * Revision 1.8  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.7  2006/11/12 22:35:30  willuhn
- * @B LK/GK-Kennzeichen verkehrtrum
- *
- * Revision 1.6  2006/11/07 14:31:14  willuhn
- * @B DtausDateiwriter wurde nicht geschlossen
- *
- * Revision 1.5  2006/10/23 21:16:51  willuhn
- * @N eBaykontoParser umbenannt und ueberarbeitet
- *
- * Revision 1.4  2006/08/21 23:15:18  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2006/08/21 23:15:01  willuhn
- * @N Bug 184 (CSV-Import)
- *
- * Revision 1.2  2006/08/07 21:51:43  willuhn
- * @N Erste Version des DTAUS-Exporters
- *
- * Revision 1.1  2006/08/07 15:19:32  willuhn
- * @N DTAUS-Export
- *
- * Revision 1.2  2006/06/08 17:40:59  willuhn
- * @N Vorbereitungen fuer DTAUS-Import von Sammellastschriften und Umsaetzen
- *
- * Revision 1.1  2006/06/07 22:42:00  willuhn
- * @N DTAUSExporter
- * @N Abstrakte Basis-Klasse fuer Export und Import
- *
- **********************************************************************/

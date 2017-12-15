@@ -242,6 +242,15 @@ public class VelocityExporter implements Exporter
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return false;
+  }
+  
+  /**
    * Hilfsklasse zum Escapen von Strings in der CSV-Datei.
    */
   public class Filter

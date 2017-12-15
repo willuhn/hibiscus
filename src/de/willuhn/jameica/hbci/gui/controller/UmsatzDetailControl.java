@@ -12,7 +12,6 @@ import java.rmi.RemoteException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -44,7 +43,6 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -393,48 +391,17 @@ public class UmsatzDetailControl extends AbstractControl
 	/**
 	 * Liefert ein Eingabe-Feld fuer den Verwendungszweck.
 	 * @return Eingabe-Feld.
-	 * @throws RemoteException
 	 */
-	public Input getZweck() throws RemoteException
+	public Input getZweck()
 	{
-	  if (this.zweck == null)
-	  {
-      this.zweck = new TextAreaInput(""){
-        @Override
-        protected void update() throws OperationCanceledException
-        {
-          super.update();
-          checkZweckLineMaxLength(text);
-        }
-      };
-      this.zweck.setEnabled(false);
-	  }
+	  if (this.zweck != null)
+	    return this.zweck;
+	  
+    this.zweck = new TextAreaInput("");
+    this.zweck.setEnabled(false);
 	  return this.zweck;
 	}
 
-	private void checkZweckLineMaxLength(Text zweckTextWidget){
-	  String[] splitText = VerwendungszweckUtil.split(zweckTextWidget.getText());
-	  int lineMaxLength=35;
-	  for (int i = 0; i < splitText.length; i++)
-    {
-        String line = splitText[i];
-        if(line.length()>lineMaxLength){
-          zweckTextWidget.setBackground(Color.MANDATORY_BG.getSWTColor());
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Jede Zeile des Verwendungszwecks darf maximal {0} Zeichen lang sein. Zeile {1} ist {2} Zeichen lang.", ""+lineMaxLength, ""+(i+1), ""+line.length()) ,StatusBarMessage.TYPE_ERROR));
-          return;
-      }
-    }
-	}
-	
-	/**
-	 * Liefert den Wert des Settings.
-	 * @return der Wert des Settings.
-	 */
-	protected boolean getZweckSwitchValue()
-	{
-    return settings.getBoolean("usage.display.all",true);
-	}
-	
 	/**
 	 * Liefert eine Checkbox, mit der man umschalten kann, ob man die vereinfachte
 	 * Version des Verwendungszwecks angezeigt bekommt oder die ausfuehrliche.
@@ -446,31 +413,54 @@ public class UmsatzDetailControl extends AbstractControl
 	  if (this.zweckSwitch != null)
 	    return this.zweckSwitch;
 	  
-	  this.zweckSwitch = new CheckboxInput(getZweckSwitchValue());
+	  boolean b = settings.getBoolean("usage.display.all",true);
+	  this.zweckSwitch = new CheckboxInput(b);
 	  this.zweckSwitch.setName(i18n.tr("Alle Daten des Verwendungszwecks anzeigen"));
 	  
 	  Listener l = new Listener() {
       @Override
       public void handleEvent(Event event)
       {
-        try
-        {
-          boolean b = ((Boolean) zweckSwitch.getValue()).booleanValue();
-          settings.setAttribute("usage.display.all",b);
-          Umsatz u = getUmsatz();
-          getZweck().setValue(b ? VerwendungszweckUtil.toString(u,"\n") : (String) BeanUtil.get(u,Tag.SVWZ.name()));
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to display usage text",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Verwendungszweck: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
-        }
+        // Wert speichern
+        boolean b2 = ((Boolean) zweckSwitch.getValue()).booleanValue();
+        settings.setAttribute("usage.display.all",b2);
+        
+        // Verwendungszweck-Anzeige aktualisieren
+        String usage = getUsage(b2);
+        getZweck().setValue(usage);
       }
     };
 	  this.zweckSwitch.addListener(l);
 	  l.handleEvent(null); // einmal initial ausloesen
 	  
     return this.zweckSwitch;
+	}
+	
+	/**
+	 * Liefert den anzuzeigenden Verwendungszweck in Abhaengigkeit der aktuellen Einstellung.
+	 * @param showAll true, wenn der rohe Verwendungszweck angezeigt werden soll.
+	 * @return der anzuzeigende Verwendungszweck.
+	 */
+	protected String getUsage(boolean showAll)
+	{
+    try
+    {
+      Umsatz u = this.getUmsatz();
+      
+      // Wir zeigen den Verwendungszweck in einer Zeile an.
+      // Das Zeilenlimit ist nicht relevant, wenn wir hier eh nicht bearbeiten koennen.
+      if (showAll)
+        return VerwendungszweckUtil.toString(u);
+
+      return (String) BeanUtil.get(u,Tag.SVWZ.name());
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to display usage text",re);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Verwendungszweck: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+    
+    return "";
 	}
 
   /**

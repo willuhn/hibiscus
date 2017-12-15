@@ -73,6 +73,15 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
     if (end == null)               return i18n.tr("Zeitraum: ab {0}, {1}",st,tt);
     return i18n.tr("Zeitraum: {0} - {1}, {2}",st,et,tt);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return false;
+  }
 }
 
 

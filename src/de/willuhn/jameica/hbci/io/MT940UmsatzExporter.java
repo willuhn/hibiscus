@@ -215,7 +215,15 @@ public class MT940UmsatzExporter implements Exporter
   {
     return i18n.tr("Swift MT940-Format (pro Buchungen eine logische Datei)");
   }
-
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return ext != null && ExportSaldoExtension.KEY_SALDO_HIDE.equals(ext);
+  }
   
   /**
    * Ableitung von OutputStreamWriter, um die Umlaute umzuschreiben.

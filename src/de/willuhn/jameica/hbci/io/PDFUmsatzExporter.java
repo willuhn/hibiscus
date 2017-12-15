@@ -28,7 +28,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ext.ExportAddSumRowExtension;
-import de.willuhn.jameica.hbci.gui.ext.ExportSVWZExtractorExtension;
 import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -48,6 +47,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class PDFUmsatzExporter implements Exporter
 {
+  private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
@@ -105,8 +105,11 @@ public class PDFUmsatzExporter implements Exporter
     boolean showSaldo = (b == null || !b.booleanValue());
     b                 = (Boolean) Exporter.SESSION.get(ExportAddSumRowExtension.KEY_SUMROW_ADD);
     boolean addSumRow = (b != null && b.booleanValue());
-    b                 = (Boolean) Exporter.SESSION.get(ExportSVWZExtractorExtension.KEY_SVWZ_EXTRACT);
-    boolean extractSVWZ = (b != null && b.booleanValue());
+    
+    // Ob wir den gesamten Verwendungszweck exportieren, entnehmen wir dem Setting "usage.display.all"
+    // Heisst: Die Verwendungszwecke werden genau in der Form exportiert, in der sie derzeit auch
+    // angezeigt werden. Das erspart diese missverstaendliche Option "Im Verwendungszweck "SVWZ+" extrahieren"
+    boolean fullUsage = settings.getBoolean("usage.display.all",true);
     
     Reporter reporter = null;
     
@@ -165,7 +168,7 @@ public class PDFUmsatzExporter implements Exporter
           
           reporter.addColumn(reporter.getDetailCell(valuta + "\n" + datum, Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT,null,color,style));
-          String verwendungszweck = (extractSVWZ) ? VerwendungszweckUtil.getTag(u, Tag.SVWZ) : VerwendungszweckUtil.toString(u,"\n");
+          String verwendungszweck = (fullUsage) ? VerwendungszweckUtil.toString(u,"\n") : VerwendungszweckUtil.getTag(u, Tag.SVWZ);
           reporter.addColumn(reporter.getDetailCell(verwendungszweck, Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
           sumRow += u.getBetrag();
@@ -213,6 +216,15 @@ public class PDFUmsatzExporter implements Exporter
   public String getName()
   {
     return i18n.tr("PDF-Format");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
+   */
+  @Override
+  public boolean suppportsExtension(String ext)
+  {
+    return ext != null && (ExportAddSumRowExtension.KEY_SUMROW_ADD.equals(ext) || ExportSaldoExtension.KEY_SALDO_HIDE.equals(ext));
   }
 
   /**

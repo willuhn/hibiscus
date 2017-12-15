@@ -81,14 +81,15 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 				throw new ApplicationException(i18n.tr("Valuta fehlt."));
 			
 			// "35" ist das DB-Limit
-      HBCIProperties.checkLength(getZweck(),35);
-      HBCIProperties.checkLength(getZweck2(),35);
+			int limit = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
+      HBCIProperties.checkLength(getZweck(),limit);
+      HBCIProperties.checkLength(getZweck2(),limit);
       String[] ewz = getWeitereVerwendungszwecke();
       if (ewz != null && ewz.length > 0)
       {
         for (int i=0;i<ewz.length;++i)
         {
-          HBCIProperties.checkLength(ewz[i],35);
+          HBCIProperties.checkLength(ewz[i],limit);
         }
       }
 
