@@ -12,9 +12,11 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.io.ClipboardSepaUeberweisungImporter;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -92,6 +94,14 @@ public class AuslandsUeberweisungNew implements Action
         }
         
         
+        // BUGZILLA 1835 - BIC nur uebernehmen, wenn es wirklich eine ist
+        // Ansonsten ermitteln wir die BIC aus der IBAN
+        if (blz == null || blz.length() != HBCIProperties.HBCI_BIC_MAXLENGTH)
+        {
+          IBAN iban = HBCIProperties.getIBAN(kto);
+          if (iban != null)
+            blz = iban.getBIC();
+        }
         u.setGegenkontoBLZ(blz);
         u.setGegenkontoNummer(kto);
 
