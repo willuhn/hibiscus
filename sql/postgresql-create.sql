@@ -183,7 +183,8 @@ CREATE TABLE umsatztyp (
   umsatztyp integer NULL,
   parent_id integer NULL,
   color varchar(11) NULL,
-  customcolor integer NULL
+  customcolor integer NULL,
+  kommentar varchar(1000) NULL
 );
 
 CREATE TABLE dauerauftrag (

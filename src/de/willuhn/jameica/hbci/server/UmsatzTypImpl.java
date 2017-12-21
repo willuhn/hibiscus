@@ -360,6 +360,19 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     setAttribute("isregex", new Integer(regex ? 1 : 0));
   }
 
+  @Override
+  public void setKommentar(String kommentar) throws RemoteException
+  {
+    setAttribute("kommentar", kommentar);
+    
+  }
+
+  @Override
+  public String getKommentar() throws RemoteException
+  {
+    return (String) getAttribute("kommentar");
+  }
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz()
    */
@@ -643,11 +656,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     t.setParent((DBObjectNode) this.getParent());
     t.setPattern(this.getPattern());
     t.setRegex(this.isRegex());
+    t.setKommentar(this.getKommentar());
     t.setTyp(this.getTyp());
     return t;
   }
-  
-  
 }
 
 /*******************************************************************************

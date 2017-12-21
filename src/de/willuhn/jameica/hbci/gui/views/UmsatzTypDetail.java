@@ -54,6 +54,7 @@ public class UmsatzTypDetail extends AbstractView
     group.addLabelPair(i18n.tr("Reihenfolge"), control.getNummer());
     group.addLabelPair(i18n.tr("Suchbegriff"), control.getPattern());
     group.addCheckbox(control.getRegex(),i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+    group.addLabelPair(i18n.tr("Kommentar"), control.getKommentar());
     group.addSeparator();
     group.addLabelPair(i18n.tr("Art des Umsatzes"), control.getArt());
 

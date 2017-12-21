@@ -326,7 +326,7 @@ public class UmsatzTypUtil
     @Override
     public String[] getAttributeNames() throws RemoteException
     {
-      return new String[]{"name","indented"};
+      return new String[]{"name","indented","kommentar"};
     }
 
     /**
@@ -689,6 +689,17 @@ public class UmsatzTypUtil
     @Override
     public void setCustomColor(boolean b) throws RemoteException
     {
+    }
+
+    @Override
+    public void setKommentar(String kommentar) throws RemoteException
+    {
+    }
+
+    @Override
+    public String getKommentar() throws RemoteException
+    {
+      return null;
     };
   }
 }

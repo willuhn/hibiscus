@@ -81,12 +81,26 @@ public interface UmsatzTyp extends DBObjectNode
   public String getPattern() throws RemoteException;
 
   /**
+   * Speichert den Kommentar fuer den Umsatztyp.
+   * @param kommentar der Kommentar.
+   * @throws RemoteException
+   */
+  public void setKommentar(String kommentar) throws RemoteException;
+
+  /**
+   * Liefert den Kommentar fuer den Umsatztyp.
+   * @return Kommentar.
+   * @throws RemoteException
+   */
+  public String getKommentar() throws RemoteException;
+
+  /**
    * Speichert das Suchmuster fuer den Umsatztyp.
    * @param pattern das Suchmuster.
    * @throws RemoteException
    */
   public void setPattern(String pattern) throws RemoteException;
-  
+
 	/**
 	 * Liefert eine Liste von Umsaetzen, die diesem Umsatz-Typ entsprechen.
    * @return Umsatz-Liste.

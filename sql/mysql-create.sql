@@ -96,6 +96,7 @@ CREATE TABLE umsatztyp (
      , parent_id int(10)
      , color VARCHAR(11)
      , customcolor int(1)
+     , kommentar TEXT
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;

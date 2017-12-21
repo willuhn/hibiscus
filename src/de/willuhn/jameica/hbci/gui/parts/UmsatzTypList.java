@@ -74,7 +74,8 @@ public class UmsatzTypList extends TablePart implements Part
         return UmsatzTypUtil.getNameForType(((Integer) o).intValue());
       }
     });
-    
+    addColumn(i18n.tr("Kommentar"),"kommentar");
+
     this.setFormatter(new TableFormatter()
     {
       /**
