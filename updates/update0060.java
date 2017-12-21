@@ -23,16 +23,16 @@ import de.willuhn.util.I18N;
 
 
 /**
- * Erweitert die Tabelle "umsatztyp" um die Spalten "kommentar" und TODO deaktiviert
+ * Erweitert die Tabelle "umsatztyp" um die Spalten "kommentar"
  */
-public class update60 implements Update
+public class update0060 implements Update
 {
   private Map statements = new HashMap();
   
   /**
    * ct
    */
-  public update60()
+  public update0060()
   {
     statements.put(DBSupportH2Impl.class.getName(),         "ALTER TABLE umsatztyp ADD kommentar varchar(1000) NULL;");
     statements.put(DBSupportMySqlImpl.class.getName(),      "ALTER TABLE umsatztyp ADD kommentar TEXT;");
