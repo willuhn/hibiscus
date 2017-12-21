@@ -414,6 +414,6 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
   
-INSERT INTO version (name,version) values ('db',59);
+INSERT INTO version (name,version) values ('db',60);
   
 COMMIT;

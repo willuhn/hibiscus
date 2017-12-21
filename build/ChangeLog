@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0629 BUGZILLA 1782 - Neues Feld "Notiz" in Umsatz-Kategorien
   * BUG: 0628 BUGZILLA 1835 - Erstellen einer Überweisung aus einem Umsatz - wenn Umsatz noch BLZ statt BIC enthält, dann automatisch in BIC konvertieren
   * NEW: 0627 Umbrechen langer Verwendungszwecke und Prüfen der Länge erst beim Bearbeiten von Umsätzen, nicht beim Anzeigen
   * NEW: 0626 Beim Daten-Export nur die für das ausgewählte Format zulässigen Export-Optionen aktivieren

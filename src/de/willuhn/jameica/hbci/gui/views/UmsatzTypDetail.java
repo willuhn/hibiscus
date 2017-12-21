@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzTypDetail.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/06/08 08:12:48 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
@@ -18,7 +12,9 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
@@ -43,21 +39,29 @@ public class UmsatzTypDetail extends AbstractView
     final UmsatzTypControl control = new UmsatzTypControl(this);
 
 		GUI.getView().setTitle(i18n.tr("Umsatz-Kategorie"));
-		
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-    group.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
-    
-    group.addCheckbox(control.getCustomColor(),i18n.tr("Benutzerdefinierte Farbe"));
-    group.addLabelPair(i18n.tr("Farbe"), control.getColor());
-    
-    group.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
-    group.addLabelPair(i18n.tr("Reihenfolge"), control.getNummer());
-    group.addLabelPair(i18n.tr("Suchbegriff"), control.getPattern());
-    group.addCheckbox(control.getRegex(),i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
-    group.addLabelPair(i18n.tr("Kommentar"), control.getKommentar());
-    group.addSeparator();
-    group.addLabelPair(i18n.tr("Art des Umsatzes"), control.getArt());
 
+    ColumnLayout columns = new ColumnLayout(getParent(),2);
+
+    Container left = new SimpleContainer(columns.getComposite());
+    
+    left.addHeadline(i18n.tr("Eigenschaften"));
+    left.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
+    left.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
+    left.addLabelPair(i18n.tr("Art des Umsatzes"), control.getArt());
+    
+    left.addSeparator();
+    left.addLabelPair(i18n.tr("Suchbegriff"), control.getPattern());
+    left.addCheckbox(control.getRegex(),i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
+
+    left.addSeparator();
+    left.addCheckbox(control.getCustomColor(),i18n.tr("Benutzerdefinierte Farbe"));
+    left.addLabelPair(i18n.tr("Farbe"), control.getColor());
+    
+    left.addLabelPair(i18n.tr("Reihenfolge"), control.getNummer());
+
+    Container right = new SimpleContainer(columns.getComposite(),true);
+    right.addHeadline(i18n.tr("Notizen"));
+    right.addPart(control.getKommentar());
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Löschen"),   new DBObjectDelete(),control.getCurrentObject(),false,"user-trash-full.png");
@@ -89,17 +93,3 @@ public class UmsatzTypDetail extends AbstractView
     buttons.paint(getParent());
   }
 }
-
-
-/**********************************************************************
- * $Log: UmsatzTypDetail.java,v $
- * Revision 1.9  2011/06/08 08:12:48  willuhn
- * @C BUGZILLA 988 "Nummer" in "Reihenfolge" geaendert
- *
- * Revision 1.8  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.7  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- **********************************************************************/

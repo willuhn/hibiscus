@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/UmsatzTypControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2012/01/02 22:32:20 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
@@ -30,6 +24,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -113,10 +108,10 @@ public class UmsatzTypControl extends AbstractControl
    */
   public TextInput getKommentar() throws RemoteException
   {
-    if (this.kommentar == null)
-    {
-      this.kommentar = new TextInput(getUmsatzTyp().getKommentar());
-    }
+    if (this.kommentar != null)
+      return this.kommentar;
+    
+    this.kommentar = new TextAreaInput(this.getUmsatzTyp().getKommentar(),1000);
     return this.kommentar;
   }
 
@@ -398,56 +393,3 @@ public class UmsatzTypControl extends AbstractControl
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: UmsatzTypControl.java,v $
- * Revision 1.15  2012/01/02 22:32:20  willuhn
- * @N BUGZILLA 1170
- *
- * Revision 1.14  2010-06-03 13:54:02  willuhn
- * @N UmsatzTypInput setzt jetzt auch gleich Name und Attribut
- *
- * Revision 1.13  2010/06/02 15:32:03  willuhn
- * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
- * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste
- *
- * Revision 1.12  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- * Revision 1.11  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.10  2009/02/23 23:44:50  willuhn
- * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
- *
- * Revision 1.9  2008/09/17 23:44:29  willuhn
- * @B SQL-Query fuer MaxUsage-Abfrage korrigiert
- *
- * Revision 1.8  2008/08/29 16:46:23  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.7  2007/08/24 22:22:00  willuhn
- * @N Regulaere Ausdruecke vorm Speichern testen
- *
- * Revision 1.6  2007/06/12 08:56:01  willuhn
- * @B Bug 410
- *
- * Revision 1.5  2007/03/12 13:58:56  willuhn
- * @C Eindeutigkeit des Namens trotz UNIQUE-Key vorher in insertCheck pruefen - das spart das Parsen der SQLException
- *
- * Revision 1.4  2007/03/10 07:17:40  jost
- * Neu: Nummer für die Sortierung der Umsatz-Kategorien
- * Umsatzkategorien editierbar gemacht (Verlagerung vom Code -> DB)
- *
- * Revision 1.3  2006/12/28 15:38:43  willuhn
- * @N Farbige Pflichtfelder
- *
- * Revision 1.2  2006/11/23 23:24:17  willuhn
- * @N Umsatz-Kategorien: DB-Update, Edit
- *
- * Revision 1.1  2006/11/23 17:25:37  willuhn
- * @N Umsatz-Kategorien - in PROGRESS!
- *
- *********************************************************************/
