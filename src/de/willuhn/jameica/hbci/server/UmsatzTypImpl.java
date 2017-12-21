@@ -98,6 +98,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         }
       }
 
+      String comment = this.getKommentar();
+      if (comment != null && comment.length() > 1000)
+        throw new ApplicationException(i18n.tr("Die Notiz ist zu lang. Bitte geben Sie maximal 1000 Zeichen ein."));
+
       if (isCustomColor() && (getColor() == null || getColor().length != 3))
         throw new ApplicationException("Wählen Sie bitte eine benutzerdefinierte Farbe aus");
 
