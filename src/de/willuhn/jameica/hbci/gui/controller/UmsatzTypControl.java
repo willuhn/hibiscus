@@ -59,6 +59,7 @@ public class UmsatzTypControl extends AbstractControl
   private CheckboxInput regex   = null;
   private SelectInput art       = null;
   private UmsatzTypInput parent = null;
+  private TextInput kommentar        = null;
   
   private ColorInput color          = null;
   private CheckboxInput customColor = null;
@@ -106,6 +107,20 @@ public class UmsatzTypControl extends AbstractControl
   }
 
   /**
+   * Erzeugt das Eingabe-Feld fuer den Kommentar.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public TextInput getKommentar() throws RemoteException
+  {
+    if (this.kommentar == null)
+    {
+      this.kommentar = new TextInput(getUmsatzTyp().getKommentar());
+    }
+    return this.kommentar;
+  }
+
+  /**
    * Erzeugt das Eingabe-Feld fuer die Nummer.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -120,6 +135,7 @@ public class UmsatzTypControl extends AbstractControl
     }
     return this.nummer;
   }
+
   
   /**
    * Erzeugt das Eingabe-Feld fuer den Such-Pattern.
@@ -273,6 +289,7 @@ public class UmsatzTypControl extends AbstractControl
       UmsatzTyp ut = getUmsatzTyp();
       ut.setTyp(t == null ? UmsatzTyp.TYP_EGAL : t.typ);
       ut.setName((String)getName().getValue());
+      ut.setKommentar((String)getKommentar().getValue());
       ut.setNummer((String)getNummer().getValue());
       ut.setPattern((String)getPattern().getValue());
       ut.setRegex(((Boolean)getRegex().getValue()).booleanValue());

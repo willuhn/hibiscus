@@ -81,6 +81,7 @@ public class UmsatzTypTree extends TreePart
         return UmsatzTypUtil.getNameForType(((Integer) o).intValue());
       }
     });
+    addColumn(i18n.tr("Kommentar"),"kommentar");
     
     this.setFormatter(new TreeFormatter()
     {

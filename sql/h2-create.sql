@@ -206,6 +206,7 @@ CREATE TABLE umsatztyp (
   parent_id int(5) NULL,
   color varchar(11) NULL,
   customcolor int(1) NULL,
+  kommentar varchar(1000) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
