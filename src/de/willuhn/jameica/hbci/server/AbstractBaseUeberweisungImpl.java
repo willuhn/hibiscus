@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AbstractBaseUeberweisungImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2011/10/27 09:42:14 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.server;
@@ -53,17 +47,25 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
    */
   protected void insertCheck() throws ApplicationException
   {
-    super.insertCheck();
-    
     try
     {
+      super.insertCheck();
+      
       if (this.getTermin() == null)
         this.setTermin(new Date());
     }
     catch (RemoteException e)
     {
-      Logger.error("error while checking order",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Auftrages."));
+      Logger.error("error while checking job",e);
+      if (!this.markingExecuted())
+        throw new ApplicationException(i18n.tr("Fehler beim Prüfen des SEPA-Auftrages."));
+    }
+    catch (ApplicationException ae)
+    {
+      if (!this.markingExecuted())
+        throw ae;
+      
+      Logger.warn(ae.getMessage());
     }
   }
 
@@ -74,7 +76,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   {
 		try
 		{
-			if (!whileStore && ausgefuehrt())
+			if (!this.markingExecuted() && this.ausgefuehrt())
 				throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt und kann daher nicht mehr geändert werden."));
 		}
 		catch (RemoteException e)
@@ -141,7 +143,16 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 
   // Kleines Hilfsboolean damit uns der Status-Wechsel
   // beim Speichern nicht um die Ohren fliegt.
-  private boolean whileStore = false;
+  private boolean markingExecuted = false;
+  
+  /**
+   * Liefert true, wenn wir uns gerade dabei befinden, den Vorgang als ausgefuehrt zu markieren.
+   * @return true, wenn wir uns gerade dabei befinden, den Vorgang als ausgefuehrt zu markieren.
+   */
+  protected boolean markingExecuted()
+  {
+    return this.markingExecuted;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#setAusgefuehrt(boolean)
@@ -150,7 +161,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   {
     try
     {
-      whileStore = true;
+      markingExecuted = true;
       setAttribute("ausgefuehrt",new Integer(b ? 1 : 0));
       setAttribute("ausgefuehrt_am",new Date());
       store();
@@ -158,7 +169,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     }
     finally
     {
-      whileStore = false;
+      markingExecuted = false;
     }
   }
   

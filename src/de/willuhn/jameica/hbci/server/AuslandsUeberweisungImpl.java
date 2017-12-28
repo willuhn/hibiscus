@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/AuslandsUeberweisungImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/03/01 10:52:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.server;
@@ -141,8 +135,16 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     }
     catch (RemoteException e)
     {
-      Logger.error("error while checking foreign ueberweisung",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Prüfen der SEPA-Überweisung."));
+      Logger.error("error while checking job",e);
+      if (!this.markingExecuted())
+        throw new ApplicationException(i18n.tr("Fehler beim Prüfen des SEPA-Auftrages."));
+    }
+    catch (ApplicationException ae)
+    {
+      if (!this.markingExecuted())
+        throw ae;
+      
+      Logger.warn(ae.getMessage());
     }
   }
   

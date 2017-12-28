@@ -83,8 +83,16 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
     catch (RemoteException e)
     {
-      Logger.error("error while checking sammeltransfer",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Auftrags."));
+      Logger.error("error while checking job",e);
+      if (!this.markingExecuted())
+        throw new ApplicationException(i18n.tr("Fehler beim Prüfen des SEPA-Auftrages."));
+    }
+    catch (ApplicationException ae)
+    {
+      if (!this.markingExecuted())
+        throw ae;
+      
+      Logger.warn(ae.getMessage());
     }
   }
 
@@ -94,7 +102,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   protected void updateCheck() throws ApplicationException
   {
     try {
-      if (!whileStore && ausgefuehrt())
+      if (!this.markingExecuted() && this.ausgefuehrt())
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt und kann daher nicht mehr geändert werden."));
     }
     catch (RemoteException e)
@@ -170,7 +178,16 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
 
   // Kleines Hilfsboolean damit uns der Status-Wechsel
   // beim Speichern nicht um die Ohren fliegt.
-  private boolean whileStore = false;
+  private boolean markingExecuted = false;
+
+  /**
+   * Liefert true, wenn wir uns gerade dabei befinden, den Vorgang als ausgefuehrt zu markieren.
+   * @return true, wenn wir uns gerade dabei befinden, den Vorgang als ausgefuehrt zu markieren.
+   */
+  protected boolean markingExecuted()
+  {
+    return this.markingExecuted;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#setAusgefuehrt(boolean)
@@ -179,7 +196,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   {
     try
     {
-      whileStore = true;
+      markingExecuted = true;
       setAttribute("ausgefuehrt",new Integer(b ? 1 : 0));
       setAttribute("ausgefuehrt_am",new Date());
       store();
@@ -187,7 +204,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
     finally
     {
-      whileStore = false;
+      markingExecuted = false;
     }
   }
 

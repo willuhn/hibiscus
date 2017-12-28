@@ -1,7 +1,7 @@
 /**********************************************************************
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.server;
@@ -183,8 +183,16 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     }
     catch (RemoteException e)
     {
-      Logger.error("error while checking foreign ueberweisung",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des SEPA-Auftrages."));
+      Logger.error("error while checking job",e);
+      if (!this.markingExecuted())
+        throw new ApplicationException(i18n.tr("Fehler beim Prüfen des SEPA-Auftrages."));
+    }
+    catch (ApplicationException ae)
+    {
+      if (!this.markingExecuted())
+        throw ae;
+      
+      Logger.warn(ae.getMessage());
     }
   }
 
