@@ -29,13 +29,13 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
-import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
 import de.willuhn.jameica.hbci.gui.action.UmsatzAssign;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzMarkChecked;
+import de.willuhn.jameica.hbci.gui.action.UmsatzMarkUnChecked;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
@@ -77,8 +77,8 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new UmsatzItem(i18n.tr("In Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
     addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new AuslandsUeberweisungNew(),"stock_next.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzMarkChecked(Umsatz.FLAG_CHECKED,true),"emblem-default.png","ALT+G"));
-    addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new FlaggableChange(Umsatz.FLAG_CHECKED,false),"edit-undo.png","CTRL+ALT+G"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzMarkChecked(),"emblem-default.png","ALT+G"));
+    addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new UmsatzMarkUnChecked(),"edit-undo.png","CTRL+ALT+G"));
     addReverseBookItem();
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Drucken..."),new Action() {

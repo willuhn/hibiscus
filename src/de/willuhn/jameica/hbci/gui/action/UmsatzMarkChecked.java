@@ -10,6 +10,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.hbci.rmi.Flaggable;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 
@@ -22,12 +23,10 @@ public class UmsatzMarkChecked extends FlaggableChange
 
   /**
    * ct.
-   * @param flags die zu setzenden Flags.
-   * @param add true, wenn Flags hinzugefuegt werden sollen. Andernfalls werden sie entfernt.
    */
-  public UmsatzMarkChecked(int flags, boolean add)
+  public UmsatzMarkChecked()
   {
-    super(flags,add);
+    super(Umsatz.FLAG_CHECKED,true);
   }
   
   /**
@@ -46,13 +45,13 @@ public class UmsatzMarkChecked extends FlaggableChange
   @Override
   protected void postProcess(Flaggable o) throws Exception
   {
-    // Nur, wenn das Flag gesetzt wird
-    if (!this.getAdd())
-      return;
-    
     if (!(o instanceof Umsatz))
       return;
-
+    
+    // Wir senden die Aenderung noch per Messaging, damit SynTAX das Geprueft-Flag bei Bedarf
+    // synchronisieren kann
+    Application.getMessagingFactory().getMessagingQueue("hibiscus.umsatz.markchecked").sendMessage(new QueryMessage(Boolean.TRUE.toString(),o));
+    
     Umsatz u = (Umsatz) o;
     UmsatzTyp ut = u.getUmsatzTyp();
     

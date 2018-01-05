@@ -52,7 +52,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        new UmsatzMarkChecked(Umsatz.FLAG_CHECKED,true).handleAction(context);
+        new UmsatzMarkChecked().handleAction(context);
         checked.setEnabled(false); // nur einmal moeglich
       }
     },u,false,"emblem-default.png");
