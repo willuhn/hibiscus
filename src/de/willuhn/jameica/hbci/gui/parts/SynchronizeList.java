@@ -9,9 +9,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -44,6 +42,7 @@ import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -54,8 +53,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class SynchronizeList extends TablePart
 {
-  // Wir cachen die Liste der vom User explizit abgewaehlten Aufgaben waehrend der Sitzung
-  private static Map<String,Boolean> uncheckedCache = new HashMap<String,Boolean>();
+  // Wir speichern die Liste der vom User (ab)gewaehlten Aufgaben
+  private final static Settings settings = new Settings(SynchronizeList.class);
   
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private MessageConsumer mcSync  = new SyncMessageConsumer();
@@ -99,6 +98,10 @@ public class SynchronizeList extends TablePart
     init();
   }
   
+  private String getCheckedSettingsKey(SynchronizeJob job) throws RemoteException, ApplicationException{
+    return job.getKonto().getID()+"."+job.getName()+".synchChecked";
+  }
+  
   /**
    * Initialisiert die Liste der Synchronisierungsaufgaben
    * @throws RemoteException
@@ -125,7 +128,7 @@ public class SynchronizeList extends TablePart
           try
           {
             // nicht markiert, wenn das letzte Mal explizit abgewaehlt
-            checked = !uncheckedCache.containsKey(job.getName());
+            checked = settings.getBoolean(getCheckedSettingsKey(job), true);
           }
           catch (Exception e)
           {
@@ -181,27 +184,22 @@ public class SynchronizeList extends TablePart
   }
   
   /**
-   * Cached die Liste der abgewaehlten Aufgaben.
+   * Speichere, ob Aufgaben ausgewählt sind.
    */
-  private void cacheUnchecked()
+  private void persistCheckedState()
   {
     try
     {
-      uncheckedCache.clear();
       List<SynchronizeJob> selected = getItems(true);
       List<SynchronizeJob> all      = getItems(false);
       for (SynchronizeJob j:all)
       {
-        if (!selected.contains(j))
-        {
-          // abgewaehlt
-          uncheckedCache.put(j.getName(),Boolean.TRUE);
-        }
+        settings.setAttribute(getCheckedSettingsKey(j), selected.contains(j));
       }
     }
     catch (Exception e)
     {
-      Logger.error("unable to cache unchecked items",e);
+      Logger.error("unable to persist unchecked items",e);
     }
   }
   
@@ -281,7 +279,7 @@ public class SynchronizeList extends TablePart
     {
       try
       {
-        cacheUnchecked();
+        persistCheckedState();
         
         Logger.info("Collecting synchronize jobs");
         List<SynchronizeJob> selected = getItems(true);
@@ -432,7 +430,7 @@ public class SynchronizeList extends TablePart
      */
     public void handleMessage(Message message) throws Exception
     {
-      cacheUnchecked();
+      persistCheckedState();
     }
   }
   
