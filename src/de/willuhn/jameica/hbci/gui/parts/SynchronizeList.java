@@ -99,7 +99,7 @@ public class SynchronizeList extends TablePart
   }
   
   private String getCheckedSettingsKey(SynchronizeJob job) throws RemoteException, ApplicationException{
-    return job.getKonto().getID()+"."+job.getName()+".synchChecked";
+    return job.getKonto().getID()+".synchChecked";
   }
   
   /**
