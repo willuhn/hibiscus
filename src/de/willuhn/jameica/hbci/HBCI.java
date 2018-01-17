@@ -215,7 +215,7 @@ public class HBCI extends AbstractPlugin
       this.hbciProps = new Properties();
       
       Version v = getManifest().getVersion(); // client.product.name darf hoechstens 25 Zeichen lang sein
-      this.hbciProps.put("client.product.name","HBCI4Java (Hibiscus " + v.getMajor() + "." + v.getMinor() + ")");
+      this.hbciProps.put("client.product.name","HBCI4Java/Hibiscus");
       this.hbciProps.put("client.product.version",v.getMajor() + "." + v.getMinor()); // Maximal 5 Zeichen
       
       //////////////////////////////////
