@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0633 Offizielle HBCI-Produktregistrierung von Hibiscus hinterlegt: A44C2953982351617D475443E - siehe http://hbci-zka.de/register/register_faq.htm
   * NEW: 0632 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/6490158f2a7d0a39480fbf622c96ef5bfe594bd9
   * NEW: 0631 Geprüft-Markierung von Umsätzen mit den korrespondierenden Buchungen in SynTAX synchronisieren
   * BUG: 0630 BUGZILLA 1836 - Ausgeführt-Markierung eines Auftrages kann fehlschlagen, wenn unbekannte Bankverbindung enthalten ist und Checksummenprüfung aktiv
