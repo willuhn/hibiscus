@@ -182,7 +182,7 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     ////////////////////////////////////////////////////////////////////////////
     // Preview
     this.preview = new TablePart(null);
-    this.preview.addColumn(i18n.tr("Vorschau auf die ersten 10 Folge-Termine"),null);
+    this.preview.addColumn(i18n.tr("Vorschau auf die nächsten Folge-Termine"),null);
     this.preview.setSummary(false);
     this.preview.setFormatter(new TableFormatter() {
       public void format(TableItem item)
