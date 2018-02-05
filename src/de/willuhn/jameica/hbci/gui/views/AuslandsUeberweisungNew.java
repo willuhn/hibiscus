@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.controller.AuslandsUeberweisungControl;
+import de.willuhn.jameica.hbci.gui.parts.PanelButtonNew;
 import de.willuhn.jameica.hbci.io.print.PrintSupportAuslandsUeberweisung;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
@@ -55,6 +56,7 @@ public class AuslandsUeberweisungNew extends AbstractView
     this.transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonNew(AuslandsUeberweisung.class));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportAuslandsUeberweisung(transfer)));
 		
     Container cl = new SimpleContainer(getParent());

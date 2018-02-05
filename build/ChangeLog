@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0634 Neuer Panel-Button "+" oben rechts in der Detailansicht von Aufträgen, um schnell einen neuen Auftrag erstellen zu können
   * NEW: 0633 Offizielle HBCI-Produktregistrierung von Hibiscus hinterlegt: A44C2953982351617D475443E - siehe http://hbci-zka.de/register/register_faq.htm
   * NEW: 0632 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/6490158f2a7d0a39480fbf622c96ef5bfe594bd9
   * NEW: 0631 Geprüft-Markierung von Umsätzen mit den korrespondierenden Buchungen in SynTAX synchronisieren

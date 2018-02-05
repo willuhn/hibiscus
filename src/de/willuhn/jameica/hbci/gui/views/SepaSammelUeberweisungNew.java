@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.SepaSammelUeberweisungControl;
+import de.willuhn.jameica.hbci.gui.parts.PanelButtonNew;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
@@ -54,6 +55,7 @@ public class SepaSammelUeberweisungNew extends AbstractView
     this.transfer = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Sammelüberweisung bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonNew(SepaSammelUeberweisung.class));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaSammelUeberweisung(transfer)));
 		
     Container group = new SimpleContainer(getParent());

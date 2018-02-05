@@ -63,9 +63,12 @@ public class Open implements Action
   {
     if (context == null)
       return;
+
+    // Wenn kein konkretes Objekt angegeben ist sondern nur der Typ (z.Bsp, um eine neue Ueberweisung zu erzeugen),
+    final boolean typeGiven = (context instanceof Class);
     
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    Class type          = context.getClass();
+    Class type          =  typeGiven ? (Class) context : context.getClass();
     
     Iterator<Class> keys = actionMap.keySet().iterator();
     while (keys.hasNext())
@@ -74,7 +77,7 @@ public class Open implements Action
       if (key.isAssignableFrom(type))
       {
         Action a = service.get(actionMap.get(key));
-        a.handleAction(context);
+        a.handleAction(typeGiven ? null : context); // Wenn der Typ angegeben ist, rufen wir die View ohne Context auf.
         return;
       }
     }

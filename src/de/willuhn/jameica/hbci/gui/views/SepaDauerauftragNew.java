@@ -17,6 +17,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragDelete;
 import de.willuhn.jameica.hbci.gui.controller.SepaDauerauftragControl;
+import de.willuhn.jameica.hbci.gui.parts.PanelButtonNew;
 import de.willuhn.jameica.hbci.io.print.PrintSupportSepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.system.Application;
@@ -39,6 +40,7 @@ public class SepaDauerauftragNew extends AbstractView
     final SepaDauerauftrag da = control.getTransfer();
 
 		GUI.getView().setTitle(i18n.tr("SEPA-Dauerauftrag bearbeiten"));
+    GUI.getView().addPanelButton(new PanelButtonNew(SepaDauerauftrag.class));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaDauerauftrag(da)));
 
     Container konten = new SimpleContainer(getParent());
