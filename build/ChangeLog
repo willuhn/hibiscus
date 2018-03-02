@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0636 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.03.2018
   * NEW: 0635 BUGZILLA 1841 - In Pruefziffern-Methode 90 fehlte die Variante G
   * NEW: 0634 Neuer Panel-Button "+" oben rechts in der Detailansicht von Aufträgen, um schnell einen neuen Auftrag erstellen zu können
   * NEW: 0633 Offizielle HBCI-Produktregistrierung von Hibiscus hinterlegt: A44C2953982351617D475443E - siehe http://hbci-zka.de/register/register_faq.htm

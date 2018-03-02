@@ -230,6 +230,8 @@ public class IbanCalcDialog extends AbstractDialog
       
       if (ok)
       {
+        LabelInput msg = this.getMessage();
+        
         try
         {
           IBAN newIban = HBCIProperties.getIBAN(blz,kto);
@@ -238,18 +240,26 @@ public class IbanCalcDialog extends AbstractDialog
           
           IBANCode code = newIban.getCode();
           if (code != null && code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
-            getMessage().setValue("Prüfziffer konnte nicht verifiziert werden. Bitte prüfen Sie die IBAN");
+          {
+            msg.setColor(Color.COMMENT);
+            msg.setValue(i18n.tr("IBAN ermittelt, Prüfziffer jedoch nich kontrolliert"));
+          }
           else
-            getMessage().setValue("");
+          {
+            msg.setColor(Color.SUCCESS);
+            msg.setValue(i18n.tr("Prüfziffer korrekt"));
+          }
         }
         catch (ApplicationException ae)
         {
-          getMessage().setValue(ae.getMessage());
+          msg.setColor(Color.ERROR);
+          msg.setValue(ae.getMessage());
         }
         catch (Exception e)
         {
           Logger.error("error while calculating IBAN/BIC",e);
-          getMessage().setValue(i18n.tr("IBAN-Berechnung fehlgeschlagen"));
+          msg.setColor(Color.ERROR);
+          msg.setValue(i18n.tr("IBAN-Berechnung fehlgeschlagen"));
         }
       }
     }
