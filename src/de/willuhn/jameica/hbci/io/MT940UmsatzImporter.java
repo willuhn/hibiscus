@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/io/MT940UmsatzImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/06/23 07:37:28 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
@@ -22,6 +16,7 @@ import java.util.Properties;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.manager.HBCIKey;
 import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.postprocessor.PostProcessor;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.swift.Swift;
 
@@ -280,74 +275,10 @@ public class MT940UmsatzImporter implements Importer
         public void clearInstEncKey() {}
         public void clearBPD(){}
         public void changePassphrase(){}
+        public PostProcessor getPostProcessor() { return null; }
+        public void setPostProcessor(PostProcessor arg0) {}
       };
     }
     
   }
 }
-
-/*******************************************************************************
- * $Log: MT940UmsatzImporter.java,v $
- * Revision 1.2  2011/06/23 07:37:28  willuhn
- * @N Ersetzen der Umlaute beim MT940-Export abschaltbar
- * @N Beim MT940-Import explizit mit ISO-8859 lesen - ist zwar eigentlich nicht noetig, weil da per Definition keine Umlaute enthalten sein duerfen - aber wir sind ja tolerant ;)
- *
- * Revision 1.1  2010-06-02 15:32:22  willuhn
- * @Importer umbenannt
- *
- * Revision 1.16  2009/12/07 22:55:32  willuhn
- * @R nicht mehr benoetigte Funktionen entfernt
- *
- * Revision 1.15  2009/02/12 16:14:34  willuhn
- * @N HBCI4Java-Version mit Unterstuetzung fuer vorgemerkte Umsaetze
- *
- * Revision 1.14  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- * Revision 1.13  2008/01/22 13:34:45  willuhn
- * @N Neuer XML-Import/-Export
- *
- * Revision 1.12  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.11  2007/03/16 14:40:02  willuhn
- * @C Redesign ImportMessage
- * @N Aktualisierung der Umsatztabelle nach Kategorie-Zuordnung
- *
- * Revision 1.10  2006/11/20 23:07:54  willuhn
- * @N new package "messaging"
- * @C moved ImportMessage into new package
- *
- * Revision 1.9  2006/08/21 23:15:01  willuhn
- * @N Bug 184 (CSV-Import)
- *
- * Revision 1.8  2006/08/02 17:49:44  willuhn
- * @B Bug 255
- * @N Erkennung des Kontos beim Import von Umsaetzen aus dem Kontextmenu heraus
- *
- * Revision 1.7  2006/06/19 11:52:17  willuhn
- * @N Update auf hbci4java 2.5.0rc9
- *
- * Revision 1.6  2006/06/06 21:37:55  willuhn
- * @R FilternEngine entfernt. Wird jetzt ueber das Jameica-Messaging-System abgewickelt
- *
- * Revision 1.5  2006/01/23 23:07:23  willuhn
- * @N csv import stuff
- *
- * Revision 1.4  2006/01/23 12:16:57  willuhn
- * @N Update auf HBCI4Java 2.5.0-rc5
- *
- * Revision 1.3  2006/01/23 00:36:29  willuhn
- * @N Import, Export und Chipkartentest laufen jetzt als Background-Task
- *
- * Revision 1.2  2006/01/18 00:51:01  willuhn
- * @B bug 65
- *
- * Revision 1.1  2006/01/17 00:22:36  willuhn
- * @N erster Code fuer Swift MT940-Import
- *
- ******************************************************************************/
