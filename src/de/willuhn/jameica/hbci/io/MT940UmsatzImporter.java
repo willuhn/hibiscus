@@ -16,7 +16,6 @@ import java.util.Properties;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.manager.HBCIKey;
 import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.postprocessor.PostProcessor;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.swift.Swift;
 
@@ -275,8 +274,6 @@ public class MT940UmsatzImporter implements Importer
         public void clearInstEncKey() {}
         public void clearBPD(){}
         public void changePassphrase(){}
-        public PostProcessor getPostProcessor() { return null; }
-        public void setPostProcessor(PostProcessor arg0) {}
       };
     }
     
