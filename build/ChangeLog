@@ -1,6 +1,6 @@
 HEAD 2.7 (nightly)
 
-
+  * NEW: 0638 Beim Laden der Umsätze die Geprüft-Markierung (obwohl Bitmask) per SQL-Query filtern, um die zu übertragende Datenmenge bei externer MySQL-DB zu reduzieren
   * NEW: 0637 Neue HBCI4Java-Version 3.0.15-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/1bef1a798d4359e15fce65092a3d82630df2e6ec
   * NEW: 0636 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.03.2018
   * NEW: 0635 BUGZILLA 1841 - In Pruefziffern-Methode 90 fehlte die Variante G

@@ -362,5 +362,9 @@ INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (1,1,1,1);
+
+CREATE INDEX idx_umsatz_datum ON umsatz(datum);
+CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
+CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',60);
+INSERT INTO version (name,version) values ('db',61);

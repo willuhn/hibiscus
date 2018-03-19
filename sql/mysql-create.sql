@@ -414,12 +414,32 @@ ALTER TABLE sepasueb ADD CONSTRAINT fk_sepasueb_konto FOREIGN KEY (konto_id) REF
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasuebbuchung_sepasueb FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id);
 ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_sepadauerauftrag_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 
--- Indizes fuer grosse Datenmengen
+-- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
+COMMIT;
+
+INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
+  VALUES (2,1,1,1);
+
+INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
+  VALUES (2,1,15,1);
+
+INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
+  VALUES (2,3,1,1);
+
+INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
+  VALUES (2,6,1,1);
+
+INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
+  VALUES (2,12,1,1);
+
+INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
+  VALUES (1,1,1,1);
+
 ALTER TABLE umsatz ADD INDEX (datum);
 ALTER TABLE umsatz ADD INDEX (valuta);
+ALTER TABLE umsatz ADD INDEX (flags);
 ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
-
-INSERT INTO version (name,version) values ('db',60);
+INSERT INTO version (name,version) values ('db',61);

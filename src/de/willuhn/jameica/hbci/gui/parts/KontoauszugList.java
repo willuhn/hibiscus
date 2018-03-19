@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/KontoauszugList.java,v $
- * $Revision: 1.50 $
- * $Date: 2012/04/05 21:23:41 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
@@ -607,10 +601,6 @@ public class KontoauszugList extends UmsatzList
     else if (o != null && (o instanceof String))   {umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);this.filterCount++;}
     /////////////////////////////////////////////////////////////////
 
-    if (search != null) this.filterCount++;
-    if (typ != null) this.filterCount++;
-    if (unchecked) this.filterCount++;
-    
     /////////////////////////////////////////////////////////////////
     // Betrag
     if (min != null && !(Double.isNaN(min.doubleValue())))
@@ -642,6 +632,17 @@ public class KontoauszugList extends UmsatzList
     }
     /////////////////////////////////////////////////////////////////
 
+    /////////////////////////////////////////////////////////////////
+    // Geprueft
+    if (unchecked)
+    {
+      this.filterCount++;
+      umsaetze.addFilter("(flags = ? OR flags = ?)",Umsatz.FLAG_NONE,Umsatz.FLAG_NOTBOOKED);
+    }
+    /////////////////////////////////////////////////////////////////
+
+    if (search != null) this.filterCount++;
+    if (typ != null) this.filterCount++;
 
     GUI.getView().setLogoText(this.filterCount > 0 ? i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)) : "");
     
@@ -674,12 +675,6 @@ public class KontoauszugList extends UmsatzList
         }
       }
       
-      if (unchecked)
-      {
-        // Nur ungepruefte anzeigen
-        if ((u.getFlags() & Umsatz.FLAG_CHECKED) != 0)
-          continue;
-      }
       result.add(u);
     }
     return result;
