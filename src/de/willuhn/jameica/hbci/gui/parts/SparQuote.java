@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/parts/SparQuote.java,v $
- * $Revision: 1.38 $
- * $Date: 2012/05/06 14:26:04 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
@@ -33,7 +27,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
@@ -280,14 +273,7 @@ public class SparQuote implements Part
 
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data,null);
-    this.table.addColumn(i18n.tr("Monat"), "monat", new Formatter() {
-      public String format(Object o)
-      {
-        if (o == null)
-          return "";
-        return DATEFORMAT.format((Date)o);
-      }
-    });
+    this.table.addColumn(i18n.tr("Monat"), "text");
     this.table.addColumn(i18n.tr("Einnahmen"), "einnahmen", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.addColumn(i18n.tr("Ausgaben"),  "ausgaben", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.addColumn(i18n.tr("Sparquote"), "sparquote", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
@@ -352,6 +338,48 @@ public class SparQuote implements Part
     this.data.clear();
     calculateRange();
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Wir iterieren erstmal ueber den Zeitraum und erzeugen die passenden Time-Boxen
+    Date from = DateUtil.startOfDay(start != null ? start : new Date());
+    
+    for (int i=0;i<1000;++i) // Wir machen keine Endlosschleife sondern hoeren bei maximal 1000 auf
+    {
+      // Wenn das Start-Datum in der Zukunft liegt, koennen wir aufhoeren
+      if (from.after(new Date()))
+        break;
+
+      UmsatzEntry e = new UmsatzEntry();
+      e.start = from;
+      e.text = DATEFORMAT.format(e.start);
+      
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(from);
+
+      // Anzahl der Monate fuer das Ende der Periode
+      cal.add(Calendar.MONTH,this.monate);
+
+      // Der Tag, ab dem die naechste Periode beginnt
+      if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+        cal.set(Calendar.DATE,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      else
+        cal.set(Calendar.DATE, stichtag);
+
+      // Merken wir uns fuer den naechsten Durchlauf
+      from = DateUtil.startOfDay(cal.getTime());
+      
+      // Das Ende des Vortages ist das Ende der aktuellen Periode
+      cal.add(Calendar.DATE,-1);
+      e.end = DateUtil.endOfDay(cal.getTime());
+
+      // Zur Liste hinzufuegen
+      this.data.add(e);
+    }
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Iterieren ueber die Umsaetze und einsortieren in die passende Timebox
+
     DBIterator umsaetze = UmsatzUtil.getUmsaetze();
     Object o = getKontoAuswahl().getValue();
     if (o != null && (o instanceof Konto))
@@ -362,10 +390,6 @@ public class SparQuote implements Part
     if (start != null)
       umsaetze.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
 
-    UmsatzEntry currentEntry = null;
-    Calendar cal             = Calendar.getInstance();
-    Date currentLimit        = null;
-
     while (umsaetze.hasNext())
     {
       Umsatz u = (Umsatz) umsaetze.next();
@@ -375,38 +399,23 @@ public class SparQuote implements Part
         Logger.warn("no date found for umsatz, skipping record");
         continue;
       }
-
-      if (currentLimit == null || date.after(currentLimit) || date.equals(currentLimit))
+      
+      UmsatzEntry e = this.getEntry(date);
+      if (e == null)
       {
-        // Wir haben das Limit erreicht. Also beginnen wir einen neuen Block
-        currentEntry = new UmsatzEntry();
-        currentEntry.monat = date;
-        if (currentEntry.monat != null)
-          currentEntry.text = DATEFORMAT.format(currentEntry.monat);
-        
-        this.data.add(currentEntry);
-
-        // BUGZILLA 337
-        // Neues Limit definieren
-        cal.setTime(date);
-        cal.add(Calendar.MONTH,this.monate);
-
-        // BUGZILLA 691
-        if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
-          cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-        else
-          cal.set(Calendar.DAY_OF_MONTH, stichtag);
-
-        currentLimit = DateUtil.startOfDay(cal.getTime());
+        Logger.warn("no matching entry found for umsatz, skipping record");
+        continue;
       }
-
+      
       double betrag = u.getBetrag();
       if (betrag > 0)
-        currentEntry.einnahmen += betrag;
+        e.einnahmen += betrag;
       else
-        currentEntry.ausgaben -= betrag;
+        e.ausgaben -= betrag;
+      //
+      ////////////////////////////////////////////////////////////////////////////
     }
-
+    
     // Trend ermitteln
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Glättungsverfahren
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Trend_und_Saisonkomponente
@@ -415,6 +424,25 @@ public class SparQuote implements Part
     for (int i=0;i<this.data.size();++i)
       this.trend.add(getDurchschnitt(this.data,i));
   }
+
+  /**
+   * Liefert den passenden Zeitraum fuer das Datum.
+   * @param date das Datum.
+   * @return der passende Zeitraum oder NULL, wenn keiner existiert.
+   */
+  private UmsatzEntry getEntry(Date date)
+  {
+    if (date == null)
+      return null;
+    
+    for (UmsatzEntry e:this.data)
+    {
+      if (!e.start.after(date) && !e.end.before(date))
+        return e;
+    }
+    return null;
+  }
+
 
   /**
    * Liefert einen synthetischen Umsatz-Entry basierend auf den
@@ -437,9 +465,9 @@ public class SparQuote implements Part
         ue.einnahmen += current.einnahmen;
         if (i == 0) // Als Monat verwenden wir genau den aus der Mitte
         {
-          ue.monat = current.monat;
-          if (ue.monat != null)
-            ue.text = DATEFORMAT.format(ue.monat);
+          ue.start = current.start;
+          ue.end = current.end;
+          ue.text = current.text;
         }
       }
       catch (IndexOutOfBoundsException e)
@@ -460,7 +488,8 @@ public class SparQuote implements Part
   {
     private double einnahmen = 0d;
     private double ausgaben  = 0d;
-    private Date monat       = null;
+    private Date start       = null;
+    private Date end         = null;
     private String text      = null;
 
     /**
@@ -470,6 +499,24 @@ public class SparQuote implements Part
     public double getEinnahmen()
     {
       return this.einnahmen;
+    }
+    
+    /**
+     * Liefert das Start-Datum.
+     * @return das Start-Datum.
+     */
+    public Date getStart()
+    {
+      return start;
+    }
+    
+    /**
+     * Liefert das End-Datum.
+     * @return das End-Datum.
+     */
+    public Date getEnd()
+    {
+      return end;
     }
 
     /**
@@ -481,15 +528,6 @@ public class SparQuote implements Part
       return this.ausgaben;
     }
 
-    /**
-     * Liefert den Monat.
-     * @return der Monat.
-     */
-    public Date getMonat()
-    {
-      return this.monat;
-    }
-    
     /**
      * Liefert den Text.
      * @return der Text.
@@ -549,7 +587,7 @@ public class SparQuote implements Part
      */
     public String getLabelAttribute() throws RemoteException
     {
-      return "monat";
+      return "start";
     }
 
     /**
