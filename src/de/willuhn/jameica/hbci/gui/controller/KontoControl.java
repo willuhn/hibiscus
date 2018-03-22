@@ -846,8 +846,7 @@ public class KontoControl extends AbstractControl
 		}
     catch (OperationCanceledException oce)
     {
-      Logger.info(oce.getMessage());
-      return;
+      Logger.info("operation cancelled");
     }
 		catch (ApplicationException ae)
 		{

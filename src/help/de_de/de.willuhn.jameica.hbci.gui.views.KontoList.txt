@@ -4,7 +4,7 @@
 	</p>
 
   <p>
-		Klicken Sie auf <b>Konten aus HBCI-Konfiguration laden...</b>,
+		Klicken Sie auf <b>Konten über den Bank-Zugang importieren...</b>,
 		um die Konten zu einem Bank-Zugang automatisch zu ermitteln - vergessen Sie nicht,
 		vorher einen Bank-Zugang anzulegen. Bereits eingerichtete Konten
 		werden hierbei nicht überschrieben.

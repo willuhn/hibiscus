@@ -186,6 +186,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       close();
       throw ae;
     }
+    catch (OperationCanceledException oce)
+    {
+      close();
+      throw oce;
+    }
 		catch (Exception e)
 		{
 			close();

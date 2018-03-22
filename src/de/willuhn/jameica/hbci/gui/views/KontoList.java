@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/KontoList.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/04/29 11:38:57 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
@@ -43,7 +37,7 @@ public class KontoList extends AbstractView
     control.getKontoListe().paint(getParent());
 
 		ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Konten aus HBCI-Konfiguration laden..."), new Action() {
+    buttons.addButton(i18n.tr("Konten über den Bank-Zugang importieren..."), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleReadFromPassport();
@@ -53,20 +47,3 @@ public class KontoList extends AbstractView
 		buttons.paint(getParent());
   }
 }
-
-
-/**********************************************************************
- * $Log: KontoList.java,v $
- * Revision 1.9  2011/04/29 11:38:57  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.8  2011-04-08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.7  2010-09-29 23:43:34  willuhn
- * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
- * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
- * @N Config-Test jetzt auch bei Schluesseldatei
- * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
- **********************************************************************/

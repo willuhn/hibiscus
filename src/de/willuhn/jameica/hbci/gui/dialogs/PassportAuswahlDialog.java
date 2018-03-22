@@ -106,7 +106,7 @@ public class PassportAuswahlDialog extends AbstractDialog
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        throw new OperationCanceledException();
+        throw new OperationCanceledException(i18n.tr("Vorgang abgebrochen"));
       }
     },null,false,"process-stop.png");
     
