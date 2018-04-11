@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/KeyPasswordLoadDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2011/05/24 09:06:11 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.rdh;
@@ -91,13 +86,13 @@ public class KeyPasswordLoadDialog extends PasswordDialog
     String text = null;
     if (s != null)
     {
-      setTitle(i18n.tr("Schlüsseldiskette. Konto: {0}",s));
-      text = i18n.tr("Bitte geben Sie das Passwort der Schlüsseldiskette ein.\nKonto: {0}",s);
+      setTitle(i18n.tr("Schlüsseldatei. Konto: {0}",s));
+      text = i18n.tr("Bitte geben Sie das Passwort der Schlüsseldatei ein.\nKonto: {0}",s);
     }
     else
     {
-      setTitle(i18n.tr("Schlüsseldiskette"));
-      text = i18n.tr("Bitte geben Sie das Passwort der Schlüsseldiskette ein.");
+      setTitle(i18n.tr("Schlüsseldatei"));
+      text = i18n.tr("Bitte geben Sie das Passwort der Schlüsseldatei ein.");
     }
     
     if (passport != null && (passport instanceof HBCIPassportRDHNew))
@@ -118,7 +113,7 @@ public class KeyPasswordLoadDialog extends PasswordDialog
     Part p = new Part() {
       public void paint(Composite parent) throws RemoteException
       {
-        String text = i18n.tr("Schlüssel-Datei: {0}",filename);
+        String text = i18n.tr("Schlüsseldatei: {0}",filename);
 
         final Label comment = new Label(parent,SWT.WRAP);
         comment.setText(text);
@@ -161,13 +156,3 @@ public class KeyPasswordLoadDialog extends PasswordDialog
 		return (i18n.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
 	}
 }
-
-
-/**********************************************************************
- * $Log: KeyPasswordLoadDialog.java,v $
- * Revision 1.1  2011/05/24 09:06:11  willuhn
- * @C Refactoring und Vereinfachung von HBCI-Callbacks
- *
- * Revision 1.8  2011-05-03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- **********************************************************************/

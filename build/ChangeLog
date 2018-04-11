@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * CHG: 0640 Begriff "Schlüsseldiskette" generell gegen "Schlüsseldatei" ersetzt
   * BUG: 0639 BUGZILLA 1842 - Sparquote: Wenn Stichtag am Ende des Monats definiert ist, kann es bei Konten mit sehr wenigen Buchungen vorkommen, dass eine Buchung dem falschen Auswertungsmonat zugeordnet wird
   * NEW: 0638 Beim Laden der Umsätze die Geprüft-Markierung (obwohl Bitmask) per SQL-Query filtern, um die zu übertragende Datenmenge bei externer MySQL-DB zu reduzieren
   * NEW: 0637 Neue HBCI4Java-Version 3.0.15-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/1bef1a798d4359e15fce65092a3d82630df2e6ec

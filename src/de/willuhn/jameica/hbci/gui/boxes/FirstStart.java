@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/boxes/FirstStart.java,v $
- * $Revision: 1.13 $
- * $Date: 2011/06/10 10:32:43 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -134,7 +129,7 @@ public class FirstStart extends AbstractBox
       Label desc = new Label(comp,SWT.WRAP);
       desc.setBackground(bg);
       desc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      desc.setText(i18n.tr("Bitte richten Sie zunächst einen Bank-Zugang (Chipkarte, Schlüsseldiskette oder PIN/TAN) ein.\n\n" +
+      desc.setText(i18n.tr("Bitte richten Sie zunächst einen Bank-Zugang (Chipkarte, Schlüsseldatei oder PIN/TAN) ein.\n\n" +
           "Wechseln Sie anschließend zur Konten-Übersicht und prüfen Sie die angelegten Konten. " +
           "Falls sie nicht automatisch angelegt wurden, dann erstellen Sie das Konto bitte manuell."));
     }
@@ -153,62 +148,3 @@ public class FirstStart extends AbstractBox
     return 180;
   }
 }
-
-
-/*********************************************************************
- * $Log: FirstStart.java,v $
- * Revision 1.13  2011/06/10 10:32:43  willuhn
- * @C In Ubuntu ist die Default-Schrift so gross, dass der Content nicht ganz rein passte
- *
- * Revision 1.12  2011-06-09 10:07:45  willuhn
- * @C Rahmen und Hintergrundfarbe nur unter Windows/OSX anzeigen
- *
- * Revision 1.11  2011-06-08 13:37:00  willuhn
- * @N Neuer First-Start-Assistent
- *
- * Revision 1.10  2011-05-03 11:07:39  willuhn
- * @N Styling-Fixes fuer Windows (Background)
- *
- * Revision 1.9  2011-04-29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.8  2010-09-29 22:03:05  willuhn
- * @N Kann ja noch weiter verkuerzt werden ;)
- *
- * Revision 1.7  2010-09-29 22:01:43  willuhn
- * @R Dialog nicht noetig - macht die Action intern ohnehin auch nochmal
- *
- * Revision 1.6  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.5  2008/04/15 16:16:34  willuhn
- * @B BUGZILLA 584
- *
- * Revision 1.4  2007/12/29 18:45:37  willuhn
- * @N Hoehe von Boxen explizit konfigurierbar
- *
- * Revision 1.3  2007/03/29 15:30:31  willuhn
- * @N Uebersichtlichere Darstellung der Systemstart-Meldungen
- * @C FirstStart-View bei Initialisierungsfehler nicht anzeigen
- *
- * Revision 1.2  2007/03/02 14:49:14  willuhn
- * @R removed old firststart view
- * @C do not show boxes on first start
- *
- * Revision 1.1  2006/06/29 23:10:33  willuhn
- * @R Box-System aus Hibiscus in Jameica-Source verschoben
- * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
- *
- * Revision 1.4  2006/01/18 00:51:00  willuhn
- * @B bug 65
- *
- * Revision 1.3  2005/10/17 15:12:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/10/17 15:11:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/10/17 14:15:01  willuhn
- * @N FirstStart
- *
- **********************************************************************/

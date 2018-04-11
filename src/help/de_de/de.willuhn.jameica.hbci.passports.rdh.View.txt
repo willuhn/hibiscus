@@ -8,7 +8,7 @@
 	</p>
 	
 	<p>
-	  Wenn Sie eine existierende Schlüssel-Datei (z.Bsp. aus einem anderen Programm) importieren möchten,
+	  Wenn Sie eine existierende Schlüsseldatei (z.Bsp. aus einem anderen Programm) importieren möchten,
 	  dann wählen Sie bitte <b>Schlüssel importieren</b>.
 	</p>
 	

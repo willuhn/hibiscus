@@ -5,7 +5,7 @@
 	
 	<p>
 	  Wählen Sie bitte den Button <b>Sicherheitsmedium einrichten</b>, um
-	  Ihren HBCI-Zugang via Chipkarte, Schlüsseldiskette oder PIN/TAN zu konfigurieren.
+	  Ihren HBCI-Zugang via Chipkarte, Schlüsseldatei oder PIN/TAN zu konfigurieren.
 	</p>
 	
 	<p>

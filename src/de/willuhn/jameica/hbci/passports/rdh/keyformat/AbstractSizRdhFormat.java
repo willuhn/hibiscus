@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/AbstractSizRdhFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/17 11:26:48 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -88,40 +83,10 @@ public abstract class AbstractSizRdhFormat implements KeyFormat
         break;
     }
     if (file == null)
-      throw new ApplicationException(res.getI18N().tr("SizRDH-Schlüsseldisketten werden für Ihr Betriebssystem nicht von Hibiscus unterstützt"));
+      throw new ApplicationException(res.getI18N().tr("SizRDH-Schlüsseldateien werden für Ihr Betriebssystem nicht von Hibiscus unterstützt"));
 
     file = mf.getPluginDir() + File.separator + "lib" + File.separator + file;
     Logger.info("using sizrdh native lib " + file);
     return file;
   }
 }
-
-
-/**********************************************************************
- * $Log: AbstractSizRdhFormat.java,v $
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.5  2009/03/29 22:25:56  willuhn
- * @B Warte-Dialog wurde nicht angezeigt, wenn Schluesseldiskette nicht eingelegt
- *
- * Revision 1.4  2008/11/17 23:23:27  willuhn
- * @N SizRDH nur noch fuer Win32 und Linux32 zulassen. Fuer alle anderen Plattformen haben wir sowieso keine Lib
- * @C Code zur Ermittlung des OS in Jameica verschoben
- *
- * Revision 1.3  2008/07/25 11:34:56  willuhn
- * @B Bugfixing
- *
- * Revision 1.2  2008/07/25 11:06:08  willuhn
- * @N RDH-2 Format
- * @C Haufenweise Code-Cleanup
- *
- * Revision 1.1  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- **********************************************************************/

@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/View.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/04/29 11:38:58 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.rdh;
@@ -35,13 +30,13 @@ public class View extends AbstractView
    */
   public void bind() throws Exception
   {
-		GUI.getView().setTitle(i18n.tr("Schlüsseldisketten"));
+		GUI.getView().setTitle(i18n.tr("Schlüsseldateien"));
 
 		final Controller control = new Controller(this);
 
     Container c = new SimpleContainer(getParent());
     c.addText(i18n.tr("Zum Erstellen eines neuen INI-Briefes klicken Sie auf \"Neuen Schlüssel erstellen\". " +
-    		              "Wenn Sie eine existierende Schlüssel-Datei (z.Bsp. aus einem anderen Programm) " +
+    		              "Wenn Sie eine existierende Schlüsseldatei (z.Bsp. aus einem anderen Programm) " +
     		              "importieren möchten, dann wählen Sie bitte \"Schlüssel importieren\"."),true);
 
 		ButtonArea buttons = new ButtonArea();
@@ -64,25 +59,3 @@ public class View extends AbstractView
     control.getKeyList().paint(getParent());
   }
 }
-
-
-/**********************************************************************
- * $Log: View.java,v $
- * Revision 1.3  2011/04/29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.2  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.11  2009/03/04 22:49:16  willuhn
- * @C INI-Brief anzeigen/drucken nur noch in Detail-Ansicht
- * @B falsche Button-Anzahl
- **********************************************************************/

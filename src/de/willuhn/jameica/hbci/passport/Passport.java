@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passport/Passport.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/04/29 09:17:35 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.passport;
@@ -56,7 +51,7 @@ public interface Passport extends Remote {
   /**
    * Liefert einen Info-Text, den die Passport-Klasse frei implementieren kann.
    * Sie kann hier z.Bsp. die Anzahl vorhandener PIN/TAN-Konfigurationen oder
-   * Schluesseldisketten zuruecklistern.
+   * Schluesseldateien zuruecklistern.
    * BUGZILLA 471
    * @return Info-Text zu dem Sicherheitsmedium.
    * @throws RemoteException
@@ -91,20 +86,3 @@ public interface Passport extends Remote {
    */
   public List<? extends Configuration> getConfigurations() throws RemoteException;
 }
-
-
-/**********************************************************************
- * $Log: Passport.java,v $
- * Revision 1.7  2011/04/29 09:17:35  willuhn
- * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
- * @R Passports sind keine UnicastRemote-Objekte mehr
- *
- * Revision 1.6  2010/04/22 12:42:03  willuhn
- * @N Erste Version des Supports fuer Offline-Konten
- *
- * Revision 1.5  2010/04/21 23:39:24  willuhn
- * @N Support fuer Offline-Konten
- *
- * Revision 1.4  2010/04/14 16:51:11  willuhn
- * @N BUGZILLA 471
- **********************************************************************/

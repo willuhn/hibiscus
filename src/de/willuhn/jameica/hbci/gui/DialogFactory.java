@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/DialogFactory.java,v $
- * $Revision: 1.43 $
- * $Date: 2011/08/05 11:21:59 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui;
@@ -333,7 +328,7 @@ public class DialogFactory
     if (passport instanceof HBCIPassportPinTan)
       key = ((HBCIPassportPinTan)passport).getFileName();
       
-    // Schluesseldiskette
+    // Schluesseldatei
     else if (passport instanceof AbstractRDHSWFileBasedPassport)
       key = ((AbstractRDHSWFileBasedPassport)passport).getFilename();
       

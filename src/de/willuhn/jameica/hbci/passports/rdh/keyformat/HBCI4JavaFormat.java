@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/keyformat/HBCI4JavaFormat.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/07/06 08:00:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -234,7 +229,7 @@ public class HBCI4JavaFormat implements KeyFormat
           InsertKeyDialog kd = new InsertKeyDialog(f);
           Boolean b = (Boolean) kd.open();
           if (b == null || !b.booleanValue())
-            throw new OperationCanceledException(i18n.tr("Schlüsseldiskette nicht eingelegt oder nicht lesbar"));
+            throw new OperationCanceledException(i18n.tr("Schlüsseldatei nicht eingelegt oder nicht lesbar"));
         }
       }
       
@@ -290,56 +285,3 @@ public class HBCI4JavaFormat implements KeyFormat
   }
 
 }
-
-
-/**********************************************************************
- * $Log: HBCI4JavaFormat.java,v $
- * Revision 1.4  2011/07/06 08:00:18  willuhn
- * @N Debug-Output
- *
- * Revision 1.3  2011-05-24 09:23:26  willuhn
- * @C Exception-Handling
- *
- * Revision 1.2  2010/06/17 17:20:58  willuhn
- * @N Exception-Handling beim Laden der Schluesseldatei ueberarbeitet - OperationCancelledException wird nun sauber behandelt - auch wenn sie in HBCI_Exceptions gekapselt ist
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.10  2010/06/14 22:47:53  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2009/11/02 23:05:55  willuhn
- * @B RDHX-Schluessel wurden als RDHNew angelegt - siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=62310#62310
- *
- * Revision 1.8  2009/04/14 08:37:52  willuhn
- * @N Neuer Schluessel im RDHNew-Format liess sich nicht mehr erstellen, da nach der Datei gefragt wurde
- *
- * Revision 1.7  2009/03/29 22:25:56  willuhn
- * @B Warte-Dialog wurde nicht angezeigt, wenn Schluesseldiskette nicht eingelegt
- *
- * Revision 1.6  2008/08/29 17:06:25  willuhn
- * @N InvalidPassphraseException beruecksichtigen
- *
- * Revision 1.5  2008/07/28 09:31:13  willuhn
- * @N Abfrage der HBCI-Version via Messaging
- *
- * Revision 1.4  2008/07/25 12:56:50  willuhn
- * @B Bugfixing
- *
- * Revision 1.3  2008/07/25 11:34:56  willuhn
- * @B Bugfixing
- *
- * Revision 1.2  2008/07/25 11:06:08  willuhn
- * @N RDH-2 Format
- * @C Haufenweise Code-Cleanup
- *
- * Revision 1.1  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- **********************************************************************/

@@ -1,6 +1,6 @@
 <form>
 	<p>
-		<span color="header" font="header">Details der Schlüsseldiskette</span>
+		<span color="header" font="header">Details der Schlüsseldatei</span>
 	</p>
 	
   <p>
@@ -15,10 +15,10 @@
 
   <p>
     Falls Sie bei einer Bank mehrere Konten mit verschiedenen
-    Schlüsseldisketten besitzen oder Ihre Bank für den HBCI-Zugang eine
+    Schlüsseldateien besitzen oder Ihre Bank für den HBCI-Zugang eine
     abweichende BLZ verwendet, dann können Sie in der Tabelle
     &quot;Fest zugeordnete Konten&quot; manuell einzelne Konten auswählen,
-    für die diese Schlüsseldiskette gelten soll. Auf diese Weise müssen Sie
+    für die diese Schlüsseldatei gelten soll. Auf diese Weise müssen Sie
     beim Ausführen von Geschäftsvorfällen nicht manuell die zu verwendende Datei
     wählen. Andernfalls können Sie die Auswahl freilassen. Sie werden dann
     bei der Ausführung eines HBCI-Auftrages zur Auswahl der zu verwendenden

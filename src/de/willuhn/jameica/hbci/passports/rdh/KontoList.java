@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/KontoList.java,v $
- * $Revision: 1.3 $
- * $Date: 2011/08/05 11:21:59 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -82,7 +77,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
-    // Liste der existierenden Konten mit Schluesseldiskette ermitteln
+    // Liste der existierenden Konten mit Schluesseldatei ermitteln
     // Davon ziehen wir die bereits verlinkten ab
     ArrayList konten = new ArrayList();
     DBIterator list = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
@@ -92,7 +87,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     {
       Konto k = (Konto) list.next();
       if (exclude.contains(k) != null)
-        continue; // Ist schon mit einer anderen Diskette verlinkt
+        continue; // Ist schon mit einer anderen Datei verlinkt
       konten.add(k);
     }
     /////////////////////////////////////////////////////////////////
@@ -119,26 +114,3 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
   }
 
 }
-
-
-/*********************************************************************
- * $Log: KontoList.java,v $
- * Revision 1.3  2011/08/05 11:21:59  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.2  2010-09-07 15:17:07  willuhn
- * @N GUI-Cleanup
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.1  2007/05/30 14:48:50  willuhn
- * @N Bug 314
- *
- **********************************************************************/

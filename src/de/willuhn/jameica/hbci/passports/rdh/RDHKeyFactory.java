@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/RDHKeyFactory.java,v $
- * $Revision: 1.4 $
- * $Date: 2012/03/28 22:47:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -230,7 +224,7 @@ public class RDHKeyFactory
 	{
 		GenericIterator i = getKeys();
 		if (!i.hasNext())
-			throw new ApplicationException(i18n.tr("Bitte erstellen Sie zuerst eine Schlüsseldiskette"));
+			throw new ApplicationException(i18n.tr("Bitte erstellen Sie zuerst eine Schlüsseldatei"));
 
     RDHKey key = null;
     
@@ -265,7 +259,7 @@ public class RDHKeyFactory
       return (RDHKey) keys.get(0);
 
     if (Application.inServerMode())
-      throw new ApplicationException(i18n.tr("Zu verwendende Schlüsseldiskette nicht eindeutig ermittelbar. Bitte fest verknüpfen"));
+      throw new ApplicationException(i18n.tr("Zu verwendende Schlüsseldatei nicht eindeutig ermittelbar. Bitte fest verknüpfen"));
 
     // Nicht eindeutig
     SelectKeyDialog d = new SelectKeyDialog(SelectKeyDialog.POSITION_CENTER);
@@ -280,7 +274,7 @@ public class RDHKeyFactory
     catch (Exception e)
     {
       Logger.error("error while choosing key",e);
-      throw new ApplicationException(i18n.tr("Fehler bei der Auswahl der Schlüsseldiskette"));
+      throw new ApplicationException(i18n.tr("Fehler bei der Auswahl der Schlüsseldatei"));
     }
 	}
 
@@ -372,145 +366,3 @@ public class RDHKeyFactory
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: RDHKeyFactory.java,v $
- * Revision 1.4  2012/03/28 22:47:18  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.3  2011-06-17 08:49:19  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.2  2011-04-26 12:15:51  willuhn
- * @B Potentielle Bugs gemaess Code-Checker
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.38  2009/03/29 22:25:56  willuhn
- * @B Warte-Dialog wurde nicht angezeigt, wenn Schluesseldiskette nicht eingelegt
- *
- * Revision 1.37  2009/03/29 22:04:21  willuhn
- * *** empty log message ***
- *
- * Revision 1.36  2008/10/01 12:03:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.35  2008/07/28 09:00:40  willuhn
- * @B NPE
- *
- * Revision 1.34  2008/07/28 08:35:44  willuhn
- * @N Finder-Methode fuer Schluesselformate in RDHKeyFactory verschoben
- *
- * Revision 1.33  2008/07/25 11:34:56  willuhn
- * @B Bugfixing
- *
- * Revision 1.32  2008/07/25 11:06:08  willuhn
- * @N RDH-2 Format
- * @C Haufenweise Code-Cleanup
- *
- * Revision 1.31  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- * Revision 1.30  2008/05/23 08:53:21  willuhn
- * @C Schluesseldateien beim Loeschen nicht mehr physisch loeschen
- *
- * Revision 1.29  2008/05/05 09:26:44  willuhn
- * @B currentHandle wurde nicht korrekt zurueckgesetzt
- *
- * Revision 1.28  2008/01/03 16:54:48  willuhn
- * @B Beim Editieren eine RDH-Passports wurde das zugehoerige PassportHandle nicht im Callback registriert - daher konnte der Benutzer nicht nach dem Passwort gefragt werden und Hibiscus hat nach einem dynamisch generierten Passwort gesucht, was fehlschlaegt
- *
- * Revision 1.27  2007/05/30 14:48:50  willuhn
- * @N Bug 314
- *
- * Revision 1.26  2006/10/12 11:29:17  willuhn
- * @B bug 289
- *
- * Revision 1.25  2006/10/10 23:24:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.24  2006/01/23 17:19:48  willuhn
- * @B bug 155
- *
- * Revision 1.23  2006/01/22 23:42:31  willuhn
- * @B bug 173
- *
- * Revision 1.22  2005/11/14 15:21:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.21  2005/11/14 12:22:31  willuhn
- * @B bug 148
- *
- * Revision 1.20  2005/11/14 11:00:18  willuhn
- * @B bug 148
- *
- * Revision 1.19  2005/06/23 22:39:44  web0
- * *** empty log message ***
- *
- * Revision 1.18  2005/06/21 21:45:06  web0
- * @B bug 80
- *
- * Revision 1.17  2005/06/21 20:18:48  web0
- * *** empty log message ***
- *
- * Revision 1.16  2005/06/13 09:56:25  web0
- * *** empty log message ***
- *
- * Revision 1.15  2005/06/13 09:34:21  web0
- * *** empty log message ***
- *
- * Revision 1.14  2005/06/06 22:57:53  web0
- * @B bug 72
- *
- * Revision 1.13  2005/03/11 02:44:17  web0
- * *** empty log message ***
- *
- * Revision 1.12  2005/03/09 01:07:16  web0
- * @D javadoc fixes
- *
- * Revision 1.11  2005/03/07 17:17:16  web0
- * *** empty log message ***
- *
- * Revision 1.10  2005/02/28 15:08:24  web0
- * @N autodetection of right key
- *
- * Revision 1.9  2005/02/20 19:04:21  willuhn
- * @B Bug 7
- *
- * Revision 1.8  2005/02/19 16:49:15  willuhn
- * @B bug 11
- *
- * Revision 1.7  2005/02/08 22:26:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2005/02/08 18:34:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/02/07 22:06:48  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2005/02/02 16:15:35  willuhn
- * @N Erstellung neuer Schluessel
- * @N Schluessel-Import
- * @N Schluessel-Auswahl
- * @N Passport scharfgeschaltet
- *
- * Revision 1.3  2005/02/01 18:26:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/01/09 23:21:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/01/09 18:48:27  willuhn
- * @N native lib for sizrdh
- *
- **********************************************************************/

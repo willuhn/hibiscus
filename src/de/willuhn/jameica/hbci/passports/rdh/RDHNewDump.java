@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/passports/rdh/RDHNewDump.java,v $
- * $Revision: 1.2 $
- * $Date: 2011/01/17 17:32:33 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -34,10 +29,10 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * Kleine dreckige Testklasse, um eine HBCI4Java-Schluesseldiskette
+ * Kleine dreckige Testklasse, um eine HBCI4Java-Schluesseldatei
  * zu entschluesseln und den XML-Inhalt unverschluesselt auf die
  * Console zu schreiben. Das Tool dient nur zu Debugging-Zwecken,
- * um mal nachschauen zu koennen, was genau in der Schluesseldiskette
+ * um mal nachschauen zu koennen, was genau in der Schluesseldatei
  * drin steht.
  * Der Code ist aus "HBCIPassportRDHNew" (HBCI4Java) zusammenkopiert.
  * Aufruf:
@@ -115,27 +110,3 @@ public class RDHNewDump
   }
 
 }
-
-
-/*********************************************************************
- * $Log: RDHNewDump.java,v $
- * Revision 1.2  2011/01/17 17:32:33  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.3  2007/07/11 17:21:44  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2007/07/11 17:21:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2007/07/11 17:19:39  willuhn
- * @N Tool, um den XML-Inhalt einer Schluesseldiskette auf der Konsole auszugeben
- *
- **********************************************************************/

@@ -2,6 +2,7 @@
  * 
  * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
 ****************************************************************************/
 package de.willuhn.jameica.hbci.passports.rdh.server;
@@ -95,7 +96,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       RDHKey activeKey = this.key != null ? this.key : RDHKeyFactory.findByKonto(passport != null ? passport.getKonto() : null);
       
       if (activeKey == null)
-        throw new ApplicationException(i18n.tr("Keine Schlüssel-Diskette für dieses Konto definiert"));
+        throw new ApplicationException(i18n.tr("Keine Schlüsseldatei für dieses Konto definiert"));
 
       String filename = activeKey.getFilename();
       
@@ -105,7 +106,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         InsertKeyDialog kd = new InsertKeyDialog(f);
         Boolean b = (Boolean) kd.open();
         if (b == null || !b.booleanValue())
-          throw new OperationCanceledException(i18n.tr("Schlüsseldiskette nicht eingelegt oder nicht lesbar"));
+          throw new OperationCanceledException(i18n.tr("Schlüsseldatei nicht eingelegt oder nicht lesbar"));
       }
       
       Logger.info("using passport file " + filename);
