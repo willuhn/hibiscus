@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0641 BUGZILLA 1843 - "Nur ungeprüfte Umsätze" Filter funktionierte nicht mehr seit "NEW: 0638" (fehlte ein NULL-Check)
   * CHG: 0640 Begriff "Schlüsseldiskette" generell gegen "Schlüsseldatei" ersetzt
   * BUG: 0639 BUGZILLA 1842 - Sparquote: Wenn Stichtag am Ende des Monats definiert ist, kann es bei Konten mit sehr wenigen Buchungen vorkommen, dass eine Buchung dem falschen Auswertungsmonat zugeordnet wird
   * NEW: 0638 Beim Laden der Umsätze die Geprüft-Markierung (obwohl Bitmask) per SQL-Query filtern, um die zu übertragende Datenmenge bei externer MySQL-DB zu reduzieren

@@ -637,7 +637,7 @@ public class KontoauszugList extends UmsatzList
     if (unchecked)
     {
       this.filterCount++;
-      umsaetze.addFilter("(flags = ? OR flags = ?)",Umsatz.FLAG_NONE,Umsatz.FLAG_NOTBOOKED);
+      umsaetze.addFilter("(flags IS NULL OR flags = ? OR flags = ?)",Umsatz.FLAG_NONE,Umsatz.FLAG_NOTBOOKED);
     }
     /////////////////////////////////////////////////////////////////
 
