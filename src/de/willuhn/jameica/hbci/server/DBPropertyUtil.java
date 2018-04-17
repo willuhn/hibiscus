@@ -2,23 +2,21 @@
  *
  * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.DBProperty;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.TypedProperties;
@@ -29,110 +27,126 @@ import de.willuhn.util.TypedProperties;
 public class DBPropertyUtil
 {
   /**
-   * Der Prefix fuer die BPD.
+   * Separator-Zeichen fuer die Properties.
    */
-  public final static String PREFIX_BPD = "bpd";
+  public final static char SEP = '.';
   
   /**
-   * Der Prefix fuer die UPD.
+   * Definition der Prefixe.
    */
-  public final static String PREFIX_UPD = "upd";
-  
-  /**
-   * Der Prefix fuer Meta-Daten.
-   */
-  public final static String PREFIX_META = "meta";
-  
-  
-  /**
-   * Query-Parameter fuer die BPD fuer "SEPA-Dauerauftrag aendern".
-   */
-  public final static String BPD_QUERY_SEPADAUER_EDIT = "Params%.DauerSEPAEditPar%.ParDauerSEPAEdit.%";
-  
-  /**
-   * Filter fuer die BPD-Eintraege, die in den Cache uebernommen werden sollen.
-   * Es werden nur jene Eintraege in die Datenbank uebernommen, deren Namen einen der folgenden String enthaelt.
-   */
-  public final static List<String> BPD_UPDATE_FILTER = new ArrayList<String>()
-  {{
-    add("ParDauerSEPAEdit");
-  }};
-
-  /**
-   * Liefert die BPD fuer das Konto und den angegebenen Suchfilter.
-   * @param konto das Konto.
-   * @param query Suchfilter.
-   * @return Liste der Properties.
-   * Die Schluesselnamen sind um alle Prefixe gekuerzt, enthalten also nur noch den
-   * eigentlichen Parameternamen wie etwas "maxusage".
-   * Die Funktion liefert nie NULL sondern hoechstens leere Properties.
-   * @throws RemoteException
-   */
-  public static TypedProperties getBPD(Konto konto, String query) throws RemoteException
+  public enum Prefix
   {
-    final TypedProperties props = new HBCITypedProperties();
-
-    // Konto angegeben?
-    if (konto == null || query == null || query.length() == 0)
-      return props;
+    /**
+     * Prefix fuer BPDs.
+     */
+    BPD("bpd",new HashSet(Arrays.asList("DauerSEPAEditPar","KontoauszugPar","KontoauszugPdfPar"))),
     
-    // Kundennummer korrekt?
-    String kd = konto.getKundennummer();
-    if (kd == null || kd.length() == 0 || !kd.trim().matches("[0-9a-zA-Z]{1,30}"))
-      return props;
-
-    // Wir haengen noch unseren Prefix vorn dran. Der wurde vom Callback hinzugefuegt
-    query = PREFIX_BPD + "." + kd.trim() + "." + query;
-
-    // Wir sortieren aufsteigend, da es pro BPD-Set (z.Bsp. in "%UebPar%") mehrere
-    // gibt (jeweils pro Segment-Version). HBCI4Java nimmt bei Geschaeftsvorfaellen
-    // immer die hoechste verfuegbare Segment-Version. Also machen wir das hier auch
-    Settings.getDBService().execute("select name,content from property where name like ? order by name",new String[]{query},new ResultSetExtractor()
+    /**
+     * Prefix fuer UPDs.
+     */
+    UPD("upd",null),
+    
+    /**
+     *  Prefix fuer Meta-Daten.
+     */
+    META("meta",null),
+    
+    ;
+    
+    private String value = null;
+    private Set<String> filter = null;
+    
+    /**
+     * ct.
+     * @param value der Wert des Prefix, mit dem er in der Datenbank erscheint.
+     * @param filter optionale Angabe von Filtern. Wenn welche angegeben sind, werden nur Parameter dieses Filters angelegt.
+     */
+    private Prefix(String value, Set<String> filter)
     {
-      public Object extract(ResultSet rs) throws RemoteException, SQLException
-      {
-        while (rs.next())
-        {
-          String name  = rs.getString(1);
-          String value = rs.getString(2);
-
-          if (name == null || value == null) continue;
-          
-          // Wir trimmen noch den Prefix aus dem Namen raus
-          name = name.substring(name.lastIndexOf('.')+1);
-          props.put(name,value);
-        }
-        return null;
-      }
-    });
+      this.value = value;
+      this.filter = filter;
+    }
     
-    return props;
+    /**
+     * Liefert den Wert des Prefix.
+     * @return der Wert des Prefix.
+     */
+    public String value()
+    {
+      return this.value;
+    }
+    
+    /**
+     * Liefert die optionalen Filter.
+     * @return die optionalen Filter.
+     */
+    private Set<String> getFilter()
+    {
+      return this.filter;
+    }
   }
-
+  
   /**
    * Legt ein Property neu an. Es wird vorher nicht gesucht, ob es bereits existiert.
+   * @param prefix der Prefix.
+   * @param scope der Scope.
+   * @param id optionale ID.
    * @param name Name des Property.
    * @param value Wert des Property.
+   * @return true, wenn der Parameter angelegt wurde.
    * @throws RemoteException
    */
-  public static void insert(String name, String value) throws RemoteException
+  public static boolean insert(Prefix prefix, String scope, String id, String name, String value) throws RemoteException
   {
     if (value == null)
-      return;
+      return false;
     
-    if (name == null)
+    if (prefix == null)
     {
-      Logger.warn("parameter name missing");
-      return;
+      Logger.warn("prefix missing");
+      return false;
+    }
+
+    if (scope == null || scope.length() == 0)
+    {
+      Logger.warn("scope missing");
+      return false;
+    }
+
+    if (name == null || name.length() == 0)
+    {
+      Logger.warn("name missing");
+      return false;
+    }
+
+    // Checken, ob Filter definiert sind
+    Set<String> filters = prefix.getFilter();
+    if (filters != null && filters.size() > 0)
+    {
+      boolean found = false;
+      // Pruefen, ob der Name im Filter enthalten ist
+      for (String filter:filters)
+      {
+        if (name.contains(filter))
+        {
+          found = true;
+          break;
+        }
+      }
+      
+      if (!found)
+        return false;
     }
     
     try
     {
+      String localName = createIdentifier(prefix,scope,id,name);
       DBService service = Settings.getDBService();
       DBProperty prop = (DBProperty) service.createObject(DBProperty.class,null);
-      prop.setName(name);
+      prop.setName(localName);
       prop.setValue(value);
       prop.store();
+      return true;
     }
     catch (ApplicationException ae)
     {
@@ -140,19 +154,57 @@ public class DBPropertyUtil
     }
   }
   
+  /**
+   * Liefert den passenden Identifier fuer den Datensatz.
+   * @param prefix der Prefix.
+   * @param scope der Scope.
+   * @param id die optionale ID.
+   * @param name der Name des Parameters.
+   * @return der Identifier.
+   */
+  private static String createIdentifier(Prefix prefix, String scope, String id, String name)
+  {
+    StringBuilder sb = new StringBuilder();
+    if (prefix != null)
+    {
+      sb.append(prefix.value());
+      sb.append(SEP);
+    }
+    if (scope != null && scope.length() > 0)
+    {
+      sb.append(scope);
+      sb.append(SEP);
+    }
+    if (id != null && id.length() > 0)
+    {
+      sb.append(id);
+      sb.append(SEP);
+    }
+    if (name != null && name.length() > 0)
+    {
+      sb.append(name);
+    }
+    
+    return sb.toString();
+  }
 
   /**
    * Speichert ein Property.
+   * @param prefix der Prefix.
+   * @param scope der Scope.
+   * @param id optionale ID.
    * @param name Name des Property.
    * @param value Wert des Property.
    * @throws RemoteException
    */
-  public static void set(String name, String value) throws RemoteException
+  public static void set(Prefix prefix, String scope, String id, String name, String value) throws RemoteException
   {
-    DBProperty prop = find(name);
+    String localname = createIdentifier(prefix,scope,id,name);
+    
+    DBProperty prop = find(localname);
     if (prop == null)
     {
-      Logger.warn("parameter name " + name + " invalid");
+      Logger.warn("parameter name " + localname + " invalid");
       return;
     }
 
@@ -181,14 +233,19 @@ public class DBPropertyUtil
   
   /**
    * Liefert den Wert des Parameters.
-   * @param name Name des Parameters.
+   * @param prefix der Prefix.
+   * @param scope der Scope.
+   * @param id optionale ID.
+   * @param name Name des Property.
    * @param defaultValue Default-Wert, wenn der Parameter nicht existiert oder keinen Wert hat.
    * @return Wert des Parameters.
    * @throws RemoteException
    */
-  public static String get(String name, String defaultValue) throws RemoteException
+  public static String get(Prefix prefix, String scope, String id, String name, String defaultValue) throws RemoteException
   {
-    DBProperty prop = find(name);
+    String localname = createIdentifier(prefix,scope,id,name);
+
+    DBProperty prop = find(localname);
     if (prop == null)
       return defaultValue;
     String value = prop.getValue();
@@ -201,15 +258,60 @@ public class DBPropertyUtil
    * @return die Anzahl der geloeschten Datensaetze.
    * @throws RemoteException
    */
-  public static int deleteAll(String prefix) throws RemoteException
+  public static int deleteAll(Prefix prefix) throws RemoteException
   {
-    if (prefix == null || prefix.length() == 0)
-      throw new RemoteException("no parameter prefix given");
+    if (prefix == null)
+      throw new RemoteException("no prefix given");
 
-    if (prefix.indexOf("%") != -1 || prefix.indexOf("_") != -1)
-      throw new RemoteException("no wildcards allowed in parameter prefix");
+    return Settings.getDBService().executeUpdate("delete from property where name like ?",prefix.value() + ".%");
+  }
+
+  /**
+   * Loescht alle passenden Parameter.
+   * @param prefix der Prefix.
+   * @param scope einschraenkender Scope.
+   * @return die Anzahl der geloeschten Datensaetze.
+   * @throws RemoteException
+   */
+  public static int deleteScope(Prefix prefix, String scope) throws RemoteException
+  {
+    if (prefix == null)
+      throw new RemoteException("no prefix given");
+
+    if (scope == null || scope.length() == 0)
+      throw new RemoteException("no scope given");
+
+    if (scope.indexOf("%") != -1 || scope.indexOf("_") != -1)
+      throw new RemoteException("no wildcards allowed in scope");
     
-    return Settings.getDBService().executeUpdate("delete from property where name like ?",prefix + ".%");
+    String localPrefix = prefix.value() + "." + scope;
+    return Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + ".%");
+  }
+
+  /**
+   * Loescht alle passenden Parameter, deren Namen mit dem angegebenen Prefix beginnt und die der Kundenkennung zugeordnet sind.
+   * @param prefix der Prefix.
+   * @param scope einschraenkender Scope.
+   * @param id optionale Angabe der ID.
+   * @return die Anzahl der geloeschten Datensaetze.
+   * @throws RemoteException
+   */
+  public static int delete(Prefix prefix, String scope, String id) throws RemoteException
+  {
+    if (prefix == null)
+      throw new RemoteException("no prefix given");
+
+    if (scope == null || scope.length() == 0)
+      throw new RemoteException("no scope given");
+
+    if (scope.indexOf("%") != -1 || scope.indexOf("_") != -1)
+      throw new RemoteException("no wildcards allowed in scope");
+
+    if (id != null && (id.indexOf("%") != -1 || scope.indexOf("_") != -1))
+      throw new RemoteException("no wildcards allowed in id");
+
+    String localPrefix = createIdentifier(prefix,scope,id,null);
+    return Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + ".%");
   }
 
   /**

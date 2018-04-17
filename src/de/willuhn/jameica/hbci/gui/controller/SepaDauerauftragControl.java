@@ -44,7 +44,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.BPDUtil;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragStore;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -122,7 +122,7 @@ public class SepaDauerauftragControl extends AbstractControl
 	  
 	  SepaDauerauftrag auftrag = this.getTransfer();
 	  if (auftrag.isActive())
-      this.bpd = DBPropertyUtil.getBPD(auftrag.getKonto(),DBPropertyUtil.BPD_QUERY_SEPADAUER_EDIT);
+      this.bpd = BPDUtil.getBPD(auftrag.getKonto(),BPDUtil.Query.DauerEdit);
 	  else
 	    this.bpd = new TypedProperties(); // Der Auftrag ist noch nicht aktiv - dann gibt es noch keine Einschraenkungen
 	  

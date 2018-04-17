@@ -23,7 +23,7 @@ import de.willuhn.logging.Logger;
  */
 public class CleanDBPropertiesMessageConsumer implements MessageConsumer
 {
-  private final static long bpdMaxAge = 14 * 24 * 60 * 60 * 1000L;
+  private final static long bpdMaxAge = 7 * 24 * 60 * 60 * 1000L;
   private final static Settings settings = new Settings(CleanDBPropertiesMessageConsumer.class);
   
   /**
@@ -68,12 +68,12 @@ public class CleanDBPropertiesMessageConsumer implements MessageConsumer
   {
     try
     {
-      // UPD loeschen. Werden nicht mehr gebraucht
-      if (settings.getString("upd.deleted",null) == null)
+      // UPD nur loeschen. wenn explizit angegeben. Aktualisiert wird der Cache ja trotzdem
+      if (settings.getBoolean("upd.delete",false))
       {
         Logger.info("deleting upd cache, no longer needed");
-        int count = DBPropertyUtil.deleteAll(DBPropertyUtil.PREFIX_UPD);
-        int v     = VersionUtil.deleteAll(de.willuhn.jameica.hbci.Settings.getDBService(),DBPropertyUtil.PREFIX_UPD);
+        int count = DBPropertyUtil.deleteAll(DBPropertyUtil.Prefix.UPD);
+        int v     = VersionUtil.deleteAll(de.willuhn.jameica.hbci.Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value());
         Logger.info("deleted upd cache entries: " + count + ", versions: " + v);
         settings.setAttribute("upd.deleted",HBCI.LONGDATEFORMAT.format(new Date()));
       }
@@ -84,8 +84,8 @@ public class CleanDBPropertiesMessageConsumer implements MessageConsumer
       if (timestamp == 0L || timestamp < (now - bpdMaxAge))
       {
         Logger.info("expiring bpd cache");
-        int count = DBPropertyUtil.deleteAll(DBPropertyUtil.PREFIX_BPD);
-        int v     = VersionUtil.deleteAll(de.willuhn.jameica.hbci.Settings.getDBService(),DBPropertyUtil.PREFIX_BPD);
+        int count = DBPropertyUtil.deleteAll(DBPropertyUtil.Prefix.BPD);
+        int v     = VersionUtil.deleteAll(de.willuhn.jameica.hbci.Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value());
         Logger.info("deleted bpd cache entries: " + count + ", versions: " + v);
         settings.setAttribute("bpd.deleted",now);
       }

@@ -36,11 +36,12 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
   {
     if (name == null || name.length() == 0)
       throw new RemoteException("no name given for meta attribute");
-    
-    if (this.getID() == null)
+
+    String id = this.getID();
+    if (id == null)
       return defaultValue;
-    
-    return DBPropertyUtil.get(this.getPrefix() + name,defaultValue);
+
+    return DBPropertyUtil.get(DBPropertyUtil.Prefix.META,this.getTableName(),id,name,defaultValue);
   }
 
   /**
@@ -50,24 +51,14 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
   {
     if (name == null || name.length() == 0)
       throw new RemoteException("no name given for meta attribute");
-    
-    DBPropertyUtil.set(this.getPrefix() + name,value);
-  }
-  
-  /**
-   * Liefert den Namens-Prefix fuer die Meta-Angaben der Bean.
-   * @return der Namens-Prefix.
-   * @throws RemoteException
-   */
-  private String getPrefix() throws RemoteException
-  {
+
     String id = this.getID();
     if (id == null)
       throw new RemoteException("entity has no id");
-    
-    return DBPropertyUtil.PREFIX_META + "." + this.getTableName() + "." + id + ".";
-  }
 
+    DBPropertyUtil.set(DBPropertyUtil.Prefix.META,this.getTableName(),id,name,value);
+  }
+  
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#delete()
    */
@@ -84,7 +75,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
       Application.getMessagingFactory().getMessagingQueue("hibiscus.dbobject.delete").sendSyncMessage(new QueryMessage(this));
 
       // Meta-Daten loeschen - muss NACH der Message erfolgen - sonst fehlen uns dort die Meta-Daten schon
-      DBPropertyUtil.deleteAll(this.getPrefix());
+      DBPropertyUtil.delete(DBPropertyUtil.Prefix.META,this.getTableName(),this.getID());
 
       super.delete();
       this.transactionCommit();

@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/HBCIProperties.java,v $
- * $Revision: 1.46 $
- * $Date: 2011/05/27 11:33:23 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci;
@@ -15,11 +10,15 @@ package de.willuhn.jameica.hbci;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.passport.HBCIPassport;
+import org.kapott.hbci.structures.Konto;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.jost_net.OBanToo.SEPA.IBANCode;
@@ -761,11 +760,43 @@ public class HBCIProperties
   {
     return DateUtil.endOfDay(date);
   }
+  
+  /**
+   * Ermittelt die Customer-IDs aus dem Passport.
+   * @param passport Passport.
+   * @return Liste der Customer-IDs.
+   */
+  public static Set<String> getCustomerIDs(HBCIPassport passport)
+  {
+    Konto[] accounts = passport.getAccounts();
+
+    // Zum Vermeiden von Doppeln
+    Set<String> set = new HashSet<String>();
+    
+    set.add(passport.getCustomerId()); // Die Customer-ID des Passport selbst auf jeden Fall auch
+
+    // Das macht HBCI4Java in passport.getCustomerId() genauso
+    // Wenn keine Customer-IDs vorhanden sind, wird die User-ID genommen
+    if (accounts == null || accounts.length == 0)
+    {
+      set.add(passport.getUserId());
+      return set;
+    }
+
+    // Und jetzt noch fuer die Kundenkennungen aller Konten.
+    for (int i=0;i<accounts.length;++i)
+    {
+      String value = accounts[i].customerid;
+      if (value != null)
+        set.add(value);
+    }
+    return set;
+  }
 
   // disabled
 	private HBCIProperties()
 	{
 	}
-
+	
 }
 

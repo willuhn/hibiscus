@@ -51,7 +51,7 @@ public class VersionUtil
   }
 
   /**
-   * Loescht alle Parameter, deren Namen mit dem angegebenen Prefix beginnt.
+   * Loescht alle Versionen, deren Namen mit dem angegebenen Prefix beginnt.
    * @param service der Datenbank-Service.
    * @param prefix der prefix.
    * @return die Anzahl der geloeschten Datensaetze.
@@ -60,12 +60,28 @@ public class VersionUtil
   public static int deleteAll(HBCIDBService service, String prefix) throws RemoteException
   {
     if (prefix == null || prefix.length() == 0)
-      throw new RemoteException("no parameter prefix given");
+      throw new RemoteException("no prefix given");
 
     if (prefix.indexOf("%") != -1 || prefix.indexOf("_") != -1)
-      throw new RemoteException("no wildcards allowed in parameter prefix");
+      throw new RemoteException("no wildcards allowed in prefix");
     
     return service.executeUpdate("delete from version where name like ?",prefix + ".%");
   }
 
+
+  /**
+   * Loescht die Version.
+   * @param service der Datenbank-Service.
+   * @param name der Name der Version.
+   * @return die Anzahl der geloeschten Datensaetze.
+   * @throws RemoteException
+   */
+  public static int delete(HBCIDBService service, String name) throws RemoteException
+  {
+    if (name == null || name.length() == 0)
+      throw new RemoteException("no name given");
+
+    int i = service.executeUpdate("delete from version where name = ?",name);
+    return i;
+  }
 }

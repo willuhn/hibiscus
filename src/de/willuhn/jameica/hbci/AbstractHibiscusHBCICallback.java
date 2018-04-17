@@ -8,18 +8,17 @@
 package de.willuhn.jameica.hbci;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.structures.Konto;
 
 import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
 import de.willuhn.jameica.hbci.server.VersionUtil;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
@@ -53,7 +52,7 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
     {
       final Properties data = passport.getBPD();
       final String version  = passport.getBPDVersion();
-      final String prefix   = DBPropertyUtil.PREFIX_BPD;
+      final Prefix prefix   = DBPropertyUtil.Prefix.BPD;
   
       String user = passport.getUserId();
       if (version == null || version.length() == 0 || user == null || user.length() == 0 || data == null || data.size() == 0)
@@ -63,7 +62,7 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
       }
       
       int nv = Integer.parseInt(version);
-      Version v = VersionUtil.getVersion(Settings.getDBService(),prefix + "." + user);
+      Version v = VersionUtil.getVersion(Settings.getDBService(),prefix.value() + "." + user);
       int cv = v.getVersion();
       
       // Keine neue Version
@@ -83,30 +82,26 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
       if (monitor != null)
         monitor.log(i18n.tr("Aktualisiere BPD"));
       Logger.info("got new " + prefix + " version. old: " + cv + ", new: " + nv + ", updating cache");
-      String[] customerID = getCustomerIDs(passport);
+      Set<String> customerIDs = HBCIProperties.getCustomerIDs(passport);
       
       int count = 0;
       
-      for (int i=0;i<customerID.length;++i)
+      for (String customerId:customerIDs)
       {
-        final String localPrefix = prefix + "." + customerID[i];
-        int deleted = DBPropertyUtil.deleteAll(localPrefix);
-        Logger.info("deleted " + deleted + " old entries");
+        int deleted = DBPropertyUtil.deleteScope(prefix,customerId);
+        Logger.info("deleted " + deleted + " old BPD cache entries");
         
         for (Enumeration keys = data.keys();keys.hasMoreElements();)
         {
           String name = (String) keys.nextElement();
-          if (updateBPD(name))
-          {
-            DBPropertyUtil.insert(localPrefix + "." + name,data.getProperty(name));
+          if (DBPropertyUtil.insert(prefix,customerId,null,name,data.getProperty(name)))
             count++;
             
-            if (count % 20 == 0 && monitor != null)
-              monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
-          }
+          if (count % 20 == 0 && monitor != null)
+            monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
         }
       }
-      Logger.info("created " + count + " new entries");
+      Logger.info("created " + count + " new BPD cache entries");
       
       // Speichern der neuen Versionsnummer
       v.setVersion(nv);
@@ -116,51 +111,6 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
     {
       Logger.error("error while updating bpd - will be ignored",e);
     }
-  }
-  
-  /**
-   * Liefert true, wenn der BPD-Parameter in den Cache uebernommen werden soll.
-   * @param name der zu pruefende Name.
-   * @return true, wenn der Parameter uebernommen werden soll.
-   */
-  private boolean updateBPD(String name)
-  {
-    name = StringUtils.trimToNull(name);
-    if (name == null)
-      return false;
-    
-    for (String s:DBPropertyUtil.BPD_UPDATE_FILTER)
-    {
-      if (name.contains(s))
-        return true;
-    }
-    
-    return false;
-  }
-  
-  /**
-   * Ermittelt die Customer-IDs aus dem Passport.
-   * @param passport Passport.
-   * @return Liste der Customer-IDs.
-   */
-  private String[] getCustomerIDs(HBCIPassport passport)
-  {
-    Konto[] accounts = passport.getAccounts();
-
-    // Das macht HBCI4Java in passport.getCustomerId() genauso
-    // Wenn keine Customer-IDs vorhanden sind, wird die User-ID genommen
-    if (accounts == null || accounts.length == 0)
-      return new String[]{passport.getUserId()};
-
-    // Hash zum Vermeiden von Doppeln
-    Hashtable values = new Hashtable();
-    for (int i=0;i<accounts.length;++i)
-    {
-      String value = accounts[i].customerid;
-      if (value != null)
-        values.put(value,value);
-    }
-    return (String[]) values.values().toArray(new String[values.size()]);
   }
   
   /**

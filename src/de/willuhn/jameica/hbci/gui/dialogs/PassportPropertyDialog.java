@@ -1,17 +1,14 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/PassportPropertyDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/05/16 09:55:29 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.gui.dialogs;
+
+import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
@@ -23,7 +20,11 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.PassportPropertyList;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.VersionUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -94,9 +95,22 @@ public class PassportPropertyDialog extends AbstractDialog
           ((AbstractHBCIPassport)passport).syncSysId();
           
           passport.saveChanges();
+
+          // BPD-Cache auch in der Datenbank loeschen
+          Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
+          for (String customerId:customerIds)
+          {
+            DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
+          }
+          
+          // Versionsnummer der BPD fuer den User loeschen, um das Neubefuellen des Cache zu forcieren
+          String user = passport.getUserId();
+          if (user != null && user.length() > 0)
+            VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + user);
+
+          // Aus der Tabelle in der Anzeige loeschen
           table.clearBPD();
           
-          // Noch aus der Tabelle loeschen
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("BPD gelöscht"),StatusBarMessage.TYPE_SUCCESS));
         }
         catch (OperationCanceledException oce)
@@ -123,24 +137,3 @@ public class PassportPropertyDialog extends AbstractDialog
   }
 
 }
-
-
-/**********************************************************************
- * $Log: PassportPropertyDialog.java,v $
- * Revision 1.4  2011/05/16 09:55:29  willuhn
- * @N Funktion zum Loeschen der BPD
- *
- * Revision 1.3  2011-05-06 12:35:24  willuhn
- * @R Nicht mehr noetig - macht AbstractDialog jetzt selbst
- *
- * Revision 1.2  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.1  2009/06/16 15:32:30  willuhn
- * *** empty log message ***
- *
- **********************************************************************/
