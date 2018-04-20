@@ -1,19 +1,15 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/views/UmsatzDetailEdit.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/04/08 15:19:13 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailEditControl;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -43,7 +39,16 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
         control.handleStore();
       }
     },null,true,"document-save.png");
-    
+
+    buttons.addButton(i18n.tr("Speichern und &Zurück"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (getControl().handleStore())
+          new Back().handleAction(context);
+      }
+    },null,true,"go-previous.png");
+
     Konto k = control.getUmsatz().getKonto();
     if (k != null && k.hasFlag(Konto.FLAG_OFFLINE))
     {
@@ -69,25 +74,3 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
     return this.control;
   }
 }
-
-
-/**********************************************************************
- * $Log: UmsatzDetailEdit.java,v $
- * Revision 1.4  2011/04/08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.3  2009/05/28 10:45:18  willuhn
- * @N more icons
- *
- * Revision 1.2  2009/01/20 10:51:46  willuhn
- * @N Mehr Icons - fuer Buttons
- *
- * Revision 1.1  2009/01/04 14:47:53  willuhn
- * @N Bearbeiten der Umsaetze nochmal ueberarbeitet - Codecleanup
- *
- * Revision 1.1  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- **********************************************************************/

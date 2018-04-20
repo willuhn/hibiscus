@@ -15,6 +15,7 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
@@ -80,17 +81,32 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     Button edit = new Button(i18n.tr("Bearbeiten"),new de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit(),u,false,"text-x-generic.png");
     edit.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
     buttons.addButton(edit);
-    
-    Button store = new Button(i18n.tr("&Speichern"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        getControl().handleStore();
-      }
-    },null,false,"document-save.png");
-    store.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
-    buttons.addButton(store);
 
+    {
+      Button store = new Button(i18n.tr("&Speichern"),new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          getControl().handleStore();
+        }
+      },null,false,"document-save.png");
+      store.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
+      buttons.addButton(store);
+    }
+
+    {
+      Button store = new Button(i18n.tr("Speichern und &Zurück"),new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          if (getControl().handleStore())
+            new Back().handleAction(context);
+        }
+      },null,true,"go-previous.png");
+      store.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
+      buttons.addButton(store);
+    }
+    
     buttons.paint(getParent());
   }
 
