@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -73,6 +74,22 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   protected void insertCheck() throws ApplicationException
   {
     try {
+      
+      Konto k = getKonto();
+
+      if (k == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
+      if (k.isNewObject())
+        throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
+      
+      String kiban = k.getIban();
+      if (kiban == null || kiban.length() == 0)
+        throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
+      
+      String bic = k.getBic();
+      if (bic == null || bic.length() == 0)
+        throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
+
       Date ersteZahlung = getErsteZahlung();
       Date letzteZahlung = getLetzteZahlung();
       
