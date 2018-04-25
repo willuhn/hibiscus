@@ -122,7 +122,7 @@ public class Detail extends AbstractView
       buttons.paint(getParent());
       
       // Ggf. angezeigten Fehlertext von vorher loeschen
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage("",StatusBarMessage.TYPE_SUCCESS));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage("Schlüsseldatei geladen",StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
     {

@@ -225,7 +225,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
    */
   protected class HBCIJobGroup extends JobGroup implements Closeable
   {
-    private List<AbstractHBCIJob> hbciJobs = new ArrayList<AbstractHBCIJob>();
     private PassportHandle handle = null;
     private HBCIHandler handler   = null;
 
@@ -259,8 +258,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       int step     = (int) ((chunk - 6) / this.jobs.size());
       ////////////////////////////////////////////////////////////////////
 
-      boolean haveError = false;
-      boolean inCatch   = false;
+      boolean ok      = true;
+      boolean inCatch = false;
 
       try
       {
@@ -275,6 +274,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         new TaskSepaInfo(handler).execute();
 
         Logger.info("processing jobs");
+        
+        List<AbstractHBCIJob> hbciJobs = new ArrayList<AbstractHBCIJob>();
         for (SynchronizeJob job:this.jobs)
         {
           this.checkInterrupted();
@@ -282,36 +283,17 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           for (AbstractHBCIJob hbciJob:list)
           {
             this.checkInterrupted();
-
             monitor.setStatusText(i18n.tr("Aktiviere HBCI-Job: \"{0}\"",job.getName()));
-            Logger.info("adding job " + hbciJob.getIdentifier() + " to queue");
-
-            HBCIJob j = handler.newJob(hbciJob.getIdentifier());
-            this.dumpJob(j);
-            hbciJob.setJob(j);
-            j.addToQueue();
-            this.hbciJobs.add(hbciJob);
-            if (hbciJob.isExclusive())
-            {
-              Logger.info("job will be executed in seperate hbci message");
-              handler.newMsg();
-            }
+            hbciJobs.add(hbciJob);
           }
           monitor.addPercentComplete(step);
         }
-
-        ////////////////////////////////////////////////////////////////////////
-        // Jobs ausfuehren
-        Logger.info("executing jobs");
-        monitor.setStatusText(i18n.tr("Führe HBCI-Jobs aus"));
-        this.handler.execute();
-        monitor.setStatusText(i18n.tr("HBCI-Jobs ausgeführt"));
-        //
-        ////////////////////////////////////////////////////////////////////////
+        
+        ok = this.executeJobs(monitor,hbciJobs,ok);
       }
       catch (Exception e)
       {
-        haveError = true;
+        ok = false;
         inCatch = true;
         throw e;
       }
@@ -320,56 +302,13 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         try
         {
           Application.getMessagingFactory().getMessagingQueue(HBCI_TRACE).sendMessage(new HBCITraceMessage(HBCITraceMessage.Type.CLOSE,this.getKonto().getID()));
-          String name = null;
-
-          // Waehrend der Ergebnis-Auswertung findet KEIN "checkInterrupted" Check statt,
-          // da sonst Job-Ergebnisse verloren gehen wuerden.
-
-          // //////////////////////////////////////////////////////////////////////
-          // Job-Ergebnisse auswerten.
-          // checkInterrupted wird hier nicht aufgerufen, um sicherzustellen, dass
-          // dieser Vorgang nicht abgebrochen wird.
-          for (AbstractHBCIJob hbciJob:this.hbciJobs)
-          {
-            try
-            {
-              name = hbciJob.getName();
-              monitor.setStatusText(i18n.tr("Werte Ergebnis von HBCI-Job \"{0}\" aus",name));
-              Logger.info("executing check for job " + hbciJob.getIdentifier());
-              hbciJob.handleResult();
-            }
-            catch (Throwable t)
-            {
-              haveError = true;
-              final boolean interrupted = HBCISynchronizeBackend.this.worker.isInterrupted();
-              
-              // Nur loggen, wenn wir nicht abgebrochen wurden. Waeren sonst nur Folgefehler
-              // Im Debug-Log erscheint es aber trotzdem
-              Logger.write(Level.DEBUG,"error while processing job result, have error: " + haveError + ", interrupted: " + interrupted,t);
-              if (!interrupted)
-              {
-                if (t instanceof ApplicationException)
-                {
-                  monitor.setStatusText(t.getMessage());
-                  Logger.warn(t.getMessage());
-                  Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
-                }
-                else
-                {
-                  monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
-                  Logger.error("error while processing job result",t);
-                  monitor.log(t.getMessage());
-                }
-              }
-            }
-          }
 
           monitor.addPercentComplete(3);
 
           final boolean interrupted = HBCISynchronizeBackend.this.worker.isInterrupted();
-          if (haveError || interrupted)
+          if (!ok || interrupted)
           {
-            Logger.warn("found errors or synchronization cancelled, mark PIN cache dirty [have error: " + haveError + ", interrupted: " + interrupted + "]");
+            Logger.warn("found errors or synchronization cancelled, mark PIN cache dirty [have error: " + (!ok) + ", interrupted: " + interrupted + "]");
             DialogFactory.dirtyPINCache(this.handler != null ? this.handler.getPassport() : null);
           }
 
@@ -379,7 +318,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
             // werfen die handleResult-Funktionen naemlich ohnehin Fehler. Die
             // interessieren beim Abbruch aber nicht.
             // Der Abbruch-Check kommt unten drunter
-            if (haveError && !interrupted)
+            if (!ok && !interrupted)
               throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
             //
             // //////////////////////////////////////////////////////////////////////
@@ -393,6 +332,102 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           IOUtil.close(this);
         }
       }
+    }
+    
+    /**
+     * Fuehrt die HBCI-Jobs aus.
+     * @param monitor der Monitor.
+     * @param hbciJobs die Jobs.
+     * @param ok der bisherige Erfolgsstatus.
+     * @return true, wenn sie erfolgreich ausgefuehrt wurden.
+     * throws Exception
+     */
+    private boolean executeJobs(ProgressMonitor monitor, List<AbstractHBCIJob> hbciJobs, boolean ok) throws Exception
+    {
+      try
+      {
+        for (AbstractHBCIJob hbciJob:hbciJobs)
+        {
+          this.checkInterrupted();
+
+          Logger.info("adding job " + hbciJob.getIdentifier() + " to queue");
+
+          HBCIJob j = handler.newJob(hbciJob.getIdentifier());
+          this.dumpJob(j);
+          hbciJob.setJob(j);
+          j.addToQueue();
+          if (hbciJob.isExclusive())
+          {
+            Logger.info("job will be executed in seperate hbci message");
+            handler.newMsg();
+          }
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        // Jobs ausfuehren
+        Logger.info("executing jobs");
+        monitor.setStatusText(i18n.tr("Führe HBCI-Jobs aus"));
+        this.handler.execute();
+        monitor.setStatusText(i18n.tr("HBCI-Jobs ausgeführt"));
+        //
+        ////////////////////////////////////////////////////////////////////////
+      }
+      finally
+      {
+        ////////////////////////////////////////////////////////////////////////
+        // Job-Ergebnisse auswerten.
+        // Waehrend der Ergebnis-Auswertung findet KEIN "checkInterrupted" Check statt,
+        // da sonst Job-Ergebnisse verloren gehen wuerden.
+        List<AbstractHBCIJob> followers = new ArrayList<AbstractHBCIJob>();
+        for (AbstractHBCIJob hbciJob:hbciJobs)
+        {
+          String name = null;
+          try
+          {
+            name = hbciJob.getName();
+            monitor.setStatusText(i18n.tr("Werte Ergebnis von HBCI-Job \"{0}\" aus",name));
+            Logger.info("executing check for job " + hbciJob.getIdentifier());
+            hbciJob.handleResult();
+
+            // Checken, ob wir Nachfolge-Jobs haben
+            List<AbstractHBCIJob> follower = hbciJob.getFollowerJobs();
+            if (follower != null && follower.size() > 0)
+              followers.addAll(follower);
+          }
+          catch (Throwable t)
+          {
+            ok = false;
+            final boolean interrupted = HBCISynchronizeBackend.this.worker.isInterrupted();
+            
+            // Nur loggen, wenn wir nicht abgebrochen wurden. Waeren sonst nur Folgefehler
+            // Im Debug-Log erscheint es aber trotzdem
+            Logger.write(Level.DEBUG,"error while processing job result, have error: " + (!ok) + ", interrupted: " + interrupted,t);
+            if (!interrupted)
+            {
+              if (t instanceof ApplicationException)
+              {
+                monitor.setStatusText(t.getMessage());
+                Logger.warn(t.getMessage());
+                Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
+              }
+              else
+              {
+                monitor.setStatusText(i18n.tr("Fehler beim Auswerten des HBCI-Auftrages {0}", name));
+                Logger.error("error while processing job result",t);
+                monitor.log(t.getMessage());
+              }
+            }
+          }
+        }
+
+        if (followers != null && followers.size() > 0)
+        {
+          Logger.info("executing follower jobs");
+          this.executeJobs(monitor, followers, ok);
+        }
+      }
+      
+      return ok;
     }
 
     /**

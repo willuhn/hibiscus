@@ -12,6 +12,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
+import org.kapott.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
@@ -24,6 +26,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.KontoType;
+import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
@@ -249,6 +252,45 @@ public class Converter
 
     auftrag.setTurnus(TurnusHelper.createByDauerAuftrag(d));
     return auftrag;
+  }
+  
+  /**
+   * Konvertiert einen abgerufenen Kontoauszug von HBCI4Java in  das Format von Hibiscus.
+   * Achtung: Die Binaer-Daten werden hierbei ignoriert. Es ist Aufgabe des Aufrufers, die
+   * passend zu speichern.
+   * @param kt das Konto, uber das die Kontoauszuege abgerufen wurden.
+   * @param k der Kontoauszug von HBCI4Java.
+   * @return der Kontoauszug von Hibiscus.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static Kontoauszug HBCIKontoauszug2HibiscusKontoauszug(de.willuhn.jameica.hbci.rmi.Konto kt, GVRKontoauszugEntry k)
+      throws RemoteException, ApplicationException
+  {
+    Kontoauszug kh = Settings.getDBService().createObject(Kontoauszug.class,null);
+    
+    kh.setBis(k.getEndDate());
+    kh.setDateiname(k.getFilename());
+    kh.setErstellungsdatum(k.getDate());
+    
+    Format f = k.getFormat();
+    kh.setFormat(f != null ? f.getCode() : null);
+    
+    int year = k.getYear();
+    kh.setJahr(year > 0 ? Integer.valueOf(year) : null);
+    
+    kh.setKonto(kt);
+    kh.setName1(k.getName());
+    kh.setName2(k.getName2());
+    kh.setName3(k.getName3());
+    
+    int number = k.getNumber();
+    kh.setNummer(number > 0 ? Integer.valueOf(number) : null);
+    
+    kh.setQuittungscode(k.getReceipt());
+    kh.setVon(k.getStartDate());
+    
+    return kh;
   }
 
   /**

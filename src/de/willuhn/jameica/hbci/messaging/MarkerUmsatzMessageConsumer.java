@@ -22,9 +22,9 @@ import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 
 /**
- * Markiert das Navigations-Element "Auswertungen->Kontoauszuege", wenn neue Umsaetze vorhanden sind.
+ * Markiert das Navigations-Element "Auswertungen->Umsaetze", wenn neue Umsaetze vorhanden sind.
  */
-public class MarkerUmsatzmessageConsumer implements MessageConsumer
+public class MarkerUmsatzMessageConsumer implements MessageConsumer
 {
   private DelayedListener listener = new DelayedListener(1000,new Worker());
   
@@ -77,7 +77,7 @@ public class MarkerUmsatzmessageConsumer implements MessageConsumer
       {
         GenericIterator i = NeueUmsaetze.getNeueUmsaetze();
         final int size = i.size();
-        GUI.getNavigation().setUnreadCount("hibiscus.navi.kontoauszug",size);
+        GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size);
       }
       catch (Throwable t) // wir fangen hier alles - fuer den Fall, dass die Jameica-Version noch kein "setUnreadCount" hat
       {

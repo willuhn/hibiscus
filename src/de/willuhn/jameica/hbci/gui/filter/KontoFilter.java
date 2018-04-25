@@ -18,6 +18,7 @@ import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Mit diesem Filter koennen einzelne Konten bei der Suche
@@ -179,6 +180,10 @@ public abstract class KontoFilter implements Filter<Konto>
           SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
           SynchronizeBackend backend = engine.getBackend(type,konto);
           return backend == null || backend.supports(type,konto);
+        }
+        catch (ApplicationException ae)
+        {
+          return false;
         }
         catch (Exception e)
         {

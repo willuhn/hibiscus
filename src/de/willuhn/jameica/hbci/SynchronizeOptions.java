@@ -89,6 +89,7 @@ public class SynchronizeOptions implements Serializable
   {
     return getSyncSaldo() ||
            getSyncKontoauszuege() ||
+           getSyncKontoauszuegePdf() ||
            getSyncSepaDauerauftraege() ||
            getSyncAuslandsUeberweisungen() ||
            getSyncSepaLastschriften();
@@ -102,6 +103,7 @@ public class SynchronizeOptions implements Serializable
   {
     this.setSyncSaldo(status);
     this.setSyncKontoauszuege(status);
+    this.setSyncKontoauszuegePdf(status);
     this.setSyncSepaDauerauftraege(status);
     this.setSyncAuslandsUeberweisungen(status);
     this.setSyncSepaLastschriften(status);
@@ -138,7 +140,16 @@ public class SynchronizeOptions implements Serializable
   {
     return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszug",settings.getBoolean("sync.konto.default.kontoauszug",true));
   }
-  
+
+  /**
+   * Prueft, ob die PDF-Kontoauszuege abgerufen werden sollen.
+   * @return true, wenn sie synchronisiert werden sollen.
+   */
+  public boolean getSyncKontoauszuegePdf()
+  {
+    return !this.disabled && settings.getBoolean("sync.konto." + id + ".kontoauszugpdf",settings.getBoolean("sync.konto.default.kontoauszugpdf",false));
+  }
+
   /**
    * Prueft, ob die SEPA-Dauerauftraege synchronisiert werden sollen.
    * @return true, wenn sie synchronisiert werden sollen.
@@ -216,6 +227,15 @@ public class SynchronizeOptions implements Serializable
   public void setSyncKontoauszuege(boolean b)
   {
     settings.setAttribute("sync.konto." + id + ".kontoauszug",b);
+  }
+  
+  /**
+   * Legt fest, ob die PDF-Kontoauszuege abgerufen werden sollen.
+   * @param b true, wenn sie synchronisiert werden sollen.
+   */
+  public void setSyncKontoauszuegePdf(boolean b)
+  {
+    settings.setAttribute("sync.konto." + id + ".kontoauszugpdf",b);
   }
   
   /**

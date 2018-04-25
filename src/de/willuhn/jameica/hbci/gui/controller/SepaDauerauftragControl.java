@@ -45,6 +45,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.BPDUtil;
+import de.willuhn.jameica.hbci.server.BPDUtil.Support;
 import de.willuhn.jameica.hbci.server.TurnusHelper;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragStore;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -122,9 +123,15 @@ public class SepaDauerauftragControl extends AbstractControl
 	  
 	  SepaDauerauftrag auftrag = this.getTransfer();
 	  if (auftrag.isActive())
-      this.bpd = BPDUtil.getBPD(auftrag.getKonto(),BPDUtil.Query.DauerEdit);
-	  else
-	    this.bpd = new TypedProperties(); // Der Auftrag ist noch nicht aktiv - dann gibt es noch keine Einschraenkungen
+	  {
+	    Support support = BPDUtil.getSupport(auftrag.getKonto(),BPDUtil.Query.DauerEdit);
+      this.bpd = support != null ? support.getBpd() : null;
+	  }
+
+	  
+    // Der Auftrag ist noch nicht aktiv oder wir konnten keine Einschraenkungen ermitteln
+	  if (this.bpd == null)
+	    this.bpd = new TypedProperties();
 	  
 	  return this.bpd;
 	}

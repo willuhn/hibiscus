@@ -7,28 +7,18 @@
 
 package de.willuhn.jameica.hbci;
 
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.Set;
-
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.callback.AbstractHBCICallback;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.passport.HBCIPassport;
 
-import de.willuhn.jameica.hbci.rmi.Version;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.BPDUtil;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
-import de.willuhn.jameica.hbci.server.VersionUtil;
-import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCITraceMessage;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCITraceMessage.Type;
-import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
-import de.willuhn.util.ProgressMonitor;
 
 /**
  * Abstrakte Basis-Implementierung des HBCI-Callback.
@@ -36,83 +26,26 @@ import de.willuhn.util.ProgressMonitor;
  */
 public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
-   * Speichert die BPD/UPD des Passports in der Hibiscus-Datenbank zwischen und aktualisiert sie automatisch bei Bedarf.
+   * Speichert die BPD des Passports in der Hibiscus-Datenbank zwischen und aktualisiert sie automatisch bei Bedarf.
    * Dadurch stehen sie in Hibiscus zur Verfuegung, ohne dass hierzu ein Passport geoeffnet werden muss.
    * @param passport der betreffende Passport.
    */
   protected void updateBPD(HBCIPassport passport)
   {
-    if (passport == null)
-      return;
-    
-    try
-    {
-      final Properties data = passport.getBPD();
-      final String version  = passport.getBPDVersion();
-      final Prefix prefix   = DBPropertyUtil.Prefix.BPD;
-  
-      String user = passport.getUserId();
-      if (version == null || version.length() == 0 || user == null || user.length() == 0 || data == null || data.size() == 0)
-      {
-        Logger.debug("[" + prefix + "] no version, no userid or no data found, skipping update");
-        return;
-      }
-      
-      int nv = Integer.parseInt(version);
-      Version v = VersionUtil.getVersion(Settings.getDBService(),prefix.value() + "." + user);
-      int cv = v.getVersion();
-      
-      // Keine neue Version
-      if (nv == cv)
-        return;
-      
-      if (cv < 0 || nv < 0)
-      {
-        Logger.warn("SUSPECT - " + prefix + " version smaller than zero. new: " + nv + ", current: " + cv);
-        return;
-      }
-  
-      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
-      ProgressMonitor monitor = session != null ? session.getProgressMonitor() : null;
-
-      if (monitor != null)
-        monitor.log(i18n.tr("Aktualisiere BPD"));
-      Logger.info("got new " + prefix + " version. old: " + cv + ", new: " + nv + ", updating cache");
-      Set<String> customerIDs = HBCIProperties.getCustomerIDs(passport);
-      
-      int count = 0;
-      
-      for (String customerId:customerIDs)
-      {
-        int deleted = DBPropertyUtil.deleteScope(prefix,customerId);
-        Logger.info("deleted " + deleted + " old BPD cache entries");
-        
-        for (Enumeration keys = data.keys();keys.hasMoreElements();)
-        {
-          String name = (String) keys.nextElement();
-          if (DBPropertyUtil.insert(prefix,customerId,null,name,data.getProperty(name)))
-            count++;
-            
-          if (count % 20 == 0 && monitor != null)
-            monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
-        }
-      }
-      Logger.info("created " + count + " new BPD cache entries");
-      
-      // Speichern der neuen Versionsnummer
-      v.setVersion(nv);
-      v.store();
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while updating bpd - will be ignored",e);
-    }
+    BPDUtil.updateCache(passport,Prefix.BPD);
   }
-  
+
+  /**
+   * Speichert die UPD des Passports in der Hibiscus-Datenbank zwischen und aktualisiert sie automatisch bei Bedarf.
+   * Dadurch stehen sie in Hibiscus zur Verfuegung, ohne dass hierzu ein Passport geoeffnet werden muss.
+   * @param passport der betreffende Passport.
+   */
+  protected void updateUPD(HBCIPassport passport)
+  {
+    BPDUtil.updateCache(passport,Prefix.UPD);
+  }
+
   /**
    * Protokolliert die Status-Info aus dem HBCI-Kernel.
    * @param text zu loggender Text.
@@ -174,6 +107,7 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
   
       case STATUS_INIT_UPD_DONE:
         status(HBCIUtilsInternal.getLocMsg("STATUS_REC_USER_DATA_DONE",passport.getUPDVersion()));
+        updateUPD(passport);
         break;
   
       case STATUS_LOCK_KEYS:
@@ -247,7 +181,11 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
       case STATUS_MSG_RAW_RECV:
         Application.getMessagingFactory().getMessagingQueue(HBCISynchronizeBackend.HBCI_TRACE).sendMessage(new HBCITraceMessage(Type.RECV,o[0].toString()));
         break;
-        
+
+      case STATUS_MSG_RAW_RECV_ENCRYPTED:
+        // ignorieren wir
+        break;
+
       default:
         Logger.warn("unknown callback status: " + statusTag);
     }

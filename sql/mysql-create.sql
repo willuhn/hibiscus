@@ -375,6 +375,31 @@ CREATE TABLE reminder (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE kontoauszug (
+  id int(10) AUTO_INCREMENT,
+  konto_id int(10) NOT NULL,
+  ausgefuehrt_am datetime,
+  kommentar TEXT,
+  pfad TEXT,
+  dateiname TEXT,
+  uuid varchar(255),
+  format varchar(5),
+  erstellungsdatum date,
+  von date,
+  bis date,
+  jahr int(4),
+  nummer int(5),
+  name1 varchar(255),
+  name2 varchar(255),
+  name3 varchar(255),
+  quittungscode TEXT,
+  quittiert_am datetime,
+  gelesen_am datetime,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+
 CREATE INDEX idx_lastschrift_konto ON lastschrift(konto_id);
 CREATE INDEX idx_sueberweisung_konto ON sueberweisung(konto_id);
 CREATE INDEX idx_umsatztyp_umsatztyp ON umsatztyp(parent_id);
@@ -394,6 +419,8 @@ CREATE INDEX idx_sepaslastbuchung_sepaslast ON sepaslastbuchung(sepaslast_id);
 CREATE INDEX idx_sepasueb_konto ON sepasueb(konto_id);
 CREATE INDEX idx_sepasuebbuchung_sepasueb ON sepasuebbuchung(sepasueb_id);
 CREATE INDEX idx_sepadauerauftrag_konto ON sepadauerauftrag(konto_id);
+CREATE INDEX idx_kontoauszug_konto ON kontoauszug(konto_id);
+CREATE INDEX idx_kontoauszug_gelesen ON kontoauszug(gelesen_am);
 
 ALTER TABLE lastschrift ADD CONSTRAINT fk_lastschrift_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_sueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
@@ -413,6 +440,7 @@ ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslastbuchung_sepaslast FOREIG
 ALTER TABLE sepasueb ADD CONSTRAINT fk_sepasueb_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasuebbuchung_sepasueb FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id);
 ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_sepadauerauftrag_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE kontoauszug ADD CONSTRAINT fk_kontoauszug_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;
@@ -442,4 +470,4 @@ ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
-INSERT INTO version (name,version) values ('db',61);
+INSERT INTO version (name,version) values ('db',62);

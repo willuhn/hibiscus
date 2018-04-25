@@ -375,6 +375,30 @@ CREATE TABLE reminder (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE kontoauszug (
+  id IDENTITY(1),
+  konto_id int(4) NOT NULL,
+  ausgefuehrt_am datetime,
+  kommentar varchar(1000),
+  pfad varchar(1000),
+  dateiname varchar(256),
+  uuid varchar(255),
+  format varchar(5),
+  erstellungsdatum date,
+  von date,
+  bis date,
+  jahr int(4),
+  nummer int(5),
+  name1 varchar(255),
+  name2 varchar(255),
+  name3 varchar(255),
+  quittungscode varchar(1000),
+  quittiert_am datetime,
+  gelesen_am datetime,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 
 ALTER TABLE ueberweisung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE umsatz ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
@@ -392,6 +416,7 @@ ALTER TABLE sepaslastbuchung ADD CONSTRAINT fk_sepaslast1 FOREIGN KEY (sepaslast
 ALTER TABLE sepasueb ADD CONSTRAINT fk_konto11 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasueb1 FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id) DEFERRABLE;
 ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_konto12 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE kontoauszug ADD CONSTRAINT fk_konto13 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;
@@ -418,6 +443,6 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',61);
+INSERT INTO version (name,version) values ('db',62);
   
 COMMIT;

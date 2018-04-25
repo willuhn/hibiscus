@@ -76,7 +76,7 @@ public class PassportPropertyDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
         String s = i18n.tr("Die BPD (Bank-Parameter-Daten) werden beim nächsten Verbindungsaufbau \n" +
-        		               "mit der Bank automatisch erneut abgerufen.\n\n" +
+        		               "mit der Bank automatisch (oder durch Klick auf \"Konfiguration testen\") erneut abgerufen.\n\n" +
         		               "Hinweis: Bei Verwendung einer Chipkarte müssen Sie gleich die PIN eingeben.\n\n" +
         		               "BPD jetzt löschen?");
         try
@@ -96,17 +96,21 @@ public class PassportPropertyDialog extends AbstractDialog
           
           passport.saveChanges();
 
-          // BPD-Cache auch in der Datenbank loeschen
+          // Caches loeschen
           Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
           for (String customerId:customerIds)
           {
             DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
+            DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
           }
-          
-          // Versionsnummer der BPD fuer den User loeschen, um das Neubefuellen des Cache zu forcieren
+
+          // Versionsnummer Caches loeschen, um das Neubefuellen des Cache zu forcieren
           String user = passport.getUserId();
           if (user != null && user.length() > 0)
+          {
             VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + user);
+            VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + user);
+          }
 
           // Aus der Tabelle in der Anzeige loeschen
           table.clearBPD();

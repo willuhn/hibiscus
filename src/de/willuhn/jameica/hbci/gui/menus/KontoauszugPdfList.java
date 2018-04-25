@@ -1,0 +1,88 @@
+/**********************************************************************
+ *
+ * Copyright (c) by Olaf Willuhn
+ * All rights reserved
+ * GPLv2
+ *
+ **********************************************************************/
+package de.willuhn.jameica.hbci.gui.menus;
+
+import java.rmi.RemoteException;
+
+import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchKontoauszug;
+import de.willuhn.jameica.hbci.gui.action.KontoKontoauszugReceipt;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugDelete;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugMarkRead;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugMarkUnread;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugOpen;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugSave;
+import de.willuhn.jameica.hbci.rmi.Kontoauszug;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
+
+/**
+ * Kontext-Menu, welches an Listen mit den Kontoauszuegen im PDF-Format gehangen werden kann.
+ * Es ist fix und fertig vorkonfiguriert und mit Elementen gefuellt.
+ */
+public class KontoauszugPdfList extends ContextMenu
+{
+	private final static I18N i18n	= Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  /**
+	 * Erzeugt ein Kontext-Menu fuer eine Liste von SEPA-Dauerauftraegen.
+	 */
+	public KontoauszugPdfList()
+	{
+		addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"),            new KontoauszugOpen(),"document-open.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Speichern unter..."),      new KontoauszugSave(),"document-save.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),              new KontoauszugDelete(),"user-trash-full.png"));
+		addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedContextMenuItem(i18n.tr("Als gelesen markieren"),   new KontoauszugMarkRead(),"emblem-default.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Als ungelesen markieren"), new KontoauszugMarkUnread(),"edit-undo.png"));
+    addItem(ContextMenuItem.SEPARATOR);
+    addItem(new ContextMenuItem(i18n.tr("Kontoauszüge abrufen..."),        new KontoFetchKontoauszug(),"mail-send-receive.png"));
+    addItem(new UnsentCheckedContextMenuItem(i18n.tr("Empfangsquittung senden..."), new KontoKontoauszugReceipt(),"mail-forward.png"));
+	}
+	
+	private class UnsentCheckedContextMenuItem extends CheckedSingleContextMenuItem
+	{
+	  /**
+     * ct.
+     * @param text
+     * @param a
+     * @param icon
+     */
+    public UnsentCheckedContextMenuItem(String text, Action a, String icon)
+    {
+      super(text, a, icon);
+    }
+
+    /**
+	   * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
+	   */
+	  @Override
+	  public boolean isEnabledFor(Object o)
+	  {
+	    if (!(o instanceof Kontoauszug))
+	      return false;
+	    
+	    try
+	    {
+	      Kontoauszug k = (Kontoauszug) o;
+	      return k.getQuittiertAm() == null && super.isEnabledFor(o);
+	    }
+	    catch (RemoteException re)
+	    {
+	      Logger.error("unable to check state",re);
+	      return false;
+	    }
+	  }
+	}
+}

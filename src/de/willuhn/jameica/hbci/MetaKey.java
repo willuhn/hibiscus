@@ -7,9 +7,12 @@
 
 package de.willuhn.jameica.hbci;
 
+import java.io.File;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
+import de.willuhn.jameica.hbci.rmi.KontoauszugInterval;
+import de.willuhn.jameica.system.Application;
 
 /**
  * Listet bekannte Meta-Keys, die zu Fachobjekten gespeichert werden koennen.
@@ -46,6 +49,51 @@ public enum MetaKey
    */
   SEPA_BATCHBOOK("sepa.batchbook", "Umsätze dieses Sammelauftrages",null),
 
+  /**
+   * Soll das Abrufen der Kontoauszuege auch dann erlaubt werden, wenn PDF nicht unterstuetzt wird?
+   */
+  KONTOAUSZUG_IGNORE_FORMAT("kontoauszug.ignoreformat","Auch abrufen, wenn Kontoauszug nicht unterstützt oder kein PDF-Format angeboten wird","false"),
+
+  /**
+   * Sollen Kontoauszuege beim Abruf sofort als gelesen markiert werden?
+   */
+  KONTOAUSZUG_MARK_READ("kontoauszug.markread","Automatisch als gelesen markieren","false"),
+
+  /**
+   * Sollen die Empfangsquittungen automatisch gesendet werden?
+   */
+  KONTOAUSZUG_SEND_RECEIPT("kontoauszug.send.receipt","Automatisch Empfangsquittung an Bank senden","true"),
+
+  /**
+   * Abruf-Intervall fuer die Kontoauszuege im PDF-Format.
+   */
+  KONTOAUSZUG_INTERVAL("kontoauszug.interval","Intervall",KontoauszugInterval.DEFAULT.getId()),
+  
+  /**
+   * Datum des letzten Abrufs der Kontoauszuege im PDF-Format.
+   */
+  KONTOAUSZUG_INTERVAL_LAST("kontoauszug.interval.last","Datum des letzten Abrufs",null),
+
+  /**
+   * True, wenn die Kontoauszuege per Messaging-Plugin gespeichert werden sollen.
+   */
+  KONTOAUSZUG_STORE_MESSAGING("kontoauszug.store.messaging","Kontoauszüge per Jameica Messaging speichern","false"),
+
+  /**
+   * Ordner, in dem die Kontoauszuege erstellt werden sollen.
+   */
+  KONTOAUSZUG_STORE_PATH("kontoauszug.store.path","Kontoauszüge speichern in",Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + File.separator + "kontoauszuege"),
+
+  /**
+   * Template fuer den Unter-Ordner.
+   */
+  KONTOAUSZUG_TEMPLATE_PATH("kontoauszug.template.path","Vorlage für Unterordner","${iban}" + File.separator + "${jahr}"),
+
+  /**
+   * Template fuer den Dateinamen.
+   */
+  KONTOAUSZUG_TEMPLATE_NAME("kontoauszug.template.name","Vorlage für Dateinamen","${jahr}-${nummer}"),
+
   ;
 
   private String name         = null;
@@ -81,6 +129,15 @@ public enum MetaKey
   public String getDescription()
   {
     return this.description;
+  }
+  
+  /**
+   * Liefert den Default-Wert.
+   * @return der Default-Wert.
+   */
+  public String getDefault()
+  {
+    return this.defaultValue;
   }
   
   /**

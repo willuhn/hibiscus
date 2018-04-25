@@ -19,6 +19,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
 import org.kapott.hbci.manager.HBCIUtilsInternal;
@@ -93,6 +94,17 @@ public abstract class AbstractHBCIJob
    * @return der zugehoerige Auftrag von Hibiscus - insofern verfuegbar.
    */
   protected abstract HibiscusDBObject getContext();
+  
+  /**
+   * Liefert ein oder mehrere Nachfolge-Jobs, die ausgefuehrt werden sollen, nachdem dieser ausgefuehrt wurde.
+   * @return ein oder mehrere Nachfolge-Jobs, die ausgefuehrt werden sollen, nachdem dieser ausgefuehrt wurde.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public List<AbstractHBCIJob> getFollowerJobs() throws RemoteException, ApplicationException
+  {
+    return null;
+  }
 
   /**
    * Wird aufgerufen, wenn der User den Vorgang abgebrochen hat.

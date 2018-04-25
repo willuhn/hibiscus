@@ -57,7 +57,8 @@
     <item id="hibiscus.navi"                                 name="Hibiscus"                 icon-close="folder.png" icon-open="folder-open.png">
       <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"             icon-close="seahorse-preferences.png"        action="de.willuhn.jameica.hbci.gui.action.PassportList" />
       <item id="hibiscus.navi.accounts"                      name="Konten"                   icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
-      <item id="hibiscus.navi.kontoauszug"                   name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugRpt" />
+      <item id="hibiscus.navi.umsatz"                        name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugList" />
+      <item id="hibiscus.navi.kontoauszug"                   name="Elektr. Kontoauszüge"     icon-close="application-pdf.png"             action="de.willuhn.jameica.hbci.gui.action.KontoauszugPdfList" />
       <item id="hibiscus.navi.addresses"                     name="Adressbuch"               icon-close="contact-new.png"                 action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item id="hibiscus.navi.sepatransfer"                  name="Zahlungsverkehr"          icon-close="folder.png" icon-open="folder-open.png">
         <item id="hibiscus.navi.transfer.uebforeign"         name="Überweisungen"            icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungList" />

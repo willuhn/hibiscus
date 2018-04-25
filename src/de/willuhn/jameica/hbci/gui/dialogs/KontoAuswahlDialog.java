@@ -47,6 +47,8 @@ public class KontoAuswahlDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
+  private final static int WINDOW_WIDTH = 500;
+  
   private String text        = null;
   private Konto choosen      = null;
   private Konto preselected  = null;
@@ -90,6 +92,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     this.preselected = preselected;
     this.filter      = filter;
     this.setTitle(i18n.tr("Konto-Auswahl"));
+    setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
   /**
@@ -117,7 +120,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     },null,false,"process-stop.png");
 		group.addButtonArea(b);
 		
-		getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
     getKontoAuswahl().focus(); // damit wir direkt mit dem Cursor die Auswahl treffen koennen
   }
 

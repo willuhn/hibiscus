@@ -2,6 +2,7 @@
  *
  * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
@@ -13,7 +14,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Action fuer die Kontoauszüge.
  */
-public class KontoauszugRpt implements Action
+public class KontoauszugList implements Action
 {
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)

@@ -15,6 +15,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
@@ -54,6 +55,7 @@ public class Open implements Action
     actionMap.put(Konto.class,                  KontoNew.class);
     actionMap.put(Umsatz.class,                 UmsatzDetail.class);
     actionMap.put(UmsatzTyp.class,              UmsatzTypNew.class);
+    actionMap.put(Kontoauszug.class,            KontoauszugOpen.class);
   }
   
   /**

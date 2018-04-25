@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/dialogs/SynchronizeOptionsDialog.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/05/20 16:22:31 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -37,6 +32,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
@@ -56,19 +52,20 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   
   private final static int WINDOW_WIDTH = 400;
   
-  private Konto konto                 = null;
-  private boolean offline             = false;
-  private boolean syncAvail           = false;
-  private SynchronizeOptions options  = null;
-  private CheckboxInput syncOffline   = null;
-  private CheckboxInput syncSaldo     = null;
-  private CheckboxInput syncUmsatz    = null;
-  private CheckboxInput syncAueb      = null;
-  private CheckboxInput syncSepaLast  = null;
-  private CheckboxInput syncSepaDauer = null;
-  private CheckboxInput syncMessages  = null;
-  private LabelInput error            = null;
-  private Button apply                = null;
+  private Konto konto                   = null;
+  private boolean offline               = false;
+  private boolean syncAvail             = false;
+  private SynchronizeOptions options    = null;
+  private CheckboxInput syncOffline     = null;
+  private CheckboxInput syncSaldo       = null;
+  private CheckboxInput syncUmsatz      = null;
+  private CheckboxInput syncKontoauszug = null;
+  private CheckboxInput syncAueb        = null;
+  private CheckboxInput syncSepaLast    = null;
+  private CheckboxInput syncSepaDauer   = null;
+  private CheckboxInput syncMessages    = null;
+  private LabelInput error              = null;
+  private Button apply                  = null;
   
   private List<Input> properties = new ArrayList<Input>();
 
@@ -170,6 +167,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         }
         else
         {
+          options.setSyncKontoauszuegePdf(((Boolean)getSyncKontoauszug().getValue()).booleanValue());
           options.setSyncMessages(((Boolean)getSyncMessages().getValue()).booleanValue());
           options.setSyncSepaDauerauftraege(((Boolean)getSyncSepaDauer().getValue()).booleanValue());
           options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
@@ -200,6 +198,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     Input i5 = this.getSyncSepaLast();
     Input i6 = this.getSyncSepaDauer();
     Input i7 = this.getSyncMessages();
+    Input i8 = this.getSyncKontoauszug();
     
     if (!offline || syncAvail)
     {
@@ -213,6 +212,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     }
     else
     {
+      group.addInput(i8);
       group.addInput(i4);
       group.addInput(i5);
       group.addInput(i6);
@@ -274,6 +274,29 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   }
 
   /**
+   * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Kontoauszuege im PDF-Format.
+   * @return Checkbox.
+   */
+  private CheckboxInput getSyncKontoauszug()
+  {
+    if (this.syncKontoauszug != null)
+      return this.syncKontoauszug;
+    
+    this.syncKontoauszug = new CheckboxInput(options.getSyncKontoauszuegePdf());
+    this.syncKontoauszug.setName(i18n.tr("Elektronischen Kontoauszug abrufen"));
+    
+    // Option fuer die PDF-Kontoauszuege nur aktivieren, wenn es laut BPD unterstuetzt wird
+    boolean supported = KontoauszugPdfUtil.supported(this.konto);
+    this.syncKontoauszug.setEnabled(supported);
+    
+    // Wenn es nicht unterstuetzt wird, nehmen wir auch das Haekchen raus. Egal, was der User eingestellt hatte
+    if (!supported)
+      this.syncKontoauszug.setValue(supported); 
+    
+    return this.syncKontoauszug;
+  }
+
+  /**
    * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der SEPA-Dauerauftraege.
    * @return Checkbox.
    */
@@ -332,6 +355,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     final Input i3 = getSyncAueb();
     final Input i4 = getSyncSepaLast();
     final Input i5 = getSyncSepaDauer();
+    final Input i6 = getSyncKontoauszug();
     
     // Wir haengen hier noch einen Listener dran, der bewirkt, dass die Option nur dann auswaehlbar ist,
     // wenn wenigstens ein HBCI-Geschaeftsvorfall durchgefuehrt wird
@@ -345,6 +369,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         b |= ((Boolean) i3.getValue()).booleanValue();
         b |= ((Boolean) i4.getValue()).booleanValue();
         b |= ((Boolean) i5.getValue()).booleanValue();
+        b |= ((Boolean) i6.getValue()).booleanValue();
         syncMessages.setEnabled(b);
       }
     };
@@ -354,6 +379,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     i3.addListener(l);
     i4.addListener(l);
     i5.addListener(l);
+    i6.addListener(l);
     
     // einmal initial ausloesen
     l.handleEvent(null);

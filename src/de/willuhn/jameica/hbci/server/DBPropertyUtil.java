@@ -44,7 +44,7 @@ public class DBPropertyUtil
     /**
      * Prefix fuer UPDs.
      */
-    UPD("upd",null),
+    UPD("upd",new HashSet(Arrays.asList("KInfo"))),
     
     /**
      *  Prefix fuer Meta-Daten.
