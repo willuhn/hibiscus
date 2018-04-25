@@ -447,7 +447,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     this.getIgnoreFormat().setEnabled(conditional);
 
     CheckboxInput messaging = this.getMessaging();
-    if (messaging != null & (Boolean) messaging.getValue())
+    if (messaging != null && (Boolean) messaging.getValue())
     {
       // Wir haben Messaging aktiv. Dann bleiben die Pfade ohnehin deaktiviert, egal,
       // was eingestellt ist.
