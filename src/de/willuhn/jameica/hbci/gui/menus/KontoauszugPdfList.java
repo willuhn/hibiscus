@@ -101,7 +101,7 @@ public class KontoauszugPdfList extends ContextMenu
 	    try
 	    {
 	      Kontoauszug k = (Kontoauszug) o;
-	      return k.getQuittiertAm() == null && super.isEnabledFor(o);
+	      return k.getQuittungscode() != null && k.getQuittiertAm() == null && super.isEnabledFor(o);
 	    }
 	    catch (RemoteException re)
 	    {
