@@ -141,15 +141,15 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
     GVRKontoauszug result = (GVRKontoauszug) getJobResult();
     List<GVRKontoauszugEntry> entries = result.getEntries();
     
+    // Datum des letzten Abrufs in den Meta-Daten speichern - auch dann, wenn keine neuen vorlagen
+    MetaKey.KONTOAUSZUG_INTERVAL_LAST.set(this.konto,HBCI.LONGDATEFORMAT.format(new Date()));
+    
     if (entries != null && entries.size() > 0)
     {
       for (GVRKontoauszugEntry entry:entries)
       {
         try
         {
-          // Datum des letzten Abrufs in den Meta-Daten speichern - auch dann, wenn keine neuen vorlagen
-          MetaKey.KONTOAUSZUG_INTERVAL_LAST.set(this.konto,HBCI.LONGDATEFORMAT.format(new Date()));
-
           byte[] data = entry.getData();
           if (data == null || data.length == 0)
           {
