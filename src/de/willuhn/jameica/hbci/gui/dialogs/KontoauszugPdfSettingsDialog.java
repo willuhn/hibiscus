@@ -106,7 +106,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     c.addInput(this.getIgnoreFormat());
     
     c.addHeadline(i18n.tr("Konto-Synchronisation"));
-    c.addText(i18n.tr("Wählen Sie das Intervall, in dem die elektronischen Kontoauszüge bei der Konto-Synchronisation mit abgerufen werden sollen." +
+    c.addText(i18n.tr("Wählen Sie das Intervall, in dem die elektronischen Kontoauszüge bei der Konto-Synchronisation mit abgerufen werden sollen. " +
                       "Sie können außerdem festlegen, ob die Kontoauszüge auch dann abgerufen werden sollen, wenn die Bank kein PDF-Format anbietet (sondern nur MT940)."),true,Color.COMMENT);
     c.addInput(this.getIntervall());
     c.addInput(this.getNextFetch());
