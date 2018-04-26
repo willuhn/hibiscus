@@ -1,16 +1,19 @@
 <form>
   <p>
-    <span color="header" font="header">PDF-Kontoauszüge</span>
+    <span color="header" font="header">Elektr. Kontoauszüge</span>
   </p>
   
   <p>
-    In dieser Liste sehen Sie die abgerufenen Kontoauszüge im PDF-Format, die den angegebenen Kriterien
+    In dieser Liste sehen Sie die abgerufenen elektronischen Kontoauszüge, die den angegebenen Kriterien
     entsprechen. Klicken Sie doppelt auf den gewünschten Kontoauszug, um diesen zu öffnen.
   </p>
   
-    <p>
+  <p>
     <b>Tipp:</b> Klicken Sie auf <b>Einstellungen</b>, um z.Bsp. das Abruf-Intervall oder
-    den Ablageort der PDF-Dateien zu konfigurieren.
+    den Ablageort der Dateien zu konfigurieren.
+  </p>
+  <p>
+    Weitere Informationen finden Sie im <a href="https://www.willuhn.de/wiki/doku.php?id=handbuch:kontoauszug">Handbuch</a>.
   </p>
   
 </form>
