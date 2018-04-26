@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.server.DBReminderImpl;
 import de.willuhn.jameica.hbci.server.DauerauftragImpl;
 import de.willuhn.jameica.hbci.server.HibiscusAddressImpl;
 import de.willuhn.jameica.hbci.server.KontoImpl;
+import de.willuhn.jameica.hbci.server.KontoauszugImpl;
 import de.willuhn.jameica.hbci.server.LastschriftImpl;
 import de.willuhn.jameica.hbci.server.NachrichtImpl;
 import de.willuhn.jameica.hbci.server.ProtokollImpl;
@@ -168,6 +169,10 @@ public class BackupCreate implements Action
           monitor.setStatusText(i18n.tr("Speichere SEPA-Sammelüberweisungen"));
           backup(SepaSammelUeberweisungImpl.class,writer,monitor);
           backup(SepaSammelUeberweisungBuchungImpl.class,writer,monitor);
+          monitor.addPercentComplete(5);
+
+          monitor.setStatusText(i18n.tr("Speichere Kontoauszüge"));
+          backup(KontoauszugImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Properties"));

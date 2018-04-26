@@ -15,37 +15,31 @@ import java.util.Map;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.serialize.ObjectFactory;
 import de.willuhn.datasource.serialize.Reader;
 import de.willuhn.datasource.serialize.XmlReader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
-import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Importer fuer das Hibiscus-eigene XML-Format.
+ * XML-Importer fuer Kontoauszuege.
  */
-public class XMLImporter implements Importer
+public class XMLKontoauszugImporter extends XMLImporter
 {
-
-  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
   /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
+   * @see de.willuhn.jameica.hbci.io.XMLImporter#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
    */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
 
@@ -63,7 +57,6 @@ public class XMLImporter implements Importer
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
-          // object.setID(id); // Keine ID angeben, da wir die Daten neu anlegen wollen
           Iterator i = values.keySet().iterator();
           while (i.hasNext())
           {
@@ -78,11 +71,31 @@ public class XMLImporter implements Importer
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
+
+      Konto konto = null;
+      if (context instanceof Konto)
+      {
+        konto = (Konto) context;
+      }
+      else
+      {
+        try
+        {
+          KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+          konto = (Konto) d.open();
+        }
+        catch (OperationCanceledException oce)
+        {
+          Logger.info("import cancelled");
+          return;
+        }
+      }
+      
       int created = 0;
       int error   = 0;
 
-      DBObject object = null;
-      while ((object = (DBObject) reader.read()) != null)
+      Kontoauszug ka = null;
+      while ((ka = (Kontoauszug) reader.read()) != null)
       {
         if (monitor != null)
         {
@@ -90,17 +103,20 @@ public class XMLImporter implements Importer
           if (created > 0 && created % 10 == 0) // nur geschaetzt
             monitor.addPercentComplete(1);
         }
-        
+
         if (t != null && t.isInterrupted())
           throw new OperationCanceledException();
 
         try
         {
-          object.store();
+          if (konto != null)
+            ka.setKonto(konto);
+          
+          ka.store();
           created++;
           try
           {
-            Application.getMessagingFactory().sendMessage(new ImportMessage(object));
+            Application.getMessagingFactory().sendMessage(new ImportMessage(ka));
           }
           catch (Exception ex)
           {
@@ -149,42 +165,20 @@ public class XMLImporter implements Importer
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
-  public String getName()
-  {
-    return i18n.tr("Hibiscus-Format");
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
   public IOFormat[] getIOFormats(Class objectType)
   {
-    if (!GenericObject.class.isAssignableFrom(objectType))
-      return null; // Import fuer alles moeglich, was von GenericObject abgeleitet ist
-    
-    // BUGZILLA 700
-    if (SammelTransfer.class.isAssignableFrom(objectType))
-      return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.
-
-    if (SepaSammelTransfer.class.isAssignableFrom(objectType))
-      return null; // Keine SEPA-Sammel-Auftraege - die muessen gesondert behandelt werden.
-
-    // BUGZILLA 1149
-    if (Umsatz.class.isAssignableFrom(objectType))
-      return null; // Keine Umsaetze - die muessen gesondert behandelt werden.
-
-    if (UmsatzTyp.class.isAssignableFrom(objectType))
-      return null; // Keine Kategorien - die muessen gesondert behandelt werden.
-
-    if (Kontoauszug.class.isAssignableFrom(objectType))
+    if (objectType == null)
       return null;
-
+    
+    if (!Kontoauszug.class.isAssignableFrom(objectType))
+      return null; // Nur fuer Umsaetze anbieten - fuer alle anderen tut es die Basis-Implementierung
+    
     IOFormat f = new IOFormat() {
       public String getName()
       {
-        return XMLImporter.this.getName();
+        return i18n.tr("Hibiscus-Format");
       }
 
       /**

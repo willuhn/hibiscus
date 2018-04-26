@@ -20,7 +20,7 @@ import de.willuhn.util.I18N;
  */
 public class Export implements Action
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private Class type = null;
   private Object data = null;
