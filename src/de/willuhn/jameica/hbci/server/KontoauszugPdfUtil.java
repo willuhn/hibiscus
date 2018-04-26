@@ -34,6 +34,7 @@ import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.MessagingAvailableConsumer;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
@@ -390,15 +391,15 @@ public class KontoauszugPdfUtil
       
       Integer i = ka != null && ka.getJahr() != null ? ka.getJahr() : null;
       ctx.put("jahr",i != null ? i.toString() : Integer.toString(cal.get(Calendar.YEAR)));
-      ctx.put("monat",Integer.toString(cal.get(Calendar.MONTH) + 1));
-      ctx.put("tag",Integer.toString(cal.get(Calendar.DATE)));
-      ctx.put("stunde",Integer.toString(cal.get(Calendar.HOUR_OF_DAY)));
-      ctx.put("minute",Integer.toString(cal.get(Calendar.MINUTE)));
+      ctx.put("monat",String.format("%02d",cal.get(Calendar.MONTH) + 1));
+      ctx.put("tag",String.format("%02d",cal.get(Calendar.DATE)));
+      ctx.put("stunde",String.format("%02d",cal.get(Calendar.HOUR_OF_DAY)));
+      ctx.put("minute",String.format("%02d",cal.get(Calendar.MINUTE)));
     }
     
     {
       Integer i = ka != null && ka.getNummer() != null ? ka.getNummer() : null;
-      ctx.put("nummer",i != null ? i.toString() : "1");
+      ctx.put("nummer",String.format("%03d",i != null ? i.intValue() : 1));
     }
 
     VelocityService velocity = Application.getBootLoader().getBootable(VelocityService.class);
@@ -481,9 +482,10 @@ public class KontoauszugPdfUtil
    */
   public static GenericIterator<Kontoauszug> getUnread() throws RemoteException
   {
-    DBIterator it = Settings.getDBService().createList(Kontoauszug.class);
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    DBIterator it = service.createList(Kontoauszug.class);
     it.addFilter("gelesen_am is null");
-    it.setOrder("order by erstellungsdatum desc");
+    it.setOrder("order by " + service.getSQLTimestamp("erstellungsdatum") + " desc");
     return it;
   }
   
@@ -498,7 +500,8 @@ public class KontoauszugPdfUtil
    */
   public static GenericIterator<Kontoauszug> getList(Object konto, Date from, Date to, boolean unread) throws RemoteException
   {
-    DBIterator it = Settings.getDBService().createList(Kontoauszug.class);
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    DBIterator it = service.createList(Kontoauszug.class);
     
     // Bei HKEKP in Segment-Version 1 wird gar kein Zeitraum mitgeliefert.
     // Daher nehmen wir dort das Abrufdatum
@@ -521,7 +524,10 @@ public class KontoauszugPdfUtil
     if (unread)
       it.addFilter("gelesen_am is null");
     
-    it.setOrder("order by jahr desc, nummer desc, erstellungsdatum desc, von desc, ausgefuehrt_am desc");
+    it.setOrder("order by jahr desc, nummer desc, " + 
+                service.getSQLTimestamp("erstellungsdatum") + " desc, " + 
+                service.getSQLTimestamp("von") + " desc, " + 
+                service.getSQLTimestamp("ausgefuehrt_am") + " desc");
     return it;
   }
   
