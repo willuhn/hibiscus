@@ -119,7 +119,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     c.addText(i18n.tr("Sie können die folgenden Platzhalter zur Benennung der Unterordner und Dateinamen " +
                       "verwenden:\n\n${iban}, ${bic}, ${jahr}, ${monat}, ${tag}, ${stunde}, ${minute}, ${nummer}\n\n" +
                       "Unterordner werden bei Bedarf automatisch erstellt. Lassen Sie die Vorlage für Unterordner " +
-                      "alternativ leer, wenn Sie diese nutzen möchten. " +
+                      "alternativ leer, wenn Sie diese nicht nutzen möchten. " +
                       "Die passende Dateiendung wird automatisch an den Dateinamen angehängt."),true, Color.COMMENT);
     if (MessagingAvailableConsumer.haveMessaging())
       c.addInput(this.getMessaging());
