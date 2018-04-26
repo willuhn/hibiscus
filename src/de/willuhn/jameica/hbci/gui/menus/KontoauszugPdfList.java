@@ -46,14 +46,34 @@ public class KontoauszugPdfList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Speichern unter..."),      new KontoauszugSave(),"document-save.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),              new KontoauszugDelete(),"user-trash-full.png"));
 		addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Als gelesen markieren"),   new KontoauszugMarkRead(),"emblem-default.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Als ungelesen markieren"), new KontoauszugMarkUnread(),"edit-undo.png"));
+    addItem(new SCCheckedContextMenuItem(i18n.tr("Als gelesen markieren"),   new KontoauszugMarkRead(),"emblem-default.png","ALT+G"));
+    addItem(new SCCheckedContextMenuItem(i18n.tr("Als ungelesen markieren"), new KontoauszugMarkUnread(),"edit-undo.png","CTRL+ALT+G"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Kontoauszüge abrufen..."),        new KontoFetchKontoauszug(),"mail-send-receive.png"));
     addItem(new UnsentCheckedContextMenuItem(i18n.tr("Empfangsquittung senden..."), new KontoKontoauszugReceipt(),"mail-forward.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),          new KontoauszugExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),                 new KontoauszugImport(),"document-open.png"));
+	}
+	
+	/**
+	 * Nimmt den Shortcut noch mit im Construktor auf.
+	 */
+	private class SCCheckedContextMenuItem extends CheckedContextMenuItem
+	{
+    /**
+     * ct.
+     * @param text
+     * @param a
+     * @param icon
+     * @param shortcut
+     */
+    public SCCheckedContextMenuItem(String text, Action a, String icon, String shortcut)
+    {
+      super(text, a, icon);
+      this.setShortcut(shortcut);
+    }
+	  
 	}
 	
 	private class UnsentCheckedContextMenuItem extends CheckedSingleContextMenuItem

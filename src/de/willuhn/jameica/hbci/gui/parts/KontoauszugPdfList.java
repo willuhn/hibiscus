@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
@@ -30,10 +31,13 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.TableChangeListener;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -84,6 +88,8 @@ public class KontoauszugPdfList extends TablePart
   {
     super(new KontoauszugOpen());
 
+    this.addFeature(new FeatureShortcut());
+
     this.listener = new Listener() {
       public void handleEvent(Event event) {
         // Wenn das event "null" ist, kann es nicht von SWT ausgeloest worden sein
@@ -102,7 +108,17 @@ public class KontoauszugPdfList extends TablePart
         try
         {
           Kontoauszug k = (Kontoauszug) item.getData();
-          item.setFont(k.getGelesenAm() == null ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
+          
+          if (k.getGelesenAm() != null)
+          {
+            item.setFont(Font.DEFAULT.getSWTFont());
+            item.setImage(0,SWTUtil.getImage("emblem-default.png"));
+          }
+          else
+          {
+            item.setFont(Font.BOLD.getSWTFont());
+            item.setImage(0,null); // Image wieder entfernen. Noetig, weil wir auch bei Updates aufgerufen werden
+          }
         }
         catch (RemoteException re)
         {
@@ -118,6 +134,7 @@ public class KontoauszugPdfList extends TablePart
     this.addColumn(i18n.tr("Erstellt am"),"erstellungsdatum",df);
     this.addColumn(i18n.tr("Abgerufen am"),"ausgefuehrt_am",df);
     this.addColumn(i18n.tr("Quittiert am"),"quittiert_am",df);
+    this.addColumn(i18n.tr("Notiz"),"kommentar",null,true);
 
     this.setRememberOrder(true);
     this.setRememberColWidths(true);
@@ -126,6 +143,27 @@ public class KontoauszugPdfList extends TablePart
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoauszugPdfList());
     
+    this.addChangeListener(new TableChangeListener() {
+      public void itemChanged(Object object, String attribute, String newValue) throws ApplicationException
+      {
+        try
+        {
+          Kontoauszug u = (Kontoauszug) object;
+          BeanUtil.set(u,attribute,newValue);
+          u.store();
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to apply changes",e);
+          throw new ApplicationException(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()));
+        }
+      }
+    });
+
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende Kontoauszuege
     // informiert werden.
     this.mc = new TransferMessageConsumer();
