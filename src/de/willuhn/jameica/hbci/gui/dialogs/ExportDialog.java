@@ -62,7 +62,10 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class ExportDialog extends AbstractDialog implements Extendable
 {
-  final static Settings SETTINGS = new Settings(ExportDialog.class);
+  /**
+   * Zugriff auf die Settings des Export-Dialogs.
+   */
+  public final static Settings SETTINGS = new Settings(ExportDialog.class);
   
   private final static int WINDOW_WIDTH = 420;
 
