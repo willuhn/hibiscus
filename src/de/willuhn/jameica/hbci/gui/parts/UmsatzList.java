@@ -252,21 +252,32 @@ public class UmsatzList extends TablePart implements Extendable
       
       // Andernfalls berechnen wir die Summe
       double sum = 0.0d;
+      double income = 0.0d;
+      double expenses = 0.0d;
       Umsatz[] list = (Umsatz[]) o;
       String curr = null;
       for (Umsatz u:list)
       {
         if (curr == null)
           curr = u.getKonto().getWaehrung();
-        sum += u.getBetrag();
+        
+        double betrag = u.getBetrag();
+        sum += betrag;
+        
+        if (betrag >= 0.01d)
+          income += betrag;
+        else
+          expenses += betrag;
       }
       if (curr == null)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
-      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}",new String[]{Integer.toString(size),
-                                                                              Integer.toString(list.length),
-                                                                              HBCI.DECIMALFORMAT.format(sum),
-                                                                              curr});
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {5}, Einnahmen: {3} {5}, Ausgaben: {4} {5}",new String[]{Integer.toString(size),
+                                                                                                        Integer.toString(list.length),
+                                                                                                        HBCI.DECIMALFORMAT.format(sum),
+                                                                                                        HBCI.DECIMALFORMAT.format(income),
+                                                                                                        HBCI.DECIMALFORMAT.format(Math.abs(expenses)),
+                                                                                                        curr});
     }
     catch (Exception e)
     {
