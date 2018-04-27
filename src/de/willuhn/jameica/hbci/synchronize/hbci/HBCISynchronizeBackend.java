@@ -280,10 +280,10 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         {
           this.checkInterrupted();
           AbstractHBCIJob[] list = ((HBCISynchronizeJob)job).createHBCIJobs();
+          monitor.setStatusText(i18n.tr("Aktiviere HBCI-Job: \"{0}\"",job.getName()));
           for (AbstractHBCIJob hbciJob:list)
           {
             this.checkInterrupted();
-            monitor.setStatusText(i18n.tr("Aktiviere HBCI-Job: \"{0}\"",job.getName()));
             hbciJobs.add(hbciJob);
           }
           monitor.addPercentComplete(step);
