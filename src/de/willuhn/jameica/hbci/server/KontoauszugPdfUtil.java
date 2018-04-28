@@ -386,10 +386,13 @@ public class KontoauszugPdfUtil
 
     {
       Calendar cal = Calendar.getInstance();
-      if (ka != null && ka.getErstellungsdatum() != null)
-        cal.setTime(ka.getErstellungsdatum());
-      else
-        cal.setTime(ka.getAusfuehrungsdatum());
+      if (ka != null)
+      {
+        if (ka.getErstellungsdatum() != null)
+          cal.setTime(ka.getErstellungsdatum());
+        else if (ka.getAusfuehrungsdatum() != null)
+          cal.setTime(ka.getAusfuehrungsdatum());
+      }
       
       Integer i = ka != null && ka.getJahr() != null ? ka.getJahr() : null;
       ctx.put("jahr",i != null ? i.toString() : Integer.toString(cal.get(Calendar.YEAR)));
