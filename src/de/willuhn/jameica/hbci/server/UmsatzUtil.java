@@ -8,11 +8,14 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
@@ -52,6 +55,35 @@ public class UmsatzUtil
   public static DBIterator getUmsaetzeBackwards() throws RemoteException
   {
     return getUmsaetze(true);
+  }
+  
+  /**
+   * Liefert das Datum des aeltesten Umsatzes auf dem Konto oder der Kontogruppe.
+   * @param kontoOrGroup Konto oder Name einer Kontogruppe.
+   * Optional. Wenn nichts angegeben ist, wird der aelteste Umsatz ueber alle Konten ermittelt.
+   * @return das Datum des aeltesten Umsatzes oder NULL, wenn keiner gefunden wurde.
+   * @throws RemoteException
+   */
+  public static Date getOldest(Object kontoOrGroup) throws RemoteException
+  {
+    String   query  = "select min(datum) from umsatz";
+    Object[] params = null;
+    if (kontoOrGroup != null && (kontoOrGroup instanceof Konto))
+      query += " where konto_id = " + ((Konto) kontoOrGroup).getID();
+    else if (kontoOrGroup != null && (kontoOrGroup instanceof String))
+    {
+      query += " where konto_id in (select id from konto where kategorie = ?)";
+      params = new String[]{(String) kontoOrGroup};
+    }
+    
+    return (Date) Settings.getDBService().execute(query,params,new ResultSetExtractor() {
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        if (!rs.next())
+          return null;
+        return rs.getDate(1);
+      }
+    });
   }
   
   /**

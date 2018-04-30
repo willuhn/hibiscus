@@ -129,7 +129,7 @@ public class SparQuote implements Part
     Integer days = (Integer) getStartAuswahl().getValue();
     if (days == null || days == -1)
     {
-      start = null;
+      start = UmsatzUtil.getOldest(getKontoAuswahl().getValue());
     }
     else
     {

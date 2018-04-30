@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: 0647 Wenn in der Auswertung "Sparquote" als Zeitraum "Alle Umsätze" ausgewählt wurde, wurde kein gültiges Startdatum ermittelt (Bug war in Zusammenhang mit BUGZILLA 1842 entstanden)
   * NEW: 0646 Zustand von "Summe-Zeile am Ende der Datei anfügen" und "Spalte 'Saldo' in Export ausblenden" im Export-Dialog speichern
   * NEW: 0645 In der Summenzeile der Umsätze auch die Summen der Einnahmen und Ausgaben der markierten Umsätze anzeigen
   * NEW: 0644 BUGZILLA 1231 - Elektronischer Kontoauszug via HKEKA/HKEKP

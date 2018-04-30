@@ -14,8 +14,6 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
@@ -26,7 +24,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.ScaleInput;
@@ -47,6 +44,7 @@ import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -257,26 +255,7 @@ public class SaldoChart implements Part
 
         if (start < 0)
         {
-          // Keine Anzahl von Tagen angegeben. Dann nehmen wir den
-          // aeltesten gefundenen Umsatz als Beginn
-          String   query  = "select min(datum) from umsatz";
-          Object[] params = null;
-          if (o != null && (o instanceof Konto))
-            query += " where konto_id = " + ((Konto) o).getID();
-          else if (o != null && (o instanceof String))
-          {
-            query += " where konto_id in (select id from konto where kategorie = ?)";
-            params = new String[]{(String) o};
-          }
-          
-          date = (Date) Settings.getDBService().execute(query,params,new ResultSetExtractor() {
-            public Object extract(ResultSet rs) throws RemoteException, SQLException
-            {
-              if (!rs.next())
-                return null;
-              return rs.getDate(1);
-            }
-          });
+          date = UmsatzUtil.getOldest(o);
         }
         else
         {
