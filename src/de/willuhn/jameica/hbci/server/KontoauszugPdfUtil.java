@@ -415,16 +415,35 @@ public class KontoauszugPdfUtil
     {
       if (path == null || path.length() == 0)
         path = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath();
-      sb.append(path).append(File.separator);
+      sb.append(path);
+      
+      if (!path.endsWith(File.separator))
+        sb.append(File.separator);
     }
     //
     /////////////////////////////
-    
+
     /////////////////////////////
     // Unter-Ordner
     {
       if (folder != null && folder.length() > 0)
-        sb.append(folder).append(File.separator);
+      {
+        try
+        {
+          // Velocity-Escaping machen wir. Das sollte der User nicht selbst machen muessen
+          // Eigentlich wird hier nur "\" gegen "\\" ersetzt. Die zusaetzlichen
+          // Die extra Escapings sind fuer Java selbst in String-Literalen.
+          folder = folder.replace("\\","\\\\");
+          folder = velocity.merge(folder,ctx);
+        }
+        catch (Exception e)
+        {
+          Logger.error("folder template invalid: \"" + folder + "\"",e);
+        }
+        sb.append(folder);
+        if (!folder.endsWith(File.separator))
+          sb.append(File.separator);
+      }
     }
     //
     /////////////////////////////
@@ -438,6 +457,14 @@ public class KontoauszugPdfUtil
       if (name == null || name.length() == 0)
         name = MetaKey.KONTOAUSZUG_TEMPLATE_NAME.getDefault();
       
+      try
+      {
+        name = velocity.merge(name,ctx);
+      }
+      catch (Exception e)
+      {
+        Logger.error("name template invalid: \"" + name + "\"",e);
+      }
       sb.append(name);
       
       // Dateiendung noch anhaengen.
@@ -449,21 +476,7 @@ public class KontoauszugPdfUtil
       sb.append(f.getExtention());
     }
 
-    String result = sb.toString();
-    try
-    {
-      // Velocity-Escaping machen wir. Das sollte der User nicht selbst machen muessen
-      // Eigentlich wird hier nur "\" gegen "\\" ersetzt. Die zusaetzlichen
-      // Die extra Escapings sind fuer Java selbst in String-Literalen.
-      result = result.replace("\\","\\\\");
-      result = velocity.merge(result,ctx);
-    }
-    catch (Exception e)
-    {
-      Logger.error("template invalid: \"" + result + "\"",e);
-    }
-
-    return result;
+    return sb.toString();
   }
   
   /**
