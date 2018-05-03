@@ -267,8 +267,11 @@ public class UmsatzTypControl extends AbstractControl
    */
   public UmsatzTypInput getParent() throws RemoteException
   {
-    if (this.parent == null)
-      this.parent = new UmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp(),UmsatzTyp.TYP_EGAL, false);
+    if (this.parent != null)
+      return this.parent;
+    
+    this.parent = new UmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp(),UmsatzTyp.TYP_EGAL, false);
+    this.parent.setComment("");
     return this.parent;
   }
 

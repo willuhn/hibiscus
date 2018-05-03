@@ -377,7 +377,7 @@ public class KontoauszugList extends UmsatzList
       preset = null; // wurde zwischenzeitlich geloescht
     this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL, true);
     this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
-    this.kategorie.setComment(null);
+    this.kategorie.setComment("");
     this.kategorie.addListener(this.listener);
     
     // Wenn in der Kategorie-Auswahl "<Alle Kategorien>" ausgewaehlt wurde, deaktivieren wir uns

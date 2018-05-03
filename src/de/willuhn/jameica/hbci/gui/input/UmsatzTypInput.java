@@ -8,21 +8,22 @@
 package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypBean;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -34,7 +35,9 @@ public class UmsatzTypInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private boolean haveComment = false;
+  private boolean haveComments      = false;
+  private boolean haveCustomComment = false;
+  private boolean haveAutoComment   = false;
 
   /**
    * ct.
@@ -91,9 +94,20 @@ public class UmsatzTypInput extends SelectInput
     this.setAttribute("indented");
     this.setName(i18n.tr("Umsatz-Kategorie"));
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
+    
+    // Checken, ob wir ueberhaupt irgendwelche Kategorien mit Kommentaren haben
+    this.haveComments = Settings.getDBService().execute("select count(id) from umsatztyp where kommentar is not null and kommentar != ''", null, new ResultSetExtractor() {
+      
+      @Override
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        return (rs.next() && rs.getInt(1) > 0 ? Boolean.TRUE : null);
+      }
+    }) != null;
+    
     refreshComment();
     
-    // Betrag aktualisieren
+    // Kommentar aktualisieren
     this.addListener(new Listener() {
     
       public void handleEvent(Event event)
@@ -120,8 +134,13 @@ public class UmsatzTypInput extends SelectInput
   @Override
   public void setComment(String comment)
   {
+    this.haveCustomComment = StringUtils.trimToNull(comment) != null;
+    this.haveAutoComment = this.haveComments && comment != null;
+
+    if (!this.haveCustomComment && !this.haveAutoComment)
+      return;
+    
     super.setComment(comment);
-    this.haveComment = StringUtils.trimToNull(comment) != null;
   }
   
   /**
@@ -129,9 +148,10 @@ public class UmsatzTypInput extends SelectInput
    */
   private void refreshComment()
   {
-    // Wir wuerden sonst u.U haufenweise Umsaetze und Kategorien laden, um die Summen
-    // zu ermitteln. Und am Ende wird der Kommentar gar nicht angezeigt.
-    if (!this.haveComment)
+    if (this.haveCustomComment)
+      return;
+    
+    if (!this.haveAutoComment)
       return;
     
     try
@@ -139,17 +159,22 @@ public class UmsatzTypInput extends SelectInput
       UmsatzTyp ut = (UmsatzTyp) getValue();
       if (ut == null)
       {
-        setComment("");
+        super.setComment("");
         return;
       }
       
-      Calendar cal = Calendar.getInstance();
-      setComment(i18n.tr("Umsatz im laufenden Monat: {0} {1}", new String[]{HBCI.DECIMALFORMAT.format(ut.getUmsatz(cal.get(Calendar.DAY_OF_MONTH))), HBCIProperties.CURRENCY_DEFAULT_DE}));
+      String comment = ut.getKommentar();
+      if (StringUtils.trimToNull(comment) == null)
+      {
+        super.setComment("");
+        return;
+      }
+      
+      super.setComment(StringUtils.abbreviateMiddle(comment,"...",40));
     }
     catch (Exception e)
     {
-      Logger.error("unable to refresh umsatz",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren des Umsatzes"), StatusBarMessage.TYPE_ERROR));
+      Logger.error("unable to refresh comment",e);
     }
   }
 }
