@@ -42,7 +42,6 @@ import de.willuhn.jameica.hbci.server.BPDUtil.Support;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -140,7 +139,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        throw new OperationCanceledException();
+        close();
       }
     },null,false,"window-close.png");
     c3.addButtonArea(buttons);
