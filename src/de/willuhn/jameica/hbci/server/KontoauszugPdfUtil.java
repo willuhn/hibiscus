@@ -698,6 +698,21 @@ public class KontoauszugPdfUtil
    */
   public static boolean supported(Konto k)
   {
+    if (k == null)
+    {
+      Logger.warn("no account given");
+      return false;
+    }
+
+    try
+    {
+      Logger.debug("checking HKEKP/HKEKA support for account: " + k != null ? k.getIban() : "<none>");
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine iban");
+    }
+    
     // Wenn HKEKP unterstuetzt wird, haben wir auf jeden Fall PDF
     Support support = BPDUtil.getSupport(k,BPDUtil.Query.KontoauszugPdf);
     if (support != null && support.isSupported())
@@ -780,9 +795,7 @@ public class KontoauszugPdfUtil
    */
   private static boolean conditionalSupport(String reason, boolean ignoreSupport)
   {
-    if (ignoreSupport)
-      Logger.debug(reason + " - but activation of account statements forced");
-    
+    Logger.debug(reason + " - support forced: " + ignoreSupport);
     return ignoreSupport;
   }
 }
