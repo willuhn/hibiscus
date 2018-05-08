@@ -706,7 +706,7 @@ public class KontoauszugPdfUtil
 
     try
     {
-      Logger.debug("checking HKEKP/HKEKA support for account: " + k != null ? k.getIban() : "<none>");
+      Logger.debug("checking HKEKP/HKEKA support for account: " + (k != null ? k.getIban() : "<none>"));
     }
     catch (RemoteException re)
     {
@@ -716,7 +716,10 @@ public class KontoauszugPdfUtil
     // Wenn HKEKP unterstuetzt wird, haben wir auf jeden Fall PDF
     Support support = BPDUtil.getSupport(k,BPDUtil.Query.KontoauszugPdf);
     if (support != null && support.isSupported())
+    {
+      Logger.debug("HKEKP supported");
       return true;
+    }
 
     boolean ignoreSupport = false;
     try
@@ -747,7 +750,10 @@ public class KontoauszugPdfUtil
       return conditionalSupport("BPD cache contains no information regarding supported formats of HKEKA",ignoreSupport);
     
     if (formats.contains(Format.PDF))
+    {
+      Logger.debug("HKEKA with PDF supported");
       return true;
+    }
      
     return conditionalSupport("HKEKA does not support PDF according to BPD",ignoreSupport);
   }
