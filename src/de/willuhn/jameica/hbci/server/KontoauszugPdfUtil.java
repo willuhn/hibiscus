@@ -431,9 +431,9 @@ public class KontoauszugPdfUtil
         try
         {
           // Velocity-Escaping machen wir. Das sollte der User nicht selbst machen muessen
-          // Eigentlich wird hier nur "\" gegen "\\" ersetzt. Die zusaetzlichen
+          // Eigentlich wird hier nur "\$" gegen "\\$" ersetzt. Die zusaetzlichen
           // Die extra Escapings sind fuer Java selbst in String-Literalen.
-          folder = folder.replace("\\","\\\\");
+          folder = folder.replace("\\$","\\\\$");
           folder = velocity.merge(folder,ctx);
         }
         catch (Exception e)
