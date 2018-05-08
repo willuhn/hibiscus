@@ -360,7 +360,6 @@ public class EmpfaengerList extends TablePart implements Part
    */
   private synchronized void reload()
   {
-    GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
     GUI.startSync(new Runnable() // Sanduhr anzeigen
     {
       public void run()
@@ -391,10 +390,6 @@ public class EmpfaengerList extends TablePart implements Part
         {
           Logger.error("error while reloading addresses",e);
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden der Adressen"), StatusBarMessage.TYPE_ERROR));
-        }
-        finally
-        {
-          GUI.getView().setLogoText("");
         }
       }
     });

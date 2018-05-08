@@ -337,8 +337,6 @@ public class KontoauszugPdfList extends TablePart
         }
       }
 
-      // Fehlertext "End-Datum muss ..." ggf. wieder entfernen
-      GUI.getView().setLogoText(i18n.tr("Aktualisiere Daten..."));
       GUI.startSync(new Runnable() //Sanduhr anzeigen
       {
         public void run()
@@ -363,10 +361,6 @@ public class KontoauszugPdfList extends TablePart
           {
             Logger.error("error while reloading table",e);
             Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
-          }
-          finally
-          {
-            GUI.getView().setLogoText("");
           }
         }
       });

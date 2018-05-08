@@ -233,7 +233,6 @@ public class KontoauszugList extends UmsatzList
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
-        GUI.getView().setLogoText(""); // Hinweis-Test wieder ausblenden BUGZILLA 449
         disposed = true;
       }
     });
@@ -644,7 +643,8 @@ public class KontoauszugList extends UmsatzList
     if (search != null) this.filterCount++;
     if (typ != null) this.filterCount++;
 
-    GUI.getView().setLogoText(this.filterCount > 0 ? i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)) : "");
+    if (this.filterCount > 0)
+    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)),StatusBarMessage.TYPE_INFO));
     
     if (search != null)
     {
@@ -807,7 +807,6 @@ public class KontoauszugList extends UmsatzList
     if (!force && !hasChanged())
       return;
     
-    GUI.getView().setLogoText(i18n.tr("Lade..."));
     GUI.getDisplay().asyncExec(new Runnable() {
       
       @Override
