@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.input.DirectoryInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
@@ -98,6 +99,8 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     Container c = new SimpleContainer(parent);
+    
+    c.addText(i18n.tr("Wählen Sie das Konto aus, für das Sie den Abruf der elektronischen Kontoauszüge konfigurieren möchten.\nFür weitere Informationen klicken Sie auf die Schaltfläche \"Hilfe\".") + "\n",true);
     c.addInput(this.getKontoAuswahl());
     
     c.addInput(this.getHinweise());
@@ -134,6 +137,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     
     Container c3 = new SimpleContainer(parent);
     ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("Hilfe") + "  ",new Program(),"http://www.willuhn.de/wiki/doku.php?id=handbuch:kontoauszug",false,"gtk-info.png");
     buttons.addButton(this.getApply());
     buttons.addButton(i18n.tr("Schließen"), new Action()
     {
