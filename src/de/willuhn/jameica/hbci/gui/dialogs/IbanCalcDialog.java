@@ -242,7 +242,7 @@ public class IbanCalcDialog extends AbstractDialog
           if (code != null && code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
           {
             msg.setColor(Color.COMMENT);
-            msg.setValue(i18n.tr("IBAN ermittelt, Prüfziffer jedoch nich kontrolliert"));
+            msg.setValue(i18n.tr("IBAN ermittelt, Prüfziffer jedoch nicht kontrolliert"));
           }
           else
           {
