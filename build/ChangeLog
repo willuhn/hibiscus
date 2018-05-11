@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+  * NEW: 0649 Neue HBCI4Java-Version 3.0.16-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/035342b8bd84574b914eb779cf836d00abbcd960
+  * NEW: 0648 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.06.2018
   * BUG: 0647 Wenn in der Auswertung "Sparquote" als Zeitraum "Alle Umsätze" ausgewählt wurde, wurde kein gültiges Startdatum ermittelt (Bug war in Zusammenhang mit BUGZILLA 1842 entstanden)
   * NEW: 0646 Zustand von "Summe-Zeile am Ende der Datei anfügen" und "Spalte 'Saldo' in Export ausblenden" im Export-Dialog speichern
   * NEW: 0645 In der Summenzeile der Umsätze auch die Summen der Einnahmen und Ausgaben der markierten Umsätze anzeigen
