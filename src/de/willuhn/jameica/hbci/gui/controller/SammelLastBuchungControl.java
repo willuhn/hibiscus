@@ -1,12 +1,12 @@
-/*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/gui/controller/SammelLastBuchungControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2011/05/10 11:41:30 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+/**********************************************************************
  *
-****************************************************************************/
+ * Copyright (c) 2004 Olaf Willuhn
+ * All rights reserved.
+ * 
+ * This software is copyrighted work licensed under the terms of the
+ * Jameica License.  Please consult the file "LICENSE" for details. 
+ *
+ **********************************************************************/
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;

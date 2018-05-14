@@ -1,12 +1,12 @@
-/*****************************************************************************
- * $Source: /cvsroot/hibiscus/hibiscus/src/de/willuhn/jameica/hbci/server/SammelLastschriftImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/01/31 14:14:14 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
+/**********************************************************************
  *
-****************************************************************************/
+ * Copyright (c) 2004 Olaf Willuhn
+ * All rights reserved.
+ * 
+ * This software is copyrighted work licensed under the terms of the
+ * Jameica License.  Please consult the file "LICENSE" for details. 
+ *
+ **********************************************************************/
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;

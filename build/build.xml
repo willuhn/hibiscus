@@ -144,6 +144,7 @@
 
     <copy file="plugin.xml" todir="${project.zipdir}" />
     <copy file="${basedir}/LICENSE" todir="${project.zipdir}" />
+    <copy file="${basedir}/COPYING" todir="${project.zipdir}" />
 
 
     <!-- Jetzt muessen wir noch das ZIP-File erzeugen und signieren -->
@@ -168,6 +169,7 @@
         <include name=".classpath" />
         <include name="plugin.xml" />
         <include name="LICENSE" />
+        <include name="COPYING" />
         <include name="${update.dir}/**" />
         <include name="${lib.dir}/**" />
         <include name="${src.dir}/**" />
