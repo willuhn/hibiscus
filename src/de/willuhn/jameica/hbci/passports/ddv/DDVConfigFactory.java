@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -238,20 +239,24 @@ public class DDVConfigFactory
         {
           try
           {
-            List<CardTerminal> terminals = TerminalFactory.getDefault().terminals().list();
-            // Eigentlich koennen wir hier pauschal den ersten gefundenen nehmen
-            if (terminals != null && terminals.size() > 0)
+            CardTerminals terminals = TerminalFactory.getDefault().terminals();
+            if (terminals != null)
             {
-              CardTerminal terminal = terminals.get(0);
-              String name = terminal.getName();
-              temp.setPCSCName(name);
-              
-              if (testConfig(monitor,temp))
+              List<CardTerminal> l = terminals.list();
+              // Eigentlich koennen wir hier pauschal den ersten gefundenen nehmen
+              if (l != null && l.size() > 0)
               {
-                // Wir kopieren die temporaere Config noch in eine richtige
-                DDVConfig config = temp.copy();
-                config.setName(name);
-                return config;
+                CardTerminal terminal = l.get(0);
+                String name = terminal.getName();
+                temp.setPCSCName(name);
+                
+                if (testConfig(monitor,temp))
+                {
+                  // Wir kopieren die temporaere Config noch in eine richtige
+                  DDVConfig config = temp.copy();
+                  config.setName(name);
+                  return config;
+                }
               }
             }
           }
