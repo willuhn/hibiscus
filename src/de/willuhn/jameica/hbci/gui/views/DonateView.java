@@ -133,7 +133,7 @@ public class DonateView extends AbstractView
             Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anlegen der SEPA-Überweisung: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
           }
         }
-      },null,false,"stock_next.png");
+      },null,false,"ueberweisung.png");
       buttons.paint(getParent());
     }
     
@@ -141,34 +141,3 @@ public class DonateView extends AbstractView
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: DonateView.java,v $
- * Revision 1.8  2011/04/08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.7  2010-10-07 10:25:09  willuhn
- * @C Bankverbindung geaendert
- *
- * Revision 1.6  2010-10-05 22:24:41  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2010-10-05 22:21:48  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2010-10-05 21:39:18  willuhn
- * @C Doppelte Spenden-Funktion entfernt - jetzt nur noch ueber die DonateView
- *
- * Revision 1.3  2010-08-26 14:13:44  willuhn
- * @N Besser 7 Tage Vorlauf
- *
- * Revision 1.2  2010-08-20 12:56:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2010-08-20 12:42:02  willuhn
- * @N Neuer Spenden-Aufruf. Ich bin gespannt, ob das klappt ;)
- *
- **********************************************************************/

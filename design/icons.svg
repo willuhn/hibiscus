@@ -1,0 +1,2248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="hibiscus-icons.svg"
+   inkscape:export-filename="/home/willuhn/download/bitmap.png"
+   inkscape:export-xdpi="25.4"
+   inkscape:export-ydpi="25.4">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3133">
+      <stop
+         style="stop-color:#d40000;stop-opacity:1;"
+         offset="0"
+         id="stop3129" />
+      <stop
+         style="stop-color:#ff7a7a;stop-opacity:0.97297299"
+         offset="1"
+         id="stop3131" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2851"
+       inkscape:collect="always">
+      <stop
+         id="stop2847"
+         offset="0"
+         style="stop-color:#4d4d4d;stop-opacity:1" />
+      <stop
+         id="stop2849"
+         offset="1"
+         style="stop-color:#c3c3c3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
+       id="border"
+       inkscape:collect="always">
+      <stop
+         id="stop2683"
+         offset="0"
+         style="stop-color:#ffffff;stop-opacity:1" />
+      <stop
+         id="stop2685"
+         offset="1"
+         style="stop-color:#d7d7d7;stop-opacity:1" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path881"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#5e739b;stroke-opacity:1;fill:#5e739b;fill-opacity:1"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Send"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Send"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path887"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#7b7b7b;stroke-opacity:1;fill:#7b7b7b;fill-opacity:1"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.3) rotate(180) translate(-2.3,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Send"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path869"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#7b7b7b;stroke-width:1pt;stroke-opacity:1;fill:#7b7b7b;fill-opacity:1"
+         transform="scale(0.2) rotate(180) translate(6,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Mend"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path863"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#7b7b7b;stroke-width:1pt;stroke-opacity:1;fill:#7b7b7b;fill-opacity:1"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path857"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#7b7b7b;stroke-width:1pt;stroke-opacity:1;fill:#7b7b7b;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2662"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2717"
+       x1="34.183128"
+       y1="35.788937"
+       x2="17.894779"
+       y2="7.440722"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2760"
+       gradientUnits="userSpaceOnUse"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688"
+       gradientTransform="matrix(-1,0,0,1,79.903106,0)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2762"
+       gradientUnits="userSpaceOnUse"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083"
+       gradientTransform="matrix(-1,0,0,1,79.903106,0)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2766"
+       gradientUnits="userSpaceOnUse"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957"
+       gradientTransform="translate(77.508163)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2768"
+       gradientUnits="userSpaceOnUse"
+       x1="28.891462"
+       y1="28.607389"
+       x2="17.894779"
+       y2="7.440722"
+       gradientTransform="translate(77.508163)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2772"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,0)"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2774"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,0)"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2782"
+       x1="192.92358"
+       y1="26.719812"
+       x2="179.23875"
+       y2="7.3427715"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2790"
+       x1="178.7583"
+       y1="14.559049"
+       x2="191.93405"
+       y2="35.005165"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2915"
+       gradientUnits="userSpaceOnUse"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957"
+       gradientTransform="translate(0,36.096726)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2917"
+       gradientUnits="userSpaceOnUse"
+       x1="34.183128"
+       y1="35.788937"
+       x2="17.894779"
+       y2="7.440722"
+       gradientTransform="translate(0,36.096726)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2919"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,79.903106,36.096726)"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2921"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,79.903106,36.096726)"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2923"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163,36.096726)"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2925"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163,36.096726)"
+       x1="28.891462"
+       y1="28.607389"
+       x2="17.894779"
+       y2="7.440722" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2927"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,36.096726)"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2929"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,36.096726)"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient2931"
+       gradientUnits="userSpaceOnUse"
+       x1="178.7583"
+       y1="14.559049"
+       x2="191.93405"
+       y2="35.005165"
+       gradientTransform="translate(0,36.096726)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient2933"
+       gradientUnits="userSpaceOnUse"
+       x1="192.92358"
+       y1="26.719812"
+       x2="179.23875"
+       y2="7.3427715"
+       gradientTransform="translate(0,36.096726)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient3017"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,74.583538)"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient3019"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,74.583538)"
+       x1="34.183128"
+       y1="35.788937"
+       x2="17.894779"
+       y2="7.440722" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient3021"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,79.903106,74.583538)"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient3023"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,79.903106,74.583538)"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient3025"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163,74.583538)"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient3027"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163,74.583538)"
+       x1="28.891462"
+       y1="28.607389"
+       x2="17.894779"
+       y2="7.440722" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient3029"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,74.583538)"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient3031"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,74.583538)"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient3033"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,74.583538)"
+       x1="178.7583"
+       y1="14.559049"
+       x2="191.93405"
+       y2="35.005165" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient3035"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,74.583538)"
+       x1="192.92358"
+       y1="26.719812"
+       x2="179.23875"
+       y2="7.3427715" />
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter3125"
+       x="-0.14892321"
+       width="1.2978464"
+       y="-0.13939188"
+       height="1.2787838">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.74158316"
+         id="feGaussianBlur3127" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient3135"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient3155"
+       gradientUnits="userSpaceOnUse"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903"
+       gradientTransform="translate(18.575232)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient3727"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163)"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient3731"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(99.624716)"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903" />
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter3775"
+       x="-0.12"
+       width="1.24"
+       y="-0.12"
+       height="1.24">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.98255014"
+         id="feGaussianBlur3777" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4033"
+       x="-0.15545457"
+       width="1.3109091"
+       y="-1.0944003"
+       height="3.1888006">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.76171826"
+         id="feGaussianBlur4035" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4037"
+       x="-0.15545457"
+       width="1.3109091"
+       y="-1.0944003"
+       height="3.1888006">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.76171826"
+         id="feGaussianBlur4039" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4041"
+       x="-0.15545457"
+       width="1.3109091"
+       y="-1.0944003"
+       height="3.1888006">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.76171826"
+         id="feGaussianBlur4043" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4045"
+       x="-0.15545457"
+       width="1.3109091"
+       y="-1.0944003"
+       height="3.1888006">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.76171826"
+         id="feGaussianBlur4047" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient4293"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,111.734)"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient4295"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,111.734)"
+       x1="34.183128"
+       y1="35.788937"
+       x2="17.894779"
+       y2="7.440722" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient4297"
+       gradientUnits="userSpaceOnUse"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903"
+       gradientTransform="translate(0,37.150464)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient4299"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,79.903106,111.734)"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient4301"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,79.903106,111.734)"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient4303"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(18.575232,37.150464)"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient4305"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163,111.734)"
+       x1="19.595671"
+       y1="15.567208"
+       x2="29.045078"
+       y2="35.410957" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient4307"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163,111.734)"
+       x1="28.891462"
+       y1="28.607389"
+       x2="17.894779"
+       y2="7.440722" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient4309"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(77.508163,37.150464)"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient4311"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,111.734)"
+       x1="23.738348"
+       y1="17.037189"
+       x2="13.008906"
+       y2="35.143688" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient4313"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,160.88577,111.734)"
+       x1="12.58802"
+       y1="27.137407"
+       x2="23.77471"
+       y2="9.3116083" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="linearGradient4315"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(99.624716,37.150464)"
+       x1="29.822184"
+       y1="97.119698"
+       x2="29.822184"
+       y2="87.898903" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#border"
+       id="linearGradient4317"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,111.734)"
+       x1="178.7583"
+       y1="14.559049"
+       x2="191.93405"
+       y2="35.005165" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2851"
+       id="linearGradient4319"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,111.734)"
+       x1="192.92358"
+       y1="26.719812"
+       x2="179.23875"
+       y2="7.3427715" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="306.09954"
+     inkscape:cy="756.41467"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="false"
+     inkscape:snap-global="false" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2662);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2717);stroke-width:2.156;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 34.770648,26.891041 v 6.006822 H 6.9129151 V 5.0401292 H 34.770648 v 5.3684228"
+       id="rect2450"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/ueberweisung.png"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-ydpi="20.309999" />
+    <g
+       id="g2726"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/ueberweisung.png"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-ydpi="20.309999">
+      <path
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path2437"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         y="17.232809"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect2444"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect2446"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="20.156876" />
+    </g>
+    <path
+       d="m 26.584239,13.111107 8.824325,5.416023 -8.824325,5.416006 c 1.817724,-3.197607 1.807252,-7.5725 0,-10.832029 z"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path2448"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/ueberweisung.png"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-ydpi="20.309999" />
+    <path
+       inkscape:export-ydpi="20.309999"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/lastschrift.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path2758"
+       d="m 45.132458,26.891041 v 6.006822 H 72.99019 V 5.0401292 H 45.132458 v 5.3684228"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2760);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2762);stroke-width:2.1559999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <g
+       inkscape:export-ydpi="20.309999"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/lastschrift.png"
+       id="g2754"
+       transform="translate(46.638533)">
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         id="path2748"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect2750"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="17.232809"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         y="20.156876"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect2752"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+    </g>
+    <path
+       inkscape:export-ydpi="20.309999"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/lastschrift.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path2853"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 45.29406,13.111107 8.824325,5.416023 -8.824325,5.416006 c 1.817724,-3.197607 1.807252,-7.5725 0,-10.832029 z" />
+    <path
+       inkscape:export-ydpi="20.309999"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path2764"
+       d="m 112.27881,26.891041 v 6.006822 H 84.421078 V 5.0401292 h 27.857732 v 5.3684228"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2766);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2768);stroke-width:2.1559999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       d="m 104.06936,13.111107 8.82432,5.416023 -8.82432,5.416006 c 1.81772,-3.197607 1.80725,-7.5725 0,-10.832029 z"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path2855"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-ydpi="20.309999" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2556"
+       width="11.759859"
+       height="2.5390604"
+       x="88.198952"
+       y="9.4179888"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-ydpi="20.309999" />
+    <rect
+       inkscape:export-ydpi="20.309999"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       y="25.988699"
+       x="88.198952"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2562"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2564"
+       width="11.759859"
+       height="2.5390604"
+       x="88.198952"
+       y="14.629745"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-ydpi="20.309999" />
+    <rect
+       inkscape:export-ydpi="20.309999"
+       inkscape:export-xdpi="20.309999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       y="20.242405"
+       x="88.198952"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2568"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2772);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2774);stroke-width:2.1559999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 126.11512,26.891041 v 6.006822 h 27.85774 V 5.0401292 h -27.85774 v 5.3684228"
+       id="path2770"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/slastschrift.png"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-ydpi="13.54" />
+    <path
+       inkscape:export-ydpi="13.54"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/slastschrift.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path2857"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 126.18097,13.111107 8.82432,5.416023 -8.82432,5.416006 c 1.81772,-3.197607 1.80725,-7.5725 0,-10.832029 z" />
+    <rect
+       inkscape:export-ydpi="13.54"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/slastschrift.png"
+       y="9.4179888"
+       x="137.91107"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2574"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2576"
+       width="11.759859"
+       height="2.5390604"
+       x="137.91107"
+       y="25.988699"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/slastschrift.png"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-ydpi="13.54" />
+    <rect
+       inkscape:export-ydpi="13.54"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/slastschrift.png"
+       y="14.629745"
+       x="137.91107"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2578"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2580"
+       width="11.759859"
+       height="2.5390604"
+       x="137.91107"
+       y="20.242405"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/slastschrift.png"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-ydpi="13.54" />
+    <path
+       inkscape:export-ydpi="13.54"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/dauerauftrag.png"
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path2582"
+       d="M 198.07233,32.897863 H 170.2146 V 5.0401292 h 27.85773 z"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2790);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2782);stroke-width:2.1559999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <circle
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:2.01936293;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="path2594"
+       cx="183.94823"
+       cy="18.839239"
+       r="9.8255014"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/dauerauftrag.png"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-ydpi="13.54" />
+    <rect
+       inkscape:export-ydpi="13.54"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/dauerauftrag.png"
+       y="-117.5792"
+       x="143.35213"
+       height="1.4699823"
+       width="8.0180855"
+       id="rect2596"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       transform="rotate(45)" />
+    <rect
+       transform="rotate(90)"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2598"
+       width="8.0180855"
+       height="1.4699823"
+       x="11.288872"
+       y="-184.95053"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/dauerauftrag.png"
+       inkscape:export-xdpi="13.54"
+       inkscape:export-ydpi="13.54" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2941"
+       width="33.450893"
+       height="33.450893"
+       x="4.0632415"
+       y="38.275303"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/ueberweisung.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <path
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/ueberweisung.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path2859"
+       d="m 34.770648,62.987767 v 6.006822 H 6.9129151 V 41.136855 H 34.770648 v 5.368423"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2915);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2917);stroke-width:1.256;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <g
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/ueberweisung.png"
+       id="g2867"
+       transform="translate(0,36.096726)">
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         id="path2861"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect2863"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="17.232809"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         y="20.156876"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect2865"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+    </g>
+    <path
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/ueberweisung.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path2869"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 26.584239,49.207833 8.824325,5.416023 -8.824325,5.416006 c 1.817724,-3.197607 1.807252,-7.5725 0,-10.832029 z" />
+    <rect
+       y="38.275303"
+       x="42.333332"
+       height="33.450893"
+       width="33.450893"
+       id="rect2943"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/lastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2919);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2921);stroke-width:1.256;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 45.132458,62.987767 v 6.006822 H 72.99019 V 41.136855 H 45.132458 v 5.368423"
+       id="path2871"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/lastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <g
+       transform="translate(46.638533,36.096726)"
+       id="g2879"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/lastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999">
+      <path
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path2873"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         y="17.232809"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect2875"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect2877"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="20.156876" />
+    </g>
+    <path
+       d="m 45.29406,49.207833 8.824325,5.416023 -8.824325,5.416006 c 1.817724,-3.197607 1.807252,-7.5725 0,-10.832029 z"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path2881"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/lastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2945"
+       width="33.450893"
+       height="33.450893"
+       x="81.548363"
+       y="38.275303"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2923);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2925);stroke-width:1.256;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 112.27881,62.987767 v 6.006822 H 84.421078 V 41.136855 h 27.857732 v 5.368423"
+       id="path2883"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <path
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path2885"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 104.06936,49.207833 8.82432,5.416023 -8.82432,5.416006 c 1.81772,-3.197607 1.80725,-7.5725 0,-10.832029 z" />
+    <rect
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       y="45.514713"
+       x="88.198952"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2887"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2889"
+       width="11.759859"
+       height="2.5390604"
+       x="88.198952"
+       y="62.085426"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <rect
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       y="50.726471"
+       x="88.198952"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2891"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2893"
+       width="11.759859"
+       height="2.5390604"
+       x="88.198952"
+       y="56.33913"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/sueberweisung.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <rect
+       y="38.275303"
+       x="123.12575"
+       height="33.450893"
+       width="33.450893"
+       id="rect2947"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/slastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <path
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/slastschrift.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path2895"
+       d="m 126.11512,62.987767 v 6.006822 h 27.85774 V 41.136855 h -27.85774 v 5.368423"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2927);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2929);stroke-width:1.256;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       d="m 126.18097,49.207833 8.82432,5.416023 -8.82432,5.416006 c 1.81772,-3.197607 1.80725,-7.5725 0,-10.832029 z"
+       style="fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path2897"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/slastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2899"
+       width="11.759859"
+       height="2.5390604"
+       x="137.91107"
+       y="45.514713"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/slastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <rect
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/slastschrift.png"
+       y="62.085426"
+       x="137.91107"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2901"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2903"
+       width="11.759859"
+       height="2.5390604"
+       x="137.91107"
+       y="50.726471"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/slastschrift.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <rect
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/slastschrift.png"
+       y="56.33913"
+       x="137.91107"
+       height="2.5390604"
+       width="11.759859"
+       id="rect2905"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.51166391;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2949"
+       width="33.450893"
+       height="33.450893"
+       x="167.44345"
+       y="38.275303"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/dauerauftrag.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient2931);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2933);stroke-width:1.256;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="M 198.07233,68.994589 H 170.2146 V 41.136855 h 27.85773 z"
+       id="path2907"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/dauerauftrag.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <circle
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/dauerauftrag.png"
+       r="9.8255014"
+       cy="54.935966"
+       cx="183.94823"
+       id="circle2909"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:2.01936293;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       transform="rotate(45)"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2911"
+       width="8.0180855"
+       height="1.4699823"
+       x="168.87637"
+       y="-92.054962"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/dauerauftrag.png"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-ydpi="18.219999" />
+    <rect
+       inkscape:export-ydpi="18.219999"
+       inkscape:export-xdpi="18.219999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/150/dauerauftrag.png"
+       y="-184.95053"
+       x="47.385597"
+       height="1.4699823"
+       width="8.0180855"
+       id="rect2913"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       transform="rotate(90)" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/ueberweisung.png"
+       y="76.762115"
+       x="4.0632415"
+       height="33.450893"
+       width="33.450893"
+       id="rect2951"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient3017);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient3019);stroke-width:0.956;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 34.770648,101.47458 v 6.00682 H 6.9129151 V 79.623667 H 34.770648 v 5.368423"
+       id="path2953"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/ueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <g
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/ueberweisung.png"
+       id="g3043"
+       transform="translate(1.0690781,75.118077)"
+       style="opacity:0.35899999;stroke:#000000;stroke-opacity:1;filter:url(#filter3125)">
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         id="path3037"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect3039"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="17.232809"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         y="20.156876"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect3041"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+    </g>
+    <g
+       transform="translate(0,74.583538)"
+       id="g2961"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/ueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999">
+      <path
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path2955"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         y="17.232809"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect2957"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect2959"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="20.156876" />
+    </g>
+    <path
+       d="m 26.584239,87.694645 8.824325,5.416023 -8.824325,5.416006 c 1.817724,-3.197607 1.807252,-7.5725 0,-10.832029 z"
+       style="fill:url(#linearGradient3135);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path2963"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/ueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/lastschrift.png"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2965"
+       width="33.450893"
+       height="33.450893"
+       x="42.333332"
+       y="76.762115" />
+    <path
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/lastschrift.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path2967"
+       d="m 45.132458,101.47458 v 6.00682 H 72.99019 V 79.623667 H 45.132458 v 5.368423"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient3021);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient3023);stroke-width:0.956;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <g
+       style="opacity:0.35899999;stroke:#000000;stroke-opacity:1;filter:url(#filter3125)"
+       transform="translate(47.573976,75.118077)"
+       id="g3143"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/lastschrift.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999">
+      <path
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path3137"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         y="17.232809"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect3139"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect3141"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="20.156876" />
+    </g>
+    <g
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/lastschrift.png"
+       id="g2975"
+       transform="translate(46.638533,74.583538)">
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         id="path2969"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect2971"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="17.232809"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         y="20.156876"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect2973"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+    </g>
+    <path
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/lastschrift.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path3153"
+       style="fill:url(#linearGradient3155);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 45.159471,87.694645 8.824325,5.416023 -8.824325,5.416006 c 1.817724,-3.197607 1.807252,-7.5725 0,-10.832029 z" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       y="76.762115"
+       x="81.548363"
+       height="33.450893"
+       width="33.450893"
+       id="rect2979"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path2981"
+       d="m 112.27881,101.47458 v 6.00682 H 84.421078 V 79.623667 h 27.857732 v 5.368423"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient3025);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient3027);stroke-width:0.956;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       d="m 104.0924,87.694645 8.82433,5.416023 -8.82433,5.416006 c 1.81773,-3.197607 1.80725,-7.5725 0,-10.832029 z"
+       style="fill:url(#linearGradient3727);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path3725"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       y="84.201981"
+       x="88.73349"
+       height="1.6704344"
+       width="11.759859"
+       id="rect3785"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4033);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2985"
+       width="11.759859"
+       height="1.6704344"
+       x="88.198952"
+       y="84.001526"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect2993"
+       width="33.450893"
+       height="33.450893"
+       x="123.12575"
+       y="76.762115" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient3029);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient3031);stroke-width:0.956;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 126.11512,101.47458 v 6.00682 h 27.85774 V 79.623667 h -27.85774 v 5.368423"
+       id="path2995"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <path
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path3729"
+       style="fill:url(#linearGradient3731);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 126.20895,87.694645 8.82433,5.416023 -8.82433,5.416006 c 1.81773,-3.197607 1.80725,-7.5725 0,-10.832029 z" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/dauerauftrag.png"
+       y="76.762115"
+       x="167.44345"
+       height="33.450893"
+       width="33.450893"
+       id="rect3007"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/dauerauftrag.png"
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3009"
+       d="M 198.07233,107.4814 H 170.2146 V 79.623667 h 27.85773 z"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient3033);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient3035);stroke-width:0.956;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <circle
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/dauerauftrag.png"
+       r="9.8255014"
+       cy="93.957314"
+       cx="184.61639"
+       id="circle3733"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.404;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.01936293;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate;filter:url(#filter3775)" />
+    <circle
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:2.01936293;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="circle3011"
+       cx="183.94823"
+       cy="93.422775"
+       r="9.8255014"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/dauerauftrag.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/dauerauftrag.png"
+       y="-64.840675"
+       x="196.09065"
+       height="1.4699823"
+       width="8.0180855"
+       id="rect3013"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       transform="rotate(45)" />
+    <rect
+       transform="rotate(90)"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect3015"
+       width="8.0180855"
+       height="1.4699823"
+       x="85.872406"
+       y="-184.95053"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/dauerauftrag.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4037);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect3787"
+       width="11.759859"
+       height="1.6704344"
+       x="88.73349"
+       y="101.24042"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       y="101.03996"
+       x="88.198952"
+       height="1.6704344"
+       width="11.759859"
+       id="rect3779"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       y="95.761391"
+       x="88.73349"
+       height="1.6704344"
+       width="11.759859"
+       id="rect3789"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4041);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect3781"
+       width="11.759859"
+       height="1.6704344"
+       x="88.198952"
+       y="95.560936"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4045);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect3791"
+       width="11.759859"
+       height="1.6704344"
+       x="88.73349"
+       y="90.282364"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/sueberweisung.png"
+       y="90.081909"
+       x="88.198952"
+       height="1.6704344"
+       width="11.759859"
+       id="rect3783"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4033);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4049"
+       width="11.759859"
+       height="1.6704344"
+       x="138.71289"
+       y="84.201981"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       y="84.001526"
+       x="138.17836"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4051"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       y="101.24042"
+       x="138.71289"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4053"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4037);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4055"
+       width="11.759859"
+       height="1.6704344"
+       x="138.17836"
+       y="101.03996"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4041);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4057"
+       width="11.759859"
+       height="1.6704344"
+       x="138.71289"
+       y="95.761391"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       y="95.560936"
+       x="138.17836"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4059"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       inkscape:export-ydpi="24.299999"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       y="90.282364"
+       x="138.71289"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4061"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4045);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4063"
+       width="11.759859"
+       height="1.6704344"
+       x="138.17836"
+       y="90.081909"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/200/slastschrift.png"
+       inkscape:export-xdpi="24.299999"
+       inkscape:export-ydpi="24.299999" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4193"
+       width="33.450893"
+       height="33.450893"
+       x="4.0632415"
+       y="113.91258"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/ueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <path
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/ueberweisung.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path4195"
+       d="m 34.770648,138.62504 v 6.00682 H 6.9129151 V 116.77413 H 34.770648 v 5.36842"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient4293);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient4295);stroke-width:0.95599997;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <g
+       style="opacity:0.35899999;stroke:#000000;stroke-opacity:1;filter:url(#filter3125)"
+       transform="translate(1.0690781,112.26854)"
+       id="g4203"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/ueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001">
+      <path
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4197"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         y="17.232809"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect4199"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect4201"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="20.156876" />
+    </g>
+    <g
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/ueberweisung.png"
+       id="g4211"
+       transform="translate(0,111.734)">
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         id="path4205"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect4207"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="17.232809"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         y="20.156876"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect4209"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+    </g>
+    <path
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/ueberweisung.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path4213"
+       style="fill:url(#linearGradient4297);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 26.584239,124.84511 8.824325,5.41602 -8.824325,5.41601 c 1.817724,-3.19761 1.807252,-7.5725 0,-10.83203 z" />
+    <rect
+       y="113.91258"
+       x="42.333332"
+       height="33.450893"
+       width="33.450893"
+       id="rect4215"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/lastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient4299);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient4301);stroke-width:0.95599997;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 45.132458,138.62504 v 6.00682 H 72.99019 V 116.77413 H 45.132458 v 5.36842"
+       id="path4217"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/lastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <g
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/lastschrift.png"
+       id="g4225"
+       transform="translate(47.573976,112.26854)"
+       style="opacity:0.35899999;stroke:#000000;stroke-opacity:1;filter:url(#filter3125)">
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         id="path4219"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect4221"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="17.232809"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+      <rect
+         y="20.156876"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect4223"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-ydpi="27.540001" />
+    </g>
+    <g
+       transform="translate(46.638533,111.734)"
+       id="g4233"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/lastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001">
+      <path
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4227"
+         d="m 22.90358,13.619662 c -1.164606,-1.028891 -2.664508,-1.597675 -4.218512,-1.599702 -3.525894,-5.4e-5 -6.38421,2.85826 -6.384155,6.384156 -5.5e-5,3.525896 2.858261,6.384214 6.384155,6.38416 1.554457,-0.0027 3.054419,-0.573041 4.218512,-1.603202"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.78359449;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         y="17.232809"
+         x="10.952457"
+         height="0.094322227"
+         width="6.5421238"
+         id="rect4229"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+      <rect
+         inkscape:export-ydpi="27.540001"
+         inkscape:export-xdpi="27.540001"
+         inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/bitmap.png"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:1.65430248;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         id="rect4231"
+         width="6.5421238"
+         height="0.094322227"
+         x="10.952457"
+         y="20.156876" />
+    </g>
+    <path
+       d="m 45.159471,124.84511 8.824325,5.41602 -8.824325,5.41601 c 1.817724,-3.19761 1.807252,-7.5725 0,-10.83203 z"
+       style="fill:url(#linearGradient4303);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path4235"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/lastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4237"
+       width="33.450893"
+       height="33.450893"
+       x="81.548363"
+       y="113.91258"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient4305);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient4307);stroke-width:0.95599997;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 112.27881,138.62504 v 6.00682 H 84.421078 v -27.85773 h 27.857732 v 5.36842"
+       id="path4239"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <path
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path4241"
+       style="fill:url(#linearGradient4309);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       d="m 104.0924,124.84511 8.82433,5.41602 -8.82433,5.41601 c 1.81773,-3.19761 1.80725,-7.5725 0,-10.83203 z" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4033);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4243"
+       width="11.759859"
+       height="1.6704344"
+       x="88.73349"
+       y="121.35245"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       y="121.15199"
+       x="88.198952"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4245"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       y="113.91258"
+       x="123.12575"
+       height="33.450893"
+       width="33.450893"
+       id="rect4247"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <path
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path4249"
+       d="m 126.11512,138.62504 v 6.00682 h 27.85774 v -27.85773 h -27.85774 v 5.36842"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient4311);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient4313);stroke-width:0.95599997;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       d="m 126.20895,124.84511 8.82433,5.41602 -8.82433,5.41601 c 1.81773,-3.19761 1.80725,-7.5725 0,-10.83203 z"
+       style="fill:url(#linearGradient4315);fill-opacity:1;fill-rule:evenodd;stroke:#d40000;stroke-width:0.7405147;stroke-linejoin:round;stroke-opacity:1"
+       id="path4251"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1.57668078;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4253"
+       width="33.450893"
+       height="33.450893"
+       x="167.44345"
+       y="113.91258"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/dauerauftrag.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <path
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:url(#linearGradient4317);fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient4319);stroke-width:0.95599997;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="M 198.07233,144.63186 H 170.2146 v -27.85773 h 27.85773 z"
+       id="path4255"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/dauerauftrag.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <circle
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.40400002;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.01936293;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter3775);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="circle4257"
+       cx="184.61639"
+       cy="131.10777"
+       r="9.8255014"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/dauerauftrag.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <circle
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/dauerauftrag.png"
+       r="9.8255014"
+       cy="130.57324"
+       cx="183.94823"
+       id="circle4259"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#475b81;stroke-width:2.01936293;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       transform="rotate(45)"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4261"
+       width="8.0180855"
+       height="1.4699823"
+       x="222.36"
+       y="-38.571331"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/dauerauftrag.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/dauerauftrag.png"
+       y="-184.95053"
+       x="123.02287"
+       height="1.4699823"
+       width="8.0180855"
+       id="rect4263"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#d40000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.57803023;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       transform="rotate(90)" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       y="138.39088"
+       x="88.73349"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4265"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4037);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4267"
+       width="11.759859"
+       height="1.6704344"
+       x="88.198952"
+       y="138.19043"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4041);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4269"
+       width="11.759859"
+       height="1.6704344"
+       x="88.73349"
+       y="132.91185"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       y="132.7114"
+       x="88.198952"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4271"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       y="127.43283"
+       x="88.73349"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4273"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4045);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4275"
+       width="11.759859"
+       height="1.6704344"
+       x="88.198952"
+       y="127.23238"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/sueberweisung.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       y="121.35245"
+       x="138.71289"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4277"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4033);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4279"
+       width="11.759859"
+       height="1.6704344"
+       x="138.17836"
+       y="121.15199"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4037);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4281"
+       width="11.759859"
+       height="1.6704344"
+       x="138.71289"
+       y="138.39088"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       y="138.19043"
+       x="138.17836"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4283"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       y="132.91185"
+       x="138.71289"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4285"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4041);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4287"
+       width="11.759859"
+       height="1.6704344"
+       x="138.17836"
+       y="132.7114"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.41499999;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter4045);color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       id="rect4289"
+       width="11.759859"
+       height="1.6704344"
+       x="138.71289"
+       y="127.43283"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-ydpi="36.450001" />
+    <rect
+       inkscape:export-ydpi="36.450001"
+       inkscape:export-xdpi="36.450001"
+       inkscape:export-filename="/work/willuhn/git/hibiscus/src/img/300/slastschrift.png"
+       y="127.23238"
+       x="138.17836"
+       height="1.6704344"
+       width="11.759859"
+       id="rect4291"
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#475b81;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.03722835;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+  </g>
+</svg>

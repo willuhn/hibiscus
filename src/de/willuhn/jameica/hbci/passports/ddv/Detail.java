@@ -76,7 +76,7 @@ public class Detail extends AbstractView
       {
         control.handleDisplayProperties();
       }
-    },null,false,"text-x-generic.png");
+    },null,false,"document-properties.png");
     buttonArea.addButton(i18n.tr("Konfiguration testen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -90,7 +90,7 @@ public class Detail extends AbstractView
       {
         control.handleChangeBankData();
       }
-    },null,false,"seahorse-preferences.png");
+    },null,false,"user-info.png");
     buttonArea.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException

@@ -72,7 +72,7 @@ public class UmsatzList extends ContextMenu implements Extendable
 		addItem(new OpenItem());
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("In Adressbuch übernehmen"),new EmpfaengerAdd(),"contact-new.png"));
-    addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new AuslandsUeberweisungNew(),"stock_next.png"));
+    addItem(new UmsatzItem(i18n.tr("Als neue Überweisung anlegen..."),new AuslandsUeberweisungNew(),"ueberweisung.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzBookedItem(i18n.tr("als \"geprüft\" markieren..."),new UmsatzMarkChecked(),"emblem-default.png","ALT+G"));
     addItem(new UmsatzBookedItem(i18n.tr("als \"ungeprüft\" markieren..."),new UmsatzMarkUnChecked(),"edit-undo.png","CTRL+ALT+G"));

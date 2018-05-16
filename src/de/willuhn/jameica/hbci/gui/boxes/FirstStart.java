@@ -114,7 +114,7 @@ public class FirstStart extends AbstractBox
       Label icon = new Label(comp,SWT.NONE);
       icon.setBackground(bg);
       icon.setLayoutData(gd);
-      icon.setImage(SWTUtil.getImage("hibiscus-icon-64x64.png"));
+      icon.setImage(SWTUtil.getImage("hibiscus-large.png"));
     }
     
     // Ueberschrift
@@ -137,8 +137,8 @@ public class FirstStart extends AbstractBox
     }
       
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Bank-Zugang einrichten"),new PassportDetail(),null,true,"seahorse-preferences.png");
-    buttons.addButton(i18n.tr("Konten-Übersicht"),new KontoList(),null,false,"system-file-manager.png");
+    buttons.addButton(i18n.tr("Bank-Zugang einrichten"),new PassportDetail(),null,true,"user-info.png");
+    buttons.addButton(i18n.tr("Konten-Übersicht"),new KontoList(),null,false,"wallet-open.png");
     buttons.paint(comp);
   }
 

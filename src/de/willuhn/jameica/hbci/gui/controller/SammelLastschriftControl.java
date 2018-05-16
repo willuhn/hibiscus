@@ -97,7 +97,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl<Samm
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CreateMenuItem(new SammelLastBuchungNew()));
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("In Einzellastschrift duplizieren"), new LastschriftNew(),"stock_previous.png"));
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("In Einzellastschrift duplizieren"), new LastschriftNew(),"lastschrift.png"));
     this.buchungen.setContextMenu(ctx);
     return this.buchungen;
   }

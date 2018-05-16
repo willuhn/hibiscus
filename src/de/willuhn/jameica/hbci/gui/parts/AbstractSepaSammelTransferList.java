@@ -99,7 +99,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
             try
             {
               Reminder r = provider.get(uuid);
-              item.setImage(4,SWTUtil.getImage("stock_form-time-field.png"));
+              item.setImage(4,SWTUtil.getImage("preferences-system-time.png"));
               item.setText(4,i18n.tr("ab {0}\n{1}",HBCI.DATEFORMAT.format(termin),r.getReminderInterval().toString()));
             }
             catch (Exception e)

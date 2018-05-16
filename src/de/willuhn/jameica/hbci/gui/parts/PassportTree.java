@@ -73,7 +73,7 @@ public class PassportTree extends TreePart
       {
         Object data = item.getData();
         if (data instanceof ConfigObject)
-          item.setImage(SWTUtil.getImage("seahorse-preferences.png"));
+          item.setImage(SWTUtil.getImage("user-info.png"));
       }
     });
     this.setMulti(false);
@@ -99,7 +99,7 @@ public class PassportTree extends TreePart
       {
         new PassportDetail().handleAction(null);
       }
-    },"seahorse-preferences.png"));
+    },"list-add.png"));
     
     menu.addItem(ContextMenuItem.SEPARATOR);
     menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen"),new Action() {

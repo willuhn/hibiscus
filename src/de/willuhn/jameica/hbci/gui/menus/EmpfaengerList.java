@@ -48,9 +48,9 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     addItem(new ContextMenuItem(i18n.tr("Neue Adresse..."), new ENeu(),"contact-new.png"));
     addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"stock_next.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"stock_previous.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"stock_form-time-field.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"ueberweisung.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"lastschrift.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"dauerauftrag.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport(),"document-open.png"));

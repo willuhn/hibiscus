@@ -46,7 +46,7 @@ public class SepaSammelLastBuchungNew extends AbstractView
     GUI.getView().setTitle(i18n.tr("SEPA-Sammellastschrift {0}: Buchung bearbeiten",l.getBezeichnung()));
 
     // Zusaetzlicher Back-Button, um zurueck zum Auftrag zu kommen
-    GUI.getView().addPanelButton(new PanelButton("stock_navigator-shift-left.png",new SepaSammelLastschriftNew(){
+    GUI.getView().addPanelButton(new PanelButton("slastschrift.png",new SepaSammelLastschriftNew(){
       public void handleAction(Object context) throws ApplicationException
       {
         super.handleAction(l);

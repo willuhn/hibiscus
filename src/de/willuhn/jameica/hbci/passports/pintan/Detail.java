@@ -92,7 +92,7 @@ public class Detail extends AbstractView
       {
         control.handleDisplayProperties();
       }
-    },null,false,"text-x-generic.png");
+    },null,false,"document-properties.png");
     buttons.addButton(i18n.tr("Konfiguration testen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException

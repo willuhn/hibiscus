@@ -45,7 +45,7 @@ public class SepaSammelUeberweisungBuchungNew extends AbstractView
     GUI.getView().setTitle(i18n.tr("SEPA-Sammelüberweisung {0}: Buchung bearbeiten",l.getBezeichnung()));
 
     // Zusaetzlicher Back-Button, um zurueck zum Auftrag zu kommen
-    GUI.getView().addPanelButton(new PanelButton("stock_navigator-shift-right.png",new de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew(){
+    GUI.getView().addPanelButton(new PanelButton("sueberweisung.png",new de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew(){
       public void handleAction(Object context) throws ApplicationException
       {
         super.handleAction(l);

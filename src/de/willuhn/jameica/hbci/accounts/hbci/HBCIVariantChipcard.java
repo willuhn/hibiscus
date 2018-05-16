@@ -46,7 +46,7 @@ public class HBCIVariantChipcard implements HBCIVariant
     info.setText(i18n.tr("Verwenden Sie dieses Verfahren, wenn Sie eine spezielle HBCI-Chipkarte besitzen."));
     info.setComment(i18n.tr("Sie benötigen hierfür zusätzlich ein Chipkarten-Lesegerät mit USB-Anschluss."));
     info.setUrl("http://www.willuhn.de/wiki/doku.php?id=support:list:kartenleser");
-    info.setIcon("hbci-chipcard.png");
+    info.setIcon("gcr-smart-card.png");
     return info;
   }
 

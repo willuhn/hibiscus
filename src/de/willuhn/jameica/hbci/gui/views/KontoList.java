@@ -46,7 +46,7 @@ public class KontoList extends AbstractView
         control.handleReadFromPassport();
       }
     },null,false,"mail-send-receive.png");
-		buttons.addButton(i18n.tr("Konto manuell anlegen"),new KontoNew(),null,false,"system-file-manager.png");
+		buttons.addButton(i18n.tr("Konto manuell anlegen"),new KontoNew(),null,false,"list-add.png");
 		buttons.paint(getParent());
   }
 }

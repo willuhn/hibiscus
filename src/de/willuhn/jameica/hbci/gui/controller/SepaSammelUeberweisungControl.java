@@ -131,7 +131,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CreateMenuItem(new SepaSammelUeberweisungBuchungNew()));
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("In Einzelüberweisung duplizieren"), new AuslandsUeberweisungNew(),"stock_next.png"));
+    ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("In Einzelüberweisung duplizieren"), new AuslandsUeberweisungNew(),"ueberweisung.png"));
     this.buchungen.setContextMenu(ctx);
     return this.buchungen;
   }

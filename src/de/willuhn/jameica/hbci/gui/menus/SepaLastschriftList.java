@@ -51,7 +51,7 @@ public class SepaLastschriftList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new SingleItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
-    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammelaufträgen zusammenfassen..."), new SepaLastschriftMerge(),"stock_navigator-shift-left.png"));
+    addItem(new NotActiveMultiMenuItem(i18n.tr("Zu Sammelaufträgen zusammenfassen..."), new SepaLastschriftMerge(),"slastschrift.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new SepaLastschriftExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));

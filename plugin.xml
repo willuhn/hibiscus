@@ -9,17 +9,17 @@
   <url>https://www.willuhn.de/products/hibiscus/releases/nightly/hibiscus-2.7.0-nightly.zip</url>
   <homepage>http://www.willuhn.de/products/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
-  <icon>hibiscus-icon-64x64.png</icon>
+  <icon>hibiscus-large.png</icon>
 
   <requires jameica="2.7.0+" />
 
   <menu>
     <item id="hibiscus.menu"                             name="&amp;Hibiscus">
       <item id="hibiscus.menu.transfer"                  name="&amp;Zahlungsverkehr">
-        <item id="hibiscus.menu.transfer.sepaueb"        name="Neue Überweisung..."       shortcut="ALT+U"    icon="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew" />
-        <item id="hibiscus.menu.transfer.sepalast"       name="Neue Lastschrift..."       shortcut="ALT+T"    icon="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew" />
-        <item id="hibiscus.menu.transfer.sepasammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    icon="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew" />
-        <item id="hibiscus.menu.transfer.sepasammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    icon="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftNew" />
+        <item id="hibiscus.menu.transfer.sepaueb"        name="Neue Überweisung..."       shortcut="ALT+U"    icon="ueberweisung.png"                action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew" />
+        <item id="hibiscus.menu.transfer.sepalast"       name="Neue Lastschrift..."       shortcut="ALT+T"    icon="lastschrift.png"                 action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew" />
+        <item id="hibiscus.menu.transfer.sepasammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    icon="sueberweisung.png"               action="de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew" />
+        <item id="hibiscus.menu.transfer.sepasammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    icon="slastschrift.png"                action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftNew" />
       </item>
       <item id="hibiscus.menu.ibancalculator"            name="IBAN-Rechner"                                  icon="accessories-calculator.png"      action="de.willuhn.jameica.hbci.gui.action.IbanCalc" />
       <item id="hibiscus.menu.messages"                  name="&amp;Bank-Nachrichten"                         icon="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
@@ -33,11 +33,11 @@
         <item id="hibiscus.menu.ext.chiptantest"         name="chipTAN-Generator testen..."                   icon="scanner.png"                     action="de.willuhn.jameica.hbci.gui.action.ChipTanTest" />
       </item>
       <item id="hibiscus.menu.archive"                   name="Archiv">
-        <item id="hibiscus.menu.archive.transfer.ueb"        name="Überweisungen"                             icon="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
-        <item id="hibiscus.menu.archive.transfer.sammelueb"  name="Sammelüberweisungen"                       icon="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
-        <item id="hibiscus.menu.archive.transfer.dauer"      name="Daueraufträge"                             icon="stock_form-time-field.png"       action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
-        <item id="hibiscus.menu.archive.transfer.einzellast" name="Lastschriften"                             icon="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
-        <item id="hibiscus.menu.archive.transfer.sammellast" name="Sammellastschriften"                       icon="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
+        <item id="hibiscus.menu.archive.transfer.ueb"        name="Überweisungen"                             icon="ueberweisung.png"                action="de.willuhn.jameica.hbci.gui.action.UeberweisungList" />
+        <item id="hibiscus.menu.archive.transfer.einzellast" name="Lastschriften"                             icon="lastschrift.png"                 action="de.willuhn.jameica.hbci.gui.action.LastschriftList" />
+        <item id="hibiscus.menu.archive.transfer.sammelueb"  name="Sammelüberweisungen"                       icon="sueberweisung.png"               action="de.willuhn.jameica.hbci.gui.action.SammelUeberweisungList" />
+        <item id="hibiscus.menu.archive.transfer.sammellast" name="Sammellastschriften"                       icon="slastschrift.png"                action="de.willuhn.jameica.hbci.gui.action.SammelLastschriftList" />
+        <item id="hibiscus.menu.archive.transfer.dauer"      name="Daueraufträge"                             icon="dauerauftrag.png"                action="de.willuhn.jameica.hbci.gui.action.DauerauftragList" />
       </item>
       <item id="hibiscus.menu.handbuch"              name="&amp;Handbuch"                                 icon="edit-copy.png"                   action="de.willuhn.jameica.hbci.gui.action.HandbuchAction"/>
       <item id="hibiscus.menu.support"               name="&amp;Support"                                  icon="internet-web-browser.png"        action="de.willuhn.jameica.hbci.gui.action.SupportAction"/>
@@ -55,23 +55,23 @@
 
   <navigation>
     <item id="hibiscus.navi"                                 name="Hibiscus"                 icon-close="folder.png" icon-open="folder-open.png">
-      <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"             icon-close="seahorse-preferences.png"        action="de.willuhn.jameica.hbci.gui.action.PassportList" />
+      <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"             icon-close="user-info.png"                   action="de.willuhn.jameica.hbci.gui.action.PassportList" />
       <item id="hibiscus.navi.accounts"                      name="Konten"                   icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.umsatz"                        name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugList" />
       <item id="hibiscus.navi.kontoauszug"                   name="Elektr. Kontoauszüge"     icon-close="application-pdf.png"             action="de.willuhn.jameica.hbci.gui.action.KontoauszugPdfList" />
       <item id="hibiscus.navi.addresses"                     name="Adressbuch"               icon-close="contact-new.png"                 action="de.willuhn.jameica.hbci.gui.action.EmpfaengerList" />
       <item id="hibiscus.navi.sepatransfer"                  name="Zahlungsverkehr"          icon-close="folder.png" icon-open="folder-open.png">
-        <item id="hibiscus.navi.transfer.uebforeign"         name="Überweisungen"            icon-close="stock_next.png"                  action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungList" />
-        <item id="hibiscus.navi.transfer.sepalast"           name="Lastschriften"            icon-close="stock_previous.png"              action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftList" />
-        <item id="hibiscus.navi.transfer.sepasammelueb"      name="Sammelüberweisungen"      icon-close="stock_navigator-shift-right.png" action="de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungList" />
-        <item id="hibiscus.navi.transfer.sepasammellast"     name="Sammellastschriften"      icon-close="stock_navigator-shift-left.png"  action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftList" />
-        <item id="hibiscus.navi.transfer.sepadauer"          name="Daueraufträge"            icon-close="stock_form-time-field.png"       action="de.willuhn.jameica.hbci.gui.action.SepaDauerauftragList" />
+        <item id="hibiscus.navi.transfer.uebforeign"         name="Überweisungen"            icon-close="ueberweisung.png"                action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungList" />
+        <item id="hibiscus.navi.transfer.sepalast"           name="Lastschriften"            icon-close="lastschrift.png"                 action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftList" />
+        <item id="hibiscus.navi.transfer.sepasammelueb"      name="Sammelüberweisungen"      icon-close="sueberweisung.png"               action="de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungList" />
+        <item id="hibiscus.navi.transfer.sepasammellast"     name="Sammellastschriften"      icon-close="slastschrift.png"                action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftList" />
+        <item id="hibiscus.navi.transfer.sepadauer"          name="Daueraufträge"            icon-close="dauerauftrag.png"                action="de.willuhn.jameica.hbci.gui.action.SepaDauerauftragList" />
       </item>
       <item id="hibiscus.navi.reporting"                     name="Auswertungen"             icon-close="folder.png" icon-open="folder-open.png">
         <item id="hibiscus.navi.reporting.kategorien"        name="Umsätze nach Kategorien"  icon-close="x-office-spreadsheet.png"        action="de.willuhn.jameica.hbci.gui.action.UmsatzTypTree" />
-        <item id="hibiscus.navi.reporting.einnahmenausgaben" name="Einnahmen/Ausgaben"       icon-close="stock_task-recurring.png"        action="de.willuhn.jameica.hbci.gui.action.EinnahmenAusgaben" />
-        <item id="hibiscus.navi.reporting.saldochart"        name="Saldo im Verlauf"         icon-close="gnome-finance.png"               action="de.willuhn.jameica.hbci.gui.action.SaldoChart" />
-        <item id="hibiscus.navi.reporting.sparquote"         name="Sparquote"                icon-close="invest.png"                      action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
+        <item id="hibiscus.navi.reporting.einnahmenausgaben" name="Einnahmen/Ausgaben"       icon-close="gnome-session-switch.png"        action="de.willuhn.jameica.hbci.gui.action.EinnahmenAusgaben" />
+        <item id="hibiscus.navi.reporting.saldochart"        name="Saldo im Verlauf"         icon-close="office-chart-area.png"           action="de.willuhn.jameica.hbci.gui.action.SaldoChart" />
+        <item id="hibiscus.navi.reporting.sparquote"         name="Sparquote"                icon-close="office-chart-area-focus-peak-node.png" action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
       </item>
       <item id="hibiscus.navi.donate"                        name="Spenden"                  icon-close="emblem-special.png"              action="de.willuhn.jameica.hbci.gui.action.DonateView" />
     </item>

@@ -77,14 +77,14 @@ public class Detail extends AbstractView
           {
             control.changePassword();
           }
-        },null,false,"seahorse-preferences.png");
+        },null,false,"stock_keyring.png");
         buttons.addButton(i18n.tr("INI-Brief anzeigen/erzeugen"),new Action()
         {
           public void handleAction(Object context) throws ApplicationException
           {
             control.startIniLetter();
           }
-        },null,false,"stock_keyring.png");
+        },null,false,"text-x-generic.png");
         buttons.paint(getParent());
       }
 
@@ -99,7 +99,7 @@ public class Detail extends AbstractView
         {
           control.handleDisplayProperties();
         }
-      },null,false,"text-x-generic.png");
+      },null,false,"document-properties.png");
       buttons.addButton(i18n.tr("Konfiguration testen"),new Action()
       {
         public void handleAction(Object context) throws ApplicationException

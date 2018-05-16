@@ -228,7 +228,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CreateMenuItem(new SepaSammelLastBuchungNew()));
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("In Einzellastschrift duplizieren"), new SepaLastschriftNew(),"stock_previous.png"));
+    ctx.addItem(new CheckedSingleContextMenuItem(i18n.tr("In Einzellastschrift duplizieren"), new SepaLastschriftNew(),"lastschrift.png"));
     this.buchungen.setContextMenu(ctx);
     return this.buchungen;
   }

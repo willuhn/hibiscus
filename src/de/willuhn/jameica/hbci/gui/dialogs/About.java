@@ -69,7 +69,7 @@ public class About extends AbstractDialog
     Version version = (Version) list.next();
     
     Label l = GUI.getStyleFactory().createLabel(parent,SWT.BORDER);
-    l.setImage(SWTUtil.getImage("hibiscus.jpg"));
+    l.setImage(SWTUtil.getImage("hibiscus-splash.png"));
 
     Container container = new LabelGroup(parent,i18n.tr("Versionsinformationen"),true);
     
@@ -142,7 +142,7 @@ public class About extends AbstractDialog
     
     container.addButtonArea(buttons);
     
-    setSize(SWT.DEFAULT,430); // BUGZILLA 269
+    setSize(SWT.DEFAULT,530); // BUGZILLA 269
   }
 
   /**

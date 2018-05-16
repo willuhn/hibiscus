@@ -53,7 +53,7 @@ public class PassportList extends AbstractView
         // new de.willuhn.jameica.hbci.gui.action.AccountNew().handleAction(null);
         new PassportDetail().handleAction(null);
       }
-    },null,false,"seahorse-preferences.png"));
+    },null,false,"list-add.png"));
     buttons.paint(getParent());
 
     tree.paint(getParent());

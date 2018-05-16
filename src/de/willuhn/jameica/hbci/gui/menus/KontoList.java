@@ -57,16 +57,16 @@ public class KontoList extends ContextMenu implements Extendable
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"system-file-manager.png"));
+    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"list-add.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new KontoauszugList(),"text-x-generic.png"));
     addItem(new AccountItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png"));
     addItem(ContextMenuItem.SEPARATOR);
 
-    addItem(new AccountItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"stock_next.png"));
-    addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"stock_previous.png"));
-    addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"stock_form-time-field.png"));
+    addItem(new AccountItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"ueberweisung.png"));
+    addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"lastschrift.png"));
+    addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"dauerauftrag.png"));
     addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png").offlineAccount());
 
     addItem(ContextMenuItem.SEPARATOR);

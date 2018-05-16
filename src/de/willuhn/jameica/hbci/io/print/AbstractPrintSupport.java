@@ -13,6 +13,18 @@ package de.willuhn.jameica.hbci.io.print;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
+
+import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.SWTUtil;
+import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.print.PrintSupport;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 import net.sf.paperclips.AlignPrint;
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
@@ -26,19 +38,6 @@ import net.sf.paperclips.Print;
 import net.sf.paperclips.PrintJob;
 import net.sf.paperclips.SimplePageDecoration;
 import net.sf.paperclips.TextPrint;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
-
-import de.willuhn.jameica.gui.util.Font;
-import de.willuhn.jameica.gui.util.SWTUtil;
-import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.print.PrintSupport;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.Settings;
-import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Abstrakte Basis-Implementierung fuer den Druck-Support.
@@ -79,7 +78,7 @@ public abstract class AbstractPrintSupport implements PrintSupport
 
     {
       table.add(new TextPrint(i18n.tr("Druck: {0}",HBCI.LONGDATEFORMAT.format(new Date())),fontTiny));
-      ImagePrint ip = new ImagePrint(SWTUtil.getImage("hibiscus-donate.png").getImageData(),new Point(300,300));
+      ImagePrint ip = new ImagePrint(SWTUtil.getImage("hibiscus-print.png").getImageData(),new Point(300,300));
       table.add(new AlignPrint(ip,SWT.RIGHT,SWT.TOP));
     }
     ////////////////////////////////////////////////////////////////////////////
