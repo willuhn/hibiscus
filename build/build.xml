@@ -247,8 +247,8 @@
   <target depends="init,compile,zip,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
 
-    <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
-    <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.src.zip" />
+    <copy file="${project.release}/${define.zipfilename}" todir="${project.nightly}" />
+    <copy file="${project.release}/${define.srcfilename}" todir="${project.nightly}" />
 
     <!-- Die Datei brauchen die anderen Plugins zum Kompilieren //-->
     <copy file="${project.zipdir}/${define.jarfilename}" tofile="releases/hibiscus-lib.jar" />

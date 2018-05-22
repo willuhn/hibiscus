@@ -1,4 +1,6 @@
-HEAD 2.7 (nightly)
+HEAD 2.9 (nightly)
+
+2018-05-22 Version 2.8.0
 
   * NEW: 0650 HiDPI-Icons
   * NEW: 0649 Neue HBCI4Java-Version 3.0.16-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/035342b8bd84574b914eb779cf836d00abbcd960
