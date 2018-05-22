@@ -658,7 +658,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         // Haben wir wenigstens PDF-Format bei HKEKA?
         if (!ok)
         {
-          ok = hkeka != null && KontoauszugPdfUtil.getFormats(hkeka.getBpd()).contains(Format.PDF);
+          ok = hkeka != null && hkeka.getBpdSupport() && hkeka.getUpdSupport() && KontoauszugPdfUtil.getFormats(hkeka.getBpd()).contains(Format.PDF);
           if (ok)
             text2 = "HKEKA: Von Bank unterstützt, freigeschaltet und PDF-Format vorhanden";
         }
