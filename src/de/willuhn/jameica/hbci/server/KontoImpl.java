@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Dauerauftrag;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.rmi.Lastschrift;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
@@ -267,6 +268,15 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       {
         um = (Umsatz) list.next();
         um.delete();
+      }
+      
+      // dann die Kontoauszuege
+      list = getKontoauszuege();
+      Kontoauszug az = null;
+      while (list.hasNext())
+      {
+        az = (Kontoauszug) list.next();
+        az.delete();
       }
 
       // dann die Dauerauftraege
@@ -604,6 +614,17 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   public DBIterator getSammelUeberweisungen() throws RemoteException
   {
     DBIterator list = getService().createList(SammelUeberweisung.class);
+    list.addFilter("konto_id = " + getID());
+    return list;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getKontoauszuege()
+   */
+  @Override
+  public DBIterator getKontoauszuege() throws RemoteException
+  {
+    DBIterator list = getService().createList(Kontoauszug.class);
     list.addFilter("konto_id = " + getID());
     return list;
   }

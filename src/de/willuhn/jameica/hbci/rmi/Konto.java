@@ -354,6 +354,13 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
 	 * @throws RemoteException
 	 */
 	public DBIterator getProtokolle() throws RemoteException;
+	
+	/**
+	 * Liefert die Liste der Kontoauszuege.
+	 * @return die Liste der Kontoauszuege.
+	 * @throws RemoteException
+	 */
+	public DBIterator getKontoauszuege() throws RemoteException;
 
 	/**
 	 * Fuegt den uebergebenen Text zum Konto-Protokoll hinzu.
