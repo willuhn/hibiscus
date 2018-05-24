@@ -1,5 +1,11 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0652 Sparquote - tabellarische Ansicht: Spalte "Monat" wurde nicht korrekt chronologisch (sondern alphabetisch) sortiert
+  
+2018-05-23 Version 2.8.1
+
+  * CHG: 0651 System-Anforderung geändert: Jameica in Version 2.8.0+
+  
 2018-05-22 Version 2.8.0
 
   * NEW: 0650 HiDPI-Icons
