@@ -30,6 +30,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
@@ -276,7 +277,7 @@ public class SparQuote implements Part
 
     // Wir initialisieren die Tabelle erstmal ohne Werte.
     this.table = new TablePart(data,null);
-    this.table.addColumn(i18n.tr("Monat"), "text");
+    this.table.addColumn(i18n.tr("Monat"), "start",new DateFormatter(DATEFORMAT));
     this.table.addColumn(i18n.tr("Einnahmen"), "einnahmen", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.addColumn(i18n.tr("Ausgaben"),  "ausgaben", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.addColumn(i18n.tr("Sparquote"), "sparquote", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
@@ -353,7 +354,6 @@ public class SparQuote implements Part
 
       UmsatzEntry e = new UmsatzEntry();
       e.start = from;
-      e.text = DATEFORMAT.format(e.start);
       
       Calendar cal = Calendar.getInstance();
       cal.setTime(from);
@@ -470,7 +470,6 @@ public class SparQuote implements Part
         {
           ue.start = current.start;
           ue.end = current.end;
-          ue.text = current.text;
         }
       }
       catch (IndexOutOfBoundsException e)
@@ -493,7 +492,6 @@ public class SparQuote implements Part
     private double ausgaben  = 0d;
     private Date start       = null;
     private Date end         = null;
-    private String text      = null;
 
     /**
      * Liefert die Einnahmen.
@@ -529,15 +527,6 @@ public class SparQuote implements Part
     public double getAusgaben()
     {
       return this.ausgaben;
-    }
-
-    /**
-     * Liefert den Text.
-     * @return der Text.
-     */
-    public String getText()
-    {
-      return this.text;
     }
 
     /**
