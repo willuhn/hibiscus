@@ -1,13 +1,13 @@
-May 14, 2018
+May 11, 2018
 
-Jameica is licensed under the terms of the GNU General Public License.
+Jameica is licensed under the terms of the GNU General Public License version 2 or later.
 
 Linking this program statically or dynamically with other modules is making a
 combined work based on this program. Thus, the terms and conditions of the
 GNU General Public License cover the whole combination.
 
 As a special exception, the copyright holders of this program give you
-permission to link this proram with independent modules to produce an
+permission to link this program with independent modules to produce an
 executable, regardless of the license terms of these independent modules, and
 to copy and distribute the resulting executable under terms of your choice,
 provided that you also meet, for each linked independent module, the terms and
@@ -20,9 +20,8 @@ statement from your version.
 You should have received a copy of the GNU General Public License along with
 Jameica; see the file COPYING.  If not, write to
 
-Free Software Foundation
-59 Temple Place - Suite 330
+Free Software Foundation, Inc.
+51 Franklin St, Fifth Floor
 Boston
-MA 02111-1307
+MA 02110-1301
 USA
-
