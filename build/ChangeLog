@@ -1,5 +1,7 @@
-Version 2.8.1
+2018-xx-xx Version 2.8.2
 
+  * NEW: 0654 Befehl "Umsätze importieren..." auch im Kontextmenu von Konten. Viele User suchen dort nach der Import-Möglichkeit von Umsätzen
+  * BUG: 0653 Kontoauszug per HKEKP: Auch in Segment-Version 1 IBAN/BIC verwenden - https://github.com/hbci4j/hbci4java/commit/25524d041a6b85fad88a3c4d65fc519f242dd459
   * BUG: 0652 Sparquote - tabellarische Ansicht: Spalte "Monat" wurde nicht korrekt chronologisch (sondern alphabetisch) sortiert
   
 2018-05-23 Version 2.8.1

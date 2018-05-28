@@ -33,6 +33,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoauszugList;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew;
 import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
+import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.rmi.Flaggable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -70,8 +71,9 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png").offlineAccount());
 
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new KontoExport(),"document-save.png"));
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),new KontoImport(),"document-open.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Konten exportieren..."),new KontoExport(),"document-save.png"));
+    addItem(new ContextMenuItem(i18n.tr("Konten importieren..."),new KontoImport(),"document-open.png"));
+    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport(),"document-open.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addMenu(new ExtendedMenu());
   }
