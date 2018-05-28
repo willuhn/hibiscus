@@ -313,7 +313,7 @@ public class Controller extends AbstractControl
   {
     try
     {
-      String ask = i18n.tr("Legen Sie Ihre HBCI-Chipkarte vor dem Test in das Lesegerät.\nDie Suchen kann einige Minuten in Anspruch nehmen. Vorgang fortsetzen?");
+      String ask = i18n.tr("Legen Sie Ihre HBCI-Chipkarte vor dem Test in das Lesegerät.\nDie Suche kann einige Minuten in Anspruch nehmen. Vorgang fortsetzen?");
       if (!Application.getCallback().askUser(ask))
         return;
     }
