@@ -40,6 +40,7 @@ import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Platform;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ClassFinder;
@@ -347,6 +348,8 @@ public class DDVConfigFactory
     catch (Exception e)
     {
       monitor.log("  " + i18n.tr("  nicht gefunden"));
+      Logger.info("exception: " + e.getMessage());
+      Logger.write(Level.DEBUG,"stacktrace for debugging purpose",e);
     }
     finally
     {
