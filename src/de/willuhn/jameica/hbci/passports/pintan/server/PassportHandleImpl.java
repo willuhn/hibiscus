@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIVersion;
@@ -167,11 +168,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       //////////////////////
       // BUGZILLA 831
       // Siehe auch Stefans Mail vom 10.03.2010 - Betreff "Re: [hbci4java] Speicherung des TAN-Verfahrens im PIN/TAN-Passport-File?"
-      String secmech = config.getSecMech();
-      if (secmech != null && secmech.trim().length() == 0)
-        secmech = null; // nur um sicherzustellen, dass kein Leerstring drinsteht
+      PtSecMech mech = config.getStoredSecMech();
+      String secmech = mech != null ? StringUtils.trimToNull(mech.getId()) : null;
 
-      Logger.info("[PIN/TAN] tan sec mech: " + secmech);
+      Logger.info("[PIN/TAN] using stored tan sec mech: " + (mech != null ? mech.toString() : "<ask-user>"));
       ((AbstractPinTanPassport)hbciPassport).setCurrentTANMethod(secmech);
       //////////////////////
 
@@ -323,15 +323,17 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         String flicker = retData.toString();
         if (flicker != null && flicker.length() > 0)
         {
+          Logger.debug("got flicker code " + flicker);
           // Wir haben einen Flicker-Code. Also zeigen wir den Flicker-Dialog statt
           // dem normalen TAN-Dialog an
-          Logger.debug("got flicker code " + flicker + ", using optical chiptan dialog");
+          Logger.info("using chiptan OPTIC/USB");
           dialog = new ChipTANDialog(config,flicker);
         }
         
         // regulaerer TAN-Dialog
         if (dialog == null)
         {
+          Logger.info("using chiptan MANUAL");
           Logger.debug("using regular tan dialog");
           dialog = new TANDialog(config);
         }
@@ -347,12 +349,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       {
         if (config != null)
         {
-          String type = config.getSecMech();
-          if (type != null && type.length() > 0)
+          PtSecMech mech = config.getStoredSecMech();
+          String type = mech != null ? StringUtils.trimToNull(mech.getId()) : null;
+          if (type != null)
           {
             // Wir checken vorher noch, ob es das TAN-Verfahren ueberhaupt noch gibt
-            PtSecMech mech = PtSecMech.contains(retData.toString(),type);
-            if (mech != null)
+            PtSecMech m = PtSecMech.contains(retData.toString(),type);
+            if (m != null)
             {
               // Jepp, gibts noch
               retData.replace(0,retData.length(),type);

@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0657 Support für ChipTAN USB
   * NEW: 0656 Neue HBCI4Java-Version 3.0.17-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/2266407b15ed137c283080f107445e15e25f21d0
   * NEW: 0655 Bei Klick auf "Neuer Bankzugang..." im Kontextmenu eines Verfahrens dieses direkt vorauswählen
   * NEW: 0654 Befehl "Umsätze importieren..." auch im Kontextmenu von Konten. Viele User suchen dort nach der Import-Möglichkeit von Umsätzen

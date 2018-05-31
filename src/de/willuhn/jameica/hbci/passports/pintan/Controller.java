@@ -328,8 +328,13 @@ public class Controller extends AbstractControl
   {
     try
     {
-      getConfig().setSecMech(null);
-      getConfig().setTanMedia(null);
+      PinTanConfig conf = this.getConfig();
+      conf.setCurrentSecMech(null);
+      conf.setStoredSecMech(null);
+      conf.setTanMedia(null);
+      conf.setChipTANUSB(false);
+      conf.setChipTANUSBAsked(false);
+      
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorauswahl der TAN-Verfahren zurückgesetzt"),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)

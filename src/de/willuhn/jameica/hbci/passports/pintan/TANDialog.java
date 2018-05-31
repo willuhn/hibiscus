@@ -39,7 +39,7 @@ public class TANDialog extends PasswordDialog
 
   protected final static int WINDOW_WIDTH = 550;
 
-  private PinTanConfig config = null;
+  protected PinTanConfig config = null;
   private HibiscusDBObject context = null;
   
   /**
@@ -214,22 +214,3 @@ public class TANDialog extends PasswordDialog
 		return (i18n.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
 	}
 }
-
-
-/**********************************************************************
- * $Log: TANDialog.java,v $
- * Revision 1.5  2011/05/23 10:47:29  willuhn
- * @R BUGZILLA 62 - Speichern der verbrauchten TANs ausgebaut. Seit smsTAN/chipTAN gibt es zum einen ohnehin keine TAN-Listen mehr. Zum anderen kann das jetzt sogar Fehler ausloesen, wenn ueber eines der neuen TAN-Verfahren die gleiche TAN generiert wird, die frueher irgendwann schonmal zufaellig generiert wurde. TANs sind inzwischen fluechtige und werden dynamisch erzeugt. Daher ist es unsinnig, die zu speichern. Zumal es das Wallet sinnlos aufblaeht.
- *
- * Revision 1.4  2011-05-16 15:34:59  willuhn
- * @N TAN-Text kann formatiert sein
- *
- * Revision 1.3  2011-05-09 17:27:39  willuhn
- * @N Erste Vorbereitungen fuer optisches chipTAN
- *
- * Revision 1.2  2011-05-09 09:25:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- **********************************************************************/

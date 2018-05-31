@@ -16,6 +16,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.passport.Configuration;
+import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.rmi.Konto;
 
 /**
@@ -171,18 +172,74 @@ public interface PinTanConfig extends GenericObject, Configuration
   public void setBezeichnung(String bezeichnung) throws RemoteException;
   
   /**
-   * Liefert einen ggf gespeicherten Sicherheitsmechanismus.
-   * @return ID des Sicherheitsmechanismus.
+   * Liefert das gespeicherte TAN-Verfahren.
+   * @return das gespeicherte TAN-Verfahren oder NULL, wenn keines gespeichert wurde.
    * @throws RemoteException
    */
-  public String getSecMech() throws RemoteException;
+  public PtSecMech getStoredSecMech() throws RemoteException;
 
   /**
-   * Speichert einen Sicherheitsmechanismus.
-   * @param s der Sicherheitsmechanismus.
+   * Speichert das TAN-Verfahren permanent.
+   * @param mech das TAN-Verfahrens.
    * @throws RemoteException
    */
-  public void setSecMech(String s) throws RemoteException;
+  public void setStoredSecMech(PtSecMech mech) throws RemoteException;
+  
+  /**
+   * Liefert das aktuell ausgewaehlte TAN-Verfahren.
+   * @return das aktuell ausgewaehlte TAN-Verfahren.
+   * @throws RemoteException
+   */
+  public PtSecMech getCurrentSecMech() throws RemoteException;
+
+  /**
+   * Speichert das aktuell ausgewaehlte TAN-Verfahren.
+   * @param mech das aktuell ausgewaehlte TAN-Verfahren.
+   * @throws RemoteException
+   */
+  public void setCurrentSecMech(PtSecMech mech) throws RemoteException;
+  
+  /**
+   * Prueft, ob der User schonmal gefragt wurde, ob er chipTAN USB nutzen moechte.
+   * @return true, wenn der User schonmal gefragt wurde, ob er chipTAN USB nutzen moechte.
+   * @throws RemoteException
+   */
+  public boolean isChipTANUSBAsked() throws RemoteException;
+  
+  /**
+   * Legt fest, ob der User schonmal gefragt wurde, ob er chipTAN USB nutzen moechte.
+   * @param b true, wenn der User gefragt wurde, ob er chipTAN USB nutzen moechte.
+   * @throws RemoteException
+   */
+  public void setChipTANUSBAsked(boolean b) throws RemoteException;
+  
+  /**
+   * Liefert true, wenn chipTAN USB verwendet werden soll.
+   * @return true, wenn chipTAN USB verwendet werden soll.
+   * @throws RemoteException
+   */
+  public boolean isChipTANUSB() throws RemoteException;
+  
+  /**
+   * Legt fest, ob chipTAN USB genutzt werden soll.
+   * @param b true, wenn chipTAN USB genutzt werden soll.
+   * @throws RemoteException
+   */
+  public void setChipTANUSB(boolean b) throws RemoteException;
+  
+  /**
+   * Liefert eine optionale Bezeichnung fuer den zu nutzenden Karteleser.
+   * @return eine optionale Bezeichnung fuer den zu nutzenden Karteleser.
+   * @throws RemoteException
+   */
+  public String getCardReader() throws RemoteException;
+  
+  /**
+   * Speichert den Namen des zu verwendenden Kartenlesers.
+   * @param name der Name des zu verwendenden Kartenlesers.
+   * @throws RemoteException
+   */
+  public void setCardReader(String name) throws RemoteException;
 
   /**
    * Prueft, ob die TAN waehrend der Eingabe angezeigt werden soll.

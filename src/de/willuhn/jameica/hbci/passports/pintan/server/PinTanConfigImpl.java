@@ -24,6 +24,7 @@ import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.passports.pintan.Detail;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
+import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Settings;
@@ -79,8 +80,6 @@ public class PinTanConfigImpl implements PinTanConfig
       return getBezeichnung();
     if ("showtan".equals(attribute))
       return new Boolean(getShowTan());
-    if ("secmech".equals(attribute))
-      return getSecMech();
     if ("tanmedia".equals(attribute))
       return getTanMedia();
     if ("tanmedias".equals(attribute))
@@ -381,19 +380,100 @@ public class PinTanConfigImpl implements PinTanConfig
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getSecMech()
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getStoredSecMech()
    */
-  public String getSecMech() throws RemoteException
+  public PtSecMech getStoredSecMech() throws RemoteException
   {
-    return settings.getString(getID() + ".secmech",null);
+    // Wir haben migriert. Vorher wurde nur die ID des Verfahrens gespeichert.
+    // Jetzt zusaetzlich auch der Name, damit wir erkennen koennen, ob es chipTAN USB ist
+    // Wenn wir den Namen nicht haben, forcieren wir, dass der User die Auswahl
+    // neu taetigt. Wenn hier nur die ID enthalten ist, wird NULL zurueckgeliefert
+    // und damit die Vorauswahl resettet.
+    return PtSecMech.create(settings.getString(getID() + ".secmech",null));
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setSecMech(java.lang.String)
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setStoredSecMech(de.willuhn.jameica.hbci.passports.pintan.PtSecMech)
    */
-  public void setSecMech(String s) throws RemoteException
+  public void setStoredSecMech(PtSecMech mech) throws RemoteException
   {
-    settings.setAttribute(getID() + ".secmech",s);
+    settings.setAttribute(getID() + ".secmech",mech != null ? mech.toString() : null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCurrentSecMech()
+   */
+  @Override
+  public PtSecMech getCurrentSecMech() throws RemoteException
+  {
+    // Checken, ob es ein aktuell ausgewaehltes gibt. Das hat Vorrang.
+    PtSecMech mech = PtSecMech.create(settings.getString(getID() + ".secmech.current",null));
+    
+    // Wenn kein aktuelles vorhanden ist, nehmen wir das persistierte
+    return mech != null ? mech : this.getStoredSecMech();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCurrentSecMech(de.willuhn.jameica.hbci.passports.pintan.PtSecMech)
+   */
+  @Override
+  public void setCurrentSecMech(PtSecMech mech) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".secmech.current",mech != null ? mech.toString() : null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCardReader()
+   */
+  @Override
+  public String getCardReader() throws RemoteException
+  {
+    return settings.getString(getID() + ".cardreader",null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCardReader(java.lang.String)
+   */
+  @Override
+  public void setCardReader(String name) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".cardreader",name);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isChipTANUSB()
+   */
+  @Override
+  public boolean isChipTANUSB() throws RemoteException
+  {
+    return settings.getBoolean(getID() + ".chiptan.usb.enabled",false);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isChipTANUSBAsked()
+   */
+  @Override
+  public boolean isChipTANUSBAsked() throws RemoteException
+  {
+    return settings.getBoolean(getID() + ".chiptan.usb.asked",false);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setChipTANUSB(boolean)
+   */
+  @Override
+  public void setChipTANUSB(boolean b) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".chiptan.usb.enabled",b);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setChipTANUSBAsked(boolean)
+   */
+  @Override
+  public void setChipTANUSBAsked(boolean b) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".chiptan.usb.asked",b);
   }
 
   /**
@@ -462,7 +542,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public boolean getShowTan() throws RemoteException
   {
-    return settings.getBoolean(getID() + ".showtan",false);
+    return settings.getBoolean(getID() + ".showtan",true);
   }
 
   /**

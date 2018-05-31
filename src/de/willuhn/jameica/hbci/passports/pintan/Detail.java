@@ -68,8 +68,7 @@ public class Detail extends AbstractView
     
     {
       ButtonArea buttons = new ButtonArea();
-      // BUGZILLA 218
-      String secMech  = control.getConfig().getSecMech();
+      PtSecMech secMech  = control.getConfig().getStoredSecMech(); // BUGZILLA 218
       String tanMedia = control.getConfig().getTanMedia();
       Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
         public void handleAction(Object context) throws ApplicationException
@@ -77,7 +76,7 @@ public class Detail extends AbstractView
           control.handleDeleteTanSettings();
         }
       },null,false,"edit-undo.png");
-      b.setEnabled((secMech != null && secMech.length() > 0) || (tanMedia != null && tanMedia.length() > 0));
+      b.setEnabled(secMech != null || (tanMedia != null && tanMedia.length() > 0));
       buttons.addButton(b);
       buttons.paint(getParent());
     }
