@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0655 Bei Klick auf "Neuer Bankzugang..." im Kontextmenu eines Verfahrens dieses direkt vorauswählen
   * NEW: 0654 Befehl "Umsätze importieren..." auch im Kontextmenu von Konten. Viele User suchen dort nach der Import-Möglichkeit von Umsätzen
   * BUG: 0653 Kontoauszug per HKEKP: Auch in Segment-Version 1 IBAN/BIC verwenden - https://github.com/hbci4j/hbci4java/commit/25524d041a6b85fad88a3c4d65fc519f242dd459
   * BUG: 0652 Sparquote - tabellarische Ansicht: Spalte "Monat" wurde nicht korrekt chronologisch (sondern alphabetisch) sortiert

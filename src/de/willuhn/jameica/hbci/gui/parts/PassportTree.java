@@ -97,7 +97,9 @@ public class PassportTree extends TreePart
     menu.addItem(new ContextMenuItem(i18n.tr("Neuer Bank-Zugang..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        new PassportDetail().handleAction(null);
+        Object o = getSelection();
+        Passport p = (o instanceof PassportObject) ? ((PassportObject)o).passport : null;
+        new PassportDetail().handleAction(p);
       }
     },"list-add.png"));
     
