@@ -28,7 +28,6 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
-import de.willuhn.jameica.hbci.rmi.KontoType;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
@@ -332,21 +331,16 @@ public class Converter
   public static de.willuhn.jameica.hbci.rmi.Konto HBCIKonto2HibiscusKonto(Konto konto, Class passportClass) throws RemoteException
   {
     DBIterator list = Settings.getDBService().createList(de.willuhn.jameica.hbci.rmi.Konto.class);
-    list.addFilter("kontonummer = ?", new Object[]{konto.number});
-    list.addFilter("blz = ?",         new Object[]{konto.blz});
+    list.addFilter("kontonummer = ?", konto.number);
+    list.addFilter("blz = ?",         konto.blz);
     if (passportClass != null)
-      list.addFilter("passport_class = ?", new Object[]{passportClass.getName()});
+      list.addFilter("passport_class = ?", passportClass.getName());
 
     // BUGZILLA 355
     if (konto.subnumber != null && konto.subnumber.length() > 0)
-      list.addFilter("unterkonto = ?",new Object[]{konto.subnumber});
+      list.addFilter("unterkonto = ?",konto.subnumber);
 
-    // BUGZILLA 338: Wenn das Konto eine Bezeichnung hat, muss sie uebereinstimmen
-    if (konto.type != null && konto.type.length() > 0)
-      list.addFilter("bezeichnung = ?", new Object[]{konto.type});
-
-    // Wir vervollstaendigen gleich noch die Kontoart, wenn wir eine haben und im Konto noch
-    // keine hinterlegt ist.
+    
     String type = StringUtils.trimToNull(konto.acctype);
     Integer accType = null;
     if (type != null)
@@ -361,28 +355,13 @@ public class Converter
       }
     }
 
-    if (list.hasNext())
-    {
-      // Konto gibts schon
-      de.willuhn.jameica.hbci.rmi.Konto result = (de.willuhn.jameica.hbci.rmi.Konto) list.next();
-      Integer current = result.getAccountType();
-      if ((current == null && accType != null) || (current != null && accType != null && !current.equals(accType))) // Neu oder hat sich geaendert
-      {
-        try
-        {
-          KontoType kt = KontoType.find(accType);
-          Logger.info("auto-completing account type (value: " + accType + " - " + kt + ", old value: " + current + ") for account ID: " + result.getID());
-          result.setAccountType(accType);
-          result.store();
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to auto-complete account type (value: " + accType + ") for account ID: " + result.getID(),e);
-        }
-      }
+    // Wenn das Konto einen Typ hat, muss er uebereinstimmen
+    if (accType != null)
+      list.addFilter("acctype = ?", accType);
 
-      return result;
-    }
+    // Konto gibts schon
+    if (list.hasNext())
+      return (de.willuhn.jameica.hbci.rmi.Konto) list.next();
 
     // Ne, wir erstellen ein neues
     de.willuhn.jameica.hbci.rmi.Konto k = (de.willuhn.jameica.hbci.rmi.Konto) Settings.getDBService().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,null);

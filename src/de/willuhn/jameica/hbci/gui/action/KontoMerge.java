@@ -41,8 +41,15 @@ public class KontoMerge implements Action
     if (context == null)
       return;
 
+    final boolean kontoCheck = Settings.getKontoCheck();
+    
     try
     {
+      // Die Pruefung der BIC/IBAN muessen wir waehrend des Merge kurzfristig abschalten - fuer
+      // den Fall, dass die Bank selbst ungueltige Konten liefert. Die koennten wir sonst nicht
+      // anlegen. Tritt z.Bsp. bei Demo-Konten auf
+      Settings.setKontoCheck(false);
+      
       List<Konto> konten = new ArrayList<Konto>();
 
       if (context instanceof Konto)        konten.add((Konto) context);
@@ -81,20 +88,16 @@ public class KontoMerge implements Action
           if (pp == null || !pp.equals(konto.getPassportClass()))
             continue;
 
+          // Hier haben wir vorher den Namen des Kontos verglichen.
+          // Jetzt pruefen wir stattdessen den Kontotyp.
+          Integer localType = check.getAccountType();
+          Integer newType   = konto.getAccountType();
+          boolean haveType  = (localType != null && newType != null);
 
-          // BUGZILLA 338: Checken, ob Bezeichnung (=Type) uebereinstimmt
-          // Bezeichnung ist optional - wir checken nur, wenn auf beiden
-          // Seiten ein Name vorhanden ist und sie sich unterscheiden
-          String localType = check.getBezeichnung();
-          String newType   = konto.getBezeichnung();
-          boolean haveName = (localType != null && localType.length() > 0 &&
-                             newType != null && newType.length() > 0);
-
-          // Die Konten gelten bereits als identisch, wenn
-          // eines von beiden keine Bezeichnung hat (dann genuegen
-          // die o.g. Kriterien). Andernfalls muessen die Bezeichnungen
-          // uebereinstimmen.
-          if (!haveName || newType.equals(localType))
+          // Die Konten gelten bereits als identisch, wenn eines von beiden
+          // keinen Typ hat (dann genuegen die o.g. Kriterien).
+          // Andernfalls muss der Typ uebereinstimmen.
+          if (!haveType || newType.equals(localType))
           {
             found = true;
             Logger.info("  konto exists, skipping");
@@ -134,18 +137,11 @@ public class KontoMerge implements Action
       Logger.error("error while merging accounts",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anlegen der Konten: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
+    finally
+    {
+      // Einstellung wieder zuruecksetzen
+      Settings.setKontoCheck(kontoCheck);
+    }
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: KontoMerge.java,v $
- * Revision 1.1  2010/09/29 23:43:34  willuhn
- * @N Automatisches Abgleichen und Anlegen von Konten aus KontoFetchFromPassport in KontoMerge verschoben
- * @N Konten automatisch (mit Rueckfrage) anlegen, wenn das Testen der HBCI-Konfiguration erfolgreich war
- * @N Config-Test jetzt auch bei Schluesseldatei
- * @B in PassportHandleImpl#getKonten() wurder der Converter-Funktion seit jeher die falsche Passport-Klasse uebergeben. Da gehoerte nicht das Interface hin sondern die Impl
- *
- **********************************************************************/
