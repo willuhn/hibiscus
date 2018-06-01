@@ -10,6 +10,7 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
@@ -43,6 +44,7 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.JameicaCompat;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Customizing;
 import de.willuhn.jameica.system.Settings;
@@ -171,6 +173,8 @@ public class ChipTANDialog extends TANDialog
     
     if (this.usb)
     {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie die bitte Chipkarte ein."),StatusBarMessage.TYPE_INFO));
+
       this.setShowPassword(true); // Bei ChipTAN USB immer die TAN anzeigen, damit der User vergleichen kann.
       container.addHeadline(i18n.tr("ChipTAN USB"));
       container.addText(i18n.tr("Legen Sie die Chipkarte ein und folgen Sie den Anweisungen des Kartenlesers. Klicken Sie auf \"OK\", wenn die TAN korrekt übertragen wurde."),true);
@@ -179,6 +183,8 @@ public class ChipTANDialog extends TANDialog
       final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.horizontalSpan = 2;
       progress.setLayoutData(gd);
+      
+      final AtomicBoolean cancelled = new AtomicBoolean(false);
 
       final Thread usbThread = new Thread()
       {
@@ -188,7 +194,7 @@ public class ChipTANDialog extends TANDialog
           {
             Logger.info("trying to get TAN using USB cardreader");
             String s = StringUtils.trimToNull(service.getTan(code));
-            if (s != null)
+            if (s != null && !cancelled.get())
             {
               setPassword(s,parent);
             }
@@ -199,8 +205,11 @@ public class ChipTANDialog extends TANDialog
           }
           catch (Exception e)
           {
-            Logger.error("unable to get tan from chipcard",e);
-            setErrorText(i18n.tr("Fehler bei TAN-Ermittlung: {0}",e.getMessage()));
+            if (!cancelled.get())
+            {
+              Logger.error("unable to get tan from chipcard",e);
+              setErrorText(i18n.tr("Fehler bei TAN-Ermittlung: {0}",e.getMessage()));
+            }
           }
         }
       };
@@ -210,6 +219,7 @@ public class ChipTANDialog extends TANDialog
         @Override
         public void widgetDisposed(DisposeEvent e)
         {
+          cancelled.set(true);
           // Nur fuer den Fall, dass der Thread noch laeuft.
           try
           {
