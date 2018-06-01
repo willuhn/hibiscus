@@ -78,7 +78,9 @@ public class ChipTANDialog extends TANDialog
     this.checkUSB();
     Logger.info("using chiptan " + (this.usb ? "USB" : "OPTIC"));
     
-    if (!this.usb)
+    if (this.usb)
+      this.setSideImage(SWTUtil.getImage("cardreader.png"));
+    else
       this.setSideImage(null); // den Platz haben wir hier nicht.
     
     this.smallDisplay = Customizing.SETTINGS.getBoolean("application.scrollview",false);
@@ -136,6 +138,7 @@ public class ChipTANDialog extends TANDialog
     // Versuchen, die Verbindung zum Kartenleser herzustellen
     try
     {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie die bitte Chipkarte ein."),StatusBarMessage.TYPE_INFO));
       this.service = SmartCardService.createInstance(ChipTanCardService.class,this.config != null ? StringUtils.trimToNull(this.config.getCardReader()) : null);
 
       // Wir haben grundsaetzlich einen Kartenleser.
