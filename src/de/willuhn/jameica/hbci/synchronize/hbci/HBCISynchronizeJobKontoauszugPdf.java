@@ -84,7 +84,7 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
           // Wenn die Bank PDF nicht unterstuetzt, lassen wir den Parameter einfach weg
           if (formats.contains(Format.PDF))
             format = "PDF";
-          else
+          else if (formats.size() > 0)
             format = formats.get(0).name();
         }
       }
