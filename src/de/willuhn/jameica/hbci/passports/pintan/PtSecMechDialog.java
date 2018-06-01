@@ -116,8 +116,8 @@ public class PtSecMechDialog extends AbstractDialog
             try
             {
               Application.getCallback().notifyUser(
-                  i18n.tr("Sie können diese Vorauswahl später in der PIN/TAN-Konfiguration\n" +
-                           "über die Option \"TAN-Verfahren zurücksetzen\" wieder\n" +
+                  i18n.tr("Sie können diese Vorauswahl später in der PIN/TAN-Konfiguration " +
+                           "über die Option \"TAN-Verfahren zurücksetzen\" wieder " +
                            "rückgängig machen."));
             }
             catch (Exception e)
