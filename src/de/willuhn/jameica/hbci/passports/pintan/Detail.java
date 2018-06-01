@@ -61,14 +61,23 @@ public class Detail extends AbstractView
     
     {
       Container group = new SimpleContainer(getParent());
+
       group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
-      group.addInput(control.getBezeichnung());
       group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
+      group.addInput(control.getBezeichnung());
+
+      PtSecMech secMech = control.getConfig().getCurrentSecMech();
+      if (secMech != null && secMech.useUSB())
+      {
+        group.addHeadline(i18n.tr("ChipTAN USB"));
+        group.addInput(control.getChipTANUSB());
+        group.addInput(control.getCardReaders());
+      }
     }
     
     {
+      PtSecMech secMech = control.getConfig().getStoredSecMech();
       ButtonArea buttons = new ButtonArea();
-      PtSecMech secMech  = control.getConfig().getStoredSecMech(); // BUGZILLA 218
       String tanMedia = control.getConfig().getTanMedia();
       Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
         public void handleAction(Object context) throws ApplicationException

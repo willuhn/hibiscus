@@ -51,7 +51,7 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Dialog für die ChipTAN optisch.
+ * Dialog für die ChipTAN (OPTIC und USB).
  */
 public class ChipTANDialog extends TANDialog
 {
@@ -137,24 +137,21 @@ public class ChipTANDialog extends TANDialog
       this.service = SmartCardService.createInstance(ChipTanCardService.class,this.config != null ? StringUtils.trimToNull(this.config.getCardReader()) : null);
 
       // Wir haben grundsaetzlich einen Kartenleser.
-      if (this.service != null)
+      if (this.service != null && this.config != null)
       {
-        if (this.config != null)
+        if (config.isChipTANUSBAsked())
+        {
+          this.usb = this.config.isChipTANUSB();
+        }
+        else
         {
           // User fragen, ob er ihn auch nutzen moechte, wenn wir das noch nicht getan haben
-          if (config.isChipTANUSBAsked())
-          {
-            this.usb = this.config.isChipTANUSB();
-          }
-          else
-          {
-            this.usb = Application.getCallback().askUser(i18n.tr("Es wurde ein USB-Kartenleser gefunden.\nMöchten Sie diesen zur Erzeugung der TAN verwenden?"),false);
-            
-            // Das Speichern der Antwort koennen wir nicht Jameica selbst ueberlassen, weil
-            // die Entscheidung ja pro PIN/TAN-Config gelten soll und nicht global.
-            this.config.setChipTANUSBAsked(true);
-            this.config.setChipTANUSB(this.usb);
-          }
+          this.usb = Application.getCallback().askUser(i18n.tr("Es wurde ein USB-Kartenleser gefunden.\nMöchten Sie diesen zur Erzeugung der TAN verwenden?"),false);
+          
+          // Das Speichern der Antwort koennen wir nicht Jameica selbst ueberlassen, weil
+          // die Entscheidung ja pro PIN/TAN-Config gelten soll und nicht global.
+          this.config.setChipTANUSBAsked(true);
+          this.config.setChipTANUSB(this.usb);
         }
       }
     }

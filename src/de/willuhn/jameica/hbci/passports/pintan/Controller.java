@@ -10,9 +10,18 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CardTerminals;
+import javax.smartcardio.TerminalFactory;
+
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -43,6 +52,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -56,20 +66,22 @@ public class Controller extends AbstractControl
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 
-  private PinTanConfig config   = null;
-  private HBCIPassport passport = null;
+  private PinTanConfig config     = null;
+  private HBCIPassport passport   = null;
 
-  private TablePart configList  = null;
-
-  private Input url             = null;
-  private Input blz             = null;
-  private Input port            = null;
-  private Input filterType      = null;
-  private Input hbciVersion     = null;
-  private Input customerId      = null;
-  private Input userId          = null;
-  private Input bezeichnung     = null;
-  private CheckboxInput showTan = null;
+  private TablePart configList    = null;
+  
+  private Input url               = null;
+  private Input blz               = null;
+  private Input port              = null;
+  private Input filterType        = null;
+  private Input hbciVersion       = null;
+  private Input customerId        = null;
+  private Input userId            = null;
+  private Input bezeichnung       = null;
+  private CheckboxInput showTan   = null;
+  private SelectInput cardReaders = null;
+  private CheckboxInput useUsb    = null;
 
   // BUGZILLA 173
   private TablePart kontoList   = null;
@@ -209,6 +221,103 @@ public class Controller extends AbstractControl
     showTan = new CheckboxInput(getConfig().getShowTan());
     return showTan;
   }
+  
+  /**
+   * Liefert eine Auswahl verfuegbarer Kartenleser-Bezeichnungen.
+   * @return eine Auswahl verfuegbaren Kartenleser-Bezeichnungen.
+   * @throws RemoteException
+   */
+  public SelectInput getCardReaders() throws RemoteException
+  {
+    if (this.cardReaders != null)
+      return this.cardReaders;
+    
+    List<String> available = new ArrayList<String>();
+    
+    // Erste Zeile Leerer Eintrag.
+    // Damit das Feld auch dann leer bleiben kann, wenn der User nur einen
+    // Kartenleser hat. Der sollte dann nicht automatisch vorselektiert
+    // werden, da dessen Bezeichnung sonst unnoetigerweise hart gespeichert wird
+    available.add("");
+    try
+    {
+      TerminalFactory terminalFactory = TerminalFactory.getDefault();
+      CardTerminals terminals = terminalFactory.terminals();
+      if (terminals != null)
+      {
+        List<CardTerminal> list = terminals.list();
+        if (list != null && list.size() > 0)
+        {
+          for (CardTerminal t:list)
+          {
+            String name = StringUtils.trimToNull(t.getName());
+            if (name != null)
+            available.add(name);
+          }
+        }
+      }
+    }
+    catch (Throwable t)
+    {
+      Logger.info("unable to determine card reader list: " + t.getMessage());
+      Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
+    }
+    
+    this.cardReaders = new SelectInput(available,this.getConfig().getCardReader());
+    this.cardReaders.setEditable(true);
+    this.cardReaders.setComment(i18n.tr("nur nötig, wenn mehrere Leser vorhanden"));
+    this.cardReaders.setName(i18n.tr("Identifier des PC/SC-Kartenlesers"));
+    return this.cardReaders;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
+   * @return eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
+   * @throws RemoteException
+   */
+  public CheckboxInput getChipTANUSB() throws RemoteException
+  {
+    if (this.useUsb != null)
+      return this.useUsb;
+    
+    this.useUsb = new CheckboxInput(this.getConfig().isChipTANUSB());
+    this.useUsb.setName(i18n.tr("Kartenleser per USB zur TAN-Erzeugung verwenden"));
+    
+    final Listener l = new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Boolean b = (Boolean) getChipTANUSB().getValue();
+          getCardReaders().setEnabled(b != null && b.booleanValue());
+
+          // Bei chipTAN USB wird die TAN grundsaetzlich angezeigt
+          if (b != null && b.booleanValue() && (event == null || event.type == SWT.Selection))
+          {
+            Boolean showTan = (Boolean) getShowTan().getValue();
+            if (showTan == null || !showTan.booleanValue())
+            {
+              getShowTan().setValue(true);
+              String msg = i18n.tr("Anzeige der TANs aktiviert, damit Sie die korrekte Übertragung vom Kartenleser prüfen können");
+              Application.getMessagingFactory().sendMessage(new StatusBarMessage(msg,StatusBarMessage.TYPE_INFO));
+            }
+          }
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("error while updating cardreader field",re);
+        }
+      }
+    };
+    
+    // einmal initial ausloesen
+    l.handleEvent(null);
+
+    this.useUsb.addListener(l);
+    return this.useUsb;
+  }
 
   /**
    * Liefert ein Eingabe-Feld fuer die Bezeichnung.
@@ -332,7 +441,6 @@ public class Controller extends AbstractControl
       conf.setCurrentSecMech(null);
       conf.setStoredSecMech(null);
       conf.setTanMedia(null);
-      conf.setChipTANUSB(false);
       conf.setChipTANUSBAsked(false);
       
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorauswahl der TAN-Verfahren zurückgesetzt"),StatusBarMessage.TYPE_SUCCESS));
@@ -480,6 +588,8 @@ public class Controller extends AbstractControl
       config.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
 			config.setHBCIVersion(version);
 			config.setPort((Integer)getPort().getValue());
+			config.setChipTANUSB(((Boolean)getChipTANUSB().getValue()).booleanValue());
+			config.setCardReader((String) getCardReaders().getValue());
 			
       AbstractHBCIPassport p = (AbstractHBCIPassport)config.getPassport();
       PassportChangeRequest change = new PassportChangeRequest(p,(String)getCustomerId().getValue(),(String)getUserId().getValue());
