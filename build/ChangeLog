@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0661 Parsen der TAN bei chipTAN USB war fehlerhaft bei TANs mit ungerader Länge https://github.com/hbci4j/hbci4java/commit/2266407b15ed137c283080f107445e15e25f21d0
   * NEW: 0660 Die Option "Alle Daten des Verwendungszwecks anzeigen" wirkt sich jetzt auch beim Umsatz-Export im CSV-Format aus
   * NEW: 0659 Verwendung von ChipTAN USB und Name des Kartenlesers in Bank-Zugang konfigurierbar 
   * CHG: 0658 BUGZILLA 1848 -  Beim Anlegen der Konten statt Name die Kontoart beruecksichtigen
