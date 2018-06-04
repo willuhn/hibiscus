@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0660 Die Option "Alle Daten des Verwendungszwecks anzeigen" wirkt sich jetzt auch beim Umsatz-Export im CSV-Format aus
   * NEW: 0659 Verwendung von ChipTAN USB und Name des Kartenlesers in Bank-Zugang konfigurierbar 
   * CHG: 0658 BUGZILLA 1848 -  Beim Anlegen der Konten statt Name die Kontoart beruecksichtigen
   * NEW: 0657 Support für ChipTAN USB

@@ -68,7 +68,12 @@ public class VelocityExporter implements Exporter
 
     String encoding = settings.getString("file.encoding",System.getProperty("file.encoding")); // BUGZILLA 1358
     Logger.info("used encoding: " + encoding);
-    
+
+    // Ob wir den gesamten Verwendungszweck exportieren, entnehmen wir dem Setting "usage.display.all"
+    // Heisst: Die Verwendungszwecke werden genau in der Form exportiert, in der sie derzeit auch
+    // angezeigt werden. Das erspart diese missverstaendliche Option "Im Verwendungszweck "SVWZ+" extrahieren"
+    Exporter.SESSION.put("usage.display.all",Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings().getBoolean("usage.display.all",true));
+
     context.put("datum",         new Date());
     context.put("charset",       encoding); // BUGZILLA 328
     context.put("dateformat",    HBCI.DATEFORMAT);
@@ -77,7 +82,7 @@ public class VelocityExporter implements Exporter
     context.put("objects",       objects);
     context.put("filter",        new Filter());
     context.put("session",       Exporter.SESSION);
-    
+
     BufferedWriter writer = null;
     try
     {
