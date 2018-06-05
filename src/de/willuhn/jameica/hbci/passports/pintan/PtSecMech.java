@@ -45,14 +45,13 @@ public class PtSecMech
     String[] lines = text.split("\\|");
     for (String s:lines)
     {
-      try
+      PtSecMech mech = PtSecMech.create(s);
+      if (mech == null)
       {
-        list.add(new PtSecMech(s));
+        Logger.warn("invalid tan mech: " + s + " - skipping");
+        continue;
       }
-      catch (Exception e)
-      {
-        Logger.error("invalid tan mech: " + s + " - skipping",e);
-      }
+      list.add(mech);
     }
     
     return list;
@@ -90,27 +89,29 @@ public class PtSecMech
     Logger.warn("tan mech " + id + " not found in list " + text);
     return null;
   }
-    
+  
   /**
-   * ct.
-   * @param text
-   * @throws Exception
+   * Erzeugt ein PTSechMech-Objekt aus dem Text.
+   * Der Text ist fuer gewoehnlich so zusammengesetzt: "<id>:<name>".
+   * @param text der zu parsende Text.
+   * @return das PTSechMech-Objekt oder NULL, wenn es kein interpretierbares TAN-Verfahren war.
    */
-  private PtSecMech(String text) throws Exception
+  public static PtSecMech create(String text)
   {
-    if (text == null || text.length() == 0 || text.indexOf(":") == -1)
-      throw new Exception();
-      
-    String[] s = text.split(":");
+    if (text == null || text.length() == 0)
+      return null;
 
-    if (s[0] == null || s[0].length() == 0 ||
-        s[1] == null || s[1].length() == 0)
-      throw new Exception();
+    int pos = text.indexOf(":");
+    if (pos <= 0)
+      return null;
 
-    this.id   = s[0];
-    this.name = s[1];
+    PtSecMech result = new PtSecMech();
+    result.id   = text.substring(0,pos);
+    result.name = text.substring(pos+1);
+    
+    return result;
   }
-
+    
   /**
    * Liefert die ID des TAN-Verfahrens.
    * @return id die ID des TAN-Verfahrens.
@@ -140,15 +141,21 @@ public class PtSecMech
     String id = ((PtSecMech)obj).getId();
     return this.id.equals(id);
   }
-
   
+  /**
+   * Liefert true, wenn es ein USB-basiertes Verfahren ist.
+   * @return true, wenn es ein USB-basiertes Verfahren ist.
+   */
+  public boolean useUSB()
+  {
+    return this.name != null && this.name.toLowerCase().contains("usb");
+  }
   
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString()
+  {
+    return this.id + ":" + this.name;
+  }
 }
-
-
-/*********************************************************************
- * $Log: PtSecMech.java,v $
- * Revision 1.1  2010/12/15 13:17:25  willuhn
- * @N Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
- *
- **********************************************************************/

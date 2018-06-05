@@ -1,5 +1,13 @@
 2018-xx-xx Version 2.8.2
 
+  * NEW: 0662 BUGZILLA 1850 - Wenn ein Kontoauszugsintervall konfiguriert wurde, automatisch auch die korrespondierende Synchronisationsoption "Elektronischen Kontoauszug abrufen" des Kontos aktivieren
+  * NEW: 0661 Parsen der TAN bei chipTAN USB war fehlerhaft bei TANs mit ungerader Länge https://github.com/hbci4j/hbci4java/commit/2266407b15ed137c283080f107445e15e25f21d0
+  * NEW: 0660 Die Option "Alle Daten des Verwendungszwecks anzeigen" wirkt sich jetzt auch beim Umsatz-Export im CSV-Format aus
+  * NEW: 0659 Verwendung von ChipTAN USB und Name des Kartenlesers in Bank-Zugang konfigurierbar 
+  * CHG: 0658 BUGZILLA 1848 -  Beim Anlegen der Konten statt Name die Kontoart beruecksichtigen
+  * NEW: 0657 Support für ChipTAN USB
+  * NEW: 0656 Neue HBCI4Java-Version 3.0.17-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/2266407b15ed137c283080f107445e15e25f21d0
+  * NEW: 0655 Bei Klick auf "Neuer Bankzugang..." im Kontextmenu eines Verfahrens dieses direkt vorauswählen
   * NEW: 0654 Befehl "Umsätze importieren..." auch im Kontextmenu von Konten. Viele User suchen dort nach der Import-Möglichkeit von Umsätzen
   * BUG: 0653 Kontoauszug per HKEKP: Auch in Segment-Version 1 IBAN/BIC verwenden - https://github.com/hbci4j/hbci4java/commit/25524d041a6b85fad88a3c4d65fc519f242dd459
   * BUG: 0652 Sparquote - tabellarische Ansicht: Spalte "Monat" wurde nicht korrekt chronologisch (sondern alphabetisch) sortiert

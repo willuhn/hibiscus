@@ -105,27 +105,27 @@ public class PtSecMechDialog extends AbstractDialog
         try
         {
           choosen = (PtSecMech) getType().getValue();
-          
-          if (choosen != null)
+
+          if (config != null)
+            config.setCurrentSecMech(choosen);
+
+          Boolean b = (Boolean) getSave().getValue();
+          if (getSave().isEnabled() && b.booleanValue())
           {
-            Boolean b = (Boolean) getSave().getValue();
-            if (getSave().isEnabled() && b.booleanValue())
+            // BUGZILLA 218
+            try
             {
-              // BUGZILLA 218
-              try
-              {
-                Application.getCallback().notifyUser(
-                    i18n.tr("Sie können diese Vorauswahl später in der PIN/TAN-Konfiguration\n" +
-                             "über die Option \"TAN-Verfahren zurücksetzen\" wieder\n" +
-                             "rückgängig machen."));
-              }
-              catch (Exception e)
-              {
-                Logger.error("unable to notify user",e);
-              }
-              if (config != null)
-                config.setSecMech(choosen.getId());
+              Application.getCallback().notifyUser(
+                  i18n.tr("Sie können diese Vorauswahl später in der PIN/TAN-Konfiguration " +
+                           "über die Option \"TAN-Verfahren zurücksetzen\" wieder " +
+                           "rückgängig machen."));
             }
+            catch (Exception e)
+            {
+              Logger.error("unable to notify user",e);
+            }
+            if (config != null)
+              config.setStoredSecMech(choosen);
           }
           close();
         }
@@ -181,31 +181,3 @@ public class PtSecMechDialog extends AbstractDialog
     return this.type;
   }
 }
-
-
-/*********************************************************************
- * $Log: PtSecMechDialog.java,v $
- * Revision 1.8  2011/12/06 22:22:19  willuhn
- * @N BUGZILLA 1151 - Name des aktuellen Kontos anzeigen
- *
- * Revision 1.7  2011-05-09 09:22:02  willuhn
- * @C Checkbox nur anklickbar machen, wenn Config vorhanden
- *
- * Revision 1.6  2011-05-09 08:35:18  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2011-05-09 08:33:02  willuhn
- * @C GUI-polish
- *
- * Revision 1.4  2011-05-09 08:29:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2010-12-31 01:09:08  willuhn
- * @B Typos
- *
- * Revision 1.2  2010-12-15 13:17:25  willuhn
- * @N Code zum Parsen der TAN-Verfahren in PtSecMech ausgelagert. Wenn ein TAN-Verfahren aus Vorauswahl abgespeichert wurde, wird es nun nur noch dann automatisch verwendet, wenn es in der aktuellen Liste der TAN-Verfahren noch enthalten ist. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=12545
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- **********************************************************************/

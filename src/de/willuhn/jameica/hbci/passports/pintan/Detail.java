@@ -61,15 +61,23 @@ public class Detail extends AbstractView
     
     {
       Container group = new SimpleContainer(getParent());
+
       group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
-      group.addInput(control.getBezeichnung());
       group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
+      group.addInput(control.getBezeichnung());
+
+      PtSecMech secMech = control.getConfig().getCurrentSecMech();
+      if (secMech != null && secMech.useUSB())
+      {
+        group.addHeadline(i18n.tr("ChipTAN USB"));
+        group.addInput(control.getChipTANUSB());
+        group.addInput(control.getCardReaders());
+      }
     }
     
     {
+      PtSecMech secMech = control.getConfig().getStoredSecMech();
       ButtonArea buttons = new ButtonArea();
-      // BUGZILLA 218
-      String secMech  = control.getConfig().getSecMech();
       String tanMedia = control.getConfig().getTanMedia();
       Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
         public void handleAction(Object context) throws ApplicationException
@@ -77,7 +85,7 @@ public class Detail extends AbstractView
           control.handleDeleteTanSettings();
         }
       },null,false,"edit-undo.png");
-      b.setEnabled((secMech != null && secMech.length() > 0) || (tanMedia != null && tanMedia.length() > 0));
+      b.setEnabled(secMech != null || (tanMedia != null && tanMedia.length() > 0));
       buttons.addButton(b);
       buttons.paint(getParent());
     }

@@ -35,6 +35,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.MetaKey;
+import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.messaging.MessagingAvailableConsumer;
@@ -709,7 +710,17 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     try
     {
       MetaKey.KONTOAUSZUG_IGNORE_FORMAT.set(this.konto,Boolean.toString((Boolean) this.getIgnoreFormat().getValue()));
+      
       MetaKey.KONTOAUSZUG_INTERVAL.set(this.konto,((KontoauszugInterval) this.getIntervall().getValue()).getId());
+      
+      // Wenn ein Intervall konfiguriert wurde, in dem die Auszuege tatsaechlich regelmaessig
+      // abgerufen werden (also alles ausser "niemals") eingestellt wird, aktivieren wir
+      // automatisch auch die korrespondierende Checkbox in den Sync-Optionen
+      if (KontoauszugInterval.getNextInterval(this.konto) != null)
+      {
+        SynchronizeOptions options = new SynchronizeOptions(this.konto);
+        options.setSyncKontoauszuegePdf(true);
+      }
       
       CheckboxInput messaging = this.getMessaging();
       if (messaging != null)

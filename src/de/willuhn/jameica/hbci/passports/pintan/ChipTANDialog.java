@@ -10,7 +10,9 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -26,23 +28,32 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 import org.kapott.hbci.manager.FlickerRenderer;
+import org.kapott.hbci.smartcardio.ChipTanCardService;
+import org.kapott.hbci.smartcardio.SmartCardService;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.hbci.JameicaCompat;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Customizing;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Dialog für die ChipTAN-Eingabe.
+ * Dialog für die ChipTAN (OPTIC und USB).
  */
 public class ChipTANDialog extends TANDialog
 {
@@ -50,6 +61,8 @@ public class ChipTANDialog extends TANDialog
   
   private String code = null;
   private boolean smallDisplay = false;
+  private boolean usb = false;
+  private ChipTanCardService service = null;
   
   /**
    * ct.
@@ -62,34 +75,266 @@ public class ChipTANDialog extends TANDialog
   {
     super(config);
     this.code = code;
-    this.setSideImage(null); // den Platz haben wir hier nicht.
+    this.checkUSB();
+    Logger.info("using chiptan " + (this.usb ? "USB" : "OPTIC"));
+    
+    if (this.usb)
+      this.setSideImage(SWTUtil.getImage("cardreader.png"));
+    else
+      this.setSideImage(null); // den Platz haben wir hier nicht.
     
     this.smallDisplay = Customizing.SETTINGS.getBoolean("application.scrollview",false);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#setText(java.lang.String)
+   */
+  @Override
+  public void setText(String text)
+  {
+    // Ueberschrieben, um den im Fliesstext am Anfang enthaltenen Flicker-Code rauszuschneiden.
+    text = StringUtils.trimToNull(text);
+    if (text != null)
+    {
+      final String token2 = "CHLGTEXT";
+      // Jetzt checken, ob die beiden Tokens enthalten sind
+      int t1Start = text.indexOf("CHLGUC");
+      int t2Start = text.indexOf(token2);
+      if (t1Start == -1 || t2Start == -1 || t2Start <= t1Start)
+      {
+        // Ne, nicht enthalten
+        super.setText(text);
+        return;
+      }
+      
+      // Alles bis zum Ende des zweiten Tocken abschneiden
+      text = text.substring(t2Start + token2.length());
+
+      // Jetzt noch diese 4-stellige Ziffer abschneiden, die auch noch hinten dran steht.
+      // Aber nur, wenn auch noch relevant Text uebrig ist
+      if (text.length() > 4)
+      {
+        String nums = text.substring(0,4);
+        if (nums.matches("[0-9]{4}"))
+          text = text.substring(4);
+      }
+    }
+    
+    super.setText(text);
+    return;
+  }
+  
+  /**
+   * Findet heraus, ob alle Vorbedingungen fuer die Nutzung von ChipTAN USB erfuellt sind.
+   * @throws RemoteException
+   */
+  private void checkUSB() throws RemoteException
+  {
+    // Checken, ob wir chipTAN USB ausgewaehlt haben
+    PtSecMech mech = config != null ? config.getCurrentSecMech() : null;
+    if (mech == null || !mech.useUSB())
+      return; // brauchen wir gar nicht weiter ueberlegen
+    
+    // Versuchen, die Verbindung zum Kartenleser herzustellen
+    try
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie die bitte Chipkarte ein."),StatusBarMessage.TYPE_INFO));
+      this.service = SmartCardService.createInstance(ChipTanCardService.class,this.config != null ? StringUtils.trimToNull(this.config.getCardReader()) : null);
+
+      // Wir haben grundsaetzlich einen Kartenleser.
+      if (this.service != null && this.config != null)
+      {
+        if (config.isChipTANUSBAsked())
+        {
+          this.usb = this.config.isChipTANUSB();
+        }
+        else
+        {
+          // User fragen, ob er ihn auch nutzen moechte, wenn wir das noch nicht getan haben
+          this.usb = Application.getCallback().askUser(i18n.tr("Es wurde ein USB-Kartenleser gefunden.\nMöchten Sie diesen zur Erzeugung der TAN verwenden?"),false);
+          
+          // Das Speichern der Antwort koennen wir nicht Jameica selbst ueberlassen, weil
+          // die Entscheidung ja pro PIN/TAN-Config gelten soll und nicht global.
+          this.config.setChipTANUSBAsked(true);
+          this.config.setChipTANUSB(this.usb);
+        }
+      }
+    }
+    catch (Throwable t)
+    {
+      Logger.info("no chipcard reader found, chipTAN USB not available: " + t.getMessage());
+      Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
+    }
   }
 
 	/**
    * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#paint(org.eclipse.swt.widgets.Composite)
    */
-  protected void paint(Composite parent) throws Exception
+  protected void paint(final Composite parent) throws Exception
   {
     Container container = new SimpleContainer(parent);
-    container.addHeadline(i18n.tr("Flicker-Grafik"));
-    container.addText(i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."),true);
     
-    FlickerPart flicker = new FlickerPart(this.code);
-    flicker.paint(parent);
+    if (this.usb)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie die bitte Chipkarte ein."),StatusBarMessage.TYPE_INFO));
+
+      this.setShowPassword(true); // Bei ChipTAN USB immer die TAN anzeigen, damit der User vergleichen kann.
+      container.addHeadline(i18n.tr("ChipTAN USB"));
+      container.addText(i18n.tr("Legen Sie die Chipkarte ein und folgen Sie den Anweisungen des Kartenlesers. Klicken Sie auf \"OK\", wenn die TAN korrekt übertragen wurde."),true);
+
+      ProgressBar progress = new ProgressBar(container.getComposite(), SWT.INDETERMINATE);
+      final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.horizontalSpan = 2;
+      progress.setLayoutData(gd);
+      
+      final AtomicBoolean cancelled = new AtomicBoolean(false);
+
+      final Thread usbThread = new Thread()
+      {
+        public void run()
+        {
+          try
+          {
+            Logger.info("trying to get TAN using USB cardreader");
+            String s = StringUtils.trimToNull(service.getTan(code));
+            if (s != null && !cancelled.get())
+            {
+              setPassword(s,parent);
+            }
+            else
+            {
+              throw new Exception(i18n.tr("Keine TAN übertragen"));
+            }
+          }
+          catch (Exception e)
+          {
+            if (!cancelled.get())
+            {
+              Logger.error("unable to get tan from chipcard",e);
+              setErrorText(i18n.tr("Fehler bei TAN-Ermittlung: {0}",e.getMessage()));
+            }
+          }
+        }
+      };
+      usbThread.start();
+      
+      parent.addDisposeListener(new DisposeListener() {
+        @Override
+        public void widgetDisposed(DisposeEvent e)
+        {
+          cancelled.set(true);
+          // Nur fuer den Fall, dass der Thread noch laeuft.
+          try
+          {
+            if (usbThread != null)
+              usbThread.interrupt();
+          }
+          catch (Throwable th)
+          {
+            Logger.error("unable to interrupt USB thread",th);
+          }
+        }
+      });
+    }
+    else
+    {
+      container.addHeadline(i18n.tr(this.usb ? "ChipTAN USB" : "Flicker-Grafik"));
+      container.addText(i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."),true);
+      FlickerPart flicker = new FlickerPart(this.code);
+      flicker.paint(parent);
+    }
+    
     
     // Hier stehen dann noch die Anweisungen von der Bank drin
     super.paint(parent);
 
-    // Wir muessen das Fenster wenigstens gross genug machen, damit der Flickercode reinpasst, falls
-    // der User den recht verbreitert hat
-    int width = settings.getInt("width",-1);
-    if (width > 0)
-      width +=10; // Wenigstens noch 10 Pixel Rand hinzufuegen.
-    // Wir nehmen den groesseren von beiden Werten
+    if (!this.usb)
+    {
+      // Wir muessen das Fenster wenigstens gross genug machen, damit der Flickercode reinpasst, falls
+      // der User den recht verbreitert hat
+      int width = settings.getInt("width",-1);
+      if (width > 0)
+        width +=10; // Wenigstens noch 10 Pixel Rand hinzufuegen.
+      // Wir nehmen den groesseren von beiden Werten
+      
+      getShell().setMinimumSize(getShell().computeSize(width > WINDOW_WIDTH ? width : WINDOW_WIDTH,smallDisplay ? 520 : SWT.DEFAULT));
+    }
+  }
+  
+  /**
+   * Ueberschrieben, um Abwaertskompatibilitaet zu Jameica 2.8.0 herzustellen.
+   * Dort war es noch nicht moeglich, das Passwort per Code zu setzen.
+   * @param password das zu setzende Passwort.
+   * @param parent das Composite.
+   */
+  private void setPassword(final String password, final Composite parent)
+  {
+    GUI.getDisplay().asyncExec(new Runnable() {
+      
+      @Override
+      public void run()
+      {
+        setPassword(password);
+        
+        // Checken, ob es das Passwort-Eingabefeld schon als Member in der Klasse gibt
+        try
+        {
+          Object input = JameicaCompat.get(this,null,"passwordInput");
+          
+          // OK, das Feld gibts. Dann ist die Version aktuell.
+          if (input != null)
+            return;
+
+          // Feld gibts nicht. Dann muessen wir das Eingabefeld suchen
+          applyPassword(password,parent.getChildren());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to update password field",e);
+        }
+      }
+    });
+  }
+  
+  /**
+   * Uebernimmt das Passwort.
+   * @param password das Passwort.
+   * @param controls die Controls.
+   * @return true, wenn es uebernommen wurde.
+   */
+  private boolean applyPassword(String password, Control[] controls)
+  {
+    if (controls == null || controls.length == 0)
+      return false;
     
-    getShell().setMinimumSize(getShell().computeSize(width > WINDOW_WIDTH ? width : WINDOW_WIDTH,smallDisplay ? 520 : SWT.DEFAULT));
+    for (Control c:controls)
+    {
+      if (c instanceof Text)
+      {
+        Text t = (Text) c;
+        if (!t.isDisposed())
+        {
+          // Das kann nur das Passwort-Feld sein.
+          String value = StringUtils.trimToNull(t.getText());
+          if (value == null)
+          {
+            t.setText(password);
+            return true;
+          }
+        }
+      }
+
+      // Rekursion
+      if (c instanceof Composite)
+      {
+        Composite comp = (Composite) c;
+        boolean b = applyPassword(password, comp.getChildren());
+        if (b)
+          return true; // gefunden
+      }
+    }
+    
+    return false;
   }
 
   /**
