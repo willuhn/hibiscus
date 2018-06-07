@@ -340,6 +340,8 @@ public class Converter
     if (konto.subnumber != null && konto.subnumber.length() > 0)
       list.addFilter("unterkonto = ?",konto.subnumber);
 
+    if (konto.customerid != null && konto.customerid.length() > 0)
+      list.addFilter("kundennummer = ?",konto.customerid);
     
     String type = StringUtils.trimToNull(konto.acctype);
     Integer accType = null;

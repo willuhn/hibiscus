@@ -82,6 +82,10 @@ public class KontoMerge implements Action
           // Kontonummer stimmt nicht ueberein.
           if (!check.getKontonummer().equals(konto.getKontonummer()))
             continue;
+          
+          // Kundenkennung stimmt nicht ueberein
+          if (!check.getKundennummer().equals(konto.getKundennummer()))
+            continue;
 
           // Stimmen Passports ueberein?
           String pp = check.getPassportClass();
