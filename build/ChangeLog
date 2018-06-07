@@ -1,3 +1,7 @@
+2018-xx-xx Version 2.8.3
+
+  * NEW: 0663 Beim Abgleich der Konten die Kundenkennung mit berücksichtigen
+
 2018-06-05 Version 2.8.2
 
   * NEW: 0662 BUGZILLA 1850 - Wenn ein Kontoauszugsintervall konfiguriert wurde, automatisch auch die korrespondierende Synchronisationsoption "Elektronischen Kontoauszug abrufen" des Kontos aktivieren
