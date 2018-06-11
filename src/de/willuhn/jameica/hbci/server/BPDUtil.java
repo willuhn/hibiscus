@@ -475,5 +475,24 @@ public class BPDUtil
       Logger.error("error while updating " + prefix + " - will be ignored",e);
     }
   }
+  
+  /**
+   * Markiert den Cache als expired.
+   * @param passport der Passport.
+   * @param prefix der Prefix.
+   * @throws RemoteException
+   */
+  public static void expireCache(HBCIPassport passport, Prefix prefix) throws RemoteException
+  {
+    final String user = passport.getUserId();
+    if (user == null || user.length() == 0)
+    {
+      Logger.debug("[" + prefix + "] no userid found, skipping cache expiry");
+      return;
+    }
+
+    Logger.info("expire " + prefix.name() + " cache");
+    DBPropertyUtil.set(prefix,user,null,"cacheupdate","0");
+  }
 
 }
