@@ -86,6 +86,7 @@ public class PassportPropertyDialog extends AbstractDialog
           if (!Application.getCallback().askUser(s))
             return;
           
+          Logger.info("deleting BPD");
           passport.clearBPD();
           
           // Das triggert beim naechsten Verbindungsaufbau
