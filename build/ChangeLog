@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0666 Typo im Dialog zum Ausführen einer Überweisung
   * CHG: 0665 Beim Löschen der BPD explizit auch die UPD-Versionsnummer löschen sowie die BPD/UPD-Caches als expired markieren um auch ein Update des UPD-Caches zu forcieren
   * CHG: 0664 Auto-Korrektur des Dateinamens, wenn die Card-ID ungueltige Zeichen enthält, die nicht als Dateiname abbildbar wären https://github.com/hbci4j/hbci4java/commit/00ff4491a63edff7179dea3ed4a978993b64f5b2
   * NEW: 0663 Beim Abgleich der Konten die Kundenkennung mit berücksichtigen
