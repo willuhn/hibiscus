@@ -1,7 +1,8 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0669 Support für chipTAN USB per ReinerSCT tanJACK USB - https://github.com/hbci4j/hbci4java/commit/3d166d85aec80a1e8da0439fccde4e8c437c3ff2
   * NEW: 0668 Neuer Parameter "database.driver.h2.parameters" in 'de.willuhn.jameica.hbci.rmi.HBCIDBService.properties' zum Hinzufügen eigener JDBC-Parameter
-  * CHG: 0667 0x6D im SW1 von Finalize-TX tolerieren, manche Kartenleser unterstützen das wohl nicht  https://github.com/hbci4j/hbci4java/commit/8bfed0a12af312a88ba8270f5e67810545c4866f
+  * CHG: 0667 0x6D im SW1 von Finalize-TX tolerieren, manche Kartenleser unterstützen das wohl nicht - https://github.com/hbci4j/hbci4java/commit/8bfed0a12af312a88ba8270f5e67810545c4866f
   * CHG: 0666 Typo im Dialog zum Ausführen einer Überweisung
   * CHG: 0665 Beim Löschen der BPD explizit auch die UPD-Versionsnummer löschen sowie die BPD/UPD-Caches als expired markieren um auch ein Update des UPD-Caches zu forcieren
   * CHG: 0664 Auto-Korrektur des Dateinamens, wenn die Card-ID ungueltige Zeichen enthält, die nicht als Dateiname abbildbar wären https://github.com/hbci4j/hbci4java/commit/00ff4491a63edff7179dea3ed4a978993b64f5b2
