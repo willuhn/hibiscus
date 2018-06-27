@@ -143,12 +143,20 @@ public class PtSecMech
   }
   
   /**
-   * Liefert true, wenn es ein USB-basiertes Verfahren ist.
-   * @return true, wenn es ein USB-basiertes Verfahren ist.
+   * Liefert true, wenn es ein Verfahren ist, das USB-tauglich ist.
+   * @return true, wenn es ein Verfahren ist, das USB-tauglich ist.
    */
   public boolean useUSB()
   {
-    return this.name != null && this.name.toLowerCase().contains("usb");
+    if (this.name == null)
+      return false;
+    
+    String s = this.name.toLowerCase();
+    return s.contains("usb") ||
+           s.contains("optic") ||
+           s.contains("optisch") ||
+           s.contains("komfort") ||
+           s.contains("comfort");
   }
   
   /**

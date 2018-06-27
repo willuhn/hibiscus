@@ -53,7 +53,7 @@ public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
 		group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
 
 		Input empfName = new LabelInput(ueb.getGegenkontoName());
-		group.addLabelPair(i18n.tr("Name des Empfänger"),empfName);
+		group.addLabelPair(i18n.tr("Name des Empfängers"),empfName);
 
 		Input empfKto = new LabelInput(HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
 		group.addLabelPair(i18n.tr("IBAN des Empfängers"),empfKto);

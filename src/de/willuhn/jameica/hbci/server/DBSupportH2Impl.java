@@ -121,6 +121,11 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       Logger.warn("#############################################################");
       url += ";RECOVER=1";
     }
+    
+    String addon = HBCIDBService.SETTINGS.getString("database.driver.h2.parameters",null);
+    if (addon != null)
+      url += ";" + addon;
+
     return url;
   }
 

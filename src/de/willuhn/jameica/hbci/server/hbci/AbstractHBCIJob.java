@@ -235,6 +235,8 @@ public abstract class AbstractHBCIJob
         }
       }
     }
+    
+    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed);
 
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
@@ -273,13 +275,14 @@ public abstract class AbstractHBCIJob
     // enthalten. Daher pruefen wir hier nach Vorhandensein von 0010/0020
     if (executed && status.isOK())
     {
+      Logger.info("mark job executed [executed: true, status: OK]");
       markExecutedInternal(errorText);
       return;
     }
     
     if ((tanNeeded || status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN) && session.getStatus() == ProgressMonitor.STATUS_CANCEL) // BUGZILLA 690
     {
-      Logger.warn("hbci session cancelled by user, mark job as cancelled");
+      Logger.warn("hbci session cancelled by user, mark job as cancelled [status code: " + status.getStatusCode() + ", session status: " + session.getStatus() + "]");
       markCancelled();
       return;
     }
@@ -288,6 +291,7 @@ public abstract class AbstractHBCIJob
     // Wir markieren die Ueberweisung als "ausgefuehrt"
     if (result.isOK())
     {
+      Logger.info("mark job executed [result: OK]");
       markExecutedInternal(errorText);
       return;
     }
@@ -299,6 +303,7 @@ public abstract class AbstractHBCIJob
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
       // als ausgefuehrt (damit er nicht mehrfach ausgefuhert wird), melden
       // den globalen Fehler aber trotzdem weiter
+      Logger.info("mark job executed [status: OK]");
       markExecutedInternal(errorText);
       return;
     }
@@ -309,6 +314,7 @@ public abstract class AbstractHBCIJob
     String error = null;
     try
     {
+      Logger.info("mark job failed");
       error = markFailed(errorText);
     }
     catch (Exception e)

@@ -10,6 +10,7 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
@@ -25,7 +26,9 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.PassportPropertyList;
+import de.willuhn.jameica.hbci.server.BPDUtil;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
 import de.willuhn.jameica.hbci.server.VersionUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -86,6 +89,7 @@ public class PassportPropertyDialog extends AbstractDialog
           if (!Application.getCallback().askUser(s))
             return;
           
+          Logger.info("deleting BPD");
           passport.clearBPD();
           
           // Das triggert beim naechsten Verbindungsaufbau
@@ -94,7 +98,14 @@ public class PassportPropertyDialog extends AbstractDialog
           // -> HBCIUser.register()
           // -> HBCIUser.updateUserData()
           // -> HBCIUser.fetchSysId() - und das holt die BPD beim naechsten mal ueber einen nicht-anonymen Dialog
-          ((AbstractHBCIPassport)passport).syncSysId();
+          AbstractHBCIPassport p = (AbstractHBCIPassport) passport;
+          p.syncSysId();
+          
+          // Ausserdem muessen wir noch sicherstellen, dass die UPD-Versionen 0 ist damit *beide*
+          // beim naechsten Mal definitiv neu abgerufen werden
+          Properties upd = p.getUPD();
+          if (upd != null)
+            upd.setProperty("UPA.version","0");
           
           passport.saveChanges();
 
@@ -112,6 +123,10 @@ public class PassportPropertyDialog extends AbstractDialog
           {
             VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + user);
             VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + user);
+            
+            // Wir markieren ausserdem auch noch den Cache als expired
+            BPDUtil.expireCache(passport,Prefix.BPD);
+            BPDUtil.expireCache(passport,Prefix.UPD);
           }
 
           // Aus der Tabelle in der Anzeige loeschen
