@@ -299,7 +299,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       return this.nextFetch;
     
     this.nextFetch = new LabelInput("");
-    this.nextFetch.setName(i18n.tr("Nächste Abruf"));
+    this.nextFetch.setName(i18n.tr("Nächster Abruf"));
     this.nextFetch.setComment("");
     return this.nextFetch;
   }
