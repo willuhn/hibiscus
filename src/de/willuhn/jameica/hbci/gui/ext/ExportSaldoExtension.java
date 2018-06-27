@@ -55,9 +55,10 @@ public class ExportSaldoExtension implements Extension
       return;
     
     // Erstmal per Default nicht ausblenden
-    Exporter.SESSION.put(KEY_SALDO_HIDE,false);
+    boolean initial = ExportDialog.SETTINGS.getBoolean(KEY_SALDO_HIDE,false);
+    Exporter.SESSION.put(KEY_SALDO_HIDE,initial);
     
-    final CheckboxInput check = new CheckboxInput(ExportDialog.SETTINGS.getBoolean(KEY_SALDO_HIDE,false));
+    final CheckboxInput check = new CheckboxInput(initial);
     check.setName(i18n.tr("Spalte \"Saldo\" in Export ausblenden"));
     check.addListener(new Listener() {
       public void handleEvent(Event event)
