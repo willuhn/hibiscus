@@ -105,7 +105,8 @@ public class MT940UmsatzExporter implements Exporter
     		  out.write(NL);
     		
         out.write(":20:Hibiscus" + NL);
-    		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + curr + NL);
+    		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + NL);
+        out.write(":28C:1" + NL); // Auszugsnummer. Belegen wir hart mit "1", damit das Feld vorhanden ist. SAP braucht das fuer den Import
     		
     		if (showSaldo)
     		{
