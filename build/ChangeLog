@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0672 Fehler beim Ermitteln der Kartenleser-Features tolerieren (der tanJACK USB scheint das nicht zu unterstützen) - https://github.com/hbci4j/hbci4java/commit/22b702505bc9aef54bdb7b6663c948ce4b0b91cf
   * BUG: 0671 Export-Optionen "Saldo ausblenden" und "Summenzeile anzeigen" funktionierten nur, wenn die Checkboxen beim Export betätigt wurden - https://homebanking-hilfe.de/forum/topic.php?p=138415
 
 2018-06-27 Version 2.8.3
