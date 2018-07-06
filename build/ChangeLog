@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0674 Wenn eine Bank im Verwendungszweck zwar das "SVWZ"-Tag liefert, es aber keinen Wert enthält, wird ebenfalls ein Fallback auf die Anzeige des kompletten Verwendungszweck gemacht
   * NEW: 0673 Beim MT940-Export in Feld :25: das Währungskennzeichen weglassen und die Auszugsnummer in Feld ":28C:" mit dem Pseudowert "1" ausgeben - SAP benötigt das für den Import
   * NEW: 0672 Fehler beim Ermitteln der Kartenleser-Features tolerieren (der tanJACK USB scheint das nicht zu unterstützen) - https://github.com/hbci4j/hbci4java/commit/22b702505bc9aef54bdb7b6663c948ce4b0b91cf
   * BUG: 0671 Export-Optionen "Saldo ausblenden" und "Summenzeile anzeigen" funktionierten nur, wenn die Checkboxen beim Export betätigt wurden - https://homebanking-hilfe.de/forum/topic.php?p=138415
