@@ -17,7 +17,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Part;
@@ -44,6 +50,7 @@ public class UmsatzTypVerlauf implements Part
   private Date start      = null;
   private Date stop       = null;
   private LineChart chart = null;
+  private int interval    = Calendar.MONTH;
   
   /**
    * Speichert die anzuzeigenden Daten.
@@ -86,7 +93,7 @@ public class UmsatzTypVerlauf implements Part
     for (int i=0;i<this.data.size();++i)
     {
       UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i); 
-      ChartDataUmsatz cd = new ChartDataUmsatz(group);
+      ChartDataUmsatz cd = new ChartDataUmsatz(group, interval);
       if (cd.hasData)
       {
         this.chart.addData(cd);
@@ -95,11 +102,21 @@ public class UmsatzTypVerlauf implements Part
     }
     
     if (count <= 1)
-      this.chart.setTitle(i18n.tr("Bitte wählen Sie einen größeren Zeitraum (mindestens zwei Monate)"));
+      this.chart.setTitle(i18n.tr("Bitte wählen Sie einen größeren Zeitraum"));
     else
-      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach Monat)"));
+      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach "+getIntervalName()+")"));
     
     this.chart.redraw();
+  }
+
+  private String getIntervalName(){
+    switch (interval)
+    {
+    case Calendar.YEAR: return "Jahr";
+    case Calendar.MONTH: return "Monat";
+    case Calendar.WEEK_OF_YEAR: return "Woche";
+    default: throw new IllegalStateException("illegal interval");
+    }
   }
 
   /**
@@ -115,11 +132,12 @@ public class UmsatzTypVerlauf implements Part
       for (int i=0;i<this.data.size();++i)
       {
         UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i);
-        ChartDataUmsatz cd = new ChartDataUmsatz(group);
+        ChartDataUmsatz cd = new ChartDataUmsatz(group, interval);
         if (cd.hasData)
           this.chart.addData(cd);
       }
       this.chart.paint(parent);
+      addGroupingMenu();
     }
     catch (RemoteException re)
     {
@@ -130,6 +148,54 @@ public class UmsatzTypVerlauf implements Part
       Logger.error("unable to create chart",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erzeugen des Diagramms"),StatusBarMessage.TYPE_ERROR));
     }
+  }
+
+  //Gruppierung nach unterschiedlichen Intervallen erlauben
+  //bei Auswahl wird der Haken richtig gesetzt und das Diagramm neu gezeichnet
+  private void addGroupingMenu(){
+    Menu plotMenu = this.chart.getChart().getPlotArea().getMenu();
+    MenuItem groupMenuItem = new MenuItem(plotMenu, SWT.CASCADE, 0);
+    groupMenuItem.setText("Gruppierung");
+    Menu groupMenu=new Menu(groupMenuItem);
+    groupMenuItem.setMenu(groupMenu);
+    final List<MenuItem> items=new ArrayList<MenuItem>();
+    items.add(createGroupMenuItem(groupMenu, "Woche", Calendar.WEEK_OF_YEAR));
+    items.add(createGroupMenuItem(groupMenu, "Monat", Calendar.MONTH));
+    items.add(createGroupMenuItem(groupMenu, "Jahr", Calendar.YEAR));
+
+    SelectionListener l=new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e)
+      {
+        for (MenuItem menuItem : items)
+        {
+          menuItem.setSelection(false);
+        }
+        MenuItem item = (MenuItem)e.getSource();
+        item.setSelection(true);
+        interval = (Integer)item.getData();
+        try
+        {
+          redraw();
+        } catch (RemoteException re)
+        {
+          Logger.error("unable to redraw chart",re);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    };
+    for (MenuItem menuItem : items)
+    {
+      menuItem.addSelectionListener(l);
+    }
+  }
+
+  private MenuItem createGroupMenuItem(Menu parent, String text, int data){
+    final MenuItem item = new MenuItem(parent, SWT.CHECK);
+    item.setText(text);
+    item.setSelection(interval==data);
+    item.setData(data);
+    return item;
   }
 
   /**
@@ -155,12 +221,28 @@ public class UmsatzTypVerlauf implements Part
      * @param group
      * @throws RemoteException
      */
-    private ChartDataUmsatz(UmsatzTreeNode group) throws RemoteException
+    private ChartDataUmsatz(UmsatzTreeNode group, int intervalSize) throws RemoteException
     {
       HashMap<Date,Double> verteilung = new HashMap<Date, Double>();
       Calendar calendar = Calendar.getInstance();
       this.group = group;
       this.entries.clear();
+
+      int normalizeProperty;
+      switch (intervalSize)
+      {
+      case Calendar.YEAR:
+        normalizeProperty=Calendar.DAY_OF_YEAR;
+        break;
+      case Calendar.MONTH:
+        normalizeProperty=Calendar.DAY_OF_MONTH;
+        break;
+      case Calendar.WEEK_OF_YEAR:
+        normalizeProperty=Calendar.DAY_OF_WEEK;
+        break;
+      default:
+        throw new IllegalStateException("illegal interval");
+      }
 
       for (Umsatz umsatz: getRecursiveUmsaetze(group)) {
         if (umsatz.getDatum() == null) {
@@ -169,31 +251,37 @@ public class UmsatzTypVerlauf implements Part
         }
         this.hasData = true;
         calendar.setTime(DateUtil.startOfDay(umsatz.getDatum()));
-        calendar.set(Calendar.DAY_OF_MONTH,1);
+        calendar.set(normalizeProperty, 1);
         double aggMonatsWert = verteilung.containsKey(calendar.getTime())?verteilung.get(calendar.getTime()):0;
         verteilung.put(calendar.getTime(), umsatz.getBetrag() + aggMonatsWert);
       }
 
       calendar.setTime(DateUtil.startOfDay(start));
-      calendar.set(Calendar.DAY_OF_MONTH, 1);
-      Date monat = calendar.getTime();
+      calendar.set(normalizeProperty, 1);
+      Date interval = calendar.getTime();
 
       // BUGZILLA 1604 - wir wollen im End-Datum kein oberes Jahr fest vorgeben.
-      // Daher beenden wir hier die Iteration stattdessen nach maximal 1200 Monaten.
-      // Das sind 100 Jahre.
-      int limit = 0;
-      while(monat.before(stop) && limit++ < 1200) {
-        Entry aktuellerMonatswert = new Entry();
-        aktuellerMonatswert.monat = monat;
-        if (verteilung.containsKey(monat)) {
-          aktuellerMonatswert.betrag = verteilung.get(monat);
+      // Daher beenden wir hier die Iteration stattdessen nach maximal 100 Jahren.
+      int limitYear = interval.getYear()+101;
+      while(interval.before(stop) && interval.getYear() < limitYear) {
+        Entry aktuellerWert = new Entry();
+        aktuellerWert.monat = interval;
+        if (verteilung.containsKey(interval)) {
+          aktuellerWert.betrag = verteilung.get(interval);
         }
-        entries.add(aktuellerMonatswert);
+        entries.add(aktuellerWert);
 
-        calendar.setTime(monat);
-        calendar.add(Calendar.MONTH, 1);
-        monat = calendar.getTime();
+        calendar.setTime(interval);
+        calendar.add(intervalSize, 1);
+        interval = calendar.getTime();
       }
+
+      //Dummy-Eintrag für das nächste Intervall, da das letzte reguläre sonst
+      //aufgrund der Normalisierung auf den ersten Tag des Intervalls
+      //ggf. gar nicht angezeigt wird
+      Entry lastEntry = new Entry();
+      lastEntry.monat = interval;
+      entries.add(lastEntry);
     }
 
     /**
