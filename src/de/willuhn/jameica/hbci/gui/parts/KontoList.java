@@ -27,7 +27,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -55,11 +54,12 @@ import de.willuhn.util.I18N;
  */
 public class KontoList extends TablePart implements Part
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   // BUGZILLA 476
   private MessageConsumer mc = null;
+  private boolean haveAvailable = false;
 
-  private I18N i18n;
 
   /**
    * @param action
@@ -78,8 +78,6 @@ public class KontoList extends TablePart implements Part
   public KontoList(GenericIterator konten, Action action)
   {
     super(konten,action);
-
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer",null,false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
@@ -138,7 +136,18 @@ public class KontoList extends TablePart implements Part
           if ((saldo == 0 && k.getSaldoDatum() == null) || Double.isNaN(saldo))
             item.setText(saldocolumn,"");
           else
-            item.setText(saldocolumn,HBCI.DECIMALFORMAT.format(k.getSaldo()) + " " + k.getWaehrung());
+            item.setText(saldocolumn,HBCI.DECIMALFORMAT.format(saldo) + " " + k.getWaehrung());
+          
+          if (haveAvailable)
+          {
+            double avail = k.getSaldoAvailable();
+            if ((avail == 0 && k.getSaldoDatum() == null) || Double.isNaN(avail))
+              item.setText(saldocolumn+1,"");
+            else
+              item.setText(saldocolumn+1,HBCI.DECIMALFORMAT.format(avail) + " " + k.getWaehrung());
+            
+            item.setForeground(saldocolumn+1,ColorUtil.getForeground(k.getSaldoAvailable()));
+          }
 
           // Checken, ob Konto deaktiviert ist
           int flags = k.getFlags();
@@ -204,8 +213,9 @@ public class KontoList extends TablePart implements Part
         if (!Double.isNaN(d))
         {
           // Wir haben tatsaechlich eines, wo was drin steht
-          Column col = new Column("saldo_available",i18n.tr("Verfügbar"),new CurrencyFormatter(k.getWaehrung(),HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
+          Column col = new Column("saldo_available",i18n.tr("Verfügbar"),null,false,Column.ALIGN_RIGHT);
           addColumn(col);
+          this.haveAvailable = true;
           return;
         }
       }
