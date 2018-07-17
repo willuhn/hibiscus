@@ -75,7 +75,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
    * Liefert das eigentliche SWT-Chart-Objekt.
    * @return das eigentliche SWT-Chart-Objekt.
    */
-  protected org.swtchart.Chart getChart()
+  public org.swtchart.Chart getChart()
   {
     return this.chart;
   }
