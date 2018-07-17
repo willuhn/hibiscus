@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.swtchart.Chart;
 import org.swtchart.IAxis;
 import org.swtchart.IAxisTick;
 import org.swtchart.IGrid;
@@ -130,13 +129,6 @@ public class LineChart extends AbstractChart<LineChartData>
     }
     
     getChart().getAxisSet().adjustRange();
-  }
-
-  @Override
-  //allow customization of underlying chart
-  public Chart getChart()
-  {
-    return super.getChart();
   }
 
   /**
