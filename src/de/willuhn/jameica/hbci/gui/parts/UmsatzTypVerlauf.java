@@ -104,7 +104,7 @@ public class UmsatzTypVerlauf implements Part
     if (count <= 1)
       this.chart.setTitle(i18n.tr("Bitte wählen Sie einen größeren Zeitraum"));
     else
-      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach "+getIntervalName()+")"));
+      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach {0})", getIntervalName()));
     
     this.chart.redraw();
   }
@@ -112,9 +112,9 @@ public class UmsatzTypVerlauf implements Part
   private String getIntervalName(){
     switch (interval)
     {
-    case Calendar.YEAR: return "Jahr";
-    case Calendar.MONTH: return "Monat";
-    case Calendar.WEEK_OF_YEAR: return "Woche";
+    case Calendar.YEAR: return i18n.tr("Jahr");
+    case Calendar.MONTH: return i18n.tr("Monat");
+    case Calendar.WEEK_OF_YEAR: return i18n.tr("Woche");
     default: throw new IllegalStateException("illegal interval");
     }
   }
@@ -128,7 +128,7 @@ public class UmsatzTypVerlauf implements Part
     {
       this.chart = new LineChart();
       this.chart.setStacked(false); // TODO Stacked Graph für "Umsätze nach Kategorieren" BUGZILLA 749
-      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach Monat)"));
+      this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach {0})", getIntervalName()));
       for (int i=0;i<this.data.size();++i)
       {
         UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i);
@@ -155,13 +155,13 @@ public class UmsatzTypVerlauf implements Part
   private void addGroupingMenu(){
     Menu plotMenu = this.chart.getChart().getPlotArea().getMenu();
     MenuItem groupMenuItem = new MenuItem(plotMenu, SWT.CASCADE, 0);
-    groupMenuItem.setText("Gruppierung");
+    groupMenuItem.setText(i18n.tr("Gruppierung nach"));
     Menu groupMenu=new Menu(groupMenuItem);
     groupMenuItem.setMenu(groupMenu);
     final List<MenuItem> items=new ArrayList<MenuItem>();
-    items.add(createGroupMenuItem(groupMenu, "Woche", Calendar.WEEK_OF_YEAR));
-    items.add(createGroupMenuItem(groupMenu, "Monat", Calendar.MONTH));
-    items.add(createGroupMenuItem(groupMenu, "Jahr", Calendar.YEAR));
+    items.add(createGroupMenuItem(groupMenu, i18n.tr("Woche"), Calendar.WEEK_OF_YEAR));
+    items.add(createGroupMenuItem(groupMenu, i18n.tr("Monat"), Calendar.MONTH));
+    items.add(createGroupMenuItem(groupMenu, i18n.tr("Jahr"), Calendar.YEAR));
 
     SelectionListener l=new SelectionAdapter() {
       @Override
