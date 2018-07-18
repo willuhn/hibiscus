@@ -15,12 +15,17 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
+import de.willuhn.jameica.gui.parts.PanelButton;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugSettings;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -51,7 +56,25 @@ public class KontoauszugList extends AbstractView
         print.setEnabled(list.getSelection() != null);
       }
     });
-
+    
+    final PanelButton settings = new PanelButton("document-properties.png",new Action() {
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          new KontoauszugSettings().handleAction(null);
+          // Ein einfaches Reload reicht nicht, da die Spalten ggf. geaendert wurden
+          GUI.startView(GUI.getCurrentView(),getCurrentObject());
+        }
+        catch (OperationCanceledException oce)
+        {
+          // ignore
+        }
+      }
+    },i18n.tr("Einstellungen"));
+    
+    GUI.getView().addPanelButton(settings);
     GUI.getView().addPanelButton(print);
     
     list.paint(getParent());

@@ -49,6 +49,8 @@ import de.willuhn.util.ProgressMonitor;
 public abstract class AbstractHBCIJob
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  private final static String NL = System.getProperty("line.separator","\n");
 
 	private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
@@ -378,11 +380,11 @@ public abstract class AbstractHBCIJob
       }
       String sDetail = sb.toString();
       if (sDetail != null && sDetail.length() > 0)
-        sr += System.getProperty("line.separator","\n") + sDetail;
+        sr += NL + sDetail;
       if (sJob != null && sJob.length() > 0)
-        sr += System.getProperty("line.separator","\n") + sJob;
+        sr += NL + sJob;
       if (sGlob != null && sGlob.length() > 0)
-        sr += System.getProperty("line.separator","\n") + sGlob;
+        sr += NL + sGlob;
 		}
 		catch (ArrayIndexOutOfBoundsException aio)
 		{

@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.input.CheckboxInput;
@@ -456,7 +455,7 @@ public class UmsatzDetailControl extends AbstractControl
       if (showAll)
         return VerwendungszweckUtil.toString(u);
 
-      return (String) BeanUtil.get(u,Tag.SVWZ.name());
+      return (String) u.getAttribute(Tag.SVWZ.name());
     }
     catch (RemoteException re)
     {

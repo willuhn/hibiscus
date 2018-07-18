@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * DEL: 0678 Option "Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich" aus den Einstellungen entfernt, braucht keiner mehr 
+  * NEW: 0677 Option "Alle Daten des Verwendungszwecks anzeigen" auch in Liste der Umsätze konfigurierbar (per Config-Button oben rechts)
   * NEW: 0676 In der Auswertung "Umsätze nach Kategorien -> Im Verlauf" können durch Rechtsklick in die Grafik auch andere Intervalle (Jahr, Monat, Woche) ausgewählt werden. 
   * BUG: 0675 In Kontoliste in der Spalte "verfügbarer Saldo" das Währungskennzeichen des konkreten Kontos verwenden und nicht des ersten gefundenen 
   * NEW: 0674 Wenn eine Bank im Verwendungszweck zwar das "SVWZ"-Tag liefert, es aber keinen Wert enthält, wird ebenfalls ein Fallback auf die Anzeige des kompletten Verwendungszweck gemacht

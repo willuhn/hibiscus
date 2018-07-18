@@ -44,7 +44,6 @@ public class SettingsControl extends AbstractControl
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 	// Eingabe-Felder
-	private CheckboxInput onlineMode     		= null;
   private CheckboxInput cachePin          = null;
   private CheckboxInput storePin          = null;
   private CheckboxInput decimalGrouping   = null;
@@ -77,17 +76,6 @@ public class SettingsControl extends AbstractControl
       umsatzTypTree = new UmsatzTypTree(new UmsatzTypNew());
     return umsatzTypTree;
   }
-
-  /**
-	 * Checkbox zur Auswahl des Online-Mode.
-   * @return Checkbox.
-   */
-  public CheckboxInput getOnlineMode()
-	{
-		if (onlineMode == null)
-      onlineMode = new CheckboxInput(Settings.getOnlineMode());
-		return onlineMode;
-	}
 
   /**
    * Checkbox zur Auswahl von Dezimal-Trennzeichen in Betraegen.
@@ -258,7 +246,6 @@ public class SettingsControl extends AbstractControl
 		Settings.setBuchungHabenForeground(hf.getRGB());
 		Settings.setBuchungSollForeground(sf.getRGB());
 
-		Settings.setOnlineMode(((Boolean)getOnlineMode().getValue()).booleanValue());
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
     Settings.setKontoCheckExcludeAddressbook(((Boolean)getKontoCheckExcludeAddressbook().getValue()).booleanValue());
