@@ -13,11 +13,12 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -101,18 +102,6 @@ public class UmsatzTypVerlauf implements Part
     this.data  = data;
     this.start = start;
     this.stop  = stop;
-    
-    // Wenn das Start-Datum nicht angegeben ist, nehmen wir das
-    // aktuelle Jahr
-    if (this.start == null)
-    {
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.MONTH,Calendar.JANUARY);
-      cal.set(Calendar.DATE,1);
-      this.start = DateUtil.startOfDay(cal.getTime());
-    }
-    if (this.stop == null || !this.stop.after(this.start))
-      this.stop = new Date(); // Wenn das Stop-Datum ungueltig ist, machen wir heute draus
   }
   
   /**
@@ -244,6 +233,8 @@ public class UmsatzTypVerlauf implements Part
     private UmsatzTreeNode group = null;
     private List<Entry> entries  = new ArrayList<Entry>();
     private boolean hasData      = false;
+    private Date chartStartDate  = null;
+    private Date chartStopDate   = null;
     
     private List<Umsatz> getRecursiveUmsaetze(UmsatzTreeNode group) {
       List<Umsatz> result = new ArrayList<Umsatz>();
@@ -279,15 +270,13 @@ public class UmsatzTypVerlauf implements Part
         verteilung.put(calendar.getTime(), umsatz.getBetrag() + aggMonatsWert);
       }
 
-      calendar.setTime(DateUtil.startOfDay(start));
+      calculateChartInterval(verteilung.keySet());
+
+      calendar.setTime(DateUtil.startOfDay(chartStartDate));
       calendar.set(interval.type, 1);
       Date next = calendar.getTime();
 
-      // BUGZILLA 1604 - wir wollen im End-Datum kein oberes Jahr fest vorgeben.
-      // Daher beenden wir hier die Iteration stattdessen nach maximal 100 Jahren.
-      int year = DateUtils.toCalendar(next).get(Calendar.YEAR);
-      int limitYear = year + 101;
-      while(next.before(stop) && year < limitYear)
+      while(!next.after(chartStopDate))
       {
         Entry aktuellerWert = new Entry();
         aktuellerWert.monat = next;
@@ -306,6 +295,25 @@ public class UmsatzTypVerlauf implements Part
       Entry lastEntry = new Entry();
       lastEntry.monat = next;
       entries.add(lastEntry);
+    }
+
+    private void calculateChartInterval(Set<Date> chartDates){
+      Date dataMin=new Date();
+      Date dataMax=new Date();
+      if(!chartDates.isEmpty()){
+        dataMin = Collections.min(chartDates);
+        dataMax = Collections.max(chartDates);
+      }
+      if(start != null && start.after(dataMin)){
+        chartStartDate = start;
+      }else{
+        chartStartDate = dataMin;
+      }
+      if(stop != null && stop.before(dataMax)){
+        chartStopDate = stop;
+      }else{
+        chartStopDate = dataMax;
+      }
     }
 
     /**
