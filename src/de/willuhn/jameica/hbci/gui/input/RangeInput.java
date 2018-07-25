@@ -126,7 +126,7 @@ public class RangeInput extends SelectInput
     Date dTo   = (Date) oTo;
 
     if (dTo.before(dFrom))
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum. Das Von-Datum sollte nicht vor dem Bis-Datum liegen."), StatusBarMessage.TYPE_INFO));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum. Das Bis-Datum sollte nicht vor dem Von-Datum liegen."), StatusBarMessage.TYPE_INFO));
   }
 
   /**
