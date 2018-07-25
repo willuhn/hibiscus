@@ -15,6 +15,7 @@ import java.util.Date;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
@@ -126,7 +127,16 @@ public class RangeInput extends SelectInput
     Date dTo   = (Date) oTo;
 
     if (dTo.before(dFrom))
+    {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum. Das Bis-Datum sollte nicht vor dem Von-Datum liegen."), StatusBarMessage.TYPE_INFO));
+      return;
+    }
+    
+    // Hier weitere Checks bei Bedarf
+    
+    
+    // Ansonsten Fehlermeldung loeschen
+    GUI.getView().getNotificationPanel().reset();
   }
 
   /**
