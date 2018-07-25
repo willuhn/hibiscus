@@ -21,7 +21,7 @@
     Ausblenden aller Datenreihen geöffnet werden.
   </p>
 	<p>
-		Außerdem kann über das Kontextmenu des Diagramms das
-		Gruppierungsintervall (Jahr, Monat, Woche) gewählt werden.
+	  <b>Hinweis:</b> Klicken Sie mit der rechten Maustaste in die Grafik
+	  und wählen Sie &quot;Gruppierung nach&quot;, um nach Jahr, Monat oder Woche zu gruppieren.
 	</p>
 </form>
