@@ -20,5 +20,8 @@
     Mit einem Rechtsklick auf die Legende kann ein Kontext-Menü zum Ein- oder
     Ausblenden aller Datenreihen geöffnet werden.
   </p>
-  	
+	<p>
+		Außerdem kann über das Kontextmenu des Diagramms das
+		Gruppierungsintervall (Jahr, Monat, Woche) gewählt werden.
+	</p>
 </form>
