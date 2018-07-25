@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.NotificationPanel;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -136,7 +137,10 @@ public class RangeInput extends SelectInput
     
     
     // Ansonsten Fehlermeldung loeschen
-    GUI.getView().getNotificationPanel().reset();
+    NotificationPanel panel = GUI.getView().getNotificationPanel();
+    if (panel != null)
+      panel.reset();
+    
   }
 
   /**
