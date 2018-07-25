@@ -10,6 +10,8 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
+import java.util.Date;
+
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -17,6 +19,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.I18N;
@@ -82,6 +85,7 @@ public class RangeInput extends SelectInput
           
           setValue(null);
           settings.setAttribute(param,(String)null);
+          checkInvalidRange(from, to);
         }
       };
       
@@ -103,7 +107,19 @@ public class RangeInput extends SelectInput
       }
     });
   }
-  
+
+  private void checkInvalidRange(Input from, Input to){
+    if(from!=null && to!=null){
+      Object fromValue = from.getValue();
+      Object toValue = to.getValue();
+      if(fromValue instanceof Date && toValue instanceof Date){
+        if(((Date)toValue).before((Date)fromValue)){
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum - das Ende sollte nicht vor dem Anfang liegen."), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    }
+  }
+
   /**
    * Wendet den Range auf die Von- und Bis-Felder an.
    * @param range der Range. Kann null sein.
