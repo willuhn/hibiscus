@@ -85,7 +85,7 @@ public class RangeInput extends SelectInput
           
           setValue(null);
           settings.setAttribute(param,(String)null);
-          checkInvalidRange(from, to);
+          checkRange();
         }
       };
       
@@ -108,16 +108,25 @@ public class RangeInput extends SelectInput
     });
   }
 
-  private void checkInvalidRange(Input from, Input to){
-    if(from!=null && to!=null){
-      Object fromValue = from.getValue();
-      Object toValue = to.getValue();
-      if(fromValue instanceof Date && toValue instanceof Date){
-        if(((Date)toValue).before((Date)fromValue)){
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum - das Ende sollte nicht vor dem Anfang liegen."), StatusBarMessage.TYPE_ERROR));
-        }
-      }
-    }
+  /**
+   * Prueft den vom User eingegebenen Zeitraum auf Plausibilitaet.
+   */
+  private void checkRange()
+  {
+    if (this.from == null || this.to ==null)
+      return;
+    
+    Object oFrom = this.from.getValue();
+    Object oTo   = this.to.getValue();
+
+    if (!(oFrom instanceof Date) || !(oTo instanceof Date))
+      return;
+
+    Date dFrom = (Date) oFrom;
+    Date dTo   = (Date) oTo;
+
+    if (dTo.before(dFrom))
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum. Das Von-Datum sollte nicht vor dem Bis-Datum liegen."), StatusBarMessage.TYPE_INFO));
   }
 
   /**
