@@ -28,8 +28,6 @@ import org.eclipse.swt.widgets.MenuItem;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.parts.NotificationPanel;
-import de.willuhn.jameica.gui.parts.NotificationPanel.Type;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
@@ -168,12 +166,6 @@ public class UmsatzTypVerlauf implements Part
       }
       this.chart.paint(parent);
       addGroupingMenu();
-
-      NotificationPanel info = new NotificationPanel();
-      info.paint(parent);
-      info.setBorder(0);
-      info.setBackground(false);
-      info.setText(Type.INFO,i18n.tr("Klicken Sie mit der rechten Maustaste in die Grafik und wählen Sie \"Gruppierung nach\", um nach Jahr, Monat oder Woche zu gruppieren."));
     }
     catch (RemoteException re)
     {
