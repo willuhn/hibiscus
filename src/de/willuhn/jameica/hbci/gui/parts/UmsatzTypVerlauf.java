@@ -258,16 +258,20 @@ public class UmsatzTypVerlauf implements Part
       this.group = group;
       this.entries.clear();
 
-      for (Umsatz umsatz: getRecursiveUmsaetze(group)) {
-        if (umsatz.getDatum() == null) {
+      for (Umsatz umsatz:getRecursiveUmsaetze(group))
+      {
+        if (umsatz.getDatum() == null)
+        {
           Logger.warn("no date found for umsatz, skipping record");
           continue;
         }
         this.hasData = true;
         calendar.setTime(DateUtil.startOfDay(umsatz.getDatum()));
         calendar.set(interval.type, 1);
-        double aggMonatsWert = verteilung.containsKey(calendar.getTime())?verteilung.get(calendar.getTime()):0;
-        verteilung.put(calendar.getTime(), umsatz.getBetrag() + aggMonatsWert);
+        
+        Date key = calendar.getTime();
+        double aggMonatsWert = verteilung.containsKey(key) ? verteilung.get(key) : 0;
+        verteilung.put(key, umsatz.getBetrag() + aggMonatsWert);
       }
 
       calculateChartInterval(verteilung.keySet());
@@ -297,23 +301,28 @@ public class UmsatzTypVerlauf implements Part
       entries.add(lastEntry);
     }
 
-    private void calculateChartInterval(Set<Date> chartDates){
-      Date dataMin=new Date();
-      Date dataMax=new Date();
-      if(!chartDates.isEmpty()){
-        dataMin = Collections.min(chartDates);
-        dataMax = Collections.max(chartDates);
+    /**
+     * Ermittelt das Minimum und Maximum aus dem Set von Datumswerten.
+     * @param chartDates das Set der Datumswerte.
+     */
+    private void calculateChartInterval(Set<Date> chartDates)
+    {
+      Date min = new Date();
+      Date max = new Date();
+      
+      if (!chartDates.isEmpty())
+      {
+        min = Collections.min(chartDates);
+        max = Collections.max(chartDates);
       }
-      if(start != null && start.after(dataMin)){
-        chartStartDate = start;
-      }else{
-        chartStartDate = dataMin;
-      }
-      if(stop != null && stop.before(dataMax)){
-        chartStopDate = stop;
-      }else{
-        chartStopDate = dataMax;
-      }
+
+      // Wenn ein explizites Start-Datum angegeben ist und es sich hinter
+      // dem ermittelten befindet, nehmen wir das explizit angegebene
+      this.chartStartDate = (start != null && start.after(min)) ? start : min;
+
+      // Wenn ein explizites Stop-Datum angegeben ist und es sich vor
+      // dem ermittelten befindet, nehmen wir das explizit angegebene
+      this.chartStopDate = (stop != null && stop.before(max)) ? start : max;
     }
 
     /**
