@@ -143,8 +143,8 @@ public class PtSecMech
   }
   
   /**
-   * Liefert true, wenn es ein Verfahren ist, das USB-tauglich ist.
-   * @return true, wenn es ein Verfahren ist, das USB-tauglich ist.
+   * Liefert true, wenn es ein Verfahren ist, das prinzipiell USB-tauglich ist.
+   * @return true, wenn es ein Verfahren ist, das prinzipiell USB-tauglich ist.
    */
   public boolean useUSB()
   {

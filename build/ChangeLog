@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0680 BUGZILLA 1858 - Hibiscus sucht auch bei deaktivierter chipTAN-USB-Option weiter nach Kartenlesern
   * NEW: 0679 Support für HKKAZ/HKKAN in Segment-Version 7 - https://github.com/hbci4j/hbci4java/commit/e3372a339bd5b9f0c2cea80155199f475dd46ed4
   * DEL: 0678 Option "Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich" aus den Einstellungen entfernt, braucht keiner mehr 
   * NEW: 0677 Option "Alle Daten des Verwendungszwecks anzeigen" auch in Liste der Umsätze konfigurierbar (per Config-Button oben rechts)
