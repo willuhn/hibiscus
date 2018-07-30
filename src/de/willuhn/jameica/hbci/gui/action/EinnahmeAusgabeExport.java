@@ -9,10 +9,17 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog.ExpotFormat;
+import de.willuhn.jameica.hbci.io.XMLExporter;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
+import de.willuhn.jameica.hbci.server.EinnameAusgabeTreeNode;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -33,13 +40,19 @@ public class EinnahmeAusgabeExport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (context == null || !(context instanceof EinnahmeAusgabe[]))
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
-
     try
     {
-      ExportDialog d = new ExportDialog((EinnahmeAusgabe[]) context,EinnahmeAusgabe.class);
-      d.open();
+      if(context instanceof EinnahmeAusgabe[])
+      {
+        ExportDialog d = new ExportDialog((EinnahmeAusgabe[]) context,EinnahmeAusgabe.class);
+        filterFormatsAndOpenDialog(d);
+        
+      }else if(context instanceof EinnameAusgabeTreeNode[]){
+        ExportDialog d = new ExportDialog((EinnameAusgabeTreeNode[]) context,EinnameAusgabeTreeNode.class);
+        filterFormatsAndOpenDialog(d);
+      }else{
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
+      }
     }
     catch (OperationCanceledException oce)
     {
@@ -57,6 +70,25 @@ public class EinnahmeAusgabeExport implements Action
     }
   }
 
+  //da die Objekte (angeblich) GenericObject implementieren, wird der XML-Export angeboten
+  //das wollen wir nicht, vielleicht geht das auch eleganter
+  private void filterFormatsAndOpenDialog(ExportDialog d) throws Exception
+  {
+    List exportFormatList = ((SelectInput)d.getExporterList()).getList();
+    List filtered=new ArrayList();
+    for (Object object : exportFormatList)
+    {
+      if(object instanceof ExpotFormat)
+      {
+        ExpotFormat f=(ExpotFormat)object;
+        if(!(f.getExporter() instanceof XMLExporter)){
+          filtered.add(object);
+        }
+      }
+    }
+    ((SelectInput)d.getExporterList()).setList(filtered);
+    d.open();
+  }
 }
 
 /*******************************************************************************

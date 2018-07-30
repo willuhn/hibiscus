@@ -11,20 +11,22 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.TreeItem;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.formatter.TreeFormatter;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
@@ -37,6 +39,7 @@ import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
+import de.willuhn.jameica.hbci.server.EinnameAusgabeTreeNode;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -54,8 +57,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private DateInput start          = null;
   private DateInput end            = null;
   private RangeInput range         = null;
+  private SelectInput granularity  = null;
 
-  private TablePart table          = null;
+  private TreePart tree            = null;
 
   /**
    * ct.
@@ -129,32 +133,45 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
+   * Liefert ein Auswahl-Feld für die zeitliche Auflösung der Aufschlüsselung.
+   * @return Auswahl-Feld
+   * */
+  public SelectInput getGranularity()
+  {
+    if(this.granularity !=null)
+      return this.granularity;
+    this.granularity=new SelectInput(Granularity.values(), null);
+    this.granularity.setName(i18n.tr("Aufschlüsselung"));
+    return this.granularity;
+  }
+
+  /**
    * Liefert eine Tabelle mit den Einnahmen/Ausgaben und Salden
    * @return Tabelle mit den Einnahmen/Ausgaben und Salden
    * @throws RemoteException
    */
-  public TablePart getTable() throws RemoteException
+  public TreePart getTree() throws RemoteException
   {
-    if (this.table != null)
-      return this.table;
+    if (this.tree != null)
+      return this.tree;
 
-    table = new TablePart(getWerte(), null);
-    table.addColumn(i18n.tr("Konto"),        "text");
-    table.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Einnahmen"),    "einnahmen",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Ausgaben"),     "ausgaben",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Endsaldo"),     "endsaldo",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Plus/Minus"),   "plusminus",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    table.addColumn(i18n.tr("Differenz"),    "differenz",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    tree = new TreePart(getWerte(), null);
+    tree.addColumn(i18n.tr("Konto"),        "text");
+    tree.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    tree.addColumn(i18n.tr("Einnahmen"),    "einnahmen",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    tree.addColumn(i18n.tr("Ausgaben"),     "ausgaben",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    tree.addColumn(i18n.tr("Endsaldo"),     "endsaldo",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    tree.addColumn(i18n.tr("Plus/Minus"),   "plusminus",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    tree.addColumn(i18n.tr("Differenz"),    "differenz",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
 
-    table.setFormatter(new TableFormatter()
+    tree.setFormatter(new TreeFormatter()
     {
       /**
        * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
        */
-      public void format(TableItem item)
+      public void format(TreeItem item)
       {
-        if (item == null)
+        if (item == null || item.getData() instanceof EinnameAusgabeTreeNode)
           return;
         
         EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
@@ -180,22 +197,54 @@ public class EinnahmeAusgabeControl extends AbstractControl
       }
     });
 
-    table.setRememberColWidths(true);
-    table.setSummary(false);
-    return table;
+    tree.setRememberColWidths(true);
+    return tree;
   }
 
   /**
-   * Ermittelt die Liste der Zeilen fuer die Tabelle.
+   * Ermittelt die Liste der Knoten für den Baum. Wenn keine Aufschlüsselung gewünscht ist,
+   * werden die Zeilen ohne Elternknoten angezeigt.
    * @return Liste mit den Werten.
    * @throws RemoteException
    */
-  private List<EinnahmeAusgabe> getWerte() throws RemoteException
+  private List<Object> getWerte() throws RemoteException
+  {
+    Date start  = (Date) this.getStart().getValue();
+    Date end    = (Date) this.getEnd().getValue();
+
+    Granularity selectedGranularity = (Granularity)getGranularity().getValue();
+    List<Object> result=new ArrayList<Object>();
+    if(Granularity.all.equals(selectedGranularity))
+    {
+      result.addAll(getWerte(start, end));
+    }else
+    {
+      EinnameAusgabeTreeNode node;
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(DateUtil.startOfDay(start));
+      while (calendar.getTime().before(end))
+      {
+        calendar.set(selectedGranularity.type, 1);
+        Date nodeFrom=calendar.getTime();
+        //ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
+        calendar.add(selectedGranularity.size,1);
+        calendar.setTimeInMillis(calendar.getTime().getTime()-1);
+        Date nodeTo=DateUtil.startOfDay(calendar.getTime());
+        List<EinnahmeAusgabe> werte = getWerte(nodeFrom, nodeTo);
+        node=new EinnameAusgabeTreeNode(nodeFrom, nodeTo, werte);
+        result.add(node);
+        //ermittle den Start des nächsten Zeitraums
+        calendar.setTime(nodeFrom);
+        calendar.add(selectedGranularity.size, 1);
+      }
+    }
+    return result;
+  }
+
+  private List<EinnahmeAusgabe> getWerte(Date start, Date end) throws RemoteException
   {
     List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
 
-    Date start  = (Date) this.getStart().getValue();
-    Date end    = (Date) this.getEnd().getValue();
     Object o    = getKontoAuswahl().getValue();
 
     // Uhrzeit zuruecksetzen, falls vorhanden
@@ -240,8 +289,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     summen.setAusgaben(summeAusgaben);
     summen.setEinnahmen(summeEinnahmen);
     summen.setEndsaldo(summeEndsaldo);
-    summen.setEnddatum((Date) this.getStart().getValue());
-    summen.setStartdatum((Date) this.getEnd().getValue());
+    summen.setEnddatum(start);
+    summen.setStartdatum(end);
     list.add(summen);
     
     return list;
@@ -254,8 +303,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
   {
     try
     {
-      TablePart table = this.getTable();
-      table.removeAll();
+      TreePart tree = this.getTree();
+      tree.removeAll();
       
       Date tStart = (Date) getStart().getValue();
       Date tEnd = (Date) getEnd().getValue();
@@ -264,15 +313,44 @@ public class EinnahmeAusgabeControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
         return;
       }
+      if(tStart == null || tEnd == null)
+      {
+        //bei einem offenen Intervall ist keine Aufschlüsselung möglich
+        getGranularity().setValue(Granularity.all);
+      }
 
-      List<EinnahmeAusgabe> list = this.getWerte();
-      for (EinnahmeAusgabe ea:list)
-        table.addItem(ea);
+      tree.setList(this.getWerte());
     }
     catch (RemoteException re)
     {
       Logger.error("unable to redraw table",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
+    }
+  }
+
+  private enum Granularity {
+    all(-1, -1, "Gesamtzeitraum"), 
+    year(Calendar.DAY_OF_YEAR, Calendar.YEAR,"pro Jahr"),
+    month(Calendar.DAY_OF_MONTH, Calendar.MONDAY, "pro Monat");
+
+    private String name;
+    private int type;
+    private int size;
+
+    private Granularity(int type, int size, String name)
+    {
+      this.name = name;
+      this.type = type;
+      this.size = size;
+    }
+
+    /**
+     * @see java.lang.Enum#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return this.name;
     }
   }
 }
