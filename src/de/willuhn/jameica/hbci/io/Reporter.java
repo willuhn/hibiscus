@@ -261,7 +261,18 @@ public class Reporter
    */
   public PdfPCell getDetailCell(double value)
   {
-    Font f = FontFactory.getFont(FontFactory.HELVETICA, 8f, Font.NORMAL, value >= 0.01d ? BaseColor.BLACK : BaseColor.RED);
+    return this.getDetailCell(value,value >= 0.01d ? BaseColor.BLACK : BaseColor.RED);
+  }
+
+  /**
+   * Erzeugt eine Zelle fuer die uebergebene Zahl in der angegebenen Farbe.
+   * @param value die Zahl.
+   * @param color die Farbe.
+   * @return die erzeugte Zelle.
+   */
+  public PdfPCell getDetailCell(double value, BaseColor color)
+  {
+    Font f = FontFactory.getFont(FontFactory.HELVETICA, 8f, Font.NORMAL, color);
     PdfPCell cell = new PdfPCell(new Phrase(HBCI.DECIMALFORMAT.format(value), f));
     cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
     return cell;

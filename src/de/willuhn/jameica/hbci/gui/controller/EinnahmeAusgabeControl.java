@@ -39,7 +39,7 @@ import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
-import de.willuhn.jameica.hbci.server.EinnameAusgabeTreeNode;
+import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -53,13 +53,51 @@ public class EinnahmeAusgabeControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private KontoInput kontoAuswahl  = null;
-  private DateInput start          = null;
-  private DateInput end            = null;
-  private RangeInput range         = null;
-  private SelectInput granularity  = null;
+  private KontoInput kontoAuswahl = null;
+  private DateInput start         = null;
+  private DateInput end           = null;
+  private RangeInput range        = null;
+  private SelectInput interval    = null;
 
-  private TreePart tree            = null;
+  private TreePart tree           = null;
+
+  /**
+   * Gruppierung der Einnahmen/Ausgaben nach Zeitraum.
+   */
+  private enum Interval
+  {
+    ALL(-1, -1, i18n.tr("Gesamtzeitraum")), 
+    YEAR(Calendar.DAY_OF_YEAR, Calendar.YEAR,i18n.tr("Jahr")),
+    MONTH(Calendar.DAY_OF_MONTH, Calendar.MONDAY, i18n.tr("Monat")),
+    
+    ;
+
+    private String name;
+    private int type;
+    private int size;
+
+    /**
+     * ct.
+     * @param type
+     * @param size
+     * @param name
+     */
+    private Interval(int type, int size, String name)
+    {
+      this.name = name;
+      this.type = type;
+      this.size = size;
+    }
+
+    /**
+     * @see java.lang.Enum#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return this.name;
+    }
+  }
 
   /**
    * ct.
@@ -133,16 +171,17 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
-   * Liefert ein Auswahl-Feld für die zeitliche Auflösung der Aufschlüsselung.
+   * Liefert ein Auswahl-Feld für die zeitliche Gruppierung.
    * @return Auswahl-Feld
    * */
-  public SelectInput getGranularity()
+  public SelectInput getInterval()
   {
-    if(this.granularity !=null)
-      return this.granularity;
-    this.granularity=new SelectInput(Granularity.values(), null);
-    this.granularity.setName(i18n.tr("Aufschlüsselung"));
-    return this.granularity;
+    if(this.interval !=null)
+      return this.interval;
+    
+    this.interval = new SelectInput(Interval.values(), null);
+    this.interval.setName(i18n.tr("Gruppierung nach"));
+    return this.interval;
   }
 
   /**
@@ -171,7 +210,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
        */
       public void format(TreeItem item)
       {
-        if (item == null || item.getData() instanceof EinnameAusgabeTreeNode)
+        if (item == null || item.getData() instanceof EinnahmeAusgabeTreeNode)
           return;
         
         EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
@@ -212,40 +251,52 @@ public class EinnahmeAusgabeControl extends AbstractControl
     Date start  = (Date) this.getStart().getValue();
     Date end    = (Date) this.getEnd().getValue();
 
-    Granularity selectedGranularity = (Granularity)getGranularity().getValue();
+    Interval interval = (Interval) getInterval().getValue();
     List<Object> result=new ArrayList<Object>();
-    if(Granularity.all.equals(selectedGranularity))
+    
+    // Sonderfall "alle". Es findet keine zeitliche Gruppierung statt
+    if(Interval.ALL.equals(interval))
     {
-      result.addAll(getWerte(start, end));
-    }else
+      result.addAll(this.getWerte(start, end));
+      return result;
+    }
+    
+    EinnahmeAusgabeTreeNode node;
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(DateUtil.startOfDay(start));
+    while (calendar.getTime().before(end))
     {
-      EinnameAusgabeTreeNode node;
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTime(DateUtil.startOfDay(start));
-      while (calendar.getTime().before(end))
-      {
-        calendar.set(selectedGranularity.type, 1);
-        Date nodeFrom=calendar.getTime();
-        //ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
-        calendar.add(selectedGranularity.size,1);
-        calendar.setTimeInMillis(calendar.getTime().getTime()-1);
-        Date nodeTo=DateUtil.startOfDay(calendar.getTime());
-        List<EinnahmeAusgabe> werte = getWerte(nodeFrom, nodeTo);
-        node=new EinnameAusgabeTreeNode(nodeFrom, nodeTo, werte);
-        result.add(node);
-        //ermittle den Start des nächsten Zeitraums
-        calendar.setTime(nodeFrom);
-        calendar.add(selectedGranularity.size, 1);
-      }
+      calendar.set(interval.type, 1);
+      Date nodeFrom = calendar.getTime();
+      
+      // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
+      calendar.add(interval.size,1);
+      calendar.setTimeInMillis(calendar.getTime().getTime()-1);
+      Date nodeTo = DateUtil.startOfDay(calendar.getTime());
+      
+      List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
+      node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
+      result.add(node);
+      
+      // ermittle den Start des nächsten Zeitraums
+      calendar.setTime(nodeFrom);
+      calendar.add(interval.size, 1);
     }
     return result;
   }
 
+  /**
+   * Liefert die Werte fuer den angegebenen Zeitraum.
+   * @param start Startdatum.
+   * @param end Enddatum.
+   * @return die Liste der Werte.
+   * @throws RemoteException
+   */
   private List<EinnahmeAusgabe> getWerte(Date start, Date end) throws RemoteException
   {
     List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
 
-    Object o    = getKontoAuswahl().getValue();
+    Object o = getKontoAuswahl().getValue();
 
     // Uhrzeit zuruecksetzen, falls vorhanden
     if (start != null) start = DateUtil.startOfDay(start);
@@ -313,10 +364,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
         return;
       }
-      if(tStart == null || tEnd == null)
+      if (tStart == null || tEnd == null)
       {
-        //bei einem offenen Intervall ist keine Aufschlüsselung möglich
-        getGranularity().setValue(Granularity.all);
+        // bei einem offenen Intervall ist keine Aufschlüsselung möglich
+        getInterval().setValue(Interval.ALL);
       }
 
       tree.setList(this.getWerte());
@@ -325,32 +376,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       Logger.error("unable to redraw table",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
-    }
-  }
-
-  private enum Granularity {
-    all(-1, -1, "Gesamtzeitraum"), 
-    year(Calendar.DAY_OF_YEAR, Calendar.YEAR,"pro Jahr"),
-    month(Calendar.DAY_OF_MONTH, Calendar.MONDAY, "pro Monat");
-
-    private String name;
-    private int type;
-    private int size;
-
-    private Granularity(int type, int size, String name)
-    {
-      this.name = name;
-      this.type = type;
-      this.size = size;
-    }
-
-    /**
-     * @see java.lang.Enum#toString()
-     */
-    @Override
-    public String toString()
-    {
-      return this.name;
     }
   }
 }
