@@ -14,13 +14,15 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.datasource.BeanUtil;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
 
 /**
  * Container fuer die EinnahmeAusgabe-Daten.
  */
-
-public class EinnahmeAusgabe
+//für die Anzeige im Baum implementieren wir das absolute Minimum aus GenericObject 
+public class EinnahmeAusgabe implements GenericObject
 {
   private String text;
   private double anfangssaldo;
@@ -230,6 +232,45 @@ public class EinnahmeAusgabe
   public void setIsSumme(boolean b)
   {
     this.isSumme = b;
+  }
+
+  @Override
+  public boolean equals(GenericObject arg0) throws RemoteException
+  {
+    return arg0==this;
+  }
+
+  @Override
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    try
+    {
+      //TODO typischerweise wird de nicht zu viele Zeilen in der Tabelle geben
+      //so dass sich der Reflection-Overhead in Grenzen hält
+      //besser wäre ein explizites Mapping...
+      return BeanUtil.invoke(this, BeanUtil.toGetMethod(arg0), new Object[]{});
+    } catch (Exception e)
+    {
+      throw new RemoteException("no property with name "+arg0,e);
+    }
+  }
+
+  @Override
+  public String[] getAttributeNames() throws RemoteException
+  {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String getID() throws RemoteException
+  {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String getPrimaryAttribute() throws RemoteException
+  {
+    throw new UnsupportedOperationException();
   }
 }
 
