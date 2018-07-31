@@ -16,8 +16,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.sepa.PainVersion;
-import org.kapott.hbci.sepa.PainVersion.Type;
+import org.kapott.hbci.sepa.SepaVersion;
+import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -44,7 +44,7 @@ public class PainVersionDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private Type type               = null;
-  private PainVersion painVersion = null;
+  private SepaVersion painVersion = null;
   private Button ok               = null;
 
   /**
@@ -78,7 +78,7 @@ public class PainVersionDialog extends AbstractDialog
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        painVersion = (PainVersion) version.getValue();
+        painVersion = (SepaVersion) version.getValue();
         if (painVersion == null)
         {
           msg.setValue(i18n.tr("Bitte wählen Sie eine SEPA XML-Version aus."));
@@ -107,8 +107,8 @@ public class PainVersionDialog extends AbstractDialog
    */
   private SelectInput getPainVersionInput()
   {
-    List<PainVersion> list = PainVersion.getKnownVersions(type);
-    final SelectInput select = new SelectInput(list,PainVersion.findGreatest(list));
+    List<SepaVersion> list = SepaVersion.getKnownVersions(type);
+    final SelectInput select = new SelectInput(list,SepaVersion.findGreatest(list));
     select.setAttribute("file");
     select.setName(i18n.tr("Schema-Version der SEPA XML-Datei"));
     select.addListener(new Listener() {

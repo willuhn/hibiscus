@@ -22,7 +22,8 @@ import java.util.Properties;
 
 import org.kapott.hbci.GV.parsers.ISEPAParser;
 import org.kapott.hbci.GV.parsers.SEPAParserFactory;
-import org.kapott.hbci.sepa.PainVersion;
+import org.kapott.hbci.sepa.SepaVersion;
+import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
@@ -70,20 +71,20 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     IOUtil.copy(is,bos);
     
-    PainVersion version = PainVersion.autodetect(new ByteArrayInputStream(bos.toByteArray()));
+    SepaVersion version = SepaVersion.autodetect(new ByteArrayInputStream(bos.toByteArray()));
     if (version == null)
       throw new ApplicationException(i18n.tr("SEPA-Version der XML-Datei nicht ermittelbar"));
     
     monitor.log(i18n.tr("SEPA-Version: {0}",version.getURN()));
     
     // PAIN-Typ nicht kompatibel. User fragen, ob er trotzdem importieren  moechte
-    PainVersion.Type type = this.getSupportedPainType();
+    SepaVersion.Type type = this.getSupportedPainType();
     if (type != null && type != version.getType())
     {
       String l = i18n.tr("Lastschrift");
       String u = i18n.tr("Überweisung");
       String q = i18n.tr("Sie versuchen, eine {0} als {1} zu importieren.\nVorgang wirklich fortsetzen?");
-      boolean b = type == PainVersion.Type.PAIN_001;
+      boolean b = type == SepaVersion.Type.PAIN_001;
       if (!Application.getCallback().askUser(q,new String[]{b ? l : u, b ? u : l}))
         throw new OperationCanceledException();
     }
@@ -184,6 +185,6 @@ public abstract class AbstractSepaImporter extends AbstractImporter
    * Wird benötigt, damit eine Lastschrift nicht versehentlich als Überweisung importiert wird.
    * @return erlaubter SEPA PAIN-Typ.
    */
-  abstract PainVersion.Type getSupportedPainType(); 
+  abstract Type getSupportedPainType(); 
 
 }

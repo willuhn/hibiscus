@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.sepa.PainVersion;
-import org.kapott.hbci.sepa.PainVersion.Type;
+import org.kapott.hbci.sepa.SepaVersion;
+import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -54,7 +54,7 @@ public class SepaExportDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private Type type               = null;
-  private PainVersion painVersion = null;
+  private SepaVersion painVersion = null;
   private File file               = null;
   private Button ok               = null;
 
@@ -101,7 +101,7 @@ public class SepaExportDialog extends AbstractDialog
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        painVersion = (PainVersion) version.getValue();
+        painVersion = (SepaVersion) version.getValue();
         if (painVersion == null)
         {
           msg.setValue(i18n.tr("Bitte wählen Sie eine Schema-Version aus."));
@@ -156,8 +156,8 @@ public class SepaExportDialog extends AbstractDialog
    */
   private SelectInput getPainVersionInput()
   {
-    List<PainVersion> list = PainVersion.getKnownVersions(type);
-    final SelectInput select = new SelectInput(list,PainVersion.findGreatest(list));
+    List<SepaVersion> list = SepaVersion.getKnownVersions(type);
+    final SelectInput select = new SelectInput(list,SepaVersion.findGreatest(list));
     select.setAttribute("file");
     select.setName(i18n.tr("Schema-Version der SEPA-Datei"));
     select.addListener(new Listener() {
@@ -239,7 +239,7 @@ public class SepaExportDialog extends AbstractDialog
    * Liefert die ausgewaehlte PAIN-Version.
    * @return die ausgewaehlte PAIN-Version.
    */
-  public PainVersion getPainVersion()
+  public SepaVersion getPainVersion()
   {
     return this.painVersion;
   }

@@ -16,7 +16,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.SepaUtil;
 import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.sepa.PainVersion.Type;
+import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
