@@ -45,6 +45,8 @@ import de.willuhn.util.ApplicationException;
  */
 public class Converter
 {
+  private final static double KURS_EUR = 1.95583;
+
 
   /**
    * Konvertiert einen einzelnen Umsatz von HBCI4Java nach Hibiscus.
@@ -62,8 +64,8 @@ public class Converter
     umsatz.setArt(clean(u.text));
     umsatz.setCustomerRef(clean(u.customerref));
     umsatz.setPrimanota(clean(u.primanota));
-
-    double kurs = 1.95583;
+    umsatz.setTransactionId(u.id);
+    umsatz.setPurposeCode(u.purposecode);
 
     //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
     Saldo s = u.saldo;
@@ -76,7 +78,7 @@ public class Converter
         double saldo = v.getDoubleValue();
         String curr  = v.getCurr();
         if (curr != null && "DEM".equals(curr))
-          saldo /= kurs;
+          saldo /= KURS_EUR;
         umsatz.setSaldo(saldo);
       }
     }
@@ -87,7 +89,7 @@ public class Converter
 
     // BUGZILLA 318
     if (curr != null && "DEM".equals(curr))
-      betrag /= kurs;
+      betrag /= KURS_EUR;
 
     umsatz.setBetrag(betrag);
     umsatz.setDatum(u.bdate);
@@ -115,16 +117,26 @@ public class Converter
 
     String[] lines = (String[]) u.usage.toArray(new String[u.usage.size()]);
 
-    // die Bank liefert keine strukturierten Verwendungszwecke (gvcode=999).
-    // Daher verwenden wir den gesamten "additional"-Block und zerlegen ihn
-    // in 27-Zeichen lange Haeppchen
-    if (lines.length == 0)
-      lines = VerwendungszweckUtil.parse(u.additional);
-
-    // Es gibt eine erste Bank, die 40 Zeichen lange Verwendungszwecke lieferte.
-    // Siehe Mail von Frank vom 06.02.2014
-    lines = VerwendungszweckUtil.rewrap(HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH,lines);
-    VerwendungszweckUtil.apply(umsatz,lines);
+    // Wenn es ein CAMT-Umsatz ist, koennen wir einfach die erste Zeile pauschal
+    // uebernehmen. Da gibt es ohnehin nur noch diese eine Zeile
+    if (u.isCamt)
+    {
+      if (lines.length > 0)
+        umsatz.setZweck(lines[0]);
+    }
+    else
+    {
+      // die Bank liefert keine strukturierten Verwendungszwecke (gvcode=999).
+      // Daher verwenden wir den gesamten "additional"-Block und zerlegen ihn
+      // in 27-Zeichen lange Haeppchen
+      if (lines.length == 0)
+        lines = VerwendungszweckUtil.parse(u.additional);
+      
+      // Es gibt eine erste Bank, die 40 Zeichen lange Verwendungszwecke lieferte.
+      // Siehe Mail von Frank vom 06.02.2014
+      lines = VerwendungszweckUtil.rewrap(HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH,lines);
+      VerwendungszweckUtil.apply(umsatz,lines);
+    }
     //
     ////////////////////////////////////////////////////////////////////////////
 

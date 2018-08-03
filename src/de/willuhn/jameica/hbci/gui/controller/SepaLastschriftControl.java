@@ -392,7 +392,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (zweck != null)
       return zweck;
-    zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+    zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
     zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     zweck.setEnabled(!getTransfer().ausgefuehrt());
     return zweck;

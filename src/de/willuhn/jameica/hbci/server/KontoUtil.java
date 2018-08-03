@@ -22,12 +22,19 @@ import org.apache.commons.lang.StringUtils;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.CamtSetupDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.BPDUtil.Query;
+import de.willuhn.jameica.hbci.server.BPDUtil.Support;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.util.DateUtil;
+import de.willuhn.logging.Logger;
 
 /**
  * Hilfsklasse mit statischen Funktionen fuer Konten.
@@ -111,6 +118,90 @@ public class KontoUtil
     
     return null;
   }
+  
+  /**
+   * Prueft, ob die Umsaetze eines Kontos per CAMT abgerufen werden sollen.
+   * @param k das zu pruefende Konto.
+   * @param ask true, wenn der User hier auch gefragt werden darf, falls er die Entscheidung noch nicht getroffen hat.
+   * @return true, wenn CAMT verwendet werden soll.
+   */
+  public static boolean useCamt(Konto k, boolean ask)
+  {
+    if (k == null)
+    {
+      Logger.warn("unable to check if CAMT is supported, no account given");
+      return false;
+    }
+    try
+    {
+      // Erstmal checken, ob wir grundsaetzlich Support fuer CAMT haben
+      Logger.debug("checking if account supports CAMT");
+      Support support = BPDUtil.getSupport(k,Query.UmsatzCamt);
+      if (support == null)
+      {
+        Logger.debug("unable to determine CAMT support");
+        return false;
+      }
+      
+      if (!support.isSupported())
+      {
+        Logger.debug("account does not support CAMT");
+        return false;
+      }
+      
+      // Also grundsaetzlich haben wir Support.
+      // Jetzt checken, wir, was fuer das Konto konfiguriert ist.
+      String value = StringUtils.trimToNull(MetaKey.UMSATZ_CAMT.get(k));
+      
+      // Wenn ein Wert drin steht, hat sich der User entschieden, dann halten wir uns dran
+      if (value != null)
+      {
+        Logger.debug("CAMT usage configured as: " + value);
+        return Boolean.valueOf(value);
+      }
+      
+      // Wenn als Wert noch nichts drin steht, dann hat der User es noch nicht konfigutiert. In dem Fall entscheiden
+      // wir erstmal basierend auf den vorhandenen Umsaetzen. Wenn das Konto noch keine Umsaetze hat, verwenden wir
+      // CAMT und speichern das auch als Wert. Damit wird kuenftig bei neuen Usern automatisch CAMT verwendet.
+      // Wenn es Umsaetze hat, fragen wir den User, ob er umstellen moechte.
+      if (k.getNumUmsaetze() == 0)
+      {
+        Logger.debug("account does not have bookings yet, auto-activating CAMT");
+        MetaKey.UMSATZ_CAMT.set(k,Boolean.TRUE.toString());
+        return true;
+      }
+
+      if (!ask)
+      {
+        Logger.debug("CAMT support available but not yet activated");
+        return false;
+      }
+
+      // Wenn wir keine UI haben, koennen wir den User aber nicht fragen
+      if (Application.inServerMode())
+      {
+        Logger.debug("running in server mode, user cannot be asked if CAMT shall be used");
+        return false;
+      }
+
+      Logger.debug("asking user if CAMT shall be used");
+      CamtSetupDialog d = new CamtSetupDialog(k);
+      Boolean b = (Boolean) d.open();
+      Logger.debug("user answered for CAMT: " + b);
+      return b != null ? b.booleanValue() : false;
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.debug("operation cancelled");
+      return false;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to check if account supports CAMT",e);
+      return false;
+    }
+  }
+  
 
   /**
    * Sucht das Konto in der Datenbank.

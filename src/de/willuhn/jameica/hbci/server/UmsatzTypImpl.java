@@ -268,16 +268,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       return false;
 
     String zweck = VerwendungszweckUtil.toString(umsatz,"");
-    String name  = umsatz.getGegenkontoName();
-    String kto   = umsatz.getGegenkontoNummer();
-    String kom   = umsatz.getKommentar();
-    String art   = umsatz.getArt();
+    String name  = StringUtils.trimToEmpty(umsatz.getGegenkontoName());
+    String kto   = StringUtils.trimToEmpty(umsatz.getGegenkontoNummer());
+    String kom   = StringUtils.trimToEmpty(umsatz.getKommentar());
+    String art   = StringUtils.trimToEmpty(umsatz.getArt());
+    String purp  = StringUtils.trimToEmpty(umsatz.getPurposeCode());
     
-    if (name == null) name = "";
-    if (kto  == null) kto = "";
-    if (kom  == null) kom = "";
-    if (art  == null) art = "";
-
     if (!isRegex())
     {
       zweck = zweck.toLowerCase();
@@ -285,6 +281,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       kto   = kto.toLowerCase();
       kom   = kom.toLowerCase();
       art   = art.toLowerCase();
+      purp  = purp.toLowerCase();
 
       if (settings.getBoolean("search.ignore.whitespace",true))
       {
@@ -302,7 +299,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
             name.indexOf(test) != -1 ||
             kto.indexOf(test)  != -1 ||
             kom.indexOf(test) != -1 ||
-            art.indexOf(test) != -1)
+            art.indexOf(test) != -1 ||
+            purp.indexOf(test) != -1)
         {
           return true;
         }
@@ -326,13 +324,15 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mKto = pattern.matcher(kto);
       Matcher mKom = pattern.matcher(kom);
       Matcher mArt = pattern.matcher(art);
-      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art);
+      Matcher mPurp = pattern.matcher(purp);
+      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp);
 
       return (mZweck.matches() ||
-              mName.matches() ||
-              mKto.matches()  ||
-              mKom.matches()  ||
-              mArt.matches()  ||
+              mName.matches()  ||
+              mKto.matches()   ||
+              mKom.matches()   ||
+              mArt.matches()   ||
+              mPurp.matches()  ||
               mAll.matches()
              );
     }

@@ -177,7 +177,7 @@ CREATE TABLE umsatz (
   empfaenger_blz varchar(15),
   empfaenger_name varchar(255),
   betrag double NOT NULL,
-  zweck varchar(35),
+  zweck varchar(255),
   zweck2 varchar(35),
   zweck3 varchar(1000),
   datum date NOT NULL,
@@ -192,6 +192,8 @@ CREATE TABLE umsatz (
   flags int(1) NULL,
   gvcode varchar(3) NULL,
   addkey varchar(3) NULL,
+  txid varchar(100),
+  purposecode varchar(10),
   UNIQUE (id),
   PRIMARY KEY (id)
 );

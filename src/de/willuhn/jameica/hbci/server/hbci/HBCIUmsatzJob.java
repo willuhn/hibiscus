@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.hbci.rewriter.RewriterRegistry;
 import de.willuhn.jameica.hbci.server.hbci.rewriter.UmsatzRewriter;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -131,7 +132,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
   public String getIdentifier() {
-    return "KUmsAll";
+    return KontoUtil.useCamt(this.konto,true) ? "KUmsAllCamt" : "KUmsAll";
   }
 
   /**

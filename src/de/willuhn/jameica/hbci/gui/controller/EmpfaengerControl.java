@@ -415,7 +415,7 @@ public class EmpfaengerControl extends AbstractControl
       Address a = getAddress();
       if (a instanceof HibiscusAddress)
         s = ((HibiscusAddress)a).getBank();
-      this.bank = new TextInput(s, HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+      this.bank = new TextInput(s, HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       this.bank.setEnabled(isHibiscusAdresse());
     }
     return this.bank;

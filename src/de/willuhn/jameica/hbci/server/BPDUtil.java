@@ -66,6 +66,11 @@ public class BPDUtil
      */
     KontoauszugPdf("KontoauszugPdf","HKEKP"),
     
+    /**
+     * Query fuer Abruf der Umsaetze im CAMT-Format.
+     */
+    UmsatzCamt("KUmsZeitCamt","HKCAZ")
+    
     ;
     
     private String query  = null;

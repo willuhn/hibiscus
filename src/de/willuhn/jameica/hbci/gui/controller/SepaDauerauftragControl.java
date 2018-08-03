@@ -449,7 +449,7 @@ public class SepaDauerauftragControl extends AbstractControl
       return zweck;
     
     SepaDauerauftrag t = getTransfer();
-    zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+    zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
     zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     zweck.setMandatory(true);
     if (t.isActive())

@@ -96,6 +96,11 @@ public enum MetaKey
    * Template fuer den Dateinamen.
    */
   KONTOAUSZUG_TEMPLATE_NAME("kontoauszug.template.name","Vorlage für Dateinamen","${jahr}-${nummer}"),
+  
+  /**
+   * Legt fest, ob CAMT fuer den Umsatz-Abruf verwendet werden soll.
+   */
+  UMSATZ_CAMT("umsatz.camt","CAMT-Format für Umsatz-Abruf verwenden",null);
 
   ;
 

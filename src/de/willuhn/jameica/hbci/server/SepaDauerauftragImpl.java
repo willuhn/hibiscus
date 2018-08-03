@@ -135,14 +135,14 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
 
       if (StringUtils.trimToNull(getGegenkontoName()) == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
-      HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+      HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
       String zweck = this.getZweck();
       if (zweck == null || zweck.length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Verwendungszweck ein"));
 
-      HBCIProperties.checkLength(zweck, HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+      HBCIProperties.checkLength(zweck, HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(zweck, HBCIProperties.HBCI_SEPA_VALIDCHARS);
       
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
