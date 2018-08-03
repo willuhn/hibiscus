@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0683 Neuer PIN/TAN-Bankzugang liess sich nicht mehr anlegen, da die ChipTAN-USB-Checkbox zu dem Zeitpunkt nicht korrekt berücksichtigt wurde
   * NEW: 0682 Neue HBCI4Java-Version mit CAMT-Bugfix - https://github.com/hbci4j/hbci4java/commit/3dc9ebf080810acc2636aef0c9413e0d40672dbb
   * NEW: 0681 Neue HBCI4Java-Version mit Unterstützung für CAMT - https://github.com/hbci4j/hbci4java/commit/ecca11320308b1fa1dc40bb37e6571d629064471
   * BUG: 0680 BUGZILLA 1858 - Hibiscus sucht auch bei deaktivierter chipTAN-USB-Option weiter nach Kartenlesern

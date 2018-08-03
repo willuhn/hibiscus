@@ -608,9 +608,17 @@ public class Controller extends AbstractControl
 			config.setPort((Integer)getPort().getValue());
 			config.setCardReader((String) getCardReaders().getValue());
 
-			CheckboxInput check = getChipTANUSB();
-			boolean gray = ((Button)check.getControl()).getGrayed();
-	    config.setChipTANUSB((Boolean) (gray ? null : check.getValue()));
+      PtSecMech secMech = config.getCurrentSecMech();
+      if (secMech != null && secMech.useUSB())
+      {
+        CheckboxInput check = this.getChipTANUSB();
+        Button button = (Button)check.getControl();
+        if (button != null && !button.isDisposed())
+        {
+          boolean gray = button.getGrayed();
+          config.setChipTANUSB((Boolean) (gray ? null : check.getValue()));
+        }
+      }
 
 			
       AbstractHBCIPassport p = (AbstractHBCIPassport)config.getPassport();
