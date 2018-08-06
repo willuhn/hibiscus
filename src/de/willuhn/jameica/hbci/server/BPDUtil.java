@@ -461,10 +461,12 @@ public class BPDUtil
         {
           String name = (String) keys.nextElement();
           if (DBPropertyUtil.insert(prefix,customerId,null,name,data.getProperty(name)))
+          {
             count++;
+            if (count > 0 && count % 20 == 0 && monitor != null)
+              monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
+          }
             
-          if (count > 0 && count % 20 == 0 && monitor != null)
-            monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
         }
       }
       Logger.info("created " + count + " new " + prefix.name() + " cache entries");
