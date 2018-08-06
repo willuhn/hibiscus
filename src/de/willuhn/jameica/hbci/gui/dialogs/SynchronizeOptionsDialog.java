@@ -60,7 +60,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private final static int WINDOW_WIDTH = 400;
+  private final static int WINDOW_WIDTH = 500;
   
   private Konto konto                   = null;
   private boolean offline               = false;
@@ -160,10 +160,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     Container group = new SimpleContainer(parent);
 
+    group.addHeadline(this.konto.getLongName());
+
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei der " +
     		                  "Synchronisierung des Kontos ausgeführt werden sollen."),true);
-    
-    group.addHeadline(this.konto.getLongName());
     
     this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
