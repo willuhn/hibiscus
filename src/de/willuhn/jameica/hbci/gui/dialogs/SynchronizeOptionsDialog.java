@@ -232,20 +232,19 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     Input i7  = this.getSyncMessages();
     Input i8  = this.getSyncKontoauszug();
 
+    Input camt = null;
+
     if (!offline || syncAvail)
     {
       // Wir stellen die Option nur zur Verfuegung, wenn das Konto es prinzipiell unterstuetzt
       Support support = BPDUtil.getSupport(this.konto,Query.UmsatzCamt);
       
       // Wichtig: Das Input muss erzeugt werden, bevor getSyncUmsatz gezeichnet wird. Sonst wird der Listener nicht mehr registriert
-      Input camt = null;
       if (!offline && support != null && support.isSupported())
         camt = this.getUseCamt();
       
       group.addInput(i1);
       group.addInput(i2);
-      if (camt != null)
-        group.addInput(camt);
     }
     
     if (offline)
@@ -260,7 +259,14 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       group.addInput(i6);
       group.addInput(i7);
     }
-    
+
+    if (!offline || syncAvail)
+    {
+      group.addHeadline(i18n.tr("Erweiterte Einstellungen: FinTS"));
+      if (camt != null)
+        group.addInput(camt);
+    }
+
     if (this.properties.size() > 0)
     {
       for (Entry<SynchronizeBackend,List<Input>> e:this.properties.entrySet())
