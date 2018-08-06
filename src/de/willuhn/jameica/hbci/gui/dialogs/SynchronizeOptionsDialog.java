@@ -46,6 +46,10 @@ import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszugPdf;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragList;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaLastschrift;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaUeberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
@@ -253,10 +257,15 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     }
     else
     {
-      group.addInput(i8);
-      group.addInput(i4);
-      group.addInput(i5);
-      group.addInput(i6);
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeEngine engine = service.get(SynchronizeEngine.class);
+      
+      if (engine.supports(SynchronizeJobKontoauszugPdf.class,this.konto)) group.addInput(i8);
+      if (engine.supports(SynchronizeJobSepaUeberweisung.class,this.konto)) group.addInput(i4);
+      if (engine.supports(SynchronizeJobSepaLastschrift.class,this.konto)) group.addInput(i5);
+      if (engine.supports(SynchronizeJobSepaDauerauftragList.class,this.konto)) group.addInput(i6);
+      
+      // Abrufen der Nachrichten lassen wir immer zu.
       group.addInput(i7);
     }
 
