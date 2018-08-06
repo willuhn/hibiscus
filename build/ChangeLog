@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0686 Manueller Import von Umsätzen im CAMT-Format
   * BUG: 0685 BUGZILLA 1860 - Kein Scrollbalken bei Anzeige einer überlangen Banknachricht
   * NEW: 0684 BUGZILLA 1621 - Support für Umsatz-Abruf im CAMT-Format
   * BUG: 0683 Neuer PIN/TAN-Bankzugang liess sich nicht mehr anlegen, da die ChipTAN-USB-Checkbox zu dem Zeitpunkt nicht korrekt berücksichtigt wurde
