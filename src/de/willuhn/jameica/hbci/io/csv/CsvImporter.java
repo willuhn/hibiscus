@@ -16,6 +16,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +94,19 @@ public class CsvImporter implements Importer
       Profile p = (Profile) d.open();
 
       CsvPreference prefs = p.createCsvPreference();
-      csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(data),p.getFileEncoding()),prefs);
+      
+      Charset charset = null;
+      
+      try
+      {
+        charset = Charset.forName(p.getFileEncoding());
+      }
+      catch (UnsupportedCharsetException e)
+      {
+        Logger.warn("unsupported charset: " + p.getFileEncoding());
+      }
+
+      csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(data),charset != null ? charset : Charset.defaultCharset()),prefs);
 
       List<String> line = csv.read();
       
@@ -248,9 +262,6 @@ public class CsvImporter implements Importer
     }
     catch (OperationCanceledException oce)
     {
-      Logger.info("operation cancelled");
-      monitor.setStatus(ProgressMonitor.STATUS_CANCEL);
-      monitor.setStatusText(i18n.tr("Import abgebrochen"));
       throw oce;
     }
     catch (ApplicationException ae)

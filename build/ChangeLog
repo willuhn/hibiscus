@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0689 BUGZILLA 1861 - Unterstützung für benutzerspezifische CSV-Import-Profile
   * NEW: 0688 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.09.2018
   * NEW: 0687 Nur jene Synchronizisierungsoptionen anzeigen, die das Backend unterstützt
   * NEW: 0686 Manueller Import von Umsätzen im CAMT-Format

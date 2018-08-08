@@ -10,17 +10,11 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import java.beans.ExceptionListener;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +22,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
@@ -39,6 +35,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
@@ -49,6 +46,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.csv.Column;
 import de.willuhn.jameica.hbci.io.csv.Format;
 import de.willuhn.jameica.hbci.io.csv.Profile;
+import de.willuhn.jameica.hbci.io.csv.ProfileUtil;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -63,8 +62,9 @@ public class CSVImportDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static String[] CHARSETS = new String[]{"UTF-8","ISO-8859-15","ISO-8859-1"};
 
+  private SelectInput profiles      = null;
+  private Profile result            = null;
   private Format format             = null;
-  private Profile profile           = null;
   private byte[] data               = null;
 
   private TextInput sepChar         = null;
@@ -94,7 +94,7 @@ public class CSVImportDialog extends AbstractDialog
     this.data   = data;
 
     this.setTitle(i18n.tr("Zuordnung der Spalten"));
-    this.setSize(680,500);
+    this.setSize(680,700);
 
   }
   
@@ -105,6 +105,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     // BUGZILLA 281
     Container options = new SimpleContainer(parent);
+    options.addInput(this.getProfiles());
     options.addHeadline(i18n.tr("Optionen"));
     options.addInput(this.getFileEncoding());
     options.addInput(this.getSeparatorChar());
@@ -129,37 +130,12 @@ public class CSVImportDialog extends AbstractDialog
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        Profile p = getProfile();
-        p.setFileEncoding((String)getFileEncoding().getValue());
-        p.setQuotingChar((String)getQuoteChar().getValue());
-        p.setSeparatorChar((String)getSeparatorChar().getValue());
-        p.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
-        
-        // Spalten noch zuordnen
-        List<Column> columns = new ArrayList<Column>();
-        for (int i=0;i<selects.size();++i)
-        {
-          SelectInput input = selects.get(i);
-          Column c = (Column) input.getValue();
-          if (c == null)
-            continue; // Spalte nicht zugeordnet
-          
-          // Spalten konnen mehrfach zugeordnet werden.
-          // Daher verwenden wir einen Clone. Andernfalls wuerden
-          // wir nur die letzte Zuordnung speichern
-          try
-          {
-            c = (Column) c.clone();
-          }
-          catch (CloneNotSupportedException e) {/*dann halt nicht */}
-          
-          // Spaltennummer speichern
-          c.setColumn(i);
-          columns.add(c);
-        }
-        p.setColumns(columns);
-        
-        storeProfile(p);
+        result = getProfile();
+        result.setFileEncoding((String)getFileEncoding().getValue());
+        result.setQuotingChar((String)getQuoteChar().getValue());
+        result.setSeparatorChar((String)getSeparatorChar().getValue());
+        result.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
+        result.setColumns(getColumns());
         close();
       }
     },null,false,"ok.png");
@@ -167,23 +143,106 @@ public class CSVImportDialog extends AbstractDialog
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        Profile p = getProfile();
+        reload();
+      }
+    },null,false,"view-refresh.png");
+    b.addButton(i18n.tr("Profil speichern..."), new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        // Wir erzeugen erstmal ein neues Profil
+        // Der User entscheidet dann im CSVProfileStoreDialog, ob er ueberschreibt oder nicht
+        Profile p = new Profile();
+        p.setColumns(getColumns());
+        p.setName(getProfile().getName());
+        p.setSystem(false);
         p.setFileEncoding((String)getFileEncoding().getValue());
         p.setQuotingChar((String)getQuoteChar().getValue());
         p.setSeparatorChar((String)getSeparatorChar().getValue());
         p.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
-        reload();
+        
+        Profile pNew = ProfileUtil.add(format,p);
+        if (pNew != null)
+        {
+          // Liste in der Auswahlbox neu laden und das neue Profil selektieren
+          getProfiles().setList(ProfileUtil.read(format));
+          getProfiles().setPreselected(pNew);
+        }
       }
-    },null,false,"view-refresh.png");
-    b.addButton(i18n.tr("Abbrechen"), new Action()
-    {
+    },null,false,"document-save.png");
+    b.addButton(i18n.tr("Profil löschen..."), new Action() {
+      
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
-        throw new OperationCanceledException();
+        try
+        {
+          if (!Application.getCallback().askUser(i18n.tr("Soll das Profil wirklich gelöscht werden?"),false))
+            return;
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (Exception e)
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+          return;
+        }
+        if (ProfileUtil.delete(format,getProfile()))
+        {
+          // Liste aktualisieren
+          getProfiles().setList(ProfileUtil.read(format));
+          
+          // Nach dem Loeschen die Auswahl zurueck auf das Default-Profil setzen
+          getProfiles().setValue(getProfiles().getList().get(0));
+        }
+
+        // Einstellungen des ausgewaehlten Profils uebernehmen
+        update();
+        
+        // Datei damit neu laden
+        reload();
       }
-    },null,false,"process-stop.png");
-    
+    },null,false,"user-trash-full.png");
+    b.addButton(new Cancel());
     c.addButtonArea(b);
+  }
+  
+  /**
+   * Liefert die aktuelle Spalten-Zuordnung.
+   * @return die aktuelle Spalten-Zuordnung.
+   */
+  private List<Column> getColumns()
+  {
+    // Spalten noch zuordnen
+    List<Column> columns = new ArrayList<Column>();
+    for (int i=0;i<selects.size();++i)
+    {
+      SelectInput input = selects.get(i);
+      Column c = (Column) input.getValue();
+      if (c == null)
+        continue; // Spalte nicht zugeordnet
+      
+      // Spalten konnen mehrfach zugeordnet werden.
+      // Daher verwenden wir einen Clone. Andernfalls wuerden
+      // wir nur die letzte Zuordnung speichern
+      try
+      {
+        c = (Column) c.clone();
+      }
+      catch (CloneNotSupportedException e) {/*dann halt nicht */}
+      
+      // Spaltennummer speichern
+      c.setColumn(i);
+      columns.add(c);
+    }
+    return columns;
   }
   
   /**
@@ -200,14 +259,25 @@ public class CSVImportDialog extends AbstractDialog
 
       this.selects.clear();
 
-      Profile p = this.getProfile();
+      Profile p = getProfile();
       List<List<String>> lines = new ArrayList<List<String>>(); // Liste mit Zeilen mit Listen von Spalten %-)
       int cols = 0;
 
       ////////////////////////////////////////////////////////////////////////////
       // CSV-Datei einlesen
       CsvPreference prefs = p.createCsvPreference();
-      csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),p.getFileEncoding()),prefs);
+      
+      Charset charset = null;
+      
+      try
+      {
+        charset = Charset.forName(p.getFileEncoding());
+      }
+      catch (UnsupportedCharsetException e)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Encoding {0} wird nicht unterstützt",p.getFileEncoding()),StatusBarMessage.TYPE_ERROR));
+      }
+      csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),charset != null ? charset : Charset.defaultCharset()),prefs);
       List<String> line = null;
       while ((line = csv.read()) != null)
       {
@@ -220,8 +290,7 @@ public class CSVImportDialog extends AbstractDialog
         lines.add(l);
 
         // Wir verwenden als Basis die Zeile mit den meisten Spalten
-        if (l.size() > cols)
-          cols = l.size();
+        cols = Math.max(l.size(),cols);
       }
       
       if (cols == 0)
@@ -245,7 +314,8 @@ public class CSVImportDialog extends AbstractDialog
       //
       ////////////////////////////////////////////////////////////////////////////
 
-      List<Column> columns = p.getColumns();
+      List<Column> all     = format.getDefaultProfile().getColumns(); // Als Auswahlmoeglichkeit immer die aus dem Default
+      List<Column> columns = p.getColumns(); // Die, die im Template tatsaechlich zugeordnet sind.
       List<String> current = lines.get(p.getSkipLines()); // Die erste anzuzeigende Zeile
 
       ScrolledContainer container = new ScrolledContainer(this.parent);
@@ -260,7 +330,7 @@ public class CSVImportDialog extends AbstractDialog
             value = value.substring(0,30) + "...";
         } catch (Exception e) {} // Spalte gibts in der Zeile nicht
         
-        final SelectInput s = new SelectInput(columns,getColumn(columns,i));
+        final SelectInput s = new SelectInput(all,getColumn(columns,i));
         s.setName((i+1) + ". " + (value != null ? value : "<" + i18n.tr("leer") + ">"));
         s.setPleaseChoose("<" + i18n.tr("Nicht zugeordnet") + ">");
         selects.add(s);
@@ -298,158 +368,14 @@ public class CSVImportDialog extends AbstractDialog
     }
     return null;
   }
-
   
-  /**
-   * Prueft, ob ein serialisiertes, vom User abgespeichertes Profil existiert
-   * und laedt dieses. Andernfalls wird das Default-Profil des Formats verwendet.
-   * @return das Profil. Nie NULL sondern hoechstens das Default-Profil.
-   */
-  private Profile getProfile()
-  {
-    if (this.profile != null)
-      return this.profile;
-
-    Profile defaultProfile = this.format.getDefaultProfile();
-
-    // 1. Wir nehmen erstmal das Default-Profil
-    this.profile = defaultProfile;
-    
-    // 2. Mal schauen, ob wir ein gespeichertes Profil fuer das Format haben
-    File dir = new File(Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath(),"csv");
-    if (!dir.exists())
-    {
-      // Wir erstellen das Verzeichnis - dann muss es der User nicht selbst anlegen
-      Logger.info("creating " + dir);
-      dir.mkdirs();
-      return this.profile; // Wenn das Verzeichnis noch nicht existierte, gibts auch kein Benutzer-Profil
-    }
-    
-    File file = new File(dir,this.format.getClass().getName() + ".xml");
-    if (!file.exists() || !file.canRead())
-      return this.profile; // XML-Datei gibts nicht oder nicht lesbar - also Default-Profil
-    
-    Logger.info("reading csv profile " + file);
-    XMLDecoder decoder = null;
-    try
-    {
-      decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
-      decoder.setExceptionListener(new ExceptionListener()
-      {
-        public void exceptionThrown(Exception e)
-        {
-          throw new RuntimeException(e);
-        }
-      });
-      Profile p = (Profile) decoder.readObject();
-      
-      // Versionsnummer pruefen
-      if (defaultProfile.getVersion() > p.getVersion())
-      {
-        Logger.info("default profile has changed, new version number " + defaultProfile.getVersion() + ". skipping serialized profile");
-        return this.profile;
-      }
-        
-        
-      this.profile = p;
-      
-      // Der User hat beim letzten Mal eventuell nicht alle Spalten zugeordnet.
-      // Die wuerden jetzt hier in dem Objekt fehlen. Daher nehmen wir
-      // noch die Spalten aus dem Default-Profil und haengen die fehlenden noch an.
-      List<Column> currentColumns = this.profile.getColumns();
-      List<Column> defaultColumns = defaultProfile.getColumns();
-      for (Column cd:defaultColumns)
-      {
-        String n1 = cd.getProperty();
-        if (n1 == null)
-          continue; // Sollte es eigentlich nicht geben
-        
-        cd.setColumn(-1); // gilt als nicht zugeordnet
-        
-        // Checken, ob im serialisierten Profil enthalten
-        boolean found = false;
-        for (Column cc:currentColumns)
-        {
-          String n2 = cc.getProperty();
-          if (n2 == null)
-            continue;
-          if (n1.equals(n2))
-          {
-            found = true;
-            break;
-          }
-        }
-        
-        // Wenn wir die Spalte im serialisierten Profil nicht gefunden
-        // haben, haengen wir sie als nicht zugeordnet hinten dran
-        if (!found)
-          currentColumns.add(cd);
-      }
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to read profile " + file,e);
-    }
-    finally
-    {
-      if (decoder != null) {
-        try {
-          decoder.close();
-        }
-        catch (Exception e) { /* useless */}
-      }
-    }
-    
-    return this.profile;
-  }
-  
-  
-  /**
-   * Serialisiert das Profil.
-   * @param profile das zu serialisierende Profil.
-   */
-  private void storeProfile(Profile profile)
-  {
-    // 2. Mal schauen, ob wir ein gespeichertes Profil fuer das Format haben
-    File dir = new File(Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath(),"csv");
-    File file = new File(dir,this.format.getClass().getName() + ".xml");
-    
-    Logger.info("writing csv profile " + file);
-    XMLEncoder encoder = null;
-    try
-    {
-      encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
-      encoder.setExceptionListener(new ExceptionListener()
-      {
-        public void exceptionThrown(Exception e)
-        {
-          throw new RuntimeException(e);
-        }
-      });
-      encoder.writeObject(profile);
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to store profile " + file,e);
-    }
-    finally
-    {
-      if (encoder != null) {
-        try {
-          encoder.close();
-        }
-        catch (Exception e) { /* useless */}
-      }
-    }
-  }
-
   /**
    * Liefert das angepasste Mapping zurueck.
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
   protected Object getData() throws Exception
   {
-    return this.getProfile();
+    return this.result;
   }
   
   
@@ -459,13 +385,13 @@ public class CSVImportDialog extends AbstractDialog
    */
   private TextInput getSeparatorChar()
   {
-    if (this.sepChar == null)
-    {
-      this.sepChar = new TextInput(this.getProfile().getSeparatorChar(),1);
-      this.sepChar.setName(i18n.tr("Trennzeichen"));
-      this.sepChar.setComment(i18n.tr("Zeichen, mit dem die Spalten getrennt sind"));
-      this.sepChar.setMandatory(true);
-    }
+    if (this.sepChar != null)
+      return this.sepChar;
+    
+    this.sepChar = new TextInput(getProfile().getSeparatorChar(),1);
+    this.sepChar.setName(i18n.tr("Trennzeichen"));
+    this.sepChar.setComment(i18n.tr("Zeichen, mit dem die Spalten getrennt sind"));
+    this.sepChar.setMandatory(true);
     return this.sepChar;
   }
   
@@ -475,12 +401,12 @@ public class CSVImportDialog extends AbstractDialog
    */
   private LabelInput getError()
   {
-    if (this.error == null)
-    {
-      this.error = new LabelInput("");
-      this.error.setName("");
-      this.error.setColor(Color.ERROR);
-    }
+    if (this.error != null)
+      return this.error;
+    
+    this.error = new LabelInput("");
+    this.error.setName("");
+    this.error.setColor(Color.ERROR);
     return this.error;
   }
 
@@ -490,13 +416,13 @@ public class CSVImportDialog extends AbstractDialog
    */
   private TextInput getQuoteChar()
   {
-    if (this.quoteChar == null)
-    {
-      this.quoteChar = new TextInput(this.getProfile().getQuotingChar(),1);
-      this.quoteChar.setName(i18n.tr("Anführungszeichen"));
-      this.quoteChar.setComment(i18n.tr("Zeichen, mit dem die Spalten umschlossen sind"));
-      this.quoteChar.setMandatory(false);
-    }
+    if (this.quoteChar != null)
+      return this.quoteChar;
+    
+    this.quoteChar = new TextInput(this.getProfile().getQuotingChar(),1);
+    this.quoteChar.setName(i18n.tr("Anführungszeichen"));
+    this.quoteChar.setComment(i18n.tr("Zeichen, mit dem die Spalten umschlossen sind"));
+    this.quoteChar.setMandatory(false);
     return this.quoteChar;
   }
   
@@ -506,14 +432,14 @@ public class CSVImportDialog extends AbstractDialog
    */
   private SelectInput getFileEncoding()
   {
-    if (this.encoding == null)
-    {
-      this.encoding = new SelectInput(CHARSETS,this.getProfile().getFileEncoding());
-      this.encoding.setName(i18n.tr("Zeichensatz"));
-      this.encoding.setComment(i18n.tr("Zeichensatz der CSV-Datei"));
-      this.encoding.setMandatory(true);
-      this.encoding.setEditable(true);
-    }
+    if (this.encoding != null)
+      return this.encoding;
+    
+    this.encoding = new SelectInput(CHARSETS,this.getProfile().getFileEncoding());
+    this.encoding.setName(i18n.tr("Zeichensatz"));
+    this.encoding.setComment(i18n.tr("Zeichensatz der CSV-Datei"));
+    this.encoding.setMandatory(true);
+    this.encoding.setEditable(true);
     return this.encoding;
   }
   
@@ -524,13 +450,67 @@ public class CSVImportDialog extends AbstractDialog
    */
   private SpinnerInput getSkipLines()
   {
-    if (this.skipLines == null)
-    {
-      this.skipLines = new SpinnerInput(0,10,this.getProfile().getSkipLines());
-      this.skipLines.setName(i18n.tr("Zeilen überspringen"));
-      this.skipLines.setComment(i18n.tr("Zu überspringende Zeilen am Datei-Anfang"));
-      this.skipLines.setMandatory(false);
-    }
+    if (this.skipLines != null)
+      return this.skipLines;
+    
+    this.skipLines = new SpinnerInput(0,10,this.getProfile().getSkipLines());
+    this.skipLines.setName(i18n.tr("Zeilen überspringen"));
+    this.skipLines.setComment(i18n.tr("Zu überspringende Zeilen am Datei-Anfang"));
+    this.skipLines.setMandatory(false);
     return this.skipLines;
+  }
+  
+  /**
+   * Liefert das aktuelle Profil.
+   * @return das aktuelle Profil.
+   */
+  private Profile getProfile()
+  {
+    return (Profile) this.getProfiles().getValue();
+  }
+  
+  /**
+   * Liefert eine Auswahlbox mit den verfuegbaren Profilen.
+   * @return eine Auswahlbox mit den verfuegbaren Profilen.
+   * @throws ApplicationException
+   */
+  private SelectInput getProfiles()
+  {
+    if (this.profiles != null)
+      return this.profiles;
+    
+    this.profiles = new SelectInput(ProfileUtil.read(this.format),null);
+    this.profiles.setAttribute("name");
+    this.profiles.setName(i18n.tr("Profil"));
+    this.profiles.addListener(new Listener() {
+      @Override
+      public void handleEvent(Event event)
+      {
+        if (event != null && event.type == SWT.Selection)
+        {
+          update();
+          reload();
+        }
+      }
+    });
+    return this.profiles;
+  }
+  
+  /**
+   * Aktualisiert die Auswahl- und Eingabefelder nach Wechsel des Profils.
+   */
+  private void update()
+  {
+    Profile p = getProfile();
+    Logger.info("chaning profile to: " + p);
+    
+    // Einstellungen in die Eingabefelder uebernehmen
+    this.getFileEncoding().setValue(p.getFileEncoding());
+    this.getQuoteChar().setValue(p.getQuotingChar());
+    this.getSeparatorChar().setValue(p.getSeparatorChar());
+    this.getSkipLines().setValue(Integer.valueOf(p.getSkipLines()));
+    
+    // Datei mit den neuen Einstellungen laden
+    reload();
   }
 }
