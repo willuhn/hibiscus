@@ -47,7 +47,6 @@ import de.willuhn.jameica.hbci.io.csv.Column;
 import de.willuhn.jameica.hbci.io.csv.Format;
 import de.willuhn.jameica.hbci.io.csv.Profile;
 import de.willuhn.jameica.hbci.io.csv.ProfileUtil;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -106,40 +105,9 @@ public class CSVImportDialog extends AbstractDialog
     // BUGZILLA 281
     Container options = new SimpleContainer(parent);
     options.addInput(this.getProfiles());
-    options.addHeadline(i18n.tr("Optionen"));
-    options.addInput(this.getFileEncoding());
-    options.addInput(this.getSeparatorChar());
-    options.addInput(this.getQuoteChar());
-    options.addInput(this.getSkipLines());
-    
-    // BUGZILLA 412
-    options.addHeadline(i18n.tr("Zuordnung der Spalten"));
-    options.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
-                            "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
-
-    this.parent = new Composite(parent,SWT.NONE);
-    this.parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-    this.parent.setLayout(new GridLayout());
-    reload();
-    
-    SimpleContainer c = new SimpleContainer(parent);
-    c.addInput(this.getError());
     
     ButtonArea b = new ButtonArea();
-    b.addButton(i18n.tr("Übernehmen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        result = getProfile();
-        result.setFileEncoding((String)getFileEncoding().getValue());
-        result.setQuotingChar((String)getQuoteChar().getValue());
-        result.setSeparatorChar((String)getSeparatorChar().getValue());
-        result.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
-        result.setColumns(getColumns());
-        close();
-      }
-    },null,false,"ok.png");
-    b.addButton(i18n.tr("Datei neu laden"), new Action()
+    b.addButton(i18n.tr("CSV-Datei neu laden"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -191,7 +159,8 @@ public class CSVImportDialog extends AbstractDialog
         }
         catch (Exception e)
         {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+          Logger.error("unable to delete profile",e);
+          getError().setValue(i18n.tr("Fehler beim Löschen: {0}",e.getMessage()));
           return;
         }
         if (ProfileUtil.delete(format,getProfile()))
@@ -210,8 +179,45 @@ public class CSVImportDialog extends AbstractDialog
         reload();
       }
     },null,false,"user-trash-full.png");
-    b.addButton(new Cancel());
-    c.addButtonArea(b);
+    options.addButtonArea(b);
+
+    options.addText("",false);
+    options.addHeadline(i18n.tr("Optionen"));
+    options.addInput(this.getFileEncoding());
+    options.addInput(this.getSeparatorChar());
+    options.addInput(this.getQuoteChar());
+    options.addInput(this.getSkipLines());
+    
+    options.addText("",false);
+    // BUGZILLA 412
+    options.addHeadline(i18n.tr("Zuordnung der Spalten"));
+    options.addText(i18n.tr("In der linken Spalte sehen Sie die erste Zeile Ihrer CSV-Datei.\n" +
+                            "Ordnen Sie die Felder bitte über die Auswahl-Elemente auf der rechte Seite zu."),true);
+
+    this.parent = new Composite(parent,SWT.NONE);
+    this.parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+    this.parent.setLayout(new GridLayout());
+    reload();
+    
+    SimpleContainer c = new SimpleContainer(parent);
+    c.addInput(this.getError());
+    
+    ButtonArea b2 = new ButtonArea();
+    b2.addButton(i18n.tr("Import starten"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        result = getProfile();
+        result.setFileEncoding((String)getFileEncoding().getValue());
+        result.setQuotingChar((String)getQuoteChar().getValue());
+        result.setSeparatorChar((String)getSeparatorChar().getValue());
+        result.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
+        result.setColumns(getColumns());
+        close();
+      }
+    },null,false,"ok.png");
+    b2.addButton(new Cancel());
+    c.addButtonArea(b2);
   }
   
   /**
@@ -275,7 +281,7 @@ public class CSVImportDialog extends AbstractDialog
       }
       catch (UnsupportedCharsetException e)
       {
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Encoding {0} wird nicht unterstützt",p.getFileEncoding()),StatusBarMessage.TYPE_ERROR));
+        getError().setValue(i18n.tr("Encoding {0} ignoriert, wird nicht unterstützt",p.getFileEncoding()));
       }
       csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),charset != null ? charset : Charset.defaultCharset()),prefs);
       List<String> line = null;
