@@ -463,8 +463,11 @@ public class BPDUtil
           if (DBPropertyUtil.insert(prefix,customerId,null,name,data.getProperty(name)))
           {
             count++;
-            if (count > 0 && count % 20 == 0 && monitor != null)
-              monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
+            if (count > 0 && count % 50 == 0 && monitor != null)
+            {
+              Logger.info("stored " + count + " entries");
+              monitor.log(i18n.tr("  {0} {1}-Parameter aktualisiert",Integer.toString(count),prefix.name()));
+            }
           }
             
         }
