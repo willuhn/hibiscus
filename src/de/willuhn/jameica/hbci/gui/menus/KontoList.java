@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
@@ -48,15 +49,13 @@ import de.willuhn.util.I18N;
 public class KontoList extends ContextMenu implements Extendable
 {
 
-  private I18N i18n;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Erzeugt ein Kontext-Menu fuer eine Liste von Konten.
    */
   public KontoList()
   {
-    i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
     addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"list-add.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
@@ -76,6 +75,9 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport(),"document-open.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addMenu(new ExtendedMenu());
+    
+    // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
+    ExtensionRegistry.extend(this);
   }
 
   /**
