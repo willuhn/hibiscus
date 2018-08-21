@@ -163,11 +163,38 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       }
     }
     
-    Logger.info("init update provider");
-    UpdateProvider provider = new HBCIUpdateProvider(getConnection(),version);
-    Updater updater = new Updater(provider,"iso-8859-1");
-    updater.execute();
-    Logger.info("updates finished");
+    try
+    {
+      Logger.info("init update provider");
+      UpdateProvider provider = new HBCIUpdateProvider(getConnection(),version);
+      Updater updater = new Updater(provider,"iso-8859-1");
+      updater.execute();
+      Logger.info("updates finished");
+    }
+    catch (Exception e)
+    {
+      // Wir versuchen herauszufinden, ob es dieses Problem hier ist:
+      // https://homebanking-hilfe.de/forum/topic.php?p=139423#real139423
+      // Siehe auch https://www.h2database.com/javadoc/org/h2/api/ErrorCode.html#c90131
+      Throwable t = e;
+      
+      for (int i=0;i<10;++i)
+      {
+        if (t instanceof SQLException)
+        {
+          SQLException se = (SQLException) t;
+          int code = se.getErrorCode();
+          if (code == 90131)
+          {
+            Logger.error("found buggy h2 driver, update jameica first",e);
+            
+            I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+            throw new ApplicationException(i18n.tr("Bitte aktualisiere erst Jameica auf Version 2.8.2 oder höher"));
+          }
+        }
+        t = t.getCause();
+      }
+    }
   }
 
   
