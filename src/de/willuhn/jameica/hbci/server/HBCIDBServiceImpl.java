@@ -180,6 +180,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       
       for (int i=0;i<10;++i)
       {
+        if (t == null)
+          break;
+        
         if (t instanceof SQLException)
         {
           SQLException se = (SQLException) t;
