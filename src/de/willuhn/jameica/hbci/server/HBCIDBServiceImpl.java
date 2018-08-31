@@ -197,6 +197,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
         }
         t = t.getCause();
       }
+
+      // Keine passende Exception gefunden. Dann Original weiterwerfen.
+      throw e;
     }
   }
 
