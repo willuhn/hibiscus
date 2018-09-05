@@ -199,8 +199,8 @@ public class KontoauszugPdfList extends TablePart
     }
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Kontoauszüge abrufen..."), new KontoAction(new KontoFetchKontoauszug(),this.getKontoAuswahl()),null,false,"mail-send-receive.png");
-    buttons.addButton(i18n.tr("Einstellungen"),new KontoAction(new KontoauszugPdfSettings(),this.getKontoAuswahl()),null,false,"document-properties.png");
+    buttons.addButton(i18n.tr("Kontoauszüge abrufen..."), new KontoAction(new KontoFetchKontoauszug()),null,false,"mail-send-receive.png");
+    buttons.addButton(i18n.tr("Einstellungen"),new KontoAction(new KontoauszugPdfSettings()),null,false,"document-properties.png");
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -461,6 +461,15 @@ public class KontoauszugPdfList extends TablePart
       return false;
     }
   }
+  
+  /**
+   * Oeffnet die Einstellungen.
+   * @throws ApplicationException
+   */
+  public void handleSettings() throws ApplicationException
+  {
+    new KontoAction(new KontoauszugPdfSettings()).handleAction(null);
+  }
 
   /**
    * Uebernimmt automatisch das ausgewaehlte Konto in die Action.
@@ -468,16 +477,14 @@ public class KontoauszugPdfList extends TablePart
   private class KontoAction implements Action
   {
     private Action redirect = null;
-    private KontoInput input = null;
     
     /**
      * ct.
      * @param redirect
      */
-    private KontoAction(Action redirect, KontoInput input)
+    private KontoAction(Action redirect)
     {
       this.redirect = redirect;
-      this.input = input;
     }
     
     /**
@@ -491,7 +498,7 @@ public class KontoauszugPdfList extends TablePart
       Konto k = null;
       try
       {
-        Object o = input.getValue();
+        Object o = getKontoAuswahl().getValue();
         if (o != null && (o instanceof Konto))
           k = (Konto) o;
       }
