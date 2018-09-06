@@ -269,11 +269,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       group.addInput(i7);
     }
 
-    if (!offline || syncAvail)
+    if (camt != null && (!offline || syncAvail))
     {
       group.addHeadline(i18n.tr("Erweiterte Einstellungen: FinTS"));
-      if (camt != null)
-        group.addInput(camt);
+      group.addInput(camt);
     }
 
     if (this.properties.size() > 0)
