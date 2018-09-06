@@ -33,12 +33,14 @@ import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -61,9 +63,10 @@ import de.willuhn.util.I18N;
  */
 public class EmpfaengerList extends TablePart implements Part
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   private Addressbook book       = null;
   private TextInput search       = null;
-  private I18N i18n              = null;
   private KeyAdapter listener    = null;
   private AddressFilter filter   = null;
 
@@ -93,8 +96,6 @@ public class EmpfaengerList extends TablePart implements Part
     super(action);
     
     this.filter = filter;
-    
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.listener = new DelayedAdapter();
 
     addColumn(i18n.tr("Name"),"name");
@@ -232,6 +233,9 @@ public class EmpfaengerList extends TablePart implements Part
     tab.addLabelPair(i18n.tr("Suchbegriff"), this.search);
     this.search.getControl().addKeyListener(this.listener);
 
+    ButtonArea buttons = new ButtonArea();
+    buttons.addButton(i18n.tr("Neue Adresse"),new EmpfaengerNew(),null,true,"contact-new.png");
+    buttons.paint(parent);
     
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
     parent.addDisposeListener(new DisposeListener() {

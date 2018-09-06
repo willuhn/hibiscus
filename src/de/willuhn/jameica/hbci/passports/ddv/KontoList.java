@@ -38,7 +38,8 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
    */
   public KontoList(DDVConfig config) throws RemoteException
   {
-    super(PseudoIterator.fromArray(new Konto[0]),new KontoNew());
+    super(null,new KontoNew());
+    this.setShowFilter(false);
     this.setCheckable(true);
     this.setSummary(false);
     this.myConfig = config;

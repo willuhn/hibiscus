@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
-import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
@@ -35,6 +34,7 @@ import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.parts.table.Feature;
 import de.willuhn.jameica.gui.parts.table.Feature.Context;
 import de.willuhn.jameica.gui.parts.table.Feature.Event;
+import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
 import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
@@ -60,7 +60,6 @@ public class UmsatzTree extends TreePart
   private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
-  private boolean summary = false;
   
   /**
    * ct.
@@ -70,24 +69,8 @@ public class UmsatzTree extends TreePart
   public UmsatzTree(GenericIterator list) throws RemoteException
   {
     super(list, new UmsatzDetail());
-    
-    try
-    {
-      BeanUtil.invoke(this,"addFeature",new Object[]{"de.willuhn.jameica.gui.parts.table.FeatureShortcut"});
-    }
-    catch (Exception e)
-    {
-      Logger.warn("Shortcut feature not available in this jameica version");
-    }
-    try
-    {
-      BeanUtil.invoke(this,"addFeature",new Object[]{"de.willuhn.jameica.gui.parts.table.FeatureSummary"});
-      this.summary = true;
-    }
-    catch (Exception e)
-    {
-      Logger.warn("Summary feature not available in this jameica version");
-    }
+    this.addFeature(new FeatureShortcut());
+    this.addFeature(new FeatureSummary());
     
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
@@ -165,16 +148,13 @@ public class UmsatzTree extends TreePart
 
     this.setContextMenu(new UmsatzList());
     
-    if (this.summary)
-    {
-      this.addSelectionListener(new Listener() {
-        @Override
-        public void handleEvent(org.eclipse.swt.widgets.Event event)
-        {
-          featureEvent(Feature.Event.REFRESH,null);
-        }
-      });
-    }
+    this.addSelectionListener(new Listener() {
+      @Override
+      public void handleEvent(org.eclipse.swt.widgets.Event event)
+      {
+        featureEvent(Feature.Event.REFRESH,null);
+      }
+    });
   }
 
   

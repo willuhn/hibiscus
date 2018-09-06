@@ -67,7 +67,7 @@ public class Konten extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    KontoList l = new KontoList(new KontoNew());
+    KontoList l = new KontoList(null,new KontoNew());
     l.paint(parent);
   }
 
@@ -80,37 +80,3 @@ public class Konten extends AbstractBox implements Box
   }
 
 }
-
-
-/*********************************************************************
- * $Log: Konten.java,v $
- * Revision 1.9  2010/08/12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- *
- * Revision 1.8  2010-07-29 21:43:22  willuhn
- * @N BUGZILLA 886
- *
- * Revision 1.7  2010/06/17 12:16:52  willuhn
- * @N BUGZILLA 530
- *
- * Revision 1.6  2008/01/04 16:39:31  willuhn
- * @N Weitere Hoehen-Angaben von Komponenten
- *
- * Revision 1.5  2007/12/18 17:10:22  willuhn
- * @N Neues ExpandPart
- * @N Boxen auf der Startseite koennen jetzt zusammengeklappt werden
- *
- * Revision 1.4  2007/08/29 10:04:42  willuhn
- * @N Bug 476
- *
- * Revision 1.3  2006/06/29 23:10:33  willuhn
- * @R Box-System aus Hibiscus in Jameica-Source verschoben
- * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
- *
- * Revision 1.2  2006/03/27 21:34:16  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2006/03/20 00:35:54  willuhn
- * @N new box "Konten-Übersicht"
- *
- **********************************************************************/

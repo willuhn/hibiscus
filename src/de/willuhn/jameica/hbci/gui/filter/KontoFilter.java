@@ -12,6 +12,8 @@ package de.willuhn.jameica.hbci.gui.filter;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
@@ -150,7 +152,70 @@ public abstract class KontoFilter implements Filter<Konto>
       SynchronizeEngine engine = service.get(SynchronizeEngine.class);
       return engine.supports(SynchronizeJobKontoauszug.class,konto);
     }
-  }; 
+  };
+  
+  /**
+   * Liefert einen Kontofilter zur Suche nach Konten mit bestimmten Kriterien.
+   * @param text Suchbegriff.
+   * @param ignoreFlags optionale Flags. Kann NULL bleiben, wenn keine Flags als Filter dienen sollen. Konten mit diesen Flags werden ignoriert.
+   * @param accountType optionale Angabe der Kontoart.
+   * @return der Kontofilter.
+   */
+  public final static KontoFilter SEARCH(final String text, final Integer ignoreFlags, final Integer accountType)
+  {
+    return new KontoFilter() {
+      @Override
+      public boolean accept(Konto konto) throws RemoteException
+      {
+        if (konto == null)
+          return false;
+        
+        if (ignoreFlags != null)
+        {
+          int f = ignoreFlags.intValue();
+          
+          for (int flag:new int[]{Konto.FLAG_DISABLED,Konto.FLAG_OFFLINE})
+          {
+            // Ist das Flag in der Suche enthalten?
+            if ((f & flag) == flag)
+            {
+              // Dann darf es im Konto nicht enthalten sein
+              if (konto.hasFlag(flag))
+                return false;
+            }
+          }
+        }
+
+        if (accountType != null && (konto.getAccountType() == null || !konto.getAccountType().equals(accountType)))
+          return false;
+
+        String s = StringUtils.trimToNull(text);
+        if (s == null)
+          return true;
+        s = s.toLowerCase();
+        
+        String s1 = StringUtils.trimToEmpty(konto.getBezeichnung()).toLowerCase();
+        String s2 = StringUtils.trimToEmpty(konto.getBic()).toLowerCase();
+        String s3 = StringUtils.trimToEmpty(konto.getBLZ()).toLowerCase();
+        String s4 = StringUtils.trimToEmpty(konto.getIban()).toLowerCase();
+        String s5 = StringUtils.trimToEmpty(konto.getKategorie()).toLowerCase();
+        String s6 = StringUtils.trimToEmpty(konto.getKommentar()).toLowerCase();
+        String s7 = StringUtils.trimToEmpty(konto.getKontonummer()).toLowerCase();
+        String s8 = StringUtils.trimToEmpty(konto.getKundennummer()).toLowerCase();
+        String s9 = StringUtils.trimToEmpty(konto.getName()).toLowerCase();
+        
+        return s1.contains(s) ||
+               s2.contains(s) ||
+               s3.contains(s) ||
+               s4.contains(s) ||
+               s5.contains(s) ||
+               s6.contains(s) ||
+               s7.contains(s) ||
+               s8.contains(s) ||
+               s9.contains(s);
+      }
+    };
+  }
   
   /**
    * Erzeugt einen Konto-Filter basierend auf {@link KontoFilter#FOREIGN}, welcher jedoch nur jene Konten

@@ -14,39 +14,61 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TableItem;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.Feature;
+import de.willuhn.jameica.gui.parts.table.Feature.Context;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
+import de.willuhn.jameica.hbci.gui.action.KontoNew;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.KontoartInput;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -55,29 +77,27 @@ import de.willuhn.util.I18N;
 public class KontoList extends TablePart implements Part
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
-  // BUGZILLA 476
+  private TextInput search = null;
+  private CheckboxInput onlyActive = null;
+  private SelectInput accountType = null;
+  
   private MessageConsumer mc = null;
-  private boolean haveAvailable = false;
-
-
-  /**
-   * @param action
-   * @throws RemoteException
-   */
-  public KontoList(Action action) throws RemoteException
-  {
-    this(init(), action);
-  }
+  private boolean showFilter = true;
+  
+  private Listener listener = new MyListener();
+  private KeyListener delayed = new MyDelayedListener();
 
   /**
    * ct.
    * @param konten
    * @param action
    */
-  public KontoList(GenericIterator konten, Action action)
+  public KontoList(List<Konto> konten, Action action)
   {
     super(konten,action);
+    this.addFeature(new FeatureSummary());
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer",null,false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
@@ -122,7 +142,7 @@ public class KontoList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("Saldo"),"saldo",null,false,Column.ALIGN_RIGHT);
-    addSaldoAvailable(konten);
+    addColumn(i18n.tr("Verfügbar"),"saldo_available",null,false,Column.ALIGN_RIGHT);
     // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
     addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
     setFormatter(new TableFormatter()
@@ -138,16 +158,13 @@ public class KontoList extends TablePart implements Part
           else
             item.setText(saldocolumn,HBCI.DECIMALFORMAT.format(saldo) + " " + k.getWaehrung());
           
-          if (haveAvailable)
-          {
-            double avail = k.getSaldoAvailable();
-            if ((avail == 0 && k.getSaldoDatum() == null) || Double.isNaN(avail))
-              item.setText(saldocolumn+1,"");
-            else
-              item.setText(saldocolumn+1,HBCI.DECIMALFORMAT.format(avail) + " " + k.getWaehrung());
-            
-            item.setForeground(saldocolumn+1,ColorUtil.getForeground(k.getSaldoAvailable()));
-          }
+          double avail = k.getSaldoAvailable();
+          if ((avail == 0 && k.getSaldoDatum() == null) || Double.isNaN(avail))
+            item.setText(saldocolumn+1,"");
+          else
+            item.setText(saldocolumn+1,HBCI.DECIMALFORMAT.format(avail) + " " + k.getWaehrung());
+          
+          item.setForeground(saldocolumn+1,ColorUtil.getForeground(k.getSaldoAvailable()));
 
           // Checken, ob Konto deaktiviert ist
           int flags = k.getFlags();
@@ -190,51 +207,18 @@ public class KontoList extends TablePart implements Part
     {
       public void handleEvent(Event event)
       {
-        refreshSummary();
+        featureEvent(Feature.Event.REFRESH,null);
       }
     });
   }
-
+  
   /**
-   * Fuegt die Spalte "verfuegbarer Betrag" hinzu, wenn wenigstens ein Konto
-   * aus der Liste einen solchen besitzt.
-   * @param konten Liste der zu checkenden Konten.
+   * Legt fest, ob die Filtermoeglichkeiten angezeigt werden sollen.
+   * @param b true, wenn die Filtermoeglichkeiten angezeigt werden sollen.
    */
-  private void addSaldoAvailable(GenericIterator konten)
+  public void setShowFilter(boolean b)
   {
-    try
-    {
-      while (konten.hasNext())
-      {
-        Konto k = (Konto) konten.next();
-        if ((k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
-          continue; // ignorieren
-        double d = k.getSaldoAvailable();
-        if (!Double.isNaN(d))
-        {
-          // Wir haben tatsaechlich eines, wo was drin steht
-          Column col = new Column("saldo_available",i18n.tr("Verfügbar"),null,false,Column.ALIGN_RIGHT);
-          addColumn(col);
-          this.haveAvailable = true;
-          return;
-        }
-      }
-    }
-    catch (RemoteException re)
-    {
-      Logger.error("unable to check if at least one account has an available value",re);
-    }
-    finally
-    {
-      try
-      {
-        konten.begin();
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to reset iterator",e);
-      }
-    }
+    this.showFilter = b;
   }
 
   /**
@@ -242,6 +226,42 @@ public class KontoList extends TablePart implements Part
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
+    if (this.showFilter)
+    {
+      // Daten initial laden
+      reload();
+
+      final TabFolder folder = new TabFolder(parent, SWT.NONE);
+      folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
+
+      ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
+      
+      {
+        Container c = new SimpleContainer(cols.getComposite());
+        TextInput search = this.getText();
+        c.addInput(search);
+        search.getControl().addKeyListener(this.delayed);
+        
+        c.addInput(this.getActiveOnly());
+      }
+      
+      {
+        Container c = new SimpleContainer(cols.getComposite());
+        c.addInput(this.getAccountType());
+      }
+      
+      ButtonArea buttons = new ButtonArea();
+      buttons.addButton(i18n.tr("Konten über den Bank-Zugang importieren..."), new Action() {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          new KontoFetchFromPassport().handleAction(getSelection());
+        }
+      },null,false,"mail-send-receive.png");
+      buttons.addButton(i18n.tr("Konto manuell anlegen"),new KontoNew(),null,false,"list-add.png");
+      buttons.paint(parent);
+    }
+
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
@@ -250,23 +270,123 @@ public class KontoList extends TablePart implements Part
     });
     super.paint(parent);
   }
-
+  
   /**
-   * Initialisiert die Konten-Liste.
-   * @return Liste der Konten.
-   * @throws RemoteException
+   * Liefert das Eingabefeld mit dem Suchbegriff.
+   * @return das Eingabefeld mit dem Suchbegriff.
    */
-  private static DBIterator init() throws RemoteException
+  private TextInput getText()
   {
-    DBIterator i = Settings.getDBService().createList(Konto.class);
-    i.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
-    return i;
+    if (this.search != null)
+      return this.search;
+    
+    this.search = new TextInput(settings.getString("kontolist.filter.text",null),255);
+    this.search.setName(i18n.tr("Suchbegriff"));
+    return this.search;
+  }
+  
+  /**
+   * Liefert die Checkbox, mit der eingestellt werden kann, ob nur aktive Konten angezeigt werden sollen.
+   * @return Checkbox.
+   */
+  private CheckboxInput getActiveOnly()
+  {
+    if (this.onlyActive != null)
+      return this.onlyActive;
+    
+    this.onlyActive = new CheckboxInput(settings.getBoolean("kontolist.filter.active",false));
+    this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
+    this.onlyActive.addListener(this.listener);
+    return this.onlyActive;
+  }
+  
+  /**
+   * Liefert eine Auswahlbox mit der Kontoart.
+   * @return eine Auswahlbox mit der Kontoart.
+   */
+  private SelectInput getAccountType()
+  {
+    if (this.accountType != null)
+      return this.accountType;
+    
+    this.accountType = new KontoartInput(settings.getInt("kontolist.filter.type",-1));
+    this.accountType.addListener(this.listener);
+    return this.accountType;
   }
 
   /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
+   * Laedt die Liste der Konten neu.
    */
-  protected String getSummary()
+  private void reload()
+  {
+    GUI.startSync(new Runnable() {
+      
+      @Override
+      public void run()
+      {
+        try
+        {
+          removeAll();
+
+          // Liste neu laden
+          List<Konto> konten = getList();
+          if (konten == null)
+            return;
+
+          for (Konto k:konten)
+            addItem(k);
+          
+          // Sortierung wiederherstellen
+          sort();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while reloading table",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    });
+  }
+  
+  /**
+   * Liefert die Liste der gefundenen Konten.
+   * @return die Liste der Konten.
+   * @throws RemoteException
+   */
+  private List<Konto> getList() throws RemoteException
+  {
+    final String text = (String) this.getText().getValue();
+    final boolean activeOnly = ((Boolean)this.getActiveOnly().getValue()).booleanValue();
+    final Integer type = (Integer) getAccountType().getValue();
+    
+    Integer flags = activeOnly ? Konto.FLAG_DISABLED : null;
+    List<Konto> list = KontoUtil.getKonten(KontoFilter.SEARCH(text,flags,type));
+
+    // Speichern der Werte aus den Filter-Feldern.
+    settings.setAttribute("kontolist.filter.text",text);
+    settings.setAttribute("kontolist.filter.active",activeOnly);
+    settings.setAttribute("kontolist.filter.type",type != null ? type.intValue() : -1);
+    
+    return list;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.parts.TablePart#createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event, java.lang.Object)
+   */
+  @Override
+  protected Context createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event e, Object data)
+  {
+    Context ctx = super.createFeatureEventContext(e, data);
+    if (this.hasEvent(FeatureSummary.class,e))
+      ctx.addon.put(FeatureSummary.CTX_KEY_TEXT,this.getSummaryText());
+    return ctx;
+  }
+  
+  /**
+   * Liefert die Summenzeile.
+   * @return die Summenzeile.
+   */
+  private String getSummaryText()
   {
     try
     {
@@ -291,14 +411,15 @@ public class KontoList extends TablePart implements Part
 
       if (selected)
         return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}",new String[]{Integer.toString(items.size()),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
-
+      
       return i18n.tr("Gesamt-Saldo: {0} {1}",new String[]{HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
     }
-    catch (Exception e)
+    catch (Exception ex)
     {
-      Logger.error("error while updating summary",e);
+      Logger.error("error while updating summary",ex);
     }
-    return super.getSummary();
+    
+    return null;
   }
 
   /**
@@ -356,7 +477,7 @@ public class KontoList extends TablePart implements Part
              select(o);
 
            // Summen-Zeile aktualisieren
-           refreshSummary();
+           featureEvent(Feature.Event.REFRESH,null);
           }
           catch (Exception e)
           {
@@ -372,6 +493,37 @@ public class KontoList extends TablePart implements Part
     public boolean autoRegister()
     {
       return false;
+    }
+  }
+  
+  /**
+   * Listener zum Neuladen der Daten.
+   */
+  private class MyListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    @Override
+    public void handleEvent(Event event)
+    {
+      reload();
+    }
+  }
+  
+  /**
+   * Listener fuer das verzoegerte Reload.
+   */
+  private class MyDelayedListener extends KeyAdapter
+  {
+    private Listener forward = new DelayedListener(700,listener);
+
+    /**
+     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+     */
+    public void keyReleased(KeyEvent e)
+    {
+      forward.handleEvent(null);
     }
   }
 }
