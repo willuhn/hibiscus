@@ -37,6 +37,7 @@ import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.MessagingAvailableConsumer;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.messaging.ObjectDeletedMessage;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
@@ -598,6 +599,7 @@ public class KontoauszugPdfUtil
         Konto konto = k.getKonto();
         konto.addToProtokoll(i18n.tr("Elektronischen Kontoauszug gelöscht"),Protokoll.TYP_SUCCESS);
         k.delete();
+        Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(k));
         count++;
       }
       
