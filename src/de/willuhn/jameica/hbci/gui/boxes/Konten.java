@@ -68,6 +68,7 @@ public class Konten extends AbstractBox implements Box
   public void paint(Composite parent) throws RemoteException
   {
     KontoList l = new KontoList(null,new KontoNew());
+    l.setShowFilter(false);
     l.paint(parent);
   }
 

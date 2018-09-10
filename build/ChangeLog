@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0693 Nachtrag zu Bugzilla 1864 - Kontofilter in der Liste der Konten auf der Startseite ausblenden, dort ist der Platz dafuer zu knapp
   * NEW: 0692 BUGZILLA 1864 - Filterkriterien in der Liste der Konten (u.a. deaktivierte Konten ausblenden)
   * NEW: 0691 Suchbegriff "flicker" in die Liste der TAN-Verfahren aufgenommen, für die chipTAN USB in Frage kommt
   * NEW: 0690 Sonderbehandlung fuer Fehlerfall https://homebanking-hilfe.de/forum/topic.php?p=139423#real139423 (Fehler beim Update der H2-Datenbank durch fehlerhaften H2-Treiber)
