@@ -194,6 +194,7 @@ CREATE TABLE umsatz (
   addkey varchar(3) NULL,
   txid varchar(100),
   purposecode varchar(10),
+  endtoendid varchar(100),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -445,6 +446,6 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',63);
+INSERT INTO version (name,version) values ('db',64);
   
 COMMIT;

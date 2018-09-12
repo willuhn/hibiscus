@@ -801,4 +801,22 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     this.setAttribute("purposecode",code);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEndToEndId()
+   */
+  @Override
+  public String getEndToEndId() throws RemoteException
+  {
+    return (String) this.getAttribute("endtoendid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEndToEndId(java.lang.String)
+   */
+  @Override
+  public void setEndToEndId(String id) throws RemoteException
+  {
+    this.setAttribute("endtoendid",id);
+  }
 }

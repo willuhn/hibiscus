@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0695 Support für dedizierte EndToEnd-ID in Umsätzen
   * BUG: 0694 NPE beim Parsen von CAMT-Dateien - https://github.com/hbci4j/hbci4java/commit/b2b607ad8b72012978badab5f8cc39a8f8dfccaa
   * CHG: 0693 Nachtrag zu Bugzilla 1864 - Kontofilter in der Liste der Konten auf der Startseite ausblenden, dort ist der Platz dafuer zu knapp
   * NEW: 0692 BUGZILLA 1864 - Filterkriterien in der Liste der Konten (u.a. deaktivierte Konten ausblenden)

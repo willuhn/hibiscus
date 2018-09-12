@@ -173,7 +173,8 @@ CREATE TABLE umsatz (
   gvcode varchar(3) NULL,
   addkey varchar(3) NULL,
   txid varchar(100),
-  purposecode varchar(10)
+  purposecode varchar(10),
+  endtoendid varchar(100)
 );
 
 CREATE TABLE umsatztyp (

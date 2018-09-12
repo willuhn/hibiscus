@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -79,8 +80,8 @@ public abstract class AbstractUmsatzDetail extends AbstractView
     right.addHeadline(i18n.tr("Sonstige Informationen"));
     right.addLabelPair(i18n.tr("Art der Buchung"),              control.getArt());
     right.addLabelPair(i18n.tr("Kundenreferenz"),               control.getCustomerRef());
-    right.addLabelPair(i18n.tr("Primanota-Kennzeichen"),        control.getPrimanota());
-    right.addLabelPair(i18n.tr("Geschäftsvorfall-Code"),        control.getGvCode());
+    right.addInput(control.getEndToEndId());
+    right.addLabelPair(i18n.tr("Primanota/GV-Code"),new MultiInput(control.getPrimanota(),control.getGvCode()));
 
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());

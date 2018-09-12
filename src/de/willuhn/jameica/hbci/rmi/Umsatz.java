@@ -223,4 +223,20 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    */
   public void setPurposeCode(String code) throws RemoteException;
 
+  
+  /**
+   * Liefert die EndToEnd-ID der Buchung.
+   * Nur bei Umsaetzen vorhanden, die per CAMT abgerufen wurden.
+   * @return der EndToEnd-ID der Buchung.
+   * @throws RemoteException
+   */
+  public String getEndToEndId() throws RemoteException;
+  
+  /**
+   * Speichern die EndToEnd-ID der Buchung.
+   * @param id die EndToEnd-ID der Buchung.
+   * @throws RemoteException
+   */
+  public void setEndToEndId(String id) throws RemoteException;
+
 }

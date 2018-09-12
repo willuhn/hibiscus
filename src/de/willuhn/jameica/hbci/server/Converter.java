@@ -63,6 +63,7 @@ public class Converter
     umsatz.setPrimanota(clean(u.primanota));
     umsatz.setTransactionId(u.id);
     umsatz.setPurposeCode(u.purposecode);
+    umsatz.setEndToEndId(u.endToEndId);
 
     //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
     Saldo s = u.saldo;
@@ -133,6 +134,12 @@ public class Converter
       // Siehe Mail von Frank vom 06.02.2014
       lines = VerwendungszweckUtil.rewrap(HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH,lines);
       VerwendungszweckUtil.apply(umsatz,lines);
+      
+      // Wir checken mal, ob wir eine EndToEnd-ID haben. Falls ja, tragen wir die gleich
+      // in das dedizierte Feld ein
+      final String eref = clean(VerwendungszweckUtil.getTag(umsatz,Tag.EREF));
+      if (eref != null && eref.length() > 0)
+        umsatz.setEndToEndId(eref);
     }
     //
     ////////////////////////////////////////////////////////////////////////////
