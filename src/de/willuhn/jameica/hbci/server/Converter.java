@@ -9,18 +9,20 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server;
 
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
-import org.kapott.hbci.swift.DTAUS;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -29,10 +31,6 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
-import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
-import de.willuhn.jameica.hbci.rmi.SammelTransfer;
-import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
-import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
@@ -46,7 +44,6 @@ import de.willuhn.util.ApplicationException;
 public class Converter
 {
   private final static double KURS_EUR = 1.95583;
-
 
   /**
    * Konvertiert einen einzelnen Umsatz von HBCI4Java nach Hibiscus.
@@ -208,6 +205,56 @@ public class Converter
     //
     ////////////////////////////////////////////////////////////////////////////
     return umsatz;
+  }
+
+  /**
+   * Konvertiert einen einzelnen Umsatz von Hibiscus nach HBCI4Java.
+   * @param u der zu convertierende Umsatz.
+   * @return das neu erzeugte Umsatz-Objekt.
+   * @throws RemoteException
+   */
+  public static UmsLine HibiscusUmsatz2HBCIUmsatz(Umsatz u) throws RemoteException
+  {
+    final UmsLine line = new UmsLine();
+    
+    final de.willuhn.jameica.hbci.rmi.Konto k = u.getKonto();
+    
+    final String iban = u.getGegenkontoNummer();
+    final String bic  = u.getGegenkontoBLZ();
+    final boolean isSepa = iban != null && iban.length() > HBCIProperties.HBCI_KTO_MAXLENGTH_HARD;
+    final Konto other = new Konto();
+    other.name = u.getGegenkontoName();
+    if (isSepa)
+    {
+      other.iban = iban;
+      other.bic = bic;
+    }
+    else
+    {
+      other.number = iban;
+      other.blz = bic;
+    }
+    
+    line.addkey = u.getAddKey();
+    line.bdate = u.getDatum();
+    line.customerref = u.getCustomerRef();
+    line.gvcode = u.getGvCode();
+    line.id = u.getTransactionId();
+    line.isCamt = line.id != null && line.id.length() > 0;
+    line.isSepa = isSepa;
+    line.isStorno = false;
+    line.other = other;
+    line.primanota = u.getPrimanota();
+    line.purposecode = u.getPurposeCode();
+    line.saldo = new Saldo();
+    line.saldo.timestamp = u.getDatum();
+    line.saldo.value = new Value(new BigDecimal(u.getSaldo()),k.getWaehrung());
+    line.text = u.getArt();
+    line.usage = Arrays.asList(VerwendungszweckUtil.toArray(u));
+    line.value = new Value(new BigDecimal(u.getBetrag()),k.getWaehrung());
+    line.valuta = u.getValuta();
+    
+    return line;
   }
 
   /**
@@ -446,73 +493,6 @@ public class Converter
       name = name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
     e.setName(name);
     return e;  	
-  }
-
-  /**
-   * Konvertiert eine Sammel-Ueberweisung in DTAUS-Format.
-   * @param su Sammel-Ueberweisung.
-   * @return DTAUS-Repraesentation.
-   * @throws RemoteException
-   */
-  public static DTAUS HibiscusSammelUeberweisung2DTAUS(SammelUeberweisung su) throws RemoteException
-  {
-    // TYPE_CREDIT = Sammelüberweisung
-    // TYPE_DEBIT = Sammellastschrift
-    return HibiscusSammelTransfer2DTAUS(su, DTAUS.TYPE_CREDIT);
-  }
-
-  /**
-   * Konvertiert eine Sammel-Lastschrift in DTAUS-Format.
-   * @param sl Sammel-Lastschrift.
-   * @return DTAUS-Repraesentation.
-   * @throws RemoteException
-   */
-  public static DTAUS HibiscusSammelLastschrift2DTAUS(SammelLastschrift sl) throws RemoteException
-  {
-    // TYPE_CREDIT = Sammelüberweisung
-    // TYPE_DEBIT = Sammellastschrift
-    return HibiscusSammelTransfer2DTAUS(sl, DTAUS.TYPE_DEBIT);
-  }
-
-  /**
-   * Hilfsfunktion. Ist private, damit niemand aus Versehen den falschen Type angibt.
-   * @param s Sammel-Transfer.
-   * @param type Art des Transfers.
-   * @see DTAUS#TYPE_CREDIT
-   * @see DTAUS#TYPE_DEBIT
-   * @return DTAUS-Repraesentation.
-   * @throws RemoteException
-   */
-  private static DTAUS HibiscusSammelTransfer2DTAUS(SammelTransfer s, int type) throws RemoteException
-  {
-
-    DTAUS dtaus = new DTAUS(HibiscusKonto2HBCIKonto(s.getKonto()),type);
-    DBIterator buchungen = s.getBuchungen();
-    SammelTransferBuchung b = null;
-    while (buchungen.hasNext())
-    {
-      b = (SammelTransferBuchung) buchungen.next();
-      final DTAUS.Transaction tr = dtaus.new Transaction();
-
-      Konto other = new Konto("DE",b.getGegenkontoBLZ(),b.getGegenkontoNummer());
-      other.name = b.getGegenkontoName();
-
-      tr.otherAccount = other;
-      tr.value = new Value(String.valueOf(b.getBetrag()));
-
-      String key = b.getTextSchluessel();
-      if (key != null && key.length() > 0)
-        tr.key = key; // Nur setzen, wenn in der Buchung definiert. Gibt sonst in DTAUS#toString eine NPE
-
-      String[] lines = VerwendungszweckUtil.toArray(b);
-      for (String line:lines)
-      {
-        tr.addUsage(line);
-      }
-
-      dtaus.addEntry(tr);
-    }
-    return dtaus;
   }
 
 }
