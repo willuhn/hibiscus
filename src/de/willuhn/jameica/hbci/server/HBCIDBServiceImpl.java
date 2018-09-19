@@ -199,7 +199,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       }
 
       // Keine passende Exception gefunden. Dann Original weiterwerfen.
-      throw e;
+      throw new ApplicationException(e);
     }
   }
 
