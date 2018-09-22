@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
+import de.willuhn.jameica.hbci.gui.input.ZweckInput;
 import de.willuhn.jameica.hbci.gui.parts.SepaLastschriftList;
 import de.willuhn.jameica.hbci.reminder.ReminderUtil;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -77,7 +78,7 @@ public class SepaLastschriftControl extends AbstractControl
   // Eingabe-Felder
   private KontoInput kontoAuswahl            = null;
   private Input betrag                       = null;
-  private TextInput zweck                    = null;
+  private ZweckInput zweck                   = null;
 
   private AddressInput empfName              = null;
   private TextInput empfkto                  = null;
@@ -392,7 +393,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (zweck != null)
       return zweck;
-    zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
+    zweck = new ZweckInput(getTransfer().getZweck());
     zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     zweck.setEnabled(!getTransfer().ausgefuehrt());
     return zweck;

@@ -40,6 +40,7 @@ import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.PurposeCodeInput;
+import de.willuhn.jameica.hbci.gui.input.ZweckInput;
 import de.willuhn.jameica.hbci.gui.parts.SepaDauerauftragList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -74,7 +75,7 @@ public class SepaDauerauftragControl extends AbstractControl
 	
   private KontoInput kontoAuswahl    = null;
   private DecimalInput betrag        = null;
-  private TextInput zweck            = null;
+  private ZweckInput zweck           = null;
   private AddressInput empfName      = null;
   private TextInput empfkto          = null;
   private TextInput bic              = null;
@@ -443,14 +444,13 @@ public class SepaDauerauftragControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public TextInput getZweck() throws RemoteException
+  public ZweckInput getZweck() throws RemoteException
   {
     if (zweck != null)
       return zweck;
     
     SepaDauerauftrag t = getTransfer();
-    zweck = new TextInput(getTransfer().getZweck(),HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
-    zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+    zweck = new ZweckInput(getTransfer().getZweck());
     zweck.setMandatory(true);
     if (t.isActive())
       zweck.setEnabled(getBPD().getBoolean("usageeditable",true));
