@@ -394,7 +394,6 @@ public class SepaLastschriftControl extends AbstractControl
     if (zweck != null)
       return zweck;
     zweck = new ZweckInput(getTransfer().getZweck());
-    zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     zweck.setEnabled(!getTransfer().ausgefuehrt());
     return zweck;
   }
