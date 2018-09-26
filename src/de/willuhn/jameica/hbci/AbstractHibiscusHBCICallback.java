@@ -46,7 +46,14 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
    */
   protected void updateUPD(HBCIPassport passport)
   {
-    BPDUtil.updateCache(passport,Prefix.UPD);
+    if (BPDUtil.updateCache(passport,Prefix.UPD))
+    {
+      // Wenn wir neue UPD haben, aktualisieren wir gleich auch nochmal die BPD
+      // Denn wenn wir die UPD haben, sind auch die Konten vorhanden. Und damit
+      // koennen wir die BPD ebenfalls korrekt fuer alle verfuegbaren Kundenkennungen speichern
+      BPDUtil.expireCache(passport,Prefix.BPD);
+      BPDUtil.updateCache(passport,Prefix.BPD);
+    }
   }
 
   /**
