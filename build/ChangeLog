@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+2018-09-26 Version 2.8.4
+
   * NEW: 0700 Beim Empfang neuer UPD gleich die BPD mit aktualisieren
   * NEW: 0699 Neue HBCI4Java-Version mit Server-Adressen für IsBank - https://github.com/hbci4j/hbci4java/commit/649179cd52cc57bc540ce224cc8ef6ebaf0a806e
   * NEW: 0698 Scrollbalken in Einstellungsdialog für elektr. Kontoauszug für kleine Displays anzeigen, Fenstergröße speichern
