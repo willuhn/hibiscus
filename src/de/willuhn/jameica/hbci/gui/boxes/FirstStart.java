@@ -137,7 +137,7 @@ public class FirstStart extends AbstractBox
     }
       
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Bank-Zugang einrichten"),new PassportDetail(),null,true,"user-info.png");
+    buttons.addButton(i18n.tr("Bank-Zugang einrichten"),new PassportDetail(),null,true,"system-users.png");
     buttons.addButton(i18n.tr("Konten-Übersicht"),new KontoList(),null,false,"wallet-open.png");
     buttons.paint(comp);
   }

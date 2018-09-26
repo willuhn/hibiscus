@@ -286,7 +286,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
       // Erst Ausgaben, dann Einnahmen, dann Rest
       int thisType  = this.typ.getTyp();
       int otherType = other.typ.getTyp();
-      if (thisType != otherType)
+      if (thisType != otherType && thisType != UmsatzTyp.TYP_EGAL && otherType != UmsatzTyp.TYP_EGAL)
         return thisType < otherType ? -1 : 1;
       
       String n1  = this.typ.getNummer();  if (n1  == null) n1  = "";

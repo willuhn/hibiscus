@@ -11,10 +11,13 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.parts.PanelButton;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.controller.KontoauszugPdfControl;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -34,8 +37,19 @@ public class KontoauszugPdfList extends AbstractView
     
     final KontoauszugPdfControl control = new KontoauszugPdfControl(this);
     final de.willuhn.jameica.hbci.gui.parts.KontoauszugPdfList list = control.getList();
+
     
     list.paint(getParent());
+    
+    PanelButton button = new PanelButton("document-properties.png",new Action() {
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        list.handleSettings();
+      }
+    },i18n.tr("Einstellungen"));
+    GUI.getView().addPanelButton(button);
+
   }
   
 }

@@ -70,6 +70,11 @@ public interface SynchronizeBackend
    * angezeigt werden sollen. Wird z.Bsp. vom ScriptingBackend verwendet, um dort
    * die Zugangsdaten zur Webseite hinterlegen zu koennen, ohne dafuer Kontonummer,
    * Benutzerkennung, usw. des Kontos "missbrauchen" zu muessen.
+   * Die vom Benutzer eingegebenen Werte werden als Meta-Daten zum Konto gespeichert.
+   * Sie koennen mittels {@link Konto#getMeta(String, String)} wieder abgerufen werden.
+   * Besitzt ein Property den Suffix "(true/false)" wird es als Checkbox angezeigt.
+   * Besitzt ein Property den Suffix "(pwd)" oder "(password)" wird es als Passwort-Eingabe angezeigt.
+   * Der Suffix wird vor dem Speichern des Property in den Meta-Daten des Konto entfernt.
    * @param k das Konto.
    * @return Liste von lesbaren Property-Namen. Die werden dem Benutzer 1:1 als
    * Label von Eingabefeldern angezeigt.

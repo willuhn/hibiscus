@@ -18,7 +18,8 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.SepaUtil;
 import org.kapott.hbci.GV.parsers.ISEPAParser;
-import org.kapott.hbci.sepa.PainVersion;
+import org.kapott.hbci.sepa.SepaVersion;
+import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -76,9 +77,9 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
    * @see de.willuhn.jameica.hbci.io.AbstractSepaImporter#getSupportedPainType()
    */
   @Override
-  PainVersion.Type getSupportedPainType()
+  Type getSupportedPainType()
   {
-    return PainVersion.Type.PAIN_001;
+    return SepaVersion.Type.PAIN_001;
   }
 
 }

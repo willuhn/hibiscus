@@ -29,7 +29,7 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
 import de.willuhn.jameica.hbci.gui.controller.EinnahmeAusgabeControl;
-import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
+import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -61,6 +61,7 @@ public class EinnahmenAusgaben extends AbstractView
       
       Container left = new SimpleContainer(cols.getComposite());
       left.addInput(control.getKontoAuswahl());
+      left.addInput(control.getInterval());
       
       Container right = new SimpleContainer(cols.getComposite());
         
@@ -77,8 +78,8 @@ public class EinnahmenAusgaben extends AbstractView
       {
         try
         {
-          List data = control.getTable().getItems();
-          new EinnahmeAusgabeExport().handleAction(data.toArray(new EinnahmeAusgabe[data.size()]));
+          List data = control.getTree().getItems();
+          new EinnahmeAusgabeExport().handleAction(data.toArray(new EinnahmeAusgabeZeitraum[data.size()]));
         }
         catch (RemoteException re)
         {
@@ -100,6 +101,6 @@ public class EinnahmenAusgaben extends AbstractView
     },null,true,"view-refresh.png");
     buttons.paint(getParent());
     
-    control.getTable().paint(this.getParent());
+    control.getTree().paint(this.getParent());
   }
 }

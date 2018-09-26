@@ -41,10 +41,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
-import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
-import de.willuhn.jameica.hbci.gui.dialogs.PassportAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -672,7 +670,7 @@ public class KontoControl extends AbstractControl
 		if (kontoList != null)
 			return kontoList;
 
-    kontoList = new de.willuhn.jameica.hbci.gui.parts.KontoList(new KontoNew());
+    kontoList = new de.willuhn.jameica.hbci.gui.parts.KontoList(null,new KontoNew());
     // BUGZILLA 81 http://www.willuhn.de/bugzilla/show_bug.cgi?id=81
     kontoList.addColumn(i18n.tr("Umsätze"),"numumsaetze");
 		return kontoList;
@@ -827,40 +825,6 @@ public class KontoControl extends AbstractControl
     else if (!offline && have)
       getKonto().setFlags(flags ^ Konto.FLAG_OFFLINE);
   }
-
-	/**
-   * Liest alle ueber das Sicherheitsmedium verfuegbaren Konten
-   * aus und speichert sie (insofern Konten mit identischer kto-Nummer/BLZ nicht schon existieren).
-   */
-  public synchronized void handleReadFromPassport()
-	{
-
-		try 
-		{
-		  // Checken, ob wir ein Konto ausgewaehlt haben
-		  Object selection = getKontoListe().getSelection();
-		  Konto k = null;
-		  if (selection != null && (selection instanceof Konto))
-		    k = (Konto) selection;
-      PassportAuswahlDialog d = new PassportAuswahlDialog(k,PassportAuswahlDialog.POSITION_CENTER);
-      Passport p = (Passport) d.open();
-
-      new KontoFetchFromPassport().handleAction(p);
-		}
-    catch (OperationCanceledException oce)
-    {
-      Logger.info("operation cancelled");
-    }
-		catch (ApplicationException ae)
-		{
-			GUI.getStatusBar().setErrorText(ae.getMessage());
-		}
-		catch (Exception e)
-		{
-			Logger.error("error while reading passport from select box",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Auslesen der Konto-Informationen"));
-		}
-	}
 
   /**
    * Laedt die Tabelle mit den Umsaetzen neu.

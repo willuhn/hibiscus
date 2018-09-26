@@ -164,7 +164,16 @@ public class VerwendungszweckUtil
       return null;
     }
       
-    return result.get(tag);
+    // Sonderrolle SVWZ.
+    // Es kann sein, dass der Verwendungszweck so aussieht:
+    // "EREF+1234 MREF+1234 SVWZ+"
+    // Sprich: Das Tag ist zwar da, aber leer. Macht die "S-Bahn Berlin GmbH".
+    // In dem Fall liefern wir ebenfalls den kompletten Text
+    String value = result.get(tag);
+    if (tag == Tag.SVWZ && StringUtils.trimToNull(value) == null)
+      return toString(t);
+    
+    return value;
   }
 
   /**

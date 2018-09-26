@@ -69,7 +69,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
    */
   public String getName()
   {
-    return "HBCI";
+    return "FinTS/HBCI";
   }
 
   /**

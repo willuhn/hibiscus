@@ -286,7 +286,7 @@ CREATE TABLE umsatz (
      , empfaenger_blz VARCHAR(15)
      , empfaenger_name VARCHAR(255)
      , betrag DOUBLE NOT NULL
-     , zweck VARCHAR(35)
+     , zweck VARCHAR(255)
      , zweck2 VARCHAR(35)
      , zweck3 TEXT
      , datum DATE NOT NULL
@@ -301,6 +301,9 @@ CREATE TABLE umsatz (
      , flags int(1)
      , gvcode varchar(3)
      , addkey varchar(3)
+     , txid varchar(100)
+     , purposecode varchar(10)
+     , endtoendid varchar(100)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -470,4 +473,4 @@ ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
-INSERT INTO version (name,version) values ('db',62);
+INSERT INTO version (name,version) values ('db',64);

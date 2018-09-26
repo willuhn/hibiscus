@@ -73,7 +73,19 @@ public class PassportTree extends TreePart
       {
         Object data = item.getData();
         if (data instanceof ConfigObject)
-          item.setImage(SWTUtil.getImage("user-info.png"));
+        {
+          ConfigObject o = (ConfigObject) data;
+          Passport p = o.passport;
+          String icon = "system-users.png";
+          if (p instanceof de.willuhn.jameica.hbci.passports.pintan.rmi.Passport)
+            icon = "hbci-pintan.png";
+          else if (p instanceof de.willuhn.jameica.hbci.passports.rdh.rmi.Passport)
+            icon = "dialog-password.png";
+          else if (p instanceof de.willuhn.jameica.hbci.passports.ddv.rmi.Passport)
+            icon = "gcr-smart-card.png";
+          
+          item.setImage(SWTUtil.getImage(icon));
+        }
       }
     });
     this.setMulti(false);

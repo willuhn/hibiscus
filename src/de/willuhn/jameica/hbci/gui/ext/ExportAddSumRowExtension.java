@@ -53,11 +53,11 @@ public class ExportAddSumRowExtension implements Extension
     Class type = e.getType();
     if (!type.isAssignableFrom(Umsatz.class))
       return;
+
+    boolean initial = ExportDialog.SETTINGS.getBoolean(KEY_SUMROW_ADD,false);
+    Exporter.SESSION.put(KEY_SUMROW_ADD,initial);
     
-    // Erstmal per Default nicht ausblenden
-    Exporter.SESSION.put(KEY_SUMROW_ADD,false);
-    
-    final CheckboxInput check = new CheckboxInput(ExportDialog.SETTINGS.getBoolean(KEY_SUMROW_ADD,false));
+    final CheckboxInput check = new CheckboxInput(initial);
     check.setName(i18n.tr("Summe-Zeile am Ende der Datei anfügen"));
     check.addListener(new Listener() {
       public void handleEvent(Event event)

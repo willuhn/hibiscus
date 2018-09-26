@@ -28,18 +28,18 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzDetailEdit implements Action
 {
-
-  private boolean createReverse=false;
-  private Konto toBookTo=null;
+  private boolean createReverse = false;
+  private Konto toBookTo = null;
 
   /**
    * setzt ein flag, dass die Gegenbuchung des Kontext-Objects erstellt werden soll
    * @param toBookTo Offline-Konto, auf das die Gegenbuchung erstellt werden soll
    * @return das (modifizierte) Objekt selbst
    * */
-  public UmsatzDetailEdit asReverse(Konto toBookTo){
-    this.createReverse=true;
-    this.toBookTo=toBookTo;
+  public UmsatzDetailEdit asReverse(Konto toBookTo)
+  {
+    this.createReverse = true;
+    this.toBookTo = toBookTo;
     return this;
   }
 
@@ -72,9 +72,12 @@ public class UmsatzDetailEdit implements Action
         throw new ApplicationException(i18n.tr("Fehler beim Anlegen des Umsatzes: {0}",re.getMessage()));
       }
     }
-    else if (!(context instanceof Umsatz)){
+    else if (!(context instanceof Umsatz))
+    {
       return;
-    }else if(createReverse){
+    }
+    else if (createReverse)
+    {
       try
       {
         Umsatz orig=(Umsatz)context;
@@ -87,7 +90,8 @@ public class UmsatzDetailEdit implements Action
         u.setGegenkontoNummer(konto.getKontonummer());
         u.setUmsatzTyp(null);
         context = u;
-      } catch (RemoteException e)
+      }
+      catch (RemoteException e)
       {
         throw new ApplicationException(e);
       } 

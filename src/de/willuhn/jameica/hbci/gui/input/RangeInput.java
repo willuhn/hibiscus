@@ -10,13 +10,18 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
+import java.util.Date;
+
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.NotificationPanel;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.I18N;
@@ -82,6 +87,7 @@ public class RangeInput extends SelectInput
           
           setValue(null);
           settings.setAttribute(param,(String)null);
+          checkRange();
         }
       };
       
@@ -103,7 +109,40 @@ public class RangeInput extends SelectInput
       }
     });
   }
-  
+
+  /**
+   * Prueft den vom User eingegebenen Zeitraum auf Plausibilitaet.
+   */
+  private void checkRange()
+  {
+    if (this.from == null || this.to ==null)
+      return;
+    
+    Object oFrom = this.from.getValue();
+    Object oTo   = this.to.getValue();
+
+    if (!(oFrom instanceof Date) || !(oTo instanceof Date))
+      return;
+
+    Date dFrom = (Date) oFrom;
+    Date dTo   = (Date) oTo;
+
+    if (dTo.before(dFrom))
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum. Das Bis-Datum sollte nicht vor dem Von-Datum liegen."), StatusBarMessage.TYPE_INFO));
+      return;
+    }
+    
+    // Hier weitere Checks bei Bedarf
+    
+    
+    // Ansonsten Fehlermeldung loeschen
+    NotificationPanel panel = GUI.getView().getNotificationPanel();
+    if (panel != null)
+      panel.reset();
+    
+  }
+
   /**
    * Wendet den Range auf die Von- und Bis-Felder an.
    * @param range der Range. Kann null sein.

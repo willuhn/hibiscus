@@ -135,29 +135,35 @@ public class ChipTANDialog extends TANDialog
     if (mech == null || !mech.useUSB())
       return; // brauchen wir gar nicht weiter ueberlegen
     
+    // Checken, ob der User schon entschieden hatte, dass er chipTAN USB NICHT nutzen moechte
+    Boolean use = config != null ? config.isChipTANUSB() : null;
+    if (use != null && !use.booleanValue())
+      return; // User hat explizit entschieden, chipTAN USB NICHT zu nutzen
+
     // Versuchen, die Verbindung zum Kartenleser herzustellen
     try
     {
+      Logger.info("searching for smartcards, please wait...");
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie die bitte Chipkarte ein."),StatusBarMessage.TYPE_INFO));
       this.service = SmartCardService.createInstance(ChipTanCardService.class,this.config != null ? StringUtils.trimToNull(this.config.getCardReader()) : null);
 
       // Wir haben grundsaetzlich einen Kartenleser.
       if (this.service != null && this.config != null)
       {
-        if (config.isChipTANUSBAsked())
+        Logger.info("found smartcard, to be used: " + (use != null ? use : "<asking user>"));
+        
+        // User hat explizit entschieden, den Kartenleser per USB zu nutzen.
+        if (use != null && use.booleanValue())
         {
           this.usb = this.config.isChipTANUSB();
+          return;
         }
-        else
-        {
-          // User fragen, ob er ihn auch nutzen moechte, wenn wir das noch nicht getan haben
-          this.usb = Application.getCallback().askUser(i18n.tr("Es wurde ein USB-Kartenleser gefunden.\nMöchten Sie diesen zur Erzeugung der TAN verwenden?"),false);
-          
-          // Das Speichern der Antwort koennen wir nicht Jameica selbst ueberlassen, weil
-          // die Entscheidung ja pro PIN/TAN-Config gelten soll und nicht global.
-          this.config.setChipTANUSBAsked(true);
-          this.config.setChipTANUSB(this.usb);
-        }
+        
+        // User fragen, ob er ihn auch nutzen moechte, wenn wir das noch nicht getan haben
+        // Das Speichern der Antwort koennen wir nicht Jameica selbst ueberlassen, weil
+        // die Entscheidung ja pro PIN/TAN-Config gelten soll und nicht global.
+        this.usb = Application.getCallback().askUser(i18n.tr("Es wurde ein USB-Kartenleser gefunden.\nMöchten Sie diesen zur Erzeugung der TAN verwenden?"),false);
+        this.config.setChipTANUSB(this.usb);
       }
     }
     catch (Throwable t)

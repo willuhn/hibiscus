@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.input.CheckboxInput;
@@ -76,6 +75,7 @@ public class UmsatzDetailControl extends AbstractControl
 	private Input primanota				= null;
 	private Input art							= null;
 	private Input customerRef			= null;
+	private TextInput endToEndId  = null;
 	private TextInput gvcode      = null;
   
   private Input kommentar       = null;
@@ -367,7 +367,31 @@ public class UmsatzDetailControl extends AbstractControl
 		}
 		return this.customerRef;
 	}
-	
+
+	 /**
+   * Liefert ein Eingabe-Feld mit der EndToEnd-ID.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getEndToEndId() throws RemoteException
+  {
+    if (this.endToEndId == null)
+    {
+      String eref = StringUtils.trimToNull(getUmsatz().getEndToEndId());
+      
+      // Fuer die Abwaertskompatibilitaet
+      if (eref == null)
+        eref = VerwendungszweckUtil.getTag(getUmsatz(),Tag.EREF);
+        
+      this.endToEndId = new TextInput(eref,HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
+      this.endToEndId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      this.endToEndId.setName(i18n.tr("End-to-End ID"));
+      this.endToEndId.setEnabled(false);
+
+    }
+    return this.endToEndId;
+  }
+  
 	/**
 	 * Liefert ein Eingabe-Feld fuer den GV-Code.
 	 * @return Eingabe-Feld.
@@ -456,7 +480,7 @@ public class UmsatzDetailControl extends AbstractControl
       if (showAll)
         return VerwendungszweckUtil.toString(u);
 
-      return (String) BeanUtil.get(u,Tag.SVWZ.name());
+      return (String) u.getAttribute(Tag.SVWZ.name());
     }
     catch (RemoteException re)
     {

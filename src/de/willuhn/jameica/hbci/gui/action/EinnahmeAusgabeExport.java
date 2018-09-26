@@ -12,7 +12,7 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
-import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
+import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -33,12 +33,12 @@ public class EinnahmeAusgabeExport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (context == null || !(context instanceof EinnahmeAusgabe[]))
+    if (context == null || !(context instanceof EinnahmeAusgabeZeitraum[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
 
     try
     {
-      ExportDialog d = new ExportDialog((EinnahmeAusgabe[]) context,EinnahmeAusgabe.class);
+      ExportDialog d = new ExportDialog((EinnahmeAusgabeZeitraum[])context,EinnahmeAusgabeZeitraum.class);
       d.open();
     }
     catch (OperationCanceledException oce)
@@ -56,17 +56,4 @@ public class EinnahmeAusgabeExport implements Action
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Erstellung der Liste"),StatusBarMessage.TYPE_ERROR));
     }
   }
-
 }
-
-/*******************************************************************************
- * $Log: EinnahmeAusgabeExport.java,v $
- * Revision 1.5  2011/05/11 10:20:28  willuhn
- * @N OCE fangen
- *
- * Revision 1.4  2010-08-24 17:38:04  willuhn
- * @N BUGZILLA 896
- *
- * Revision 1.3  2009/04/05 21:16:22  willuhn
- * @B BUGZILLA 716
- ******************************************************************************/

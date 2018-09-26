@@ -66,6 +66,11 @@ public class BPDUtil
      */
     KontoauszugPdf("KontoauszugPdf","HKEKP"),
     
+    /**
+     * Query fuer Abruf der Umsaetze im CAMT-Format.
+     */
+    UmsatzCamt("KUmsZeitCamt","HKCAZ")
+    
     ;
     
     private String query  = null;
@@ -365,11 +370,12 @@ public class BPDUtil
    * Aktualisiert den Cache fuer den Passport.
    * @param passport der Passport.
    * @param prefix der Prefix.
+   * @return true, wenn der Cache aktualisiert wurde.
    */
-  public static void updateCache(HBCIPassport passport, Prefix prefix)
+  public static boolean updateCache(HBCIPassport passport, Prefix prefix)
   {
     if (passport == null)
-      return;
+      return false;
 
     try
     {
@@ -380,7 +386,7 @@ public class BPDUtil
       if (version == null || version.length() == 0 || user == null || user.length() == 0 || data == null || data.size() == 0)
       {
         Logger.debug("[" + prefix + "] no version, no userid or no data found, skipping update");
-        return;
+        return false;
       }
 
       // Wir machen das Update nicht jedesmal sondern periodisch. Denn unter
@@ -433,7 +439,7 @@ public class BPDUtil
 
       Logger.info(prefix + " cache update state [expired: " + expired + ", new version: " + newVersion + "]");
       if (!expired && !newVersion)
-        return;
+        return false;
       
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
@@ -452,14 +458,24 @@ public class BPDUtil
         int deleted = DBPropertyUtil.deleteScope(prefix,customerId);
         Logger.info("deleted " + deleted + " old " + prefix.name() + " cache entries");
         
+        int count2 = 0;
+        
         for (Enumeration keys = data.keys();keys.hasMoreElements();)
         {
           String name = (String) keys.nextElement();
           if (DBPropertyUtil.insert(prefix,customerId,null,name,data.getProperty(name)))
+          {
             count++;
+            count2++;
+            if (count2 > 0 && count2 % 50 == 0)
+            {
+              Logger.info("stored " + count2 + " " + prefix.name() + " entries");
+              
+              if (monitor != null)
+                monitor.log(i18n.tr("  {0} {1}-Parameter aktualisiert",Integer.toString(count),prefix.name()));
+            }
+          }
             
-          if (count > 0 && count % 20 == 0 && monitor != null)
-            monitor.log("  " + i18n.tr("{0} Datensätze",Integer.toString(count)));
         }
       }
       Logger.info("created " + count + " new " + prefix.name() + " cache entries");
@@ -469,10 +485,12 @@ public class BPDUtil
       
       // Datum des letzten Abrufs speichern
       DBPropertyUtil.set(prefix,user,null,"cacheupdate",Long.toString(now));
+      return true;
     }
     catch (Exception e)
     {
       Logger.error("error while updating " + prefix + " - will be ignored",e);
+      return false;
     }
   }
   
@@ -480,9 +498,8 @@ public class BPDUtil
    * Markiert den Cache als expired.
    * @param passport der Passport.
    * @param prefix der Prefix.
-   * @throws RemoteException
    */
-  public static void expireCache(HBCIPassport passport, Prefix prefix) throws RemoteException
+  public static void expireCache(HBCIPassport passport, Prefix prefix)
   {
     final String user = passport.getUserId();
     if (user == null || user.length() == 0)
@@ -490,9 +507,15 @@ public class BPDUtil
       Logger.debug("[" + prefix + "] no userid found, skipping cache expiry");
       return;
     }
-
-    Logger.info("expire " + prefix.name() + " cache");
-    DBPropertyUtil.set(prefix,user,null,"cacheupdate","0");
+    
+    try
+    {
+      Logger.info("expire " + prefix.name() + " cache");
+      DBPropertyUtil.set(prefix,user,null,"cacheupdate","0");
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while expiring " + prefix + " cache",e);
+    }
   }
-
 }

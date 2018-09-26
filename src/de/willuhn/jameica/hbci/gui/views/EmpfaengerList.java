@@ -11,9 +11,7 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.controller.EmpfaengerControl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -35,18 +33,5 @@ public class EmpfaengerList extends AbstractView
 		EmpfaengerControl control = new EmpfaengerControl(this);
 		
     control.getEmpfaengerListe().paint(getParent());
-
-    ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Neue Adresse"),new EmpfaengerNew(),null,true,"contact-new.png");
-    buttons.paint(getParent());
   }
 }
-
-
-/**********************************************************************
- * $Log: EmpfaengerList.java,v $
- * Revision 1.9  2011/04/08 15:19:13  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- **********************************************************************/

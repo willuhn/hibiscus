@@ -20,16 +20,16 @@ import org.supercsv.prefs.CsvPreference.Builder;
 /**
  * Bean fuer ein Profil zum Import von CSV-Dateien.
  */
-public class Profile implements Serializable
+public class Profile implements Serializable, Comparable
 {
+  private String name          = null;
+  private boolean system       = false;
   private List<Column> columns = new ArrayList<Column>();
   private String separatorChar = ";";
   private String quotingChar   = "\"";
   private int skipLines        = 0;
   private String fileEncoding  = System.getProperty("file.encoding");
   
-  private int version          = 0;
-
   /**
    * Liefert die Liste der Spalten fuer das Profil.
    * @return columns Liste der Spalten fuer das Profil.
@@ -126,27 +126,39 @@ public class Profile implements Serializable
   }
 
   /**
-   * Liefert die Versionsnummer des Profils.
-   * Wenn das Default-Profil des Formats eine hoehere Versionsnummer
-   * liefert als die ggf. serialisierte Version im Benutzerverzeichnis,
-   * dann wird die serialisierte Version ignoriert und stattdessen
-   * wieder das Default-Profil verwendet. Andernfalls muesste der
-   * User die XML-Datei in ~/.jameica/hibiscus/csv manuell loeschen,
-   * damit eine ggf. aktualisierte Profil-Version verwendet wird.
-   * @return version Versionsnummer des Profils.
+   * Liefert den Namen des Profils.
+   * @return der Name des Profils.
    */
-  public int getVersion()
+  public String getName()
   {
-    return version;
+    return name;
   }
-
+  
   /**
-   * Speichert die Versionsnummer des Profils.
-   * @param version version
+   * Speichert den Namen des Profils.
+   * @param name der Name des Profils.
    */
-  public void setVersion(int version)
+  public void setName(String name)
   {
-    this.version = version;
+    this.name = name;
+  }
+  
+  /**
+   * Liefert true, wenn es sich um ein System-Profil handelt.
+   * @return system true, wenn es sich um ein System-Profil handelt.
+   */
+  public boolean isSystem()
+  {
+    return system;
+  }
+  
+  /**
+   * Legt fest, ob es sich um ein System-Profil handelt.
+   * @param system true, wenn es sich um ein System-Profil handelt.
+   */
+  public void setSystem(boolean system)
+  {
+    this.system = system;
   }
   
   /**
@@ -168,5 +180,48 @@ public class Profile implements Serializable
     
     Builder builder = new CsvPreference.Builder(qc,sc,prefs.getEndOfLineSymbols());
     return builder.build();
+  }
+  
+  /**
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (!(obj instanceof Profile))
+      return false;
+    
+    Profile other = (Profile) obj;
+    return this.getName() != null && this.getName().equals(other.getName());
+  }
+  
+  /**
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(Object o)
+  {
+    // System-Profil immer vorn
+    if (this.isSystem())
+      return -1;
+    
+    Profile other = (Profile) o;
+    if (other.isSystem())
+      return 1;
+    
+    if (this.getName() == null)
+      return -1;
+    
+    // Rest alphabetisch
+    return this.getName().compareTo(other.getName());
+  }
+  
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    return this.getName() + ", encoding: " + this.getFileEncoding() + ", separator: " + this.getSeparatorChar() + ", quoting char: " + this.getQuotingChar() + ", skip lines: " + this.getSkipLines();
   }
 }

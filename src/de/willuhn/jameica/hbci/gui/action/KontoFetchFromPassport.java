@@ -12,8 +12,10 @@ package de.willuhn.jameica.hbci.gui.action;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.PassportRegistry;
 import de.willuhn.jameica.hbci.gui.views.KontoList;
 import de.willuhn.jameica.hbci.passport.Passport;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -33,10 +35,34 @@ public class KontoFetchFromPassport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		if (context == null || !(context instanceof Passport))
-			throw new ApplicationException(i18n.tr("Kein Sicherheitsmedium ausgewählt oder keines verfügbar"));
+    if (context == null)
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto oder einen Bankzugang aus"));
 
-		final Passport p = (Passport) context;
+    Passport passport = null;
+    
+    if (context instanceof Konto)
+    {
+      try 
+      {
+        Konto k = (Konto) context;
+        passport = PassportRegistry.findByClass(k.getPassportClass());
+      }
+      catch (ApplicationException ae)
+      {
+        throw ae;
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while reading passport from select box",e);
+        throw new ApplicationException(i18n.tr("Fehler beim Auslesen der Konto-Informationen"));
+      }
+    }
+    else if (context instanceof Passport)
+    {
+      passport = (Passport) context;
+    }
+
+		final Passport p = passport;
 
 		GUI.startSync(new Runnable()
 		{

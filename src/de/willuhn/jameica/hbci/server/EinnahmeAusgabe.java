@@ -14,13 +14,15 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.datasource.BeanUtil;
+import de.willuhn.datasource.GenericObject;
+import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
 
 /**
  * Container fuer die EinnahmeAusgabe-Daten.
  */
-
-public class EinnahmeAusgabe
+public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
 {
   private String text;
   private double anfangssaldo;
@@ -150,8 +152,7 @@ public class EinnahmeAusgabe
   }
 
   /**
-   * Liefert das Start-Datum.
-   * @return das Start-Datum.
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getStartdatum()
    */
   public Date getStartdatum()
   {
@@ -168,8 +169,7 @@ public class EinnahmeAusgabe
   }
 
   /**
-   * Liefert das End-Datum.
-   * @return das End-Datum.
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getEnddatum()
    */
   public Date getEnddatum()
   {
@@ -202,7 +202,7 @@ public class EinnahmeAusgabe
    */
   public boolean hasDiff()
   {
-    return Math.abs(this.getDifferenz()) >= 0.01;
+    return Math.abs(this.getDifferenz()) >= 0.01d;
   }
 
   /**
@@ -231,19 +231,88 @@ public class EinnahmeAusgabe
   {
     this.isSumme = b;
   }
-}
 
-/*******************************************************************************
- * $Log: EinnahmeAusgabe.java,v $
- * Revision 1.1  2010/08/24 17:38:04  willuhn
- * @N BUGZILLA 896
- *
- * Revision 1.5  2010/06/07 22:41:13  willuhn
- * @N BUGZILLA 844/852
- *
- * Revision 1.4  2010/04/06 22:49:54  willuhn
- * @B BUGZILLA 844
- *
- * Revision 1.3  2010/02/17 10:43:41  willuhn
- * @N Differenz in Einnahmen/Ausgaben anzeigen, Cleanup
- ******************************************************************************/
+  /**
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
+   */
+  @Override
+  public boolean equals(GenericObject arg0) throws RemoteException
+  {
+    return arg0 == this;
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  @Override
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    try
+    {
+      // Wir koennen hier nicht direkt "BeanUtil.get(this,arg0)" aufrufen,
+      // da EinnahmeAusgabe selbst ja ein GenericObject ist und "BeanUtil.get()"
+      // in dem Fall intern wieder "this.getAttribute(arg0)" aufrufen wuerde.
+      // Das gaebe eine Endlos-Rekursion.
+      return BeanUtil.invoke(this,BeanUtil.toGetMethod(arg0),null);
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (Exception e)
+    {
+      throw new RemoteException("unable to get value for attribute " + arg0,e);
+    }
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
+   */
+  @Override
+  public String[] getAttributeNames() throws RemoteException
+  {
+    return new String[] {
+      "text",
+      "anfangssaldo",
+      "einnahmen",
+      "ausgaben",
+      "endsaldo",
+      "startdatum",
+      "enddatum"
+    };
+
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getID()
+   */
+  @Override
+  public String getID() throws RemoteException
+  {
+    return null;
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
+   */
+  @Override
+  public String getPrimaryAttribute() throws RemoteException
+  {
+    return "text";
+  }
+  
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    return this.text + ":" +
+           this.anfangssaldo + ":" +
+           this.einnahmen + ":" +
+           this.ausgaben + ":" +
+           this.endsaldo + ":" +
+           this.getPlusminus() + ":" +
+           this.getDifferenz();
+  }
+}

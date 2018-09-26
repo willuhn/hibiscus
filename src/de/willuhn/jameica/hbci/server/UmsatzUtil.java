@@ -123,8 +123,9 @@ public class UmsatzUtil
           "LOWER(primanota) LIKE ? OR " +
           "LOWER(art) LIKE ? OR " +
           "LOWER(customerref) LIKE ? OR " +
+          "LOWER(purposecode) LIKE ? OR " +
           "LOWER(kommentar) LIKE ?)",
-          text,text,text,text,text,text,text,text);
+          text,text,text,text,text,text,text,text,text);
     }
     return list;
   }

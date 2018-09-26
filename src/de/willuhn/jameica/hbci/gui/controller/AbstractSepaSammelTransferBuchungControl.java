@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.PurposeCodeInput;
+import de.willuhn.jameica.hbci.gui.input.ZweckInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
@@ -53,7 +54,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   
   // Eingabe-Felder
   private Input betrag                       = null;
-  private TextInput zweck                    = null;
+  private ZweckInput zweck                   = null;
 
   private AddressInput empfName              = null;
   private TextInput empfkto                  = null;
@@ -187,8 +188,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
     SepaSammelTransferBuchung s = this.getBuchung();
 
-    zweck = new TextInput(s.getZweck(),HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
-    zweck.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+    zweck = new ZweckInput(s.getZweck());
     zweck.setEnabled(!s.getSammelTransfer().ausgefuehrt());
     return zweck;
   }

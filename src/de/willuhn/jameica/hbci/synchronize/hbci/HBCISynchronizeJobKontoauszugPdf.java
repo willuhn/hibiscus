@@ -100,6 +100,6 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
     }
     
     return i18n.tr("Unbekannter Auftrag");
-}
+  }
 
 }

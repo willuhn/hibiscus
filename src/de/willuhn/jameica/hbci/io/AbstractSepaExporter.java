@@ -21,8 +21,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.generators.ISEPAGenerator;
 import org.kapott.hbci.GV.generators.SEPAGeneratorFactory;
-import org.kapott.hbci.sepa.PainVersion;
-import org.kapott.hbci.sepa.PainVersion.Type;
+import org.kapott.hbci.sepa.SepaVersion;
+import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PainVersionDialog;
@@ -107,7 +107,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
     
     // User nach der SEPA-Version fragen, die verwendet werden soll.
     PainVersionDialog d = new PainVersionDialog(this.getPainType());
-    PainVersion version = (PainVersion) d.open();
+    SepaVersion version = (SepaVersion) d.open();
     ctx.version = version;
 
     // Header-Infos zuweisen
@@ -197,7 +197,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
    */
   protected class JobContext
   {
-    protected PainVersion version = null;
+    protected SepaVersion version = null;
     protected Properties props = new Properties();
     protected Map meta = new HashMap();
     

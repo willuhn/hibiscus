@@ -12,7 +12,10 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -32,12 +35,21 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.SynchronizeOptions;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.BPDUtil;
+import de.willuhn.jameica.hbci.server.BPDUtil.Query;
+import de.willuhn.jameica.hbci.server.BPDUtil.Support;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszugPdf;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaDauerauftragList;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaLastschrift;
+import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaUeberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
@@ -52,7 +64,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private final static int WINDOW_WIDTH = 400;
+  private final static int WINDOW_WIDTH = 500;
   
   private Konto konto                   = null;
   private boolean offline               = false;
@@ -66,10 +78,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private CheckboxInput syncSepaLast    = null;
   private CheckboxInput syncSepaDauer   = null;
   private CheckboxInput syncMessages    = null;
+  private CheckboxInput useCamt         = null;
   private LabelInput error              = null;
   private Button apply                  = null;
   
-  private List<Input> properties = new ArrayList<Input>();
+  private Map<SynchronizeBackend,List<Input>> properties = new HashMap<SynchronizeBackend,List<Input>>();
 
   /**
    * ct.
@@ -99,9 +112,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         List<String> names = backend.getPropertyNames(konto);
         if (names != null && names.size() > 0)
         {
+          List<Input> props = new ArrayList<Input>();
+          this.properties.put(backend,props);
           for (String name:names)
           {
-            this.createCustomProperty(name);
+            props.add(this.createCustomProperty(name));
           }
         }
       }
@@ -115,9 +130,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   /**
    * Erzeugt ein Custom-Property-Input fuer den angegebenen Property-Namen.
    * @param name der Name des Custom-Property.
+   * @return das erzeugte Eingabefeld.
    * @throws RemoteException
    */
-  private void createCustomProperty(String name) throws RemoteException
+  private Input createCustomProperty(String name) throws RemoteException
   {
     Input t = null;
     if (name.endsWith("(true/false)"))
@@ -138,7 +154,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       t = new TextInput(konto.getMeta(name,null));
       t.setName(name);
     }
-    this.properties.add(t);
+    return t;
   }
 
   /**
@@ -148,10 +164,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     Container group = new SimpleContainer(parent);
 
+    group.addHeadline(this.konto.getLongName());
+
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei der " +
     		                  "Synchronisierung des Kontos ausgeführt werden sollen."),true);
-    
-    group.addHeadline(this.konto.getLongName());
     
     this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -161,6 +177,21 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         {
           options.setSyncSaldo(((Boolean)getSyncSaldo().getValue()).booleanValue());
           options.setSyncKontoauszuege(((Boolean)getSyncUmsatz().getValue()).booleanValue());
+          
+          Support support = BPDUtil.getSupport(konto,Query.UmsatzCamt);
+          if (support != null && support.isSupported())
+          {
+            try
+            {
+              Boolean value = (Boolean) getUseCamt().getValue();
+              MetaKey.UMSATZ_CAMT.set(konto,value.toString());
+            }
+            catch (RemoteException re)
+            {
+              Logger.error("unable to save changes",re);
+              Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Übernehmen der Einstellungen fehlgeschlagen: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
+            }
+          }
         }
         
         if (offline)
@@ -178,10 +209,13 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         
         try
         {
-          for (Input prop:properties)
+          for (List<Input> l:properties.values())
           {
-            Object value = prop.getValue();
-            konto.setMeta(prop.getName(),value != null ? value.toString() : null);
+            for (Input prop:l)
+            {
+              Object value = prop.getValue();
+              konto.setMeta(prop.getName(),value != null ? value.toString() : null);
+            }
           }
         }
         catch (Exception e)
@@ -193,17 +227,26 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     
-    Input i1 = this.getSyncSaldo();
-    Input i2 = this.getSyncUmsatz();
-    Input i3 = this.getSyncOffline();
-    Input i4 = this.getSyncAueb();
-    Input i5 = this.getSyncSepaLast();
-    Input i6 = this.getSyncSepaDauer();
-    Input i7 = this.getSyncMessages();
-    Input i8 = this.getSyncKontoauszug();
-    
+    Input i1  = this.getSyncSaldo();
+    Input i2  = this.getSyncUmsatz();
+    Input i3  = this.getSyncOffline();
+    Input i4  = this.getSyncAueb();
+    Input i5  = this.getSyncSepaLast();
+    Input i6  = this.getSyncSepaDauer();
+    Input i7  = this.getSyncMessages();
+    Input i8  = this.getSyncKontoauszug();
+
+    Input camt = null;
+
     if (!offline || syncAvail)
     {
+      // Wir stellen die Option nur zur Verfuegung, wenn das Konto es prinzipiell unterstuetzt
+      Support support = BPDUtil.getSupport(this.konto,Query.UmsatzCamt);
+      
+      // Wichtig: Das Input muss erzeugt werden, bevor getSyncUmsatz gezeichnet wird. Sonst wird der Listener nicht mehr registriert
+      if (!offline && support != null && support.isSupported())
+        camt = this.getUseCamt();
+      
       group.addInput(i1);
       group.addInput(i2);
     }
@@ -214,19 +257,33 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     }
     else
     {
-      group.addInput(i8);
-      group.addInput(i4);
-      group.addInput(i5);
-      group.addInput(i6);
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      SynchronizeEngine engine = service.get(SynchronizeEngine.class);
+      
+      if (engine.supports(SynchronizeJobKontoauszugPdf.class,this.konto)) group.addInput(i8);
+      if (engine.supports(SynchronizeJobSepaUeberweisung.class,this.konto)) group.addInput(i4);
+      if (engine.supports(SynchronizeJobSepaLastschrift.class,this.konto)) group.addInput(i5);
+      if (engine.supports(SynchronizeJobSepaDauerauftragList.class,this.konto)) group.addInput(i6);
+      
+      // Abrufen der Nachrichten lassen wir immer zu.
       group.addInput(i7);
     }
-    
+
+    if (camt != null && (!offline || syncAvail))
+    {
+      group.addHeadline(i18n.tr("Erweiterte Einstellungen: FinTS"));
+      group.addInput(camt);
+    }
+
     if (this.properties.size() > 0)
     {
-      group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
-      for (Input prop:this.properties)
+      for (Entry<SynchronizeBackend,List<Input>> e:this.properties.entrySet())
       {
-        group.addInput(prop);
+        group.addHeadline(i18n.tr("Erweiterte Einstellungen: {0}",e.getKey().getName()));
+        for (Input prop:e.getValue())
+        {
+          group.addInput(prop);
+        }
       }
     }
     
@@ -273,6 +330,36 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         this.syncUmsatz.addListener(new OfflineListener());
     }
     return this.syncUmsatz;
+  }
+
+  /**
+   * Liefert eine Checkbox fuer die Aktivierung/Deaktivierung des CAMT-Formats.
+   * @return Checkbox.
+   */
+  private CheckboxInput getUseCamt()
+  {
+    if (this.useCamt == null)
+    {
+      this.useCamt = new CheckboxInput(KontoUtil.useCamt(this.konto,false));
+      this.useCamt.setName(i18n.tr("Umsätze im neuen SEPA CAMT-Format abrufen"));
+      
+      final CheckboxInput syncUms = this.getSyncUmsatz();
+      
+      final Listener l = new Listener() {
+        
+        @Override
+        public void handleEvent(Event event)
+        {
+          // Option nur freischalten, wenn Umsatz-Abruf aktiviert ist
+          useCamt.setEnabled((Boolean)syncUms.getValue());
+        }
+      };
+      
+      syncUms.addListener(l);
+      l.handleEvent(null);
+    }
+    
+    return this.useCamt;
   }
 
   /**

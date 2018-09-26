@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -40,9 +41,17 @@ public class NachrichtDetails extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("System-Nachricht vom {0}", HBCI.DATEFORMAT.format(n.getDatum())));
 		
-    SimpleContainer container = new SimpleContainer(getParent());
-    container.addText(i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIProperties.getNameForBank(n.getBLZ()),n.getBLZ()}) + "\n",true);
-    container.addText(n.getNachricht(),true);
+    SimpleContainer container = new SimpleContainer(getParent(),true);
+    String name = HBCIProperties.getNameForBank(n.getBLZ());
+    if (name != null)
+      container.addText(i18n.tr("{0} [BLZ: {1}]", new String[] {name,n.getBLZ()}) + "\n",true);
+    else
+      container.addText(i18n.tr("BLZ: {0}", new String[] {n.getBLZ()}) + "\n",true);
+
+    ScrolledContainer sc = new ScrolledContainer(container.getComposite());
+    String msg = n.getNachricht();
+    msg = msg.replace("\\n","\n"); // Falls die Zeilenumbrueche escaped waren
+    sc.addText(msg,true);
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("In Zwischenablage kopieren"),new NachrichtCopy(),n,false,"edit-copy.png");
@@ -50,16 +59,3 @@ public class NachrichtDetails extends AbstractView {
     buttons.paint(getParent());
   }
 }
-
-
-/**********************************************************************
- * $Log: NachrichtDetails.java,v $
- * Revision 1.2  2011/04/08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.1  2009/07/17 08:42:57  willuhn
- * @N Detail-Ansicht fuer Systemnachrichten der Bank
- * @N Systemnachrichten in Zwischenablage kopieren
- *
- **********************************************************************/

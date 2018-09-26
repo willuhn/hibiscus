@@ -444,38 +444,21 @@ public class PinTanConfigImpl implements PinTanConfig
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isChipTANUSB()
    */
   @Override
-  public boolean isChipTANUSB() throws RemoteException
+  public Boolean isChipTANUSB() throws RemoteException
   {
-    return settings.getBoolean(getID() + ".chiptan.usb.enabled",false);
+    String s = StringUtils.trimToNull(settings.getString(getID() + ".chiptan.usb.enabled",null));
+    return s != null ? Boolean.valueOf(s) : null;
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isChipTANUSBAsked()
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setChipTANUSB(java.lang.Boolean)
    */
   @Override
-  public boolean isChipTANUSBAsked() throws RemoteException
+  public void setChipTANUSB(Boolean b) throws RemoteException
   {
-    return settings.getBoolean(getID() + ".chiptan.usb.asked",false);
+    settings.setAttribute(getID() + ".chiptan.usb.enabled",(String) (b != null ? b.toString() : null));
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setChipTANUSB(boolean)
-   */
-  @Override
-  public void setChipTANUSB(boolean b) throws RemoteException
-  {
-    settings.setAttribute(getID() + ".chiptan.usb.enabled",b);
-  }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setChipTANUSBAsked(boolean)
-   */
-  @Override
-  public void setChipTANUSBAsked(boolean b) throws RemoteException
-  {
-    settings.setAttribute(getID() + ".chiptan.usb.asked",b);
-  }
-
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedias()
    */

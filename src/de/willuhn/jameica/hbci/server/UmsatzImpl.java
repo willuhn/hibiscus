@@ -77,9 +77,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 			if (getValuta() == null)
 				throw new ApplicationException(i18n.tr("Valuta fehlt."));
 			
-			// "35" ist das DB-Limit
-			int limit = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
-      HBCIProperties.checkLength(getZweck(),limit);
+      HBCIProperties.checkLength(getZweck(),HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
+      
+      int limit = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
       HBCIProperties.checkLength(getZweck2(),limit);
       String[] ewz = getWeitereVerwendungszwecke();
       if (ewz != null && ewz.length > 0)
@@ -92,6 +92,11 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
       HBCIProperties.checkLength(this.getGvCode(),HBCIProperties.HBCI_GVCODE_MAXLENGTH);
       HBCIProperties.checkLength(this.getAddKey(),HBCIProperties.HBCI_ADDKEY_MAXLENGTH);
+      
+      // Bei TX-ID und PurposeCode muessen wir die Laenge nicht checken. Das sind CAMT-Umsaetze.
+      // Und die kommen schema-validiert im XML-Format. Hier extra nochmal zu pruefen, waere redundant.
+      // Zumal die korrespondierenden Datebank-Felder vorsorglich ohnehin deutlich laenger definiert
+      // sind als es das Schema zulaesst
 		}
 		catch (RemoteException e)
 		{
@@ -114,7 +119,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     // Wir speichern die Checksumme nun grundsaetzlich beim
     // Anlegen des Datensatzes. Dann koennen wir anschliessend
-    // beliebig aendern und muessens uns nicht mehr mit
+    // beliebig aendern und muessen uns nicht mehr mit
     // "hasChangedByUser" herumschlagen
     setAttribute("checksum",new Long(getChecksum()));
     super.insert();
@@ -304,7 +309,13 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 			String id2 = other.getID();
 			if (id1 != null && id2 != null)
 			  return id1.equals(id2);
-			  
+			
+			// Wenn beide eine TX-ID haben, brauchen wir nur anhand der TX-ID vergleichen.
+			id1 = this.getTransactionId();
+			id2 = other.getTransactionId();
+      if (id1 != null && id2 != null)
+        return id1.equals(id2);
+			
 			return other.getChecksum() == getChecksum();
 		}
 		catch (Exception e)
@@ -407,19 +418,19 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
         sv = valuta.toString();
       }
     }
-
+    
     String s = (""+getArt()).toUpperCase() +
                getKonto().getID() + // wenigstens die ID vom Konto muss mit rein. Andernfalls haben zwei gleich aussehende Umsaetze auf verschiedenen Konten die gleiche Checksumme
-		           getBetrag() +
-		           getCustomerRef() +
-		           getGegenkontoBLZ() +
-		           getGegenkontoNummer() +
-		           (""+getGegenkontoName()).toUpperCase() +
-		           getPrimanota() +
+               getBetrag() +
+               getCustomerRef() +
+               getGegenkontoBLZ() +
+               getGegenkontoNummer() +
+               (""+getGegenkontoName()).toUpperCase() +
+               getPrimanota() +
                (Settings.getSaldoInChecksum() ? getSaldo() : "") +
-		           ((String)getAttribute("mergedzweck")).toUpperCase() +
-		           sd +
-							 sv;
+               ((String)getAttribute("mergedzweck")).toUpperCase() +
+               sd +
+               sv;
     
     // Bei Vormerkbuchungen haengen wir noch was hinten dran. Da der
     // Saldo per Default nicht mehr in der Checksumme ist, geht sonst
@@ -744,144 +755,68 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     copy.setZweck2(this.getZweck2());
     copy.setWeitereVerwendungszwecke(this.getWeitereVerwendungszwecke());
     copy.setGvCode(this.getGvCode());
+    copy.setPurposeCode(this.getPurposeCode());
+
+    // Das Duplizieren von Umsatzbuchungen machen wir z.Bsp. dann, wenn ein User
+    // per Hand eine Gegenbuchung erzeugt (per Kontextmenu-Eintrag "Gegenbuchung erzeugen auf...").
+    // Das Duplikat darf nicht die selbe Transaction-ID haben, dann waere sie
+    // nicht mehr eindeutig. Daher wird die TX-ID nicht mit dupliziert
+    // copy.setTransactionId(this.getTransactionId());
+
     return copy;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getTransactionId()
+   */
+  @Override
+  public String getTransactionId() throws RemoteException
+  {
+    return (String) this.getAttribute("txid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setTransactionId(java.lang.String)
+   */
+  @Override
+  public void setTransactionId(String id) throws RemoteException
+  {
+    this.setAttribute("txid",id);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getPurposeCode()
+   */
+  @Override
+  public String getPurposeCode() throws RemoteException
+  {
+    return (String) this.getAttribute("purposecode");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setPurposeCode(java.lang.String)
+   */
+  @Override
+  public void setPurposeCode(String code) throws RemoteException
+  {
+    this.setAttribute("purposecode",code);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEndToEndId()
+   */
+  @Override
+  public String getEndToEndId() throws RemoteException
+  {
+    return (String) this.getAttribute("endtoendid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEndToEndId(java.lang.String)
+   */
+  @Override
+  public void setEndToEndId(String id) throws RemoteException
+  {
+    this.setAttribute("endtoendid",id);
+  }
 }
-
-
-/**********************************************************************
- * $Log: UmsatzImpl.java,v $
- * Revision 1.92  2012/05/03 21:50:47  willuhn
- * @B BUGZILLA 1232 - Saldo des Kontos bei Offline-Konten nur bei neuen Umsaetzen uebernehmen - nicht beim Bearbeiten existierender
- *
- * Revision 1.91  2012/04/29 19:32:07  willuhn
- * @N Reihenfolge der Kategorien bei der Zuordnung beachten
- *
- * Revision 1.90  2012/04/05 21:44:18  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.89  2011/10/18 09:28:14  willuhn
- * @N Gemeinsames Basis-Interface "HibiscusDBObject" fuer alle Entities (ausser Version und DBProperty) mit der Implementierung "AbstractHibiscusDBObject". Damit koennen jetzt zu jedem Fachobjekt beliebige Meta-Daten in der Datenbank gespeichert werden. Wird im ersten Schritt fuer die Reminder verwendet, um zu einem Auftrag die UUID des Reminders am Objekt speichern zu koennen
- *
- * Revision 1.88  2011-07-25 17:17:19  willuhn
- * @N BUGZILLA 1065 - zusaetzlich noch addkey
- *
- * Revision 1.87  2011-07-25 14:42:40  willuhn
- * @N BUGZILLA 1065
- *
- * Revision 1.86  2011-04-28 12:15:25  willuhn
- * @N Wenn beide Umsaetze eine ID haben, muss nur anhand derer verglichen werden
- *
- * Revision 1.85  2011-04-28 07:50:07  willuhn
- * @B BUGZILLA 692
- *
- * Revision 1.84  2011-03-11 15:05:14  willuhn
- * @C Loeschen von Vormerkbuchungen nicht protokollieren - da Hibiscus die selbst loescht und das irritierende Protokoll-Meldungen fuer den User erzeugt
- *
- * Revision 1.83  2010-11-19 17:02:06  willuhn
- * @N VWZUtil#toString
- *
- * Revision 1.82  2010-09-28 21:40:27  willuhn
- * @C Vormerkbuchungen haben eine andere Checksumme als valutierte Buchungen - auch, wenn sie sonst identisch sind
- *
- * Revision 1.81  2010-09-27 11:51:38  willuhn
- * @N BUGZILLA 804
- *
- * Revision 1.80  2010-08-30 14:25:37  willuhn
- * @B NPE, wenn Konto angegeben, jedoch ohne ID
- *
- * Revision 1.79  2010-08-27 09:24:58  willuhn
- * @B Generics-Deklaration im Cache hat javac nicht akzeptiert (der Eclipse-Compiler hats komischerweise gefressen)
- *
- * Revision 1.78  2010-08-26 12:53:08  willuhn
- * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
- *
- * Revision 1.77  2010-08-26 11:31:23  willuhn
- * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
- *
- * Revision 1.76  2010-08-03 11:00:01  willuhn
- * @N Konto-ID mit in Checksumme
- *
- * Revision 1.75  2010-06-17 15:31:27  willuhn
- * @C BUGZILLA 622 - Defaultwert des checksum.saldo-Parameters geaendert - steht jetzt per Default auf false, sodass der Saldo NICHT mit in die Checksumme einfliesst
- * @B BUGZILLA 709 - Konto ist nun ENDLICH nicht mehr Bestandteil der Checksumme, dafuer sind jetzt alle Verwendungszweck-Zeilen drin
- *
- * Revision 1.74  2010/05/30 23:29:31  willuhn
- * @N Alle Verwendungszweckzeilen in Umsatzlist und -tree anzeigen (BUGZILLA 782)
- *
- * Revision 1.73  2010/05/06 22:08:45  willuhn
- * @N BUGZILLA 622
- *
- * Revision 1.72  2010/04/27 11:02:32  willuhn
- * @R Veralteten Verwendungszweck-Code entfernt
- *
- * Revision 1.71  2010/04/22 12:42:03  willuhn
- * @N Erste Version des Supports fuer Offline-Konten
- *
- * Revision 1.70  2010/03/16 00:44:18  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- * Revision 1.69  2010/01/18 22:59:05  willuhn
- * @B BUGZILLA 808
- *
- * Revision 1.68  2009/10/29 22:52:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.67  2009/09/15 00:23:35  willuhn
- * @N BUGZILLA 745
- *
- * Revision 1.66  2009/03/12 10:56:01  willuhn
- * @B Double.NaN geht nicht
- *
- * Revision 1.65  2009/03/11 17:53:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.64  2009/02/23 17:01:58  willuhn
- * @C Kein Abgleichen mehr bei vorgemerkten Buchungen sondern stattdessen vorgemerkte loeschen und neu abrufen
- *
- * Revision 1.63  2009/02/13 10:52:18  willuhn
- * @N Verwendungszweck mit in Tiny-Checksum uebernehmen, damit die Buchungen auch dann gefunden werden, wenn das Gegenkonto von der Bank nicht gefuellt wird
- *
- * Revision 1.62  2009/02/12 18:37:18  willuhn
- * @N Erster Code fuer vorgemerkte Umsaetze
- *
- * Revision 1.61  2009/02/04 23:06:24  willuhn
- * @N BUGZILLA 308 - Umsaetze als "geprueft" markieren
- *
- * Revision 1.60  2009/01/04 01:32:57  willuhn
- * @N Laengen-Check - ist jetzt noetig, da Umsaetze nun manuell geaendert werden koennen
- *
- * Revision 1.59  2009/01/04 01:25:47  willuhn
- * @N Checksumme von Umsaetzen wird nun generell beim Anlegen des Datensatzes gespeichert. Damit koennen Umsaetze nun problemlos geaendert werden, ohne mit "hasChangedByUser" checken zu muessen. Die Checksumme bleibt immer erhalten, weil sie in UmsatzImpl#insert() sofort zu Beginn angelegt wird
- * @N Umsaetze sind nun vollstaendig editierbar
- *
- * Revision 1.58  2008/12/14 23:18:35  willuhn
- * @N BUGZILLA 188 - REFACTORING
- *
- * Revision 1.57  2008/12/02 10:52:23  willuhn
- * @B DecimalInput kann NULL liefern
- * @B Double.NaN beruecksichtigen
- *
- * Revision 1.56  2008/11/26 00:39:36  willuhn
- * @N Erste Version erweiterter Verwendungszwecke. Muss dringend noch getestet werden.
- *
- * Revision 1.55  2008/11/17 23:30:00  willuhn
- * @C Aufrufe der depeicated BLZ-Funktionen angepasst
- *
- * Revision 1.54  2008/09/03 21:29:44  willuhn
- * @C BUGZILLA 622 - Debug-Ausgaben
- *
- * Revision 1.53  2008/04/27 22:22:56  willuhn
- * @C I18N-Referenzen statisch
- *
- * Revision 1.52  2008/02/15 17:39:10  willuhn
- * @N BUGZILLA 188 Basis-API fuer weitere Zeilen Verwendungszweck. GUI fehlt noch
- * @N DB-Update 0005. Speichern des Textschluessels bei Sammelauftragsbuchungen in der Datenbank
- **********************************************************************/

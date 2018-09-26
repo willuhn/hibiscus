@@ -3,10 +3,10 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.2.xsd"
-        name="hibiscus" version="2.8.3" class="de.willuhn.jameica.hbci.HBCI">
+        name="hibiscus" version="2.8.4" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
-  <url>https://www.willuhn.de/products/hibiscus/releases/2.8/hibiscus-2.8.3.zip</url>
+  <url>https://www.willuhn.de/products/hibiscus/releases/2.8/hibiscus-2.8.4.zip</url>
   <homepage>http://www.willuhn.de/products/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
   <icon>hibiscus-large.png</icon>
@@ -55,7 +55,7 @@
 
   <navigation>
     <item id="hibiscus.navi"                                 name="Hibiscus"                 icon-close="folder.png" icon-open="folder-open.png">
-      <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"             icon-close="user-info.png"                   action="de.willuhn.jameica.hbci.gui.action.PassportList" />
+      <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"             icon-close="system-users.png"                action="de.willuhn.jameica.hbci.gui.action.PassportList" />
       <item id="hibiscus.navi.accounts"                      name="Konten"                   icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.umsatz"                        name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugList" />
       <item id="hibiscus.navi.kontoauszug"                   name="Elektr. Kontoauszüge"     icon-close="application-pdf.png"             action="de.willuhn.jameica.hbci.gui.action.KontoauszugPdfList" />

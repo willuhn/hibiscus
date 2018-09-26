@@ -135,9 +135,9 @@ public class HBCIProperties
   public final static int HBCI_TRANSFER_BZU_LENGTH = settings.getInt("hbci.transfer.bzu.length",13);
 
   /**
-   * Maximale Text-Laenge einer Verwendungszweck-Zeile fuer Auslandsueberweisungen.
+   * Maximale Text-Laenge einer Verwendungszweck-Zeile bei SEPA-Auftraegen.
    */
-  public final static int HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.foreigntransfer.usage.maxlength",140);
+  public final static int HBCI_SEPATRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.foreigntransfer.usage.maxlength",140);
 
   /**
    * Maximale Anzahl von Verwendungszwecken.

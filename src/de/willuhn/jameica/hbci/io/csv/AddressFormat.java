@@ -41,8 +41,9 @@ public class AddressFormat implements Format<HibiscusAddress>
     if (this.profile == null)
     {
       this.profile = new Profile();
+      this.profile.setName(i18n.tr("Default-Profil"));
       this.profile.setSkipLines(1);
-      this.profile.setVersion(0);
+      this.profile.setSystem(true);
       
       Serializer s = new DefaultSerializer();
       List<Column> list = this.profile.getColumns();

@@ -1,3 +1,36 @@
+2018-09-26 Version 2.8.4
+
+  * NEW: 0700 Beim Empfang neuer UPD gleich die BPD mit aktualisieren
+  * NEW: 0699 Neue HBCI4Java-Version mit Server-Adressen für IsBank - https://github.com/hbci4j/hbci4java/commit/649179cd52cc57bc540ce224cc8ef6ebaf0a806e
+  * NEW: 0698 Scrollbalken in Einstellungsdialog für elektr. Kontoauszug für kleine Displays anzeigen, Fenstergröße speichern
+  * NEW: 0697 BUGZILLA 1495 - automatisches Entfernen nicht unterstüzter Zeichen beim Einfügen des Verwendungszweck per Zwischenablage
+  * NEW: 0696 Neue HBCI4Java-Version mit aktualisierter Server-Adresse der Sparda-Bank Berlin - https://github.com/hbci4j/hbci4java/commit/c91f6ed2c5b6b5ddc8d29c4ec6cb66428af6f15e
+  * NEW: 0695 Support für dedizierte EndToEnd-ID in Umsätzen
+  * BUG: 0694 NPE beim Parsen von CAMT-Dateien - https://github.com/hbci4j/hbci4java/commit/b2b607ad8b72012978badab5f8cc39a8f8dfccaa
+  * CHG: 0693 Nachtrag zu Bugzilla 1864 - Kontofilter in der Liste der Konten auf der Startseite ausblenden, dort ist der Platz dafuer zu knapp
+  * NEW: 0692 BUGZILLA 1864 - Filterkriterien in der Liste der Konten (u.a. deaktivierte Konten ausblenden)
+  * NEW: 0691 Suchbegriff "flicker" in die Liste der TAN-Verfahren aufgenommen, für die chipTAN USB in Frage kommt
+  * NEW: 0690 Sonderbehandlung fuer Fehlerfall https://homebanking-hilfe.de/forum/topic.php?p=139423#real139423 (Fehler beim Update der H2-Datenbank durch fehlerhaften H2-Treiber)
+  * NEW: 0689 BUGZILLA 1861 - Unterstützung für benutzerspezifische CSV-Import-Profile
+  * NEW: 0688 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.09.2018
+  * NEW: 0687 Nur jene Synchronizisierungsoptionen anzeigen, die das Backend unterstützt
+  * NEW: 0686 Manueller Import von Umsätzen im CAMT-Format
+  * BUG: 0685 BUGZILLA 1860 - Kein Scrollbalken bei Anzeige einer überlangen Banknachricht
+  * NEW: 0684 BUGZILLA 1621 - Support für Umsatz-Abruf im CAMT-Format
+  * BUG: 0683 Neuer PIN/TAN-Bankzugang liess sich nicht mehr anlegen, da die ChipTAN-USB-Checkbox zu dem Zeitpunkt nicht korrekt berücksichtigt wurde
+  * NEW: 0682 Neue HBCI4Java-Version mit CAMT-Bugfix - https://github.com/hbci4j/hbci4java/commit/3dc9ebf080810acc2636aef0c9413e0d40672dbb
+  * NEW: 0681 Neue HBCI4Java-Version mit Unterstützung für CAMT - https://github.com/hbci4j/hbci4java/commit/ecca11320308b1fa1dc40bb37e6571d629064471
+  * BUG: 0680 BUGZILLA 1858 - Hibiscus sucht auch bei deaktivierter chipTAN-USB-Option weiter nach Kartenlesern
+  * NEW: 0679 Support für HKKAZ/HKKAN in Segment-Version 7 - https://github.com/hbci4j/hbci4java/commit/e3372a339bd5b9f0c2cea80155199f475dd46ed4
+  * DEL: 0678 Option "Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich" aus den Einstellungen entfernt, braucht keiner mehr 
+  * NEW: 0677 Option "Alle Daten des Verwendungszwecks anzeigen" auch in Liste der Umsätze konfigurierbar (per Config-Button oben rechts)
+  * NEW: 0676 In der Auswertung "Umsätze nach Kategorien -> Im Verlauf" können durch Rechtsklick in die Grafik auch andere Intervalle (Jahr, Monat, Woche) ausgewählt werden. 
+  * BUG: 0675 In Kontoliste in der Spalte "verfügbarer Saldo" das Währungskennzeichen des konkreten Kontos verwenden und nicht des ersten gefundenen 
+  * NEW: 0674 Wenn eine Bank im Verwendungszweck zwar das "SVWZ"-Tag liefert, es aber keinen Wert enthält, wird ebenfalls ein Fallback auf die Anzeige des kompletten Verwendungszweck gemacht
+  * NEW: 0673 Beim MT940-Export in Feld :25: das Währungskennzeichen weglassen und die Auszugsnummer in Feld ":28C:" mit dem Pseudowert "1" ausgeben - SAP benötigt das für den Import
+  * NEW: 0672 Fehler beim Ermitteln der Kartenleser-Features tolerieren (der tanJACK USB scheint das nicht zu unterstützen) - https://github.com/hbci4j/hbci4java/commit/22b702505bc9aef54bdb7b6663c948ce4b0b91cf
+  * BUG: 0671 Export-Optionen "Saldo ausblenden" und "Summenzeile anzeigen" funktionierten nur, wenn die Checkboxen beim Export betätigt wurden - https://homebanking-hilfe.de/forum/topic.php?p=138415
+
 2018-06-27 Version 2.8.3
 
   * NEW: 0670 chipTAN USB auch dann anbieten, wenn zwar chipTAN optisch ausgewählt aber ein Kartenleser gefunden wurde 

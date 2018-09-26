@@ -10,14 +10,10 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.gui.controller.KontoControl;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -35,18 +31,8 @@ public class KontoList extends AbstractView
   {
 
 		final KontoControl control = new KontoControl(this);
-		GUI.getView().setTitle(i18n.tr("Vorhandene Bankverbindungen"));
+		GUI.getView().setTitle(i18n.tr("Vorhandene Konten"));
 
     control.getKontoListe().paint(getParent());
-
-		ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Konten über den Bank-Zugang importieren..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleReadFromPassport();
-      }
-    },null,false,"mail-send-receive.png");
-		buttons.addButton(i18n.tr("Konto manuell anlegen"),new KontoNew(),null,false,"list-add.png");
-		buttons.paint(getParent());
   }
 }

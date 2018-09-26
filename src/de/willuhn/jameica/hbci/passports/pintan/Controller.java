@@ -20,6 +20,7 @@ import javax.smartcardio.TerminalFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
@@ -280,7 +281,8 @@ public class Controller extends AbstractControl
     if (this.useUsb != null)
       return this.useUsb;
     
-    this.useUsb = new CheckboxInput(this.getConfig().isChipTANUSB());
+    final Boolean b = this.getConfig().isChipTANUSB();
+    this.useUsb = new CheckboxInput(b == null || b.booleanValue());
     this.useUsb.setName(i18n.tr("Kartenleser per USB zur TAN-Erzeugung verwenden"));
     
     final Listener l = new Listener() {
@@ -290,11 +292,27 @@ public class Controller extends AbstractControl
       {
         try
         {
-          Boolean b = (Boolean) getChipTANUSB().getValue();
-          getCardReaders().setEnabled(b != null && b.booleanValue());
+          Boolean newValue = (Boolean) getChipTANUSB().getValue();
+          
+          if (event != null && event.type == SWT.Selection)
+          {
+            // Wir kamen aus dem Gray-State. Der User hat entschieden
+            org.eclipse.swt.widgets.Button bt = (org.eclipse.swt.widgets.Button) useUsb.getControl();
+            if (bt.getGrayed())
+            {
+              bt.setGrayed(false);
+              bt.setSelection(true);
+              newValue = Boolean.TRUE;
+            }
+          }
+
+          if (event != null)
+            getCardReaders().setEnabled(newValue != null && newValue.booleanValue());
+          else
+            getCardReaders().setEnabled(b != null && b.booleanValue());
 
           // Bei chipTAN USB wird die TAN grundsaetzlich angezeigt
-          if (b != null && b.booleanValue() && (event == null || event.type == SWT.Selection))
+          if (newValue != null && newValue.booleanValue() && (event == null || event.type == SWT.Selection))
           {
             Boolean showTan = (Boolean) getShowTan().getValue();
             if (showTan == null || !showTan.booleanValue())
@@ -441,7 +459,7 @@ public class Controller extends AbstractControl
       conf.setCurrentSecMech(null);
       conf.setStoredSecMech(null);
       conf.setTanMedia(null);
-      conf.setChipTANUSBAsked(false);
+      conf.setChipTANUSB(null);
       
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorauswahl der TAN-Verfahren zurückgesetzt"),StatusBarMessage.TYPE_SUCCESS));
     }
@@ -588,8 +606,20 @@ public class Controller extends AbstractControl
       config.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
 			config.setHBCIVersion(version);
 			config.setPort((Integer)getPort().getValue());
-			config.setChipTANUSB(((Boolean)getChipTANUSB().getValue()).booleanValue());
 			config.setCardReader((String) getCardReaders().getValue());
+
+      PtSecMech secMech = config.getCurrentSecMech();
+      if (secMech != null && secMech.useUSB())
+      {
+        CheckboxInput check = this.getChipTANUSB();
+        Button button = (Button)check.getControl();
+        if (button != null && !button.isDisposed())
+        {
+          boolean gray = button.getGrayed();
+          config.setChipTANUSB((Boolean) (gray ? null : check.getValue()));
+        }
+      }
+
 			
       AbstractHBCIPassport p = (AbstractHBCIPassport)config.getPassport();
       PassportChangeRequest change = new PassportChangeRequest(p,(String)getCustomerId().getValue(),(String)getUserId().getValue());

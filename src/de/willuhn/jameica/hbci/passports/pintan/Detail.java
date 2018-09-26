@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -70,8 +71,17 @@ public class Detail extends AbstractView
       if (secMech != null && secMech.useUSB())
       {
         group.addHeadline(i18n.tr("ChipTAN USB"));
-        group.addInput(control.getChipTANUSB());
+        
+        CheckboxInput check = control.getChipTANUSB();
+        group.addInput(check);
         group.addInput(control.getCardReaders());
+        
+        // Wenn der User die Entscheidung noch nicht getroffen hat, dann ausgrauen
+        if (control.getConfig().isChipTANUSB() == null)
+        {
+          org.eclipse.swt.widgets.Button b = (org.eclipse.swt.widgets.Button) check.getControl();
+          b.setGrayed(true);
+        }
       }
     }
     

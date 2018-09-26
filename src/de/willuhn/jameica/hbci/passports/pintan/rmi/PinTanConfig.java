@@ -200,32 +200,22 @@ public interface PinTanConfig extends GenericObject, Configuration
   public void setCurrentSecMech(PtSecMech mech) throws RemoteException;
   
   /**
-   * Prueft, ob der User schonmal gefragt wurde, ob er chipTAN USB nutzen moechte.
-   * @return true, wenn der User schonmal gefragt wurde, ob er chipTAN USB nutzen moechte.
-   * @throws RemoteException
-   */
-  public boolean isChipTANUSBAsked() throws RemoteException;
-  
-  /**
-   * Legt fest, ob der User schonmal gefragt wurde, ob er chipTAN USB nutzen moechte.
-   * @param b true, wenn der User gefragt wurde, ob er chipTAN USB nutzen moechte.
-   * @throws RemoteException
-   */
-  public void setChipTANUSBAsked(boolean b) throws RemoteException;
-  
-  /**
    * Liefert true, wenn chipTAN USB verwendet werden soll.
    * @return true, wenn chipTAN USB verwendet werden soll.
+   * false, wenn es nicht verwendet werden soll.
+   * NULL, wenn der User die Entscheidung noch nicht getroffen hat.
    * @throws RemoteException
    */
-  public boolean isChipTANUSB() throws RemoteException;
+  public Boolean isChipTANUSB() throws RemoteException;
   
   /**
    * Legt fest, ob chipTAN USB genutzt werden soll.
    * @param b true, wenn chipTAN USB genutzt werden soll.
+   * false, wenn es nicht verwendet werden soll.
+   * NULL, wenn der User die Entscheidung noch nicht getroffen hat.
    * @throws RemoteException
    */
-  public void setChipTANUSB(boolean b) throws RemoteException;
+  public void setChipTANUSB(Boolean b) throws RemoteException;
   
   /**
    * Liefert eine optionale Bezeichnung fuer den zu nutzenden Karteleser.

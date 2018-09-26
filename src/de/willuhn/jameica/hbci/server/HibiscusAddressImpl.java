@@ -107,7 +107,7 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
       }
       if (bank != null && bank.length() > 0)
       {
-        HBCIProperties.checkLength(bank, HBCIProperties.HBCI_FOREIGNTRANSFER_USAGE_MAXLENGTH);
+        HBCIProperties.checkLength(bank, HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       }
       //
       //////////////////////////////////////////////////////////////////////////
