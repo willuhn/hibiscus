@@ -15,9 +15,13 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
 
 import de.willuhn.jameica.gui.Action;
@@ -32,6 +36,7 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.MetaKey;
@@ -47,6 +52,7 @@ import de.willuhn.jameica.hbci.server.BPDUtil.Support;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -57,8 +63,10 @@ import de.willuhn.util.I18N;
 public class KontoauszugPdfSettingsDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Settings settings = new Settings(KontoauszugPdfSettingsDialog.class);
 
-  private final static int WINDOW_WIDTH = 600;
+  private final static int WINDOW_WIDTH = 700;
+  private final static int WINDOW_HEIGHT = 500;
 
   private Konto konto = null;
   
@@ -93,7 +101,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     super(POSITION_CENTER);
     this.konto = konto;
     this.setTitle(i18n.tr("Einstellungen für den elektronischen Kontoauszug"));
-    setSize(WINDOW_WIDTH,SWT.DEFAULT);
+    setSize(settings.getInt("window.width",WINDOW_WIDTH),settings.getInt("window.height",WINDOW_HEIGHT));
   }
 
   /**
@@ -102,7 +110,22 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   @Override
   protected void paint(Composite parent) throws Exception
   {
-    Container c = new SimpleContainer(parent);
+    Container scroll = new ScrolledContainer(parent,1)
+    {
+      /**
+       * @see de.willuhn.jameica.gui.util.ScrolledContainer#update()
+       */
+      @Override
+      public void update()
+      {
+        Composite comp = this.getComposite();
+        if (comp == null || comp.isDisposed())
+          return;
+        comp.setSize(comp.computeSize(settings.getInt("window.width",WINDOW_WIDTH), SWT.DEFAULT));
+        comp.layout();
+      }
+    };
+    Container c = new SimpleContainer(scroll.getComposite());
     
     c.addText(i18n.tr("Wählen Sie das Konto aus, für das Sie den Abruf der elektronischen Kontoauszüge konfigurieren möchten.\nFür weitere Informationen klicken Sie auf die Schaltfläche \"Hilfe\".") + "\n",true);
     c.addInput(this.getKontoAuswahl());
@@ -135,9 +158,10 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     c.addInput(this.getFolder());
     c.addInput(this.getName());
     
-    Container c2 = new SimpleContainer(parent);
+    Container c2 = new SimpleContainer(scroll.getComposite());
     c2.addInput(this.getExampleText());
     c2.addInput(this.getExample());
+    c2.addInput(new LabelInput("")); // Unten noch etwas Platzhalter
     
     Container c3 = new SimpleContainer(parent);
     ButtonArea buttons = new ButtonArea();
@@ -152,8 +176,24 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     },null,false,"window-close.png");
     c3.addButtonArea(buttons);
     
-    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
-
+    // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
+    getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
+    
+    getShell().addDisposeListener(new DisposeListener() {
+      
+      @Override
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Shell shell = getShell();
+        if (shell == null || shell.isDisposed())
+          return;
+        
+        Point size = shell.getSize();
+        Logger.debug("saving window size: " + size.x + "x" + size.y);
+        settings.setAttribute("window.width",size.x);
+        settings.setAttribute("window.height",size.y);
+      }
+    });
   }
   
   /**

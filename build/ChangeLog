@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0698 Scrollbalken in Einstellungsdialog für elektr. Kontoauszug für kleine Displays anzeigen, Fenstergröße speichern
   * NEW: 0697 BUGZILLA 1495 - automatisches Entfernen nicht unterstüzter Zeichen beim Einfügen des Verwendungszweck per Zwischenablage
   * NEW: 0696 Neue HBCI4Java-Version mit aktualisierter Server-Adresse der Sparda-Bank Berlin - https://github.com/hbci4j/hbci4java/commit/c91f6ed2c5b6b5ddc8d29c4ec6cb66428af6f15e
   * NEW: 0695 Support für dedizierte EndToEnd-ID in Umsätzen
