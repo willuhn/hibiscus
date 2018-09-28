@@ -214,6 +214,42 @@ public class UmsatzTypUtil
   }
   
   /**
+   * Vergleicht zwei Kategorien.
+   * @param t1 Kategorie 1.
+   * @param t2 Kategorie 2.
+   * @return Sortierung.
+   * @throws RemoteException
+   */
+  public static int compare(UmsatzTyp t1, UmsatzTyp t2) throws RemoteException
+  {
+    // Nicht zugeordnete Kategorien ganz am Anfang
+    if (t1 == null)
+      return -1;
+    
+    if (t2 == null)
+      return 1;
+
+    // Erst Ausgaben, dann Einnahmen, dann Rest
+    int thisType  = t1.getTyp();
+    int otherType = t2.getTyp();
+    if (thisType != otherType && thisType != UmsatzTyp.TYP_EGAL && otherType != UmsatzTyp.TYP_EGAL)
+      return thisType < otherType ? -1 : 1;
+    
+    String n1  = t1.getNummer();  if (n1  == null) n1  = "";
+    String n2  = t2.getNummer(); if (n2  == null) n2  = "";
+    String na1 = t1.getName();    if (na1 == null) na1 = "";
+    String na2 = t2.getName();   if (na2 == null) na2 = "";
+
+    // erst nach Nummer
+    int numberCompare = n1.compareTo(n2);
+    if (numberCompare != 0)
+      return numberCompare;
+    
+    // Falls Nummer identisch/leer, dann nach Name
+    return na1.compareTo(na2);
+  }
+  
+  /**
    * Virtuelle Umsatz-Typ-Bean fuer "nicht zugeordnet".
    */
   public static class UmsatzTypUnassigned implements UmsatzTyp

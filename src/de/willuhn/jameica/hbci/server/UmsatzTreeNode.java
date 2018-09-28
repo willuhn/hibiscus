@@ -270,75 +270,18 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   {
     if (o == null || !(o instanceof UmsatzTreeNode))
       return -1;
-    
-    if (this.typ == null)
-      return -1; // Wir sind "Nicht zugeordnet" - und die steht immer oben
-    
+
     UmsatzTreeNode other = (UmsatzTreeNode) o;
-    if (other.typ == null)
-      return 1; // Die sind "Nicht zugeordnet" - wir ordnen uns unter
-    
+
     try
     {
-      // BUGZILLA 512
-      // Gruppiert nach Einnahmen und Ausgaben
-      
-      // Erst Ausgaben, dann Einnahmen, dann Rest
-      int thisType  = this.typ.getTyp();
-      int otherType = other.typ.getTyp();
-      if (thisType != otherType && thisType != UmsatzTyp.TYP_EGAL && otherType != UmsatzTyp.TYP_EGAL)
-        return thisType < otherType ? -1 : 1;
-      
-      String n1  = this.typ.getNummer();  if (n1  == null) n1  = "";
-      String n2  = other.typ.getNummer(); if (n2  == null) n2  = "";
-      String na1 = this.typ.getName();    if (na1 == null) na1 = "";
-      String na2 = other.typ.getName();   if (na2 == null) na2 = "";
-
-      // erst nach Nummer
-      int numberCompare = n1.compareTo(n2);
-      if (numberCompare != 0)
-        return numberCompare;
-      
-      // Falls Nummer identisch/leer, dann nach Name
-      return na1.compareTo(na2);
+      return UmsatzTypUtil.compare(this.typ,other.typ);
     }
     catch (RemoteException re)
     {
-      Logger.error("unable to determine umsatztyp number",re);
+      Logger.error("unable to compare categories",re);
     }
     return 0;
     
   }
 }
-
-
-/*********************************************************************
- * $Log: UmsatzTreeNode.java,v $
- * Revision 1.3  2010/12/27 21:58:05  willuhn
- * @B BUGZILLA 962
- *
- * Revision 1.2  2010-12-12 23:16:16  willuhn
- * @N Alex' Patch mit der Auswertung "Summen aller Kategorien mit Einnahmen und Ausgaben"
- *
- * Revision 1.1  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- * Revision 1.6  2008/08/29 16:46:24  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.5  2008/04/27 22:22:56  willuhn
- * @C I18N-Referenzen statisch
- *
- * Revision 1.4  2007/12/06 09:29:45  willuhn
- * @D javadoc
- *
- * Revision 1.3  2007/12/05 00:09:28  willuhn
- * @N Bug 512 - Sortierung der Kategorien auch nach Name und Typ (Einnahmen vor Ausgaben)
- *
- * Revision 1.2  2007/12/04 23:59:00  willuhn
- * @N Bug 512
- *
- * Revision 1.1  2007/04/18 08:54:21  willuhn
- * @N UmsatzGroup to fetch items from UmsatzTypTree
- *
- **********************************************************************/

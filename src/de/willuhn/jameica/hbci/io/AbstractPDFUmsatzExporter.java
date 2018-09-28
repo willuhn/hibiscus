@@ -14,21 +14,20 @@ import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.PdfPCell;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ext.ExportAddSumRowExtension;
 import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.system.Application;
@@ -38,14 +37,13 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Exportiert Umsaetze im PDF-Format.
- * Der Exporter kann Umsaetze mehrerer Konten exportieren. Sie werden
- * hierbei nach Konto gruppiert.
+ * Abstrakte Basis-Implementierung fuer den Umsatz-Export im PDF-Format.
+ * @param <T> der konkrete Typ fuer die Gruppierung.
  */
-public class PDFUmsatzExporter implements Exporter
+public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> implements Exporter
 {
   private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
@@ -56,22 +54,23 @@ public class PDFUmsatzExporter implements Exporter
     if (objects == null || objects.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Umsätze aus"));
 
-    Umsatz u = (Umsatz) objects[0];
+    Umsatz first = (Umsatz) objects[0];
 
-    Date startDate     = u.getDatum();
-    Date endDate       = u.getDatum();
-    Hashtable umsaetze = new Hashtable();
+    Date startDate     = first.getDatum();
+    Date endDate       = first.getDatum();
+    Map<String,List> umsaetze = new HashMap<String,List>();
     
     if (monitor != null) 
     {
       monitor.setStatusText(i18n.tr("Ermittle zu exportierende Umsätze und Konten"));
       monitor.addPercentComplete(1);
     }
+    
+    Map<String,T> groupMap = new HashMap<String,T>();
 
     for (int i=0;i<objects.length;++i)
     {
-      u = (Umsatz) objects[i];
-      Konto k  = u.getKonto();
+      Umsatz u = (Umsatz) objects[i];
 
       // Wir ermitteln bei der Gelegenheit das Maximal- und Minimal-Datum
       Date date = u.getDatum();
@@ -81,12 +80,15 @@ public class PDFUmsatzExporter implements Exporter
         if (startDate != null && date.before(startDate)) startDate = date;
       }
 
-      // Wir gruppieren die Umsaetze nach Konto.
-      ArrayList list = (ArrayList) umsaetze.get(k.getID());
+      // Wir gruppieren die Umsaetze nach Kategorie.
+      T group = this.getGroup(u);
+      String key = group != null ? group.getID() : null;
+      groupMap.put(key,group);
+      List<Umsatz> list = umsaetze.get(key);
       if (list == null)
       {
-        list = new ArrayList();
-        umsaetze.put(k.getID(),list);
+        list = new ArrayList<Umsatz>();
+        umsaetze.put(key,list);
       }
       list.add(u);
     }
@@ -126,19 +128,17 @@ public class PDFUmsatzExporter implements Exporter
 
       
       // Iteration ueber Umsaetze
-      Enumeration konten = umsaetze.keys();
-      while (konten.hasMoreElements())
+      List<T> groupList = new ArrayList(groupMap.values());
+      this.sort(groupList);
+      for (T group:groupList)
       {
         Double sumRow = 0.0d;
-
-        String id = (String) konten.nextElement();
-        Konto konto = (Konto) Settings.getDBService().createObject(Konto.class,id);
         
-        PdfPCell cell = reporter.getDetailCell(KontoUtil.toString(konto), Element.ALIGN_CENTER,BaseColor.LIGHT_GRAY);
+        PdfPCell cell = reporter.getDetailCell(this.toString(group), Element.ALIGN_CENTER,BaseColor.LIGHT_GRAY);
         cell.setColspan(showSaldo ? 5 : 4);
         reporter.addColumn(cell);
 
-        ArrayList list = (ArrayList) umsaetze.get(id);
+        List<Umsatz> list = umsaetze.get(group != null ? group.getID() : null);
 
         if (list.size() == 0)
         {
@@ -148,10 +148,8 @@ public class PDFUmsatzExporter implements Exporter
           continue;
         }
         
-        for (int i=0;i<list.size();++i)
+        for (Umsatz u:list)
         {
-
-          u = (Umsatz)list.get(i);
           String valuta = (u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" );
           String datum  = (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : "");
           
@@ -206,15 +204,33 @@ public class PDFUmsatzExporter implements Exporter
       }
     }
   }
-
+  
   /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
+   * Liefert das Objekt, nach dem gruppiert werden soll.
+   * @param u der Umsatz.
+   * @return das Gruppierungsobjekt. Kann NULL sein.
+   * @throws RemoteException
    */
-  public String getName()
+  protected abstract T getGroup(Umsatz u) throws RemoteException;
+  
+  /**
+   * Ermoeglicht die optionale Sortierung der Gruppen vor der Ausgabe.
+   * Leere Dummy-Implementierung.
+   * @param groups die Gruppen.
+   * @throws RemoteException
+   */
+  protected void sort(List<T> groups) throws RemoteException
   {
-    return i18n.tr("PDF-Format");
   }
   
+  /**
+   * Liefert eine sprechende Bezeichnung fuer die Gruppe.
+   * @param t die Gruppe. Kann NULL sein.
+   * @return sprechende Bezeichnung der Gruppe.
+   * @throws RemoteException
+   */
+  protected abstract String toString(T t) throws RemoteException;
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */
@@ -235,7 +251,7 @@ public class PDFUmsatzExporter implements Exporter
     IOFormat format = new IOFormat() {
       public String getName()
       {
-        return i18n.tr("PDF-Format");
+        return AbstractPDFUmsatzExporter.this.getName();
       }
 
       /**
