@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0703 Wenn EREF beim Umsatzabruf per MT940 nicht korrekt aus Verwendungszweck extrahiert wurde und mehr als 100 Zeichen lang ist, dann abschneiden
   * NEW: 0702 Limit für Maximallänge des Verwendungszwecks in Umsatzbuchungen auf volle 255 Zeichen erhöht, damit auch Nicht-SEPA-Umsätze reinpassen
   * NEW: 0701 Umsatz-Export im PDF-Format jetzt wahlweise gruppierbar nach Konto oder nach Kategorie
 

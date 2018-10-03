@@ -137,8 +137,8 @@ public class Converter
       
       // Wir checken mal, ob wir eine EndToEnd-ID haben. Falls ja, tragen wir die gleich
       // in das dedizierte Feld ein
-      final String eref = clean(VerwendungszweckUtil.getTag(umsatz,Tag.EREF));
-      if (eref != null && eref.length() > 0)
+      final String eref = cleanEndToEndId(VerwendungszweckUtil.getTag(umsatz,Tag.EREF));
+      if (eref != null && eref.length() > 0 && eref.length() <= 100)
         umsatz.setEndToEndId(eref);
     }
     //
@@ -212,6 +212,35 @@ public class Converter
     //
     ////////////////////////////////////////////////////////////////////////////
     return umsatz;
+  }
+  
+  /**
+   * Bereinigt die EndToEnd-ID.
+   * Bei einem User kam es vor, dass die ID nicht korrekt geparst wurde und daher auch den ganzen
+   * Rest des Verwendungszwecks (inclusive aller weiteren SEPA-Tags) enthielt. Ich konnte den Fehler
+   * nicht reproduzieren. Damit aber das Abrufen des Umsatzes deswegen nicht fehlschlaegt, kuerzen
+   * wir in dem Fall die EndToEnd-ID so weit, dass sie rein passt.
+   * @param text die EndToEnd-ID.
+   * @return die bereinigte EndToEnd-ID.
+   */
+  public static String cleanEndToEndId(String text)
+  {
+    text = clean(text);
+    if (text.length() <= 100)
+      return text;
+    
+    // Wir koennten jetzt hier nach 100 Zeichen abschneiden. Dann wuerde aber vermutlich auch
+    // Quatsch mit drin stehen. Da die EREF aber in aller Regel keine Leerzeichen enthaelt,
+    // schneiden wir erstmal nach dem ersten Leerzeichen ab. Wenn es dann immer noch zu lang
+    // ist, koennen wir den Rest allemal noch abschneiden.
+    int pos = text.indexOf(' ');
+    if (pos > 0 && pos < 100)
+      text = text.substring(0,pos);
+    
+    if (text.length() > 100)
+      text = text.substring(0,100);
+    
+    return text;
   }
 
   /**
