@@ -136,10 +136,14 @@ public class Converter
       VerwendungszweckUtil.apply(umsatz,lines);
       
       // Wir checken mal, ob wir eine EndToEnd-ID haben. Falls ja, tragen wir die gleich
-      // in das dedizierte Feld ein
-      final String eref = cleanEndToEndId(VerwendungszweckUtil.getTag(umsatz,Tag.EREF));
-      if (eref != null && eref.length() > 0 && eref.length() <= 100)
-        umsatz.setEndToEndId(eref);
+      // in das dedizierte Feld ein. Aber nur, wenn wir noch keine haben
+      String eref = umsatz.getEndToEndId();
+      if (eref == null || eref.length() == 0)
+      {
+        eref = cleanEndToEndId(VerwendungszweckUtil.getTag(umsatz,Tag.EREF));
+        if (eref != null && eref.length() > 0 && eref.length() <= 100)
+          umsatz.setEndToEndId(eref);
+      }
     }
     //
     ////////////////////////////////////////////////////////////////////////////
