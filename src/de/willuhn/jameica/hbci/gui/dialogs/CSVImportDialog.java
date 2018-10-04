@@ -18,6 +18,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,6 +50,7 @@ import de.willuhn.jameica.hbci.io.csv.Profile;
 import de.willuhn.jameica.hbci.io.csv.ProfileUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -58,6 +60,7 @@ import de.willuhn.util.I18N;
  */
 public class CSVImportDialog extends AbstractDialog
 {
+  private final static Settings settings = new Settings(CSVImportDialog.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static String[] CHARSETS = new String[]{"UTF-8","ISO-8859-15","ISO-8859-1"};
 
@@ -213,6 +216,8 @@ public class CSVImportDialog extends AbstractDialog
         result.setSeparatorChar((String)getSeparatorChar().getValue());
         result.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
         result.setColumns(getColumns());
+        
+        settings.setAttribute(format.getType().getSimpleName() + ".defaultprofile",result.getName());
         close();
       }
     },null,false,"ok.png");
@@ -485,7 +490,21 @@ public class CSVImportDialog extends AbstractDialog
     if (this.profiles != null)
       return this.profiles;
     
-    this.profiles = new SelectInput(ProfileUtil.read(this.format),null);
+    final List<Profile> list = ProfileUtil.read(this.format);
+    final String name = settings.getString(format.getType().getSimpleName() + ".defaultprofile",null);
+    Profile p = null;
+    if (name != null)
+    {
+      for (Profile pr:list)
+      {
+        if (StringUtils.equals(pr.getName(),name))
+        {
+          p = pr;
+          break;
+        }
+      }
+    }
+    this.profiles = new SelectInput(list,p);
     this.profiles.setAttribute("name");
     this.profiles.setName(i18n.tr("Profil"));
     this.profiles.addListener(new Listener() {
