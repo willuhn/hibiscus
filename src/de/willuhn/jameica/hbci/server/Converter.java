@@ -230,7 +230,7 @@ public class Converter
   public static String cleanEndToEndId(String text)
   {
     text = clean(text);
-    if (text.length() <= 100)
+    if (text == null || text.length() == 0 || text.length() <= 100)
       return text;
     
     // Wir koennten jetzt hier nach 100 Zeichen abschneiden. Dann wuerde aber vermutlich auch
