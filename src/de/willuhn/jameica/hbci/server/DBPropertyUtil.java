@@ -283,7 +283,7 @@ public class DBPropertyUtil
     if (scope == null || scope.length() == 0)
       throw new RemoteException("no scope given");
 
-    if (scope.indexOf("%") != -1 || scope.indexOf("_") != -1)
+    if (scope.indexOf("%") != -1)
       throw new RemoteException("no wildcards allowed in scope");
     
     String localPrefix = prefix.value() + "." + scope;
@@ -309,7 +309,7 @@ public class DBPropertyUtil
     if (scope.indexOf("%") != -1 || scope.indexOf("_") != -1)
       throw new RemoteException("no wildcards allowed in scope");
 
-    if (id != null && (id.indexOf("%") != -1 || scope.indexOf("_") != -1))
+    if (id != null && (id.indexOf("%") != -1))
       throw new RemoteException("no wildcards allowed in id");
 
     String localPrefix = createIdentifier(prefix,scope,id,null);
