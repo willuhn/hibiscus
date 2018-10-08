@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0705 Parameter "search.ignore.whitespace" nicht permanent neu laden, performance-kritisch beim Laden der Umsätze
   * NEW: 0704 CSV-Import - zuletzt ausgewähltes Profil automatisch als Vorauswahl für den nächsten Import speichern
   * BUG: 0703 Wenn EREF beim Umsatzabruf per MT940 nicht korrekt aus Verwendungszweck extrahiert wurde und mehr als 100 Zeichen lang ist, dann abschneiden
   * NEW: 0702 Limit für Maximallänge des Verwendungszwecks in Umsatzbuchungen auf volle 255 Zeichen erhöht, damit auch Nicht-SEPA-Umsätze reinpassen
