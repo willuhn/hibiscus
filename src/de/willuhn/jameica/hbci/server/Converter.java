@@ -115,12 +115,13 @@ public class Converter
 
     String[] lines = (String[]) u.usage.toArray(new String[u.usage.size()]);
 
-    // Wenn es ein CAMT-Umsatz ist, koennen wir einfach die erste Zeile pauschal
-    // uebernehmen. Da gibt es ohnehin nur noch diese eine Zeile
-    if (u.isCamt)
+    if (u.isCamt && u.usage != null)
     {
-      if (lines.length > 0)
-        umsatz.setZweck(lines[0]);
+      // Wenn wir nur eine Zeile haben, koennen wir die 1:1 uebernehmen
+      if (u.usage.size() == 1)
+        umsatz.setZweck(u.usage.get(0));
+      else
+        VerwendungszweckUtil.applyCamt(umsatz,u.usage);
     }
     else
     {

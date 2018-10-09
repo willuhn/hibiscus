@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -336,6 +337,49 @@ public class VerwendungszweckUtil
     if (l.size() > 0) t.setZweck2(l.remove(0)); // Zeile 2
     if (l.size() > 0) t.setWeitereVerwendungszwecke(l.toArray(new String[l.size()])); // Zeile 3 - x
   }
+
+  /**
+   * Verteilt die angegebenen Verwendungszweck-Zeilen auf zweck, zweck2 und zweck3.
+   * @param t der Auftrag, in dem die Verwendungszweck-Zeilen gespeichert werden sollen.
+   * @param lines die zu uebernehmenden Zeilen.
+   * @throws RemoteException
+   */
+  public static void applyCamt(HibiscusTransfer t, List<String> lines) throws RemoteException
+  {
+    if (t == null || lines == null || lines.size() == 0)
+      return;
+    
+    List<String> l = clean(true,lines);
+    
+    // Wir werfen alles in einen String und verteilen es dann ohne weitere Trennungen auf die Zeilen
+    String all = StringUtils.join(l,"");
+
+    // 1. Passt alles in Zeile 1?
+    if (all.length() <= 255)
+    {
+      t.setZweck(all);
+      return;
+    }
+
+    // Ne, dann Zweck 1 abschneiden
+    t.setZweck(all.substring(0,255));
+    all = all.substring(255);
+
+    // 2. Passt der Rest in Zeile 2?
+    int limit = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
+    if (all.length() <= limit)
+    {
+      t.setZweck2(all);
+      return;
+    }
+    
+    // Ne, dann Zweck 2 abschneiden
+    t.setZweck2(all.substring(0,limit));
+    all = all.substring(limit);
+    
+    // Den Rest verteilen
+    t.setWeitereVerwendungszwecke(parse(all));
+  }
   
   /**
    * Bricht die Verwendungszweck-Zeilen auf $limit Zeichen lange Haeppchen neu um.
@@ -481,8 +525,21 @@ public class VerwendungszweckUtil
    */
   private static List<String> clean(boolean trim, String... lines)
   {
+    return clean(trim,lines != null ? Arrays.asList(lines) : null);
+  }
+
+  /**
+   * Bereinigt die Verwendungszweck-Zeilen.
+   * Hierbei werden leere Zeilen oder NULL-Elemente entfernt.
+   * Ausserdem werden alle Zeilen getrimt.
+   * @param trim wenn die Zeilen-Enden getrimmt werden sollen.
+   * @param lines die zu bereinigenden Zeilen.
+   * @return die bereinigten Zeilen.
+   */
+  private static List<String> clean(boolean trim, List<String> lines)
+  {
     List<String> result = new ArrayList<String>();
-    if (lines == null || lines.length == 0)
+    if (lines == null || lines.size() == 0)
       return result;
     
     for (String line:lines)

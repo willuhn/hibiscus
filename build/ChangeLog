@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0706 Wenn die Bank trotz CAMT die Verwendungszweck-Zeilen alle 27 Zeichen trennt, dann neu zusammensetzen - siehe https://homebanking-hilfe.de/forum/topic.php?p=140438#real140438
   * CHG: 0705 Parameter "search.ignore.whitespace" nicht permanent neu laden, performance-kritisch beim Laden der Umsätze
   * NEW: 0704 CSV-Import - zuletzt ausgewähltes Profil automatisch als Vorauswahl für den nächsten Import speichern
   * BUG: 0703 Wenn EREF beim Umsatzabruf per MT940 nicht korrekt aus Verwendungszweck extrahiert wurde und mehr als 100 Zeichen lang ist, dann abschneiden
