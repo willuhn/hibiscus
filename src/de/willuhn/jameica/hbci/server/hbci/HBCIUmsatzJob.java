@@ -438,7 +438,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     
     try
     {
-      String storeCamt = StringUtils.trimToNull(settings.getString("umsatz.camt.booked.path",null));
+      String storeCamt = StringUtils.trimToNull(settings.getString("umsatz.camt.path",null));
       if (storeCamt == null)
         return;
       

@@ -1,6 +1,6 @@
 HEAD 2.9 (nightly)
 
-  * NEW: 0710 Die rohen CAMT-Daten können jetzt per "umsatz.camt.booked.path=<Pfad>" in 'de.willuhn.jameica.hbci.HBCI.properties' gespeichert werden
+  * NEW: 0710 Die rohen CAMT-Daten können jetzt per "umsatz.camt.path=<Pfad>" in 'de.willuhn.jameica.hbci.HBCI.properties' gespeichert werden
   * DEL: 0709 Zusätzliche Längenprüfung unter Berücksichtigung des "ß" entfernt - in SEPA-Zeiten vermutlich nicht mehr nötig
   * DEL: 0708 Hinweis mit der Längenbeschränkung der Verwendungszweck-Zeilen beim manuellen Bearbeiten eines Umsatzes entfernt
   * NEW: 0707 Neue HBCI4Java-Version mit Trimmen von Leerzeichen bei Umsatzabruf per CAMT - https://github.com/hbci4j/hbci4java/commit/7bba2509cc97f66aa932d916ae6a229170121448
