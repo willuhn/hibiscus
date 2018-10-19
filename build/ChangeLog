@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * DEL: 0708 Hinweis mit der Längenbeschränkung der Verwendungszweck-Zeilen beim manuellen Bearbeiten eines Umsatzes entfernt
   * NEW: 0707 Neue HBCI4Java-Version mit Trimmen von Leerzeichen bei Umsatzabruf per CAMT - https://github.com/hbci4j/hbci4java/commit/7bba2509cc97f66aa932d916ae6a229170121448
   * NEW: 0706 Wenn die Bank trotz CAMT die Verwendungszweck-Zeilen alle 27 Zeichen trennt, dann neu zusammensetzen - siehe https://homebanking-hilfe.de/forum/topic.php?p=140438#real140438
   * CHG: 0705 Parameter "search.ignore.whitespace" nicht permanent neu laden, performance-kritisch beim Laden der Umsätze
