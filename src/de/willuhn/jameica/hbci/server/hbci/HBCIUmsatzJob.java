@@ -9,7 +9,14 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server.hbci;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,13 +24,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
+import org.kapott.hbci.comm.Comm;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -180,6 +190,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     // Gebuchte Umsaetze
     if (booked != null && booked.size() > 0)
     {
+      this.dumpCamt(result.camtBooked,true);
+      
       int created = 0;
       int skipped = 0;
       Logger.info("applying booked entries");
@@ -275,6 +287,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
       if (unbooked != null && unbooked.size() > 0)
       {
+        this.dumpCamt(result.camtNotBooked,false);
+
         List<Umsatz> fetched = new ArrayList<Umsatz>();
         
         int created = 0;
@@ -410,6 +424,86 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     ////////////////////////////////////////////////////////////////////////////
 
     Logger.info("umsatz list fetched successfully");
+  }
+  
+  /**
+   * Schreibt die rohen CAMT-Daten in einen Ordner. 
+   * @param camt die CAMT-Daten.
+   * @param booked true, wenn es sich um gebuchte Umsaetze handelt.
+   */
+  private void dumpCamt(List<String> camt, boolean booked)
+  {
+    if (camt == null || camt.size() == 0)
+      return;
+    
+    try
+    {
+      String storeCamt = StringUtils.trimToNull(settings.getString("umsatz.camt.booked.path",null));
+      if (storeCamt == null)
+        return;
+      
+      Logger.info("dump CAMT data into " + storeCamt);
+      
+      File dir = new File(storeCamt);
+      if (!dir.exists() && !dir.mkdirs())
+      {
+        Logger.warn("unable to create folder " + dir);
+        return;
+      }
+
+      if (!dir.canWrite())
+      {
+        Logger.warn("unable to write into folder " + dir);
+        return;
+      }
+      
+      final Date date = new Date();
+      for (String data:camt)
+      {
+        File f = this.createFile(dir,date,booked);
+        Logger.info("dump CAMT data into " + f);
+        
+        OutputStream os = null;
+        try
+        {
+          os = new BufferedOutputStream(new FileOutputStream(f));
+          os.write(data.getBytes(Comm.ENCODING));
+        }
+        finally
+        {
+          IOUtil.close(os);
+        }
+      }
+      
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to dump raw CAMt data",e);
+    }
+  }
+  
+  /**
+   * Erzeugt einen freien Dateinamen.
+   * @param dir der Ordner.
+   * @param date das Datum.
+   * @param booked true, wenn es gebuchte Umsaetze sind.
+   * @return die Datei.
+   * @throws IOException
+   */
+  private File createFile(File dir, Date date, boolean booked) throws IOException
+  {
+    // Wir nehmen den aktuellen Zeistempel als Dateiname
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd.HH-mm-ss.SSS");
+    
+    File f = null;
+    for (int i=0;i<1000;++i)
+    {
+      f = new File(dir,df.format(date) + "-" + (booked ? "booked" : "notbooked") + (i > 0 ? ("-" + i) : "") + ".xml");
+      if (!f.exists())
+        return f;
+    }
+    
+    throw new IOException("cannot create file " + f + ", already exists");
   }
   
   /**
