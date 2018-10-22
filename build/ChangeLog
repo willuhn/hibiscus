@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0711 BUGZILLA 1863 - Daten des elektronischen Kontoauszuges bearbeitbar
   * NEW: 0710 Die rohen CAMT-Daten können jetzt per "umsatz.camt.path=<Pfad>" in 'de.willuhn.jameica.hbci.HBCI.properties' gespeichert werden
   * DEL: 0709 Zusätzliche Längenprüfung unter Berücksichtigung des "ß" entfernt - in SEPA-Zeiten vermutlich nicht mehr nötig
   * DEL: 0708 Hinweis mit der Längenbeschränkung der Verwendungszweck-Zeilen beim manuellen Bearbeiten eines Umsatzes entfernt

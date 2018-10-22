@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchKontoauszug;
 import de.willuhn.jameica.hbci.gui.action.KontoKontoauszugReceipt;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugDelete;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugDetail;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugExport;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugImport;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugMarkRead;
@@ -44,18 +45,20 @@ public class KontoauszugPdfList extends ContextMenu
 	 */
 	public KontoauszugPdfList()
 	{
-		addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"),            new KontoauszugOpen(),"application-pdf.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Speichern unter..."),      new KontoauszugSave(),"document-save.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),              new KontoauszugDelete(),"user-trash-full.png"));
+		addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"),              new KontoauszugOpen(),"application-pdf.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Bearbeiten"),          new KontoauszugDetail(),"document-open.png"));
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Speichern unter..."),  new KontoauszugSave(),"document-save.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),                new KontoauszugDelete(),"user-trash-full.png"));
+    // addItem(new CheckedContextMenuItem(i18n.tr("Dateien verschieben..."),    new KontoauszugMove(),"edit-copy.png"));
 		addItem(ContextMenuItem.SEPARATOR);
     addItem(new SCCheckedContextMenuItem(i18n.tr("Als gelesen markieren"),   new KontoauszugMarkRead(),"emblem-default.png","ALT+G"));
     addItem(new SCCheckedContextMenuItem(i18n.tr("Als ungelesen markieren"), new KontoauszugMarkUnread(),"edit-undo.png","CTRL+ALT+G"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Kontoauszüge abrufen..."),        new KontoFetchKontoauszug(),"mail-send-receive.png"));
+    addItem(new ContextMenuItem(i18n.tr("Kontoauszüge abrufen..."),          new KontoFetchKontoauszug(),"mail-send-receive.png"));
     addItem(new UnsentCheckedContextMenuItem(i18n.tr("Empfangsquittung senden..."), new KontoKontoauszugReceipt(),"mail-forward.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),          new KontoauszugExport(),"document-save.png"));
-    addItem(new ContextMenuItem(i18n.tr("Importieren..."),                 new KontoauszugImport(),"document-open.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),            new KontoauszugExport(),"document-save.png"));
+    addItem(new ContextMenuItem(i18n.tr("Importieren..."),                   new KontoauszugImport(),"document-open.png"));
 	}
 	
 	/**
