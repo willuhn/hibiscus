@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0713 Neue HBCI4Java-Version mit korrigierten Umsatzabruf per CAMT auf Konten mit Soll-Saldo, Zwischensummen waren u.U. falsch - https://github.com/hbci4j/hbci4java/commit/5bac6886d5ef8f0c08aec8cc5c5ff35d866ce221
   * NEW: 0712 Kopieren/Verschieben der Kontoauszugsdateien jetzt möglich
   * NEW: 0711 BUGZILLA 1863 - Daten des elektronischen Kontoauszuges bearbeitbar
   * NEW: 0710 Die rohen CAMT-Daten können jetzt per "umsatz.camt.path=<Pfad>" in 'de.willuhn.jameica.hbci.HBCI.properties' gespeichert werden
