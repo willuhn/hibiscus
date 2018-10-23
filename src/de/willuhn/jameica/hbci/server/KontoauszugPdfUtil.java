@@ -809,6 +809,32 @@ public class KontoauszugPdfUtil
     Logger.debug(reason + " - support forced: " + ignoreSupport);
     return ignoreSupport;
   }
+  
+  /**
+   * Liefert eine String-Repraesentation des Kontoauszuges.
+   * @param k der Kontoauszug.
+   * @return die String-Repraesentation.
+   * @throws RemoteException
+   */
+  public static String toString(Kontoauszug k) throws RemoteException
+  {
+    if (k == null)
+      return "";
+    
+    Date von = k.getVon();
+    Date bis = k.getBis();
+    if (von != null && bis != null)
+      return i18n.tr("Kontoauszug {0} - {1}",HBCI.DATEFORMAT.format(von),HBCI.DATEFORMAT.format(bis));
+    
+    Integer jahr = k.getJahr();
+    Integer nr   = k.getNummer();
+    
+    if (jahr != null && nr != null)
+      return i18n.tr("Kontoauszug {0}/{1}",jahr.toString(),nr.toString());
+
+    Date erstellt = k.getErstellungsdatum();
+    return i18n.tr("Kontoauszug vom {0}",HBCI.DATEFORMAT.format(erstellt != null ? erstellt : k.getAusfuehrungsdatum()));
+  }
 }
 
 

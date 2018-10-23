@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoauszugExport;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugImport;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugMarkRead;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugMarkUnread;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugMove;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugOpen;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugSave;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
@@ -49,7 +50,7 @@ public class KontoauszugPdfList extends ContextMenu
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Bearbeiten"),          new KontoauszugDetail(),"document-open.png"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Speichern unter..."),  new KontoauszugSave(),"document-save.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),                new KontoauszugDelete(),"user-trash-full.png"));
-    // addItem(new CheckedContextMenuItem(i18n.tr("Dateien verschieben..."),    new KontoauszugMove(),"edit-copy.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Dateien verschieben..."),    new KontoauszugMove(),"edit-copy.png"));
 		addItem(ContextMenuItem.SEPARATOR);
     addItem(new SCCheckedContextMenuItem(i18n.tr("Als gelesen markieren"),   new KontoauszugMarkRead(),"emblem-default.png","ALT+G"));
     addItem(new SCCheckedContextMenuItem(i18n.tr("Als ungelesen markieren"), new KontoauszugMarkUnread(),"edit-undo.png","CTRL+ALT+G"));
