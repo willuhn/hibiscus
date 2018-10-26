@@ -44,6 +44,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static transient Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
+  private final static transient boolean ignorewhitespace = settings.getBoolean("search.ignore.whitespace",true);
   
   private final static transient Map<String,Pattern> patternCache = new HashMap<String,Pattern>();
 
@@ -283,7 +284,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       art   = art.toLowerCase();
       purp  = purp.toLowerCase();
 
-      if (settings.getBoolean("search.ignore.whitespace",true))
+      if (ignorewhitespace)
       {
         zweck = StringUtils.deleteWhitespace(zweck);
         name = StringUtils.deleteWhitespace(name); // BUGZILLA 1705 - auch im Namen koennen Leerzeichen sein

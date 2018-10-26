@@ -13,7 +13,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -24,7 +23,6 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextAreaInput;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
@@ -39,7 +37,6 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -166,37 +163,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     if (this.zweck != null)
       return this.zweck;
 
-    final int max = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
-
-    this.zweck = new TextAreaInput("")
-    {
-      /**
-       * @see de.willuhn.jameica.gui.input.TextAreaInput#update()
-       */
-      @Override
-      protected void update() throws OperationCanceledException
-      {
-        super.update();
-        
-        Control c = this.getControl();
-        if (c.isDisposed())
-          return;
-        
-        // Laenge des Verwendungszweck pruefen
-        String[] lines = VerwendungszweckUtil.split((String)zweck.getValue());
-        
-        for (int i = 0; i < lines.length; i++)
-        {
-          String line = lines[i];
-          if (line == null || line.length() <= max)
-            continue;
-          
-          c.setBackground(Color.MANDATORY_BG.getSWTColor());
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Jede Zeile des Verwendungszwecks darf maximal {0} Zeichen lang sein. Zeile {1} ist {2} Zeichen lang.", ""+max , ""+(i+1), ""+line.length()) ,StatusBarMessage.TYPE_INFO));
-          return;
-        }
-      }
-    };
+    this.zweck = new TextAreaInput("");
     return this.zweck;
   }
 

@@ -246,7 +246,7 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
   @Override
   public String getName1() throws RemoteException
   {
-    return (String) this.getAttribute("nam1");
+    return (String) this.getAttribute("name1");
   }
 
   /**

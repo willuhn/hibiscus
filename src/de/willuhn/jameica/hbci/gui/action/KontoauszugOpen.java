@@ -40,6 +40,9 @@ public class KontoauszugOpen implements Action
     Kontoauszug k = (Kontoauszug) context;
     
     File file = KontoauszugPdfUtil.getFile(k);
+    if (!file.exists() || !file.canRead())
+      throw new ApplicationException(i18n.tr("Datei existiert nicht oder ist nicht lesbar"));
+    
     new Program().handleAction(file);
     
     // Als gelesen markieren, sobald er geoeffnet wurde

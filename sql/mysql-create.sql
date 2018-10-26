@@ -425,6 +425,7 @@ CREATE INDEX idx_sepadauerauftrag_konto ON sepadauerauftrag(konto_id);
 CREATE INDEX idx_kontoauszug_konto ON kontoauszug(konto_id);
 CREATE INDEX idx_kontoauszug_gelesen ON kontoauszug(gelesen_am);
 
+SET FOREIGN_KEY_CHECKS=OFF;
 ALTER TABLE lastschrift ADD CONSTRAINT fk_lastschrift_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE sueberweisung ADD CONSTRAINT fk_sueberweisung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE umsatztyp ADD CONSTRAINT fk_umsatztyp_umsatztyp FOREIGN KEY (parent_id) REFERENCES umsatztyp (id);
@@ -444,6 +445,7 @@ ALTER TABLE sepasueb ADD CONSTRAINT fk_sepasueb_konto FOREIGN KEY (konto_id) REF
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasuebbuchung_sepasueb FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id);
 ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_sepadauerauftrag_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE kontoauszug ADD CONSTRAINT fk_kontoauszug_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+SET FOREIGN_KEY_CHECKS=ON;
 
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;

@@ -116,8 +116,6 @@ public class CamtUmsatzImporter implements Importer
         if (monitor != null)
         {
           monitor.log(i18n.tr("Umsatz {0}", "" + (i+1)));
-          // Mit diesem Factor sollte sich der Fortschrittsbalken
-          // bis zum Ende der Swift-MT940-Datei genau auf 100% bewegen
           monitor.setPercentComplete((int)((i+1) * factor));
         }
 
