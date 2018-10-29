@@ -347,7 +347,7 @@ public class UmsatzDetailControl extends AbstractControl
 	{
 		if (this.art == null)
 		{
-      this.art = new TextInput(getUmsatz().getArt());
+      this.art = new TextInput(getUmsatz().getArt(),500);
       this.art.setEnabled(false);
 		}
 		return this.art;

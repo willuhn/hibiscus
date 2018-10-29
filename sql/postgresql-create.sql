@@ -164,7 +164,7 @@ CREATE TABLE umsatz (
   valuta date NOT NULL,
   saldo float,
   primanota varchar(100),
-  art varchar(100),
+  art varchar(500),
   customerref varchar(100),
   kommentar varchar(1000) NULL,
   checksum numeric NULL,
@@ -392,4 +392,4 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',63);
+INSERT INTO version (name,version) values ('db',65);
