@@ -293,7 +293,7 @@ CREATE TABLE umsatz (
      , valuta DATE NOT NULL
      , saldo DOUBLE
      , primanota VARCHAR(100)
-     , art VARCHAR(100)
+     , art VARCHAR(500)
      , customerref VARCHAR(100)
      , kommentar TEXT
      , checksum bigint(16)
@@ -475,4 +475,4 @@ ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
-INSERT INTO version (name,version) values ('db',64);
+INSERT INTO version (name,version) values ('db',65);
