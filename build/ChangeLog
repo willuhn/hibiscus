@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0715 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.12.2018 (enthaelt auch ein Fix, das dazu fuehrte, dass auch bei korrekten Pruefziffern angezeigt wurde, die Pruefziffer sei nicht kontrolliert worden)
   * NEW: 0714 Spalte "art" in Tabelle "umsatz" auf 500 Zeichen vergrößert - siehe https://homebanking-hilfe.de/forum/topic.php?p=140726
   
 2018-10-26 Version 2.8.5
