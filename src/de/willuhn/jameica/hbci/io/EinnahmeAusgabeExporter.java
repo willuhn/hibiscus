@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -56,13 +55,13 @@ public class EinnahmeAusgabeExporter implements Exporter
     try
     {
       reporter = new Reporter(os, monitor, i18n.tr("Einnahmen/Ausgaben"), getZeitraum(data), data.length);
-      reporter.addHeaderColumn(i18n.tr("Konto"),        Element.ALIGN_CENTER, 100, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Anfangssaldo"), Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Einnahmen"),    Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Ausgaben"),     Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Endsaldo"),     Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Plus/Minus"),   Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Differenz"),    Element.ALIGN_CENTER,  60, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Konto"),        Element.ALIGN_CENTER, 100, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Anfangssaldo"), Element.ALIGN_CENTER,  60, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Einnahmen"),    Element.ALIGN_CENTER,  60, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Ausgaben"),     Element.ALIGN_CENTER,  60, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Endsaldo"),     Element.ALIGN_CENTER,  60, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Plus/Minus"),   Element.ALIGN_CENTER,  60, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Differenz"),    Element.ALIGN_CENTER,  60, Reporter.COLOR_BG);
       reporter.createHeader();
 
       for (EinnahmeAusgabeZeitraum e:data)
@@ -159,16 +158,16 @@ public class EinnahmeAusgabeExporter implements Exporter
     PdfPCell cell = reporter.getDetailCell(ea.getText(), Element.ALIGN_LEFT);
     cell.setPaddingLeft(indent);
     reporter.addColumn(cell);
-    reporter.addColumn(reporter.getDetailCell(ea.getAnfangssaldo(),BaseColor.BLACK));
-    reporter.addColumn(reporter.getDetailCell(ea.getEinnahmen(),BaseColor.BLACK));
-    reporter.addColumn(reporter.getDetailCell(ea.getAusgaben(),BaseColor.BLACK));
-    reporter.addColumn(reporter.getDetailCell(ea.getEndsaldo(),BaseColor.BLACK));
+    reporter.addColumn(reporter.getDetailCell(ea.getAnfangssaldo(),Reporter.COLOR_FG));
+    reporter.addColumn(reporter.getDetailCell(ea.getEinnahmen(),Reporter.COLOR_FG));
+    reporter.addColumn(reporter.getDetailCell(ea.getAusgaben(),Reporter.COLOR_FG));
+    reporter.addColumn(reporter.getDetailCell(ea.getEndsaldo(),Reporter.COLOR_FG));
     
     double sum = ea.getPlusminus();
-    reporter.addColumn(reporter.getDetailCell(sum,sum >= 0.01d ? BaseColor.GREEN : (sum <= -0.01d ? BaseColor.RED : BaseColor.BLACK)));
+    reporter.addColumn(reporter.getDetailCell(sum,sum >= 0.01d ? Reporter.COLOR_GREEN : (sum <= -0.01d ? Reporter.COLOR_RED : Reporter.COLOR_FG)));
     
     double diff = ea.getDifferenz();
-    reporter.addColumn(reporter.getDetailCell(diff,Math.abs(diff) >= 0.01d ? BaseColor.RED : BaseColor.BLACK));
+    reporter.addColumn(reporter.getDetailCell(diff,Math.abs(diff) >= 0.01d ? Reporter.COLOR_RED : Reporter.COLOR_FG));
     reporter.setNextRecord();
   }
   

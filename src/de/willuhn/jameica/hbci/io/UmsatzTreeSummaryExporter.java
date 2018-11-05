@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPCell;
 
@@ -49,8 +48,8 @@ public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
     {
       reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), this.getSubTitle(tree), list.size());
 
-      reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130,BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Betrag"), Element.ALIGN_CENTER, 30,BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Kategorie"), Element.ALIGN_CENTER, 130,Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Betrag"), Element.ALIGN_CENTER, 30,Reporter.COLOR_BG);
       reporter.createHeader();
 
       // Iteration ueber die Kategorien
