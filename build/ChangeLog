@@ -1,6 +1,8 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0717 Neuberechnung der Zwischensummen bei allen Konten erlauben - nicht nur bei Offline-Konten
   * NEW: 0716 Farbe Grün und Rot beim PDF-Export etwas dunkler gestaltet, damit es beim Ausdruck in Schwarz/Weiss besser lesbar ist
+  
 2018-11-01 Version 2.8.6
 
   * NEW: 0715 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.12.2018 (enthaelt auch ein Fix, das dazu fuehrte, dass auch bei korrekten Pruefziffern angezeigt wurde, die Pruefziffer sei nicht kontrolliert worden)
