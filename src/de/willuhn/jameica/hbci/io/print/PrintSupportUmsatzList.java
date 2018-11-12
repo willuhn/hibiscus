@@ -127,7 +127,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
       border.setGapSize(3);
       look.setCellBorder(border);
       
-      GridPrint table = new GridPrint("l:p:n, l:d:n, l:p:g, r:p:n, r:p:n",look);
+      GridPrint table = new GridPrint("l:42pt:n, l:90pt:n, l:p:g, r:42pt:n, r:44pt:n",look);
       table.addHeader(new NoBreakPrint(new TextPrint(i18n.tr("Valuta/Datum"),fontTinyBold)));
       table.addHeader(new TextPrint(i18n.tr("Gegenkonto"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Verwendungszweck"),fontTinyBold));
@@ -162,10 +162,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
             if (kto != null && kto.length() > 0 && blz != null && blz.length() > 0)
             {
               String gi = HBCIProperties.getNameForBank(blz);
-              if (gi != null && gi.length() > 0)
-                sb.append(i18n.tr("Kto. {0}, {1}",kto,gi));
-              else
-                sb.append(i18n.tr("Kto. {0}, BLZ {1}",kto,blz));
+              sb.append(i18n.tr("{0}\n{1}",kto,gi != null && gi.length() > 0 ? gi : blz));
             }
           }
 
