@@ -67,7 +67,7 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(new AccountItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"ueberweisung.png"));
     addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"lastschrift.png"));
     addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"dauerauftrag.png"));
-    addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png").offlineAccount());
+    addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png",true));
 
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Konten exportieren..."),new KontoExport(),"document-save.png"));
@@ -86,28 +86,32 @@ public class KontoList extends ContextMenu implements Extendable
   private class AccountItem extends CheckedSingleContextMenuItem
   {
     private boolean offline = false;
-    
+
     /**
      * ct.
      * @param text
      * @param a
      * @param icon
      */
-    public AccountItem(String text, Action a, String icon)
+    private AccountItem(String text, Action a, String icon)
     {
-      super(text, a, icon);
+      this(text, a, icon,false);
     }
 
+
     /**
-     * Erlaubt die Verwendung nur fuer Offline-Konten.
-     * @return das modifizierte Objekt.
+     * ct.
+     * @param text
+     * @param a
+     * @param icon
+     * @param offline true, wenn die Funktion nur bei Offline-Konten verfuegbar sein soll.
      */
-    public AccountItem offlineAccount()
+    private AccountItem(String text, Action a, String icon, boolean offline)
     {
-      this.offline = true;
-      return this;
+      super(text, a, icon);
+      this.offline = offline;
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -119,7 +123,10 @@ public class KontoList extends ContextMenu implements Extendable
           return false;
 
         Konto k = (Konto)o;
-        return !k.hasFlag(Konto.FLAG_DISABLED) && k.hasFlag(Konto.FLAG_OFFLINE) == offline;
+        if (k.hasFlag(Konto.FLAG_DISABLED))
+          return false;
+        
+        return k.hasFlag(Konto.FLAG_OFFLINE) == offline;
       }
       catch (RemoteException re)
       {
@@ -165,7 +172,7 @@ public class KontoList extends ContextMenu implements Extendable
       this.setText(i18n.tr("Erweitert"));
       this.setImage(SWTUtil.getImage("emblem-symbolic-link.png"));
       addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo und Datum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
-      addItem(new AccountItem(i18n.tr("Salden neu berechnen..."), new KontoRecalculateOfflineSaldo(),"accessories-calculator.png").offlineAccount());
+      addItem(new AccountItem(i18n.tr("Salden neu berechnen..."), new KontoRecalculateOfflineSaldo(),"accessories-calculator.png"));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto deaktivieren..."), new KontoDisable(),"network-offline.png",false));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto aktivieren..."), new FlaggableChange(Konto.FLAG_DISABLED,false),"network-transmit-receive.png",true));
     }
