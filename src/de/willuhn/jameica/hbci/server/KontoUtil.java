@@ -361,12 +361,13 @@ public class KontoUtil
    * @param konto das Konto.
    * @param from Start-Datum.
    * @param to End-Datum.
+   * @param onlyBooked true, wenn nur die gebuchten Umsaetze beruecksichtigt werden sollen. False, wenn auch die Vormerkbuchungen beruecksichtigt werden sollen.
    * @return Summe der Ausgaben.
    * @throws RemoteException
    */
-  public static double getAusgaben(Konto konto, Date from, Date to) throws RemoteException
+  public static double getAusgaben(Konto konto, Date from, Date to, boolean onlyBooked) throws RemoteException
   {
-    return getSumme(konto, from, to, true);
+    return getSumme(konto, from, to, true, onlyBooked);
   }
 
   /**
@@ -374,12 +375,13 @@ public class KontoUtil
    * @param konto das Konto.
    * @param from Start-Datum.
    * @param to End-Datum.
+   * @param onlyBooked true, wenn nur die gebuchten Umsaetze beruecksichtigt werden sollen. False, wenn auch die Vormerkbuchungen beruecksichtigt werden sollen.
    * @return Summe der Einnahmen.
    * @throws RemoteException
    */
-  public static double getEinnahmen(Konto konto, Date from, Date to) throws RemoteException
+  public static double getEinnahmen(Konto konto, Date from, Date to, boolean onlyBooked) throws RemoteException
   {
-    return getSumme(konto, from, to, false);
+    return getSumme(konto, from, to, false, onlyBooked);
   }
   
   /**
@@ -409,11 +411,12 @@ public class KontoUtil
    * @param konto das Konto.
    * @param from Start-Datum.
    * @param to End-Datum.
-   * @param ausgaben
+   * @param ausgaben true, wenn die Ausgaben summiert werden sollen. Wenn false angegeben ist, werden die Einnahmen summiert.
+   * @param onlyBooked true, wenn nur die gebuchten Umsaetze beruecksichtigt werden sollen. False, wenn auch die Vormerkbuchungen beruecksichtigt werden sollen.
    * @return Summe.
    * @throws RemoteException
    */
-  private static double getSumme(Konto konto, Date from, Date to, boolean ausgaben) throws RemoteException
+  private static double getSumme(Konto konto, Date from, Date to, boolean ausgaben, boolean onlyBooked) throws RemoteException
   {
     if (konto.isNewObject())
       return 0.0d;
@@ -421,6 +424,10 @@ public class KontoUtil
     ArrayList params = new ArrayList();
 
     String sql = "select SUM(betrag) from umsatz where konto_id = " + konto.getID() + " and betrag " + (ausgaben ? "<" : ">") + " 0";
+    
+    if (onlyBooked)
+      sql += " and (flags is null or flags < " + Umsatz.FLAG_NOTBOOKED + ")";
+
     if (from != null)
     {
       params.add(new java.sql.Date(DateUtil.startOfDay(from).getTime()));

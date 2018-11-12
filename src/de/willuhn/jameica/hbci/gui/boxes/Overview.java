@@ -263,14 +263,14 @@ public class Overview extends AbstractBox implements Box
         while (i.hasNext())
         {
           Konto k = (Konto) i.next();
-          in  += KontoUtil.getEinnahmen(k,startDate,endDate);
-          out += KontoUtil.getAusgaben(k,startDate,endDate);
+          in  += KontoUtil.getEinnahmen(k,startDate,endDate,false);
+          out += KontoUtil.getAusgaben(k,startDate,endDate,false);
         }
       }
       else
       {
-        in  = KontoUtil.getEinnahmen((Konto) konto,startDate,endDate);
-        out = KontoUtil.getAusgaben((Konto) konto,startDate,endDate);
+        in  = KontoUtil.getEinnahmen((Konto) konto,startDate,endDate,false);
+        out = KontoUtil.getAusgaben((Konto) konto,startDate,endDate,false);
       }
       out = Math.abs(out); // BUGZILLA 405
       getAusgaben().setValue(HBCI.DECIMALFORMAT.format(out));

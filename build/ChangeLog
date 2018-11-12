@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0719 Einnahmen/Ausgaben: In den Spalten "Einnahmen" und "Ausgaben" wurden Vormerkbuchungen fälschlicherweise mit berücksichtigt
   * CHG: 0718 Spaltenbreiten beim Druck der Umsatzliste angepasst. Durch die langen CAMT-Verwendungszwecke wurde die Zweck-Spalte zu breit - https://homebanking-hilfe.de/forum/topic.php?p=140955#real140955
   * NEW: 0717 Neuberechnung der Zwischensummen bei allen Konten erlauben - nicht nur bei Offline-Konten
   * NEW: 0716 Farbe Grün und Rot beim PDF-Export etwas dunkler gestaltet, damit es beim Ausdruck in Schwarz/Weiss besser lesbar ist
