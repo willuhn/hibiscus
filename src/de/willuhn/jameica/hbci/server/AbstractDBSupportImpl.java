@@ -160,7 +160,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport
     // unverschluesselt
     boolean encrypted = value.startsWith(PREFIX_ENC);
     boolean doEncrypt = HBCIDBService.SETTINGS.getBoolean("encrypt",false);
-
+    
     try
     {
       if (encrypted)
@@ -171,16 +171,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport
         // Wert ist schon verschluesselt - wir entschluesseln ihn und liefern ihn zurueck
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         Application.getSSLFactory().decrypt(new ByteArrayInputStream(Base64.decode(value)),bos);
-        String result = bos.toString("UTF-8");
-        
-        // Wert wieder unverschluesselt speichern, wenn der User keine Verschluesselung (mehr) moechte
-        if (!doEncrypt)
-        {
-          Logger.info("undo encryption for key " + key);
-          HBCIDBService.SETTINGS.setAttribute(key,result);
-        }
-        
-        return result;
+        return bos.toString("UTF-8");
       }
       
       
