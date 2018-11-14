@@ -159,7 +159,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport
     // Falls der Wert bereits verschluesselt war, speichern wir ihn wieder
     // unverschluesselt
     boolean encrypted = value.startsWith(PREFIX_ENC);
-    boolean doEncrypt = HBCIDBService.SETTINGS.getBoolean("encrypt",true);
+    boolean doEncrypt = HBCIDBService.SETTINGS.getBoolean("encrypt",false);
 
     try
     {
