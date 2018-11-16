@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0721 BUGZILLA 1872: Auch bei deaktivierter Checksummenprüfung von IBANs zumindest bei deutschen IBANs die Länge von 22 Zeichen prüfen
   * BUG: 0720 Nachtrag zu 0717: Freigabe des Kontextmenüeintrages fehlte noch
   * BUG: 0719 Einnahmen/Ausgaben: In den Spalten "Einnahmen" und "Ausgaben" wurden Vormerkbuchungen fälschlicherweise mit berücksichtigt
   * CHG: 0718 Spaltenbreiten beim Druck der Umsatzliste angepasst. Durch die langen CAMT-Verwendungszwecke wurde die Zweck-Spalte zu breit - https://homebanking-hilfe.de/forum/topic.php?p=140955#real140955

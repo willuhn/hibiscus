@@ -590,14 +590,21 @@ public class HBCIProperties
    */
   public final static IBAN getIBAN(String iban) throws ApplicationException
   {
-    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
-      return null;
-
     if (StringUtils.trimToNull(iban) == null)
       return null;
     
     iban = StringUtils.deleteWhitespace(iban);
     
+    if (iban == null || iban.length() == 0)
+      return null;
+    
+    // BUGZILLA 1872: Wir checken selbst bei deaktivierter Pruefung wenigstens bei deutschen IBANs die Laenge
+    if (iban.toLowerCase().startsWith("de") && iban.length() != 22)
+      throw new ApplicationException(i18n.tr("Bitte prüfen Sie die Länge der IBAN"));
+
+    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
+      return null;
+
     try
     {
       return new IBAN(iban);
