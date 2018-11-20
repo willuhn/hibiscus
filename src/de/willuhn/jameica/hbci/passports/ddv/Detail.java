@@ -90,7 +90,7 @@ public class Detail extends AbstractView
       {
         control.handleChangeBankData();
       }
-    },null,false,"system-user.png");
+    },null,false,"system-users.png");
     buttonArea.addButton(i18n.tr("Speichern"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
