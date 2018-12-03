@@ -274,6 +274,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String kom   = StringUtils.trimToEmpty(umsatz.getKommentar());
     String art   = StringUtils.trimToEmpty(umsatz.getArt());
     String purp  = StringUtils.trimToEmpty(umsatz.getPurposeCode());
+    String e2eid = StringUtils.trimToEmpty(umsatz.getEndToEndId());
     
     if (!isRegex())
     {
@@ -283,6 +284,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       kom   = kom.toLowerCase();
       art   = art.toLowerCase();
       purp  = purp.toLowerCase();
+      e2eid = e2eid.toLowerCase();
 
       if (ignorewhitespace)
       {
@@ -301,7 +303,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
             kto.indexOf(test)  != -1 ||
             kom.indexOf(test) != -1 ||
             art.indexOf(test) != -1 ||
-            purp.indexOf(test) != -1)
+            purp.indexOf(test) != -1 ||
+            e2eid.indexOf(test) != -1)
         {
           return true;
         }
@@ -326,7 +329,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mKom = pattern.matcher(kom);
       Matcher mArt = pattern.matcher(art);
       Matcher mPurp = pattern.matcher(purp);
-      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp);
+      Matcher mE2eid = pattern.matcher(e2eid);
+      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid);
 
       return (mZweck.matches() ||
               mName.matches()  ||
@@ -334,6 +338,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
               mKom.matches()   ||
               mArt.matches()   ||
               mPurp.matches()  ||
+              mE2eid.matches()  ||
               mAll.matches()
              );
     }
