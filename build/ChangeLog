@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0723 Adressauswahldialog etwas höher gestaltet und Button "Neue Adresse" entfernt
   * NEW: 0722 EndToEnd-ID auch in globaler und Kategorie-Suche prüfen 
   * NEW: 0721 BUGZILLA 1872: Auch bei deaktivierter Checksummenprüfung von IBANs zumindest bei deutschen IBANs die Länge von 22 Zeichen prüfen
   * BUG: 0720 Nachtrag zu 0717: Freigabe des Kontextmenüeintrages fehlte noch

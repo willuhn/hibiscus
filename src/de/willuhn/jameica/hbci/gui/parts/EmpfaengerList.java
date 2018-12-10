@@ -69,6 +69,7 @@ public class EmpfaengerList extends TablePart implements Part
   private TextInput search       = null;
   private KeyAdapter listener    = null;
   private AddressFilter filter   = null;
+  private boolean createButton   = true;
 
   private MessageConsumer mcImport = null;
   private MessageConsumer mcChanged = null;
@@ -84,7 +85,7 @@ public class EmpfaengerList extends TablePart implements Part
   {
     this(action,null);
   }
-  
+
   /**
    * ct.
    * @param action
@@ -93,10 +94,23 @@ public class EmpfaengerList extends TablePart implements Part
    */
   public EmpfaengerList(Action action, AddressFilter filter) throws RemoteException
   {
+    this(action,filter,true);
+  }
+
+  /**
+   * ct.
+   * @param action
+   * @param filter optionaler Filter.
+   * @param createButton true, wenn ein Button zum Anlegen einer neuen Adresse mit angezeigt werden soll.
+   * @throws RemoteException
+   */
+  public EmpfaengerList(Action action, AddressFilter filter, boolean createButton) throws RemoteException
+  {
     super(action);
     
     this.filter = filter;
     this.listener = new DelayedAdapter();
+    this.createButton = createButton;
 
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
@@ -233,9 +247,12 @@ public class EmpfaengerList extends TablePart implements Part
     tab.addLabelPair(i18n.tr("Suchbegriff"), this.search);
     this.search.getControl().addKeyListener(this.listener);
 
-    ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Neue Adresse"),new EmpfaengerNew(),null,true,"contact-new.png");
-    buttons.paint(parent);
+    if (this.createButton)
+    {
+      ButtonArea buttons = new ButtonArea();
+      buttons.addButton(i18n.tr("Neue Adresse"),new EmpfaengerNew(),null,true,"contact-new.png");
+      buttons.paint(parent);
+    }
     
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
     parent.addDisposeListener(new DisposeListener() {
