@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0726 Support für den Import von PDF-Rechnungen im ZUGFeRD-Format (Rechtsklick in der Liste der Überweisungen und "Importieren..." im Contextmenü wählen)
   * BUG: 0725 Neue HBCI4Java-Version mit NPE-Fix wenn die Bank in CAMT-Umsätzen die eigene BIC nicht mitsendet - https://github.com/hbci4j/hbci4java/commit/caf42bb190bda7627b3e59705408f18edcfc5619
   * NEW: 0724 Funktion "Konten aus Bank-Zugang importieren..." in Kontoliste auch dann ermöglichen, wenn kein Konto ausgewählt ist, an dem das HBCI-Verfahren festgemacht werden kann
   * NEW: 0723 Adressauswahldialog etwas höher gestaltet und Button "Neue Adresse" entfernt
