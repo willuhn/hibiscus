@@ -118,12 +118,12 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
       String subTitle = i18n.tr("{0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
       reporter = new Reporter(os,monitor,i18n.tr("Umsätze") + (filter != null && filter.booleanValue() ? (" (" + i18n.tr("gefiltert") + ")") : ""), subTitle, objects.length  );
 
-      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER, 30, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER,100, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER,120, BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER, 30, BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER, 30, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER,100, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER,120, Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER, 30, Reporter.COLOR_BG);
       if (showSaldo)
-        reporter.addHeaderColumn(i18n.tr("Saldo"),                  Element.ALIGN_CENTER, 30, BaseColor.LIGHT_GRAY);
+        reporter.addHeaderColumn(i18n.tr("Saldo"),                  Element.ALIGN_CENTER, 30, Reporter.COLOR_BG);
       reporter.createHeader();
 
       
@@ -134,7 +134,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
       {
         Double sumRow = 0.0d;
         
-        PdfPCell cell = reporter.getDetailCell(this.toString(group), Element.ALIGN_CENTER,BaseColor.LIGHT_GRAY);
+        PdfPCell cell = reporter.getDetailCell(this.toString(group), Element.ALIGN_CENTER,Reporter.COLOR_BG);
         cell.setColspan(showSaldo ? 5 : 4);
         reporter.addColumn(cell);
 
@@ -142,7 +142,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
 
         if (list.size() == 0)
         {
-          PdfPCell empty = reporter.getDetailCell(i18n.tr("Keine Umsätze"), Element.ALIGN_CENTER,BaseColor.LIGHT_GRAY);
+          PdfPCell empty = reporter.getDetailCell(i18n.tr("Keine Umsätze"), Element.ALIGN_CENTER,Reporter.COLOR_BG);
           empty.setColspan(5);
           reporter.addColumn(empty);
           continue;
@@ -157,7 +157,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
           int style = Font.NORMAL;
           if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
           {
-            color = BaseColor.GRAY;
+            color = Reporter.COLOR_GRAY;
             style = Font.ITALIC;
           }
           

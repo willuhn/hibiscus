@@ -60,6 +60,37 @@ public class Reporter
   private int currRecord = 0;
 
   private ProgressMonitor monitor = null;
+  
+  /**
+   * Farbvorgabe fuer normalen Text.
+   */
+  public final static BaseColor COLOR_FG = BaseColor.BLACK;
+
+  /**
+   * Farbvorgabe fuer Hintergruende.
+   */
+  public final static BaseColor COLOR_BG = BaseColor.LIGHT_GRAY;
+
+  /**
+   * Farbvorgabe fuer Rot.
+   */
+  public final static BaseColor COLOR_RED = new BaseColor(150,0,0);
+
+  /**
+   * Farbvorgabe fuer Gruen.
+   */
+  public final static BaseColor COLOR_GREEN = new BaseColor(0,100,0);
+
+  /**
+   * Farbvorgabe fuer Weiss.
+   */
+  public final static BaseColor COLOR_WHITE = BaseColor.WHITE;
+
+
+  /**
+   * Farbvorgabe fuer Grau.
+   */
+  public final static BaseColor COLOR_GRAY = BaseColor.GRAY;
 
   /**
    * ct.
@@ -238,9 +269,9 @@ public class Reporter
    */
   public PdfPCell getDetailCell(String text, int align, BaseColor backgroundColor, BaseColor textColor, int fontStyle)
   {
-    PdfPCell cell = new PdfPCell(new Phrase(notNull(text), FontFactory.getFont(FontFactory.HELVETICA, 8, fontStyle, textColor != null ? textColor : BaseColor.BLACK)));
+    PdfPCell cell = new PdfPCell(new Phrase(notNull(text), FontFactory.getFont(FontFactory.HELVETICA, 8, fontStyle, textColor != null ? textColor : COLOR_FG)));
     cell.setHorizontalAlignment(align);
-    cell.setBackgroundColor(backgroundColor != null ? backgroundColor : BaseColor.WHITE);
+    cell.setBackgroundColor(backgroundColor != null ? backgroundColor : COLOR_WHITE);
     return cell;
   }
 
@@ -261,7 +292,7 @@ public class Reporter
    */
   public PdfPCell getDetailCell(double value)
   {
-    return this.getDetailCell(value,value >= 0.01d ? BaseColor.BLACK : BaseColor.RED);
+    return this.getDetailCell(value,value >= 0.01d ? COLOR_FG : COLOR_RED);
   }
 
   /**
@@ -351,7 +382,7 @@ public class Reporter
       float right = rect.getRight() - document.rightMargin();
       float bottom = rect.getBottom() + document.bottomMargin();
       PdfContentByte pc = writer.getDirectContent();
-      pc.setColorStroke(BaseColor.BLACK);
+      pc.setColorStroke(COLOR_FG);
       pc.setLineWidth(0.5f);
       pc.moveTo(left, bottom - 5);
       pc.lineTo(right, bottom - 5);

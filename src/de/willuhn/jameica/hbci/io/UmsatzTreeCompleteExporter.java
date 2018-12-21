@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPCell;
 
@@ -53,10 +52,10 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
     {
       reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), this.getSubTitle(tree), list.size());
 
-      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER,  30,BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER, 100,BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER, 120,BaseColor.LIGHT_GRAY);
-      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER,  30,BaseColor.LIGHT_GRAY);
+      reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER,  30,Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Empfänger/Einzahler"),    Element.ALIGN_CENTER, 100,Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Zahlungsgrund"),          Element.ALIGN_CENTER, 120,Reporter.COLOR_BG);
+      reporter.addHeaderColumn(i18n.tr("Betrag"),                 Element.ALIGN_CENTER,  30,Reporter.COLOR_BG);
       reporter.createHeader();
 
       // Iteration ueber Umsaetze
@@ -107,7 +106,7 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
       cell.setColspan(4);
       reporter.addColumn(cell);
 
-      cell = reporter.getDetailCell((String) node.getAttribute("name"),Element.ALIGN_LEFT, BaseColor.LIGHT_GRAY);
+      cell = reporter.getDetailCell((String) node.getAttribute("name"),Element.ALIGN_LEFT, Reporter.COLOR_BG);
       cell.setColspan(4);
       reporter.addColumn(cell);
 

@@ -56,8 +56,8 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     this.text         = k.getLongName();
     
     this.anfangssaldo = KontoUtil.getAnfangsSaldo(k,start);
-    this.einnahmen    = KontoUtil.getEinnahmen(k,start,end);
-    this.ausgaben     = KontoUtil.getAusgaben(k,start,end);
+    this.einnahmen    = KontoUtil.getEinnahmen(k,start,end,true);
+    this.ausgaben     = KontoUtil.getAusgaben(k,start,end,true);
     this.endsaldo     = KontoUtil.getEndSaldo(k,end);
   }
   

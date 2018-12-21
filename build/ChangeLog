@@ -1,3 +1,17 @@
+2018-12-21 Version 2.8.7
+
+  * NEW: 0726 Support für den Import von PDF-Rechnungen im ZUGFeRD-Format (Rechtsklick in der Liste der Überweisungen und "Importieren..." im Contextmenü wählen)
+  * BUG: 0725 Neue HBCI4Java-Version mit NPE-Fix wenn die Bank in CAMT-Umsätzen die eigene BIC nicht mitsendet - https://github.com/hbci4j/hbci4java/commit/caf42bb190bda7627b3e59705408f18edcfc5619
+  * NEW: 0724 Funktion "Konten aus Bank-Zugang importieren..." in Kontoliste auch dann ermöglichen, wenn kein Konto ausgewählt ist, an dem das HBCI-Verfahren festgemacht werden kann
+  * NEW: 0723 Adressauswahldialog etwas höher gestaltet und Button "Neue Adresse" entfernt
+  * NEW: 0722 EndToEnd-ID auch in globaler und Kategorie-Suche prüfen 
+  * NEW: 0721 BUGZILLA 1872: Auch bei deaktivierter Checksummenprüfung von IBANs zumindest bei deutschen IBANs die Länge von 22 Zeichen prüfen
+  * BUG: 0720 Nachtrag zu 0717: Freigabe des Kontextmenüeintrages fehlte noch
+  * BUG: 0719 Einnahmen/Ausgaben: In den Spalten "Einnahmen" und "Ausgaben" wurden Vormerkbuchungen fälschlicherweise mit berücksichtigt
+  * CHG: 0718 Spaltenbreiten beim Druck der Umsatzliste angepasst. Durch die langen CAMT-Verwendungszwecke wurde die Zweck-Spalte zu breit - https://homebanking-hilfe.de/forum/topic.php?p=140955#real140955
+  * NEW: 0717 Neuberechnung der Zwischensummen bei allen Konten erlauben - nicht nur bei Offline-Konten
+  * NEW: 0716 Farbe Grün und Rot beim PDF-Export etwas dunkler gestaltet, damit es beim Ausdruck in Schwarz/Weiss besser lesbar ist
+  
 2018-11-01 Version 2.8.6
 
   * NEW: 0715 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.12.2018 (enthaelt auch ein Fix, das dazu fuehrte, dass auch bei korrekten Pruefziffern angezeigt wurde, die Pruefziffer sei nicht kontrolliert worden)

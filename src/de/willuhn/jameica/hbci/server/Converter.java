@@ -531,7 +531,7 @@ public class Converter
       name += (" " + name2);
 
     if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
-      name = name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
+      name = StringUtils.trimToEmpty(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)); // Nochmal ein Trim, fuer den Fall, dass nach dem Abschneiden der Text mit Leerzeichen endet
     e.setName(name);
     return e;  	
   }

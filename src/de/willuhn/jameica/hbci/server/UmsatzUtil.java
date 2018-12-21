@@ -124,8 +124,10 @@ public class UmsatzUtil
           "LOWER(art) LIKE ? OR " +
           "LOWER(customerref) LIKE ? OR " +
           "LOWER(purposecode) LIKE ? OR " +
-          "LOWER(kommentar) LIKE ?)",
-          text,text,text,text,text,text,text,text,text);
+          "LOWER(kommentar) LIKE ? OR " +
+          "LOWER(endtoendid) LIKE ? OR " +
+          "LOWER(art) LIKE ?)",
+          text,text,text,text,text,text,text,text,text,text,text);
     }
     return list;
   }

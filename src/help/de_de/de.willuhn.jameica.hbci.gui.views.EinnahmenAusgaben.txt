@@ -21,4 +21,9 @@
     vorliegen. Der Differenz-Betrag wird in der Spalte <b>Differenz</b> angezeigt.
   </p>
 
+  <p>
+    <b>Hinweis:</b> Bitte beachten Sie, dass Vormerkbuchungen in dieser
+    Auswertung nicht berücksichtigt werden.
+  </p>
+
 </form>

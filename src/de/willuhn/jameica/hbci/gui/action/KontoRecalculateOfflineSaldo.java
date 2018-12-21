@@ -49,7 +49,7 @@ public class KontoRecalculateOfflineSaldo implements Action
     try
     {
       Konto k = (Konto) context;
-      if (k.isNewObject() || !k.hasFlag(Konto.FLAG_OFFLINE))
+      if (k.isNewObject())
         return;
 
       String q = i18n.tr("Die Umsatzsalden werden ab dem letzten geprüften Umsatz neu berechnet.\nSollte es keinen geben, werden alle Salden neu berechnet, wobei der Kontoanfangssaldo 0,00 angenommen wird.");
