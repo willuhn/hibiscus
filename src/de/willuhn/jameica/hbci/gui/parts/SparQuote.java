@@ -354,6 +354,7 @@ public class SparQuote implements Part
 
       UmsatzEntry e = new UmsatzEntry();
       e.start = from;
+      e.text = DATEFORMAT.format(e.start);
       
       Calendar cal = Calendar.getInstance();
       cal.setTime(from);
@@ -470,6 +471,7 @@ public class SparQuote implements Part
         {
           ue.start = current.start;
           ue.end = current.end;
+          ue.text = current.text;
         }
       }
       catch (IndexOutOfBoundsException e)
@@ -492,6 +494,7 @@ public class SparQuote implements Part
     private double ausgaben  = 0d;
     private Date start       = null;
     private Date end         = null;
+    private String text      = null;
 
     /**
      * Liefert die Einnahmen.
@@ -527,6 +530,16 @@ public class SparQuote implements Part
     public double getAusgaben()
     {
       return this.ausgaben;
+    }
+
+    /**
+     * Liefert den Text.
+     * Nicht entfernen! Wird fuer den Text im Velocity-Export gebraucht.
+     * @return der Text.
+     */
+    public String getText()
+    {
+      return this.text;
     }
 
     /**
