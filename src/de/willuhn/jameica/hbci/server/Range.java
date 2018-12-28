@@ -33,17 +33,20 @@ public abstract class Range
    */
   public final static List<Range> KNOWN = new ArrayList<Range>()
   {{
-    add(new ThisWeek());
-    add(new LastWeek());
     add(new LastSevenDays());
     add(new LastThirtyDays());
+    add(new ThisWeek());
+    add(new LastWeek());
+    add(new SecondLastWeek());
     add(new ThisMonth());
     add(new LastMonth());
     add(new SecondLastMonth());
     add(new ThisQuarter());
     add(new LastQuarter());
+    add(new SecondLastQuarter());
     add(new ThisYear());
     add(new LastYear());
+    add(new SecondLastYear());
   }};
   
   /**
@@ -125,7 +128,7 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Diese Woche");
+      return i18n.tr("Woche: Diese");
     }
   }
   
@@ -227,8 +230,8 @@ public abstract class Range
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
-      cal.setTime(new ThisWeek().getEnd());
-      cal.add(Calendar.WEEK_OF_YEAR,-1);
+      cal.setTime(this.getStart());
+      cal.add(Calendar.DATE,6);
       return DateUtil.endOfDay(cal.getTime());
     }
     
@@ -237,10 +240,46 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Letzte Woche");
+      return i18n.tr("Woche: Letzte");
     }
   }
-  
+
+  /**
+   * Berechnet vorletzte Woche.
+   */
+  public static class SecondLastWeek extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.setTime(new ThisWeek().getStart());
+      cal.add(Calendar.WEEK_OF_YEAR,-2);
+      return DateUtil.startOfDay(cal.getTime());
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      cal.setTime(this.getStart());
+      cal.add(Calendar.DATE,6);
+      return DateUtil.endOfDay(cal.getTime());
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+      return i18n.tr("Woche: Vorletzte");
+    }
+  }
+
   /**
    * Berechnet diesen Monat.
    */
@@ -271,7 +310,7 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Dieser Monat");
+      return i18n.tr("Monat: Dieser");
     }
   }
   
@@ -297,7 +336,7 @@ public abstract class Range
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
-      cal.add(Calendar.MONTH,-1);
+      cal.setTime(this.getStart());
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
@@ -307,7 +346,7 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Letzter Monat");
+      return i18n.tr("Monat: Letzter");
     }
   }
   
@@ -333,7 +372,7 @@ public abstract class Range
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
-      cal.add(Calendar.MONTH,-2);
+      cal.setTime(this.getStart());
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
@@ -343,7 +382,7 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Vorletzter Monat");
+      return i18n.tr("Monat: Vorletzter");
     }
   }
   
@@ -382,7 +421,7 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Dieses Quartal");
+      return i18n.tr("Quartal: Dieses");
     }
   }
 
@@ -419,7 +458,44 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Letztes Quartal");
+      return i18n.tr("Quartal: Letztes");
+    }
+  }
+
+  /**
+   * Berechnet vorletztes Quartal.
+   */
+  public static class SecondLastQuarter extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.setTime(new LastQuarter().getStart());
+      cal.add(Calendar.MONTH,-3);
+      return cal.getTime();
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      cal.setTime(this.getStart());
+      cal.add(Calendar.MONTH,2);
+      cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      return DateUtil.endOfDay(cal.getTime());
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+      return i18n.tr("Quartal: Vorletztes");
     }
   }
 
@@ -455,7 +531,7 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Dieses Jahr");
+      return i18n.tr("Jahr: Dieses");
     }
   }
 
@@ -493,10 +569,47 @@ public abstract class Range
      */
     public String toString()
     {
-      return i18n.tr("Letztes Jahr");
+      return i18n.tr("Jahr: Letztes");
     }
   }
 
+  /**
+   * Berechnet vorletztes Jahr.
+   */
+  public static class SecondLastYear extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.add(Calendar.YEAR,-2);
+      cal.set(Calendar.MONTH,Calendar.JANUARY);
+      cal.set(Calendar.DAY_OF_MONTH,1);
+      return DateUtil.startOfDay(cal.getTime());
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      cal.add(Calendar.YEAR,-2);
+      cal.set(Calendar.MONTH,Calendar.DECEMBER);
+      cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      return DateUtil.endOfDay(cal.getTime());
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+      return i18n.tr("Jahr: Vorletztes");
+    }
+  }
 }
 
 
