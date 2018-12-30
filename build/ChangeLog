@@ -1,5 +1,9 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0729 Nachtrag zu 0717: Menüpunkt zur Neuberechnung der Salden war versehentlich nur noch bei Online-Konten auswählbar
+
+2018-12-28 Version 2.8.7
+
   * NEW: 0728 Neue Vorgabezeitäume "Woche: Vorletzte", "Quartal: Vorletztes" und "Jahr: Vorletztes" in der Auswahl des Zeitraumes 
   * BUG: 0727 Sparquote: Beim Export im CSV-Format wurde die Spalte "Monat" nicht korrekt befüllt
   * NEW: 0726 Support für den Import von PDF-Rechnungen im ZUGFeRD-Format (Rechtsklick in der Liste der Überweisungen und "Importieren..." im Contextmenü wählen)
