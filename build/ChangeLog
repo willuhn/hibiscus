@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0730 Abruf elektronischer Kontoauszüge: Jahr basierend auf Start-Datum, End-Datum oder Erstell-Datum vervollständigen, wenn von Bank nicht übertragen. Nummer basierend auf vorherigen Kontoauszug vervollständigen, wenn von Bank nicht übertragen.
   * BUG: 0729 Nachtrag zu 0717: Menüpunkt zur Neuberechnung der Salden war versehentlich nur noch bei Online-Konten auswählbar
 
 2018-12-28 Version 2.8.7
