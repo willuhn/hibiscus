@@ -12,6 +12,8 @@ package de.willuhn.jameica.hbci.server;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -371,28 +373,90 @@ public class Converter
   {
     Kontoauszug kh = Settings.getDBService().createObject(Kontoauszug.class,null);
     
-    kh.setBis(k.getEndDate());
-    kh.setDateiname(k.getFilename());
-    kh.setErstellungsdatum(k.getDate());
+    final Date createDate = k.getDate();
+    final Date startDate  = k.getStartDate();
+    final Date endDate    = k.getEndDate();
+    
+    kh.setVon(startDate);
+    kh.setBis(endDate);
+    kh.setErstellungsdatum(createDate);
     
     Format f = k.getFormat();
     kh.setFormat(f != null ? f.getCode() : null);
-    
+
+    ///////////////////////////////////////////////////////////////////
+    //
     int year = k.getYear();
+    
+    // Kein Jahr mitgeschickt?
+    
+    // 1. Startdatum versuchen.
+    if (year == 0)
+      year = getYear(startDate);
+    
+    // 2. Enddatum versuchen.
+    if (year == 0)
+      year = getYear(endDate);
+
+    // 3. Erstellungsdatum versuchen.
+    if (year == 0)
+      year = getYear(createDate);
+
+    // 4. Aktuelles Datum
+    if (year == 0)
+      year = getYear(new Date());
+
     kh.setJahr(year > 0 ? Integer.valueOf(year) : null);
+    //
+    ///////////////////////////////////////////////////////////////////
     
     kh.setKonto(kt);
     kh.setName1(k.getName());
     kh.setName2(k.getName2());
     kh.setName3(k.getName3());
     
+    ///////////////////////////////////////////////////////////////////
+    // Kontoauszugsnummer
     int number = k.getNumber();
-    kh.setNummer(number > 0 ? Integer.valueOf(number) : null);
     
+    // Wenn wir keine Nummer haben, laden wir die Liste der letzten Auszuege und zaehlen von dort die Nummer hoch,
+    // insofern eine vorhanden ist
+    if (number == 0)
+    {
+      DBIterator<Kontoauszug> list = Settings.getDBService().createList(Kontoauszug.class);
+      list.addFilter("konto_id = ?",kt.getID());
+      list.addFilter("nummer is not null");
+      list.setOrder("order by id desc");
+      if (list.hasNext())
+      {
+        Kontoauszug kn = list.next();
+        Integer n = kn.getNummer();
+        if (n != null)
+          number = n.intValue() + 1;
+      }
+    }
+    kh.setNummer(number > 0 ? Integer.valueOf(number) : null);
+    //
+    ///////////////////////////////////////////////////////////////////
+    
+    kh.setDateiname(k.getFilename());
     kh.setQuittungscode(k.getReceipt());
-    kh.setVon(k.getStartDate());
     
     return kh;
+  }
+  
+  /**
+   * Extrahiert das Jahr aus dem Datum.
+   * @param date das Datum.
+   * @return das Jahr oder 0, wenn es nicht ermittelbar ist.
+   */
+  private static int getYear(Date date)
+  {
+    if (date == null)
+      return 0;
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    return cal.get(Calendar.YEAR);
   }
 
   /**

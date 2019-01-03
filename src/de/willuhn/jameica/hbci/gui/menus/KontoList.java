@@ -172,7 +172,7 @@ public class KontoList extends ContextMenu implements Extendable
       this.setText(i18n.tr("Erweitert"));
       this.setImage(SWTUtil.getImage("emblem-symbolic-link.png"));
       addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo und Datum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
-      addItem(new AccountItem(i18n.tr("Salden neu berechnen..."), new KontoRecalculateOfflineSaldo(),"accessories-calculator.png"));
+      addItem(new CheckedSingleContextMenuItem(i18n.tr("Salden neu berechnen..."), new KontoRecalculateOfflineSaldo(),"accessories-calculator.png"));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto deaktivieren..."), new KontoDisable(),"network-offline.png",false));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto aktivieren..."), new FlaggableChange(Konto.FLAG_DISABLED,false),"network-transmit-receive.png",true));
     }
