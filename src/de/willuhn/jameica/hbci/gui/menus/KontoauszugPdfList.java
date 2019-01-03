@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoauszugImport;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugMarkRead;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugMarkUnread;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugMove;
+import de.willuhn.jameica.hbci.gui.action.KontoauszugNew;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugOpen;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugSave;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
@@ -58,6 +59,7 @@ public class KontoauszugPdfList extends ContextMenu
     addItem(new ContextMenuItem(i18n.tr("Kontoauszüge abrufen..."),          new KontoFetchKontoauszug(),"mail-send-receive.png"));
     addItem(new UnsentCheckedContextMenuItem(i18n.tr("Empfangsquittung senden..."), new KontoKontoauszugReceipt(),"mail-forward.png"));
     addItem(ContextMenuItem.SEPARATOR);
+    addItem(new ContextMenuItem(i18n.tr("Kontoauszug manuell anlegen..."),   new KontoauszugNew(),"document-new.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),            new KontoauszugExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),                   new KontoauszugImport(),"document-open.png"));
 	}

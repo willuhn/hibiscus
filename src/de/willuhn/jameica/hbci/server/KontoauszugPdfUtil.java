@@ -541,6 +541,27 @@ public class KontoauszugPdfUtil
   }
   
   /**
+   * Liefert den aktuellsten Kontoauszug mit Nummer.
+   * @param k das Konto.
+   * @return der Kontoauszug oder NULL, wenn er nicht existiert.
+   * @throws RemoteException
+   */
+  public static Kontoauszug getNewestWithNumber(Konto k) throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    DBIterator<Kontoauszug> it = service.createList(Kontoauszug.class);
+    it.addFilter("konto_id = " + k.getID());
+    it.addFilter("nummer is not null");
+    
+    it.setOrder("order by jahr desc, nummer desc, " + 
+                service.getSQLTimestamp("erstellungsdatum") + " desc, " + 
+                service.getSQLTimestamp("von") + " desc, " + 
+                service.getSQLTimestamp("ausgefuehrt_am") + " desc");
+    
+    return it.hasNext() ? it.next() : null;
+  }
+  
+  /**
    * Loescht die angegebenen Kontoauszuege und bei Bedarf auch die Dateien.
    * @param deleteFiles true, wenn auch die Dateien geloescht werden sollen.
    * @param list die zu loeschenden Kontoauszuege.

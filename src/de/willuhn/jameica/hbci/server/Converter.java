@@ -423,14 +423,10 @@ public class Converter
     // insofern eine vorhanden ist
     if (number == 0)
     {
-      DBIterator<Kontoauszug> list = Settings.getDBService().createList(Kontoauszug.class);
-      list.addFilter("konto_id = ?",kt.getID());
-      list.addFilter("nummer is not null");
-      list.setOrder("order by id desc");
-      if (list.hasNext())
+      Kontoauszug newest = KontoauszugPdfUtil.getNewestWithNumber(kt);
+      if (newest != null)
       {
-        Kontoauszug kn = list.next();
-        Integer n = kn.getNummer();
+        Integer n = newest.getNummer();
         if (n != null)
           number = n.intValue() + 1;
       }
