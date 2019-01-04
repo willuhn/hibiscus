@@ -226,7 +226,8 @@ public abstract class AbstractHBCIJob
     boolean tanNeeded = false;
     boolean executed  = false;
     HBCIRetVal[] values = status.getSuccess();
-    if (values != null && values.length > 0)
+    boolean haveJobStatus = values != null && values.length > 0;
+    if (haveJobStatus)
     {
       for (HBCIRetVal val:values)
       {
@@ -238,7 +239,7 @@ public abstract class AbstractHBCIJob
       }
     }
     
-    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed);
+    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed + ", have job status: " + haveJobStatus);
 
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
@@ -291,7 +292,7 @@ public abstract class AbstractHBCIJob
 
     // Globaler Status ist OK - Job wurde zweifelsfrei erfolgreich ausgefuehrt
     // Wir markieren die Ueberweisung als "ausgefuehrt"
-    if (result.isOK())
+    if (result.isOK() && haveJobStatus)
     {
       Logger.info("mark job executed [result: OK]");
       markExecutedInternal(errorText);
@@ -299,7 +300,7 @@ public abstract class AbstractHBCIJob
     }
 
     // Globaler Status ist nicht OK. Mal schauen, was der Job-Status sagt
-    if (status.isOK())
+    if (status.isOK() && haveJobStatus)
     {
       // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber

@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0734 Kam es im TAN-Dialog zu einem Fehler, konnte es u.U. passieren, dass eine Überweisung fälschlicherweise als ausgeführt markiert wurde
   * NEW: 0733 Manuelles Anlegen von elektronischen Kontoauszügen - siehe https://homebanking-hilfe.de/forum/topic.php?p=141868#real141868
 
 2019-01-03 Version 2.8.8
