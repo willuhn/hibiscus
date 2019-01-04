@@ -32,6 +32,7 @@ import de.willuhn.jameica.hbci.passports.pintan.PhotoTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMechDialog;
+import de.willuhn.jameica.hbci.passports.pintan.QRTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TanMediaDialog;
@@ -310,6 +311,16 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       {
         Logger.debug("got phototan code, using phototan dialog");
         TANDialog dialog = new PhotoTANDialog(config,retData.toString());
+        dialog.setContext(this.getContext(passport));
+        dialog.setText(msg);
+        retData.replace(0,retData.length(),(String)dialog.open());
+        return true;
+      }
+
+      case HBCICallback.NEED_PT_QRTAN:
+      {
+        Logger.debug("got QR tan code, using qrtan dialog");
+        TANDialog dialog = new QRTANDialog(config,retData.toString());
         dialog.setContext(this.getContext(passport));
         dialog.setText(msg);
         retData.replace(0,retData.length(),(String)dialog.open());

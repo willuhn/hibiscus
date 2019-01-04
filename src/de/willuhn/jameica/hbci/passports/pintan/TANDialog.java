@@ -169,7 +169,7 @@ public class TANDialog extends PasswordDialog
       text = text.replaceAll("</u>","");
     }
 
-    String ctx = HBCIContext.toString(this.context);
+    String ctx = this.context != null ? HBCIContext.toString(this.context) : null;
     if (ctx != null)
     {
       text += ("\n\n" + i18n.tr("Auftrag:\n{0}",ctx));
