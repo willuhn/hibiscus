@@ -13,7 +13,6 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil.HBCITypedProperties;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil.Update;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.services.BeanService;
@@ -401,7 +401,7 @@ public class BPDUtil
       
       try
       {
-        long timestamp = Long.parseLong(DBPropertyUtil.get(prefix,user,null,"cacheupdate","0"));
+        long timestamp = Long.parseLong(DBPropertyUtil.get(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,"0"));
         expired = (timestamp == 0L || timestamp < (now - CACHE_MAX_AGE));
       }
       catch (Exception e)
@@ -451,40 +451,22 @@ public class BPDUtil
       Logger.info("updating " + prefix + " cache");
       Set<String> customerIDs = HBCIProperties.getCustomerIDs(passport);
       
-      int count = 0;
-      
+      int count = 1;
       for (String customerId:customerIDs)
       {
-        int deleted = DBPropertyUtil.deleteScope(prefix,customerId);
-        Logger.info("deleted " + deleted + " old " + prefix.name() + " cache entries");
+        Update update = DBPropertyUtil.updateScope(prefix,customerId,data);
+        Logger.info("customer " + count + ": updated " + prefix + "- inserts: " + update.inserts + ", updates: " + update.updates + ", deletions: " + update.deletes);
+        if (monitor != null)
+          monitor.log(i18n.tr("  Benutzerkennung {0} - {1}-Parameter neu: {2}, geändert: {3}, gelöscht: {4}",Integer.toString(count),prefix.name(),Integer.toString(update.inserts),Integer.toString(update.updates),Integer.toString(update.deletes)));
         
-        int count2 = 0;
-        
-        for (Enumeration keys = data.keys();keys.hasMoreElements();)
-        {
-          String name = (String) keys.nextElement();
-          if (DBPropertyUtil.insert(prefix,customerId,null,name,data.getProperty(name)))
-          {
-            count++;
-            count2++;
-            if (count2 > 0 && count2 % 50 == 0)
-            {
-              Logger.info("stored " + count2 + " " + prefix.name() + " entries");
-              
-              if (monitor != null)
-                monitor.log(i18n.tr("  {0} {1}-Parameter aktualisiert",Integer.toString(count),prefix.name()));
-            }
-          }
-            
-        }
+        count++;
       }
-      Logger.info("created " + count + " new " + prefix.name() + " cache entries");
       
       // Speichern der neuen Versionsnummer
       v.store();
       
       // Datum des letzten Abrufs speichern
-      DBPropertyUtil.set(prefix,user,null,"cacheupdate",Long.toString(now));
+      DBPropertyUtil.set(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,Long.toString(now));
       return true;
     }
     catch (Exception e)
@@ -511,7 +493,7 @@ public class BPDUtil
     try
     {
       Logger.info("expire " + prefix.name() + " cache");
-      DBPropertyUtil.set(prefix,user,null,"cacheupdate","0");
+      DBPropertyUtil.set(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,"0");
     }
     catch (Exception e)
     {

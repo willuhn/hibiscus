@@ -12,8 +12,15 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
+
+import org.apache.commons.lang.ObjectUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
@@ -32,6 +39,11 @@ public class DBPropertyUtil
    * Separator-Zeichen fuer die Properties.
    */
   public final static char SEP = '.';
+  
+  /**
+   * Der Key, in dem wir den Timestamp mit dem letzten Cache-Update speichern.
+   */
+  public final static String KEY_CACHE_UPDATE = "cacheupdate";
   
   /**
    * Definition der Prefixe.
@@ -86,6 +98,27 @@ public class DBPropertyUtil
     {
       return this.filter;
     }
+  }
+  
+  /**
+   * Kapselt die Update-Stats.
+   */
+  public static class Update
+  {
+    /**
+     * Die Anzahl durchgefuehrter Inserts.
+     */
+    public int inserts = 0;
+    
+    /**
+     * Die Anzahl durchgefuehrter Updates.
+     */
+    public int updates = 0;
+    
+    /**
+     * Die Anzahl durchgefuehrter Loeschungen.
+     */
+    public int deletes = 0;
   }
   
   /**
@@ -288,6 +321,139 @@ public class DBPropertyUtil
     
     String localPrefix = prefix.value() + "." + scope;
     return Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + ".%");
+  }
+  
+  /**
+   * Liefert alle passenden Parameter.
+   * @param prefix der Prefix.
+   * @param scope einschraenkender Scope.
+   * @return Map mit den Parametern.
+   * @throws RemoteException
+   */
+  private static Map<String, DBProperty> getScope(Prefix prefix, String scope) throws RemoteException
+  {
+    if (prefix == null)
+      throw new RemoteException("no prefix given");
+
+    if (scope == null || scope.length() == 0)
+      throw new RemoteException("no scope given");
+
+    if (scope.indexOf("%") != -1)
+      throw new RemoteException("no wildcards allowed in scope");
+    
+    final String localPrefix = prefix.value() + "." + scope;
+    DBIterator<DBProperty> list = Settings.getDBService().createList(DBProperty.class);
+    list.addFilter("name like ?",localPrefix + ".%");
+    
+    Map<String,DBProperty> result = new HashMap<String,DBProperty>();
+    while (list.hasNext())
+    {
+      DBProperty prop = list.next();
+      String name = prop.getName();
+
+      // Den internen Key nicht mit liefern.
+      if (ObjectUtils.equals(name,createIdentifier(prefix,scope,null,KEY_CACHE_UPDATE)))
+        continue;
+      
+      result.put(name,prop);
+    }
+    return result;
+  }
+  
+  /**
+   * Aktualisiert die Parameter.
+   * @param prefix der Prefix.
+   * @param scope einschraenkender Scope.
+   * @param update die Updates.
+   * Parameter, die in den Updates enthalten sind, in der lokalen Datenbank jedoch noch nicht, werden neu angelegt.
+   * Parameter, die in der lokalen Datenbank enthalten sind, im Update jedoch nicht mehr, werden geloescht.
+   * Parameter, die in den Updates einen anderen Wert haben, werden in der lokalen Datenbank aktualisiert.
+   * @return die Update-Statistik.
+   * @throws RemoteException
+   */
+  public static Update updateScope(Prefix prefix, String scope, Properties update) throws RemoteException
+  {
+    Update result = new Update();
+    
+    if (prefix == null)
+    {
+      Logger.warn("no prefix given");
+      return result;
+    }
+    
+    if (update == null || update.size() == 0)
+    {
+      Logger.warn("no update given");
+      return result;
+    }
+
+    if (scope == null || scope.length() == 0)
+    {
+      Logger.warn("no scope given");
+      return result;
+    }
+
+    if (scope.indexOf("%") != -1)
+    {
+      Logger.warn("no wildcards allowed in scope");
+      return result;
+    }
+    
+    Map<String,DBProperty> current = getScope(prefix,scope);
+    Set<String> updateKeys = new HashSet<String>();
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Neue und geaenderte Schluessel
+    for (Enumeration keys = update.keys();keys.hasMoreElements();)
+    {
+      String name        = (String) keys.nextElement();
+      String localname   = createIdentifier(prefix,scope,null,name);
+      updateKeys.add(localname);
+
+      DBProperty oldValue = current.get(localname);
+      String updateValue  = update.getProperty(name);
+
+      // Wert ist bereits vorhanden
+      if (oldValue != null)
+      {
+        // Unveraendert: nichts zu tun
+        if (ObjectUtils.equals(oldValue.getValue(),updateValue))
+          continue;
+        
+        // Geaendert: Wert aktualisieren
+        oldValue.setValue(updateValue);
+        
+        try
+        {
+          oldValue.store();
+          result.updates++;
+        }
+        catch (ApplicationException ae)
+        {
+          throw new RemoteException(ae.getMessage(),ae);
+        }
+      }
+      else
+      {
+        // Wert ist neu
+        if (insert(prefix,scope,null,name,updateValue))
+          result.inserts++;
+      }
+    }
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Zu loeschende Schluessel
+    for (Entry<String,DBProperty> e:current.entrySet())
+    {
+      if (!updateKeys.contains(e.getKey()))
+        result.deletes += Settings.getDBService().executeUpdate("delete from property where name = ?",e.getKey());
+    }
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    
+    return result;
   }
 
   /**
