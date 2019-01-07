@@ -457,7 +457,7 @@ public class BPDUtil
         Update update = DBPropertyUtil.updateScope(prefix,customerId,data);
         Logger.info("customer " + count + ": updated " + prefix + "- inserts: " + update.inserts + ", updates: " + update.updates + ", deletions: " + update.deletes);
         if (monitor != null)
-          monitor.log(i18n.tr("  Benutzerkennung {0} - {1}-Parameter neu: {2}, geändert: {3}, gelöscht: {4}",Integer.toString(count),prefix.name(),Integer.toString(update.inserts),Integer.toString(update.updates),Integer.toString(update.deletes)));
+          monitor.log(i18n.tr("  Kennung {0} - {1}-Parameter neu: {2}, geändert: {3}, gelöscht: {4}",Integer.toString(count),prefix.name(),Integer.toString(update.inserts),Integer.toString(update.updates),Integer.toString(update.deletes)));
         
         count++;
       }
