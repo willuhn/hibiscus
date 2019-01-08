@@ -207,12 +207,12 @@ public class DBPropertyUtil
     }
     if (scope != null && scope.length() > 0)
     {
-      sb.append(scope);
+      sb.append(replaceWildcards(scope));
       sb.append(SEP);
     }
     if (id != null && id.length() > 0)
     {
-      sb.append(id);
+      sb.append(replaceWildcards(id));
       sb.append(SEP);
     }
     if (name != null && name.length() > 0)
@@ -316,10 +316,7 @@ public class DBPropertyUtil
     if (scope == null || scope.length() == 0)
       throw new RemoteException("no scope given");
 
-    if (scope.indexOf("%") != -1)
-      throw new RemoteException("no wildcards allowed in scope");
-    
-    String localPrefix = prefix.value() + "." + scope;
+    String localPrefix = prefix.value() + "." + replaceWildcards(scope);
     return Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + ".%");
   }
   
@@ -337,10 +334,9 @@ public class DBPropertyUtil
 
     if (scope == null || scope.length() == 0)
       throw new RemoteException("no scope given");
-
-    if (scope.indexOf("%") != -1)
-      throw new RemoteException("no wildcards allowed in scope");
     
+    scope = replaceWildcards(scope);
+
     final String localPrefix = prefix.value() + "." + scope;
     DBIterator<DBProperty> list = Settings.getDBService().createList(DBProperty.class);
     list.addFilter("name like ?",localPrefix + ".%");
@@ -393,11 +389,7 @@ public class DBPropertyUtil
       return result;
     }
 
-    if (scope.indexOf("%") != -1)
-    {
-      Logger.warn("no wildcards allowed in scope");
-      return result;
-    }
+    scope = replaceWildcards(scope);
     
     Map<String,DBProperty> current = getScope(prefix,scope);
     Set<String> updateKeys = new HashSet<String>();
@@ -472,12 +464,6 @@ public class DBPropertyUtil
     if (scope == null || scope.length() == 0)
       throw new RemoteException("no scope given");
 
-    if (scope.indexOf("%") != -1 || scope.indexOf("_") != -1)
-      throw new RemoteException("no wildcards allowed in scope");
-
-    if (id != null && (id.indexOf("%") != -1))
-      throw new RemoteException("no wildcards allowed in id");
-
     String localPrefix = createIdentifier(prefix,scope,id,null);
     return Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + ".%");
   }
@@ -505,6 +491,21 @@ public class DBPropertyUtil
     DBProperty prop = (DBProperty) service.createObject(DBProperty.class,null);
     prop.setName(name);
     return prop;
+  }
+  
+  /**
+   * Ersetzt Wildcards in dem String.
+   * @param s der String.
+   * @return der String mit ersetzten Wildcards.
+   */
+  private static String replaceWildcards(String s)
+  {
+    if (s == null || s.length() == 0)
+      return s;
+    
+    s = s.replace("%","-");
+    s = s.replace("_","-");
+    return s;
   }
   
   /**
