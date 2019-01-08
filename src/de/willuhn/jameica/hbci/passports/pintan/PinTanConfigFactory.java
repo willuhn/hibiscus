@@ -149,8 +149,16 @@ public class PinTanConfigFactory
       Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
       for (String customerId:customerIds)
       {
-        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
-        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
+        try
+        {
+          DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
+          DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
+        }
+        catch (Exception e)
+        {
+          // Auch wenn das fehlschlaegt, soll der Rest trotzdem durchgefuehrt werden
+          Logger.error("error while clearing BPD/UPD cache",e);
+        }
       }
       
       // Versionsnummer der Caches loeschen, um das Neubefuellen des Cache zu forcieren
