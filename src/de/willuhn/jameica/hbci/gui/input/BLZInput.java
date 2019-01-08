@@ -77,6 +77,30 @@ public class BLZInput extends AccountInput
     
     // wir haengen noch einen Keyup-Listener an, um sofort bei Eingabe der BLZ ausloesen zu koennen
     c.addListener(SWT.KeyUp, new DelayedListener(this.listener));
+
+    // Fuer den Laengen-Check, damit wir nicht mehr als 8 Zeichen zulassen. Darf nicht delayed sein.
+    // Daher als extra Listener.
+    c.addListener(SWT.Verify,new Listener()
+    {
+      @Override
+      public void handleEvent(Event event)
+      {
+        // Wir schnipseln gleich noch Leerzeichen raus - aber nur, wenn welche drin stehen
+        String b = (String) getValue();
+        if (b == null || b.length() == 0)
+          return;
+        
+        if (b.indexOf(' ') != -1)
+          b = b.replaceAll(" ","");
+        
+        int len = b.length();
+       
+        // Wenn bereits 8 Zeichen eingegeben wurden, dann lassen wir keine weiteren Zeichen mehr zu
+        // sondern nur noch Steuerzeichen - z.Bsp. zum Loeschen/Aendern der Eingabe
+        if (len >= HBCIProperties.HBCI_BLZ_LENGTH)
+          event.doit = !Character.isDigit(event.character);
+      }
+    });
     
     return c;
   }
@@ -110,6 +134,7 @@ public class BLZInput extends AccountInput
           if (b.indexOf(' ') != -1)
             b = b.replaceAll(" ","");
           
+          // Wenn exakt die Laenge einer BLZ eingegeben wurde, dann den Namen der Bank ermitteln
           if (b.length() == HBCIProperties.HBCI_BLZ_LENGTH)
           {
             String name = HBCIProperties.getNameForBank(b);
