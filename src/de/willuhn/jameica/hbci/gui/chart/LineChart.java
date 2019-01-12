@@ -37,13 +37,16 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.chart.tooltips.ChartTooltipProvider;
+import de.willuhn.jameica.hbci.gui.chart.tooltips.DateMoneyTooltipProvider;
+import de.willuhn.jameica.hbci.gui.chart.tooltips.TooltipAwareChart;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ColorGenerator;
 
 /**
  * Implementierung eines Linien-Diagramms.
  */
-public class LineChart extends AbstractChart<LineChartData>
+public class LineChart extends AbstractChart<LineChartData> implements TooltipAwareChart
 {
   private boolean stacked = false;
   
@@ -205,6 +208,7 @@ public class LineChart extends AbstractChart<LineChartData>
     }
     //
     ////////////////////////////////////////////////////////////////////////////
+    getTooltipProvider().apply(this);
 
     redraw();
     super.paint(parent);
@@ -241,6 +245,12 @@ public class LineChart extends AbstractChart<LineChartData>
   public void setStacked(boolean b)
   {
     this.stacked = b;
+  }
+
+  @Override
+  public ChartTooltipProvider getTooltipProvider()
+  {
+    return new DateMoneyTooltipProvider();
   }
 }
 
