@@ -55,15 +55,23 @@ public interface Chart<T extends ChartData> extends Part
    * @throws RemoteException
    */
   public void redraw() throws RemoteException;
+  
+  /**
+   * Liefert das eigentliche SWT-Chart-Objekt.
+   * @return das eigentliche SWT-Chart-Objekt.
+   */
+  public org.swtchart.Chart getChart();
+  
+  /**
+   * Fuegt ein Feature hinzu.
+   * @param feature das Feature.
+   */
+  public void addFeature(ChartFeature feature);
+
+  /**
+   * Entfernt das Feature.
+   * @param feature das zu entfernende Feature.
+   */
+  public void removeFeature(ChartFeature feature);
+
 }
-
-
-/*********************************************************************
- * $Log: Chart.java,v $
- * Revision 1.6  2010/11/24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- * Revision 1.5  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- **********************************************************************/

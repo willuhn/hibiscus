@@ -37,16 +37,13 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.chart.tooltips.ChartTooltipProvider;
-import de.willuhn.jameica.hbci.gui.chart.tooltips.DateMoneyTooltipProvider;
-import de.willuhn.jameica.hbci.gui.chart.tooltips.TooltipAwareChart;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ColorGenerator;
 
 /**
  * Implementierung eines Linien-Diagramms.
  */
-public class LineChart extends AbstractChart<LineChartData> implements TooltipAwareChart
+public class LineChart extends AbstractChart<LineChartData>
 {
   private boolean stacked = false;
   
@@ -142,13 +139,14 @@ public class LineChart extends AbstractChart<LineChartData> implements TooltipAw
     if (getChart() != null)
       return;
     
-    setChart(new InteractiveChart(parent,SWT.BORDER));
-    getChart().setLayoutData(new GridData(GridData.FILL_BOTH));
+    this.addFeature(new ChartFeatureTooltip()); // Bei Linecharts per Default Tooltips unterstuetzen
+    this.setChart(new InteractiveChart(parent,SWT.BORDER));
+    this.getChart().setLayoutData(new GridData(GridData.FILL_BOTH));
 
     ////////////////////////////////////////////////////////////////////////////
     // Farben des Charts
-    getChart().setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-    getChart().setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+    this.getChart().setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+    this.getChart().setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
     //
     ////////////////////////////////////////////////////////////////////////////
     
@@ -208,7 +206,6 @@ public class LineChart extends AbstractChart<LineChartData> implements TooltipAw
     }
     //
     ////////////////////////////////////////////////////////////////////////////
-    getTooltipProvider().apply(this);
 
     redraw();
     super.paint(parent);
@@ -246,28 +243,4 @@ public class LineChart extends AbstractChart<LineChartData> implements TooltipAw
   {
     this.stacked = b;
   }
-
-  @Override
-  public ChartTooltipProvider getTooltipProvider()
-  {
-    return new DateMoneyTooltipProvider();
-  }
 }
-
-
-/*********************************************************************
- * $Log: LineChart.java,v $
- * Revision 1.19  2011/05/10 08:09:33  willuhn
- * @C Text etwas heller
- *
- * Revision 1.18  2011-05-04 11:05:02  willuhn
- * @B Dispose-Check fehlte
- *
- * Revision 1.17  2010-11-29 22:44:30  willuhn
- * @B getCurve() wurde falsch rum interpretiert ;)
- *
- * Revision 1.16  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- **********************************************************************/
