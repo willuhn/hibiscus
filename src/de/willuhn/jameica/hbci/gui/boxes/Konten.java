@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.parts.KontoList;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.system.Application;
@@ -68,7 +69,7 @@ public class Konten extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    KontoList l = new KontoList(KontoUtil.getKonten(null),new KontoNew());
+    KontoList l = new KontoList(KontoUtil.getKonten(KontoFilter.ACTIVE),new KontoNew());
     l.setShowFilter(false);
     l.paint(parent);
   }

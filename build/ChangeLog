@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0738 Auf der Startseite in "Hibiscus: Konten-Übersicht" die deaktivierten Konten nicht anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=142089#real142089 
   * NEW: 0737 Anzeige von Tooltips in den Line-Charts (siehe https://github.com/willuhn/hibiscus/pull/49)
   * NEW: 0736 Inkrementielles Update des UPD- und BPD-Cache in der Datenbank. Sollte den den Abruf bei Verwendung von MySQL deutlich beschleunigen, da nur noch die geänderten Parameter gespeichert werden
   * NEW: 0735 Unterstützung für chipTAN QR-Code
