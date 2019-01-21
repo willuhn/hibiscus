@@ -225,6 +225,7 @@ public abstract class AbstractHBCIJob
     // Das koennte man vermutlich auch direkt in HBCI4Java implementieren
     boolean tanNeeded = false;
     boolean executed  = false;
+    boolean isOK      = status.isOK();
     HBCIRetVal[] values = status.getSuccess();
     boolean haveJobStatus = values != null && values.length > 0;
     if (haveJobStatus)
@@ -235,6 +236,22 @@ public abstract class AbstractHBCIJob
         {
           tanNeeded |= val.code.equals("0030");
           executed  |= (val.code.equals("0010") || val.code.equals("0020"));
+        }
+      }
+    }
+    else
+    {
+      // Sonderfall: Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine Umsätze vorhanden." sondern
+      // "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
+      HBCIRetVal[] warnings = status.getWarnings();
+      if (warnings != null && warnings.length == 1 && warnings[0].code != null && warnings[0].text != null)
+      {
+        Logger.info("institute did not sent 0xxx success code - only " + warnings[0].toString());
+        if (warnings[0].code.equals("3010") && warnings[0].text.contains("liegen keine Daten vor"))
+        {
+          executed = true;
+          haveJobStatus = true;
+          isOK = true;
         }
       }
     }
@@ -276,7 +293,7 @@ public abstract class AbstractHBCIJob
     
     // Bei dem abgebrochenen fehlte das "Der Auftrag wurde entgegengenommen.". Bei beiden war aber der "0030"
     // enthalten. Daher pruefen wir hier nach Vorhandensein von 0010/0020
-    if (executed && status.isOK())
+    if (executed && isOK)
     {
       Logger.info("mark job executed [executed: true, status: OK]");
       markExecutedInternal(errorText);
@@ -300,7 +317,7 @@ public abstract class AbstractHBCIJob
     }
 
     // Globaler Status ist nicht OK. Mal schauen, was der Job-Status sagt
-    if (status.isOK() && haveJobStatus)
+    if (isOK && haveJobStatus)
     {
       // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
