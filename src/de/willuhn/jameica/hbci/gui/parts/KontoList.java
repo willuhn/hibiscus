@@ -47,11 +47,13 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportRegistry;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchFromPassport;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
@@ -145,6 +147,9 @@ public class KontoList extends TablePart implements Part
     addColumn(i18n.tr("Verfügbar"),"saldo_available",null,false,Column.ALIGN_RIGHT);
     // BUGZILLA 108 http://www.willuhn.de/bugzilla/show_bug.cgi?id=108
     addColumn(i18n.tr("Saldo aktualisiert am"),"saldo_datum", new DateFormatter(HBCI.LONGDATEFORMAT));
+    
+    final boolean bold = Settings.getBoldValues();
+
     setFormatter(new TableFormatter()
     {
       public void format(TableItem item)
@@ -163,6 +168,9 @@ public class KontoList extends TablePart implements Part
             item.setText(saldocolumn+1,"");
           else
             item.setText(saldocolumn+1,HBCI.DECIMALFORMAT.format(avail) + " " + k.getWaehrung());
+          
+          if (bold)
+            item.setFont(saldocolumn,Font.BOLD.getSWTFont());
           
           item.setForeground(saldocolumn+1,ColorUtil.getForeground(k.getSaldoAvailable()));
 

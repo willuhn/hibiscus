@@ -39,6 +39,7 @@ import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
@@ -76,6 +77,9 @@ public class UmsatzTree extends TreePart
     this.setRememberOrder(true);
     this.setRememberState(true);
     this.setMulti(true);
+    
+    final boolean bold = Settings.getBoldValues();
+    
     this.setFormatter(new TreeFormatter() {
     
       public void format(TreeItem item)
@@ -91,6 +95,19 @@ public class UmsatzTree extends TreePart
           
           Double betrag = (Double) value;
           
+          if (bold)
+            item.setFont(3,Font.BOLD.getSWTFont());
+
+          // neue Umsaetze fett drucken, vorgemerkte grau
+          if (i instanceof Umsatz)
+          {
+            Umsatz u = (Umsatz) i;
+            if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+              item.setForeground(de.willuhn.jameica.gui.util.Color.COMMENT.getSWTColor());
+
+            item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
+          }
+
           // Mal checken, ob wir eine benutzerdefinierte Farbe haben
           UmsatzTyp ut = null;
           if (i instanceof UmsatzTreeNode)
@@ -117,18 +134,7 @@ public class UmsatzTree extends TreePart
               }
             }
           }
-
           item.setForeground(ColorUtil.getForeground(betrag.doubleValue()));
-
-          // neue Umsaetze fett drucken, vorgemerkte grau
-          if (i instanceof Umsatz)
-          {
-            Umsatz u = (Umsatz) i;
-            if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
-              item.setForeground(de.willuhn.jameica.gui.util.Color.COMMENT.getSWTColor());
-
-            item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
-          }
         }
         catch (Exception e)
         {

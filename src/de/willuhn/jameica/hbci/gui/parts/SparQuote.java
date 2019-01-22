@@ -37,6 +37,7 @@ import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -283,6 +284,8 @@ public class SparQuote implements Part
     this.table.addColumn(i18n.tr("Sparquote"), "sparquote", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.setRememberOrder(true);
     this.table.setRememberColWidths(true);
+    
+    final boolean bold = de.willuhn.jameica.hbci.Settings.getBoldValues();
     this.table.setFormatter(new TableFormatter() {
       public void format(TableItem item)
       {
@@ -290,6 +293,9 @@ public class SparQuote implements Part
           return;
         UmsatzEntry ue = (UmsatzEntry) item.getData();
         item.setForeground(ColorUtil.getForeground(ue.einnahmen - ue.ausgaben));
+        
+        if (bold)
+          item.setFont(3,Font.BOLD.getSWTFont());
       }
     });
 
