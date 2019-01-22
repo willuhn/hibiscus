@@ -247,7 +247,8 @@ public abstract class AbstractHBCIJob
       if (warnings != null && warnings.length == 1 && warnings[0].code != null && warnings[0].text != null)
       {
         Logger.info("institute did not sent 0xxx success code - only " + warnings[0].toString());
-        if (warnings[0].code.equals("3010") && warnings[0].text.contains("liegen keine Daten vor"))
+        String s = warnings[0].text.toLowerCase();
+        if (warnings[0].code.equals("3010") && (s.contains("liegen keine") || s.contains("keine umsätze")))
         {
           executed = true;
           haveJobStatus = true;
