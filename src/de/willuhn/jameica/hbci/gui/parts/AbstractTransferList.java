@@ -76,6 +76,8 @@ public abstract class AbstractTransferList extends AbstractFromToList
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
+    final boolean bold = Settings.getBoldValues();
+    
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         Terminable l = (Terminable) item.getData();
@@ -84,6 +86,9 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
         try
         {
+          if (bold)
+            item.setFont(4,Font.BOLD.getSWTFont());
+
           Date termin = l.getTermin();
           boolean faellig = l.ueberfaellig() && !l.ausgefuehrt();
           item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());

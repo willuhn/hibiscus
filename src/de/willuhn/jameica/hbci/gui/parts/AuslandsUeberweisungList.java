@@ -13,18 +13,13 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.TableItem;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.Column;
-import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
@@ -57,19 +52,6 @@ public class AuslandsUeberweisungList extends AbstractTransferList
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
-    
-    if (Settings.getBoldValues())
-    {
-      setFormatter(new TableFormatter() {
-        
-        @Override
-        public void format(TableItem item)
-        {
-          item.setFont(4,Font.BOLD.getSWTFont());
-        }
-      });
-    }
-
   }
 
   /**
