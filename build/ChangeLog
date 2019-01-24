@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0740 Elektr. Kontoauszüge, die sich genau am Anfang oder Ende des in "Anzeige einschränken" angegebenen Zeitraumes befinden, wurden u.U. nicht angezeigt
   * NEW: 0741 Geldbeträge in Tabellen fett gedruckt anzeigen. Konfigurierbar mit der neuen Option "Geld-Beträgen fett gedruckt anzeigen" unter Hibiscus->Einstellungen->Benutzeroberfläche
   * NEW: 0740 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/c0680a2a91f60d04b60330fea044c4854acda943
   * NEW: 0739 Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine Umsätze vorhanden." sondern nur "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread

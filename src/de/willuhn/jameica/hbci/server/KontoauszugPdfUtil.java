@@ -516,12 +516,12 @@ public class KontoauszugPdfUtil
     // Daher nehmen wir dort das Abrufdatum
     if (from != null)
     {
-      java.sql.Date d = new java.sql.Date(DateUtil.startOfDay(from).getTime());
+      java.sql.Timestamp d = new java.sql.Timestamp(DateUtil.startOfDay(from).getTime());
       it.addFilter("(von >= ? OR erstellungsdatum >= ? OR (von IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", d, d, d);
     }
     if (to != null)
     {
-      java.sql.Date d = new java.sql.Date(DateUtil.endOfDay(to).getTime());
+      java.sql.Timestamp d = new java.sql.Timestamp(DateUtil.endOfDay(to).getTime());
       it.addFilter("(bis <= ? OR erstellungsdatum <= ? OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", d, d, d);
     }
     
