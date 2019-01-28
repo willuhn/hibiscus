@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.ExportDialog;
 import de.willuhn.jameica.hbci.io.Exporter;
+import de.willuhn.jameica.hbci.io.UmsatzTree;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -51,7 +52,7 @@ public class ExportAddSumRowExtension implements Extension
     ExportDialog e = (ExportDialog) extendable;
     
     Class type = e.getType();
-    if (!type.isAssignableFrom(Umsatz.class))
+    if (!type.isAssignableFrom(Umsatz.class) && !type.isAssignableFrom(UmsatzTree.class))
       return;
 
     boolean initial = ExportDialog.SETTINGS.getBoolean(KEY_SUMROW_ADD,false);

@@ -64,7 +64,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
    */
   public final static Settings SETTINGS = new Settings(ExportDialog.class);
   
-  private final static int WINDOW_WIDTH = 420;
+  private final static int WINDOW_WIDTH = 550;
 
   private static DateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
 
