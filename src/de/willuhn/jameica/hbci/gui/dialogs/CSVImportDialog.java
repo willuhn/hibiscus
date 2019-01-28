@@ -278,15 +278,16 @@ public class CSVImportDialog extends AbstractDialog
       // CSV-Datei einlesen
       CsvPreference prefs = p.createCsvPreference();
       
+      final String enc = (String) this.getFileEncoding().getValue();
       Charset charset = null;
       
       try
       {
-        charset = Charset.forName(p.getFileEncoding());
+        charset = Charset.forName(enc);
       }
       catch (UnsupportedCharsetException e)
       {
-        getError().setValue(i18n.tr("Encoding {0} ignoriert, wird nicht unterstützt",p.getFileEncoding()));
+        getError().setValue(i18n.tr("Encoding {0} ignoriert, wird nicht unterstützt",enc));
       }
       csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),charset != null ? charset : Charset.defaultCharset()),prefs);
       List<String> line = null;
@@ -316,7 +317,9 @@ public class CSVImportDialog extends AbstractDialog
         return;
       }
 
-      if (lines.size() <= p.getSkipLines())
+      
+      int skip = ((Integer)this.getSkipLines().getValue()).intValue();
+      if (lines.size() <= skip)
       {
         this.getError().setValue(i18n.tr("CSV-Datei enthält nur {0} Zeilen",Integer.toString(lines.size())));
         return;
@@ -327,7 +330,7 @@ public class CSVImportDialog extends AbstractDialog
 
       List<Column> all     = format.getDefaultProfile().getColumns(); // Als Auswahlmoeglichkeit immer die aus dem Default
       List<Column> columns = p.getColumns(); // Die, die im Template tatsaechlich zugeordnet sind.
-      List<String> current = lines.get(p.getSkipLines()); // Die erste anzuzeigende Zeile
+      List<String> current = lines.get(skip); // Die erste anzuzeigende Zeile
 
       ScrolledContainer container = new ScrolledContainer(this.parent);
 
@@ -527,7 +530,7 @@ public class CSVImportDialog extends AbstractDialog
   private void update()
   {
     Profile p = getProfile();
-    Logger.info("chaning profile to: " + p);
+    Logger.info("changing profile to: " + p);
     
     // Einstellungen in die Eingabefelder uebernehmen
     this.getFileEncoding().setValue(p.getFileEncoding());

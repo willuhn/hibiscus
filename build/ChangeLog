@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0741 Support für End-to-End ID bei Import und Export im CSV-Format
   * BUG: 0740 Elektr. Kontoauszüge, die sich genau am Anfang oder Ende des in "Anzeige einschränken" angegebenen Zeitraumes befinden, wurden u.U. nicht angezeigt
   * NEW: 0741 Geldbeträge in Tabellen fett gedruckt anzeigen. Konfigurierbar mit der neuen Option "Geld-Beträgen fett gedruckt anzeigen" unter Hibiscus->Einstellungen->Benutzeroberfläche
   * NEW: 0740 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/c0680a2a91f60d04b60330fea044c4854acda943
