@@ -37,7 +37,10 @@ import org.swtchart.internal.Legend;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.chart.ChartFeature.Context;
+import de.willuhn.jameica.hbci.gui.chart.ChartFeature.Event;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -48,10 +51,11 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private String title             = null;
-  private Map<RGB,Color> colors    = new HashMap<RGB,Color>();
-  private List<T> data             = new ArrayList<T>();
-  private org.swtchart.Chart chart = null;
+  private String title                = null;
+  private Map<RGB,Color> colors       = new HashMap<RGB,Color>();
+  private List<T> data                = new ArrayList<T>();
+  private org.swtchart.Chart chart    = null;
+  private List<ChartFeature> features = new ArrayList<ChartFeature>();
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#setTitle(java.lang.String)
@@ -72,8 +76,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   }
 
   /**
-   * Liefert das eigentliche SWT-Chart-Objekt.
-   * @return das eigentliche SWT-Chart-Objekt.
+   * @see de.willuhn.jameica.hbci.gui.chart.Chart#getChart()
    */
   public org.swtchart.Chart getChart()
   {
@@ -293,16 +296,54 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
       }
     });
     cleanMenu();
+    this.featureEvent(Event.PAINT);
   }
-}
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.Chart#addFeature(de.willuhn.jameica.hbci.gui.chart.ChartFeature)
+   */
+  @Override
+  public void addFeature(ChartFeature feature)
+  {
+    this.features.add(feature);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.Chart#removeFeature(de.willuhn.jameica.hbci.gui.chart.ChartFeature)
+   */
+  @Override
+  public void removeFeature(ChartFeature feature)
+  {
+    this.features.remove(feature);
+  }
+  
+  /**
+   * Loest ein Feature-Event aus.
+   * @param e das Event.
+   */
+  private void featureEvent(ChartFeature.Event e)
+  {
+    if (this.features.size() == 0)
+      return;
+    
+    Context ctx = new Context();
+    ctx.chart = this;
+    ctx.event = e;
+    
+    for (ChartFeature f:this.features)
+    {
+      if (f.onEvent(e))
+      {
+        try
+        {
+          f.handleEvent(e,ctx);
+        }
+        catch (Exception ex)
+        {
+          Logger.error("error while handling event " + e,ex);
+        }
+      }
+    }
+  }
 
-/*********************************************************************
- * $Log: AbstractChart.java,v $
- * Revision 1.9  2011/05/04 10:38:40  willuhn
- * @B Titel des Charts wurde bei Aenderung des Zeitraumes nicht aktualisiert
- *
- * Revision 1.8  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- **********************************************************************/
+}

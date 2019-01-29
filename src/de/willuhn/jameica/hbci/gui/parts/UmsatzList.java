@@ -50,6 +50,7 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -118,6 +119,8 @@ public class UmsatzList extends TablePart implements Extendable
     
     this.addFeature(new FeatureShortcut()); // Wir unterstuetzen Shortcuts
     
+    final boolean bold = Settings.getBoldValues();
+    
     setMulti(true);
     setFormatter(new TableFormatter()
     {
@@ -128,7 +131,10 @@ public class UmsatzList extends TablePart implements Extendable
 
         try {
           item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
-          
+
+          if (bold)
+            item.setFont(5,Font.BOLD.getSWTFont());
+
           if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
           {
             item.setForeground(Color.COMMENT.getSWTColor());

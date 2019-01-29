@@ -60,6 +60,9 @@ public class SepaDauerauftragList extends TablePart implements Part
   public SepaDauerauftragList(Action action) throws RemoteException
   {
     super(Settings.getDBService().createList(SepaDauerauftrag.class), action);
+
+    final boolean bold = Settings.getBoldValues();
+    
     setFormatter(new TableFormatter()
     {
       public void format(TableItem item)
@@ -69,6 +72,9 @@ public class SepaDauerauftragList extends TablePart implements Part
           if (item == null || item.getData() == null)
             return;
           SepaDauerauftrag d = (SepaDauerauftrag) item.getData();
+
+          if (bold)
+            item.setFont(4,Font.BOLD.getSWTFont());
 
           item.setFont(!d.isActive() ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           

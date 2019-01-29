@@ -1,3 +1,18 @@
+2019-01-29 Version 2.8.9
+
+  * NEW: 0742 "Umsätze nach Kategorien" - Export: Bei Format "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" neue Option zur Anzeige einer Gesamtsumme über alle Kategorien
+  * NEW: 0741 Support für End-to-End ID bei Import und Export im CSV-Format
+  * BUG: 0740 Elektr. Kontoauszüge, die sich genau am Anfang oder Ende des in "Anzeige einschränken" angegebenen Zeitraumes befinden, wurden u.U. nicht angezeigt
+  * NEW: 0741 Geldbeträge in Tabellen fett gedruckt anzeigen. Konfigurierbar mit der neuen Option "Geld-Beträgen fett gedruckt anzeigen" unter Hibiscus->Einstellungen->Benutzeroberfläche
+  * NEW: 0740 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/c0680a2a91f60d04b60330fea044c4854acda943
+  * NEW: 0739 Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine Umsätze vorhanden." sondern nur "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
+  * NEW: 0738 Auf der Startseite in "Hibiscus: Konten-Übersicht" die deaktivierten Konten nicht anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=142089#real142089 
+  * NEW: 0737 Anzeige von Tooltips in den Line-Charts (siehe https://github.com/willuhn/hibiscus/pull/49)
+  * NEW: 0736 Inkrementielles Update des UPD- und BPD-Cache in der Datenbank. Sollte den den Abruf bei Verwendung von MySQL deutlich beschleunigen, da nur noch die geänderten Parameter gespeichert werden
+  * NEW: 0735 Unterstützung für chipTAN QR-Code
+  * BUG: 0734 Kam es im TAN-Dialog zu einem Fehler, konnte es u.U. passieren, dass eine Überweisung fälschlicherweise als ausgeführt markiert wurde
+  * NEW: 0733 Manuelles Anlegen von elektronischen Kontoauszügen - siehe https://homebanking-hilfe.de/forum/topic.php?p=141868#real141868
+
 2019-01-03 Version 2.8.8
 
   * BUG: 0732 Neue obantoo-Version, die gegen iText 5.5.2 compiliert wurde

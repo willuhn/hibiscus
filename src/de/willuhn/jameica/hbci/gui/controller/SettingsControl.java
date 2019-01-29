@@ -49,6 +49,7 @@ public class SettingsControl extends AbstractControl
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
   private CheckboxInput excludeAddresses  = null;
+  private CheckboxInput boldValues        = null;
 
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
@@ -87,6 +88,17 @@ public class SettingsControl extends AbstractControl
     if (decimalGrouping == null)
       decimalGrouping = new CheckboxInput(Settings.getDecimalGrouping());
     return decimalGrouping;
+  }
+
+  /**
+   * Checkbox zur fett gedruckten Darstellung von Geldbetraegen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getBoldValues()
+  {
+    if (boldValues == null)
+      boldValues = new CheckboxInput(Settings.getBoldValues());
+    return boldValues;
   }
 
   /**
@@ -247,6 +259,7 @@ public class SettingsControl extends AbstractControl
 		Settings.setBuchungSollForeground(sf.getRGB());
 
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
+    Settings.setBoldValues(((Boolean)getBoldValues().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
     Settings.setKontoCheckExcludeAddressbook(((Boolean)getKontoCheckExcludeAddressbook().getValue()).booleanValue());
 

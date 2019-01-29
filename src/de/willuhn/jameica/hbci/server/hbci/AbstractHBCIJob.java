@@ -225,8 +225,10 @@ public abstract class AbstractHBCIJob
     // Das koennte man vermutlich auch direkt in HBCI4Java implementieren
     boolean tanNeeded = false;
     boolean executed  = false;
+    boolean isOK      = status.isOK();
     HBCIRetVal[] values = status.getSuccess();
-    if (values != null && values.length > 0)
+    boolean haveJobStatus = values != null && values.length > 0;
+    if (haveJobStatus)
     {
       for (HBCIRetVal val:values)
       {
@@ -237,8 +239,25 @@ public abstract class AbstractHBCIJob
         }
       }
     }
+    else
+    {
+      // Sonderfall: Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine Umsätze vorhanden." sondern
+      // "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
+      HBCIRetVal[] warnings = status.getWarnings();
+      if (warnings != null && warnings.length == 1 && warnings[0].code != null && warnings[0].text != null)
+      {
+        Logger.info("institute did not sent 0xxx success code - only " + warnings[0].toString());
+        String s = warnings[0].text.toLowerCase();
+        if (warnings[0].code.equals("3010") && (s.contains("liegen keine") || s.contains("keine umsätze")))
+        {
+          executed = true;
+          haveJobStatus = true;
+          isOK = true;
+        }
+      }
+    }
     
-    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed);
+    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed + ", have job status: " + haveJobStatus);
 
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
@@ -275,7 +294,7 @@ public abstract class AbstractHBCIJob
     
     // Bei dem abgebrochenen fehlte das "Der Auftrag wurde entgegengenommen.". Bei beiden war aber der "0030"
     // enthalten. Daher pruefen wir hier nach Vorhandensein von 0010/0020
-    if (executed && status.isOK())
+    if (executed && isOK)
     {
       Logger.info("mark job executed [executed: true, status: OK]");
       markExecutedInternal(errorText);
@@ -291,7 +310,7 @@ public abstract class AbstractHBCIJob
 
     // Globaler Status ist OK - Job wurde zweifelsfrei erfolgreich ausgefuehrt
     // Wir markieren die Ueberweisung als "ausgefuehrt"
-    if (result.isOK())
+    if (result.isOK() && haveJobStatus)
     {
       Logger.info("mark job executed [result: OK]");
       markExecutedInternal(errorText);
@@ -299,7 +318,7 @@ public abstract class AbstractHBCIJob
     }
 
     // Globaler Status ist nicht OK. Mal schauen, was der Job-Status sagt
-    if (status.isOK())
+    if (isOK && haveJobStatus)
     {
       // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber

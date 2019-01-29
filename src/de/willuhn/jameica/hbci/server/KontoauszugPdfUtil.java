@@ -516,12 +516,12 @@ public class KontoauszugPdfUtil
     // Daher nehmen wir dort das Abrufdatum
     if (from != null)
     {
-      java.sql.Date d = new java.sql.Date(DateUtil.startOfDay(from).getTime());
+      java.sql.Timestamp d = new java.sql.Timestamp(DateUtil.startOfDay(from).getTime());
       it.addFilter("(von >= ? OR erstellungsdatum >= ? OR (von IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", d, d, d);
     }
     if (to != null)
     {
-      java.sql.Date d = new java.sql.Date(DateUtil.endOfDay(to).getTime());
+      java.sql.Timestamp d = new java.sql.Timestamp(DateUtil.endOfDay(to).getTime());
       it.addFilter("(bis <= ? OR erstellungsdatum <= ? OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", d, d, d);
     }
     
@@ -538,6 +538,27 @@ public class KontoauszugPdfUtil
                 service.getSQLTimestamp("von") + " desc, " + 
                 service.getSQLTimestamp("ausgefuehrt_am") + " desc");
     return it;
+  }
+  
+  /**
+   * Liefert den aktuellsten Kontoauszug mit Nummer.
+   * @param k das Konto.
+   * @return der Kontoauszug oder NULL, wenn er nicht existiert.
+   * @throws RemoteException
+   */
+  public static Kontoauszug getNewestWithNumber(Konto k) throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) Settings.getDBService();
+    DBIterator<Kontoauszug> it = service.createList(Kontoauszug.class);
+    it.addFilter("konto_id = " + k.getID());
+    it.addFilter("nummer is not null");
+    
+    it.setOrder("order by jahr desc, nummer desc, " + 
+                service.getSQLTimestamp("erstellungsdatum") + " desc, " + 
+                service.getSQLTimestamp("von") + " desc, " + 
+                service.getSQLTimestamp("ausgefuehrt_am") + " desc");
+    
+    return it.hasNext() ? it.next() : null;
   }
   
   /**

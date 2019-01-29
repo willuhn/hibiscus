@@ -30,8 +30,10 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
@@ -98,12 +100,17 @@ public class SepaSammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("BIC"),"empfaenger_bic");
     addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
 
+    final boolean bold = Settings.getBoldValues();
+    
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         try {
           SepaSammelTransferBuchung b = (SepaSammelTransferBuchung) item.getData();
           if (b.getSammelTransfer().ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
+          
+          if (bold)
+            item.setFont(5,Font.BOLD.getSWTFont());
         }
         catch (RemoteException e) {
           Logger.error("unable to read sepa sammeltransfer",e);

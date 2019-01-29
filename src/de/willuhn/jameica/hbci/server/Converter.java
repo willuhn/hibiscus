@@ -155,7 +155,7 @@ public class Converter
     // Gegenkonto
     // und jetzt noch der Empfaenger (wenn er existiert)
     if (u.other != null) 
-      umsatz.setGegenkonto(HBCIKonto2Address(u.other));
+      umsatz.setGegenkonto(HBCIKonto2Address(u.other,u.isCamt));
 
     if (!HBCIProperties.HBCI_SEPA_PARSE_TAGS)
       return umsatz;
@@ -423,14 +423,10 @@ public class Converter
     // insofern eine vorhanden ist
     if (number == 0)
     {
-      DBIterator<Kontoauszug> list = Settings.getDBService().createList(Kontoauszug.class);
-      list.addFilter("konto_id = ?",kt.getID());
-      list.addFilter("nummer is not null");
-      list.setOrder("order by id desc");
-      if (list.hasNext())
+      Kontoauszug newest = KontoauszugPdfUtil.getNewestWithNumber(kt);
+      if (newest != null)
       {
-        Kontoauszug kn = list.next();
-        Integer n = kn.getNummer();
+        Integer n = newest.getNummer();
         if (n != null)
           number = n.intValue() + 1;
       }
@@ -577,10 +573,12 @@ public class Converter
   /**
    * Konvertiert ein HBCI4Java Konto in eine Hibiscus-Adresse.
    * @param konto das HBCI-Konto.
+   * @param camt true, wenn es sich um einen CAMT-Umsatz handelt. In dem Fall wird bis auf weiteres erstmal name2 ignoriert.
+   * Siehe https://homebanking-hilfe.de/forum/topic.php?p=142206#real142206
    * @return unsere Adresse.
    * @throws RemoteException
    */
-  public static HibiscusAddress HBCIKonto2Address(Konto konto) throws RemoteException
+  public static HibiscusAddress HBCIKonto2Address(Konto konto, boolean camt) throws RemoteException
   {
     HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
     e.setBlz(konto.blz);
@@ -589,15 +587,30 @@ public class Converter
     e.setIban(konto.iban);
 
     String name  = StringUtils.trimToEmpty(konto.name);
-    String name2 = StringUtils.trimToEmpty(konto.name2);
+    
+    if (!camt)
+    {
+      String name2 = StringUtils.trimToEmpty(konto.name2);
 
-    if (name2 != null && name2.length() > 0)
-      name += (" " + name2);
+      if (name2 != null && name2.length() > 0)
+        name += (" " + name2);
+    }
 
     if (name != null && name.length() > HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)
       name = StringUtils.trimToEmpty(name.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH)); // Nochmal ein Trim, fuer den Fall, dass nach dem Abschneiden der Text mit Leerzeichen endet
     e.setName(name);
-    return e;  	
+    return e;   
+  }
+
+  /**
+   * Konvertiert ein HBCI4Java Konto in eine Hibiscus-Adresse.
+   * @param konto das HBCI-Konto.
+   * @return unsere Adresse.
+   * @throws RemoteException
+   */
+  public static HibiscusAddress HBCIKonto2Address(Konto konto) throws RemoteException
+  {
+    return HBCIKonto2Address(konto,false);
   }
 
 }

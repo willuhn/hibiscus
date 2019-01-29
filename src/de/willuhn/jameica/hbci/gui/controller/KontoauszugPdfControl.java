@@ -15,6 +15,9 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -27,7 +30,11 @@ import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.parts.KontoauszugPdfList;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -41,11 +48,13 @@ import de.willuhn.util.I18N;
  */
 public class KontoauszugPdfControl extends AbstractControl
 {
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoauszugPdfControl.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   private Kontoauszug auszug = null;
   private KontoauszugPdfList list = null;
   
+  private KontoInput konto = null;
   private Input datei = null;
   private Input abrufdatum = null;
   private TextAreaInput kommentar = null;
@@ -71,13 +80,19 @@ public class KontoauszugPdfControl extends AbstractControl
   /**
    * Liefert den ausgewaehlten Kontoauszug.
    * @return der ausgewaehlte Kontoauszug.
+   * @throws RemoteException
    */
-  private Kontoauszug getKontoauszug()
+  private Kontoauszug getKontoauszug() throws RemoteException
   {
     if (this.auszug != null)
       return this.auszug;
     
     this.auszug = (Kontoauszug) this.getCurrentObject();
+    
+    if (this.auszug != null)
+      return this.auszug;
+    
+    this.auszug = Settings.getDBService().createObject(Kontoauszug.class,null);
     return this.auszug;
   }
   
@@ -92,6 +107,28 @@ public class KontoauszugPdfControl extends AbstractControl
     
     this.list = new KontoauszugPdfList();
     return this.list;
+  }
+  
+  /**
+   * Liefert das Auswahlfeld fuer das Konto.
+   * @return das Auswahlfeld fuer das Konto.
+   * @throws RemoteException
+   */
+  public KontoInput getKonto() throws RemoteException
+  {
+    if (this.konto != null)
+      return this.konto;
+    
+    this.konto = new KontoInput(getKontoauszug().getKonto(),KontoFilter.ACTIVE);
+    this.konto.setName(i18n.tr("Persönliches Konto"));
+    this.konto.setRememberSelection("kontoauszug",false);
+    this.konto.setMandatory(true);
+    
+    final Listener l = new KontoListener();
+    this.konto.addListener(l);
+    l.handleEvent(null);
+
+    return this.konto;
   }
   
   /**
@@ -292,11 +329,67 @@ public class KontoauszugPdfControl extends AbstractControl
     {
       String name = k.getDateiname();
       String path = k.getPfad();
-      File f = new File(path,name);
-      this.datei = new FileInput(f.getAbsolutePath(),false);
+      File f = name != null && path != null ? new File(path,name) : null;
+      this.datei = new FileInput(f != null ? f.getAbsolutePath() : null,false)
+      {
+        /**
+         * @see de.willuhn.jameica.gui.input.FileInput#customize(org.eclipse.swt.widgets.FileDialog)
+         */
+        @Override
+        protected void customize(FileDialog fd)
+        {
+          String dir = settings.getString(getLastdirKey(),settings.getString("lastdir",null));
+          if (dir != null)
+            fd.setFilterPath(dir);
+          super.customize(fd);
+        }
+      };
+      this.datei.addListener(new Listener() {
+        
+        @Override
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            // Wir merken uns den zuletzt ausgewaehlten Pfad pro Konto
+            String file = StringUtils.trimToNull((String) getDatei().getValue());
+            if (file != null)
+            {
+              File f = new File(file);
+              String path = f.getParent();
+              settings.setAttribute(getLastdirKey(),path);
+            }
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("unable to determine last import dir",re);
+          }
+
+        }
+      });
     }
     this.datei.setName(i18n.tr("Datei"));
     return this.datei;
+  }
+  
+  /**
+   * Liefert den Key, unter dem der Ordner des letzten Imports gespeichert wird.
+   * @return der Key, unter dem der Ordner des letzten Imports gespeichert wird.
+   */
+  private String getLastdirKey()
+  {
+    String key = "lastdir";
+    try
+    {
+      Konto k = (Konto) getKonto().getValue();
+      if (k != null)
+        key += "." + k.getID();
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine current account",re);
+    }
+    return key;
   }
   
   /**
@@ -339,6 +432,7 @@ public class KontoauszugPdfControl extends AbstractControl
     try
     {
       final Kontoauszug k = this.getKontoauszug();
+      k.setKonto((Konto)getKonto().getValue());
       k.setBis((Date) this.getBisDatum().getValue());
       k.setVon((Date) this.getVonDatum().getValue());
       k.setJahr((Integer) this.getJahr().getValue());
@@ -370,6 +464,52 @@ public class KontoauszugPdfControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
     return false;
+  }
+  
+  /**
+   * Listener, der beim Wechsel des Kontos ausgeloest wird.
+   */
+  private class KontoListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    @Override
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        // Wir vervollstaendigen Jahr und/oder Nummer basierend auf dem letzten Kontoauszug des Kontos.
+        final Input year   = getJahr();
+        final Input nummer = getNummer();
+
+        final Object k = getKonto().getValue();
+        
+        // Wenn wir kein Konto haben, brauchen wir nichts suchen
+        if (k == null || !(k instanceof Konto))
+          return;
+        
+        // Aber nur, wenn noch nichts drin steht
+        if (year.getValue() != null && nummer.getValue() != null)
+          return;
+
+        Kontoauszug newest = KontoauszugPdfUtil.getNewestWithNumber((Konto) k);
+        if (newest == null)
+          return;
+        
+        if (year.getValue() == null && newest.getJahr() != null)
+          year.setValue(newest.getJahr());
+        
+        if (nummer.getValue() == null && newest.getNummer() != null)
+          nummer.setValue(newest.getNummer().intValue() + 1);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while updating year/number",e);
+      }
+    }
+    
   }
 
 }

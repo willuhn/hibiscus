@@ -227,6 +227,24 @@ public class Settings
   }
 
   /**
+   * Prueft, ob Geldbetraege fett gedruckt angezeigt werden sollen.
+   * @return true, wenn Geldbetraege fett gedruckt angezeigt werden sollen.
+   */
+  public static boolean getBoldValues()
+  {
+    return settings.getBoolean("boldvalues",true);
+  }
+
+  /**
+   * Legt fest, ob Geldbetraege fett gedruckt angezeigt werden sollen.
+   * @param bold  true, wenn Geldbetraege fett gedruckt angezeigt werden sollen.
+   */
+  public static void setBoldValues(boolean bold)
+  {
+    settings.setAttribute("boldvalues",bold);
+  }
+
+  /**
    * Speichert, ob wir eine permanente Online-Verbindung haben und daher
    * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
    * Internetverbindung haben wollen.

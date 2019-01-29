@@ -40,6 +40,10 @@ public class KontoauszugPdfDetail extends AbstractView
     GUI.getView().setTitle(i18n.tr("Elektronischer Kontoauszug"));
     
     final KontoauszugPdfControl control = new KontoauszugPdfControl(this);
+
+    SimpleContainer cont = new SimpleContainer(getParent());
+    cont.addInput(control.getKonto());
+
     ColumnLayout columns = new ColumnLayout(getParent(),2);
     SimpleContainer left = new SimpleContainer(columns.getComposite());
 
