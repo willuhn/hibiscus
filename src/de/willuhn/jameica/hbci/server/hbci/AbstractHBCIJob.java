@@ -243,12 +243,12 @@ public abstract class AbstractHBCIJob
     {
       // Sonderfall: Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine Umsätze vorhanden." sondern
       // "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
+      // Oder "3010 - Umsatzabfrage: Keine Einträge vorhanden."
       HBCIRetVal[] warnings = status.getWarnings();
       if (warnings != null && warnings.length == 1 && warnings[0].code != null && warnings[0].text != null)
       {
         Logger.info("institute did not sent 0xxx success code - only " + warnings[0].toString());
-        String s = warnings[0].text.toLowerCase();
-        if (warnings[0].code.equals("3010") && (s.contains("liegen keine") || s.contains("keine umsätze")))
+        if (warnings[0].code.equals("3010"))
         {
           executed = true;
           haveJobStatus = true;

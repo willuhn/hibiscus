@@ -1,3 +1,7 @@
+2019-01-30 Version 2.8.10
+
+  * BUG: 0743 Nachtrag zu 0739 - einschränkenden Text "liegen keine" bzw. "keine Umsätze" entfernt, da noch weitere Textkombinationen existieren
+
 2019-01-29 Version 2.8.9
 
   * NEW: 0742 "Umsätze nach Kategorien" - Export: Bei Format "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" neue Option zur Anzeige einer Gesamtsumme über alle Kategorien
