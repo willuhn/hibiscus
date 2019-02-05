@@ -10,7 +10,6 @@
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart.ext_0.10.0.v20160212.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="lib" path="lib/obantoo-bin-2.1.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.0.22-SNAPSHOT.jar" sourcepath="/hbci4j-core/src/main/java"/>
 	<classpathentry kind="lib" path="lib/konik/harness-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/konik/itext-carriage-0.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/konik/bval-core-1.1.2.jar"/>
@@ -21,5 +20,6 @@
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.0.23-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

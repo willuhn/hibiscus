@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0744 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/5b28ebb5e1497c49547f28feeeadc8124bdb2d4e mit neuem PassportStorage
+
 2019-01-30 Version 2.8.10
 
   * BUG: 0743 Nachtrag zu 0739 - einschränkenden Text "liegen keine" bzw. "keine Umsätze" entfernt, da noch weitere Textkombinationen existieren
