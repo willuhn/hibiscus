@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0745 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/cac9ce383829e6d2a4a4c9349075b6be6a22dd76 - smsTAN in HHD-Version 1.3 wurde falsch als QR-TAN erkannt.
   * NEW: 0744 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/5b28ebb5e1497c49547f28feeeadc8124bdb2d4e mit neuem PassportStorage
 
 2019-01-30 Version 2.8.10
