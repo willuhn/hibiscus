@@ -47,7 +47,7 @@ public class KontoDelete implements Action
 
 			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
 			d.setTitle(i18n.tr("Konto löschen"));
-			d.setText(i18n.tr("Wollen Sie dieses Konto wirklich löschen?\nHierbei werden auch alle Umsätze, Überweisungen und Daueraufträge des Kontos lokal gelöscht."));
+			d.setText(i18n.tr("Wollen Sie dieses Konto wirklich löschen?\nHierbei werden auch alle Umsätze und Aufträge des Kontos lokal gelöscht."));
 
 			try {
 				Boolean choice = (Boolean) d.open();
