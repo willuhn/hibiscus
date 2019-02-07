@@ -74,7 +74,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
   {
     Container c = new SimpleContainer(parent,true);
     c.addHeadline(i18n.tr("Warnung"));
-    c.addText(i18n.tr("Wollen Sie das Konto wirklich löschen?\nHierbei werden auch alle diesem Konto zugeordneten Daten gelöscht.") + "\n",true);
+    c.addText(i18n.tr("Wollen Sie das Konto wirklich löschen?\nHierbei werden auch alle Daten gelöscht, die diesem Konto zugeordnet sind.") + "\n",true);
     c.addPart(this.getDependencies());
     c.addInput(this.getCheck());
     
