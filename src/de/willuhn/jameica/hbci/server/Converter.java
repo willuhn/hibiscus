@@ -66,6 +66,7 @@ public class Converter
     umsatz.setTransactionId(u.id);
     umsatz.setPurposeCode(u.purposecode);
     umsatz.setEndToEndId(u.endToEndId);
+    umsatz.setMandateId(u.mandateId);
 
     //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
     Saldo s = u.saldo;
@@ -143,10 +144,21 @@ public class Converter
       String eref = umsatz.getEndToEndId();
       if (eref == null || eref.length() == 0)
       {
-        eref = cleanEndToEndId(VerwendungszweckUtil.getTag(umsatz,Tag.EREF));
+        eref = cleanSepaId(VerwendungszweckUtil.getTag(umsatz,Tag.EREF));
         if (eref != null && eref.length() > 0 && eref.length() <= 100)
           umsatz.setEndToEndId(eref);
       }
+
+      // Wir checken mal, ob wir eine Mandatsreferenz haben. Falls ja, tragen wir die gleich
+      // in das dedizierte Feld ein. Aber nur, wenn wir noch keine haben
+      String mid = umsatz.getMandateId();
+      if (mid == null || mid.length() == 0)
+      {
+        mid = cleanSepaId(VerwendungszweckUtil.getTag(umsatz,Tag.MREF));
+        if (mid != null && mid.length() > 0 && mid.length() <= 100)
+          umsatz.setMandateId(mid);
+      }
+
     }
     //
     ////////////////////////////////////////////////////////////////////////////
@@ -222,15 +234,15 @@ public class Converter
   }
   
   /**
-   * Bereinigt die EndToEnd-ID.
+   * Bereinigt eine SEPA-Kennung.
    * Bei einem User kam es vor, dass die ID nicht korrekt geparst wurde und daher auch den ganzen
    * Rest des Verwendungszwecks (inclusive aller weiteren SEPA-Tags) enthielt. Ich konnte den Fehler
    * nicht reproduzieren. Damit aber das Abrufen des Umsatzes deswegen nicht fehlschlaegt, kuerzen
    * wir in dem Fall die EndToEnd-ID so weit, dass sie rein passt.
-   * @param text die EndToEnd-ID.
-   * @return die bereinigte EndToEnd-ID.
+   * @param text die SEPA-Kennung.
+   * @return die bereinigte SEPA-Kennung.
    */
-  public static String cleanEndToEndId(String text)
+  public static String cleanSepaId(String text)
   {
     text = clean(text);
     if (text == null || text.length() == 0 || text.length() <= 100)

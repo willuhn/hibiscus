@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0749 Feature #162 - neues dediziertes Feld für die Mandatsreferenz in Umsatzbuchungen
   * BUG: 0748 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/4e8226142e319a3b6aabda7ef2a6bfdcf85c2b10 - Verbindung zum Kartenleser nur im Fehlerfall schliessen
   * NEW: 0747 Sicherheitsabfrage beim Löschen eines Kontos stark erweitert. Zeigt jetzt auch die Anzahl der ebenfalls zu löschenden zugeordneten Daten an sowie eine extra Checkbox 
   * BUG: 0746 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/81a27b51809c6d7c0baa2ccd3e176cbf81d6a66c - automatisches Korrigieren von Passport-Dateinamen bei Chipkarten

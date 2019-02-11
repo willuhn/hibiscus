@@ -275,6 +275,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String art   = StringUtils.trimToEmpty(umsatz.getArt());
     String purp  = StringUtils.trimToEmpty(umsatz.getPurposeCode());
     String e2eid = StringUtils.trimToEmpty(umsatz.getEndToEndId());
+    String mid   = StringUtils.trimToEmpty(umsatz.getMandateId());
     
     if (!isRegex())
     {
@@ -285,6 +286,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       art   = art.toLowerCase();
       purp  = purp.toLowerCase();
       e2eid = e2eid.toLowerCase();
+      mid   = mid.toLowerCase();
 
       if (ignorewhitespace)
       {
@@ -304,7 +306,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
             kom.indexOf(test) != -1 ||
             art.indexOf(test) != -1 ||
             purp.indexOf(test) != -1 ||
-            e2eid.indexOf(test) != -1)
+            e2eid.indexOf(test) != -1 ||
+            mid.indexOf(test) != -1)
         {
           return true;
         }
@@ -330,16 +333,18 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mArt = pattern.matcher(art);
       Matcher mPurp = pattern.matcher(purp);
       Matcher mE2eid = pattern.matcher(e2eid);
-      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid);
+      Matcher mMid = pattern.matcher(mid);
+      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid + mid);
 
-      return (mZweck.matches() ||
-              mName.matches()  ||
-              mKto.matches()   ||
-              mKom.matches()   ||
-              mArt.matches()   ||
-              mPurp.matches()  ||
+      return (mAll.matches()    ||
+              mZweck.matches()  ||
+              mName.matches()   ||
+              mKto.matches()    ||
+              mKom.matches()    ||
+              mArt.matches()    ||
+              mPurp.matches()   ||
               mE2eid.matches()  ||
-              mAll.matches()
+              mMid.matches()
              );
     }
     catch (Exception e)
