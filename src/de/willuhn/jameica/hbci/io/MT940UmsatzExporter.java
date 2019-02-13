@@ -19,6 +19,11 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -81,24 +86,37 @@ public class MT940UmsatzExporter implements Exporter
         factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
+      
+      //////////////////////////////////////////////////////////////////////////
+      // Wir sortieren die Buchungen vorher noch chronologisch. Und checken bei
+      // der Gelegenheit auch gleich, dass die Buchungen alle vom selben Konto
+      // stammen
+      List<Umsatz> list = new LinkedList<Umsatz>();
+      for (int i=0;i<objects.length;++i)
+      {
+        if (objects[i] == null || !(objects[i] instanceof Umsatz))
+          continue;
+        
+        list.add((Umsatz) objects[i]);
+      }
+      sort(list);
+      //////////////////////////////////////////////////////////////////////////
+
 
       Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
       boolean showSaldo = (b == null || !b.booleanValue());
       
-      for (int i=0;i<objects.length;++i)
+      for (int i=0;i<list.size();++i)
       {
         if (monitor != null)  
         	monitor.setPercentComplete((int)((i) * factor));
         
-        if (objects[i] == null || !(objects[i] instanceof Umsatz))
-          continue;
-
-        Object name = BeanUtil.toString(objects[i]);
+        Umsatz u = list.get(i);
+        Object name = BeanUtil.toString(u);
         
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
         
-    		Umsatz u    = (Umsatz) objects[i];
     		Konto k     = u.getKonto();
     		String curr = k.getWaehrung();
 
@@ -217,6 +235,40 @@ public class MT940UmsatzExporter implements Exporter
     out.write("?2" + Integer.toString(m) + tag.name() + "+" + text);
     m++;
     return m;
+  }
+  
+  /**
+   * Sortiert die Buchungen chronologisch - aeltestest zuerst.
+   * @param list die zu sortierenden Buchungen.
+   */
+  protected void sort(List<Umsatz> list)
+  {
+    Collections.sort(list,new Comparator<Umsatz>() {
+      /**
+       * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+       */
+      @Override
+      public int compare(Umsatz o1, Umsatz o2)
+      {
+        try
+        {
+          Date d1 = (Date) o1.getAttribute("datum_pseudo");
+          Date d2 = (Date) o2.getAttribute("datum_pseudo");
+          if (d1 == d2)
+            return 0;
+          if (d1 == null)
+            return -1;
+          if (d2 == null)
+            return 1;
+          return d1.compareTo(d2);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to sort data",re);
+          return 0;
+        }
+      }
+    });
   }
 
   /**

@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0752 Feature #170 - Beim MT940-Export "pro Buchung eine logische Datei" ebenfalls immer chronologisch sortieren
   * NEW: 0751 Feature #169 - Beim MT940-Export von CAMT-Umsätzen die Tags EREF, KREF und MREF mit berücksichtigen
   * BUG: 0750 Bug #168 - Beim MT940-Export von CAMT-Umsätzen muss der Verwendungszweck pro 65 Zeichen umgebrochen werden. Mehr ist in MT940 nicht erlaubt, CAMT hat jedoch 140 Zeichen
   * NEW: 0749 Feature #162 - neues dediziertes Feld für die Mandatsreferenz in Umsatzbuchungen
