@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -142,7 +143,8 @@ public class MT940UmsatzExporter implements Exporter
     		
     		//Verwendungszweck
     		String[] lines = VerwendungszweckUtil.rewrap(65,VerwendungszweckUtil.toArray(u));
-    		for (int m=0;m<lines.length;++m)
+    		int m = 0;
+    		for (m=0;m<lines.length;++m)
     		{
       		// in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
     		  // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
@@ -151,6 +153,10 @@ public class MT940UmsatzExporter implements Exporter
     		    break;
           out.write("?2" + Integer.toString(m) + lines[m]);
     		}
+    		
+        m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
+        m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());
+        m = addRef(out,m,VerwendungszweckUtil.Tag.MREF,u.getMandateId());
 
         String blz = StringUtils.trimToNull(u.getGegenkontoBLZ());
         String kto = StringUtils.trimToNull(u.getGegenkontoNummer());
@@ -186,6 +192,31 @@ public class MT940UmsatzExporter implements Exporter
     {
       IOUtil.close(out);
     }
+  }
+  
+  /**
+   * Fuegt das Tag hinzu, insofern noch Platz ist.
+   * @param out der OutputStreamWriter.
+   * @param m der Counter.
+   * @param tag das Tag.
+   * @param text der Text.
+   * @return der neue Counter-Wert.
+   * @throws IOException
+   */
+  protected int addRef(OutputStreamWriter out, int m, Tag tag, String text) throws IOException
+  {
+    // Kein Platz mehr
+    if (m > 9)
+      return m;
+    
+    // Feld hat keinen Wert.
+    text = StringUtils.trimToNull(text);
+    if (text == null)
+      return m;
+    
+    out.write("?2" + Integer.toString(m) + tag.name() + "+" + text);
+    m++;
+    return m;
   }
 
   /**
