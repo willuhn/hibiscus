@@ -156,7 +156,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
     		
     		//Verwendungszweck
-    		String[] lines = VerwendungszweckUtil.toArray(u);
+    		String[] lines = VerwendungszweckUtil.rewrap(65,VerwendungszweckUtil.toArray(u));
     		for (int m=0;m<lines.length;++m)
     		{
       		// in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
