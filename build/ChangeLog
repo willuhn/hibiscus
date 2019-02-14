@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0754 Neues CSV-Exportformat für "Einnahmen/Ausgaben"
   * BUG: 0753 In Export "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" war die Summenzeile nicht korrekt
   * NEW: 0752 Feature #170 - Beim MT940-Export "pro Buchung eine logische Datei" ebenfalls immer chronologisch sortieren
   * NEW: 0751 Feature #169 - Beim MT940-Export von CAMT-Umsätzen die Tags EREF, KREF und MREF mit berücksichtigen
