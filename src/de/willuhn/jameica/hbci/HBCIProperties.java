@@ -78,6 +78,11 @@ public class HBCIProperties
   public final static String HBCI_SEPA_MANDATE_VALIDCHARS = settings.getString("hbci.sepa.mandate.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789':?,-(+.)/");
 
   /**
+   * Liste der fuer die Referenz gueltigen Zeichen. RestrictedIdentificationSEPA1.
+   */
+  public final static String HBCI_SEPA_PMTINF_VALIDCHARS = HBCI_SEPA_MANDATE_VALIDCHARS + " ";
+
+  /**
    * Liste der in einer IBAN erlaubten Zeichen.
    */
   public final static String HBCI_IBAN_VALIDCHARS = settings.getString("hbci.iban.validchars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"); 

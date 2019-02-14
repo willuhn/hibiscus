@@ -240,7 +240,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
     this.pmtInfId = new TextInput(getTransfer().getPmtInfId(),HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
     this.pmtInfId.setName(i18n.tr("Referenz (Payment-Information ID)"));
-    this.pmtInfId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+    this.pmtInfId.setValidChars(HBCIProperties.HBCI_SEPA_PMTINF_VALIDCHARS);
     this.pmtInfId.setEnabled(!getTransfer().ausgefuehrt());
     this.pmtInfId.setHint(i18n.tr("freilassen wenn nicht benötigt"));
     this.pmtInfId.setMandatory(false);
