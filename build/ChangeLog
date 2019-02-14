@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0755 Neues Feld mit der Mandatsreferenz wurde in der globalen Suche noch nicht berücksichtigt
   * NEW: 0754 Neues CSV-Exportformat für "Einnahmen/Ausgaben"
   * BUG: 0753 In Export "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" war die Summenzeile nicht korrekt
   * NEW: 0752 Feature #170 - Beim MT940-Export "pro Buchung eine logische Datei" ebenfalls immer chronologisch sortieren
