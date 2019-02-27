@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0758 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.03.2019
   * BUG: 0757 Code 3290 ebenfalls tolerieren (keine Dauerauftraege beim Abruf)
   * BUG: 0756 Wertebereich für PmtInfId noch etwas eingeschränkt (RestrictedIdentificationSEPA1)
   * BUG: 0755 Neues Feld mit der Mandatsreferenz wurde in der globalen Suche noch nicht berücksichtigt
