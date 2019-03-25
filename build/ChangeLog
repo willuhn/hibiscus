@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0760 HASPA: Bei Anlage eines neuen Bankzugangs automatisch die neue URL vorschlagen, wenn das Systemdatum der Umstellungstag 20.04.2019 ist
   * BUG: 0759 Nachtrag zu BUGZILLA 1860 - Bei langen Banknachricht wurde der Scrollbalken u.U. nicht angezeigt, weil die Höhe des Textes vom Control scheinbar falsch berechnet wurde
   * NEW: 0758 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.03.2019
   * BUG: 0757 Code 3290 ebenfalls tolerieren (keine Dauerauftraege beim Abruf)
