@@ -209,7 +209,7 @@ public class HBCIProperties
 	/**
 	 * Maximale Laenge fuer PINs.
 	 */
-	public final static int HBCI_PIN_MAXLENGTH = settings.getInt("hbci.pin.maxlength",20);
+	public final static int HBCI_PIN_MAXLENGTH = settings.getInt("hbci.pin.maxlength",50);
 	
   /**
 	 * Minimale Laenge fuer PINs.

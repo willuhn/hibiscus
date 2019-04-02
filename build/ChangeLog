@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0763 Default-Limit für PINs auf 50 Zeichen erhöht
   * NEW: 0762 Fenstergröße des Adressauswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143572#real143572
   * NEW: 0761 Einnahmen/Ausgaben: Deaktivierte Konten ausblendbar - siehe https://homebanking-hilfe.de/forum/topic.php?t=22649
   * NEW: 0760 HASPA: Bei Anlage eines neuen Bankzugangs automatisch die neue URL vorschlagen, wenn das Systemdatum der Umstellungstag 20.04.2019 ist
