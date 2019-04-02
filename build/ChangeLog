@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0762 Fenstergröße des Adressauswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143572#real143572
   * NEW: 0761 Einnahmen/Ausgaben: Deaktivierte Konten ausblendbar - siehe https://homebanking-hilfe.de/forum/topic.php?t=22649
   * NEW: 0760 HASPA: Bei Anlage eines neuen Bankzugangs automatisch die neue URL vorschlagen, wenn das Systemdatum der Umstellungstag 20.04.2019 ist
   * BUG: 0759 Nachtrag zu BUGZILLA 1860 - Bei langen Banknachricht wurde der Scrollbalken u.U. nicht angezeigt, weil die Höhe des Textes vom Control scheinbar falsch berechnet wurde
