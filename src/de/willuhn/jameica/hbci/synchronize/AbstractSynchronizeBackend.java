@@ -461,12 +461,35 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       }
       finally
       {
+        this.log(session.getWarnings(),i18n.tr("Warnungen"));
+        this.log(session.getErrors(),i18n.tr("Fehlermeldungen"));
+        
         Logger.info("stopping synchronization");
         worker = null;
         session = null;
         this.monitor.setPercentComplete(100);
         Logger.info("finished");
       }
+    }
+    
+    /**
+     * Loggt die Nachrichten zum Schluss.
+     * @param messages die Nachrichten.
+     * @param title der Titel.
+     */
+    private void log(List<String> messages, String title)
+    {
+      if (messages == null || messages.size() == 0)
+        return;
+      
+      this.monitor.log("");
+      this.monitor.log("*****************************************************");
+      this.monitor.log(title + ":");
+      for (String m:messages)
+      {
+        this.monitor.log("   " + m);
+      }
+      this.monitor.log("*****************************************************");
     }
     
     /**

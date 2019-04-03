@@ -114,6 +114,9 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   		  }
   		  else
   		  {
+  		    if (session != null && msg != null)
+  		      session.getErrors().add(msg.replace("HBCI error code: ",""));
+  		    
           type = "error";
           Logger.error(msg + " " + trace.toString());
           break;

@@ -262,20 +262,10 @@ public abstract class AbstractHBCIJob
 
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+    ProgressMonitor monitor = session.getProgressMonitor();
     
-    ////////////////////////////////////////////////////////////////////////////
-    // Warnungen ausgeben, falls vorhanden - BUGZILLA 899
-    HBCIRetVal[] warnings = status.getWarnings();
-    if (warnings != null && warnings.length > 0)
-    {
-      // Loggen
-      ProgressMonitor monitor = session.getProgressMonitor();
-      monitor.log(" ");
-      for (HBCIRetVal val:warnings)
-        monitor.log("  " + val.code + ": " + val.text);
-      monitor.log(" ");
-    }
-    ////////////////////////////////////////////////////////////////////////////
+    this.logMessages(status.getWarnings(),session.getWarnings(), monitor);
+    // this.logMessages(status.getErrors(),session.getErrors(), monitor); Geschieht bereits in HBCICallbackSWT, weil es Fehlermeldung gibt, die keinen GV-Bezug haben
 
     final String errorText = this.getErrorText();
 
@@ -345,6 +335,26 @@ public abstract class AbstractHBCIJob
       Logger.error("unable to mark job as failed",e);
     }
     throw new ApplicationException(error != null && error.length() > 0 ? error : errorText);
+  }
+  
+  /**
+   * Loggt die Meldungen.
+   * @param messages die Meldungen.
+   * @param target das Ziel, wo die Meldungen hingeschrieben werden sollen.
+   * @param monitor der ProgressMonitor.
+   */
+  private void logMessages(HBCIRetVal[] messages, List<String> target, ProgressMonitor monitor)
+  {
+    if (messages == null || messages.length == 0)
+      return;
+    
+    monitor.log(" ");
+    for (HBCIRetVal val:messages)
+    {
+      monitor.log("  " + val.code + ": " + val.text);
+      target.add(val.code + ": " + val.text);
+    }
+    monitor.log(" ");
   }
   
   /**
