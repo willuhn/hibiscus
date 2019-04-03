@@ -14,13 +14,17 @@ import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.jameica.gui.Action;
@@ -53,8 +57,12 @@ import de.willuhn.util.I18N;
 public class UmsatzTypListDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypListDialog.class);
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
+  private final static int WINDOW_WIDTH = 370;
+  private final static int WINDOW_HEIGHT = 500;
+
   private List<UmsatzTypBean> list = null;
   private UmsatzTyp choosen        = null;
   private int typ                  = UmsatzTyp.TYP_EGAL;
@@ -82,7 +90,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     this.list =  UmsatzTypUtil.getList(null,this.typ);
 
     this.setTitle(i18n.tr("Auswahl der Kategorie"));
-    this.setSize(370,500);
+    setSize(settings.getInt("window.width",WINDOW_WIDTH),settings.getInt("window.height",WINDOW_HEIGHT));
   }
 
   /**
@@ -132,6 +140,25 @@ public class UmsatzTypListDialog extends AbstractDialog
     },null,false,"process-stop.png");
     
     group.addButtonArea(buttons);
+    
+    // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
+    getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
+    
+    getShell().addDisposeListener(new DisposeListener() {
+      
+      @Override
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Shell shell = getShell();
+        if (shell == null || shell.isDisposed())
+          return;
+        
+        Point size = shell.getSize();
+        Logger.debug("saving window size: " + size.x + "x" + size.y);
+        settings.setAttribute("window.width",size.x);
+        settings.setAttribute("window.height",size.y);
+      }
+    });
   }
   
   /**

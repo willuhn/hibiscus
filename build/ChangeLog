@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0765 Fenstergröße des Kategorie-Auswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143616#real143616
   * NEW: 0764 Fehlermeldungen bei HBCI-Synchronisierung am Ende noch etwas deutlicher hervorheben
   * CHG: 0763 Default-Limit für PINs auf 50 Zeichen erhöht
   * NEW: 0762 Fenstergröße des Adressauswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143572#real143572
