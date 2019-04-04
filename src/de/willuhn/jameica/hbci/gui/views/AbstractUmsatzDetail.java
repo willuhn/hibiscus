@@ -79,8 +79,8 @@ public abstract class AbstractUmsatzDetail extends AbstractView
     SimpleContainer right = new SimpleContainer(columns.getComposite(),true);
     right.addHeadline(i18n.tr("Sonstige Informationen"));
     right.addLabelPair(i18n.tr("Art der Buchung"),              control.getArt());
-    right.addLabelPair(i18n.tr("Kundenreferenz"),               control.getCustomerRef());
     right.addInput(control.getEndToEndId());
+    right.addLabelPair(i18n.tr("Kunden-/Mandatsreferenz"),      new MultiInput(control.getCustomerRef(),control.getMandateId()));
     right.addLabelPair(i18n.tr("Primanota/GV-Code"),new MultiInput(control.getPrimanota(),control.getGvCode()));
 
     right.addHeadline(i18n.tr("Notizen"));

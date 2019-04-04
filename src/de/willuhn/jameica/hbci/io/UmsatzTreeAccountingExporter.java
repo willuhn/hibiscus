@@ -123,10 +123,13 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
     reporter.addColumn(reporter.getDetailCell(da));
     reporter.addColumn(reporter.getDetailCell(db));
     
-    // Summen
-    this.einnahmen += de.doubleValue();
-    this.ausgaben  += da.doubleValue();
-    this.betrag    += db.doubleValue();
+    // Summen - nur die Summen der obersten Ebene zaehlen
+    if (level == 0)
+    {
+      this.einnahmen += de.doubleValue();
+      this.ausgaben  += da.doubleValue();
+      this.betrag    += db.doubleValue();
+    }
 
     List<UmsatzTreeNode> children = node.getSubGroups();
     for (int i=0; i<children.size(); ++i)

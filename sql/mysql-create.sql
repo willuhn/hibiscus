@@ -304,6 +304,8 @@ CREATE TABLE umsatz (
      , txid varchar(100)
      , purposecode varchar(10)
      , endtoendid varchar(100)
+     , mandateid varchar(100)
+     , empfaenger_name2 varchar(255)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -475,4 +477,4 @@ ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
-INSERT INTO version (name,version) values ('db',65);
+INSERT INTO version (name,version) values ('db',66);

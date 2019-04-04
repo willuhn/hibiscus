@@ -11,8 +11,8 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -41,17 +41,19 @@ public class NachrichtDetails extends AbstractView {
 
 		GUI.getView().setTitle(i18n.tr("System-Nachricht vom {0}", HBCI.DATEFORMAT.format(n.getDatum())));
 		
-    SimpleContainer container = new SimpleContainer(getParent(),true);
+    SimpleContainer container = new SimpleContainer(getParent(),true,1);
     String name = HBCIProperties.getNameForBank(n.getBLZ());
     if (name != null)
       container.addText(i18n.tr("{0} [BLZ: {1}]", new String[] {name,n.getBLZ()}) + "\n",true);
     else
       container.addText(i18n.tr("BLZ: {0}", new String[] {n.getBLZ()}) + "\n",true);
 
-    ScrolledContainer sc = new ScrolledContainer(container.getComposite());
     String msg = n.getNachricht();
     msg = msg.replace("\\n","\n"); // Falls die Zeilenumbrueche escaped waren
-    sc.addText(msg,true);
+
+    TextAreaInput text = new TextAreaInput(msg);
+    text.setEnabled(false);
+    text.paint(container.getComposite());
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("In Zwischenablage kopieren"),new NachrichtCopy(),n,false,"edit-copy.png");

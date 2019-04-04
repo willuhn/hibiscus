@@ -1,3 +1,29 @@
+2019-04-04 Version 2.8.11
+
+  * NEW: 0766 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d0151ef400d59689fc836ccbe6664b45c918aebf
+  * NEW: 0765 Fenstergröße des Kategorie-Auswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143616#real143616
+  * NEW: 0764 Fehlermeldungen bei HBCI-Synchronisierung am Ende noch etwas deutlicher hervorheben
+  * CHG: 0763 Default-Limit für PINs auf 50 Zeichen erhöht
+  * NEW: 0762 Fenstergröße des Adressauswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143572#real143572
+  * NEW: 0761 Einnahmen/Ausgaben: Deaktivierte Konten ausblendbar - siehe https://homebanking-hilfe.de/forum/topic.php?t=22649
+  * NEW: 0760 HASPA: Bei Anlage eines neuen Bankzugangs automatisch die neue URL vorschlagen, wenn das Systemdatum der Umstellungstag 20.04.2019 ist
+  * BUG: 0759 Nachtrag zu BUGZILLA 1860 - Bei langen Banknachricht wurde der Scrollbalken u.U. nicht angezeigt, weil die Höhe des Textes vom Control scheinbar falsch berechnet wurde
+  * NEW: 0758 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.03.2019
+  * BUG: 0757 Code 3290 ebenfalls tolerieren (keine Dauerauftraege beim Abruf)
+  * BUG: 0756 Wertebereich für PmtInfId noch etwas eingeschränkt (RestrictedIdentificationSEPA1)
+  * BUG: 0755 Neues Feld mit der Mandatsreferenz wurde in der globalen Suche noch nicht berücksichtigt
+  * NEW: 0754 Neues CSV-Exportformat für "Einnahmen/Ausgaben"
+  * BUG: 0753 In Export "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" war die Summenzeile nicht korrekt
+  * NEW: 0752 Feature #170 - Beim MT940-Export "pro Buchung eine logische Datei" ebenfalls immer chronologisch sortieren
+  * NEW: 0751 Feature #169 - Beim MT940-Export von CAMT-Umsätzen die Tags EREF, KREF und MREF mit berücksichtigen
+  * BUG: 0750 Bug #168 - Beim MT940-Export von CAMT-Umsätzen muss der Verwendungszweck pro 65 Zeichen umgebrochen werden. Mehr ist in MT940 nicht erlaubt, CAMT hat jedoch 140 Zeichen
+  * NEW: 0749 Feature #162 - neues dediziertes Feld für die Mandatsreferenz in Umsatzbuchungen
+  * BUG: 0748 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/4e8226142e319a3b6aabda7ef2a6bfdcf85c2b10 - Verbindung zum Kartenleser nur im Fehlerfall schliessen
+  * NEW: 0747 Sicherheitsabfrage beim Löschen eines Kontos stark erweitert. Zeigt jetzt auch die Anzahl der ebenfalls zu löschenden zugeordneten Daten an sowie eine extra Checkbox 
+  * BUG: 0746 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/81a27b51809c6d7c0baa2ccd3e176cbf81d6a66c - automatisches Korrigieren von Passport-Dateinamen bei Chipkarten
+  * BUG: 0745 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/cac9ce383829e6d2a4a4c9349075b6be6a22dd76 - smsTAN in HHD-Version 1.3 wurde falsch als QR-TAN erkannt.
+  * NEW: 0744 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/5b28ebb5e1497c49547f28feeeadc8124bdb2d4e mit neuem PassportStorage
+
 2019-01-30 Version 2.8.10
 
   * BUG: 0743 Nachtrag zu 0739 - einschränkenden Text "liegen keine" bzw. "keine Umsätze" entfernt, da noch weitere Textkombinationen existieren

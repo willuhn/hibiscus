@@ -215,6 +215,18 @@ public class HBCI extends AbstractPlugin
       this.hbciProps.put("client.product.name","A44C2953982351617D475443E"); // Das ist die offizielle Produktkennung von Hibiscus - siehe http://hbci-zka.de/register/register_faq.htm
       this.hbciProps.put("client.product.version",v.getMajor() + "." + v.getMinor()); // Maximal 5 Zeichen
       
+      // Default-Passport-Format Legacy
+      this.hbciProps.put("passport.format",                    "LegacyFormat");
+      
+      // Die Passports, die im Fehlerfall einfach neu erstellt werden koennen, konvetieren wir auf AESFormat
+      this.hbciProps.put("passport.format.HBCIPassportPinTan", "AESFormat");
+      this.hbciProps.put("passport.format.HBCIPassportDDV",    "AESFormat");
+      this.hbciProps.put("passport.format.HBCIPassportDDVPCSC","AESFormat");
+      this.hbciProps.put("passport.format.HBCIPassportDDVRSA", "AESFormat");
+
+      // Die Schluesseldateien lassen wir mal noch auf dem Legacy-Format. Denn wenn wir da einen Fehler haben, geht die kaputt
+      this.hbciProps.put("passport.format.HBCIPassportRDHNew", "LegacyFormat");
+
       //////////////////////////////////
       // Log-Level
       int logLevel = HBCIUtils.LOG_INFO; // Default

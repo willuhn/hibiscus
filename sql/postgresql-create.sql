@@ -174,7 +174,9 @@ CREATE TABLE umsatz (
   addkey varchar(3) NULL,
   txid varchar(100),
   purposecode varchar(10),
-  endtoendid varchar(100)
+  endtoendid varchar(100),
+  mandateid varchar(100),
+  empfaenger_name2 varchar(255)
 );
 
 CREATE TABLE umsatztyp (
@@ -392,4 +394,4 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',65);
+INSERT INTO version (name,version) values ('db',66);

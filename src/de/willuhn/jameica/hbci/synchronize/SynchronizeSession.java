@@ -10,8 +10,10 @@
 
 package de.willuhn.jameica.hbci.synchronize;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend.JobGroup;
 import de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend.Worker;
 import de.willuhn.util.ProgressMonitor;
@@ -23,6 +25,8 @@ public class SynchronizeSession
 {
   private Worker worker = null;
   private int status = ProgressMonitor.STATUS_NONE;
+  private List<String> warnings = new ArrayList<String>();
+  private List<String> errors = new ArrayList<String>();
   
   /**
    * ct.
@@ -82,6 +86,22 @@ public class SynchronizeSession
   {
     this.worker.interrupt();
   }
+  
+  /**
+   * Liefert die Liste der Warnungen.
+   * @return warnings die Liste der Warnungen.
+   */
+  public List<String> getWarnings()
+  {
+    return warnings;
+  }
+  
+  /**
+   * Liefert die Liste der Fehlermeldungen.
+   * @return errors die Liste der Fehlermeldungen.
+   */
+  public List<String> getErrors()
+  {
+    return errors;
+  }
 }
-
-

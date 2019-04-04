@@ -1,0 +1,16 @@
+"Konto";"Anfangssaldo";"Einnahmen";"Ausgaben";"Endsaldo";"Plus/Minus";"Differenz"
+#foreach($ea in $objects)
+#if($!ea.getClass().getSimpleName().equals("EinnahmeAusgabe"))
+"$!{ea.Text}";"$!{decimalformat.format(${ea.anfangssaldo})}";"$!{decimalformat.format(${ea.einnahmen})}";"$!{decimalformat.format(${ea.ausgaben})}";"$!{decimalformat.format(${ea.endsaldo})}";"$!{decimalformat.format(${ea.plusminus})}";"$!{decimalformat.format(${ea.differenz})}"
+#else
+"$!{dateformat.format(${ea.startdatum})} - $!{dateformat.format(${ea.enddatum})}";"";"";"";"";"";""
+#set($it = $ea.getChildren())
+#foreach($i in [0..100])
+#if(!$it.hasNext())
+  #break
+#end
+#set($myea = $it.next())
+"$!{myea.Text}";"$!{decimalformat.format(${myea.anfangssaldo})}";"$!{decimalformat.format(${myea.einnahmen})}";"$!{decimalformat.format(${myea.ausgaben})}";"$!{decimalformat.format(${myea.endsaldo})}";"$!{decimalformat.format(${myea.plusminus})}";"$!{decimalformat.format(${myea.differenz})}"
+#end
+#end
+#end

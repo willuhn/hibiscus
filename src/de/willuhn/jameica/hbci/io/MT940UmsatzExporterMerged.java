@@ -14,9 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -75,32 +72,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
           throw new ApplicationException(i18n.tr("Die zu exportierenden Umsätze müssen vom selben Konto stammen"));
         list.add(u);
       }
-      Collections.sort(list,new Comparator<Umsatz>() {
-        /**
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        @Override
-        public int compare(Umsatz o1, Umsatz o2)
-        {
-          try
-          {
-            Date d1 = (Date) o1.getAttribute("datum_pseudo");
-            Date d2 = (Date) o2.getAttribute("datum_pseudo");
-            if (d1 == d2)
-              return 0;
-            if (d1 == null)
-              return -1;
-            if (d2 == null)
-              return 1;
-            return d1.compareTo(d2);
-          }
-          catch (RemoteException re)
-          {
-            Logger.error("unable to sort data",re);
-            return 0;
-          }
-        }
-      });
+      sort(list);
       //////////////////////////////////////////////////////////////////////////
 
       String curr         = k.getWaehrung();
@@ -156,8 +128,9 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
     		
     		//Verwendungszweck
-    		String[] lines = VerwendungszweckUtil.toArray(u);
-    		for (int m=0;m<lines.length;++m)
+    		String[] lines = VerwendungszweckUtil.rewrap(65,VerwendungszweckUtil.toArray(u));
+    		int m=0;
+    		for (m=0;m<lines.length;++m)
     		{
       		// in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
     		  // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
@@ -167,6 +140,10 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
           out.write("?2" + Integer.toString(m) + lines[m]);
     		}
 
+        m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
+        m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());
+        m = addRef(out,m,VerwendungszweckUtil.Tag.MREF,u.getMandateId());
+        
         String blz = StringUtils.trimToNull(u.getGegenkontoBLZ());
         String kto = StringUtils.trimToNull(u.getGegenkontoNummer());
         String nam = StringUtils.trimToNull(u.getGegenkontoName());

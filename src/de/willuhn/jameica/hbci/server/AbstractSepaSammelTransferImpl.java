@@ -79,7 +79,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
       
       HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
-      HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_PMTINF_VALIDCHARS);
 
       if (this.getTermin() == null)
         this.setTermin(new Date());

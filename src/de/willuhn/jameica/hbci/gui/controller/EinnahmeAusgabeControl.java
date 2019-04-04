@@ -15,14 +15,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.TreeItem;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -40,6 +41,7 @@ import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -52,14 +54,16 @@ import de.willuhn.util.I18N;
 public class EinnahmeAusgabeControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
-  private KontoInput kontoAuswahl = null;
-  private DateInput start         = null;
-  private DateInput end           = null;
-  private RangeInput range        = null;
-  private SelectInput interval    = null;
+  private KontoInput kontoAuswahl  = null;
+  private CheckboxInput onlyActive = null;
+  private DateInput start          = null;
+  private DateInput end            = null;
+  private RangeInput range         = null;
+  private SelectInput interval     = null;
 
-  private TreePart tree           = null;
+  private TreePart tree            = null;
 
   /**
    * Gruppierung der Einnahmen/Ausgaben nach Zeitraum.
@@ -143,6 +147,21 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
   
   /**
+   * Liefert die Checkbox, mit der eingestellt werden kann, ob nur aktive Konten angezeigt werden sollen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getActiveOnly()
+  {
+    if (this.onlyActive != null)
+      return this.onlyActive;
+    
+    this.onlyActive = new CheckboxInput(settings.getBoolean("umsatzlist.filter.active",false));
+    this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
+    return this.onlyActive;
+  }
+  
+
+  /**
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
    */
@@ -224,7 +243,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
           }
           else
           {
-            item.setForeground(ColorUtil.getForeground(plusminus));
+            Konto k = ea.getKonto();
+            if (k != null && k.hasFlag(Konto.FLAG_DISABLED))
+              item.setForeground(Color.COMMENT.getSWTColor());
+            else
+              item.setForeground(ColorUtil.getForeground(plusminus));
             item.setFont(ea.hasDiff() && !summe ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           }
           
@@ -315,14 +338,19 @@ public class EinnahmeAusgabeControl extends AbstractControl
     double summeAusgaben     = 0.0d;
     double summeEndsaldo     = 0.0d;
     
-    DBIterator it = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
-    // Einschraenken auf gewaehlte Kontogruppe
-    if (o != null && (o instanceof String))
-      it.addFilter("kategorie = ?", (String) o);
-    it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
-    while (it.hasNext())
+    boolean onlyActive = ((Boolean)this.getActiveOnly().getValue()).booleanValue();
+    settings.setAttribute("umsatzlist.filter.active",onlyActive);
+    
+    String group = o != null && (o instanceof String) ? (String) o : null;
+
+    List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
+    for (Konto k:konten)
     {
-      EinnahmeAusgabe ea = new EinnahmeAusgabe((Konto) it.next(),start,end);
+      // Einschraenken auf gewaehlte Kontogruppe
+      if (group != null && ObjectUtils.equals(k.getKategorie(),group))
+        continue;
+      
+      EinnahmeAusgabe ea = new EinnahmeAusgabe(k,start,end);
       
       // Zu den Summen hinzufuegen
       summeAnfangssaldo += ea.getAnfangssaldo();

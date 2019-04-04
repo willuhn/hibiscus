@@ -9,9 +9,13 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -26,6 +30,8 @@ import de.willuhn.jameica.hbci.gui.parts.EmpfaengerList;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -36,6 +42,10 @@ public class AdresseAuswahlDialog extends AbstractDialog
 {
 
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Settings settings = new Settings(AdresseAuswahlDialog.class);
+
+  private final static int WINDOW_WIDTH = 640;
+  private final static int WINDOW_HEIGHT = 460;
 	private Address choosen        = null;
 	private AddressFilter filter   = null;
 
@@ -59,7 +69,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
     this.filter = filter;
 
 		this.setTitle(i18n.tr("Adressbuch"));
-    this.setSize(640,460);
+    setSize(settings.getInt("window.width",WINDOW_WIDTH),settings.getInt("window.height",WINDOW_HEIGHT));
   }
 
   /**
@@ -118,6 +128,25 @@ public class AdresseAuswahlDialog extends AbstractDialog
 		
     Container c2 = new SimpleContainer(parent);
 		c2.addButtonArea(b);
+		
+    // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
+    getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
+    
+    getShell().addDisposeListener(new DisposeListener() {
+      
+      @Override
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Shell shell = getShell();
+        if (shell == null || shell.isDisposed())
+          return;
+        
+        Point size = shell.getSize();
+        Logger.debug("saving window size: " + size.x + "x" + size.y);
+        settings.setAttribute("window.width",size.x);
+        settings.setAttribute("window.height",size.y);
+      }
+    });
   }
 
   /**

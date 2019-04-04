@@ -13,8 +13,8 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoDeleteDialog;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -27,6 +27,7 @@ import de.willuhn.util.I18N;
  */
 public class KontoDelete implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * Erwartet ein Objekt vom Typ <code>Konto</code> im Context.
@@ -34,7 +35,6 @@ public class KontoDelete implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-  	I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		if (context == null || !(context instanceof Konto))
 			throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
@@ -45,18 +45,15 @@ public class KontoDelete implements Action
 			if (k.isNewObject())
 				return;
 
-			YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-			d.setTitle(i18n.tr("Konto löschen"));
-			d.setText(i18n.tr("Wollen Sie dieses Konto wirklich löschen?\nHierbei werden auch alle Umsätze, Überweisungen und Daueraufträge des Kontos lokal gelöscht."));
-
+			KontoDeleteDialog d = new KontoDeleteDialog(k);
+			
 			try {
 				Boolean choice = (Boolean) d.open();
-				if (!choice.booleanValue())
+				if (choice == null || !choice.booleanValue())
 					return;
 			}
 	    catch (OperationCanceledException oce)
 	    {
-	      Logger.info(oce.getMessage());
 	      return;
 	    }
 			catch (Exception e)

@@ -126,8 +126,10 @@ public class UmsatzUtil
           "LOWER(purposecode) LIKE ? OR " +
           "LOWER(kommentar) LIKE ? OR " +
           "LOWER(endtoendid) LIKE ? OR " +
+          "LOWER(mandateid) LIKE ? OR " +
+          "LOWER(empfaenger_name2) LIKE ? OR " +
           "LOWER(art) LIKE ?)",
-          text,text,text,text,text,text,text,text,text,text,text);
+          text,text,text,text,text,text,text,text,text,text,text,text,text);
     }
     return list;
   }

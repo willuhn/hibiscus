@@ -756,6 +756,8 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     copy.setWeitereVerwendungszwecke(this.getWeitereVerwendungszwecke());
     copy.setGvCode(this.getGvCode());
     copy.setPurposeCode(this.getPurposeCode());
+    copy.setEndToEndId(this.getEndToEndId());
+    copy.setMandateId(this.getMandateId());
 
     // Das Duplizieren von Umsatzbuchungen machen wir z.Bsp. dann, wenn ein User
     // per Hand eine Gegenbuchung erzeugt (per Kontextmenu-Eintrag "Gegenbuchung erzeugen auf...").
@@ -818,5 +820,23 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   public void setEndToEndId(String id) throws RemoteException
   {
     this.setAttribute("endtoendid",id);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getMandateId()
+   */
+  @Override
+  public String getMandateId() throws RemoteException
+  {
+    return (String) this.getAttribute("mandateid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setMandateId(java.lang.String)
+   */
+  @Override
+  public void setMandateId(String id) throws RemoteException
+  {
+    this.setAttribute("mandateid",id);
   }
 }

@@ -62,6 +62,7 @@ public class EinnahmenAusgaben extends AbstractView
       Container left = new SimpleContainer(cols.getComposite());
       left.addInput(control.getKontoAuswahl());
       left.addInput(control.getInterval());
+      left.addInput(control.getActiveOnly());
       
       Container right = new SimpleContainer(cols.getComposite());
         

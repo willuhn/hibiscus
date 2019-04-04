@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
  */
 public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
 {
+  private Konto konto;
   private String text;
   private double anfangssaldo;
   private double einnahmen;
@@ -53,12 +54,22 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   {
     this.startdatum   = start;
     this.enddatum     = end;
+    this.konto        = k;
     this.text         = k.getLongName();
     
     this.anfangssaldo = KontoUtil.getAnfangsSaldo(k,start);
     this.einnahmen    = KontoUtil.getEinnahmen(k,start,end,true);
     this.ausgaben     = KontoUtil.getAusgaben(k,start,end,true);
     this.endsaldo     = KontoUtil.getEndSaldo(k,end);
+  }
+  
+  /**
+   * Liefert das Konto.
+   * @return das Konto.
+   */
+  public Konto getKonto()
+  {
+    return this.konto;
   }
   
   /**

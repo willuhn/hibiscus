@@ -14,7 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.passport.AbstractPinTanPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -31,6 +31,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -183,25 +184,29 @@ public class AccountContainerDialog extends AbstractDialog
       {
         try
         {
-          String b = (String)blz.getValue();
-          // Neu im aktuellen HBCI4Java-Snapshot. IP/Hostname zur BLZ ermitteln
           String host = (String) getHost().getValue();
           if (host == null || host.length() == 0)
           {
-            String clazz = passport.getClass().getName();
-            if (clazz.toUpperCase().indexOf("PINTAN") != -1)
+            
+            String b = (String) blz.getValue();
+            BankInfo bi = HBCIProperties.getBankInfo(b);
+            
+            if (bi != null)
             {
-              Logger.info("auto detecting pin/tan url by blz");
-              String s = HBCIUtils.getPinTanURLForBLZ(b);
-              if (s != null && s.startsWith("https://"))
-                s = s.replaceFirst("https://","");
-              getHost().setValue(s);
+              String clazz = passport.getClass().getName();
+              if (clazz.toUpperCase().indexOf("PINTAN") != -1)
+              {
+                String s = bi.getPinTanAddress();
+                if (s != null && s.startsWith("https://"))
+                  s = s.replaceFirst("https://","");
+                getHost().setValue(s);
+              }
+              else
+              {
+                getHost().setValue(bi.getRdhAddress());
+              }
             }
-            else
-            {
-              Logger.info("auto detecting rdh/ddv ip by blz");
-              getHost().setValue(HBCIUtils.getHBCIHostForBLZ(b));
-            }
+
           }
         }
         catch (Exception e)

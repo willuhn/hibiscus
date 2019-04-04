@@ -76,6 +76,7 @@ public class UmsatzDetailControl extends AbstractControl
 	private Input art							= null;
 	private Input customerRef			= null;
 	private TextInput endToEndId  = null;
+  private TextInput mandateId   = null;
 	private TextInput gvcode      = null;
   
   private Input kommentar       = null;
@@ -391,7 +392,30 @@ public class UmsatzDetailControl extends AbstractControl
     }
     return this.endToEndId;
   }
-  
+
+  /**
+  * Liefert ein Eingabe-Feld mit der Mandatsreferenz.
+  * @return Eingabe-Feld.
+  * @throws RemoteException
+  */
+ public Input getMandateId() throws RemoteException
+ {
+   if (this.mandateId == null)
+   {
+     String mref = StringUtils.trimToNull(getUmsatz().getMandateId());
+     
+     // Fuer die Abwaertskompatibilitaet
+     if (mref == null)
+       mref = VerwendungszweckUtil.getTag(getUmsatz(),Tag.MREF);
+       
+     this.mandateId = new TextInput(mref,HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
+     this.mandateId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+     this.mandateId.setEnabled(false);
+
+   }
+   return this.mandateId;
+ }
+
 	/**
 	 * Liefert ein Eingabe-Feld fuer den GV-Code.
 	 * @return Eingabe-Feld.

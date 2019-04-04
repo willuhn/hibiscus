@@ -19,6 +19,11 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +35,7 @@ import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -80,24 +86,37 @@ public class MT940UmsatzExporter implements Exporter
         factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
+      
+      //////////////////////////////////////////////////////////////////////////
+      // Wir sortieren die Buchungen vorher noch chronologisch. Und checken bei
+      // der Gelegenheit auch gleich, dass die Buchungen alle vom selben Konto
+      // stammen
+      List<Umsatz> list = new LinkedList<Umsatz>();
+      for (int i=0;i<objects.length;++i)
+      {
+        if (objects[i] == null || !(objects[i] instanceof Umsatz))
+          continue;
+        
+        list.add((Umsatz) objects[i]);
+      }
+      sort(list);
+      //////////////////////////////////////////////////////////////////////////
+
 
       Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
       boolean showSaldo = (b == null || !b.booleanValue());
       
-      for (int i=0;i<objects.length;++i)
+      for (int i=0;i<list.size();++i)
       {
         if (monitor != null)  
         	monitor.setPercentComplete((int)((i) * factor));
         
-        if (objects[i] == null || !(objects[i] instanceof Umsatz))
-          continue;
-
-        Object name = BeanUtil.toString(objects[i]);
+        Umsatz u = list.get(i);
+        Object name = BeanUtil.toString(u);
         
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
         
-    		Umsatz u    = (Umsatz) objects[i];
     		Konto k     = u.getKonto();
     		String curr = k.getWaehrung();
 
@@ -141,8 +160,9 @@ public class MT940UmsatzExporter implements Exporter
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
     		
     		//Verwendungszweck
-    		String[] lines = VerwendungszweckUtil.toArray(u);
-    		for (int m=0;m<lines.length;++m)
+    		String[] lines = VerwendungszweckUtil.rewrap(65,VerwendungszweckUtil.toArray(u));
+    		int m = 0;
+    		for (m=0;m<lines.length;++m)
     		{
       		// in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
     		  // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
@@ -151,6 +171,10 @@ public class MT940UmsatzExporter implements Exporter
     		    break;
           out.write("?2" + Integer.toString(m) + lines[m]);
     		}
+    		
+        m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
+        m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());
+        m = addRef(out,m,VerwendungszweckUtil.Tag.MREF,u.getMandateId());
 
         String blz = StringUtils.trimToNull(u.getGegenkontoBLZ());
         String kto = StringUtils.trimToNull(u.getGegenkontoNummer());
@@ -187,6 +211,65 @@ public class MT940UmsatzExporter implements Exporter
       IOUtil.close(out);
     }
   }
+  
+  /**
+   * Fuegt das Tag hinzu, insofern noch Platz ist.
+   * @param out der OutputStreamWriter.
+   * @param m der Counter.
+   * @param tag das Tag.
+   * @param text der Text.
+   * @return der neue Counter-Wert.
+   * @throws IOException
+   */
+  protected int addRef(OutputStreamWriter out, int m, Tag tag, String text) throws IOException
+  {
+    // Kein Platz mehr
+    if (m > 9)
+      return m;
+    
+    // Feld hat keinen Wert.
+    text = StringUtils.trimToNull(text);
+    if (text == null)
+      return m;
+    
+    out.write("?2" + Integer.toString(m) + tag.name() + "+" + text);
+    m++;
+    return m;
+  }
+  
+  /**
+   * Sortiert die Buchungen chronologisch - aeltestest zuerst.
+   * @param list die zu sortierenden Buchungen.
+   */
+  protected void sort(List<Umsatz> list)
+  {
+    Collections.sort(list,new Comparator<Umsatz>() {
+      /**
+       * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+       */
+      @Override
+      public int compare(Umsatz o1, Umsatz o2)
+      {
+        try
+        {
+          Date d1 = (Date) o1.getAttribute("datum_pseudo");
+          Date d2 = (Date) o2.getAttribute("datum_pseudo");
+          if (d1 == d2)
+            return 0;
+          if (d1 == null)
+            return -1;
+          if (d2 == null)
+            return 1;
+          return d1.compareTo(d2);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to sort data",re);
+          return 0;
+        }
+      }
+    });
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
@@ -217,7 +300,7 @@ public class MT940UmsatzExporter implements Exporter
    */
   public String getName()
   {
-    return i18n.tr("Swift MT940-Format (pro Buchungen eine logische Datei)");
+    return i18n.tr("Swift MT940-Format (pro Buchung eine logische Datei)");
   }
   
   /**
