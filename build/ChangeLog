@@ -1,5 +1,8 @@
 HEAD 2.9 (nightly)
 
+2019-04-04 Version 2.8.11
+
+  * NEW: 0766 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d0151ef400d59689fc836ccbe6664b45c918aebf
   * NEW: 0765 Fenstergröße des Kategorie-Auswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143616#real143616
   * NEW: 0764 Fehlermeldungen bei HBCI-Synchronisierung am Ende noch etwas deutlicher hervorheben
   * CHG: 0763 Default-Limit für PINs auf 50 Zeichen erhöht
