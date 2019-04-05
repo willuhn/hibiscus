@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0768 Bei der Auswertung der Bankantwort jetzt generell tolerieren, wenn die Bank keinen Erfolgscode meldet sondern nur eine Warnung (siehe auch 0739 und 0757)
+  
 2019-04-05 Version 2.8.12
 
   * BUG: 0767 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/31dcfdb0ad2313efd6f3e1596cba14314e59b232 - Fehler bei Erkennung des AES-Passport-Formats unter Java 8
