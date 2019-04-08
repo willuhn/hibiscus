@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0769 Neuer Zeitfilter "Monat: Letzte 12"
   * CHG: 0768 Bei der Auswertung der Bankantwort jetzt generell tolerieren, wenn die Bank keinen Erfolgscode meldet sondern nur eine Warnung (siehe auch 0739 und 0757)
   
 2019-04-05 Version 2.8.12
