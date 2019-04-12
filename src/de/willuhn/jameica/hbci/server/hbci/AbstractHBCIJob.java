@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -52,9 +53,12 @@ public abstract class AbstractHBCIJob
   
   private final static String NL = System.getProperty("line.separator","\n");
 
+  // Das sind Warnungen, die im Wesentlichen nur dafuer stehen, dass beim Datenabruf keine neuen Daten bei der Bank vorhanden waren
+  private final static List<String> IGNORE_WARNINGS = Arrays.asList("3010","3290","3300");
+
 	private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
-	private Hashtable params 			         = new Hashtable(); 
+	private Hashtable params 			         = new Hashtable();
 
 	/**
 	 * HBCI4Java verwendet intern eindeutige Job-Namen.
@@ -353,7 +357,12 @@ public abstract class AbstractHBCIJob
     for (HBCIRetVal val:messages)
     {
       monitor.log("  " + val.code + ": " + val.text);
-      target.add(val.code + ": " + val.text);
+      
+      // Zur Liste der zum Schluss anzuzeigenden Meldungen fuegen wir nur Meldungen hinzu, die auch
+      // wirklich relevant sind. Bei den Warnungen sind z.B. jene nicht relevant, die nur mitteilen,
+      // das keine neuen Buchungen vorhanden sind. Die wuerden User nur unnoetig irritieren
+      if (!IGNORE_WARNINGS.contains(val.code))
+        target.add(val.code + ": " + val.text);
     }
     monitor.log(" ");
   }
