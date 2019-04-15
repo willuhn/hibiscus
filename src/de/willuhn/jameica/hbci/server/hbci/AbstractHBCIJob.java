@@ -250,12 +250,18 @@ public abstract class AbstractHBCIJob
       // Oder "3010 - Umsatzabfrage: Keine Einträge vorhanden."
       // 3290 senden manche Banken beim Abruf der Dauerauftraege, wenn keine vorhanden waren
       // Update: 2019-04-05: Mit "3300" ist der naechste Code aufgetaucht. Ich pruefe daher jetzt nur noch, ob es eine Warnung ist (also mit 3 beginnt)
+      // Update: 2019-04-15: Manche Banken senden auch mehrere Warnings. Wir tolerieren das auch
       HBCIRetVal[] warnings = status.getWarnings();
-      if (warnings != null && warnings.length == 1 && warnings[0].code != null && warnings[0].text != null)
+      if (warnings != null && warnings.length > 0)
       {
-        Logger.info("institute did not sent 0xxx success code - only " + warnings[0].toString());
-        if (warnings[0].code.startsWith("3")) // Bank hat nur mit einer Warnung geantwortet
+        boolean b = true;
+        for (HBCIRetVal v:warnings)
         {
+          b &= v.code.startsWith("3");
+        }
+        if (b) // Bank hat nur mit einer Warnung geantwortet
+        {
+          Logger.info("institute did not sent 0xxx success code but only warnings");
           executed = true;
           haveJobStatus = true;
           isOK = true;

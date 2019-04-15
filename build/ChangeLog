@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0771 Tolerieren, wenn die Bank nur Warnings - auch mehrere - gesendet hat
   * NEW: 0770 Nach der Synchronisierung nur jene Warnungen in der Zusammenfassung anzeigen, die sich nicht darauf beziehen, dass lediglich bei der Bank keine neuen Daten vorlagen
   * NEW: 0769 Neuer Zeitfilter "Monat: Letzte 12"
   * CHG: 0768 Bei der Auswertung der Bankantwort jetzt generell tolerieren, wenn die Bank keinen Erfolgscode meldet sondern nur eine Warnung (siehe auch 0739 und 0757)
