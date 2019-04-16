@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0773 Auswahl einer Kontogruppe in "Einnahmen/Ausgaben" führte zur Anzeige der Konten, die nicht in der Gruppe sind
   * BUG: 0772 Elektr. Kontoauszug: "$"-Zeichen im Parameter "Kontoauszüge speichern in" erlauben - es kann tatsächlich Pfade mit diesem Zeichen geben 
   * NEW: 0771 Tolerieren, wenn die Bank nur Warnings - auch mehrere - gesendet hat
   * NEW: 0770 Nach der Synchronisierung nur jene Warnungen in der Zusammenfassung anzeigen, die sich nicht darauf beziehen, dass lediglich bei der Bank keine neuen Daten vorlagen
