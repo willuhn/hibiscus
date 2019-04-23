@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0775 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/77d70ab120bbbdc06432f0798e1c665417b1cf31 - NPE beim Anlegen einer neuen Schlüsseldatei
   * NEW: 0774 Import von mehreren CAMT-Dateien in einer ZIP-Datei
   * BUG: 0773 Auswahl einer Kontogruppe in "Einnahmen/Ausgaben" führte zur Anzeige der Konten, die nicht in der Gruppe sind
   * BUG: 0772 Elektr. Kontoauszug: "$"-Zeichen im Parameter "Kontoauszüge speichern in" erlauben - es kann tatsächlich Pfade mit diesem Zeichen geben 
