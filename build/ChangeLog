@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0778 XML-Export von Adressen war nicht mehr möglich
   * NEW: 0777 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/0072d401187a69a451eae1cbe928da3e2be6109f mit neuer BLZ-Datei per 20.04.2019
   * NEW: 0776 Beim Erhalt eines neuen INI-Briefs den Bestätigungsdialog dedizierten Schließen-Button anzeigen um mehrfaches Drucken zu erlauben
   * BUG: 0775 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/77d70ab120bbbdc06432f0798e1c665417b1cf31 - NPE beim Anlegen einer neuen Schlüsseldatei
