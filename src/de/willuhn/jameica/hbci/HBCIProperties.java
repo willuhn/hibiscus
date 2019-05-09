@@ -10,7 +10,6 @@
 package de.willuhn.jameica.hbci;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -432,29 +430,7 @@ public class HBCIProperties
    */
   public static BankInfo getBankInfo(String blz)
   {
-    BankInfo info = HBCIUtils.getBankInfo(blz);
-    
-    if (info == null)
-      return null;
-    
-    // MIGRATION HASPA: Die Haspa stellt am 20.04.2019 von ihrem eigenen System auf Finanz IT um.
-    // Auch wenn die blz.properties in HBCI4Java die neue URL erst ab diesem Tag enthalten wird,
-    // wollen wir trotzdem schon vorher eine Hibiscus-Version ausliefern, die abhaengig vom aktuellen
-    // Datum die korrekte URL liefert.
-    if (ObjectUtils.equals(info.getBlz(),"20050550"))
-    {
-      // Datum checken
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.YEAR,2019);
-      cal.set(Calendar.MONTH,Calendar.APRIL);
-      cal.set(Calendar.DAY_OF_MONTH,20);
-      final Date date = DateUtil.startOfDay(cal.getTime());
-      final Date now = new Date();
-      if (now.after(date))
-        info.setPinTanAddress("https://banking-hh7.s-fints-pt-hh.de/fints30");
-    }
-    
-    return info;
+    return HBCIUtils.getBankInfo(blz);
   }
 
   /**
