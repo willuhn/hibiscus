@@ -376,7 +376,7 @@ public class Controller extends AbstractControl
   {
     if (customerId != null)
       return customerId;
-    customerId = new TextInput(getConfig().getCustomerId(),20);
+    customerId = new TextInput(getConfig().getCustomerId(),30);
     customerId.setName(i18n.tr("Kundenkennung"));
     customerId.setMandatory(true);
     return customerId;
@@ -391,7 +391,7 @@ public class Controller extends AbstractControl
   {
     if (userId != null)
       return userId;
-    userId = new TextInput(getConfig().getUserId(),20);
+    userId = new TextInput(getConfig().getUserId(),30);
     userId.setName(i18n.tr("Benutzerkennung"));
     userId.setMandatory(true);
     return userId;

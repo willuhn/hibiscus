@@ -278,7 +278,7 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (this.userid == null)
 		{
-      this.userid = new TextInput(this.passport.getUserId());
+      this.userid = new TextInput(this.passport.getUserId(),30);
       this.userid.setMandatory(true);
 		}
 		return this.userid;
@@ -292,7 +292,7 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 		if (this.customerid == null)
 		{
-			this.customerid = new TextInput(this.passport.getCustomerId());
+			this.customerid = new TextInput(this.passport.getCustomerId(),30);
 			this.customerid.setComment(i18n.tr("Meist identisch mit Benutzerkennung"));
 		}
 		return this.customerid;
