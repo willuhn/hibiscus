@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0790 Im Kategorieauswahldialog die Namen der übergeordneten Kategorien mit anzeigen, wenn nach Eingabe eines Suchbegriffs nicht mehr ersichtlich ist, zu welcher übergeordneten Kategorie der Eintrag gehört - siehe https://homebanking-hilfe.de/forum/topic.php?t=22753
   * CHG: 0780 Eingabefelder für Benutzer- und Kundenkennung auf 30 Zeichen verlängert - siehe https://homebanking-hilfe.de/forum/topic.php?p=144122#real144122
   * DEL: 0779 Haspa-Sonderbehandlung für die neue URL ab 20.04. wieder entfernt - die neue URL ist inzwischen in blz.properties enthalten
   * BUG: 0778 XML-Export von Adressen war nicht mehr möglich

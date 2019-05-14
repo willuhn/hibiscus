@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -222,6 +223,16 @@ public class UmsatzTypListDialog extends AbstractDialog
           UmsatzTyp ut = b.getTyp();
           if (ut == null)
             return;
+          
+          // Uebergeordnete Kategorie nur anzeigen, wenn sie derzeit aufgrund eines Filters nicht angezeigt wird
+          String q = (String) getSearch().getValue();
+          if (StringUtils.trimToNull(q) != null) // Wenn nichts in der Suche steht, muss die Eltern-Kategorie da sein
+          {
+            // Nur dann etwas eintragen, wenn sie ein Parent hat und wenn dieses derzeit nicht angezeigt wird
+            UmsatzTypBean parent = b.getParent();
+            if (parent != null && !table.getItems().contains(parent))
+              item.setText(0,b.getPathName());
+          }
           
           Color c = null;
           
