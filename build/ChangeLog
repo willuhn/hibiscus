@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0794 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.06.2019
   * CHG: 0793 Auswahldialog für das Schlüsselformat beim Import einer Schlüsseldatei etwas höher gestaltet - Inhalt sonst kaum erkennbar
   * NEW: 0792 Import von SEPA-Überweisungen: Wenn die PAIN-Datei ein Datum hat, dann Auftrag automatisch als Terminüberweisung markieren (da wir das Datum ja auch nur dann exportieren, wenn es wirklich eine Terminüberweisung ist)
   * NEW: 0791 SEPA-Lastschrift: Whitespaces in Gläubiger-Identifikation automatisch entfernen - kann z.Bsp. passieren, wenn man sie via Zwischenablage eingefügt hat
