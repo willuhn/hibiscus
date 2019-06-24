@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.serialize.Writer;
 import de.willuhn.datasource.serialize.XmlWriter;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.system.Application;
@@ -55,10 +56,16 @@ public class XMLExporter implements Exporter
       for (int i=0;i<objects.length;++i)
       {
         if (monitor != null)  monitor.setPercentComplete((int)((i) * factor));
+        
+        Object o = objects[i];
+        if (!(o instanceof GenericObject))
+          continue;
+
         Object name = BeanUtil.toString(objects[i]);
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
-        writer.write((GenericObject)objects[i]);
+
+        writer.write((GenericObject)o);
       }
     }
     catch (IOException e)
@@ -88,8 +95,10 @@ public class XMLExporter implements Exporter
   {
     if (objectType == null)
       return null;
-    
-    if (!GenericObject.class.isAssignableFrom(objectType))
+
+    // "Address" lassen wir erstmal zu - obwohl es kein GenericObject ist.
+    // Wir filtern beim eigentlichen Export dann aber die raus, die keine HibiscusAddress sind.
+    if (!GenericObject.class.isAssignableFrom(objectType) && !Address.class.isAssignableFrom(objectType))
       return null; // Export fuer alles moeglich, was von GenericObject abgeleitet ist
 
     // BUGZILLA 700

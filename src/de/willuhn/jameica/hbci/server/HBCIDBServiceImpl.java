@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import de.willuhn.datasource.db.DBServiceImpl;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
@@ -254,6 +257,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     catch (SQLException e)
     {
       Logger.error("error while executing sql update",e);
+      Application.getMessagingFactory().getMessagingQueue("jameica.error").sendMessage(new QueryMessage(e));
       throw new RemoteException("error while executing sql update: " + e.getMessage(),e);
     }
     finally
@@ -269,6 +273,57 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
           Logger.error("error while closing statement",t2);
         }
       }
+    }
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#createList(java.lang.Class)
+   */
+  @Override
+  public <T extends DBObject> DBIterator<T> createList(Class<? extends DBObject> arg0) throws RemoteException
+  {
+    try
+    {
+      return super.createList(arg0);
+    }
+    catch (RemoteException re)
+    {
+      Application.getMessagingFactory().getMessagingQueue("jameica.error").sendMessage(new QueryMessage(re));
+      throw re;
+    }
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#createObject(java.lang.Class, java.lang.String)
+   */
+  @Override
+  public <T extends DBObject> T createObject(Class<? extends DBObject> arg0, String arg1) throws RemoteException
+  {
+    try
+    {
+      return super.createObject(arg0, arg1);
+    }
+    catch (RemoteException re)
+    {
+      Application.getMessagingFactory().getMessagingQueue("jameica.error").sendMessage(new QueryMessage(re));
+      throw re;
+    }
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#execute(java.lang.String, java.lang.Object[], de.willuhn.datasource.rmi.ResultSetExtractor)
+   */
+  @Override
+  public Object execute(String arg0, Object[] arg1, ResultSetExtractor arg2) throws RemoteException
+  {
+    try
+    {
+      return super.execute(arg0, arg1, arg2);
+    }
+    catch (RemoteException re)
+    {
+      Application.getMessagingFactory().getMessagingQueue("jameica.error").sendMessage(new QueryMessage(re));
+      throw re;
     }
   }
 

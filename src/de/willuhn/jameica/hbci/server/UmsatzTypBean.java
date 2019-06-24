@@ -120,6 +120,19 @@ public class UmsatzTypBean implements GenericObjectNode
   {
     return StringUtils.repeat("    ",this.getLevel()) + this.typ.getName();
   }
+  
+  /**
+   * Liefert den Namen der Kategorie mit dem Namen der uebergeordneten Kategorie.
+   * @return der Name der Kategorie mit dem Namen der uebergeordneten Kategorie.
+   * @throws RemoteException
+   */
+  public String getPathName() throws RemoteException
+  {
+    if (this.parent == null)
+      return this.typ.getName();
+
+    return this.parent.getPathName() + "/" + this.typ.getName();
+  }
 
   /**
    * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)

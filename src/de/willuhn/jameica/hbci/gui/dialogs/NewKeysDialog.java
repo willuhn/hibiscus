@@ -128,7 +128,6 @@ public class NewKeysDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
         print();
-        close();
       }
     },null,true,"document-print.png");
     print.setEnabled((printers instanceof SelectInput)); // Drucken nur moeglich, wenn Drucker vorhanden.
@@ -141,6 +140,13 @@ public class NewKeysDialog extends AbstractDialog
         save();
       }
     },null,false,"document-save.png");
+    buttons.addButton(i18n.tr("Schlieﬂen"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        close();
+      }
+    },null,false,"window-close.png");
 		buttons.addButton(i18n.tr("Abbrechen"), new Action()
 		{
 			public void handleAction(Object context) throws ApplicationException

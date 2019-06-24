@@ -1,3 +1,26 @@
+2019-06-24 Version 2.8.13
+
+  * NEW: 0796 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/4282abcadf1ae3813511f7e4d19359a829e71bec - fehlendes Tag ":25:" in MT940 tolerieren
+  * NEW: 0795 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d075bbc6878aac28bcaf4c2dd6383ae33bd15749 mit Fallback-Länderkennung DE, wenn in UPD nicht/falsch übertragen
+  * NEW: 0794 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.06.2019
+  * CHG: 0793 Auswahldialog für das Schlüsselformat beim Import einer Schlüsseldatei etwas höher gestaltet - Inhalt sonst kaum erkennbar
+  * NEW: 0792 Import von SEPA-Überweisungen: Wenn die PAIN-Datei ein Datum hat, dann Auftrag automatisch als Terminüberweisung markieren (da wir das Datum ja auch nur dann exportieren, wenn es wirklich eine Terminüberweisung ist)
+  * NEW: 0791 SEPA-Lastschrift: Whitespaces in Gläubiger-Identifikation automatisch entfernen - kann z.Bsp. passieren, wenn man sie via Zwischenablage eingefügt hat
+  * NEW: 0790 Im Kategorieauswahldialog die Namen der übergeordneten Kategorien mit anzeigen, wenn nach Eingabe eines Suchbegriffs nicht mehr ersichtlich ist, zu welcher übergeordneten Kategorie der Eintrag gehört - siehe https://homebanking-hilfe.de/forum/topic.php?t=22753
+  * CHG: 0780 Eingabefelder für Benutzer- und Kundenkennung auf 30 Zeichen verlängert - siehe https://homebanking-hilfe.de/forum/topic.php?p=144122#real144122
+  * DEL: 0779 Haspa-Sonderbehandlung für die neue URL ab 20.04. wieder entfernt - die neue URL ist inzwischen in blz.properties enthalten
+  * BUG: 0778 XML-Export von Adressen war nicht mehr möglich
+  * NEW: 0777 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/0072d401187a69a451eae1cbe928da3e2be6109f mit neuer BLZ-Datei per 20.04.2019
+  * NEW: 0776 Beim Erhalt eines neuen INI-Briefs den Bestätigungsdialog dedizierten Schließen-Button anzeigen um mehrfaches Drucken zu erlauben
+  * BUG: 0775 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/77d70ab120bbbdc06432f0798e1c665417b1cf31 - NPE beim Anlegen einer neuen Schlüsseldatei
+  * NEW: 0774 Import von mehreren CAMT-Dateien in einer ZIP-Datei
+  * BUG: 0773 Auswahl einer Kontogruppe in "Einnahmen/Ausgaben" führte zur Anzeige der Konten, die nicht in der Gruppe sind
+  * BUG: 0772 Elektr. Kontoauszug: "$"-Zeichen im Parameter "Kontoauszüge speichern in" erlauben - es kann tatsächlich Pfade mit diesem Zeichen geben 
+  * NEW: 0771 Tolerieren, wenn die Bank nur Warnings - auch mehrere - gesendet hat
+  * NEW: 0770 Nach der Synchronisierung nur jene Warnungen in der Zusammenfassung anzeigen, die sich nicht darauf beziehen, dass lediglich bei der Bank keine neuen Daten vorlagen
+  * NEW: 0769 Neuer Zeitfilter "Monat: Letzte 12"
+  * CHG: 0768 Bei der Auswertung der Bankantwort jetzt generell tolerieren, wenn die Bank keinen Erfolgscode meldet sondern nur eine Warnung (siehe auch 0739 und 0757)
+  
 2019-04-05 Version 2.8.12
 
   * BUG: 0767 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/31dcfdb0ad2313efd6f3e1596cba14314e59b232 - Fehler bei Erkennung des AES-Passport-Formats unter Java 8

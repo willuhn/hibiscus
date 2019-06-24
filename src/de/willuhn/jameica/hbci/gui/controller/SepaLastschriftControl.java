@@ -500,7 +500,7 @@ public class SepaLastschriftControl extends AbstractControl
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
       t.setPmtInfId((String) getPmtInfId().getValue());
-      t.setCreditorId((String) getCreditorId().getValue());
+      t.setCreditorId(StringUtils.trimToNull((String) getCreditorId().getValue()));
       t.setMandateId((String) getMandateId().getValue());
       t.setSignatureDate((Date) getSignatureDate().getValue());
       t.setSequenceType((SepaLastSequenceType)getSequenceType().getValue());

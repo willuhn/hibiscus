@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.passports.rdh;
 
 import java.util.Arrays;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
@@ -20,6 +19,7 @@ import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -36,7 +36,8 @@ import de.willuhn.util.I18N;
 public class KeyFormatDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static int WINDOW_WIDTH = 440;
+  private final static int WINDOW_WIDTH  = 440;
+  private final static int WINDOW_HEIGHT = 260;
 
   private TablePart table   = null;
   private KeyFormat choosen = null;
@@ -55,7 +56,7 @@ public class KeyFormatDialog extends AbstractDialog
     super(position);
     this.neededFeature = feature;
     setTitle(i18n.tr("Auswahl des Datei-Formats"));
-    setSize(WINDOW_WIDTH,SWT.DEFAULT);
+    setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
   }
 
   /**
@@ -83,7 +84,7 @@ public class KeyFormatDialog extends AbstractDialog
     
     };
 
-    Container c = new SimpleContainer(parent);
+    Container c = new SimpleContainer(parent,true);
     c.addText(i18n.tr("Bitte wählen Sie das Datei-Format des Schlüssels"),true);
     c.addInput(this.warn);
 
@@ -92,7 +93,7 @@ public class KeyFormatDialog extends AbstractDialog
     this.table.setMulti(false);
     this.table.setRememberColWidths(true);
     this.table.setRememberOrder(true);
-    this.table.setSummary(false);
+    this.table.removeFeature(FeatureSummary.class);
 
     c.addPart(this.table);
     
@@ -107,7 +108,7 @@ public class KeyFormatDialog extends AbstractDialog
 
     c.addButtonArea(buttons);
     
-    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
   }
 
   /**
@@ -119,47 +120,3 @@ public class KeyFormatDialog extends AbstractDialog
   }
   
 }
-
-
-/*********************************************************************
- * $Log: KeyFormatDialog.java,v $
- * Revision 1.2  2011/04/29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.6  2010/06/14 22:55:00  willuhn
- * @C Dialog-Groesse angepasst
- *
- * Revision 1.5  2010/06/14 22:46:10  willuhn
- * @C Dialog-Groesse angepasst
- *
- * Revision 1.4  2008/11/06 21:44:37  willuhn
- * @B Benoetigtes Feature wurde in Auswahldialog nicht beruecksichtigt
- *
- * Revision 1.3  2008/07/28 08:35:44  willuhn
- * @N Finder-Methode fuer Schluesselformate in RDHKeyFactory verschoben
- *
- * Revision 1.2  2008/07/25 11:34:56  willuhn
- * @B Bugfixing
- *
- * Revision 1.1  2008/07/25 11:06:08  willuhn
- * @N RDH-2 Format
- * @C Haufenweise Code-Cleanup
- *
- * Revision 1.3  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- * Revision 1.2  2006/01/23 17:19:48  willuhn
- * @B bug 155
- *
- * Revision 1.1  2005/11/14 11:00:18  willuhn
- * @B bug 148
- *
- **********************************************************************/

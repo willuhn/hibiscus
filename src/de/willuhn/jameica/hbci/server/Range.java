@@ -41,6 +41,7 @@ public abstract class Range
     add(new ThisMonth());
     add(new LastMonth());
     add(new SecondLastMonth());
+    add(new Last12Months());
     add(new ThisQuarter());
     add(new LastQuarter());
     add(new SecondLastQuarter());
@@ -385,7 +386,42 @@ public abstract class Range
       return i18n.tr("Monat: Vorletzter");
     }
   }
-  
+
+  /**
+   * Berechnet den Zeitraum der letzten 12 Monate.
+   */
+  public static class Last12Months extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.add(Calendar.MONTH,-12);
+      cal.set(Calendar.DAY_OF_MONTH,1);
+      return DateUtil.startOfDay(cal.getTime());
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      return DateUtil.endOfDay(cal.getTime());
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+      return i18n.tr("Monat: Letzte 12");
+    }
+  }
+
   /**
    * Berechnet dieses Quartal.
    */

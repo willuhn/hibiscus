@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -52,9 +53,12 @@ public abstract class AbstractHBCIJob
   
   private final static String NL = System.getProperty("line.separator","\n");
 
+  // Das sind Warnungen, die im Wesentlichen nur dafuer stehen, dass beim Datenabruf keine neuen Daten bei der Bank vorhanden waren
+  private final static List<String> IGNORE_WARNINGS = Arrays.asList("3010","3290","3300");
+
 	private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
-	private Hashtable params 			         = new Hashtable(); 
+	private Hashtable params 			         = new Hashtable();
 
 	/**
 	 * HBCI4Java verwendet intern eindeutige Job-Namen.
@@ -245,12 +249,19 @@ public abstract class AbstractHBCIJob
       // "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
       // Oder "3010 - Umsatzabfrage: Keine Einträge vorhanden."
       // 3290 senden manche Banken beim Abruf der Dauerauftraege, wenn keine vorhanden waren
+      // Update: 2019-04-05: Mit "3300" ist der naechste Code aufgetaucht. Ich pruefe daher jetzt nur noch, ob es eine Warnung ist (also mit 3 beginnt)
+      // Update: 2019-04-15: Manche Banken senden auch mehrere Warnings. Wir tolerieren das auch
       HBCIRetVal[] warnings = status.getWarnings();
-      if (warnings != null && warnings.length == 1 && warnings[0].code != null && warnings[0].text != null)
+      if (warnings != null && warnings.length > 0)
       {
-        Logger.info("institute did not sent 0xxx success code - only " + warnings[0].toString());
-        if (warnings[0].code.equals("3010") || warnings[0].code.equals("3290"))
+        boolean b = true;
+        for (HBCIRetVal v:warnings)
         {
+          b &= v.code.startsWith("3");
+        }
+        if (b) // Bank hat nur mit einer Warnung geantwortet
+        {
+          Logger.info("institute did not sent 0xxx success code but only warnings");
           executed = true;
           haveJobStatus = true;
           isOK = true;
@@ -352,7 +363,12 @@ public abstract class AbstractHBCIJob
     for (HBCIRetVal val:messages)
     {
       monitor.log("  " + val.code + ": " + val.text);
-      target.add(val.code + ": " + val.text);
+      
+      // Zur Liste der zum Schluss anzuzeigenden Meldungen fuegen wir nur Meldungen hinzu, die auch
+      // wirklich relevant sind. Bei den Warnungen sind z.B. jene nicht relevant, die nur mitteilen,
+      // das keine neuen Buchungen vorhanden sind. Die wuerden User nur unnoetig irritieren
+      if (!IGNORE_WARNINGS.contains(val.code))
+        target.add(val.code + ": " + val.text);
     }
     monitor.log(" ");
   }

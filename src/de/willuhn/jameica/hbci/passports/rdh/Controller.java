@@ -140,7 +140,7 @@ public class Controller extends AbstractControl {
   {
     if (this.benutzerkennung != null)
       return this.benutzerkennung;
-    this.benutzerkennung = new TextInput(getHBCIPassport().getUserId(),20);
+    this.benutzerkennung = new TextInput(getHBCIPassport().getUserId(),30);
     this.benutzerkennung.setName(i18n.tr("Benutzerkennung"));
     return this.benutzerkennung;
   }
@@ -155,7 +155,7 @@ public class Controller extends AbstractControl {
   {
     if (this.kundenkennung != null)
       return this.kundenkennung;
-    this.kundenkennung = new TextInput(getHBCIPassport().getCustomerId(),20);
+    this.kundenkennung = new TextInput(getHBCIPassport().getCustomerId(),30);
     this.kundenkennung.setName(i18n.tr("Kundenkennung"));
     return this.kundenkennung;
   }

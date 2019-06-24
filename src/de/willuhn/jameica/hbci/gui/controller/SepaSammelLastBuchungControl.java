@@ -201,7 +201,7 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
       
       s.transactionBegin();
       
-      s.setCreditorId((String) getCreditorId().getValue());
+      s.setCreditorId(StringUtils.trimToNull((String) getCreditorId().getValue()));
       s.setMandateId((String) getMandateId().getValue());
       s.setSignatureDate((Date) getSignatureDate().getValue());
       

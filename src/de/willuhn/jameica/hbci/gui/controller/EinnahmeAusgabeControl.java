@@ -347,7 +347,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     for (Konto k:konten)
     {
       // Einschraenken auf gewaehlte Kontogruppe
-      if (group != null && ObjectUtils.equals(k.getKategorie(),group))
+      if (group != null && !ObjectUtils.equals(k.getKategorie(),group))
         continue;
       
       EinnahmeAusgabe ea = new EinnahmeAusgabe(k,start,end);
