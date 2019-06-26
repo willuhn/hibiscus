@@ -1,5 +1,9 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0797 Wenn eine Auftragsart nicht unterstützt wird, wurde beim Versuch diese abzusenden in der Logdatei eine NPE geloggt. Das leitete bei der Fehlersuche in die Irre - siehe https://homebanking-hilfe.de/forum/topic.php?p=145321#real145321
+
+2019-06-24 Version 2.8.13
+
   * NEW: 0796 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/4282abcadf1ae3813511f7e4d19359a829e71bec - fehlendes Tag ":25:" in MT940 tolerieren
   * NEW: 0795 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d075bbc6878aac28bcaf4c2dd6383ae33bd15749 mit Fallback-Länderkennung DE, wenn in UPD nicht/falsch übertragen
   * NEW: 0794 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.06.2019

@@ -202,7 +202,7 @@ public abstract class AbstractHBCIJob
    */
   protected final HBCIJobResult getJobResult()
 	{
-		return job.getJobResult();
+		return job != null ? job.getJobResult() : null;
 	}
   
   /**
@@ -213,8 +213,16 @@ public abstract class AbstractHBCIJob
    */
   public final void handleResult() throws ApplicationException, RemoteException
   {
-    HBCIJobResult result    = getJobResult();
-    HBCIStatus status       = result.getJobStatus();
+    HBCIJobResult result = getJobResult();
+    if (result == null)
+    {
+      Logger.info("mark job unsupported/failed");
+      final String msg = i18n.tr("Auftragsart nicht unterstützt");
+      this.markFailed(msg);
+      throw new ApplicationException(msg);
+    }
+    
+    HBCIStatus status = result.getJobStatus();
 
     // BUGZILLA 964 - nur dann als abgebrochen markieren, wenn wir fuer den Job noch keinen richtigen
     // Status haben. Denn wenn der vorliegt, ist es fuer den Abbruch - zumindest fuer diesen Auftrag - zu spaet.
