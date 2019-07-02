@@ -202,6 +202,7 @@ public class UmsatzTypListDialog extends AbstractDialog
 
     this.table = new TablePart(this.list,new Apply());
     this.table.setSummary(false);
+    this.table.setRememberColWidths(true);
     this.table.addColumn(i18n.tr("Bezeichnung"),"indented");
     this.table.addColumn(i18n.tr("Kommentar"),"kommentar");
     this.table.setFormatter(new TableFormatter()

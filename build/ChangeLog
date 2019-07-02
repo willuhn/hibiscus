@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0798 Spaltenbreite im Kategorie-Auswahl-Dialog speichern, die Spalte mit der Bezeichnung kann zu kurz werden, wenn man einen Suchbegriff eingibt
   * BUG: 0797 Wenn eine Auftragsart nicht unterstützt wird, wurde beim Versuch diese abzusenden in der Logdatei eine NPE geloggt. Das leitete bei der Fehlersuche in die Irre - siehe https://homebanking-hilfe.de/forum/topic.php?p=145321#real145321
 
 2019-06-24 Version 2.8.13
