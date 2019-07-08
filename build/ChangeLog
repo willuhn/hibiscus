@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0800 Erneutes Fix bei der Auswertung des Job-Status - Auftrag konnte u.U. fälschlicherweise als ausgeführt markiert werden, obwohl die Bank einen Fehler gesendet hat
   * BUG: 0799 Bei der Anzeige der Umsätze nach Kategorien kann es zu einem Fehler wegen der Sortierung kommen
   * NEW: 0798 Spaltenbreite im Kategorie-Auswahl-Dialog speichern, die Spalte mit der Bezeichnung kann zu kurz werden, wenn man einen Suchbegriff eingibt
   * BUG: 0797 Wenn eine Auftragsart nicht unterstützt wird, wurde beim Versuch diese abzusenden in der Logdatei eine NPE geloggt. Das leitete bei der Fehlersuche in die Irre - siehe https://homebanking-hilfe.de/forum/topic.php?p=145321#real145321
