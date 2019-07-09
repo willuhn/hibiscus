@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0801 Nummer der Umsatzbuchung beim Druck mit ausgeben
   * BUG: 0800 Erneutes Fix bei der Auswertung des Job-Status - Auftrag konnte u.U. fälschlicherweise als ausgeführt markiert werden, obwohl die Bank einen Fehler gesendet hat
   * BUG: 0799 Bei der Anzeige der Umsätze nach Kategorien kann es zu einem Fehler wegen der Sortierung kommen
   * NEW: 0798 Spaltenbreite im Kategorie-Auswahl-Dialog speichern, die Spalte mit der Bezeichnung kann zu kurz werden, wenn man einen Suchbegriff eingibt
