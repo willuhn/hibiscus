@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0803 Deutlicheren Hinweis anzeigen, wenn man versucht, eine SEPA-Lastschrift als Überweisung zu importieren (und umgekehrt)
   * BUG: 0802 Wenn man in der Umsatzliste eine Kontogruppe ausgewählt hat und diese Auswahl bestehen blieb, führte das beim nächsten Hibiscus-Start zu einem internen Fehler, der anschließend das automatisch Backup beim Shutdown verhinderte
   * NEW: 0801 Nummer der Umsatzbuchung beim Druck mit ausgeben
   * BUG: 0800 Erneutes Fix bei der Auswertung des Job-Status - Auftrag konnte u.U. fälschlicherweise als ausgeführt markiert werden, obwohl die Bank einen Fehler gesendet hat
