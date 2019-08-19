@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0807 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.09.2019
   * NEW: 0806 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/84444459efab1dc9ce08c839a8884d749f40069c - HKTAN mit SCA-Ausnahme via 3076 sollte jetzt auch bei GVs gehen
   * NEW: 0805 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d8b723f163db10983d718b2057cee8ee9b36e401 - besseres Handling bei fehlendem tanmedia
   * NEW: 0804 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/500f0753218a136bec10ddee9ba47c2e52473a3d mit erstem SCA-Support für PSD2
