@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0809 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/782a012ed602c43560125671e261249a4e188bde - erste funktional komplette Version mit SCA-Support
   * NEW: 0808 Eigene Datumsformate in Velocity-Templates verwendbar
   * NEW: 0807 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.09.2019
   * NEW: 0806 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/84444459efab1dc9ce08c839a8884d749f40069c - HKTAN mit SCA-Ausnahme via 3076 sollte jetzt auch bei GVs gehen
