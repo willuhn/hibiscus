@@ -461,8 +461,8 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       }
       finally
       {
-        this.log(session.getWarnings(),i18n.tr("Warnungen"));
-        this.log(session.getErrors(),i18n.tr("Fehlermeldungen"));
+        this.log(session.getWarnings(),i18n.tr("Zusammengefasste Warnungen"));
+        this.log(session.getErrors(),i18n.tr("Zusammengefasste Fehlermeldungen"));
         
         Logger.info("stopping synchronization");
         worker = null;

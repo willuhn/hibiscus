@@ -54,7 +54,7 @@ public abstract class AbstractHBCIJob
   private final static String NL = System.getProperty("line.separator","\n");
 
   // Das sind Warnungen, die im Wesentlichen nur dafuer stehen, dass beim Datenabruf keine neuen Daten bei der Bank vorhanden waren
-  private final static List<String> IGNORE_WARNINGS = Arrays.asList("3010","3290","3300");
+  private final static List<String> IGNORE_WARNINGS = Arrays.asList("3010","3040","3072","3076","3290","3300","3920");
 
 	private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;

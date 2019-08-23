@@ -25,6 +25,7 @@ public class SynchronizeSession
 {
   private Worker worker = null;
   private int status = ProgressMonitor.STATUS_NONE;
+  private double progressWindow = 100d;
   private List<String> warnings = new ArrayList<String>();
   private List<String> errors = new ArrayList<String>();
   
@@ -54,6 +55,24 @@ public class SynchronizeSession
   public ProgressMonitor getProgressMonitor()
   {
     return this.worker.getMonitor();
+  }
+  
+  /**
+   * Liefert die Anzahl der Prozentpunkte, innerhalb derer die aktuelle Job-Gruppe den Fortschritt erhoehen darf.
+   * @return die Anzahl der Prozentpunkte.
+   */
+  public double getProgressWindow()
+  {
+    return progressWindow;
+  }
+  
+  /**
+   * Speichert die Anzahl der Prozentpunkte, innerhalb derer die aktuelle Job-Gruppe den Fortschritt erhoehen darf.
+   * @param progressWindow die Anzahl der Prozentpunkte.
+   */
+  public void setProgressWindow(double progressWindow)
+  {
+    this.progressWindow = progressWindow;
   }
   
   /**
