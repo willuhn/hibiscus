@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0813 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/e8f79e75ecadf7cafde769b85e5579c75f1d945e - Abruf TAN-Medien und SEPA-Infos nur noch, wenn nötig
   * NEW: 0812 Fortschrittsbalken bei der Konten-Synchronisierung jetzt kontinuierlicher und mit übersichtlicherem Logging
   * NEW: 0811 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/dbcebea52e1fedf6a680203ea33cb917c232ab86 - weniger Logging, dafür aber verständlicher
   * NEW: 0810 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/f1b3ff7a7443742e3bd21d91a1ba01b20309c23b - HKTAN jetzt auch in der anonymen Dialog-Initialisierung mitsenden, wenn noch keine Infos zum TAN-Verfahren bekannt sind
