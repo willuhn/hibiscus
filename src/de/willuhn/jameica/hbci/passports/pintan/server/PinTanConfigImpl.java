@@ -14,7 +14,6 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +41,7 @@ public class PinTanConfigImpl implements PinTanConfig
 
   private final static Settings settings = new Settings(PinTanConfig.class);
 
+  private HBCIPassport passport       = null;
   private Future<HBCIPassport> future = null;
   private File file                   = null;
   
@@ -54,6 +54,18 @@ public class PinTanConfigImpl implements PinTanConfig
   public PinTanConfigImpl(Future<HBCIPassport> future, File file) throws RemoteException
   {
     this.future = future;
+    this.file = file;
+  }
+
+  /**
+   * ct.
+   * @param p
+   * @param file
+   * @throws RemoteException
+   */
+  public PinTanConfigImpl(HBCIPassport p, File file) throws RemoteException
+  {
+    this.passport = p;
     this.file = file;
   }
 
@@ -315,9 +327,13 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public HBCIPassport getPassport() throws RemoteException
   {
+    if (this.passport != null)
+      return this.passport;
+    
     try
     {
-      return this.future.get();
+      this.passport = this.future.get();
+      return this.passport;
     }
     catch (Exception e)
     {
