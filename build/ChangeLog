@@ -1,6 +1,6 @@
 HEAD 2.9 (nightly)
 
-  * NEW: 0815 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/21fb55655628512b0423d34d34c28d74e8181e0d - Fehler beim Finalisieren der ChipTAN-USB Transaktion tolerieren
+  * NEW: 0815 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/8b4419305d56ef38ca459d1b0a1d07aa3aa36767 - Fehler beim Finalisieren der ChipTAN-USB Transaktion tolerieren
   * NEW: 0814 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/443919107d3f172491e4ace2bd00410ae7b6caf0 - Sicherstellen, dass HBCI+ noch funktioniert - wenn auch ohne SCA
   * NEW: 0813 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/e8f79e75ecadf7cafde769b85e5579c75f1d945e - Abruf TAN-Medien und SEPA-Infos nur noch, wenn nötig
   * NEW: 0812 Fortschrittsbalken bei der Konten-Synchronisierung jetzt kontinuierlicher und mit übersichtlicherem Logging
