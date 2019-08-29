@@ -64,8 +64,8 @@ public class Detail extends AbstractView
       Container group = new SimpleContainer(getParent());
 
       group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
-      group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
       group.addInput(control.getBezeichnung());
+      group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
 
       PtSecMech secMech = control.getConfig().getCurrentSecMech();
       if (secMech != null && secMech.useUSB())
