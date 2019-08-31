@@ -420,7 +420,7 @@ public class HBCIProperties
     // Normalerweise nicht noetig. Es gibt aber einige Banken, die z.Bsp. folgenden
     // Namen haben: "Landesbank Baden-Württemberg/Baden-Württembergische Bank"
     // Das verzerrt sonst die Layouts an einigen Stellen
-    return StringUtils.abbreviateMiddle(bank.getBezeichnung(),"...",38);
+    return StringUtils.abbreviateMiddle(bank.getBezeichnung(),"...",24);
   }
   
   /**

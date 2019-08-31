@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0818 Überlange Namen von Banken stärker kürzen
   * NEW: 0817 Update auf HBCI4Java 3.1.1 - beim Aktualisieren eines Dauerauftrages war die Reihenfolge der HBCI-Nachrichten nicht korrekt
   * NEW: 0816 Update auf HBCI4Java 3.1.0
   * NEW: 0815 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/8b4419305d56ef38ca459d1b0a1d07aa3aa36767 - Fehler beim Finalisieren der ChipTAN-USB Transaktion tolerieren
