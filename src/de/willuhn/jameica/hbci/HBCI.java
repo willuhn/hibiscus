@@ -290,7 +290,7 @@ public class HBCI extends AbstractPlugin
 
       HBCIUtils.init(this.hbciProps,this.callback);
       final String version = HBCIUtils.version();
-      if (!HBCI4JAVA_VERSION.equals(version))
+      if (version != null && !HBCI4JAVA_VERSION.equals(version))
       {
         final String s = "Die Version der Systembibliothek HBCI4Java \"{0}\" stimmt nicht mit der erwarteten Version \"{1}\" überein. " +
                          "Das wird zu unerwarteten Fehlern führen. Bitte kopiere eine neuere Version von Hibiscus nicht über " +
