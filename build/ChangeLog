@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0819 Buttons zum Vergrößern und Verkleinern der Grafik bei Matrix-TAN
   * CHG: 0818 Überlange Namen von Banken stärker kürzen
   * NEW: 0817 Update auf HBCI4Java 3.1.1 - beim Aktualisieren eines Dauerauftrages war die Reihenfolge der HBCI-Nachrichten nicht korrekt
   * NEW: 0816 Update auf HBCI4Java 3.1.0
