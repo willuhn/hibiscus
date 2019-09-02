@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.gui.CustomDateFormat;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
+import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.services.BeanService;
@@ -40,7 +41,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- *
+ * Basis-Plugin-Klasse von Hibiscus.
  */
 public class HBCI extends AbstractPlugin
 {
@@ -73,6 +74,8 @@ public class HBCI extends AbstractPlugin
    * Mapper von HBCI4Java nach jameica Loglevels
    */
   public final static HashMap LOGMAPPING = new HashMap();
+  
+  private final static String HBCI4JAVA_VERSION = "3.1.1";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
@@ -286,9 +289,19 @@ public class HBCI extends AbstractPlugin
       //////////////////////////////////
 
       HBCIUtils.init(this.hbciProps,this.callback);
+      final String version = HBCIUtils.version();
+      if (!HBCI4JAVA_VERSION.equals(version))
+      {
+        final String s = "Die Version der Systembibliothek HBCI4Java \"{0}\" stimmt nicht mit der erwarteten Version \"{1}\" überein. " +
+                         "Das wird zu unerwarteten Fehlern führen. Bitte kopiere eine neuere Version von Hibiscus nicht über " +
+                         "die vorherige drüber. Hierbei können Fragmente der vorherigen Version erhalten bleiben. Installiere Updates " +
+                         "stattdessen per \"Datei->Einstellungen->Plugins\".";
+        Application.getMessagingFactory().getMessagingQueue("jameica.boot").queueMessage(new BootMessage(getResources().getI18N().tr(s,version,HBCI4JAVA_VERSION)));
+      }
     }
     catch (Exception e)
     {
+      Logger.error("unable to init HBCI4Java",e);
       throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
     }
   }
@@ -383,71 +396,3 @@ public class HBCI extends AbstractPlugin
   }
   
 }
-
-
-/**********************************************************************
- * $Log: HBCI.java,v $
- * Revision 1.127  2012/04/23 21:03:41  willuhn
- * @N BUGZILLA 1227
- *
- * Revision 1.126  2012/03/06 23:23:34  willuhn
- * @N BUGZILLA 1129
- *
- * Revision 1.125  2011-10-12 16:15:38  willuhn
- * @C Neue Wiki-URL
- *
- * Revision 1.124  2011-06-19 12:03:19  willuhn
- * @N Wallet loeschen, wenn bei der Deinstallation die Benutzerdaten geloescht werden sollen
- *
- * Revision 1.123  2011-06-17 16:06:58  willuhn
- * @N Die MessageConsumer fuer die benamten Queues werden jetzt in plugin.xml deklariert
- *
- * Revision 1.122  2011-06-01 21:21:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.121  2010-11-02 11:32:09  willuhn
- * @R Alten SQL-Update-Mechanismus komplett entfernt. Wir haben das jetzt seit Hibiscus 1.8 (2008) aus Migrationsgruenden mit uns herumgetragen. Das ist jetzt lange genug her. User, die noch Hibiscus < 1.8 nutzen, muessen jetzt erst auf 1.8 updaten, damit noch die letzten sql/update_x.y-x.y.sql ausgefuehrt werden und dann erst auf die aktuelle Version
- *
- * Revision 1.120  2010/05/15 19:05:56  willuhn
- * @N BUGZILLA 865
- *
- * Revision 1.119  2010/03/18 11:37:59  willuhn
- * @N Ausfuehrlichere und hilfreichere Fehlermeldung, wenn Hibiscus-Datenbank defekt ist oder nicht geoeffnet werden konnte.
- *
- * Revision 1.118  2009/10/14 14:29:35  willuhn
- * @N Neuer HBCI4Java-Snapshot (2.5.11) - das SSL-Logging kann nun auch via HBCICallback in das jameica.log geleitet werden (wenn kein log.ssl.filename angegeben ist). Damit kann das Flag "log.ssl.enable" automatisch von Hibiscus aktiviert/deaktiviert werden, wenn das Jameica-Loglevel auf DEBUG oder !DEBUG steht
- *
- * Revision 1.117  2009/10/14 11:11:49  willuhn
- * @N neuer HBCI4Java-Snapshot (2.5.11), der die neuen Parameter "log.ssl.enable" und "log.ssl.filename" mitbringt, um die PIN/TAN-Kommunikation auf HTTP-Ebene zu Debugging-Zwecken mitschneiden zu koennen
- * @N Moeglichkeit, HBCI4Java mit zusaetzlichen eigenen Parametern aus ~/.jameica/hibiscus/hbci4java.properties initialisieren zu koennen
- *
- * Revision 1.116  2009/03/18 22:08:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.115  2009/02/17 00:00:02  willuhn
- * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
- *
- * Revision 1.114  2009/01/04 17:22:14  willuhn
- * @B service.checkConsistency versehentlich entfernt - dadurch wurden keine Datenbank-Updates mehr durchgefuehrt.
- *
- * Revision 1.113  2008/12/31 12:17:37  willuhn
- * @B client.product.name darf hoechstens 25 Zeichen lang sein
- *
- * Revision 1.112  2008/12/30 15:21:40  willuhn
- * @N Umstellung auf neue Versionierung
- *
- * Revision 1.111  2008/11/04 11:55:17  willuhn
- * @N Update auf HBCI4Java 2.5.9
- *
- * Revision 1.110  2008/09/26 15:37:47  willuhn
- * @N Da das Messaging-System inzwischen Consumer solange sammeln kann, bis sie initialisiert ist, besteht kein Bedarf mehr, das explizite Registrieren von Consumern bis zum Versand der SystemMessage.SYSTEM_STARTED zu verzoegern
- *
- * Revision 1.109  2008/08/29 16:46:24  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.108  2008/01/25 12:24:05  willuhn
- * @B Messaging-Consumer zu frueh registriert
- *
- * Revision 1.107  2008/01/03 18:20:31  willuhn
- * @N geaendertes Jameica-Loglevel live in HBCI4Java uebernehmen
- **********************************************************************/
