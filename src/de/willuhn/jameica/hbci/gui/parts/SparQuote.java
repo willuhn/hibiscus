@@ -263,7 +263,7 @@ public class SparQuote implements Part
         catch (RemoteException re)
         {
           Logger.error("unable to export data",re);
-          throw new ApplicationException(i18n.tr("Export fehlgeschlagen: {}",re.getMessage()));
+          throw new ApplicationException(i18n.tr("Export fehlgeschlagen: {0}",re.getMessage()));
         }
       }
     },null,false,"document-save.png");
