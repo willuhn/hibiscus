@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0823 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d0c10a2ca4f64e2e010b4dcd7c254f4ae7cce91d - tolerieren, wenn Eingabestream nicht vorhanden ist
   * BUG: 0822 Update auf HBCI4Java 3.1.3 - NPE beim Umsatzabruf im CAMT-Format, wenn BIC in Gegenkonto fehlt
   * NEW: 0821 Update auf HBCI4Java 3.1.2 - SCA-Code 3076 auch in HIRMG suchen
   * NEW: 0820 Hinweis-Text anzeigen, wenn nicht die erwartete HBCI4Java-Version geladen wurde - potentieller Installationsfehler
