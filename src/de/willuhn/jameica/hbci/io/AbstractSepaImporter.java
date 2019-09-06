@@ -26,11 +26,12 @@ import org.kapott.hbci.sepa.SepaVersion;
 import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.io.IOUtil;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -81,11 +82,17 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     SepaVersion.Type type = this.getSupportedPainType();
     if (type != null && type != version.getType())
     {
+      boolean b = type == SepaVersion.Type.PAIN_001;
       String l = i18n.tr("Lastschrift");
       String u = i18n.tr("Überweisung");
-      String q = i18n.tr("Sie versuchen, eine {0} als {1} zu importieren.\nVorgang wirklich fortsetzen?");
-      boolean b = type == SepaVersion.Type.PAIN_001;
-      if (!Application.getCallback().askUser(q,new String[]{b ? l : u, b ? u : l}))
+      String q = i18n.tr("Sie versuchen, eine {0} als {1} zu importieren.\nVorgang wirklich fortsetzen?",b ? l : u, b ? u : l);
+      
+      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+      d.setTitle(i18n.tr("Warnung"));
+      d.setSideImage(SWTUtil.getImage("dialog-warning-large.png"));
+      d.setText("\n" + q + "\n");
+      b = ((Boolean) d.open()).booleanValue();
+      if (!b)
         throw new OperationCanceledException();
     }
     

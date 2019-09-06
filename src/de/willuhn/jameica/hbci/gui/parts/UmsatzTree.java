@@ -201,7 +201,15 @@ public class UmsatzTree extends TreePart
         if (u.getParent() == null)
           items.add(u);
       }
-      Collections.sort(items);
+      
+      try
+      {
+        Collections.sort(items);
+      }
+      catch (Exception e)
+      {
+        Logger.warn("unable to sort categories: " + e.getMessage());
+      }
       ////////////////////////////////////////////////////////////////
 
       super.setList(PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[items.size()])));

@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -42,7 +41,6 @@ import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
-import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Level;
@@ -253,12 +251,13 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       Application.getMessagingFactory().getMessagingQueue(HBCI_TRACE).sendMessage(new HBCITraceMessage(HBCITraceMessage.Type.INFO,"\n\n" + i18n.tr("{0} Synchronisiere Konto: {1}",HBCI.LONGDATEFORMAT.format(new Date()),this.getKonto().getLongName())));
 
       // Wir ermitteln anhand der Gesamt-Anzahl von Jobs, wieviel Fortschritt
-      // pro Job gemacht wird, addieren das fuer unsere Gruppe, ziehen noch
+      // pro Jobgroup gemacht wird, addieren das fuer unsere Gruppe, ziehen noch
       // einen Teil fuer Passport-Initialisierung ab (3%) sowie 3% fuer die Job-Auswertung
       // und geben den Rest den Jobs in unserer Gruppe. Wir rechnen am Anfang erstmal mit Double,
       // um die Rundungsdifferenzen etwas kleiner zu halten
-      double chunk = 100d / ((double) HBCISynchronizeBackend.this.worker.getSynchronization().size()) * ((double)this.jobs.size());
-      int step     = (int) ((chunk - 6) / this.jobs.size());
+      double chunk  = 100d / ((double) HBCISynchronizeBackend.this.worker.getSynchronization().size()) * ((double)this.jobs.size());
+      double window = chunk - 6d;
+      getCurrentSession().setProgressWindow(window);
       ////////////////////////////////////////////////////////////////////
 
       boolean ok      = true;
@@ -274,7 +273,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         Passport passport     = new TaskPassportInit().execute();
         this.handle           = new TaskHandleInit(passport).execute();
         this.handler          = new TaskHandleOpen(handle).execute();
-        new TaskSepaInfo(handler).execute();
 
         Logger.info("processing jobs");
         
@@ -283,13 +281,12 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         {
           this.checkInterrupted();
           AbstractHBCIJob[] list = ((HBCISynchronizeJob)job).createHBCIJobs();
-          monitor.setStatusText(i18n.tr("Aktiviere HBCI-Job: \"{0}\"",job.getName()));
+          monitor.setStatusText(i18n.tr("Führe Geschäftsvorfall aus: \"{0}\"",job.getName()));
           for (AbstractHBCIJob hbciJob:list)
           {
             this.checkInterrupted();
             hbciJobs.add(hbciJob);
           }
-          monitor.addPercentComplete(step);
         }
         
         ok = this.executeJobs(monitor,hbciJobs,ok);
@@ -322,7 +319,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
             // interessieren beim Abbruch aber nicht.
             // Der Abbruch-Check kommt unten drunter
             if (!ok && !interrupted)
-              throw new ApplicationException(i18n.tr("Fehler beim Auswerten eines HBCI-Auftrages"));
+              throw new ApplicationException(i18n.tr("Es sind Fehler aufgetreten"));
             //
             // //////////////////////////////////////////////////////////////////////
 
@@ -349,6 +346,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     {
       try
       {
+        monitor.setStatusText(i18n.tr("Führe Aufträge aus..."));
+
         for (AbstractHBCIJob hbciJob:hbciJobs)
         {
           this.checkInterrupted();
@@ -369,9 +368,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         ////////////////////////////////////////////////////////////////////////
         // Jobs ausfuehren
         Logger.info("executing jobs");
-        monitor.setStatusText(i18n.tr("Führe HBCI-Jobs aus"));
         this.handler.execute();
-        monitor.setStatusText(i18n.tr("HBCI-Jobs ausgeführt"));
+        monitor.setStatusText(i18n.tr("Aufträge ausgeführt"));
         //
         ////////////////////////////////////////////////////////////////////////
       }
@@ -388,7 +386,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           try
           {
             name = hbciJob.getName();
-            monitor.setStatusText(i18n.tr("Werte Ergebnis von HBCI-Job \"{0}\" aus",name));
             Logger.info("executing check for job " + hbciJob.getIdentifier());
             hbciJob.handleResult();
 
@@ -493,7 +490,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           if (passport == null)
             throw new ApplicationException(i18n.tr("Kein HBCI-Sicherheitsmedium für das Konto gefunden"));
 
-          monitor.setStatusText(i18n.tr("Initialisiere HBCI-Sicherheitsmedium"));
+          monitor.setStatusText(i18n.tr("Initialisiere Bank-Zugang"));
           passport.init(konto);
           monitor.addPercentComplete(1);
 
@@ -534,7 +531,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         ProgressMonitor monitor = HBCISynchronizeBackend.this.worker.getMonitor();
         ////////////////////////////////////////////////////////////////////
 
-        monitor.setStatusText(i18n.tr("Erzeuge HBCI-Handle"));
         PassportHandle handle = this.passport.getHandle();
 
         if (handle == null)
@@ -575,7 +571,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
 
         try
         {
-          monitor.setStatusText(i18n.tr("Öffne HBCI-Verbindung"));
           HBCIHandler handler = this.handle.open();
 
           if (handler == null)
@@ -588,59 +583,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         {
           throw HBCIProperties.getCause(e);
         }
-      }
-    }
-
-    /**
-     * Task fuer das Ermitteln der SEPA-Infos.
-     */
-    private class TaskSepaInfo extends AbstractTaskWrapper<Void>
-    {
-      private HBCIHandler handler = null;
-
-      /**
-       * ct.
-       * @param handler
-       */
-      private TaskSepaInfo(HBCIHandler handler)
-      {
-        this.handler = handler;
-      }
-
-      /**
-       * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend.HBCIJobGroup.AbstractTaskWrapper#internalExecute()
-       */
-      public Void internalExecute() throws Throwable
-      {
-        if (this.handler.getSupportedLowlevelJobs().getProperty("SEPAInfo") == null)
-        {
-          Logger.info("Fetching of SEPA infos not supported");
-          return null;
-        }
-
-        checkInterrupted();
-
-        try
-        {
-          Properties p = this.handler.getLowlevelJobRestrictions("SEPAInfo");
-          Enumeration keys = p.keys();
-          Logger.debug("sepa infos:");
-          while (keys.hasMoreElements())
-          {
-            String s = (String) keys.nextElement();
-            Logger.debug("  " + s + ", value: " + p.getProperty(s));
-          }
-          p.put("konto.id",getKonto().getID()); // Damit klar ist, zu welchem Konto das gehoert
-
-          // Wir verschicken das per Messaging - dann koennen wir das an anderer Stelle verarbeiten, falls benoetigt
-          Application.getMessagingFactory().getMessagingQueue("hibiscus.sepainfo").sendMessage(new QueryMessage(p));
-        }
-        catch (Exception e)
-        {
-          // Nur Loggen, nicht weiterwerfen
-          Logger.error("unable to fetch SEPA info",e);
-        }
-        return null;
       }
     }
 

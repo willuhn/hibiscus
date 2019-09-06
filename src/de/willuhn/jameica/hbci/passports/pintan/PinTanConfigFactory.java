@@ -14,6 +14,10 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
@@ -51,8 +55,8 @@ public class PinTanConfigFactory
    */
   public static synchronized PinTanConfig create() throws Exception
   {
-  	File f = createFilename();
-  	HBCIPassport p = load(f);
+    File f = createFilename();
+    Future<HBCIPassport> p = load(f);
     return new PinTanConfigImpl(p,f);
   }
 
@@ -70,30 +74,30 @@ public class PinTanConfigFactory
 
     String[] existing = settings.getList("config",new String[0]);
 
-		boolean found = false;
-		if (existing != null && existing.length > 0)
-		{
-			for (int i=0;i<existing.length;++i)
-			{
-				if (existing[i].equals(config.getID()))
-				{
-					Logger.info("updating existing config");
-					found = true;
-					break;
-				}
-			}
-		}
+    boolean found = false;
+    if (existing != null && existing.length > 0)
+    {
+      for (int i=0;i<existing.length;++i)
+      {
+        if (existing[i].equals(config.getID()))
+        {
+          Logger.info("updating existing config");
+          found = true;
+          break;
+        }
+      }
+    }
 
-		if (!found)
-		{
-			Logger.info("adding new pin/tan config");
-			String[] newList = new String[existing.length+1];
-			System.arraycopy(existing,0,newList,0,existing.length);
-			newList[existing.length] = config.getID();
-			settings.setAttribute("config",newList);
-		}
+    if (!found)
+    {
+      Logger.info("adding new pin/tan config");
+      String[] newList = new String[existing.length+1];
+      System.arraycopy(existing,0,newList,0,existing.length);
+      newList[existing.length] = config.getID();
+      settings.setAttribute("config",newList);
+    }
 
-		HBCIPassport p = config.getPassport();
+    HBCIPassport p = config.getPassport();
     Logger.info("saving passport config");
     p.saveChanges();
   }
@@ -189,16 +193,50 @@ public class PinTanConfigFactory
   /**
    * Erzeugt ein Passport-Objekt basierend auf der uebergebenen Config.
    * @param f das HBCI4Java-Config-File.
-   * @return Passport.
+   * @return Passport. Wir liefern hier ein Future zurueck, damit das eigentliche Laden erst bei Bedarf stattfinden muss.
    */
-  public static HBCIPassport load(File f)
+  public static Future<HBCIPassport> load(final File f)
   {
     HBCIUtils.setParam("client.passport.default","PinTan");
-    HBCIUtils.setParam("client.passport.PinTan.filename",f.getAbsolutePath());
+//    HBCIUtils.setParam("client.passport.PinTan.filename",f.getAbsolutePath());
     HBCIUtils.setParam("client.passport.PinTan.init","1");
 
     HBCIUtils.setParam("client.passport.PinTan.checkcert","1");
-    return AbstractHBCIPassport.getInstance("PinTan");
+
+    return new Future<HBCIPassport>() {
+      
+      private HBCIPassport p = null;
+      /**
+       * @see java.util.concurrent.Future#get()
+       */
+      @Override
+      public HBCIPassport get() throws InterruptedException, ExecutionException
+      {
+        if (this.p == null)
+          this.p = AbstractHBCIPassport.getInstance("PinTan",f);
+        return this.p;
+      }
+      @Override
+      public boolean cancel(boolean mayInterruptIfRunning)
+      {
+        return false;
+      }
+      @Override
+      public boolean isCancelled()
+      {
+        return false;
+      }
+      @Override
+      public boolean isDone()
+      {
+        return this.p != null;
+      }
+      @Override
+      public HBCIPassport get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
+      {
+        return this.get();
+      }
+    };
   }
 
   /**
@@ -211,9 +249,9 @@ public class PinTanConfigFactory
   public static synchronized PinTanConfig findByKonto(Konto konto) throws RemoteException, ApplicationException
   {
 
-		GenericIterator i = getConfigs();
-		if (!i.hasNext())
-			throw new ApplicationException(i18n.tr("Bitte legen Sie zuerst eine PIN/TAN-Konfiguration an"));
+    GenericIterator i = getConfigs();
+    if (!i.hasNext())
+      throw new ApplicationException(i18n.tr("Bitte legen Sie zuerst eine PIN/TAN-Konfiguration an"));
 
     Logger.info("searching config for konto " + konto.getKontonummer() + ", blz: " + konto.getBLZ());
     PinTanConfig config = null;
@@ -295,13 +333,13 @@ public class PinTanConfigFactory
     {
       if (found[i] != null && found[i].length() > 0)
       {
-      	File f = toAbsolutePath(found[i]);
+        File f = toAbsolutePath(found[i]);
         if (!f.exists())
           continue;
         
         try
         {
-          HBCIPassport p = load(f);
+          Future<HBCIPassport> p = load(f);
           configs.add(new PinTanConfigImpl(p,f));
         }
         catch (Exception e)

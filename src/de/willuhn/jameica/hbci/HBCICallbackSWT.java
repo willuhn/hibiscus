@@ -66,7 +66,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   {
     SynchronizeSession session = this.backend.getCurrentSession();
 
-    boolean log = true;
+    boolean mon = true;
     String type = null;
     
   	switch (level)
@@ -74,42 +74,43 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   	  case HBCIUtils.LOG_INTERN:
   		case HBCIUtils.LOG_DEBUG2:
         Logger.trace(msg);
-        log = false;
+        mon = false;
         break;
   		  
 			case HBCIUtils.LOG_DEBUG:
   			Logger.debug(msg);
-        log = false;
+        mon = false;
   			break;
 
 			case HBCIUtils.LOG_INFO:
+	      this.updateProgress();
 				Logger.info(msg);
 				break;
 
 			case HBCIUtils.LOG_WARN:
+	      this.updateProgress();
         // Die logge ich mit DEBUG - die nerven sonst
-        type = "warn";
-        if (msg != null && (msg.startsWith("konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen:") ||
-                            msg.startsWith("could not insert the following user-defined data"))
-           )
+        type = "Hinweis";
+        if (msg != null && (msg.startsWith("konnte folgenden nutzerdefinierten Wert nicht in Nachricht einsetzen:") || msg.startsWith("could not insert the following user-defined data")))
         {
           Logger.debug(msg);
-          log = false;
+          mon = false;
           break;
         }
         if (msg != null && msg.matches(".* Algorithmus .* nicht implementiert"))
         {
           Logger.debug(msg);
-          log = false;
+          mon = false;
           break;
         }
         Logger.warn(msg);
 				break;
 
   		case HBCIUtils.LOG_ERR:
+        this.updateProgress();
   		  if (session != null && session.getStatus() == ProgressMonitor.STATUS_CANCEL)
   		  {
-  		    log = false;
+  		    mon = false;
   		    break;
   		  }
   		  else
@@ -117,7 +118,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   		    if (session != null && msg != null)
   		      session.getErrors().add(msg.replace("HBCI error code: ",""));
   		    
-          type = "error";
+          type = "Fehler";
           Logger.error(msg + " " + trace.toString());
           break;
   		  }
@@ -126,21 +127,22 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 				Logger.warn(msg);
   	}
     
-    if (log && session != null)
+    if (mon && session != null)
     {
       ProgressMonitor monitor = session.getProgressMonitor();
       if (type != null)
-        monitor.log("[" + type + "] " + msg);
+        monitor.log("    [" + type + "] " + msg);
       else
-        monitor.log(msg);
+        monitor.log("    " + msg);
     }
   }
 
   /**
    * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
-  public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) {
-    
+  public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData)
+  {
+    this.updateProgress();
     SynchronizeSession session = this.backend.getCurrentSession();
 
     try {
@@ -364,6 +366,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
       return;
 
     SynchronizeSession session = this.backend.getCurrentSession();
+    this.updateProgress();
 
     if (session != null)
     {
@@ -371,6 +374,32 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
       monitor.log(text + "\n");
     }
 	}
+  
+  /**
+   * Schreibt den Fortschrittsbalken etwas weiter.
+   */
+  private void updateProgress()
+  {
+    final SynchronizeSession session = this.backend.getCurrentSession();
+    if (session == null)
+      return;
+    
+    ProgressMonitor m = session.getProgressMonitor();
+    if (m == null)
+      return;
+    
+    // Das ist die Gesamt-Zahl der Prozentpunkte, die wir zur Verfuegung haben
+    double window = session.getProgressWindow();
+    if (window <= 1d)
+      return;
+
+    // Wir wissen nicht wirklich, wie oft wir aufgerufen werden.
+    // Daher machen wir das hier nur geschaetzt
+    m.addPercentComplete(1);
+    session.setProgressWindow(window - 0.2d);
+    
+    
+  }
 	
   /**
    * Speichert das aktuelle Handle.

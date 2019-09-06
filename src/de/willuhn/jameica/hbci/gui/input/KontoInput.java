@@ -128,17 +128,36 @@ public class KontoInput extends SelectInput
     {
       try
       {
-        Konto k = (Konto) Settings.getDBService().createObject(Konto.class,id);
-        this.setPreselected(k);
+        // Checken, ob wir das Konto haben
+        for (Konto k:KontoUtil.getKonten(null))
+        {
+          if (id.equals(k.getID()))
+          {
+            this.setPreselected(k);
+            return;
+          }
+        }
+        
+        // OK, wir haben die ID nicht gefunden. Eventuell ist es eine Gruppe
+        if (this.supportGroups)
+        {
+          for (String group:KontoUtil.getGroups())
+          {
+            if (id.equals(group))
+            {
+              this.setPreselected(group);
+              return;
+            }
+          }
+        }
+        else
+        {
+          settings.setAttribute(this.token,(String) null); // Vorauswahl loeschen
+        }
       }
       catch (Exception e)
       {
-        // wir koennen leider nicht checken, ob "id" =~ /[0-9]{1,9}/ ist, weil der Gruppen-Name ja auch nur aus Zahlen bestehen kann
-        // daher halt direkt im catch der ObjectNotFoundException
-        if (this.supportGroups)
-          this.setPreselected(id); // Koennte eine Kategorie sein
-        else
-          settings.setAttribute(this.token,(String) null); // Konto konnte nicht geladen werden. Vorauswahl loeschen
+        Logger.error("unable to load accounts",e);
       }
     }
   }

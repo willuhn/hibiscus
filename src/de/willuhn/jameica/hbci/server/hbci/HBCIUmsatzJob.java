@@ -511,7 +511,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
    */
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
-    String msg = i18n.tr("Fehler beim Abrufen der Umsätze: {0}",error);
+    String msg = i18n.tr("Umsatzabruf fehlgeschlagen: {0}",error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }

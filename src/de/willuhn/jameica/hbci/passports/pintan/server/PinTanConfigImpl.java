@@ -14,6 +14,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIVersion;
@@ -40,18 +41,31 @@ public class PinTanConfigImpl implements PinTanConfig
 
   private final static Settings settings = new Settings(PinTanConfig.class);
 
-  private HBCIPassport passport = null;
-  private File file             = null;
+  private HBCIPassport passport       = null;
+  private Future<HBCIPassport> future = null;
+  private File file                   = null;
   
   /**
    * ct.
-   * @param passport
+   * @param future
    * @param file
    * @throws RemoteException
    */
-  public PinTanConfigImpl(HBCIPassport passport, File file) throws RemoteException
+  public PinTanConfigImpl(Future<HBCIPassport> future, File file) throws RemoteException
   {
-    this.passport = passport;
+    this.future = future;
+    this.file = file;
+  }
+
+  /**
+   * ct.
+   * @param p
+   * @param file
+   * @throws RemoteException
+   */
+  public PinTanConfigImpl(HBCIPassport p, File file) throws RemoteException
+  {
+    this.passport = p;
     this.file = file;
   }
 
@@ -118,10 +132,18 @@ public class PinTanConfigImpl implements PinTanConfig
     catch (Exception e)
     {
       Logger.error("unable to determine name",e);
-      return passport.getHost();
+      try
+      {
+        return this.getPassport().getHost();
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to determine host",re);
+        return "<unknown> (" + re.getMessage() + ")";
+      }
     }
   }
-
+  
   /**
    * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()
    */
@@ -181,7 +203,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public String getHBCIVersion() throws RemoteException
   {
-    String ppVersion = StringUtils.trimToNull(passport.getHBCIVersion());
+    String ppVersion = StringUtils.trimToNull(this.getPassport().getHBCIVersion());
     return settings.getString(getID() + ".hbciversion",ppVersion != null ? ppVersion : HBCIVersion.HBCI_300.getId());
   }
 
@@ -198,7 +220,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public String getURL() throws RemoteException
   {
-  	return passport.getHost();
+    return this.getPassport().getHost();
   }
 
   /**
@@ -206,18 +228,18 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public void setURL(String url) throws RemoteException
   {
-  	if (url == null || url.length() == 0)
-  	{
-  		Logger.warn("no url entered");
-			return;
-  	}
-  	if (url.startsWith("https://"))
+    if (url == null || url.length() == 0)
+    {
+      Logger.warn("no url entered");
+      return;
+    }
+    if (url.startsWith("https://"))
     {
       Logger.warn("URL entered with https:// prefix, cutting");
-  		url = url.substring(8);
+      url = url.substring(8);
     }
     Logger.info("saving URL " + url);
-    passport.setHost(url);
+    this.getPassport().setHost(url);
   }
 
   /**
@@ -225,7 +247,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public int getPort() throws RemoteException
   {
-    return passport.getPort().intValue();
+    return this.getPassport().getPort().intValue();
   }
 
   /**
@@ -233,7 +255,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public void setPort(int port) throws RemoteException
   {
-    passport.setPort(new Integer(port));
+    this.getPassport().setPort(new Integer(port));
   }
 
   /**
@@ -241,7 +263,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public String getFilterType() throws RemoteException
   {
-    return passport.getFilterType();
+    return this.getPassport().getFilterType();
   }
 
   /**
@@ -249,7 +271,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public void setFilterType(String type) throws RemoteException
   {
-    passport.setFilterType(type);
+    this.getPassport().setFilterType(type);
   }
 
   /**
@@ -257,7 +279,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public String getBLZ() throws RemoteException
   {
-    return passport.getBLZ();
+    return this.getPassport().getBLZ();
   }
 
   /**
@@ -265,7 +287,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public String getCustomerId() throws RemoteException
   {
-    return passport.getCustomerId();
+    return this.getPassport().getCustomerId();
   }
 
   /**
@@ -273,7 +295,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public void setCustomerId(String customer) throws RemoteException
   {
-    passport.setCustomerId(customer);
+    this.getPassport().setCustomerId(customer);
   }
 
   /**
@@ -281,7 +303,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public String getUserId() throws RemoteException
   {
-    return passport.getUserId();
+    return this.getPassport().getUserId();
   }
 
   /**
@@ -289,7 +311,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public void setUserId(String user) throws RemoteException
   {
-    passport.setUserId(user);
+    this.getPassport().setUserId(user);
   }
 
   /**
@@ -305,7 +327,18 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public HBCIPassport getPassport() throws RemoteException
   {
-    return passport;
+    if (this.passport != null)
+      return this.passport;
+    
+    try
+    {
+      this.passport = this.future.get();
+      return this.passport;
+    }
+    catch (Exception e)
+    {
+      throw new RemoteException("error while loading passport", e);
+    }
   }
 
   /**

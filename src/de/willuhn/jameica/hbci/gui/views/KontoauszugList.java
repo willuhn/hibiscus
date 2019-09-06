@@ -29,7 +29,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Zeigt Kontoauszüge an und gibt gibt sie in eine PDF-Datei aus.
+ * Zeigt die Umsatzbuchungen an.
  */
 public class KontoauszugList extends AbstractView
 {

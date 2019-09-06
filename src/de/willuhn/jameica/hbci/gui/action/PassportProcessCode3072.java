@@ -47,7 +47,7 @@ public class PassportProcessCode3072 implements Action
     Object o = hbciPassport.getPersistentData(PassportHandle.CONTEXT_USERID_CHANGED);
     if (o == null)
     {
-      Logger.info("no changed customer data in persistent data of passport found");
+      Logger.debug("no changed customer data in persistent data of passport found");
       return;
     }
 

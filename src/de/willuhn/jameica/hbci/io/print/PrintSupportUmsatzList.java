@@ -127,8 +127,9 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
       border.setGapSize(3);
       look.setCellBorder(border);
       
-      GridPrint table = new GridPrint("l:42pt:n, l:90pt:n, l:p:g, r:42pt:n, r:44pt:n",look);
+      GridPrint table = new GridPrint("l:42pt:n, r:20pt:n, l:90pt:n, l:p:g, r:42pt:n, r:44pt:n",look);
       table.addHeader(new NoBreakPrint(new TextPrint(i18n.tr("Valuta/Datum"),fontTinyBold)));
+      table.addHeader(new TextPrint("Nr.",fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Gegenkonto"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Verwendungszweck"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Betrag"),fontTinyBold));
@@ -170,6 +171,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
           TextStyle typeSoll = new TextStyle().font(fontTiny).foreground(new RGB(200,0,0));
 
           table.add(new TextPrint(HBCI.DATEFORMAT.format(u.getValuta()) + "\n" + HBCI.DATEFORMAT.format(u.getDatum()),fontTiny));
+          table.add(new TextPrint(u.getID(),fontTiny));
           table.add(new TextPrint(sb.toString(),fontTiny));
           table.add(new TextPrint(notNull(usage),fontTiny));
           table.add(new NoBreakPrint(new TextPrint(HBCI.DECIMALFORMAT.format(u.getBetrag()) + " " + k.getWaehrung(),u.getBetrag() >= 0 ? typeHaben : typeSoll)));
@@ -195,24 +197,3 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
     return i18n.tr("Umsätze");
   }
 }
-
-
-
-/**********************************************************************
- * $Log: PrintSupportUmsatzList.java,v $
- * Revision 1.5  2011/05/11 09:12:07  willuhn
- * @C Merge-Funktionen fuer den Verwendungszweck ueberarbeitet
- *
- * Revision 1.4  2011-04-29 07:44:56  willuhn
- * @B Siehe http://www.willuhn.de/blog/index.php?/archives/553-Hibiscus-Druck-Support.html#c1293
- *
- * Revision 1.3  2011-04-14 08:43:43  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2011-04-14 08:42:53  willuhn
- * @N Konto-Header
- *
- * Revision 1.1  2011-04-13 17:35:46  willuhn
- * @N Druck-Support fuer Kontoauszuege fehlte noch
- *
- **********************************************************************/

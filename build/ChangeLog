@@ -1,3 +1,34 @@
+2019-09-06 Version 2.8.14
+
+  * NEW: 0824 Update auf HBCI4Java 3.1.4
+  * NEW: 0823 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d0c10a2ca4f64e2e010b4dcd7c254f4ae7cce91d - tolerieren, wenn Eingabestream nicht vorhanden ist
+  * BUG: 0822 Update auf HBCI4Java 3.1.3 - NPE beim Umsatzabruf im CAMT-Format, wenn BIC in Gegenkonto fehlt
+  * NEW: 0821 Update auf HBCI4Java 3.1.2 - SCA-Code 3076 auch in HIRMG suchen
+  * NEW: 0820 Hinweis-Text anzeigen, wenn nicht die erwartete HBCI4Java-Version geladen wurde - potentieller Installationsfehler
+  * NEW: 0819 Buttons zum Vergrößern und Verkleinern der Grafik bei Matrix-TAN
+  * CHG: 0818 Überlange Namen von Banken stärker kürzen
+  * NEW: 0817 Update auf HBCI4Java 3.1.1 - beim Aktualisieren eines Dauerauftrages war die Reihenfolge der HBCI-Nachrichten nicht korrekt
+  * NEW: 0816 Update auf HBCI4Java 3.1.0
+  * NEW: 0815 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/8b4419305d56ef38ca459d1b0a1d07aa3aa36767 - Fehler beim Finalisieren der ChipTAN-USB Transaktion tolerieren
+  * NEW: 0814 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/443919107d3f172491e4ace2bd00410ae7b6caf0 - Sicherstellen, dass HBCI+ noch funktioniert - wenn auch ohne SCA
+  * NEW: 0813 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/e8f79e75ecadf7cafde769b85e5579c75f1d945e - Abruf TAN-Medien und SEPA-Infos nur noch, wenn nötig
+  * NEW: 0812 Fortschrittsbalken bei der Konten-Synchronisierung jetzt kontinuierlicher und mit übersichtlicherem Logging
+  * NEW: 0811 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/dbcebea52e1fedf6a680203ea33cb917c232ab86 - weniger Logging, dafür aber verständlicher
+  * NEW: 0810 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/f1b3ff7a7443742e3bd21d91a1ba01b20309c23b - HKTAN jetzt auch in der anonymen Dialog-Initialisierung mitsenden, wenn noch keine Infos zum TAN-Verfahren bekannt sind
+  * NEW: 0809 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/782a012ed602c43560125671e261249a4e188bde - erste funktional komplette Version mit SCA-Support
+  * NEW: 0808 Eigene Datumsformate in Velocity-Templates verwendbar
+  * NEW: 0807 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.09.2019
+  * NEW: 0806 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/84444459efab1dc9ce08c839a8884d749f40069c - HKTAN mit SCA-Ausnahme via 3076 sollte jetzt auch bei GVs gehen
+  * NEW: 0805 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d8b723f163db10983d718b2057cee8ee9b36e401 - besseres Handling bei fehlendem tanmedia
+  * NEW: 0804 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/500f0753218a136bec10ddee9ba47c2e52473a3d mit erstem SCA-Support für PSD2
+  * CHG: 0803 Deutlicheren Hinweis anzeigen, wenn man versucht, eine SEPA-Lastschrift als Überweisung zu importieren (und umgekehrt)
+  * BUG: 0802 Wenn man in der Umsatzliste eine Kontogruppe ausgewählt hat und diese Auswahl bestehen blieb, führte das beim nächsten Hibiscus-Start zu einem internen Fehler, der anschließend das automatisch Backup beim Shutdown verhinderte
+  * NEW: 0801 Nummer der Umsatzbuchung beim Druck mit ausgeben
+  * BUG: 0800 Erneutes Fix bei der Auswertung des Job-Status - Auftrag konnte u.U. fälschlicherweise als ausgeführt markiert werden, obwohl die Bank einen Fehler gesendet hat
+  * BUG: 0799 Bei der Anzeige der Umsätze nach Kategorien kann es zu einem Fehler wegen der Sortierung kommen
+  * NEW: 0798 Spaltenbreite im Kategorie-Auswahl-Dialog speichern, die Spalte mit der Bezeichnung kann zu kurz werden, wenn man einen Suchbegriff eingibt
+  * BUG: 0797 Wenn eine Auftragsart nicht unterstützt wird, wurde beim Versuch diese abzusenden in der Logdatei eine NPE geloggt. Das leitete bei der Fehlersuche in die Irre - siehe https://homebanking-hilfe.de/forum/topic.php?p=145321#real145321
+
 2019-06-24 Version 2.8.13
 
   * NEW: 0796 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/4282abcadf1ae3813511f7e4d19359a829e71bec - fehlendes Tag ":25:" in MT940 tolerieren

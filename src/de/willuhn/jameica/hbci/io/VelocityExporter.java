@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,6 +79,7 @@ public class VelocityExporter implements Exporter
     context.put("datum",         new Date());
     context.put("charset",       encoding); // BUGZILLA 328
     context.put("dateformat",    HBCI.DATEFORMAT);
+    context.put("dateutil",      new DateUtil());
     context.put("longdateformat",HBCI.LONGDATEFORMAT);
     context.put("decimalformat", HBCI.DECIMALFORMAT);
     context.put("objects",       objects);
@@ -250,6 +253,37 @@ public class VelocityExporter implements Exporter
   public boolean suppportsExtension(String ext)
   {
     return false;
+  }
+  
+  /**
+   * Hilfsklasse fuer weitere Datumsfunktionen.
+   */
+  public class DateUtil
+  {
+    /**
+     * Liefert ein neues Datumsformat mit dem angegebenen Format.
+     * @param format das gewuenschte Format. Z.B. "yyyy-MM-dd".
+     * @return das Datumsformat.
+     */
+    public DateFormat getFormat(String format)
+    {
+      format = StringUtils.trimToNull(format);
+      if (format == null)
+      {
+        Logger.warn("no date format given, fallback to default format");
+        return HBCI.DATEFORMAT;
+      }
+      
+      try
+      {
+        return new SimpleDateFormat(format);
+      }
+      catch (Exception e)
+      {
+        Logger.error("invalid date format: " + format + " - fallback to default format",e);
+      }
+      return HBCI.DATEFORMAT;
+    }
   }
   
   /**

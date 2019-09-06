@@ -54,7 +54,7 @@ public abstract class AbstractHBCIJob
   private final static String NL = System.getProperty("line.separator","\n");
 
   // Das sind Warnungen, die im Wesentlichen nur dafuer stehen, dass beim Datenabruf keine neuen Daten bei der Bank vorhanden waren
-  private final static List<String> IGNORE_WARNINGS = Arrays.asList("3010","3290","3300");
+  private final static List<String> IGNORE_WARNINGS = Arrays.asList("3010","3040","3072","3076","3290","3300","3920");
 
 	private org.kapott.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
@@ -202,7 +202,7 @@ public abstract class AbstractHBCIJob
    */
   protected final HBCIJobResult getJobResult()
 	{
-		return job.getJobResult();
+		return job != null ? job.getJobResult() : null;
 	}
   
   /**
@@ -213,8 +213,16 @@ public abstract class AbstractHBCIJob
    */
   public final void handleResult() throws ApplicationException, RemoteException
   {
-    HBCIJobResult result    = getJobResult();
-    HBCIStatus status       = result.getJobStatus();
+    HBCIJobResult result = getJobResult();
+    if (result == null)
+    {
+      Logger.info("mark job unsupported/failed");
+      final String msg = i18n.tr("Auftragsart nicht unterstützt");
+      this.markFailed(msg);
+      throw new ApplicationException(msg);
+    }
+    
+    HBCIStatus status = result.getJobStatus();
 
     // BUGZILLA 964 - nur dann als abgebrochen markieren, wenn wir fuer den Job noch keinen richtigen
     // Status haben. Denn wenn der vorliegt, ist es fuer den Abbruch - zumindest fuer diesen Auftrag - zu spaet.
@@ -231,8 +239,10 @@ public abstract class AbstractHBCIJob
     boolean executed  = false;
     boolean isOK      = status.isOK();
     HBCIRetVal[] values = status.getSuccess();
-    boolean haveJobStatus = values != null && values.length > 0;
-    if (haveJobStatus)
+    HBCIRetVal[] errors = status.getErrors();
+    boolean successStatus = values != null && values.length > 0;
+    boolean errorStatus = errors != null && errors.length > 0;
+    if (successStatus)
     {
       for (HBCIRetVal val:values)
       {
@@ -243,7 +253,7 @@ public abstract class AbstractHBCIJob
         }
       }
     }
-    else
+    else if (!errorStatus) // Die Warnings nur auswerten, wenn wir nicht explizit Fehler gekriegt haben
     {
       // Sonderfall: Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine Umsätze vorhanden." sondern
       // "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
@@ -263,13 +273,13 @@ public abstract class AbstractHBCIJob
         {
           Logger.info("institute did not sent 0xxx success code but only warnings");
           executed = true;
-          haveJobStatus = true;
+          successStatus = true;
           isOK = true;
         }
       }
     }
     
-    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed + ", have job status: " + haveJobStatus);
+    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed + ", success status: " + successStatus + ", error status: " + errorStatus);
 
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
@@ -312,7 +322,7 @@ public abstract class AbstractHBCIJob
 
     // Globaler Status ist OK - Job wurde zweifelsfrei erfolgreich ausgefuehrt
     // Wir markieren die Ueberweisung als "ausgefuehrt"
-    if (result.isOK() && haveJobStatus)
+    if (result.isOK() && successStatus)
     {
       Logger.info("mark job executed [result: OK]");
       markExecutedInternal(errorText);
@@ -320,7 +330,7 @@ public abstract class AbstractHBCIJob
     }
 
     // Globaler Status ist nicht OK. Mal schauen, was der Job-Status sagt
-    if (isOK && haveJobStatus)
+    if (isOK && successStatus)
     {
       // Wir haben zwar global einen Fehler. Aber zumindest der Auftrag
       // scheint in Ordnung zu sein. Wir markieren ihn sicherheitshalber
