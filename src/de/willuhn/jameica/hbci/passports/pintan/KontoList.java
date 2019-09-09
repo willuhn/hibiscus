@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.passports.pintan.server.PassportImpl;
@@ -41,8 +42,9 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
   {
     super(null,new KontoNew());
     this.setShowFilter(false);
+    this.setContextMenu(null); // Kontextmenu hier deaktivieren
     this.setCheckable(true);
-    this.setSummary(false);
+    this.removeFeature(FeatureSummary.class);
     this.myConfig = config;
   }
 
@@ -51,6 +53,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
+    
     // Erst das Parent zeichnen, damit wir anschliessend die
     // Konten checkable machen koennen.
     super.paint(parent);
@@ -115,22 +118,3 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
   }
 
 }
-
-
-/*********************************************************************
- * $Log: KontoList.java,v $
- * Revision 1.3  2011/08/05 11:21:59  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.2  2010-09-07 15:17:07  willuhn
- * @N GUI-Cleanup
- *
- * Revision 1.1  2010/06/17 11:38:15  willuhn
- * @C kompletten Code aus "hbci_passport_pintan" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- *
- * Revision 1.1  2007/08/31 09:43:55  willuhn
- * @N Einer PIN/TAN-Config koennen jetzt mehrere Konten zugeordnet werden
- *
- **********************************************************************/
