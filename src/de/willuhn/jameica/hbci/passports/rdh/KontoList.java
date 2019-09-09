@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportImpl;
@@ -41,8 +42,9 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
   {
     super(null,new KontoNew());
     this.setShowFilter(false);
+    this.setContextMenu(null); // Kontextmenu hier deaktivieren
     this.setCheckable(true);
-    this.setSummary(false);
+    this.removeFeature(FeatureSummary.class);
     this.myKey = key;
   }
 

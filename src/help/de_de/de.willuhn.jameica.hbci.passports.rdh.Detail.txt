@@ -14,15 +14,11 @@
 	</p>
 
   <p>
-    Falls Sie bei einer Bank mehrere Konten mit verschiedenen
-    Schlüsseldateien besitzen oder Ihre Bank für den HBCI-Zugang eine
-    abweichende BLZ verwendet, dann können Sie in der Tabelle
-    &quot;Fest zugeordnete Konten&quot; manuell einzelne Konten auswählen,
-    für die diese Schlüsseldatei gelten soll. Auf diese Weise müssen Sie
-    beim Ausführen von Geschäftsvorfällen nicht manuell die zu verwendende Datei
-    wählen. Andernfalls können Sie die Auswahl freilassen. Sie werden dann
-    bei der Ausführung eines HBCI-Auftrages zur Auswahl der zu verwendenden
-    Schlüsseldatei aufgefordert, falls mehrere existieren.
+    <b>Tipp</b>: Falls Sie bei einer Bank mehrere Konten mit verschiedenen
+    Bank-Zugängen besitzen, dann können Sie die gewünschten Konten fest zuordnen,
+    für die dieser Bankzugang gelten soll.
+    Auf diese Weise müssen Sie beim Ausführen von Geschäftsvorfällen
+    den zu verwendenden Bankzugang nicht manuell wählen.
   </p>
 
 </form>

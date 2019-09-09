@@ -17,7 +17,6 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
@@ -100,8 +99,12 @@ public class Detail extends AbstractView
       buttons.paint(getParent());
     }
 
-    new Headline(getParent(),i18n.tr("Fest zugeordnete Konten"));
-    control.getKontoAuswahl().paint(getParent());
+    Container c = new SimpleContainer(getParent(),true);
+    c.addHeadline(i18n.tr("Fest zugeordnete Konten"));
+    c.addText(i18n.tr("Die folgende Liste enthält alle Konten, welche diesem Bankzugang fest zugeordnet werden können. " +
+                      "Aktivieren Sie die Kontrollkästchen der gewünschten Konten in der Spalte \"Kontonummer\", um diese Konten fest zuzuordnen. Klicken Sie anschließend \"Speichern\". " +
+                      "Weitere Informationen hierzu finden Sie links in der Hilfe.\n"),true);
+    c.addPart(control.getKontoAuswahl());
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("BPD/UPD"),new Action()

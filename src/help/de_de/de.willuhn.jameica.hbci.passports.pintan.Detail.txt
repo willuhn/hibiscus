@@ -4,13 +4,6 @@
   </p>
   
   <p>
-    Im Feld &quot;Alias-Name&quot; können Sie einen optionalen
-    Bezeichnung für diese PIN/TAN-Konfiguration eingeben. Sie
-    dient der eindeutigen Identifizierung, falls Sie für eine Bank
-    mehrere Konfigurationen angelegt haben.
-  </p>
-  
-  <p>
     Bitte verwenden Sie als URL <b>nicht</b> die Adresse, welche
     Sie sonst auch für das Internet-Banking im Browser benutzen.
     PIN/TAN via Internetbrowser und PIN/TAN via HBCI sind zwei
@@ -19,28 +12,27 @@
   </p>
   
   <p>
-    Tipp: Als Filter für die Übertragung wird fast immer Base64 verwendet.
-    Als HBCI-Version kommt meist &quot;HBCI+&quot; zum Einsatz.
-    Sollte die Verbindung zu Ihrer Bank nicht funktionieren,
-    liegt dies meist an falschen Einstellungen bei diesen beiden
-    Werten.
+    <b>Hinweis</b>: Als Filter für die Übertragung wird fast immer Base64 verwendet.
+    Als HBCI-Version kommt meist &quot;FinTS 3.0&quot; zum Einsatz.
   </p>
   
   <p>
-    Falls Sie bei einer Bank mehrere Konten mit verschiedenen
-    PIN/TAN-Konfigurationen besitzen, dann können Sie die gewünschten
-    Konten fest zuordnen, für die diese Konfiguration gelten soll.
+    <b>Tipp</b>: Falls Sie bei einer Bank mehrere Konten mit verschiedenen
+    Bank-Zugängen besitzen, dann können Sie die gewünschten Konten fest zuordnen,
+    für die dieser Bankzugang gelten soll.
     Auf diese Weise müssen Sie beim Ausführen von Geschäftsvorfällen
-    nicht manuell die zu verwendende PIN/TAN-Konfiguraiton
-    wählen.
+    den zu verwendenden Bankzugang nicht manuell wählen.
+  </p>
+
+  <p>
+    Die Angabe eines Alias-Namens hilft Ihnen, mehrere Bank-Zugänge
+    besser unterscheiden zu können. Geben Sie hier z.Bsp. den Namen der Bank ein.
   </p>
 
   <p>
     Über den Button <b>TAN-Verfahren zurücksetzen</b>
     können Sie eine gespeicherte Vorauswahl des zu verwendenden TAN-Verfahrens
-    rückgängig machen. Dies kann sinnvoll sein, wenn Sie zum Beispiel für ein
-    Konto die Variante <b>Einschritt-Verfahren</b> ausgewählt und gespeichert haben,
-    diese Auswahl nun aber wieder anzeigen wollen.
+    rückgängig machen. Dies kann sinnvoll sein, wenn die Bank Ihr TAN-Verfahren umgestellt hat.
   </p>
 
 </form>
