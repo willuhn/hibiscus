@@ -129,6 +129,15 @@ public class PtSecMech
   {
     return name;
   }
+  
+  /**
+   * Liefert den Namen des TAN-Verfahrens mit der ID.
+   * @return der Name des TAN-Verfahrens mit der ID.
+   */
+  public String getLongname()
+  {
+    return "[" + this.id + "] " + this.name;
+  }
 
   /**
    * @see java.lang.Object#equals(java.lang.Object)
