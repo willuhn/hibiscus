@@ -177,7 +177,7 @@ public class PtSecMechDialog extends AbstractDialog
 
     List<PtSecMech> list = PtSecMech.parse(this.options);
     this.type = new SelectInput(list,null);
-    this.type.setAttribute("name");
+    this.type.setAttribute("longname");
     return this.type;
   }
 }
