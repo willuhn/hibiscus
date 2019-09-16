@@ -29,7 +29,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -39,6 +41,7 @@ import org.kapott.hbci.smartcardio.SmartCardService;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -58,11 +61,13 @@ import de.willuhn.util.ApplicationException;
 public class ChipTANDialog extends TANDialog
 {
   private final static Settings settings = new Settings(ChipTANDialog.class);
+  private final static String PARAM_AUTOCONTINUE = "usb.autocontinue";
   
   private String code = null;
   private boolean smallDisplay = false;
   private boolean usb = false;
   private ChipTanCardService service = null;
+  private CheckboxInput autoContinue = null;
   
   /**
    * ct.
@@ -122,6 +127,30 @@ public class ChipTANDialog extends TANDialog
     
     super.setText(text);
     return;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der man einstellen kann, ob bei Erhalt der TAN via USB automatisch fortgesetzt werden soll.
+   * @return die Checkbox.
+   * @throws RemoteException
+   */
+  private CheckboxInput getAutoContinue() throws RemoteException
+  {
+    if (this.autoContinue != null)
+      return this.autoContinue;
+    
+    this.autoContinue = new CheckboxInput(settings.getBoolean(PARAM_AUTOCONTINUE,false));
+    this.autoContinue.setName(i18n.tr("Bei Erhalt der TAN automatisch fortsetzen"));
+    this.autoContinue.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute(PARAM_AUTOCONTINUE,((Boolean)autoContinue.getValue()).booleanValue());
+      }
+    });
+    
+    return this.autoContinue;
   }
   
   /**
@@ -268,6 +297,18 @@ public class ChipTANDialog extends TANDialog
   }
   
   /**
+   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#extend(de.willuhn.jameica.gui.util.Container)
+   */
+  @Override
+  protected void extend(Container container) throws Exception
+  {
+    super.extend(container);
+
+    if (this.usb)
+      container.addInput(this.getAutoContinue());
+  }
+  
+  /**
    * Ueberschrieben, um Abwaertskompatibilitaet zu Jameica 2.8.0 herzustellen.
    * Dort war es noch nicht moeglich, das Passwort per Code zu setzen.
    * @param password das zu setzende Passwort.
@@ -285,11 +326,16 @@ public class ChipTANDialog extends TANDialog
         // Checken, ob es das Passwort-Eingabefeld schon als Member in der Klasse gibt
         try
         {
-          Object input = JameicaCompat.get(this,null,"passwordInput");
+          Object input = JameicaCompat.get(ChipTANDialog.this,null,"passwordInput");
           
           // OK, das Feld gibts. Dann ist die Version aktuell.
           if (input != null)
+          {
+            boolean ok = settings.getBoolean(PARAM_AUTOCONTINUE,false);
+            if (password != null && password.length() > 0 && ok)
+              close();
             return;
+          }
 
           // Feld gibts nicht. Dann muessen wir das Eingabefeld suchen
           applyPassword(password,parent.getChildren());
