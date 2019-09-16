@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0832 Update auf HBCI4Java 3.1.11
   * NEW: 0831 Update auf HBCI4Java 3.1.10
   * NEW: 0830 Neue Option "Bei Erhalt der TAN automatisch fortsetzen" bei ChipTAN USB
 
