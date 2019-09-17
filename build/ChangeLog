@@ -1,4 +1,4 @@
-2019-09-16 Version 2.8.17
+2019-09-17 Version 2.8.18
 
   * NEW: 0837 Update auf HBCI4Java 3.1.13
   * CHG: 0836 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/9813da9a9898eadc65f07fa8724c3079502863cc
@@ -6,7 +6,7 @@
   * NEW: 0834 Update auf HBCI4Java 3.1.12
   * NEW: 0833 Update auf HBCI4Java 3.1.12-SNAPSHOT
 
-2019-09-17 Version 2.8.17
+2019-09-16 Version 2.8.17
 
   * NEW: 0832 Update auf HBCI4Java 3.1.11
   * NEW: 0831 Update auf HBCI4Java 3.1.10
