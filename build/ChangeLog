@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0836 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/9813da9a9898eadc65f07fa8724c3079502863cc
   * BUG: 0835 Klickt man bei einem neu angelegten ChipTAN-USB-tauglichen Bankzugang direkt nach dem Anlegen nochmal auf Speichern, wurde ein Fehler angezeigt, weil die Checkbox "Kartenleser via USB..." noch fehlt
   * NEW: 0834 Update auf HBCI4Java 3.1.12
   * NEW: 0833 Update auf HBCI4Java 3.1.12-SNAPSHOT
