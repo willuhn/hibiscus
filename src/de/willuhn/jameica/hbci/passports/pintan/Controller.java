@@ -612,11 +612,19 @@ public class Controller extends AbstractControl
       if (secMech != null && secMech.useUSB())
       {
         CheckboxInput check = this.getChipTANUSB();
-        Button button = (Button)check.getControl();
-        if (button != null && !button.isDisposed())
+        try
         {
-          boolean gray = button.getGrayed();
-          config.setChipTANUSB((Boolean) (gray ? null : check.getValue()));
+          Button button = (Button)check.getControl();
+          if (button != null && !button.isDisposed())
+          {
+            boolean gray = button.getGrayed();
+            config.setChipTANUSB((Boolean) (gray ? null : check.getValue()));
+          }
+        }
+        catch (IllegalArgumentException e)
+        {
+          // Das kann passieren, wenn der Bankzugang ganz neu eingerichtet wurde. Dann fehlt die Checkbox
+          // noch. Daher tolerieren wir den Fehler
         }
       }
 
