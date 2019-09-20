@@ -19,7 +19,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Properties;
 
 import org.kapott.hbci.callback.HBCICallback;
@@ -76,7 +75,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "3.1.13";
+  private final static String HBCI4JAVA_VERSION = "3.1.14";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
@@ -231,11 +230,11 @@ public class HBCI extends AbstractPlugin
       // Die Schluesseldateien lassen wir mal noch auf dem Legacy-Format. Denn wenn wir da einen Fehler haben, geht die kaputt
       this.hbciProps.put("passport.format.HBCIPassportRDHNew", "LegacyFormat");
       
-      if (Objects.equals(v.getSuffix(),"nightly"))
-      {
-        Logger.info("enable feature ");
-        this.hbciProps.put("feature", "true");
-      }
+//      if (Objects.equals(v.getSuffix(),"nightly"))
+//      {
+//        Logger.info("enable feature PINTAN_FASTSETUP");
+//        this.hbciProps.put("feature.PINTAN_FASTSETUP", "true");
+//      }
 
       //////////////////////////////////
       // Log-Level
