@@ -24,6 +24,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passports.rdh.InsertKeyDialog;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
@@ -254,6 +255,8 @@ public class HBCI4JavaFormat implements KeyFormat
       if (oce != null)
         throw oce;
 
+      DialogFactory.clearPINCache(null);
+      
       ApplicationException ae = (ApplicationException) HBCIProperties.getCause(e,ApplicationException.class);
       if (ae != null)
         throw ae;
