@@ -32,7 +32,7 @@ public class HBCIVariantChipcard implements HBCIVariant
   @Override
   public String getName()
   {
-    return i18n.tr("Chipkarte");
+    return i18n.tr("DDV-Chipkarte");
   }
 
   /**
@@ -44,7 +44,7 @@ public class HBCIVariantChipcard implements HBCIVariant
     InfoPanel info = new InfoPanel();
     info.setTitle(this.getName());
     info.setText(i18n.tr("Verwenden Sie dieses Verfahren, wenn Sie eine spezielle HBCI-Chipkarte besitzen."));
-    info.setComment(i18n.tr("Sie benötigen hierfür zusätzlich ein Chipkarten-Lesegerät mit USB-Anschluss."));
+    info.setComment(i18n.tr("Sie benötigen hierfür zusätzlich ein Chipkarten-Lesegerät mit USB-Anschluss.\nFalls Sie ChipTAN USB nutzen möchten, wählen Sie stattdessen PIN/TAN."));
     info.setUrl("http://www.willuhn.de/wiki/doku.php?id=support:list:kartenleser");
     info.setIcon("gcr-smart-card.png");
     return info;

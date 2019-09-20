@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.gui.util.Container;
@@ -37,7 +38,7 @@ public class HBCIVariantPinTanStep1 extends AbstractHBCIAccountView
   @Override
   public void bind() throws Exception
   {
-    GUI.getView().setTitle(i18n.tr("Neuer FinTS/HBCI-Bankzugang PIN/TAN..."));
+    GUI.getView().setTitle(i18n.tr("Neuer FinTS/HBCI-Bankzugang PIN/TAN - Schritt 1 von 3"));
 
     final HBCIVariantPinTanController control = this.getController(HBCIVariantPinTanController.class);
 
@@ -55,17 +56,14 @@ public class HBCIVariantPinTanStep1 extends AbstractHBCIAccountView
     
     final Input bank    = control.getBank();
     final Input url     = control.getURL();
-    final Input version = control.getVersion();
     cs.addPart(bank);
     cs.addPart(url);
-    
-    if (version != null)
-      cs.addPart(version);
     
     bank.getControl().addListener(SWT.KeyUp,control.getStep1Listener());
     url.getControl().addListener(SWT.KeyUp,control.getStep1Listener());
     
     ButtonArea buttons = new ButtonArea();
+    buttons.addButton(new Back());
     buttons.addButton(control.getStep1Button());
     buttons.paint(comp);
   }

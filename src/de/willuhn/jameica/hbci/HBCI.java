@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.kapott.hbci.callback.HBCICallback;
@@ -229,6 +230,12 @@ public class HBCI extends AbstractPlugin
 
       // Die Schluesseldateien lassen wir mal noch auf dem Legacy-Format. Denn wenn wir da einen Fehler haben, geht die kaputt
       this.hbciProps.put("passport.format.HBCIPassportRDHNew", "LegacyFormat");
+      
+      if (Objects.equals(v.getSuffix(),"nightly"))
+      {
+        Logger.info("enable feature ");
+        this.hbciProps.put("feature", "true");
+      }
 
       //////////////////////////////////
       // Log-Level
