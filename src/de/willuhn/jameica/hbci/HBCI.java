@@ -19,10 +19,12 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.callback.HBCICallbackConsole;
+import org.kapott.hbci.manager.Feature;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.hbci.gui.CustomDateFormat;
@@ -230,11 +232,11 @@ public class HBCI extends AbstractPlugin
       // Die Schluesseldateien lassen wir mal noch auf dem Legacy-Format. Denn wenn wir da einen Fehler haben, geht die kaputt
       this.hbciProps.put("passport.format.HBCIPassportRDHNew", "LegacyFormat");
       
-//      if (Objects.equals(v.getSuffix(),"nightly"))
-//      {
-//        Logger.info("enable feature PINTAN_FASTSETUP");
-//        this.hbciProps.put("feature.PINTAN_FASTSETUP", "true");
-//      }
+      if (Objects.equals(v.getSuffix(),"nightly"))
+      {
+        Logger.info("enable feature PINTAN_FASTSETUP");
+        Feature.PINTAN_FASTSETUP.setEnabled(true);
+      }
 
       //////////////////////////////////
       // Log-Level
