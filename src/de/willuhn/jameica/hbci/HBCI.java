@@ -77,7 +77,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "3.1.14";
+  private final static String HBCI4JAVA_VERSION = "3.1.15";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
@@ -232,12 +232,6 @@ public class HBCI extends AbstractPlugin
       // Die Schluesseldateien lassen wir mal noch auf dem Legacy-Format. Denn wenn wir da einen Fehler haben, geht die kaputt
       this.hbciProps.put("passport.format.HBCIPassportRDHNew", "LegacyFormat");
       
-      if (Objects.equals(v.getSuffix(),"nightly"))
-      {
-        Logger.info("enable feature PINTAN_FASTSETUP");
-        Feature.PINTAN_FASTSETUP.setEnabled(true);
-      }
-
       //////////////////////////////////
       // Log-Level
       int logLevel = HBCIUtils.LOG_INFO; // Default
@@ -297,6 +291,13 @@ public class HBCI extends AbstractPlugin
       //////////////////////////////////
 
       HBCIUtils.init(this.hbciProps,this.callback);
+      
+      if (Objects.equals(v.getSuffix(),"nightly"))
+      {
+        Logger.info("enable feature PINTAN_FASTSETUP");
+        Feature.PINTAN_FASTSETUP.setEnabled(true);
+      }
+
       final String version = HBCIUtils.version();
       if (version != null && !HBCI4JAVA_VERSION.equals(version))
       {
