@@ -56,7 +56,6 @@
   <navigation>
     <item id="hibiscus.navi"                                 name="Hibiscus"                 icon-close="folder.png" icon-open="folder-open.png">
       <item id="hibiscus.navi.foo"                           name="Neuer Bank-Zugang"        icon-close="system-users.png"                action="de.willuhn.jameica.hbci.accounts.hbci.action.HBCIAccountNew" />
-      <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"             icon-close="system-users.png"                action="de.willuhn.jameica.hbci.gui.action.PassportList" />
       <item id="hibiscus.navi.accounts"                      name="Konten"                   icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.umsatz"                        name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugList" />
       <item id="hibiscus.navi.kontoauszug"                   name="Elektr. Kontoauszüge"     icon-close="application-pdf.png"             action="de.willuhn.jameica.hbci.gui.action.KontoauszugPdfList" />
