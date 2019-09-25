@@ -19,12 +19,10 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Properties;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.callback.HBCICallbackConsole;
-import org.kapott.hbci.manager.Feature;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.hbci.gui.CustomDateFormat;
@@ -77,7 +75,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "3.1.16";
+  private final static String HBCI4JAVA_VERSION = "3.1.17";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
@@ -292,12 +290,6 @@ public class HBCI extends AbstractPlugin
 
       HBCIUtils.init(this.hbciProps,this.callback);
       
-      if (Objects.equals(v.getSuffix(),"nightly"))
-      {
-        Logger.info("enable feature PINTAN_FASTSETUP");
-        Feature.PINTAN_FASTSETUP.setEnabled(true);
-      }
-
       final String version = HBCIUtils.version();
       if (version != null && !HBCI4JAVA_VERSION.equals(version))
       {

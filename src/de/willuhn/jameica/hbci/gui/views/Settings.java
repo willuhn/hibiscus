@@ -18,6 +18,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
@@ -73,6 +74,13 @@ public class Settings extends AbstractView implements Extendable
     ButtonArea umsatzButtons = new ButtonArea();
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew(),null,false,"text-x-generic.png");
     umsatztypes.addButtonArea(umsatzButtons);
+
+    final TablePart experiments = control.getExperiments();
+    if (experiments != null)
+    {
+      TabGroup tab = new TabGroup(getTabFolder(),i18n.tr("Experimentelle Funktionen"),true);
+      tab.addPart(experiments);
+    }
 
     ButtonArea buttons = new ButtonArea();
 		buttons.addButton(i18n.tr("&Speichern"),new Action()

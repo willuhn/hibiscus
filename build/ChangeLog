@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0842 Neuer Reiter "Experimentelle Funktionen" in den Einstellungen beim Nightly-Build
+  * NEW: 0841 Update auf HBCI4Java 3.1.17
   * NEW: 0840 Update auf HBCI4Java 3.1.16
   * NEW: 0839 Update auf HBCI4Java 3.1.15
   * NEW: 0838 Update auf HBCI4Java 3.1.14

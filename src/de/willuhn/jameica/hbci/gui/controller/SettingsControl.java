@@ -10,27 +10,36 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.experiments.Feature;
+import de.willuhn.jameica.hbci.experiments.FeatureService;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -57,7 +66,9 @@ public class SettingsControl extends AbstractControl
   private UmsatzTypTree umsatzTypTree     = null;
 
   private Input ueberweisungLimit         = null;
-
+  
+  private TablePart experiments           = null;
+  
   /**
    * @param view
    */
@@ -210,6 +221,53 @@ public class SettingsControl extends AbstractControl
     });
     return storePin;
   }
+  
+  /**
+   * Liefert eine Tabelle zum Einstellen experimenteller Funktionen im Nightly-Build.
+   * @return eine Tabelle zum Einstellen experimenteller Funktionen im Nightly-Build.
+   * Liefert NULL, wenn es kein Nightly-Build ist.
+   * @throws RemoteException
+   */
+  public TablePart getExperiments() throws RemoteException
+  {
+    if(this.experiments != null)
+      return this.experiments;
+    
+    final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    final FeatureService fs = bs.get(FeatureService.class);
+    if (!fs.enabled())
+      return null;
+    
+    this.experiments = new TablePart(null);
+    this.experiments.setCheckable(true);
+    this.experiments.addColumn(i18n.tr("Name"),"name");
+    this.experiments.addColumn(i18n.tr("Beschreibung"),"description");
+    this.experiments.setRememberColWidths(true);
+    this.experiments.setRememberOrder(true);
+    this.experiments.removeFeature(FeatureSummary.class);
+    
+    for (Feature f:fs.getFeatures())
+    {
+      this.experiments.addItem(f);
+    }
+    
+    this.experiments.setFormatter(new TableFormatter() {
+      
+      public void format(TableItem item)
+      {
+        if (item == null)
+          return;
+        
+        Feature f = (Feature) item.getData();
+        if (f == null)
+          return;
+        
+        item.setChecked(fs.isEnabled(f));
+      }
+    });
+    
+    return this.experiments;
+  }
 
   /**
 	 * Eingabe-Feld fuer ein Limit bei Ueberweisungen.
@@ -274,7 +332,29 @@ public class SettingsControl extends AbstractControl
     if (!storeEnabled) DialogFactory.clearPINStore(null);
     
     Double limit = (Double) getUeberweisungLimit().getValue();
-		Settings.setUeberweisungLimit(limit == null ? 0.0d : limit.doubleValue());
+
+    Settings.setUeberweisungLimit(limit == null ? 0.0d : limit.doubleValue());
+		
+    final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    final FeatureService fs = bs.get(FeatureService.class);
+		if (fs.enabled())
+		{
+		  try
+		  {
+	      final TablePart table = this.getExperiments();
+	      final List<Feature> all = table.getItems(false);
+	      final List<Feature> selected = table.getItems(true);
+	      for (Feature f:all)
+	      {
+	        fs.setEnabled(f,selected.contains(f));
+	      }
+		  }
+		  catch (Exception e)
+		  {
+		    Logger.error("unable to store feature",e);
+		    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Speichern der experimentellen Features fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
+		  }
+		}
 
 		GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
   }
