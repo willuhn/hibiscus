@@ -111,7 +111,29 @@ public class PtSecMech
     
     return result;
   }
+
+  /**
+   * Erzeugt ein PTSechMech-Objekt aus dem Text.
+   * Hier wird auch toleriert, wenn nur die Nummer angegeben ist.
+   * @param text der Text mit dem TAN-Verfahren.
+   * @return das PTSechMech-Objekt oder NULL, wenn kein Text angegeben wurde.
+   */
+  public static PtSecMech createFailsafe(String text)
+  {
+    if (text == null || text.length() == 0)
+      return null;
+
+    int pos = text.indexOf(":");
+    if (pos > 0)
+      return create(text);
+
+    PtSecMech result = new PtSecMech();
+    result.id   = text;
+    result.name = i18n.tr("TAN-Verfahren"); // Dummy-Name
     
+    return result;
+  }
+
   /**
    * Liefert die ID des TAN-Verfahrens.
    * @return id die ID des TAN-Verfahrens.
