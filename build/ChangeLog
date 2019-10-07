@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0844 Bei der Postbank konnte es passieren, dass ein Auftrag fälschlicherweise als ausgeführt markiert wird, wenn die Übertragung im TAN-Dialog abgebrochen wurde
   * NEW: 0843 Update auf HBCI4Java 3.1.18
   * NEW: 0842 Neuer Reiter "Experimentelle Funktionen" in den Einstellungen beim Nightly-Build
   * NEW: 0841 Update auf HBCI4Java 3.1.17

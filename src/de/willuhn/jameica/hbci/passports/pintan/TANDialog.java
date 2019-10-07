@@ -10,13 +10,17 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -65,9 +69,9 @@ public class TANDialog extends PasswordDialog
     String s = null;
     try
     {
-      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
-      Konto konto = session != null ? session.getKonto() : null;
+      final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      final SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+      final Konto konto = session != null ? session.getKonto() : null;
       
       if (konto != null)
       {
@@ -75,6 +79,33 @@ public class TANDialog extends PasswordDialog
         String name = HBCIProperties.getNameForBank(konto.getBLZ());
         if (name != null && name.length() > 0)
           s += " [" + name + "]";
+      }
+      
+      if (session != null)
+      {
+        this.addCloseListener(new Listener() {
+          
+          @Override
+          public void handleEvent(Event event)
+          {
+            if (event.detail == SWT.CANCEL)
+            {
+              // TAN-Dialog wurde abgebrochen
+              if (context != null)
+              {
+                try
+                {
+                  Logger.info("mark job as tan cancelled: " + HBCIContext.toString(context));
+                  MetaKey.TAN_CANCEL.set(context,HBCI.LONGDATEFORMAT.format(new Date()));
+                }
+                catch (Exception e)
+                {
+                  Logger.error("unable to set tan cancel flag in object",e);
+                }
+              }
+            }
+          }
+        });
       }
     }
     catch (Exception e)
@@ -111,7 +142,7 @@ public class TANDialog extends PasswordDialog
 	}
   
   /**
-   * Speichert den zugehoerigen Auftrag, insofrn ermittelbar.
+   * Speichert den zugehoerigen Auftrag, insofern ermittelbar.
    * @param context der zugehoerige Auftrag.
    */
   public void setContext(HibiscusDBObject context)

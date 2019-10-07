@@ -100,7 +100,12 @@ public enum MetaKey
   /**
    * Legt fest, ob CAMT fuer den Umsatz-Abruf verwendet werden soll.
    */
-  UMSATZ_CAMT("umsatz.camt","CAMT-Format für Umsatz-Abruf verwenden",null);
+  UMSATZ_CAMT("umsatz.camt","CAMT-Format für Umsatz-Abruf verwenden",null),
+  
+  /**
+   * TAN-Eingabe abgebrochen
+   */
+  TAN_CANCEL("sync.tan-cancel","TAN-Eingabe abgebrochen",null),
 
   ;
 

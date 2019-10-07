@@ -27,6 +27,7 @@ import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Value;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
@@ -279,14 +280,23 @@ public abstract class AbstractHBCIJob
       }
     }
     
-    Logger.info("execution state: tan needed: " + tanNeeded + ", executed: " + executed + ", success status: " + successStatus + ", error status: " + errorStatus);
-
+    HibiscusDBObject ctx = this.getContext();
+    boolean tanCancel = ctx != null && MetaKey.TAN_CANCEL.get(ctx) != null;
+    
+    Logger.info("execution state: tan needed: " + tanNeeded + ", tan-cancel: " + tanCancel + ", executed: " + executed + ", success status: " + successStatus + ", error status: " + errorStatus);
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
     ProgressMonitor monitor = session.getProgressMonitor();
     
     this.logMessages(status.getWarnings(),session.getWarnings(), monitor);
     // this.logMessages(status.getErrors(),session.getErrors(), monitor); Geschieht bereits in HBCICallbackSWT, weil es Fehlermeldung gibt, die keinen GV-Bezug haben
+
+    if (tanCancel)
+    {
+      Logger.warn("hbci job cancelled within tan dialog by user, mark job as cancelled [status code: " + status.getStatusCode() + ", session status: " + session.getStatus() + "]");
+      markCancelled();
+      return;
+    }
 
     final String errorText = this.getErrorText();
 
