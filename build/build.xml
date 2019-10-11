@@ -101,10 +101,12 @@
   </target>
 
   <target depends="jar" name="signjar" description="signs the zip files">
-    <loadfile property="storepass" srcFile="${signjar.storepass}" />
+ <!--
+  	<loadfile property="storepass" srcFile="${signjar.storepass}" />
     <exec executable="jarsigner" failonerror="true" timeout="60000">
       <arg line="-verbose -keystore ${signjar.keystore} -storepass ${storepass} ${project.zipdir}/${define.jarfilename} &quot;${signjar.alias}&quot;" />
     </exec>
+ -->
   </target>
 
   <target depends="jar" name="zip" description="generates the zip files">
@@ -156,6 +158,7 @@
     </zip>
 
   </target>
+
   <target depends="signjar,zip" name="signzip" description="generates a signed zip file" />
 
 
@@ -224,12 +227,14 @@
 
   	<!-- Die wird fuer jameica.update zum Pruefen des Downloads verwendet -->
     <echo message="Creating SHA1 signatures" />
+  	<!-- 
     <loadfile property="storepass" srcFile="${signjar.storepass}" />
+ 
     <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
       <classpath refid="compilepath" />
       <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias &quot;${signjar.alias}&quot; -keypass ${storepass} -file ${define.zipfilename} -sig ${define.zipfilename}.sha1"/>
     </java>
-    
+      --> 
   </target>
 
 	<target name="clean" description="cleanup">

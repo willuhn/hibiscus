@@ -14,7 +14,7 @@
   <requires jameica="2.9.0+" />
 
   <menu>
-    <item id="hibiscus.menu"                             name="&amp;Hibiscus">
+    <item id="hibiscus.menu"                             name="&amp;Bank/Konto">
       <item id="hibiscus.menu.transfer"                  name="&amp;Zahlungsverkehr">
         <item id="hibiscus.menu.transfer.sepaueb"        name="Neue Überweisung..."       shortcut="ALT+U"    icon="ueberweisung.png"                action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew" />
         <item id="hibiscus.menu.transfer.sepalast"       name="Neue Lastschrift..."       shortcut="ALT+T"    icon="lastschrift.png"                 action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew" />
@@ -47,14 +47,14 @@
     </item>
   </menu>
 
-  <classfinder>
+  <classfinder>	
     <include>hibiscus\.jar</include>
     <include>.*\.class</include>
     <include>ext_.*\.jar</include>
   </classfinder>
 
   <navigation>
-    <item id="hibiscus.navi"                                 name="Hibiscus"                 icon-close="folder.png" icon-open="folder-open.png">
+    <item id="hibiscus.navi"                                 name="Bank/Konto"                 icon-close="folder.png" icon-open="folder-open.png">
       <item id="hibiscus.navi.passports"                     name="Bank-Zugänge"             icon-close="system-users.png"                action="de.willuhn.jameica.hbci.gui.action.PassportList" />
       <item id="hibiscus.navi.accounts"                      name="Konten"                   icon-close="system-file-manager.png"         action="de.willuhn.jameica.hbci.gui.action.KontoList" />
       <item id="hibiscus.navi.umsatz"                        name="Umsätze"                  icon-close="emblem-documents.png"            action="de.willuhn.jameica.hbci.gui.action.KontoauszugList" />
@@ -73,7 +73,11 @@
         <item id="hibiscus.navi.reporting.saldochart"        name="Saldo im Verlauf"         icon-close="office-chart-area.png"           action="de.willuhn.jameica.hbci.gui.action.SaldoChart" />
         <item id="hibiscus.navi.reporting.sparquote"         name="Sparquote"                icon-close="office-chart-area-focus-peak-node.png" action="de.willuhn.jameica.hbci.gui.action.SparQuote" />
       </item>
+
+    <!-- donate menu remove $AT
       <item id="hibiscus.navi.donate"                        name="Spenden"                  icon-close="emblem-special.png"              action="de.willuhn.jameica.hbci.gui.action.DonateView" />
+         -->
+         
     </item>
   </navigation>
 
