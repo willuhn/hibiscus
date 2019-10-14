@@ -1,5 +1,8 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0848 Update auf HBCI4Java 3.1.21
+  * NEW: 0847 Funktion "Synchronisieren" im Bankzugang
+  * NEW: 0846 Update auf HBCI4Java 3.1.20
   * NEW: 0845 Update auf HBCI4Java 3.1.19
   * BUG: 0844 Bei der Postbank konnte es passieren, dass ein Auftrag fälschlicherweise als ausgeführt markiert wird, wenn die Übertragung im TAN-Dialog abgebrochen wurde
   * NEW: 0843 Update auf HBCI4Java 3.1.18

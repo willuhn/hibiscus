@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.action.PassportSync;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.AccountContainerDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
@@ -490,6 +491,33 @@ public class Controller extends AbstractControl
     }
   }
   
+  /**
+   * Synchronisiert den Bankzugang neu.
+   */
+  public synchronized void handleSync()
+  {
+    try
+    {
+      if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
+        return;
+
+      new PassportSync().handleAction(new PassportHandleImpl(getConfig()));
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info("operation cancelled");
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while testing passport",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Synchronisieren des Bank-Zugangs: {}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+  }
+
   /**
    * Speichert die Einstellungen.
    * @return true, wenn die Einstellungen gespeichert werden konnten.

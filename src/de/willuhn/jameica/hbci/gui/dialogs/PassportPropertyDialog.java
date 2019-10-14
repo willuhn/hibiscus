@@ -10,11 +10,7 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import java.util.Properties;
-import java.util.Set;
-
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
@@ -23,13 +19,8 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.PassportDeleteBPD;
 import de.willuhn.jameica.hbci.gui.parts.PassportPropertyList;
-import de.willuhn.jameica.hbci.server.BPDUtil;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
-import de.willuhn.jameica.hbci.server.VersionUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -89,53 +80,7 @@ public class PassportPropertyDialog extends AbstractDialog
           if (!Application.getCallback().askUser(s))
             return;
           
-          Logger.info("deleting BPD");
-          passport.clearBPD();
-          
-          // Das triggert beim naechsten Verbindungsaufbau
-          // HBCIHandler.<clinit>
-          // -> HBCIHandler.registerUser()
-          // -> HBCIUser.register()
-          // -> HBCIUser.updateUserData()
-          // -> HBCIUser.fetchSysId() - und das holt die BPD beim naechsten mal ueber einen nicht-anonymen Dialog
-          AbstractHBCIPassport p = (AbstractHBCIPassport) passport;
-          p.syncSysId();
-          
-          // Ausserdem muessen wir noch sicherstellen, dass die UPD-Versionen 0 ist damit *beide*
-          // beim naechsten Mal definitiv neu abgerufen werden
-          Properties upd = p.getUPD();
-          if (upd != null)
-            upd.setProperty("UPA.version","0");
-          
-          passport.saveChanges();
-
-          // Caches loeschen
-          Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
-          for (String customerId:customerIds)
-          {
-            try
-            {
-              DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
-              DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
-            }
-            catch (Exception e)
-            {
-              // Auch wenn das fehlschlaegt, soll der Rest trotzdem durchgefuehrt werden
-              Logger.error("error while clearing BPD/UPD cache",e);
-            }
-          }
-
-          // Versionsnummer Caches loeschen, um das Neubefuellen des Cache zu forcieren
-          String user = passport.getUserId();
-          if (user != null && user.length() > 0)
-          {
-            VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + user);
-            VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + user);
-            
-            // Wir markieren ausserdem auch noch den Cache als expired
-            BPDUtil.expireCache(passport,Prefix.BPD);
-            BPDUtil.expireCache(passport,Prefix.UPD);
-          }
+          new PassportDeleteBPD().handleAction(passport);
 
           // Aus der Tabelle in der Anzeige loeschen
           table.clearBPD();
