@@ -12,14 +12,12 @@ package de.willuhn.jameica.hbci.experiments;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
@@ -56,7 +54,7 @@ public class FeatureService
           this.features.add(f);
           
           // Aktivieren/Deaktivieren - je nach gespeichertem Zustand
-          final boolean state = this.settings.getBoolean(f.getName(),f.getDefault());
+          final boolean state = this.isEnabled(f);
           Logger.info("  " + c.getSimpleName() + ": " + state);
           f.setEnabled(state);
         }
@@ -88,6 +86,10 @@ public class FeatureService
    */
   public boolean isEnabled(Feature f)
   {
+    // Wenn der Feature-Service inaktiv ist, liefern wir generell die Default-Werte
+    if (!this.enabled())
+      return f.getDefault();
+    
     return this.settings.getBoolean(f.getName(),f.getDefault());
   }
   
@@ -113,7 +115,16 @@ public class FeatureService
    */
   public boolean enabled()
   {
-    Version version = Application.getPluginLoader().getManifest(HBCI.class).getVersion();
-    return version != null && Objects.equals(version.getSuffix(),"nightly");
+    return this.settings.getBoolean("enabled",false);
+  }
+  
+  /**
+   * Legt fest, ob die experimentellen Features verfuegbar sein sollen.
+   * @param b true, wenn die experimentellen Features verfuegbar sein sollen.
+   */
+  public void setEnabled(boolean b)
+  {
+    Logger.info("feature service enabled: " + b);
+    this.settings.setAttribute("enabled",b);
   }
 }

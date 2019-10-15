@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0849 Experimentelle Funktionen nicht mehr an Nightly-Build gekoppelt
   * NEW: 0848 Update auf HBCI4Java 3.1.21
   * NEW: 0847 Funktion "Synchronisieren" im Bankzugang
   * NEW: 0846 Update auf HBCI4Java 3.1.20

@@ -17,8 +17,9 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
@@ -43,28 +44,32 @@ public class Settings extends AbstractView implements Extendable
    * Der Tabfolder.
    */
   private TabFolder folder = null;
-
+  
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-
 		GUI.getView().setTitle(i18n.tr("Einstellungen"));
+
 		final SettingsControl control = new SettingsControl(this);
 		
 		// Grund-Einstellungen
     TabGroup system = new TabGroup(getTabFolder(),i18n.tr("Grundeinstellungen"));
+    system.addHeadline(i18n.tr("Sicherheit"));
     system.addCheckbox(control.getCachePin(),i18n.tr("PIN-Eingaben für die aktuelle Sitzung zwischenspeichern"));
     system.addCheckbox(control.getStorePin(),i18n.tr("PIN-Eingaben permanent speichern (nur bei PIN/TAN)"));
+    system.addHeadline(i18n.tr("Kontrolle"));
     system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern und Bankleitzahlen mittels Prüfsumme testen"));
     system.addCheckbox(control.getKontoCheckExcludeAddressbook(),i18n.tr("Außer Bankverbindungen des Adressbuches"));
     system.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
-		
+
     // Farb-Einstellungen
     TabGroup ui = new TabGroup(getTabFolder(),i18n.tr("Benutzeroberfläche"));
+    ui.addHeadline(i18n.tr("Farben"));
     ui.addLabelPair(i18n.tr("Textfarbe von Sollbuchungen"),control.getBuchungSollForeground());
     ui.addLabelPair(i18n.tr("Textfarbe von Habenbuchungen"),control.getBuchungHabenForeground());
+    ui.addHeadline(i18n.tr("Formatierung"));
     ui.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen anzeigen"));
     ui.addCheckbox(control.getBoldValues(),i18n.tr("Geld-Beträgen fett gedruckt anzeigen"));
 
@@ -74,12 +79,16 @@ public class Settings extends AbstractView implements Extendable
     ButtonArea umsatzButtons = new ButtonArea();
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew(),null,false,"text-x-generic.png");
     umsatztypes.addButtonArea(umsatzButtons);
-
-    final TablePart experiments = control.getExperiments();
-    if (experiments != null)
+    
+    TabGroup extended = new TabGroup(getTabFolder(),"Erweitert",true);
+    extended.addHeadline(i18n.tr("Experimentelle Funktionen"));
+    extended.addText(i18n.tr("Wenn die experimentellen Funktionen nicht aktiviert sind, gelten die Vorgabewerte.") + "\n",true);
+    extended.addInput(control.getExFeatures());
+    extended.addSeparator();
+    for (CheckboxInput c:control.getExperiments())
     {
-      TabGroup tab = new TabGroup(getTabFolder(),i18n.tr("Experimentelle Funktionen"),true);
-      tab.addPart(experiments);
+      extended.addInput(c);
+      extended.addText((String) c.getData("description") + "\n",true, Color.COMMENT);
     }
 
     ButtonArea buttons = new ButtonArea();
@@ -96,7 +105,7 @@ public class Settings extends AbstractView implements Extendable
     if (lastActiveTab != null)
       getTabFolder().setSelection(lastActiveTab.intValue());
   }
-
+  
   /**
    * Liefert den Tab-Folder, in dem die einzelnen Module der Einstellungen
    * untergebracht sind.
@@ -120,7 +129,7 @@ public class Settings extends AbstractView implements Extendable
     // Wir merken uns das aktive Tab
     lastActiveTab = new Integer(getTabFolder().getSelectionIndex());
   }
-
+  
   /**
    * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
    */

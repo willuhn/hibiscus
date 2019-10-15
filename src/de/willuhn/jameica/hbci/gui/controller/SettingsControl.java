@@ -10,25 +10,22 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -66,8 +63,9 @@ public class SettingsControl extends AbstractControl
   private UmsatzTypTree umsatzTypTree     = null;
 
   private Input ueberweisungLimit         = null;
-  
-  private TablePart experiments           = null;
+
+  private CheckboxInput exFeatures        = null;
+  private List<CheckboxInput> experiments = null;
   
   /**
    * @param view
@@ -223,48 +221,61 @@ public class SettingsControl extends AbstractControl
   }
   
   /**
-   * Liefert eine Tabelle zum Einstellen experimenteller Funktionen im Nightly-Build.
-   * @return eine Tabelle zum Einstellen experimenteller Funktionen im Nightly-Build.
-   * Liefert NULL, wenn es kein Nightly-Build ist.
-   * @throws RemoteException
+   * Liefert eine Checkbox, mit der eingestellt werden kann, ob die experimentellen Features aktiv sein sollen.
+   * @return Checkbox.
    */
-  public TablePart getExperiments() throws RemoteException
+  public CheckboxInput getExFeatures()
   {
-    if(this.experiments != null)
+    if (this.exFeatures != null)
+      return this.exFeatures;
+
+    final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    final FeatureService fs = bs.get(FeatureService.class);
+
+    this.exFeatures = new CheckboxInput(fs.enabled());
+    this.exFeatures.setName(i18n.tr("Experimentelle Funktionen aktivieren"));
+    final Listener l = new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        boolean enabled = ((Boolean) getExFeatures().getValue()).booleanValue();
+        for (CheckboxInput c:getExperiments())
+        {
+          c.setEnabled(enabled);
+        }
+      }
+    };
+    this.exFeatures.addListener(l);
+    
+    l.handleEvent(null); // Einmal initial ausloesen
+    
+    return this.exFeatures;
+  }
+  
+  /**
+   * Liefert eine Liste mit Checkboxen zum Einstellen experimenteller Funktionen.
+   * @return eine Liste mit Checkboxen zum Einstellen experimenteller Funktionen.
+   * Liefert NULL, wenn es kein Nightly-Build ist.
+   */
+  public List<CheckboxInput> getExperiments()
+  {
+    if (this.experiments != null)
       return this.experiments;
     
     final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     final FeatureService fs = bs.get(FeatureService.class);
-    if (!fs.enabled())
-      return null;
     
-    this.experiments = new TablePart(null);
-    this.experiments.setCheckable(true);
-    this.experiments.addColumn(i18n.tr("Name"),"name");
-    this.experiments.addColumn(i18n.tr("Beschreibung"),"description");
-    this.experiments.setRememberColWidths(true);
-    this.experiments.setRememberOrder(true);
-    this.experiments.removeFeature(FeatureSummary.class);
+    this.experiments = new ArrayList<CheckboxInput>();
     
     for (Feature f:fs.getFeatures())
     {
-      this.experiments.addItem(f);
+      CheckboxInput c = new CheckboxInput(fs.isEnabled(f));
+      c.setData("feature",f);
+      c.setData("description",f.getDescription() + "\n\n" + i18n.tr("Vorgabewert: {0}",i18n.tr(f.getDefault() ? "aktiviert" : "deaktiviert")));
+      c.setName(f.getName());
+      this.experiments.add(c);
     }
-    
-    this.experiments.setFormatter(new TableFormatter() {
-      
-      public void format(TableItem item)
-      {
-        if (item == null)
-          return;
-        
-        Feature f = (Feature) item.getData();
-        if (f == null)
-          return;
-        
-        item.setChecked(fs.isEnabled(f));
-      }
-    });
     
     return this.experiments;
   }
@@ -337,16 +348,17 @@ public class SettingsControl extends AbstractControl
 		
     final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     final FeatureService fs = bs.get(FeatureService.class);
-		if (fs.enabled())
+    final boolean ex = ((Boolean) this.getExFeatures().getValue()).booleanValue();
+    boolean changed = ex != fs.enabled();
+    fs.setEnabled(ex);
+		if (ex)
 		{
 		  try
 		  {
-	      final TablePart table = this.getExperiments();
-	      final List<Feature> all = table.getItems(false);
-	      final List<Feature> selected = table.getItems(true);
-	      for (Feature f:all)
+	      for (CheckboxInput c:this.getExperiments())
 	      {
-	        fs.setEnabled(f,selected.contains(f));
+	        Feature f = (Feature) c.getData("feature");
+	        fs.setEnabled(f,(Boolean) c.getValue());
 	      }
 		  }
 		  catch (Exception e)
@@ -355,6 +367,17 @@ public class SettingsControl extends AbstractControl
 		    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Speichern der experimentellen Features fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
 		  }
 		}
+    if (changed)
+    {
+      try
+      {
+        GUI.getCurrentView().reload();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to reload view",e);
+      }
+    }
 
 		GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
   }
