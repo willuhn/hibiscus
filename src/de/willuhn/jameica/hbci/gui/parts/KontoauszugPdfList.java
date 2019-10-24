@@ -135,6 +135,8 @@ public class KontoauszugPdfList extends TablePart
     this.addColumn(new KontoColumn());
     this.addColumn(i18n.tr("Jahr"),"jahr");
     this.addColumn(i18n.tr("Nummer"),"nummer");
+    this.addColumn(i18n.tr("Von"),"von",df);
+    this.addColumn(i18n.tr("Bis"),"bis",df);
     this.addColumn(i18n.tr("Erstellt am"),"erstellungsdatum",df);
     this.addColumn(i18n.tr("Abgerufen am"),"ausgefuehrt_am",df);
     this.addColumn(i18n.tr("Quittiert am"),"quittiert_am",df);
@@ -189,8 +191,8 @@ public class KontoauszugPdfList extends TablePart
     {
       Container left = new SimpleContainer(cols.getComposite());
       left.addInput(this.getKontoAuswahl());
-      left.addInput(this.getUnread());
       left.addInput(this.getInclusiveFilter());
+      left.addInput(this.getUnread());
     }
     
     {

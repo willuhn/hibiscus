@@ -512,15 +512,20 @@ public class KontoauszugPdfUtil
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator it = service.createList(Kontoauszug.class);
+
+    final boolean haveFrom = from != null;
+    final boolean haveTo = to != null;
+    
+    java.sql.Date f = haveFrom ? new java.sql.Date(DateUtil.startOfDay(from).getTime()) : null;
+    java.sql.Date t = haveTo ? new java.sql.Date(DateUtil.endOfDay(to).getTime()) : null;
     
     // Bei HKEKP in Segment-Version 1 wird gar kein Zeitraum mitgeliefert.
     // Daher nehmen wir dort das Abrufdatum
-    if(inclusive)
+    
+    if (inclusive && (haveFrom || haveTo)) // Wenigstens eines der beiden Daten muss vorhanden sein
     {
-      if(from != null && to != null)
+      if (haveFrom && haveTo)
       {
-        java.sql.Date f = new java.sql.Date(DateUtil.startOfDay(from).getTime());
-        java.sql.Date t = new java.sql.Date(DateUtil.endOfDay(to).getTime());
         it.addFilter("("
             + "(von >= ? AND von <= ?)"
             + " OR "
@@ -533,28 +538,26 @@ public class KontoauszugPdfUtil
             + "(von IS NULL AND bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ? AND ausgefuehrt_am <= ?)"
             + ")", f, t, f, t, f, t, f, t, f, t);
       }
-      else if(from != null)
+      else if (haveFrom)
       {
-        java.sql.Date f = new java.sql.Date(DateUtil.startOfDay(from).getTime());
+        // Kontoauszug beginnt wenigstens nach dem From-Datum
         it.addFilter("((bis >= ? OR erstellungsdatum >= ?) OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", f, f, f);
       }
       else
       {
-        java.sql.Date t = new java.sql.Date(DateUtil.startOfDay(to).getTime());
+        // Kontoauszug endet wenigstens vor dem To-Datum
         it.addFilter("((von <= ? OR erstellungsdatum <= ?) OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", t, t, t);        
       }
     }
     else 
     {
-      if (from != null)
+      if (haveFrom)
       {
-        java.sql.Date d = new java.sql.Date(DateUtil.startOfDay(from).getTime());
-        it.addFilter("(von >= ? OR erstellungsdatum >= ? OR (von IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", d, d, d);
+        it.addFilter("(von >= ? OR erstellungsdatum >= ? OR (von IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", f, f, f);
       }
-      if (to != null)
+      if (haveTo)
       {
-        java.sql.Date d = new java.sql.Date(DateUtil.endOfDay(to).getTime());
-        it.addFilter("(bis <= ? OR erstellungsdatum <= ? OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", d, d, d);
+        it.addFilter("(bis <= ? OR erstellungsdatum <= ? OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", t, t, t);
       }
     }
     
