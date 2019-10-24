@@ -540,12 +540,12 @@ public class KontoauszugPdfUtil
       }
       else if (haveFrom)
       {
-        // Kontoauszug beginnt wenigstens nach dem From-Datum
+        // Kontoauszug endet nach dem From-Datum
         it.addFilter("((bis >= ? OR erstellungsdatum >= ?) OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", f, f, f);
       }
       else if (haveTo)
       {
-        // Kontoauszug endet wenigstens vor dem To-Datum
+        // Kontoauszug beginnt wenigstens vor dem To-Datum
         it.addFilter("((von <= ? OR erstellungsdatum <= ?) OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", t, t, t);        
       }
     }
