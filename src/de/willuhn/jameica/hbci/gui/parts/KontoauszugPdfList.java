@@ -74,15 +74,16 @@ public class KontoauszugPdfList extends TablePart
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private MessageConsumer mc      = null;
+  private MessageConsumer mc            = null;
 
-  private KontoInput kontoAuswahl = null;
-  private Input from              = null;
-  private Input to                = null;
-  private RangeInput range        = null;
-  private CheckboxInput unread    = null;
+  private KontoInput kontoAuswahl       = null;
+  private Input from                    = null;
+  private Input to                      = null;
+  private RangeInput range              = null;
+  private CheckboxInput unread          = null;
+  private CheckboxInput inclusiveFilter = null;
 
-  private Listener listener       = null;
+  private Listener listener             = null;
 
   /**
    * ct.
@@ -189,6 +190,7 @@ public class KontoauszugPdfList extends TablePart
       Container left = new SimpleContainer(cols.getComposite());
       left.addInput(this.getKontoAuswahl());
       left.addInput(this.getUnread());
+      left.addInput(this.getInclusiveFilter());
     }
     
     {
@@ -308,6 +310,29 @@ public class KontoauszugPdfList extends TablePart
     this.unread.addListener(this.listener);
     return this.unread;
   }
+  
+  /**
+   * Liefert eine Checkbox, um auch nur teilweise im Zeitraum liegende Kontoauszuege anzuzeigen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getInclusiveFilter()
+  {
+    if (this.inclusiveFilter != null)
+      return this.inclusiveFilter;
+    
+    this.inclusiveFilter = new CheckboxInput(settings.getBoolean("kontoauszuege.filter.inclusivefilter",false));
+    this.inclusiveFilter.setName(i18n.tr("Auch nur teilweise im Zeitraum liegende Kontoauszüge anzeigen"));
+    this.inclusiveFilter.addListener(this.listener);
+    this.inclusiveFilter.addListener(new Listener()
+    {
+      @Override
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("kontoauszuege.filter.inclusivefilter", (Boolean) getInclusiveFilter().getValue());
+      }
+    });
+    return this.inclusiveFilter;
+  }
 
   /**
    * Aktualisiert die Tabelle der angezeigten Daten.
@@ -324,6 +349,7 @@ public class KontoauszugPdfList extends TablePart
       final Date dfrom     = (Date) getFrom().getValue();
       final Date dto       = (Date) getTo().getValue();
       final Boolean unread = (Boolean) getUnread().getValue();
+      final Boolean inclusiveFilter = (Boolean) getInclusiveFilter().getValue();
       
       if (!force)
       {
@@ -349,7 +375,7 @@ public class KontoauszugPdfList extends TablePart
             removeAll();
 
             // Liste neu laden
-            GenericIterator items = KontoauszugPdfUtil.getList(konto,dfrom,dto,unread != null ? unread.booleanValue() : false);
+            GenericIterator items = KontoauszugPdfUtil.getList(konto,dfrom,dto,unread != null ? unread.booleanValue() : false, inclusiveFilter != null ? inclusiveFilter.booleanValue() : false);
             if (items == null)
               return;
             
@@ -387,7 +413,8 @@ public class KontoauszugPdfList extends TablePart
       return (kontoAuswahl != null && kontoAuswahl.hasChanged()) ||
              (from != null && from.hasChanged()) ||
              (to != null && to.hasChanged()) ||
-             (unread != null && unread.hasChanged());
+             (unread != null && unread.hasChanged()) ||
+             (inclusiveFilter != null && inclusiveFilter.hasChanged());
     }
     catch (Exception e)
     {
