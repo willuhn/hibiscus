@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0851 Update auf HBCI4Java 3.1.22
   * NEW: 0850 PR von ds10: Neue Option "Auch nur teilweise im Zeitraum liegende Kontoauszüge anzeigen" bei den elektronischen Kontoauszügen
   * NEW: 0849 Experimentelle Funktionen nicht mehr an Nightly-Build gekoppelt
   * NEW: 0848 Update auf HBCI4Java 3.1.21
