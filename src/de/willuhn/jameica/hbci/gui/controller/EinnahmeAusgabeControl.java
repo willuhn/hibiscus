@@ -38,6 +38,7 @@ import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
+import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
@@ -64,6 +65,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private SelectInput interval     = null;
 
   private TreePart tree            = null;
+  private EinnahmenAusgabenVerlauf chart = null;
 
   /**
    * Gruppierung der Einnahmen/Ausgaben nach Zeitraum.
@@ -198,9 +200,23 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if(this.interval !=null)
       return this.interval;
     
-    this.interval = new SelectInput(Interval.values(), null);
+    this.interval = new SelectInput(Interval.values(), Interval.MONTH);
     this.interval.setName(i18n.tr("Gruppierung nach"));
     return this.interval;
+  }
+  
+  /**
+   * Liefert ein Balkendiagramm bei dem Ausgaben und Einnahmen gegenübergestellt werden 
+   * @return Balkendiagramm
+   * @throws RemoteException 
+   */
+  public EinnahmenAusgabenVerlauf getChart() throws RemoteException
+  {
+    if(this.chart != null)
+      return this.chart;
+    
+    this.chart = new EinnahmenAusgabenVerlauf(getWerte());
+    return chart;
   }
 
   /**
@@ -399,11 +415,15 @@ public class EinnahmeAusgabeControl extends AbstractControl
       }
 
       tree.setList(this.getWerte());
+      
+      EinnahmenAusgabenVerlauf chart = getChart();
+      chart.setList(this.getWerte());
     }
     catch (RemoteException re)
     {
       Logger.error("unable to redraw table",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
+    
   }
 }
