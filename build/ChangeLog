@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+2019-11-01 Version 2.8.19
+
   * NEW: 0852 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.12.2019
   * NEW: 0851 Update auf HBCI4Java 3.1.22 - Fehler mit gesperrten RDH2-Schlüsseln aus Fremdprogrammen - https://homebanking-hilfe.de/forum/topic.php?p=151578#real151578
   * NEW: 0850 PR von ds10: Neue Option "Auch nur teilweise im Zeitraum liegende Kontoauszüge anzeigen" bei den elektronischen Kontoauszügen
