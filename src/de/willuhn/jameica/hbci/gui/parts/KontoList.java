@@ -31,6 +31,8 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -76,7 +78,7 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung einer fix und fertig vorkonfigurierten Liste aller Konten.
  */
-public class KontoList extends TablePart implements Part
+public class KontoList extends TablePart implements Part, Extendable
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
@@ -218,8 +220,18 @@ public class KontoList extends TablePart implements Part
         featureEvent(Feature.Event.REFRESH,null);
       }
     });
+    
+    ExtensionRegistry.extend(this);
   }
   
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
+  }
+
   /**
    * Legt fest, ob die Filtermoeglichkeiten angezeigt werden sollen.
    * @param b true, wenn die Filtermoeglichkeiten angezeigt werden sollen.
@@ -276,6 +288,7 @@ public class KontoList extends TablePart implements Part
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
       }
     });
+    
     super.paint(parent);
   }
   

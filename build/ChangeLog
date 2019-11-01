@@ -1,5 +1,25 @@
 2019-09-17 Version 2.8.18
 
+2019-11-01 Version 2.8.19
+
+  * NEW: 0852 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.12.2019
+  * NEW: 0851 Update auf HBCI4Java 3.1.22 - Fehler mit gesperrten RDH2-Schlüsseln aus Fremdprogrammen - https://homebanking-hilfe.de/forum/topic.php?p=151578#real151578
+  * NEW: 0850 PR von ds10: Neue Option "Auch nur teilweise im Zeitraum liegende Kontoauszüge anzeigen" bei den elektronischen Kontoauszügen
+  * NEW: 0849 Experimentelle Funktionen nicht mehr an Nightly-Build gekoppelt
+  * NEW: 0848 Update auf HBCI4Java 3.1.21 - SPEA-Infos nur noch abrufen, wenn von Bank explizit unterstützt
+  * NEW: 0847 Funktion "Synchronisieren" im Bankzugang
+  * NEW: 0846 Update auf HBCI4Java 3.1.20 - Funktion zum Neu-Synchronisieren eines Bankzugangs 
+  * NEW: 0845 Update auf HBCI4Java 3.1.19 - Abruf der TAN-Medienbezeichnungen jetzt mit Fallback (erst ohne SCA, dann mit)
+  * BUG: 0844 Bei der Postbank konnte es passieren, dass ein Auftrag fälschlicherweise als ausgeführt markiert wird, wenn die Übertragung im TAN-Dialog abgebrochen wurde
+  * NEW: 0843 Update auf HBCI4Java 3.1.18 - Wenn die Bank Code 3040 meldet, konnte es zu einer versehentlichen doppelten Ausführung von GVs kommen - https://homebanking-hilfe.de/forum/topic.php?t=23384
+  * NEW: 0842 Neuer Reiter "Experimentelle Funktionen" in den Einstellungen beim Nightly-Build
+  * NEW: 0841 Update auf HBCI4Java 3.1.17 - Weitere Optimierung beim Abruf der TAN-Medienbezeichnungen und SEPA-Infos
+  * NEW: 0840 Update auf HBCI4Java 3.1.16 - Fehler 25 bei ChipTAN optisch behoben
+  * NEW: 0839 Update auf HBCI4Java 3.1.15 - Abruf der TAN-Medienbezeichnungen gefixt, neue URL der ING
+  * NEW: 0838 Update auf HBCI4Java 3.1.14 - Neueinreichung von INI-Briefen korrigiert, IBAN und BIC aus UPD nur noch übernehmen, wenn etwas empfangen wurde
+
+2019-09-17 Version 2.8.18
+
   * NEW: 0837 Update auf HBCI4Java 3.1.13
   * CHG: 0836 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/9813da9a9898eadc65f07fa8724c3079502863cc
   * BUG: 0835 Klickt man bei einem neu angelegten ChipTAN-USB-tauglichen Bankzugang direkt nach dem Anlegen nochmal auf Speichern, wurde ein Fehler angezeigt, weil die Checkbox "Kartenleser via USB..." noch fehlt

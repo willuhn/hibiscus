@@ -17,7 +17,6 @@ public class HBCIAccountPinTan
 {
   private String blz = null;
   private String url = null;
-  private String version = null;
   private String customer = null;
   private String username = null;
   
@@ -37,24 +36,6 @@ public class HBCIAccountPinTan
   public void setBlz(String blz)
   {
     this.blz = blz;
-  }
-  
-  /**
-   * Liefert die HBCI-Version.
-   * @return version
-   */
-  public String getVersion()
-  {
-    return this.version;
-  }
-  
-  /**
-   * Speichert die HBCI-Version.
-   * @param version version
-   */
-  public void setVersion(String version)
-  {
-    this.version = version;
   }
   
   /**

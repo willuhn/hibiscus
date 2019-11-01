@@ -504,25 +504,61 @@ public class KontoauszugPdfUtil
    * @param from das optionale Start-Datum.
    * @param to das optionale End-Datum.
    * @param unread true, wenn nur ungelesene Kontoauszuege geliefert werden sollen.
+   * @param inclusive true, wenn auch Kontoauszuege geliefert werden sollen, die nur in den Datumsbereich hineinreichen.
    * @return die Liste der passenden Kontoauszuege.
    * @throws RemoteException
    */
-  public static GenericIterator<Kontoauszug> getList(Object konto, Date from, Date to, boolean unread) throws RemoteException
+  public static GenericIterator<Kontoauszug> getList(Object konto, Date from, Date to, boolean unread, boolean inclusive) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator it = service.createList(Kontoauszug.class);
+
+    final boolean haveFrom = from != null;
+    final boolean haveTo = to != null;
+    
+    java.sql.Date f = haveFrom ? new java.sql.Date(DateUtil.startOfDay(from).getTime()) : null;
+    java.sql.Date t = haveTo ? new java.sql.Date(DateUtil.endOfDay(to).getTime()) : null;
     
     // Bei HKEKP in Segment-Version 1 wird gar kein Zeitraum mitgeliefert.
     // Daher nehmen wir dort das Abrufdatum
-    if (from != null)
+    
+    if (inclusive && (haveFrom || haveTo)) // Wenigstens eines der beiden Daten muss vorhanden sein
     {
-      java.sql.Timestamp d = new java.sql.Timestamp(DateUtil.startOfDay(from).getTime());
-      it.addFilter("(von >= ? OR erstellungsdatum >= ? OR (von IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", d, d, d);
+      if (haveFrom && haveTo)
+      {
+        it.addFilter("("
+            + "(von >= ? AND von <= ?)"
+            + " OR "
+            + "(bis >= ? AND bis <= ?)"
+            + " OR "
+            + "(von <= ? AND bis >= ?)"
+            + " OR "
+            + "(erstellungsdatum >= ? AND erstellungsdatum <= ?)"
+            + " OR "
+            + "(von IS NULL AND bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ? AND ausgefuehrt_am <= ?)"
+            + ")", f, t, f, t, f, t, f, t, f, t);
+      }
+      else if (haveFrom)
+      {
+        // Kontoauszug endet nach dem From-Datum
+        it.addFilter("((bis >= ? OR erstellungsdatum >= ?) OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", f, f, f);
+      }
+      else if (haveTo)
+      {
+        // Kontoauszug beginnt wenigstens vor dem To-Datum
+        it.addFilter("((von <= ? OR erstellungsdatum <= ?) OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", t, t, t);        
+      }
     }
-    if (to != null)
+    else 
     {
-      java.sql.Timestamp d = new java.sql.Timestamp(DateUtil.endOfDay(to).getTime());
-      it.addFilter("(bis <= ? OR erstellungsdatum <= ? OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", d, d, d);
+      if (haveFrom)
+      {
+        it.addFilter("(von >= ? OR erstellungsdatum >= ? OR (von IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am >= ?))", f, f, f);
+      }
+      if (haveTo)
+      {
+        it.addFilter("(bis <= ? OR erstellungsdatum <= ? OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", t, t, t);
+      }
     }
     
     if (konto != null && (konto instanceof Konto))

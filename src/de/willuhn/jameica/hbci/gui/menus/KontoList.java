@@ -48,33 +48,71 @@ import de.willuhn.util.I18N;
  */
 public class KontoList extends ContextMenu implements Extendable
 {
-
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  /**
+   * Stil des Kontextmenus.
+   */
+  public enum Style
+  {
+    /**
+     * Stil bei den Bankzugaengen.
+     */
+    PASSPORT,
+    
+    /**
+     * Default-Stil.
+     */
+    DEFAULT,
+    
+    ;
+  }
 
   /**
    * Erzeugt ein Kontext-Menu fuer eine Liste von Konten.
    */
   public KontoList()
   {
+    this(Style.DEFAULT);
+  }
+
+
+  /**
+   * Erzeugt ein Kontext-Menu fuer eine Liste von Konten.
+   * @param style der Stil.
+   */
+  public KontoList(Style style)
+  {
+    final boolean shortMenu = style != null && style == Style.PASSPORT;
+    
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
-    addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"list-add.png"));
-    addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
+    
+    if (!shortMenu)
+    {
+      addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"list-add.png"));
+      addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
+    }
+    
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new KontoauszugList(),"text-x-generic.png"));
     addItem(new AccountItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png"));
     addItem(ContextMenuItem.SEPARATOR);
 
-    addItem(new AccountItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"ueberweisung.png"));
-    addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"lastschrift.png"));
-    addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"dauerauftrag.png"));
-    addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png",true));
+    if (!shortMenu)
+    {
+      addItem(new AccountItem(i18n.tr("Neue Überweisung..."),new AuslandsUeberweisungNew(),"ueberweisung.png"));
+      addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"lastschrift.png"));
+      addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"dauerauftrag.png"));
+      addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png",true));
+      
+      addItem(ContextMenuItem.SEPARATOR);
+      addItem(new CheckedContextMenuItem(i18n.tr("Konten exportieren..."),new KontoExport(),"document-save.png"));
+      addItem(new ContextMenuItem(i18n.tr("Konten importieren..."),new KontoImport(),"document-open.png"));
+      addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport(),"document-open.png"));
+    }
 
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Konten exportieren..."),new KontoExport(),"document-save.png"));
-    addItem(new ContextMenuItem(i18n.tr("Konten importieren..."),new KontoImport(),"document-open.png"));
-    addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport(),"document-open.png"));
-    addItem(ContextMenuItem.SEPARATOR);
-    addMenu(new ExtendedMenu());
+    addMenu(new ExtendedMenu(style));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
@@ -165,14 +203,21 @@ public class KontoList extends ContextMenu implements Extendable
   private class ExtendedMenu extends ContextMenu
   {
     /**
-     *
+     * @param style der Style.
      */
-    private ExtendedMenu()
+    private ExtendedMenu(Style style)
     {
       this.setText(i18n.tr("Erweitert"));
       this.setImage(SWTUtil.getImage("emblem-symbolic-link.png"));
+
+      final boolean shortMenu = style != null && style == Style.PASSPORT;
+
       addItem(new CheckedSingleContextMenuItem(i18n.tr("Saldo und Datum zurücksetzen..."), new KontoResetAuszugsdatum(),"edit-undo.png"));
-      addItem(new CheckedSingleContextMenuItem(i18n.tr("Salden neu berechnen..."), new KontoRecalculateOfflineSaldo(),"accessories-calculator.png"));
+      if (!shortMenu)
+      {
+        addItem(new CheckedSingleContextMenuItem(i18n.tr("Salden neu berechnen..."), new KontoRecalculateOfflineSaldo(),"accessories-calculator.png"));
+      }
+      
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto deaktivieren..."), new KontoDisable(),"network-offline.png",false));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto aktivieren..."), new FlaggableChange(Konto.FLAG_DISABLED,false),"network-transmit-receive.png",true));
     }

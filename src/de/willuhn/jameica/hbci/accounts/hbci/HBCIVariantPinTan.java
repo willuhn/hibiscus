@@ -48,7 +48,7 @@ public class HBCIVariantPinTan implements HBCIVariant
     InfoPanel info = new InfoPanel();
     info.setTitle(this.getName());
     info.setText(i18n.tr("Verwenden Sie dieses Verfahren, wenn Sie PIN/TAN (z.Bsp. smsTAN oder chipTAN mit TAN-Generator) nutzen möchten."));
-    info.setComment(i18n.tr("Das PIN/TAN-Verfahren wird von den meisten Banken unterstützt."));
+    info.setComment(i18n.tr("Wenn Sie nicht sicher sind, welches Verfahren Ihre Bank verwendet, wählen Sie im Zweifel PIN/TAN.\nDas PIN/TAN-Verfahren wird von den meisten Banken unterstützt."));
     info.setUrl("http://www.willuhn.de/wiki/doku.php?id=support:list:tan-verfahren");
     info.setIcon("hbci-pintan.png");
     return info;

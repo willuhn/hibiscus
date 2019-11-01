@@ -10,6 +10,8 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -28,9 +30,13 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.experiments.Feature;
+import de.willuhn.jameica.hbci.experiments.FeatureService;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
+import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -58,6 +64,9 @@ public class SettingsControl extends AbstractControl
 
   private Input ueberweisungLimit         = null;
 
+  private CheckboxInput exFeatures        = null;
+  private List<CheckboxInput> experiments = null;
+  
   /**
    * @param view
    */
@@ -210,6 +219,66 @@ public class SettingsControl extends AbstractControl
     });
     return storePin;
   }
+  
+  /**
+   * Liefert eine Checkbox, mit der eingestellt werden kann, ob die experimentellen Features aktiv sein sollen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getExFeatures()
+  {
+    if (this.exFeatures != null)
+      return this.exFeatures;
+
+    final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    final FeatureService fs = bs.get(FeatureService.class);
+
+    this.exFeatures = new CheckboxInput(fs.enabled());
+    this.exFeatures.setName(i18n.tr("Experimentelle Funktionen aktivieren"));
+    final Listener l = new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        boolean enabled = ((Boolean) getExFeatures().getValue()).booleanValue();
+        for (CheckboxInput c:getExperiments())
+        {
+          c.setEnabled(enabled);
+        }
+      }
+    };
+    this.exFeatures.addListener(l);
+    
+    l.handleEvent(null); // Einmal initial ausloesen
+    
+    return this.exFeatures;
+  }
+  
+  /**
+   * Liefert eine Liste mit Checkboxen zum Einstellen experimenteller Funktionen.
+   * @return eine Liste mit Checkboxen zum Einstellen experimenteller Funktionen.
+   * Liefert NULL, wenn es kein Nightly-Build ist.
+   */
+  public List<CheckboxInput> getExperiments()
+  {
+    if (this.experiments != null)
+      return this.experiments;
+    
+    final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    final FeatureService fs = bs.get(FeatureService.class);
+    
+    this.experiments = new ArrayList<CheckboxInput>();
+    
+    for (Feature f:fs.getFeatures())
+    {
+      CheckboxInput c = new CheckboxInput(fs.isEnabled(f));
+      c.setData("feature",f);
+      c.setData("description",f.getDescription() + "\n\n" + i18n.tr("Vorgabewert: {0}",i18n.tr(f.getDefault() ? "aktiviert" : "deaktiviert")));
+      c.setName(f.getName());
+      this.experiments.add(c);
+    }
+    
+    return this.experiments;
+  }
 
   /**
 	 * Eingabe-Feld fuer ein Limit bei Ueberweisungen.
@@ -274,7 +343,41 @@ public class SettingsControl extends AbstractControl
     if (!storeEnabled) DialogFactory.clearPINStore(null);
     
     Double limit = (Double) getUeberweisungLimit().getValue();
-		Settings.setUeberweisungLimit(limit == null ? 0.0d : limit.doubleValue());
+
+    Settings.setUeberweisungLimit(limit == null ? 0.0d : limit.doubleValue());
+		
+    final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+    final FeatureService fs = bs.get(FeatureService.class);
+    final boolean ex = ((Boolean) this.getExFeatures().getValue()).booleanValue();
+    boolean changed = ex != fs.enabled();
+    fs.setEnabled(ex);
+		if (ex)
+		{
+		  try
+		  {
+	      for (CheckboxInput c:this.getExperiments())
+	      {
+	        Feature f = (Feature) c.getData("feature");
+	        fs.setEnabled(f,(Boolean) c.getValue());
+	      }
+		  }
+		  catch (Exception e)
+		  {
+		    Logger.error("unable to store feature",e);
+		    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Speichern der experimentellen Features fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
+		  }
+		}
+    if (changed)
+    {
+      try
+      {
+        GUI.getCurrentView().reload();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to reload view",e);
+      }
+    }
 
 		GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
   }

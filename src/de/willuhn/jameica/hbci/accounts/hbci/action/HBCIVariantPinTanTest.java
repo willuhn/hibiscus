@@ -140,9 +140,6 @@ public class HBCIVariantPinTanTest implements Action
           conf = new PinTanConfigImpl(PinTanConfigFactory.load(f),f);
           conf.setBezeichnung(account.getBlz());
           
-          if (account.getVersion() != null)
-            conf.setHBCIVersion(account.getVersion());
-          
           PinTanConfigFactory.store(conf);
           
           if (stop)

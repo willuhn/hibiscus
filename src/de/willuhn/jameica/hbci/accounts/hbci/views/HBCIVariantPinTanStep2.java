@@ -37,7 +37,7 @@ public class HBCIVariantPinTanStep2 extends AbstractHBCIAccountView
   @Override
   public void bind() throws Exception
   {
-    GUI.getView().setTitle(i18n.tr("Neuer FinTS/HBCI-Bankzugang PIN/TAN..."));
+    GUI.getView().setTitle(i18n.tr("Neuer FinTS/HBCI-Bankzugang PIN/TAN - Schritt 2 von 3"));
 
     final HBCIVariantPinTanController control = this.getController(HBCIVariantPinTanController.class);
 

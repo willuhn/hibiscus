@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-bin" path="test"/>
 	<classpathentry including="*.java" kind="src" output="updates" path="updates"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry exported="true" kind="src" path="/jameica"/>
 	<classpathentry kind="lib" path="lib/super-csv-2.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.swtchart_0.10.0.v20160212.jar"/>
@@ -20,6 +20,6 @@
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.22.jar" sourcepath="/hbci4j-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

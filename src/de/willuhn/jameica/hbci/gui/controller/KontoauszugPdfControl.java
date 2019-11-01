@@ -432,7 +432,11 @@ public class KontoauszugPdfControl extends AbstractControl
     try
     {
       final Kontoauszug k = this.getKontoauszug();
-      k.setKonto((Konto)getKonto().getValue());
+      final Konto konto = (Konto)getKonto().getValue();
+      if (konto == null)
+        throw new ApplicationException("Bitte wählen Sie ein Konto aus.");
+      k.setKonto(konto);
+      
       k.setBis((Date) this.getBisDatum().getValue());
       k.setVon((Date) this.getVonDatum().getValue());
       k.setJahr((Integer) this.getJahr().getValue());

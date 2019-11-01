@@ -42,6 +42,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.PassportChange;
+import de.willuhn.jameica.hbci.gui.action.PassportSync;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -527,11 +528,39 @@ public class Controller extends AbstractControl
   }
 
   /**
+   * Synchronisiert den Bankzugang neu.
+   */
+  public synchronized void handleSync()
+  {
+    this.handleDeleteTanSettings();
+    
+    try
+    {
+      if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
+        return;
+
+      new PassportSync().handleAction(new PassportHandleImpl(getConfig()));
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info("operation cancelled");
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while testing passport",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Synchronisieren des Bank-Zugangs: {}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+  }
+
+  /**
    * Testet die Konfiguration.
    */
   public synchronized void handleTest()
   {
-
     // Speichern, damit sicher ist, dass wir vernuenftige Daten fuer den
     // Test haben und die auch gespeichert sind
     if (!handleStore())

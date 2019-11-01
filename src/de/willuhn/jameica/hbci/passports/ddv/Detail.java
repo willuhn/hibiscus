@@ -81,6 +81,13 @@ public class Detail extends AbstractView
         control.handleDisplayProperties();
       }
     },null,false,"document-properties.png");
+    buttonArea.addButton(i18n.tr("Synchronisieren"),new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleSync();
+      }
+    },null,false,"view-refresh.png");
     buttonArea.addButton(i18n.tr("Konfiguration testen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException

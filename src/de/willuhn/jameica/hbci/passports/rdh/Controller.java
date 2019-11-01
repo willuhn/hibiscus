@@ -17,8 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TableItem;
 import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.exceptions.NeedKeyAckException;
-import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -40,6 +38,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.PassportChange;
+import de.willuhn.jameica.hbci.gui.action.PassportSync;
 import de.willuhn.jameica.hbci.gui.action.PassportTest;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PassportPropertyDialog;
@@ -49,7 +48,6 @@ import de.willuhn.jameica.hbci.passport.PassportChangeRequest;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.passports.rdh.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
@@ -490,9 +488,9 @@ public class Controller extends AbstractControl {
   }
   
   /**
-   * Synchronisiert die Signatur-ID.
+   * Synchronisiert den Bankzugang.
    */
-  public synchronized void syncSigId()
+  public synchronized void handleSync()
   {
     RDHKey key = getKey();
     if (key == null)
@@ -502,66 +500,28 @@ public class Controller extends AbstractControl {
     }
     
     HBCIPassport passport = null;
-    HBCIHandler handler = null;
     try
     {
-      String s = i18n.tr("Sind Sie sicher?");
-      if (!Application.getCallback().askUser(s))
+      if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
         return;
 
       passport = key.load();
       passport.syncSigId();
-
-      QueryMessage msg = new QueryMessage(passport);
-      Application.getMessagingFactory().getMessagingQueue("hibiscus.passport.rdh.hbciversion").sendSyncMessage(msg);
-      Object data = msg.getData();
-      if (data == null || !(data instanceof String))
-        throw new ApplicationException(i18n.tr("HBCI-Version nicht ermittelbar"));
       
-      String version = (String)msg.getData();
-      Logger.info("using hbci version: " + version);
-      
-      handler = new HBCIHandler(version,passport);
-      handler.close();
-      handler = null;
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Signatur-ID erfolgreich synchronisiert"), StatusBarMessage.TYPE_SUCCESS));
+      new PassportSync().handleAction(new PassportHandleImpl(key));
     }
     catch (ApplicationException ae)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Synchronisieren der Signatur: {0}",ae.getMessage()), StatusBarMessage.TYPE_ERROR));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
     catch (OperationCanceledException oce)
     {
-      Logger.warn("operation cancelled");
+      Logger.info("operation cancelled");
     }
     catch (Exception e)
     {
-      Throwable current = e;
-      for (int i=0;i<10;++i)
-      {
-        if (current == null)
-          break;
-        if (current instanceof NeedKeyAckException)
-        {
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüssel noch nicht freigegeben"), StatusBarMessage.TYPE_ERROR));
-          return;
-        }
-        current = current.getCause();
-      }
-      Logger.error("unable to sync key ",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Synchronisieren der Signatur: {0}",e.getMessage()), StatusBarMessage.TYPE_ERROR));
-    }
-    finally
-    {
-      try
-      {
-        if (handler != null)
-          handler.close();
-      }
-      catch (Throwable t)
-      {
-        Logger.error("error while closing handler",t);
-      }
+      Logger.error("error while testing passport",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Synchronisieren des Bank-Zugangs: {}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
 
@@ -605,7 +565,6 @@ public class Controller extends AbstractControl {
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Testen der Konfiguration. Bitte prüfen Sie das Protokoll. ") + e.getMessage());
     }
   }
-
 
   /**
    * Speichert die Einstellungen fuer den aktuellen Schluessel.
