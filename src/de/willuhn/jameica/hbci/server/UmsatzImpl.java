@@ -668,7 +668,19 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    */
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
-    setAttribute("zweck3",VerwendungszweckUtil.merge(list));
+    String s = VerwendungszweckUtil.merge(list);
+    try
+    {
+      if (s != null && s.length() > 1000)
+        s = s.substring(0,1000);
+    }
+    catch (Exception e)
+    {
+      // Das catch hier nur zur Sicherheit, weil das ein Quickfix ist. Ein User hatte CAMT-Umsaetze mit
+      // extrem langen Verwendungszwecken. Wir kuerzen die hier auf 1000 Zeichen.
+      Logger.error("invalid usage",e);
+    }
+    setAttribute("zweck3",s);
   }
 
   /**

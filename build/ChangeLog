@@ -1,3 +1,9 @@
+2019-11-02 Version 2.8.20
+
+  * NEW: 0855 Update auf HBCI4Java 3.1.23 - Fehler beim Anlegen eines neuen Bankzugangs, wenn die Bank kein Einschritt-TAN-Verfahren erlaubt - https://homebanking-hilfe.de/forum/topic.php?p=151712#real151712
+  * BUG: 0854 Workaround für überlange Verwendungszweck-Zeilen (mehr als 1000 Zeichen) beim Import von CAMT-Umsätzen
+  * NEW: 0853 Experimentelle Features auch dann in den Einstellungen anzeigen, wenn sie deaktiviert sind
+
 2019-11-01 Version 2.8.19
 
   * NEW: 0852 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.12.2019
