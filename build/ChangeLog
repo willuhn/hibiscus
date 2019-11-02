@@ -1,5 +1,9 @@
 HEAD 2.9 (nightly)
 
+2019-11-02 Version 2.8.21
+
+  * NEW: 0856 Update auf HBCI4Java 3.1.24 - Nochmal Postbank - https://homebanking-hilfe.de/forum/topic.php?p=151712#real151712
+
 2019-11-02 Version 2.8.20
 
   * NEW: 0855 Update auf HBCI4Java 3.1.23 - Fehler beim Anlegen eines neuen Bankzugangs, wenn die Bank kein Einschritt-TAN-Verfahren erlaubt - https://homebanking-hilfe.de/forum/topic.php?p=151712#real151712
