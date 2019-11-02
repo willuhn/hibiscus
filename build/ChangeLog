@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0854 Workaround für überlange Verwendungszweck-Zeilen (mehr als 1000 Zeichen) beim Import von CAMT-Umsätzen
   * NEW: 0853 Experimentelle Features auch dann in den Einstellungen anzeigen, wenn sie deaktiviert sind
 
 2019-11-01 Version 2.8.19
