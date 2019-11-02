@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0853 Experimentelle Features auch dann in den Einstellungen anzeigen, wenn sie deaktiviert sind
+
 2019-11-01 Version 2.8.19
 
   * NEW: 0852 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.12.2019
