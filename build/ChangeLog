@@ -9,26 +9,26 @@ HEAD 2.9 (nightly)
 2019-11-02 Version 2.8.20
 
   * NEW: 0855 Update auf HBCI4Java 3.1.23 - Fehler beim Anlegen eines neuen Bankzugangs, wenn die Bank kein Einschritt-TAN-Verfahren erlaubt - https://homebanking-hilfe.de/forum/topic.php?p=151712#real151712
-  * BUG: 0854 Workaround fÃ¼r Ã¼berlange Verwendungszweck-Zeilen (mehr als 1000 Zeichen) beim Import von CAMT-UmsÃ¤tzen
+  * BUG: 0854 Workaround für überlange Verwendungszweck-Zeilen (mehr als 1000 Zeichen) beim Import von CAMT-Umsätzen
   * NEW: 0853 Experimentelle Features auch dann in den Einstellungen anzeigen, wenn sie deaktiviert sind
 
 2019-11-01 Version 2.8.19
 
-  * NEW: 0852 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 09.12.2019
-  * NEW: 0851 Update auf HBCI4Java 3.1.22 - Fehler mit gesperrten RDH2-SchlÃ¼sseln aus Fremdprogrammen - https://homebanking-hilfe.de/forum/topic.php?p=151578#real151578
-  * NEW: 0850 PR von ds10: Neue Option "Auch nur teilweise im Zeitraum liegende KontoauszÃ¼ge anzeigen" bei den elektronischen KontoauszÃ¼gen
+  * NEW: 0852 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.12.2019
+  * NEW: 0851 Update auf HBCI4Java 3.1.22 - Fehler mit gesperrten RDH2-Schlüsseln aus Fremdprogrammen - https://homebanking-hilfe.de/forum/topic.php?p=151578#real151578
+  * NEW: 0850 PR von ds10: Neue Option "Auch nur teilweise im Zeitraum liegende Kontoauszüge anzeigen" bei den elektronischen Kontoauszügen
   * NEW: 0849 Experimentelle Funktionen nicht mehr an Nightly-Build gekoppelt
-  * NEW: 0848 Update auf HBCI4Java 3.1.21 - SPEA-Infos nur noch abrufen, wenn von Bank explizit unterstÃ¼tzt
+  * NEW: 0848 Update auf HBCI4Java 3.1.21 - SPEA-Infos nur noch abrufen, wenn von Bank explizit unterstützt
   * NEW: 0847 Funktion "Synchronisieren" im Bankzugang
   * NEW: 0846 Update auf HBCI4Java 3.1.20 - Funktion zum Neu-Synchronisieren eines Bankzugangs 
   * NEW: 0845 Update auf HBCI4Java 3.1.19 - Abruf der TAN-Medienbezeichnungen jetzt mit Fallback (erst ohne SCA, dann mit)
-  * BUG: 0844 Bei der Postbank konnte es passieren, dass ein Auftrag fÃ¤lschlicherweise als ausgefÃ¼hrt markiert wird, wenn die Ãœbertragung im TAN-Dialog abgebrochen wurde
-  * NEW: 0843 Update auf HBCI4Java 3.1.18 - Wenn die Bank Code 3040 meldet, konnte es zu einer versehentlichen doppelten AusfÃ¼hrung von GVs kommen - https://homebanking-hilfe.de/forum/topic.php?t=23384
+  * BUG: 0844 Bei der Postbank konnte es passieren, dass ein Auftrag fälschlicherweise als ausgeführt markiert wird, wenn die Übertragung im TAN-Dialog abgebrochen wurde
+  * NEW: 0843 Update auf HBCI4Java 3.1.18 - Wenn die Bank Code 3040 meldet, konnte es zu einer versehentlichen doppelten Ausführung von GVs kommen - https://homebanking-hilfe.de/forum/topic.php?t=23384
   * NEW: 0842 Neuer Reiter "Experimentelle Funktionen" in den Einstellungen beim Nightly-Build
   * NEW: 0841 Update auf HBCI4Java 3.1.17 - Weitere Optimierung beim Abruf der TAN-Medienbezeichnungen und SEPA-Infos
   * NEW: 0840 Update auf HBCI4Java 3.1.16 - Fehler 25 bei ChipTAN optisch behoben
   * NEW: 0839 Update auf HBCI4Java 3.1.15 - Abruf der TAN-Medienbezeichnungen gefixt, neue URL der ING
-  * NEW: 0838 Update auf HBCI4Java 3.1.14 - Neueinreichung von INI-Briefen korrigiert, IBAN und BIC aus UPD nur noch Ã¼bernehmen, wenn etwas empfangen wurde
+  * NEW: 0838 Update auf HBCI4Java 3.1.14 - Neueinreichung von INI-Briefen korrigiert, IBAN und BIC aus UPD nur noch übernehmen, wenn etwas empfangen wurde
 
 2019-09-17 Version 2.8.18
 
@@ -53,7 +53,7 @@ HEAD 2.9 (nightly)
 
 2019-09-09 Version 2.8.15
 
-  * NEW: 0826 ErgÃ¤nzende Hilfetexte fÃ¼r die feste Zuordnung von Konten zu einem Bank-Zugang
+  * NEW: 0826 Ergänzende Hilfetexte für die feste Zuordnung von Konten zu einem Bank-Zugang
   * NEW: 0825 Update auf HBCI4Java 3.1.5
 
 2019-09-06 Version 2.8.14
@@ -63,48 +63,48 @@ HEAD 2.9 (nightly)
   * BUG: 0822 Update auf HBCI4Java 3.1.3 - NPE beim Umsatzabruf im CAMT-Format, wenn BIC in Gegenkonto fehlt
   * NEW: 0821 Update auf HBCI4Java 3.1.2 - SCA-Code 3076 auch in HIRMG suchen
   * NEW: 0820 Hinweis-Text anzeigen, wenn nicht die erwartete HBCI4Java-Version geladen wurde - potentieller Installationsfehler
-  * NEW: 0819 Buttons zum VergrÃ¶ÃŸern und Verkleinern der Grafik bei Matrix-TAN
-  * CHG: 0818 Ãœberlange Namen von Banken stÃ¤rker kÃ¼rzen
+  * NEW: 0819 Buttons zum Vergrößern und Verkleinern der Grafik bei Matrix-TAN
+  * CHG: 0818 Überlange Namen von Banken stärker kürzen
   * NEW: 0817 Update auf HBCI4Java 3.1.1 - beim Aktualisieren eines Dauerauftrages war die Reihenfolge der HBCI-Nachrichten nicht korrekt
   * NEW: 0816 Update auf HBCI4Java 3.1.0
   * NEW: 0815 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/8b4419305d56ef38ca459d1b0a1d07aa3aa36767 - Fehler beim Finalisieren der ChipTAN-USB Transaktion tolerieren
   * NEW: 0814 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/443919107d3f172491e4ace2bd00410ae7b6caf0 - Sicherstellen, dass HBCI+ noch funktioniert - wenn auch ohne SCA
-  * NEW: 0813 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/e8f79e75ecadf7cafde769b85e5579c75f1d945e - Abruf TAN-Medien und SEPA-Infos nur noch, wenn nÃ¶tig
-  * NEW: 0812 Fortschrittsbalken bei der Konten-Synchronisierung jetzt kontinuierlicher und mit Ã¼bersichtlicherem Logging
-  * NEW: 0811 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/dbcebea52e1fedf6a680203ea33cb917c232ab86 - weniger Logging, dafÃ¼r aber verstÃ¤ndlicher
+  * NEW: 0813 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/e8f79e75ecadf7cafde769b85e5579c75f1d945e - Abruf TAN-Medien und SEPA-Infos nur noch, wenn nötig
+  * NEW: 0812 Fortschrittsbalken bei der Konten-Synchronisierung jetzt kontinuierlicher und mit übersichtlicherem Logging
+  * NEW: 0811 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/dbcebea52e1fedf6a680203ea33cb917c232ab86 - weniger Logging, dafür aber verständlicher
   * NEW: 0810 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/f1b3ff7a7443742e3bd21d91a1ba01b20309c23b - HKTAN jetzt auch in der anonymen Dialog-Initialisierung mitsenden, wenn noch keine Infos zum TAN-Verfahren bekannt sind
   * NEW: 0809 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/782a012ed602c43560125671e261249a4e188bde - erste funktional komplette Version mit SCA-Support
   * NEW: 0808 Eigene Datumsformate in Velocity-Templates verwendbar
-  * NEW: 0807 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 09.09.2019
+  * NEW: 0807 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.09.2019
   * NEW: 0806 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/84444459efab1dc9ce08c839a8884d749f40069c - HKTAN mit SCA-Ausnahme via 3076 sollte jetzt auch bei GVs gehen
   * NEW: 0805 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d8b723f163db10983d718b2057cee8ee9b36e401 - besseres Handling bei fehlendem tanmedia
-  * NEW: 0804 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/500f0753218a136bec10ddee9ba47c2e52473a3d mit erstem SCA-Support fÃ¼r PSD2
-  * CHG: 0803 Deutlicheren Hinweis anzeigen, wenn man versucht, eine SEPA-Lastschrift als Ãœberweisung zu importieren (und umgekehrt)
-  * BUG: 0802 Wenn man in der Umsatzliste eine Kontogruppe ausgewÃ¤hlt hat und diese Auswahl bestehen blieb, fÃ¼hrte das beim nÃ¤chsten Hibiscus-Start zu einem internen Fehler, der anschlieÃŸend das automatisch Backup beim Shutdown verhinderte
+  * NEW: 0804 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/500f0753218a136bec10ddee9ba47c2e52473a3d mit erstem SCA-Support für PSD2
+  * CHG: 0803 Deutlicheren Hinweis anzeigen, wenn man versucht, eine SEPA-Lastschrift als Überweisung zu importieren (und umgekehrt)
+  * BUG: 0802 Wenn man in der Umsatzliste eine Kontogruppe ausgewählt hat und diese Auswahl bestehen blieb, führte das beim nächsten Hibiscus-Start zu einem internen Fehler, der anschließend das automatisch Backup beim Shutdown verhinderte
   * NEW: 0801 Nummer der Umsatzbuchung beim Druck mit ausgeben
-  * BUG: 0800 Erneutes Fix bei der Auswertung des Job-Status - Auftrag konnte u.U. fÃ¤lschlicherweise als ausgefÃ¼hrt markiert werden, obwohl die Bank einen Fehler gesendet hat
-  * BUG: 0799 Bei der Anzeige der UmsÃ¤tze nach Kategorien kann es zu einem Fehler wegen der Sortierung kommen
+  * BUG: 0800 Erneutes Fix bei der Auswertung des Job-Status - Auftrag konnte u.U. fälschlicherweise als ausgeführt markiert werden, obwohl die Bank einen Fehler gesendet hat
+  * BUG: 0799 Bei der Anzeige der Umsätze nach Kategorien kann es zu einem Fehler wegen der Sortierung kommen
   * NEW: 0798 Spaltenbreite im Kategorie-Auswahl-Dialog speichern, die Spalte mit der Bezeichnung kann zu kurz werden, wenn man einen Suchbegriff eingibt
-  * BUG: 0797 Wenn eine Auftragsart nicht unterstÃ¼tzt wird, wurde beim Versuch diese abzusenden in der Logdatei eine NPE geloggt. Das leitete bei der Fehlersuche in die Irre - siehe https://homebanking-hilfe.de/forum/topic.php?p=145321#real145321
+  * BUG: 0797 Wenn eine Auftragsart nicht unterstützt wird, wurde beim Versuch diese abzusenden in der Logdatei eine NPE geloggt. Das leitete bei der Fehlersuche in die Irre - siehe https://homebanking-hilfe.de/forum/topic.php?p=145321#real145321
 
 2019-06-24 Version 2.8.13
 
   * NEW: 0796 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/4282abcadf1ae3813511f7e4d19359a829e71bec - fehlendes Tag ":25:" in MT940 tolerieren
-  * NEW: 0795 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d075bbc6878aac28bcaf4c2dd6383ae33bd15749 mit Fallback-LÃ¤nderkennung DE, wenn in UPD nicht/falsch Ã¼bertragen
-  * NEW: 0794 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 03.06.2019
-  * CHG: 0793 Auswahldialog fÃ¼r das SchlÃ¼sselformat beim Import einer SchlÃ¼sseldatei etwas hÃ¶her gestaltet - Inhalt sonst kaum erkennbar
-  * NEW: 0792 Import von SEPA-Ãœberweisungen: Wenn die PAIN-Datei ein Datum hat, dann Auftrag automatisch als TerminÃ¼berweisung markieren (da wir das Datum ja auch nur dann exportieren, wenn es wirklich eine TerminÃ¼berweisung ist)
-  * NEW: 0791 SEPA-Lastschrift: Whitespaces in GlÃ¤ubiger-Identifikation automatisch entfernen - kann z.Bsp. passieren, wenn man sie via Zwischenablage eingefÃ¼gt hat
-  * NEW: 0790 Im Kategorieauswahldialog die Namen der Ã¼bergeordneten Kategorien mit anzeigen, wenn nach Eingabe eines Suchbegriffs nicht mehr ersichtlich ist, zu welcher Ã¼bergeordneten Kategorie der Eintrag gehÃ¶rt - siehe https://homebanking-hilfe.de/forum/topic.php?t=22753
-  * CHG: 0780 Eingabefelder fÃ¼r Benutzer- und Kundenkennung auf 30 Zeichen verlÃ¤ngert - siehe https://homebanking-hilfe.de/forum/topic.php?p=144122#real144122
-  * DEL: 0779 Haspa-Sonderbehandlung fÃ¼r die neue URL ab 20.04. wieder entfernt - die neue URL ist inzwischen in blz.properties enthalten
-  * BUG: 0778 XML-Export von Adressen war nicht mehr mÃ¶glich
+  * NEW: 0795 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d075bbc6878aac28bcaf4c2dd6383ae33bd15749 mit Fallback-Länderkennung DE, wenn in UPD nicht/falsch übertragen
+  * NEW: 0794 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.06.2019
+  * CHG: 0793 Auswahldialog für das Schlüsselformat beim Import einer Schlüsseldatei etwas höher gestaltet - Inhalt sonst kaum erkennbar
+  * NEW: 0792 Import von SEPA-Überweisungen: Wenn die PAIN-Datei ein Datum hat, dann Auftrag automatisch als Terminüberweisung markieren (da wir das Datum ja auch nur dann exportieren, wenn es wirklich eine Terminüberweisung ist)
+  * NEW: 0791 SEPA-Lastschrift: Whitespaces in Gläubiger-Identifikation automatisch entfernen - kann z.Bsp. passieren, wenn man sie via Zwischenablage eingefügt hat
+  * NEW: 0790 Im Kategorieauswahldialog die Namen der übergeordneten Kategorien mit anzeigen, wenn nach Eingabe eines Suchbegriffs nicht mehr ersichtlich ist, zu welcher übergeordneten Kategorie der Eintrag gehört - siehe https://homebanking-hilfe.de/forum/topic.php?t=22753
+  * CHG: 0780 Eingabefelder für Benutzer- und Kundenkennung auf 30 Zeichen verlängert - siehe https://homebanking-hilfe.de/forum/topic.php?p=144122#real144122
+  * DEL: 0779 Haspa-Sonderbehandlung für die neue URL ab 20.04. wieder entfernt - die neue URL ist inzwischen in blz.properties enthalten
+  * BUG: 0778 XML-Export von Adressen war nicht mehr möglich
   * NEW: 0777 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/0072d401187a69a451eae1cbe928da3e2be6109f mit neuer BLZ-Datei per 20.04.2019
-  * NEW: 0776 Beim Erhalt eines neuen INI-Briefs den BestÃ¤tigungsdialog dedizierten SchlieÃŸen-Button anzeigen um mehrfaches Drucken zu erlauben
-  * BUG: 0775 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/77d70ab120bbbdc06432f0798e1c665417b1cf31 - NPE beim Anlegen einer neuen SchlÃ¼sseldatei
+  * NEW: 0776 Beim Erhalt eines neuen INI-Briefs den Bestätigungsdialog dedizierten Schließen-Button anzeigen um mehrfaches Drucken zu erlauben
+  * BUG: 0775 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/77d70ab120bbbdc06432f0798e1c665417b1cf31 - NPE beim Anlegen einer neuen Schlüsseldatei
   * NEW: 0774 Import von mehreren CAMT-Dateien in einer ZIP-Datei
-  * BUG: 0773 Auswahl einer Kontogruppe in "Einnahmen/Ausgaben" fÃ¼hrte zur Anzeige der Konten, die nicht in der Gruppe sind
-  * BUG: 0772 Elektr. Kontoauszug: "$"-Zeichen im Parameter "KontoauszÃ¼ge speichern in" erlauben - es kann tatsÃ¤chlich Pfade mit diesem Zeichen geben 
+  * BUG: 0773 Auswahl einer Kontogruppe in "Einnahmen/Ausgaben" führte zur Anzeige der Konten, die nicht in der Gruppe sind
+  * BUG: 0772 Elektr. Kontoauszug: "$"-Zeichen im Parameter "Kontoauszüge speichern in" erlauben - es kann tatsächlich Pfade mit diesem Zeichen geben 
   * NEW: 0771 Tolerieren, wenn die Bank nur Warnings - auch mehrere - gesendet hat
   * NEW: 0770 Nach der Synchronisierung nur jene Warnungen in der Zusammenfassung anzeigen, die sich nicht darauf beziehen, dass lediglich bei der Bank keine neuen Daten vorlagen
   * NEW: 0769 Neuer Zeitfilter "Monat: Letzte 12"
@@ -117,207 +117,207 @@ HEAD 2.9 (nightly)
 2019-04-04 Version 2.8.11
 
   * NEW: 0766 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/d0151ef400d59689fc836ccbe6664b45c918aebf
-  * NEW: 0765 FenstergrÃ¶ÃŸe des Kategorie-Auswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143616#real143616
+  * NEW: 0765 Fenstergröße des Kategorie-Auswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143616#real143616
   * NEW: 0764 Fehlermeldungen bei HBCI-Synchronisierung am Ende noch etwas deutlicher hervorheben
-  * CHG: 0763 Default-Limit fÃ¼r PINs auf 50 Zeichen erhÃ¶ht
-  * NEW: 0762 FenstergrÃ¶ÃŸe des Adressauswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143572#real143572
+  * CHG: 0763 Default-Limit für PINs auf 50 Zeichen erhöht
+  * NEW: 0762 Fenstergröße des Adressauswahl-Dialogs speichern - siehe https://homebanking-hilfe.de/forum/topic.php?p=143572#real143572
   * NEW: 0761 Einnahmen/Ausgaben: Deaktivierte Konten ausblendbar - siehe https://homebanking-hilfe.de/forum/topic.php?t=22649
   * NEW: 0760 HASPA: Bei Anlage eines neuen Bankzugangs automatisch die neue URL vorschlagen, wenn das Systemdatum der Umstellungstag 20.04.2019 ist
-  * BUG: 0759 Nachtrag zu BUGZILLA 1860 - Bei langen Banknachricht wurde der Scrollbalken u.U. nicht angezeigt, weil die HÃ¶he des Textes vom Control scheinbar falsch berechnet wurde
-  * NEW: 0758 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 04.03.2019
+  * BUG: 0759 Nachtrag zu BUGZILLA 1860 - Bei langen Banknachricht wurde der Scrollbalken u.U. nicht angezeigt, weil die Höhe des Textes vom Control scheinbar falsch berechnet wurde
+  * NEW: 0758 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.03.2019
   * BUG: 0757 Code 3290 ebenfalls tolerieren (keine Dauerauftraege beim Abruf)
-  * BUG: 0756 Wertebereich fÃ¼r PmtInfId noch etwas eingeschrÃ¤nkt (RestrictedIdentificationSEPA1)
-  * BUG: 0755 Neues Feld mit der Mandatsreferenz wurde in der globalen Suche noch nicht berÃ¼cksichtigt
-  * NEW: 0754 Neues CSV-Exportformat fÃ¼r "Einnahmen/Ausgaben"
+  * BUG: 0756 Wertebereich für PmtInfId noch etwas eingeschränkt (RestrictedIdentificationSEPA1)
+  * BUG: 0755 Neues Feld mit der Mandatsreferenz wurde in der globalen Suche noch nicht berücksichtigt
+  * NEW: 0754 Neues CSV-Exportformat für "Einnahmen/Ausgaben"
   * BUG: 0753 In Export "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" war die Summenzeile nicht korrekt
   * NEW: 0752 Feature #170 - Beim MT940-Export "pro Buchung eine logische Datei" ebenfalls immer chronologisch sortieren
-  * NEW: 0751 Feature #169 - Beim MT940-Export von CAMT-UmsÃ¤tzen die Tags EREF, KREF und MREF mit berÃ¼cksichtigen
-  * BUG: 0750 Bug #168 - Beim MT940-Export von CAMT-UmsÃ¤tzen muss der Verwendungszweck pro 65 Zeichen umgebrochen werden. Mehr ist in MT940 nicht erlaubt, CAMT hat jedoch 140 Zeichen
-  * NEW: 0749 Feature #162 - neues dediziertes Feld fÃ¼r die Mandatsreferenz in Umsatzbuchungen
+  * NEW: 0751 Feature #169 - Beim MT940-Export von CAMT-Umsätzen die Tags EREF, KREF und MREF mit berücksichtigen
+  * BUG: 0750 Bug #168 - Beim MT940-Export von CAMT-Umsätzen muss der Verwendungszweck pro 65 Zeichen umgebrochen werden. Mehr ist in MT940 nicht erlaubt, CAMT hat jedoch 140 Zeichen
+  * NEW: 0749 Feature #162 - neues dediziertes Feld für die Mandatsreferenz in Umsatzbuchungen
   * BUG: 0748 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/4e8226142e319a3b6aabda7ef2a6bfdcf85c2b10 - Verbindung zum Kartenleser nur im Fehlerfall schliessen
-  * NEW: 0747 Sicherheitsabfrage beim LÃ¶schen eines Kontos stark erweitert. Zeigt jetzt auch die Anzahl der ebenfalls zu lÃ¶schenden zugeordneten Daten an sowie eine extra Checkbox 
+  * NEW: 0747 Sicherheitsabfrage beim Löschen eines Kontos stark erweitert. Zeigt jetzt auch die Anzahl der ebenfalls zu löschenden zugeordneten Daten an sowie eine extra Checkbox 
   * BUG: 0746 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/81a27b51809c6d7c0baa2ccd3e176cbf81d6a66c - automatisches Korrigieren von Passport-Dateinamen bei Chipkarten
   * BUG: 0745 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/cac9ce383829e6d2a4a4c9349075b6be6a22dd76 - smsTAN in HHD-Version 1.3 wurde falsch als QR-TAN erkannt.
   * NEW: 0744 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/5b28ebb5e1497c49547f28feeeadc8124bdb2d4e mit neuem PassportStorage
 
 2019-01-30 Version 2.8.10
 
-  * BUG: 0743 Nachtrag zu 0739 - einschrÃ¤nkenden Text "liegen keine" bzw. "keine UmsÃ¤tze" entfernt, da noch weitere Textkombinationen existieren
+  * BUG: 0743 Nachtrag zu 0739 - einschränkenden Text "liegen keine" bzw. "keine Umsätze" entfernt, da noch weitere Textkombinationen existieren
 
 2019-01-29 Version 2.8.9
 
-  * NEW: 0742 "UmsÃ¤tze nach Kategorien" - Export: Bei Format "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" neue Option zur Anzeige einer Gesamtsumme Ã¼ber alle Kategorien
-  * NEW: 0741 Support fÃ¼r End-to-End ID bei Import und Export im CSV-Format
-  * BUG: 0740 Elektr. KontoauszÃ¼ge, die sich genau am Anfang oder Ende des in "Anzeige einschrÃ¤nken" angegebenen Zeitraumes befinden, wurden u.U. nicht angezeigt
-  * NEW: 0741 GeldbetrÃ¤ge in Tabellen fett gedruckt anzeigen. Konfigurierbar mit der neuen Option "Geld-BetrÃ¤gen fett gedruckt anzeigen" unter Hibiscus->Einstellungen->BenutzeroberflÃ¤che
+  * NEW: 0742 "Umsätze nach Kategorien" - Export: Bei Format "PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben" neue Option zur Anzeige einer Gesamtsumme über alle Kategorien
+  * NEW: 0741 Support für End-to-End ID bei Import und Export im CSV-Format
+  * BUG: 0740 Elektr. Kontoauszüge, die sich genau am Anfang oder Ende des in "Anzeige einschränken" angegebenen Zeitraumes befinden, wurden u.U. nicht angezeigt
+  * NEW: 0741 Geldbeträge in Tabellen fett gedruckt anzeigen. Konfigurierbar mit der neuen Option "Geld-Beträgen fett gedruckt anzeigen" unter Hibiscus->Einstellungen->Benutzeroberfläche
   * NEW: 0740 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/c0680a2a91f60d04b60330fea044c4854acda943
-  * NEW: 0739 Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine UmsÃ¤tze vorhanden." sondern nur "3010 - FÃ¼r Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
-  * NEW: 0738 Auf der Startseite in "Hibiscus: Konten-Ãœbersicht" die deaktivierten Konten nicht anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=142089#real142089 
+  * NEW: 0739 Wenn keine Umsaetze vorliegen, senden manche Banken nicht "0020 - Es sind keine Umsätze vorhanden." sondern nur "3010 - Für Konto <nr> liegen keine Daten vor.". Siehe https://homebanking-hilfe.de/forum/topic.php?t=22461&page=fst_unread
+  * NEW: 0738 Auf der Startseite in "Hibiscus: Konten-Übersicht" die deaktivierten Konten nicht anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=142089#real142089 
   * NEW: 0737 Anzeige von Tooltips in den Line-Charts (siehe https://github.com/willuhn/hibiscus/pull/49)
-  * NEW: 0736 Inkrementielles Update des UPD- und BPD-Cache in der Datenbank. Sollte den den Abruf bei Verwendung von MySQL deutlich beschleunigen, da nur noch die geÃ¤nderten Parameter gespeichert werden
-  * NEW: 0735 UnterstÃ¼tzung fÃ¼r chipTAN QR-Code
-  * BUG: 0734 Kam es im TAN-Dialog zu einem Fehler, konnte es u.U. passieren, dass eine Ãœberweisung fÃ¤lschlicherweise als ausgefÃ¼hrt markiert wurde
-  * NEW: 0733 Manuelles Anlegen von elektronischen KontoauszÃ¼gen - siehe https://homebanking-hilfe.de/forum/topic.php?p=141868#real141868
+  * NEW: 0736 Inkrementielles Update des UPD- und BPD-Cache in der Datenbank. Sollte den den Abruf bei Verwendung von MySQL deutlich beschleunigen, da nur noch die geänderten Parameter gespeichert werden
+  * NEW: 0735 Unterstützung für chipTAN QR-Code
+  * BUG: 0734 Kam es im TAN-Dialog zu einem Fehler, konnte es u.U. passieren, dass eine Überweisung fälschlicherweise als ausgeführt markiert wurde
+  * NEW: 0733 Manuelles Anlegen von elektronischen Kontoauszügen - siehe https://homebanking-hilfe.de/forum/topic.php?p=141868#real141868
 
 2019-01-03 Version 2.8.8
 
   * BUG: 0732 Neue obantoo-Version, die gegen iText 5.5.2 compiliert wurde
-  * NEW: 0731 Upgrade von Guava von Version 18.0 auf Version 25.1 wegen AbhÃ¤ngigkeit zu Selenium
-  * NEW: 0730 Abruf elektronischer KontoauszÃ¼ge: Jahr basierend auf Start-Datum, End-Datum oder Erstell-Datum vervollstÃ¤ndigen, wenn von Bank nicht Ã¼bertragen. Nummer basierend auf vorherigen Kontoauszug vervollstÃ¤ndigen, wenn von Bank nicht Ã¼bertragen.
-  * BUG: 0729 Nachtrag zu 0717: MenÃ¼punkt zur Neuberechnung der Salden war versehentlich nur noch bei Online-Konten auswÃ¤hlbar
+  * NEW: 0731 Upgrade von Guava von Version 18.0 auf Version 25.1 wegen Abhängigkeit zu Selenium
+  * NEW: 0730 Abruf elektronischer Kontoauszüge: Jahr basierend auf Start-Datum, End-Datum oder Erstell-Datum vervollständigen, wenn von Bank nicht übertragen. Nummer basierend auf vorherigen Kontoauszug vervollständigen, wenn von Bank nicht übertragen.
+  * BUG: 0729 Nachtrag zu 0717: Menüpunkt zur Neuberechnung der Salden war versehentlich nur noch bei Online-Konten auswählbar
 
 2018-12-28 Version 2.8.7
 
-  * NEW: 0728 Neue VorgabezeitÃ¤ume "Woche: Vorletzte", "Quartal: Vorletztes" und "Jahr: Vorletztes" in der Auswahl des Zeitraumes 
-  * BUG: 0727 Sparquote: Beim Export im CSV-Format wurde die Spalte "Monat" nicht korrekt befÃ¼llt
-  * NEW: 0726 Support fÃ¼r den Import von PDF-Rechnungen im ZUGFeRD-Format (Rechtsklick in der Liste der Ãœberweisungen und "Importieren..." im ContextmenÃ¼ wÃ¤hlen)
-  * BUG: 0725 Neue HBCI4Java-Version mit NPE-Fix wenn die Bank in CAMT-UmsÃ¤tzen die eigene BIC nicht mitsendet - https://github.com/hbci4j/hbci4java/commit/caf42bb190bda7627b3e59705408f18edcfc5619
-  * NEW: 0724 Funktion "Konten aus Bank-Zugang importieren..." in Kontoliste auch dann ermÃ¶glichen, wenn kein Konto ausgewÃ¤hlt ist, an dem das HBCI-Verfahren festgemacht werden kann
-  * NEW: 0723 Adressauswahldialog etwas hÃ¶her gestaltet und Button "Neue Adresse" entfernt
-  * NEW: 0722 EndToEnd-ID auch in globaler und Kategorie-Suche prÃ¼fen 
-  * NEW: 0721 BUGZILLA 1872: Auch bei deaktivierter ChecksummenprÃ¼fung von IBANs zumindest bei deutschen IBANs die LÃ¤nge von 22 Zeichen prÃ¼fen
-  * BUG: 0720 Nachtrag zu 0717: Freigabe des KontextmenÃ¼eintrages fehlte noch
-  * BUG: 0719 Einnahmen/Ausgaben: In den Spalten "Einnahmen" und "Ausgaben" wurden Vormerkbuchungen fÃ¤lschlicherweise mit berÃ¼cksichtigt
+  * NEW: 0728 Neue Vorgabezeitäume "Woche: Vorletzte", "Quartal: Vorletztes" und "Jahr: Vorletztes" in der Auswahl des Zeitraumes 
+  * BUG: 0727 Sparquote: Beim Export im CSV-Format wurde die Spalte "Monat" nicht korrekt befüllt
+  * NEW: 0726 Support für den Import von PDF-Rechnungen im ZUGFeRD-Format (Rechtsklick in der Liste der Überweisungen und "Importieren..." im Contextmenü wählen)
+  * BUG: 0725 Neue HBCI4Java-Version mit NPE-Fix wenn die Bank in CAMT-Umsätzen die eigene BIC nicht mitsendet - https://github.com/hbci4j/hbci4java/commit/caf42bb190bda7627b3e59705408f18edcfc5619
+  * NEW: 0724 Funktion "Konten aus Bank-Zugang importieren..." in Kontoliste auch dann ermöglichen, wenn kein Konto ausgewählt ist, an dem das HBCI-Verfahren festgemacht werden kann
+  * NEW: 0723 Adressauswahldialog etwas höher gestaltet und Button "Neue Adresse" entfernt
+  * NEW: 0722 EndToEnd-ID auch in globaler und Kategorie-Suche prüfen 
+  * NEW: 0721 BUGZILLA 1872: Auch bei deaktivierter Checksummenprüfung von IBANs zumindest bei deutschen IBANs die Länge von 22 Zeichen prüfen
+  * BUG: 0720 Nachtrag zu 0717: Freigabe des Kontextmenüeintrages fehlte noch
+  * BUG: 0719 Einnahmen/Ausgaben: In den Spalten "Einnahmen" und "Ausgaben" wurden Vormerkbuchungen fälschlicherweise mit berücksichtigt
   * CHG: 0718 Spaltenbreiten beim Druck der Umsatzliste angepasst. Durch die langen CAMT-Verwendungszwecke wurde die Zweck-Spalte zu breit - https://homebanking-hilfe.de/forum/topic.php?p=140955#real140955
   * NEW: 0717 Neuberechnung der Zwischensummen bei allen Konten erlauben - nicht nur bei Offline-Konten
-  * NEW: 0716 Farbe GrÃ¼n und Rot beim PDF-Export etwas dunkler gestaltet, damit es beim Ausdruck in Schwarz/Weiss besser lesbar ist
+  * NEW: 0716 Farbe Grün und Rot beim PDF-Export etwas dunkler gestaltet, damit es beim Ausdruck in Schwarz/Weiss besser lesbar ist
   
 2018-11-01 Version 2.8.6
 
-  * NEW: 0715 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 03.12.2018 (enthaelt auch ein Fix, das dazu fuehrte, dass auch bei korrekten Pruefziffern angezeigt wurde, die Pruefziffer sei nicht kontrolliert worden)
-  * NEW: 0714 Spalte "art" in Tabelle "umsatz" auf 500 Zeichen vergrÃ¶ÃŸert - siehe https://homebanking-hilfe.de/forum/topic.php?p=140726
+  * NEW: 0715 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.12.2018 (enthaelt auch ein Fix, das dazu fuehrte, dass auch bei korrekten Pruefziffern angezeigt wurde, die Pruefziffer sei nicht kontrolliert worden)
+  * NEW: 0714 Spalte "art" in Tabelle "umsatz" auf 500 Zeichen vergrößert - siehe https://homebanking-hilfe.de/forum/topic.php?p=140726
   
 2018-10-26 Version 2.8.5
 
   * NEW: 0713 Neue HBCI4Java-Version mit korrigierten Umsatzabruf per CAMT auf Konten mit Soll-Saldo, Zwischensummen waren u.U. falsch - https://github.com/hbci4j/hbci4java/commit/5bac6886d5ef8f0c08aec8cc5c5ff35d866ce221
-  * NEW: 0712 Kopieren/Verschieben der Kontoauszugsdateien jetzt mÃ¶glich
+  * NEW: 0712 Kopieren/Verschieben der Kontoauszugsdateien jetzt möglich
   * NEW: 0711 BUGZILLA 1863 - Daten des elektronischen Kontoauszuges bearbeitbar
-  * NEW: 0710 Die rohen CAMT-Daten kÃ¶nnen jetzt per "umsatz.camt.path=<Pfad>" in 'de.willuhn.jameica.hbci.HBCI.properties' gespeichert werden
-  * DEL: 0709 ZusÃ¤tzliche LÃ¤ngenprÃ¼fung unter BerÃ¼cksichtigung des "ÃŸ" entfernt - in SEPA-Zeiten vermutlich nicht mehr nÃ¶tig
-  * DEL: 0708 Hinweis mit der LÃ¤ngenbeschrÃ¤nkung der Verwendungszweck-Zeilen beim manuellen Bearbeiten eines Umsatzes entfernt
+  * NEW: 0710 Die rohen CAMT-Daten können jetzt per "umsatz.camt.path=<Pfad>" in 'de.willuhn.jameica.hbci.HBCI.properties' gespeichert werden
+  * DEL: 0709 Zusätzliche Längenprüfung unter Berücksichtigung des "ß" entfernt - in SEPA-Zeiten vermutlich nicht mehr nötig
+  * DEL: 0708 Hinweis mit der Längenbeschränkung der Verwendungszweck-Zeilen beim manuellen Bearbeiten eines Umsatzes entfernt
   * NEW: 0707 Neue HBCI4Java-Version mit Trimmen von Leerzeichen bei Umsatzabruf per CAMT - https://github.com/hbci4j/hbci4java/commit/7bba2509cc97f66aa932d916ae6a229170121448
   * NEW: 0706 Wenn die Bank trotz CAMT die Verwendungszweck-Zeilen alle 27 Zeichen trennt, dann neu zusammensetzen - siehe https://homebanking-hilfe.de/forum/topic.php?p=140438#real140438
-  * CHG: 0705 Parameter "search.ignore.whitespace" nicht permanent neu laden, performance-kritisch beim Laden der UmsÃ¤tze
-  * NEW: 0704 CSV-Import - zuletzt ausgewÃ¤hltes Profil automatisch als Vorauswahl fÃ¼r den nÃ¤chsten Import speichern
+  * CHG: 0705 Parameter "search.ignore.whitespace" nicht permanent neu laden, performance-kritisch beim Laden der Umsätze
+  * NEW: 0704 CSV-Import - zuletzt ausgewähltes Profil automatisch als Vorauswahl für den nächsten Import speichern
   * BUG: 0703 Wenn EREF beim Umsatzabruf per MT940 nicht korrekt aus Verwendungszweck extrahiert wurde und mehr als 100 Zeichen lang ist, dann abschneiden
-  * NEW: 0702 Limit fÃ¼r MaximallÃ¤nge des Verwendungszwecks in Umsatzbuchungen auf volle 255 Zeichen erhÃ¶ht, damit auch Nicht-SEPA-UmsÃ¤tze reinpassen
+  * NEW: 0702 Limit für Maximallänge des Verwendungszwecks in Umsatzbuchungen auf volle 255 Zeichen erhöht, damit auch Nicht-SEPA-Umsätze reinpassen
   * NEW: 0701 Umsatz-Export im PDF-Format jetzt wahlweise gruppierbar nach Konto oder nach Kategorie
 
 2018-09-26 Version 2.8.4
 
   * NEW: 0700 Beim Empfang neuer UPD gleich die BPD mit aktualisieren
-  * NEW: 0699 Neue HBCI4Java-Version mit Server-Adressen fÃ¼r IsBank - https://github.com/hbci4j/hbci4java/commit/649179cd52cc57bc540ce224cc8ef6ebaf0a806e
-  * NEW: 0698 Scrollbalken in Einstellungsdialog fÃ¼r elektr. Kontoauszug fÃ¼r kleine Displays anzeigen, FenstergrÃ¶ÃŸe speichern
-  * NEW: 0697 BUGZILLA 1495 - automatisches Entfernen nicht unterstÃ¼zter Zeichen beim EinfÃ¼gen des Verwendungszweck per Zwischenablage
+  * NEW: 0699 Neue HBCI4Java-Version mit Server-Adressen für IsBank - https://github.com/hbci4j/hbci4java/commit/649179cd52cc57bc540ce224cc8ef6ebaf0a806e
+  * NEW: 0698 Scrollbalken in Einstellungsdialog für elektr. Kontoauszug für kleine Displays anzeigen, Fenstergröße speichern
+  * NEW: 0697 BUGZILLA 1495 - automatisches Entfernen nicht unterstüzter Zeichen beim Einfügen des Verwendungszweck per Zwischenablage
   * NEW: 0696 Neue HBCI4Java-Version mit aktualisierter Server-Adresse der Sparda-Bank Berlin - https://github.com/hbci4j/hbci4java/commit/c91f6ed2c5b6b5ddc8d29c4ec6cb66428af6f15e
-  * NEW: 0695 Support fÃ¼r dedizierte EndToEnd-ID in UmsÃ¤tzen
+  * NEW: 0695 Support für dedizierte EndToEnd-ID in Umsätzen
   * BUG: 0694 NPE beim Parsen von CAMT-Dateien - https://github.com/hbci4j/hbci4java/commit/b2b607ad8b72012978badab5f8cc39a8f8dfccaa
   * CHG: 0693 Nachtrag zu Bugzilla 1864 - Kontofilter in der Liste der Konten auf der Startseite ausblenden, dort ist der Platz dafuer zu knapp
   * NEW: 0692 BUGZILLA 1864 - Filterkriterien in der Liste der Konten (u.a. deaktivierte Konten ausblenden)
-  * NEW: 0691 Suchbegriff "flicker" in die Liste der TAN-Verfahren aufgenommen, fÃ¼r die chipTAN USB in Frage kommt
+  * NEW: 0691 Suchbegriff "flicker" in die Liste der TAN-Verfahren aufgenommen, für die chipTAN USB in Frage kommt
   * NEW: 0690 Sonderbehandlung fuer Fehlerfall https://homebanking-hilfe.de/forum/topic.php?p=139423#real139423 (Fehler beim Update der H2-Datenbank durch fehlerhaften H2-Treiber)
-  * NEW: 0689 BUGZILLA 1861 - UnterstÃ¼tzung fÃ¼r benutzerspezifische CSV-Import-Profile
-  * NEW: 0688 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 03.09.2018
-  * NEW: 0687 Nur jene Synchronizisierungsoptionen anzeigen, die das Backend unterstÃ¼tzt
-  * NEW: 0686 Manueller Import von UmsÃ¤tzen im CAMT-Format
-  * BUG: 0685 BUGZILLA 1860 - Kein Scrollbalken bei Anzeige einer Ã¼berlangen Banknachricht
-  * NEW: 0684 BUGZILLA 1621 - Support fÃ¼r Umsatz-Abruf im CAMT-Format
-  * BUG: 0683 Neuer PIN/TAN-Bankzugang liess sich nicht mehr anlegen, da die ChipTAN-USB-Checkbox zu dem Zeitpunkt nicht korrekt berÃ¼cksichtigt wurde
+  * NEW: 0689 BUGZILLA 1861 - Unterstützung für benutzerspezifische CSV-Import-Profile
+  * NEW: 0688 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.09.2018
+  * NEW: 0687 Nur jene Synchronizisierungsoptionen anzeigen, die das Backend unterstützt
+  * NEW: 0686 Manueller Import von Umsätzen im CAMT-Format
+  * BUG: 0685 BUGZILLA 1860 - Kein Scrollbalken bei Anzeige einer überlangen Banknachricht
+  * NEW: 0684 BUGZILLA 1621 - Support für Umsatz-Abruf im CAMT-Format
+  * BUG: 0683 Neuer PIN/TAN-Bankzugang liess sich nicht mehr anlegen, da die ChipTAN-USB-Checkbox zu dem Zeitpunkt nicht korrekt berücksichtigt wurde
   * NEW: 0682 Neue HBCI4Java-Version mit CAMT-Bugfix - https://github.com/hbci4j/hbci4java/commit/3dc9ebf080810acc2636aef0c9413e0d40672dbb
-  * NEW: 0681 Neue HBCI4Java-Version mit UnterstÃ¼tzung fÃ¼r CAMT - https://github.com/hbci4j/hbci4java/commit/ecca11320308b1fa1dc40bb37e6571d629064471
+  * NEW: 0681 Neue HBCI4Java-Version mit Unterstützung für CAMT - https://github.com/hbci4j/hbci4java/commit/ecca11320308b1fa1dc40bb37e6571d629064471
   * BUG: 0680 BUGZILLA 1858 - Hibiscus sucht auch bei deaktivierter chipTAN-USB-Option weiter nach Kartenlesern
-  * NEW: 0679 Support fÃ¼r HKKAZ/HKKAN in Segment-Version 7 - https://github.com/hbci4j/hbci4java/commit/e3372a339bd5b9f0c2cea80155199f475dd46ed4
+  * NEW: 0679 Support für HKKAZ/HKKAN in Segment-Version 7 - https://github.com/hbci4j/hbci4java/commit/e3372a339bd5b9f0c2cea80155199f475dd46ed4
   * DEL: 0678 Option "Dauerhafte Internetverbindung, Aufforderung zum Verbinden nicht erforderlich" aus den Einstellungen entfernt, braucht keiner mehr 
-  * NEW: 0677 Option "Alle Daten des Verwendungszwecks anzeigen" auch in Liste der UmsÃ¤tze konfigurierbar (per Config-Button oben rechts)
-  * NEW: 0676 In der Auswertung "UmsÃ¤tze nach Kategorien -> Im Verlauf" kÃ¶nnen durch Rechtsklick in die Grafik auch andere Intervalle (Jahr, Monat, Woche) ausgewÃ¤hlt werden. 
-  * BUG: 0675 In Kontoliste in der Spalte "verfÃ¼gbarer Saldo" das WÃ¤hrungskennzeichen des konkreten Kontos verwenden und nicht des ersten gefundenen 
-  * NEW: 0674 Wenn eine Bank im Verwendungszweck zwar das "SVWZ"-Tag liefert, es aber keinen Wert enthÃ¤lt, wird ebenfalls ein Fallback auf die Anzeige des kompletten Verwendungszweck gemacht
-  * NEW: 0673 Beim MT940-Export in Feld :25: das WÃ¤hrungskennzeichen weglassen und die Auszugsnummer in Feld ":28C:" mit dem Pseudowert "1" ausgeben - SAP benÃ¶tigt das fÃ¼r den Import
-  * NEW: 0672 Fehler beim Ermitteln der Kartenleser-Features tolerieren (der tanJACK USB scheint das nicht zu unterstÃ¼tzen) - https://github.com/hbci4j/hbci4java/commit/22b702505bc9aef54bdb7b6663c948ce4b0b91cf
-  * BUG: 0671 Export-Optionen "Saldo ausblenden" und "Summenzeile anzeigen" funktionierten nur, wenn die Checkboxen beim Export betÃ¤tigt wurden - https://homebanking-hilfe.de/forum/topic.php?p=138415
+  * NEW: 0677 Option "Alle Daten des Verwendungszwecks anzeigen" auch in Liste der Umsätze konfigurierbar (per Config-Button oben rechts)
+  * NEW: 0676 In der Auswertung "Umsätze nach Kategorien -> Im Verlauf" können durch Rechtsklick in die Grafik auch andere Intervalle (Jahr, Monat, Woche) ausgewählt werden. 
+  * BUG: 0675 In Kontoliste in der Spalte "verfügbarer Saldo" das Währungskennzeichen des konkreten Kontos verwenden und nicht des ersten gefundenen 
+  * NEW: 0674 Wenn eine Bank im Verwendungszweck zwar das "SVWZ"-Tag liefert, es aber keinen Wert enthält, wird ebenfalls ein Fallback auf die Anzeige des kompletten Verwendungszweck gemacht
+  * NEW: 0673 Beim MT940-Export in Feld :25: das Währungskennzeichen weglassen und die Auszugsnummer in Feld ":28C:" mit dem Pseudowert "1" ausgeben - SAP benötigt das für den Import
+  * NEW: 0672 Fehler beim Ermitteln der Kartenleser-Features tolerieren (der tanJACK USB scheint das nicht zu unterstützen) - https://github.com/hbci4j/hbci4java/commit/22b702505bc9aef54bdb7b6663c948ce4b0b91cf
+  * BUG: 0671 Export-Optionen "Saldo ausblenden" und "Summenzeile anzeigen" funktionierten nur, wenn die Checkboxen beim Export betätigt wurden - https://homebanking-hilfe.de/forum/topic.php?p=138415
 
 2018-06-27 Version 2.8.3
 
-  * NEW: 0670 chipTAN USB auch dann anbieten, wenn zwar chipTAN optisch ausgewÃ¤hlt aber ein Kartenleser gefunden wurde 
-  * NEW: 0669 Support fÃ¼r chipTAN USB per ReinerSCT tanJACK USB - https://github.com/hbci4j/hbci4java/commit/3d166d85aec80a1e8da0439fccde4e8c437c3ff2
-  * NEW: 0668 Neuer Parameter "database.driver.h2.parameters" in 'de.willuhn.jameica.hbci.rmi.HBCIDBService.properties' zum HinzufÃ¼gen eigener JDBC-Parameter
-  * CHG: 0667 0x6D im SW1 von Finalize-TX tolerieren, manche Kartenleser unterstÃ¼tzen das wohl nicht - https://github.com/hbci4j/hbci4java/commit/8bfed0a12af312a88ba8270f5e67810545c4866f
-  * CHG: 0666 Typo im Dialog zum AusfÃ¼hren einer Ãœberweisung
-  * CHG: 0665 Beim LÃ¶schen der BPD explizit auch die UPD-Versionsnummer lÃ¶schen sowie die BPD/UPD-Caches als expired markieren um auch ein Update des UPD-Caches zu forcieren
-  * CHG: 0664 Auto-Korrektur des Dateinamens, wenn die Card-ID ungueltige Zeichen enthÃ¤lt, die nicht als Dateiname abbildbar wÃ¤ren https://github.com/hbci4j/hbci4java/commit/00ff4491a63edff7179dea3ed4a978993b64f5b2
-  * NEW: 0663 Beim Abgleich der Konten die Kundenkennung mit berÃ¼cksichtigen
+  * NEW: 0670 chipTAN USB auch dann anbieten, wenn zwar chipTAN optisch ausgewählt aber ein Kartenleser gefunden wurde 
+  * NEW: 0669 Support für chipTAN USB per ReinerSCT tanJACK USB - https://github.com/hbci4j/hbci4java/commit/3d166d85aec80a1e8da0439fccde4e8c437c3ff2
+  * NEW: 0668 Neuer Parameter "database.driver.h2.parameters" in 'de.willuhn.jameica.hbci.rmi.HBCIDBService.properties' zum Hinzufügen eigener JDBC-Parameter
+  * CHG: 0667 0x6D im SW1 von Finalize-TX tolerieren, manche Kartenleser unterstützen das wohl nicht - https://github.com/hbci4j/hbci4java/commit/8bfed0a12af312a88ba8270f5e67810545c4866f
+  * CHG: 0666 Typo im Dialog zum Ausführen einer Überweisung
+  * CHG: 0665 Beim Löschen der BPD explizit auch die UPD-Versionsnummer löschen sowie die BPD/UPD-Caches als expired markieren um auch ein Update des UPD-Caches zu forcieren
+  * CHG: 0664 Auto-Korrektur des Dateinamens, wenn die Card-ID ungueltige Zeichen enthält, die nicht als Dateiname abbildbar wären https://github.com/hbci4j/hbci4java/commit/00ff4491a63edff7179dea3ed4a978993b64f5b2
+  * NEW: 0663 Beim Abgleich der Konten die Kundenkennung mit berücksichtigen
 
 2018-06-05 Version 2.8.2
 
   * NEW: 0662 BUGZILLA 1850 - Wenn ein Kontoauszugsintervall konfiguriert wurde, automatisch auch die korrespondierende Synchronisationsoption "Elektronischen Kontoauszug abrufen" des Kontos aktivieren
-  * NEW: 0661 Parsen der TAN bei chipTAN USB war fehlerhaft bei TANs mit ungerader LÃ¤nge https://github.com/hbci4j/hbci4java/commit/2266407b15ed137c283080f107445e15e25f21d0
+  * NEW: 0661 Parsen der TAN bei chipTAN USB war fehlerhaft bei TANs mit ungerader Länge https://github.com/hbci4j/hbci4java/commit/2266407b15ed137c283080f107445e15e25f21d0
   * NEW: 0660 Die Option "Alle Daten des Verwendungszwecks anzeigen" wirkt sich jetzt auch beim Umsatz-Export im CSV-Format aus
   * NEW: 0659 Verwendung von ChipTAN USB und Name des Kartenlesers in Bank-Zugang konfigurierbar 
   * CHG: 0658 BUGZILLA 1848 -  Beim Anlegen der Konten statt Name die Kontoart beruecksichtigen
-  * NEW: 0657 Support fÃ¼r ChipTAN USB
+  * NEW: 0657 Support für ChipTAN USB
   * NEW: 0656 Neue HBCI4Java-Version 3.0.17-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/2266407b15ed137c283080f107445e15e25f21d0
-  * NEW: 0655 Bei Klick auf "Neuer Bankzugang..." im Kontextmenu eines Verfahrens dieses direkt vorauswÃ¤hlen
-  * NEW: 0654 Befehl "UmsÃ¤tze importieren..." auch im Kontextmenu von Konten. Viele User suchen dort nach der Import-MÃ¶glichkeit von UmsÃ¤tzen
+  * NEW: 0655 Bei Klick auf "Neuer Bankzugang..." im Kontextmenu eines Verfahrens dieses direkt vorauswählen
+  * NEW: 0654 Befehl "Umsätze importieren..." auch im Kontextmenu von Konten. Viele User suchen dort nach der Import-Möglichkeit von Umsätzen
   * BUG: 0653 Kontoauszug per HKEKP: Auch in Segment-Version 1 IBAN/BIC verwenden - https://github.com/hbci4j/hbci4java/commit/25524d041a6b85fad88a3c4d65fc519f242dd459
   * BUG: 0652 Sparquote - tabellarische Ansicht: Spalte "Monat" wurde nicht korrekt chronologisch (sondern alphabetisch) sortiert
   
 2018-05-23 Version 2.8.1
 
-  * CHG: 0651 System-Anforderung geÃ¤ndert: Jameica in Version 2.8.0+
+  * CHG: 0651 System-Anforderung geändert: Jameica in Version 2.8.0+
   
 2018-05-22 Version 2.8.0
 
   * NEW: 0650 HiDPI-Icons
   * NEW: 0649 Neue HBCI4Java-Version 3.0.16-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/035342b8bd84574b914eb779cf836d00abbcd960
-  * NEW: 0648 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 04.06.2018
-  * BUG: 0647 Wenn in der Auswertung "Sparquote" als Zeitraum "Alle UmsÃ¤tze" ausgewÃ¤hlt wurde, wurde kein gÃ¼ltiges Startdatum ermittelt (Bug war in Zusammenhang mit BUGZILLA 1842 entstanden)
-  * NEW: 0646 Zustand von "Summe-Zeile am Ende der Datei anfÃ¼gen" und "Spalte 'Saldo' in Export ausblenden" im Export-Dialog speichern
-  * NEW: 0645 In der Summenzeile der UmsÃ¤tze auch die Summen der Einnahmen und Ausgaben der markierten UmsÃ¤tze anzeigen
+  * NEW: 0648 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.06.2018
+  * BUG: 0647 Wenn in der Auswertung "Sparquote" als Zeitraum "Alle Umsätze" ausgewählt wurde, wurde kein gültiges Startdatum ermittelt (Bug war in Zusammenhang mit BUGZILLA 1842 entstanden)
+  * NEW: 0646 Zustand von "Summe-Zeile am Ende der Datei anfügen" und "Spalte 'Saldo' in Export ausblenden" im Export-Dialog speichern
+  * NEW: 0645 In der Summenzeile der Umsätze auch die Summen der Einnahmen und Ausgaben der markierten Umsätze anzeigen
   * NEW: 0644 BUGZILLA 1231 - Elektronischer Kontoauszug via HKEKA/HKEKP
-  * BUG: 0643 BUGZILLA 1845 - Beim Speichern eines Dauerauftrages wurde nicht geprÃ¼ft, ob ein Konto ausgewÃ¤hlt wurde
-  * NEW: 0642 BUGZILLA 1844 - Button "Speichern und ZurÃ¼ck" in Umsatz-Detailanzeige
-  * BUG: 0641 BUGZILLA 1843 - "Nur ungeprÃ¼fte UmsÃ¤tze" Filter funktionierte nicht mehr seit "NEW: 0638" (fehlte ein NULL-Check)
-  * CHG: 0640 Begriff "SchlÃ¼sseldiskette" generell gegen "SchlÃ¼sseldatei" ersetzt
+  * BUG: 0643 BUGZILLA 1845 - Beim Speichern eines Dauerauftrages wurde nicht geprüft, ob ein Konto ausgewählt wurde
+  * NEW: 0642 BUGZILLA 1844 - Button "Speichern und Zurück" in Umsatz-Detailanzeige
+  * BUG: 0641 BUGZILLA 1843 - "Nur ungeprüfte Umsätze" Filter funktionierte nicht mehr seit "NEW: 0638" (fehlte ein NULL-Check)
+  * CHG: 0640 Begriff "Schlüsseldiskette" generell gegen "Schlüsseldatei" ersetzt
   * BUG: 0639 BUGZILLA 1842 - Sparquote: Wenn Stichtag am Ende des Monats definiert ist, kann es bei Konten mit sehr wenigen Buchungen vorkommen, dass eine Buchung dem falschen Auswertungsmonat zugeordnet wird
-  * NEW: 0638 Beim Laden der UmsÃ¤tze die GeprÃ¼ft-Markierung (obwohl Bitmask) per SQL-Query filtern, um die zu Ã¼bertragende Datenmenge bei externer MySQL-DB zu reduzieren
+  * NEW: 0638 Beim Laden der Umsätze die Geprüft-Markierung (obwohl Bitmask) per SQL-Query filtern, um die zu übertragende Datenmenge bei externer MySQL-DB zu reduzieren
   * NEW: 0637 Neue HBCI4Java-Version 3.0.15-SNAPSHOT https://github.com/hbci4j/hbci4java/commit/1bef1a798d4359e15fce65092a3d82630df2e6ec
-  * NEW: 0636 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 05.03.2018
+  * NEW: 0636 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.03.2018
   * NEW: 0635 BUGZILLA 1841 - In Pruefziffern-Methode 90 fehlte die Variante G
-  * NEW: 0634 Neuer Panel-Button "+" oben rechts in der Detailansicht von AuftrÃ¤gen, um schnell einen neuen Auftrag erstellen zu kÃ¶nnen
+  * NEW: 0634 Neuer Panel-Button "+" oben rechts in der Detailansicht von Aufträgen, um schnell einen neuen Auftrag erstellen zu können
   * NEW: 0633 Offizielle HBCI-Produktregistrierung von Hibiscus hinterlegt: A44C2953982351617D475443E - siehe http://hbci-zka.de/register/register_faq.htm
   * NEW: 0632 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/6490158f2a7d0a39480fbf622c96ef5bfe594bd9
-  * NEW: 0631 GeprÃ¼ft-Markierung von UmsÃ¤tzen mit den korrespondierenden Buchungen in SynTAX synchronisieren
-  * BUG: 0630 BUGZILLA 1836 - AusgefÃ¼hrt-Markierung eines Auftrages kann fehlschlagen, wenn unbekannte Bankverbindung enthalten ist und ChecksummenprÃ¼fung aktiv
+  * NEW: 0631 Geprüft-Markierung von Umsätzen mit den korrespondierenden Buchungen in SynTAX synchronisieren
+  * BUG: 0630 BUGZILLA 1836 - Ausgeführt-Markierung eines Auftrages kann fehlschlagen, wenn unbekannte Bankverbindung enthalten ist und Checksummenprüfung aktiv
   * NEW: 0629 BUGZILLA 1782 - Neues Feld "Notiz" in Umsatz-Kategorien
-  * BUG: 0628 BUGZILLA 1835 - Erstellen einer Ãœberweisung aus einem Umsatz - wenn Umsatz noch BLZ statt BIC enthÃ¤lt, dann automatisch in BIC konvertieren
-  * NEW: 0627 Umbrechen langer Verwendungszwecke und PrÃ¼fen der LÃ¤nge erst beim Bearbeiten von UmsÃ¤tzen, nicht beim Anzeigen
-  * NEW: 0626 Beim Daten-Export nur die fÃ¼r das ausgewÃ¤hlte Format zulÃ¤ssigen Export-Optionen aktivieren
-  * NEW: 0625 Ãœberlange Verwendungszweck-Zeilen beim CSV-Import neu umbrechen
+  * BUG: 0628 BUGZILLA 1835 - Erstellen einer Überweisung aus einem Umsatz - wenn Umsatz noch BLZ statt BIC enthält, dann automatisch in BIC konvertieren
+  * NEW: 0627 Umbrechen langer Verwendungszwecke und Prüfen der Länge erst beim Bearbeiten von Umsätzen, nicht beim Anzeigen
+  * NEW: 0626 Beim Daten-Export nur die für das ausgewählte Format zulässigen Export-Optionen aktivieren
+  * NEW: 0625 Überlange Verwendungszweck-Zeilen beim CSV-Import neu umbrechen
   * NEW: 0624 BUGZILLA 1317 - MySQL-Datenbank-Passwort in Config-Datei automatisch verschluesseln
   * NEW: 0623 Abrufen der Banknachrichten in den Synchronisierungsoptionen pro Konto abschaltbar (Option "Banknachrichten abrufen")
-  * NEW: 0622 Hinweis-Text anzeigen, wenn AusfÃ¼hrungsdatum einer TerminÃ¼berweisung in Vergangenheit liegt
-  * NEW: 0621 Ãœberlange Geldinstitut-Bezeichnungen verkÃ¼rzt anzeigen
-  * NEW: 0620 MÃ¶glichkeit, SammelauftrÃ¤ge zurÃ¼ck in EinzelauftrÃ¤ge zu teilen (per Contextmenu)
+  * NEW: 0622 Hinweis-Text anzeigen, wenn Ausführungsdatum einer Terminüberweisung in Vergangenheit liegt
+  * NEW: 0621 Überlange Geldinstitut-Bezeichnungen verkürzt anzeigen
+  * NEW: 0620 Möglichkeit, Sammelaufträge zurück in Einzelaufträge zu teilen (per Contextmenu)
   * NEW: 0619 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/a43967b6385dc2a13dac7a778f014e88d7a7fd41
   * NEW: 0618 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/5516eef788a5c69727f8b27473b00a707e619c43
   * NEW: 0617 BUGZILLA 1834 - Erzeugen von Gegenbuchungen auch auf dem selben Konto erlauben
   * BUG: 0616 BUGZILLA 1833 - Gegenbuchung erzeugen aktualisiert nicht Saldo
-  * NEW: 0615 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 04.12.2017
-  * NEW: 0614 Zwei neue ZeitrÃ¤ume in der Auswahlliste (letzte 7 und letzte 30 Tage)
+  * NEW: 0615 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2017
+  * NEW: 0614 Zwei neue Zeiträume in der Auswahlliste (letzte 7 und letzte 30 Tage)
   * NEW: 0613 FinTS 3 bei Erstellung eines neuen PIN/TAN-Bankzugangs per Default vorauswaehlen
   * NEW: 0612 Langen Text in ChipTAN-Dialog bei kleinen Displays scrollbar machen. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=21572&highlight=&page=last#last_post 
   * NEW: 0611 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/3c21011d52075c3d2afe0ce5043d187f432834cd
-  * NEW: 0610 BUGZILLA 1827 - Automatisches Cachen von PIN-Eingaben fÃ¼r die Dauer der Synchronisierung
-  * NEW: 0609 BUGZILLA 1826 - Beim Erstellen eines INI-Briefes prÃ¼fen, dass sich dieser nicht im Programm-Ordner befindet 
-  * BUG: 0608 Enthaltene Buchungen von SammelauftrÃ¤gen liessen sich nicht nach Betrag sortieren (wurden stattdessen nach Auftrag sortiert)
+  * NEW: 0610 BUGZILLA 1827 - Automatisches Cachen von PIN-Eingaben für die Dauer der Synchronisierung
+  * NEW: 0609 BUGZILLA 1826 - Beim Erstellen eines INI-Briefes prüfen, dass sich dieser nicht im Programm-Ordner befindet 
+  * BUG: 0608 Enthaltene Buchungen von Sammelaufträgen liessen sich nicht nach Betrag sortieren (wurden stattdessen nach Auftrag sortiert)
   * NEW: 0607 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/commit/b4311a4345c91cc84ddf835de9776d5997c11f46
-  * NEW: 0606 Offene AuftrÃ¤ge ohne AusfÃ¼hrungsdatum bei Sortierung nach "AusfÃ¼hrungsdatum" oben vor den aktuellen AuftrÃ¤gen einsortieren statt unten bei den alten
-  * NEW: 0605 Zwei neue Optionen im PDF-Export ("Im Verwendungszweck 'SVWZ+' extrahieren" und "Zeile 'Summe' in Export anfÃ¼gen") - https://github.com/willuhn/hibiscus/pull/32
+  * NEW: 0606 Offene Aufträge ohne Ausführungsdatum bei Sortierung nach "Ausführungsdatum" oben vor den aktuellen Aufträgen einsortieren statt unten bei den alten
+  * NEW: 0605 Zwei neue Optionen im PDF-Export ("Im Verwendungszweck 'SVWZ+' extrahieren" und "Zeile 'Summe' in Export anfügen") - https://github.com/willuhn/hibiscus/pull/32
   
 2017-06-27 Version 2.6.20
 
-  * NEW: 0604 HBCI-Protokolle kÃ¶nnen jetzt auch ohne Konto-Bezug exportiert werden - z.Bsp. nach dem Testen eines Bankzugangs (BPD-Abruf)
-  * NEW: 0603 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 05.06.2017
+  * NEW: 0604 HBCI-Protokolle können jetzt auch ohne Konto-Bezug exportiert werden - z.Bsp. nach dem Testen eines Bankzugangs (BPD-Abruf)
+  * NEW: 0603 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.06.2017
   * NEW: 0602 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.0.11-SNAPSHOT
   * NEW: 0601 BUGZILLA 1809 - PIN-Cache nicht mehr leeren sondern als dirty markieren. PIN-Abfrage erscheint nach Fehler zwar immer noch, PIN ist dann aber bereits vorbelegt und muss nicht neu eingegeben werden 
   * CHG: 0600 Wenn in den Umsaetzen IBAN/BIC vorhanden sind, dann Kontonummer/BLZ ignorieren (bisher wurden IBAN/BIC nur verwendet, wenn Kontonummer/BLZ fehlten - was in aller Regel auch zutraf) 
@@ -326,170 +326,170 @@ HEAD 2.9 (nightly)
   * NEW: 0597 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.0.10
   * CHG: 0596 Beim Bearbeiten eines Umsatzes je nach Kontext im Eingabefeld automatisch zwischen BLZ und BIC umschalten 
   * NEW: 0595 Neue HBCI4Java-Version https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.0.9
-  * BUG: 0594 BUGZILLA 1806 - Abrufen der DauerauftrÃ¤ge kann fehlschlagen, wenn die Bank die SEPA-Daten mit einer anderen PAIN-Version sendet, als im SEPA-Deskriptor angegeben - siehe https://github.com/hbci4j/hbci4java/commit/23246977919502faf5a93d705266dd2ce9971f7f 
-  * CHG: 0593 Der MySQL-JDBC-Treiber verlangt jetzt die explizite Angabe der Zeitzone per "&serverTimezone=Europe/Paris" in der JDBC-URL, wenn der Server mit Zeitzone CEST lÃ¤uft - siehe http://stackoverflow.com/questions/26515700/mysql-jdbc-driver-5-1-33-time-zone-issue
+  * BUG: 0594 BUGZILLA 1806 - Abrufen der Daueraufträge kann fehlschlagen, wenn die Bank die SEPA-Daten mit einer anderen PAIN-Version sendet, als im SEPA-Deskriptor angegeben - siehe https://github.com/hbci4j/hbci4java/commit/23246977919502faf5a93d705266dd2ce9971f7f 
+  * CHG: 0593 Der MySQL-JDBC-Treiber verlangt jetzt die explizite Angabe der Zeitzone per "&serverTimezone=Europe/Paris" in der JDBC-URL, wenn der Server mit Zeitzone CEST läuft - siehe http://stackoverflow.com/questions/26515700/mysql-jdbc-driver-5-1-33-time-zone-issue
   * CHG: 0592 Neuer HBCI4Java-Snapshot 3.0.9
   * CHG: 0591 Migration des MySQL-Treibers von com.mysql.jdbc.Driver auf com.mysql.cj.jdbc.Driver
   * NEW: 0590 Umstellung auf neue HBCI4Java-Version von https://github.com/hbci4j/hbci4java
-  * NEW: 0589 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig ab 07.03.2017
+  * NEW: 0589 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 07.03.2017
   * BUG: 0588 MT940 immer mit deutsch formatierten Dezimalzahlen exportieren, auch wenn ein anderes Locale eingestellt ist.
   * BUG: 0587 Wenn man eine Konto-Gruppe in den Umsaetzen ausgewaehlt, einen Umsatz oeffnet und dann zurueckkehrt, war die Gruppe nicht mehr ausgewaehlt
-  * NEW: 0586 Deutsche Umlaute in SEPA-AuftrÃ¤gen freigegeben
-  * BUG: 0585 BUGZILLA 1792 - Beim Kopieren von Ãœberweisungsdaten aus der Zwischenablage wurden Windows-ZeilenumbrÃ¼che nicht korrekt erkannt
+  * NEW: 0586 Deutsche Umlaute in SEPA-Aufträgen freigegeben
+  * BUG: 0585 BUGZILLA 1792 - Beim Kopieren von Überweisungsdaten aus der Zwischenablage wurden Windows-Zeilenumbrüche nicht korrekt erkannt
   * BUG: 0584 Ziel-Termin nur checken, wenn der Auftrag nicht schon als ausgefuehrt markiert ist - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=20874&page=last#last_post
   * NEW: 0583 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/62569a8cc0a2aa408c36d72e3f408ae3041e9f8b
-  * BUG: 0582 BUGZILLA 1783 - DauerauftrÃ¤ge: Hinweis zur ersten Zahlung beim Ã„ndern existierender DA nur anzeigen, wenn in BPD erlaubt
-  * NEW: 0581 Summe der selektiv markierten Buchungen in SammelauftrÃ¤gen anzeigen, siehe Kommentar 23 in https://www.willuhn.de/bugzilla/show_bug.cgi?id=1097 
-  * NEW: 0580 IBAN des eigenen Kontos im PDF-Umsatz-Export ungekÃ¼rzt anzeigen
-  * BUG: 0579 Im BestÃ¤tigungsdialog zur AusfÃ¼hrung einer Termin-Ãœberweisung stand "Erinnerungstermin" statt "AusfÃ¼hrungstermin"
-  * BUG: 0578 BUGZILLA 1778 - Das Label "Erinnerungstermin/AusfÃ¼hrungstermin" wurde auf manchen Systemen nicht sofort aktualisiert (siehe Change-ID 529)
+  * BUG: 0582 BUGZILLA 1783 - Daueraufträge: Hinweis zur ersten Zahlung beim Ändern existierender DA nur anzeigen, wenn in BPD erlaubt
+  * NEW: 0581 Summe der selektiv markierten Buchungen in Sammelaufträgen anzeigen, siehe Kommentar 23 in https://www.willuhn.de/bugzilla/show_bug.cgi?id=1097 
+  * NEW: 0580 IBAN des eigenen Kontos im PDF-Umsatz-Export ungekürzt anzeigen
+  * BUG: 0579 Im Bestätigungsdialog zur Ausführung einer Termin-Überweisung stand "Erinnerungstermin" statt "Ausführungstermin"
+  * BUG: 0578 BUGZILLA 1778 - Das Label "Erinnerungstermin/Ausführungstermin" wurde auf manchen Systemen nicht sofort aktualisiert (siehe Change-ID 529)
   * NEW: 0577 BUGZILLA 1779 - Sync-Defaults per Konfig-Datei vorkonfigurierbar
   
 2016-12-08 Version 2.6.19
 
   * NEW: 0576 SWTChart aktualisiert auf 0.10.0
-  * NEW: 0575 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/4db3326abef3a30d9e3f3193f49f8082d7af9c5b (Support fÃ¼r neues Sparda chipTAN)
+  * NEW: 0575 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/4db3326abef3a30d9e3f3193f49f8082d7af9c5b (Support für neues Sparda chipTAN)
   * NEW: 0574 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/d142fafccfea7154824c4839f5ed91d3d6604b1e
-  * NEW: 0573 Neue obantoo-Version mit aktualisierter BLZ-Datei gÃ¼ltig vom 05.12.2016 bis 05.03.2017
-  * NEW: 0572 Default-HBCI-Version beim Suchen nach Kartenlesern von HBCI 2.1 auf FinTS3 erhÃ¶ht 
-  * BUG: 0571 BUGZILLA 1740 - Nachtrag: Datum der ersten Zahlung beim Ã„ndern nur dann auf nÃ¤chstes Datum setzen, wenn es in der Vergangenheit liegt
-  * NEW: 0570 UnterstÃ¼tzung fÃ¼r SEPA 3.0 - siehe https://github.com/willuhn/hbci4java/commit/2f6e3d19373fc0e18be5d05e9193a1e2628932e9
+  * NEW: 0573 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig vom 05.12.2016 bis 05.03.2017
+  * NEW: 0572 Default-HBCI-Version beim Suchen nach Kartenlesern von HBCI 2.1 auf FinTS3 erhöht 
+  * BUG: 0571 BUGZILLA 1740 - Nachtrag: Datum der ersten Zahlung beim Ändern nur dann auf nächstes Datum setzen, wenn es in der Vergangenheit liegt
+  * NEW: 0570 Unterstützung für SEPA 3.0 - siehe https://github.com/willuhn/hbci4java/commit/2f6e3d19373fc0e18be5d05e9193a1e2628932e9
   * NEW: 0569 Saldo-Chart: Trend nur noch basierend auf den letzten 30 Tagen berechnen (nicht mehr 15 Vergangenheit + 15 Zukunft)
-  * NEW: 0568 BIC bei der Erfassung von AuftrÃ¤gen jetzt optional
-  * NEW: 0567 BUGZILLA 1771 - Anzeige der IBAN des eigenen Kontos im TAN-Dialog beim LÃ¶schen eines Dauerauftrages
-  * NEW: 0566 Imports kÃ¶nnen jetzt abgebrochen werden
+  * NEW: 0568 BIC bei der Erfassung von Aufträgen jetzt optional
+  * NEW: 0567 BUGZILLA 1771 - Anzeige der IBAN des eigenen Kontos im TAN-Dialog beim Löschen eines Dauerauftrages
+  * NEW: 0566 Imports können jetzt abgebrochen werden
   * NEW: 0565 Hibiscus-Datenbank automatisch neu anlegen, wenn sie nicht existiert (auch wenn das Plugin schon installiert ist)
-  * NEW: 0564 Erster Code fÃ¼r optionale BIC. Ist bei Zahlungen nicht mehr Pflicht, wird aber noch automatisch aus der IBAN vervollstÃ¤ndigt
-  * NEW: 0563 Fehlerhafte AuftrÃ¤ge beim Import von SEPA-Dateien Ã¼berspringen statt abzubrechen
+  * NEW: 0564 Erster Code für optionale BIC. Ist bei Zahlungen nicht mehr Pflicht, wird aber noch automatisch aus der IBAN vervollständigt
+  * NEW: 0563 Fehlerhafte Aufträge beim Import von SEPA-Dateien überspringen statt abzubrechen
   * NEW: 0562 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/31a2d26fdd931d67e94527b221a9c071156a2891
-  * NEW: 0561 Anzeige des Banknamens hinter der BIC beim Druck von AuftrÃ¤gen 
+  * NEW: 0561 Anzeige des Banknamens hinter der BIC beim Druck von Aufträgen 
   * NEW: 0560 BUGZILLA 1279 - Ein- und Ausblenden einzelner Datenreihen in den Charts per Doppelklick in der Legende
-  * NEW: 0559 BUGZILLA 1230 - Anzeige der Summenzeile auch in "UmsÃ¤tze nach Kategorien"
+  * NEW: 0559 BUGZILLA 1230 - Anzeige der Summenzeile auch in "Umsätze nach Kategorien"
   * NEW: 0558 BUGZILLA 1146 - Erzeugung von Gegenbuchungen bei Offline-Konten
   * NEW: 0557 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/75eee0b351077cc7dd287fca483e520b5685a600
   * NEW: 0556 Shortcut-Feature jetzt auch in UmsatzTree (erfordert Jameica ab 07.10.2016)
-  * NEW: 0555 UmsÃ¤tze nach Kategorien nur dann neu laden, wenn an Konto-Auswahl, Suchbegriff oder Zeitraum etwas geÃ¤ndert wurde
-  * NEW: 0554 BUGZILLA 1180 - MT940-Export um die MÃ¶glichkeit ergÃ¤nzt, alle UmsÃ¤tze in einer logischen MT940-Datei zu exportieren (u.a. fÃ¼r Import in Collmex)
+  * NEW: 0555 Umsätze nach Kategorien nur dann neu laden, wenn an Konto-Auswahl, Suchbegriff oder Zeitraum etwas geändert wurde
+  * NEW: 0554 BUGZILLA 1180 - MT940-Export um die Möglichkeit ergänzt, alle Umsätze in einer logischen MT940-Datei zu exportieren (u.a. für Import in Collmex)
   * NEW: 0553 BUGZILLA 1513 - Umsaetze: Kategorie-Filter "Nicht zugeordnet"
-  * NEW: 0552 Automatische VervollstÃ¤ndigung von Valuta/Datum mit dem jeweils anderen Datum beim Bearbeiten von Buchungen, wenn das jeweils andere Datum fehlt
+  * NEW: 0552 Automatische Vervollständigung von Valuta/Datum mit dem jeweils anderen Datum beim Bearbeiten von Buchungen, wenn das jeweils andere Datum fehlt
   * NEW: 0551 Funktion "Salden neu berechnen..." im Kontextmenu von Offline-Konten
   * NEW: 0550 Neuer Button "Speichern und weiteren Umsatz anlegen" bei Offline-Konten 
-  * NEW: 0549 Im Kontextmenu von Konten nur fÃ¼r Online/Offline-Konten erlaubte Aktionen aktivieren
-  * NEW: 0548 Reload in Range-Input nur auslÃ¶sen, wenn etwas geÃ¤ndert wurde
+  * NEW: 0549 Im Kontextmenu von Konten nur für Online/Offline-Konten erlaubte Aktionen aktivieren
+  * NEW: 0548 Reload in Range-Input nur auslösen, wenn etwas geändert wurde
   * NEW: 0547 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/476d6459050f1e483590686c014d59922d986da1
   
 2016-09-06 Version 2.6.18
 
   * NEW: 0546 Noch eine Exception beim UPD-Abruf gefixt - neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/8ba77ee8761930dd15810674f70bd4e23beb1fca
-  * NEW: 0545 Ein paar Log-Texte Ã¼bersetzt - neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/bab6ae9e1ba6813292f2c933eb0b50deaece445d
-  * BUG: 0544 Bugfix fÃ¼r den langsamen Konto-Abruf bei Sparkassen mit FinTS3 - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=19879&page=last#last_post
+  * NEW: 0545 Ein paar Log-Texte übersetzt - neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/bab6ae9e1ba6813292f2c933eb0b50deaece445d
+  * BUG: 0544 Bugfix für den langsamen Konto-Abruf bei Sparkassen mit FinTS3 - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=19879&page=last#last_post
               Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/9833d852141c02a7c2898d7d064d26920f37fd7f
   * BUG: 0543 BUGZILLA 1762 - Sortierreihenfolge von Umsatzkategorien konnte falsch sein, wenn die Nummer NULL- und Leer-Werte enthielt 
   * NEW: 0542 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/30319d7dba86e53117084de47fd0e5a410de1158
   * NEW: 0541 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/632bd88ce462037a5f82e087bc6bb9b01180f403
-  * BUG: 0540 NPE, wenn man in einer PIN/TAN-Config Benutzer- oder Kundenkennung Ã¤ndern wollte, bevor UPD vorlagen
-  * NEW: 0539 BUGZILLA 1760 - IBAN beim Druck von AuftrÃ¤gen formatieren
+  * BUG: 0540 NPE, wenn man in einer PIN/TAN-Config Benutzer- oder Kundenkennung ändern wollte, bevor UPD vorlagen
+  * NEW: 0539 BUGZILLA 1760 - IBAN beim Druck von Aufträgen formatieren
   * NEW: 0538 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/f963d54d9cb0cc11948c9f7531c36437b6f2e108
   * NEW: 0537 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/84397df6e9ad0442173ca32f0afed37108afa299
-  * NEW: 0536 Spalte "#" beim CSV-Export von UmsÃ¤tzen mit exportieren
-  * NEW: 0535 BUGZILLA 1750 - Beim Export von UmsÃ¤tzen aus "UmsÃ¤tze nach Kategorien" auch rekursiv UmsÃ¤tze aus Kind-Kategorien exportieren
-  * BUG: 0534 Beim Export von bankseitig terminierten Ãœberweisungen nach SEPA-XML den Zieltermin als "requested execution date" mit exportieren
+  * NEW: 0536 Spalte "#" beim CSV-Export von Umsätzen mit exportieren
+  * NEW: 0535 BUGZILLA 1750 - Beim Export von Umsätzen aus "Umsätze nach Kategorien" auch rekursiv Umsätze aus Kind-Kategorien exportieren
+  * BUG: 0534 Beim Export von bankseitig terminierten Überweisungen nach SEPA-XML den Zieltermin als "requested execution date" mit exportieren
   * NEW: 0533 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/c06e43a56ef365e83e2c9d333b27a1564c7c46bd
   * NEW: 0532 Aktualisierte englische Sprach-Bundles von Christian
-  * NEW: 0531 Button "Synchronisierung starten" wÃ¤hrend der Synchronisierung deaktivieren
-  * BUG: 0530 Beim Duplizieren von Lastschriften den Ziel-Termin in die Zukunft (morgen) verschieben, wenn er sich in der Vergangenheit befindet. Duplizieren schlÃ¤gt sonst wegen BUGZILLA 1736 fehl
-  * NEW: 0529 Label "Erinnerungstermin" bei Erfassung einer Ãœberweisung in "AusfÃ¼hrungstermin" Ã¤ndern, wenn als Auftragstyp "Bankseitige SEPA-TerminÃ¼berweisung" gewÃ¤hlt wird
-  * NEW: 0528 BUGZILLA 1740 - Beim Aktualisieren eines existierenden Dauerauftrages das Datum der ersten Zahlung automatisch auf den nÃ¤chsten Termin setzen
+  * NEW: 0531 Button "Synchronisierung starten" während der Synchronisierung deaktivieren
+  * BUG: 0530 Beim Duplizieren von Lastschriften den Ziel-Termin in die Zukunft (morgen) verschieben, wenn er sich in der Vergangenheit befindet. Duplizieren schlägt sonst wegen BUGZILLA 1736 fehl
+  * NEW: 0529 Label "Erinnerungstermin" bei Erfassung einer Überweisung in "Ausführungstermin" ändern, wenn als Auftragstyp "Bankseitige SEPA-Terminüberweisung" gewählt wird
+  * NEW: 0528 BUGZILLA 1740 - Beim Aktualisieren eines existierenden Dauerauftrages das Datum der ersten Zahlung automatisch auf den nächsten Termin setzen
 
 2016-06-03 Version 2.6.17
 
   * BUG: 0527 BUGZILLA 1736 - Zieltermin in Lastschriften ist jetzt Pflichtfeld
   * NEW: 0526 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/88e04a5c81e81a452d6300c74e4fc50f4c7c8012
-  * NEW: 0525 BUGZILLA 1592 - erster Code fÃ¼r photoTAN-Support
+  * NEW: 0525 BUGZILLA 1592 - erster Code für photoTAN-Support
   * NEW: 0524 Umsatz-Kategorien effizienter laden, ebenfalls performance-relevant: Monatssummen der Kategorie nur dann laden, wenn Kommentar an Kategorie-Auswahl sichtbar
-  * NEW: 0523 Bei der Erstellung von SEPA-AuftrÃ¤gen in der Kontoliste nur noch Konten anzeigen, deren Sync-Backend den angegebenen Job unterstÃ¼tzt. Das filtert
+  * NEW: 0523 Bei der Erstellung von SEPA-Aufträgen in der Kontoliste nur noch Konten anzeigen, deren Sync-Backend den angegebenen Job unterstützt. Das filtert
               Konten aus 3rd-Party-Plugins (Scripting/Mashup) aus
-  * CHG: 0522 Parameter "usage.list.all=true" auch in "UmsÃ¤tze nach Kategorien" berÃ¼cksichtigen
+  * CHG: 0522 Parameter "usage.list.all=true" auch in "Umsätze nach Kategorien" berücksichtigen
   * CHG: 0521 Reihenfolge der Felder "Suchbegriff" und "Konto" in Auftragslisten getauscht, damit es einheitlich zu den Auswertungen ist
-  * BUG: 0520 BUGZILLA 1724 - Die Sortier-Reihenfolge in der Umsatzliste wurde nicht mehr gespeichert (das asynchrone initiale Laden fÃ¼hrte dazu, dass es nach dem pain() stattfand)
+  * BUG: 0520 BUGZILLA 1724 - Die Sortier-Reihenfolge in der Umsatzliste wurde nicht mehr gespeichert (das asynchrone initiale Laden führte dazu, dass es nach dem pain() stattfand)
   * CHG: 0519 BUGZILLA 1726 - mit dem neuen Parameter "usage.list.all=true" in ".jameica/cfg/de.willuhn.jameica.hbci.HBCI.properties" kann man jetzt auch
-              in der Umsatzliste wieder auf die alte Ansicht der Verwendungszwecke (unformatierte Anzeige der "rohen Verwendungszwecke") zurÃ¼ckschalten 
-  * BUG: 0518 Unter Konto-Details->UmsÃ¤tze wurden nur maximal die letzten 30 Tage angezeigt, auch wenn mit dem Schieberegler ein grÃ¶ÃŸerer Zeitraum gewÃ¤hlt wurde 
+              in der Umsatzliste wieder auf die alte Ansicht der Verwendungszwecke (unformatierte Anzeige der "rohen Verwendungszwecke") zurückschalten 
+  * BUG: 0518 Unter Konto-Details->Umsätze wurden nur maximal die letzten 30 Tage angezeigt, auch wenn mit dem Schieberegler ein größerer Zeitraum gewählt wurde 
 
 2016-05-02 Version 2.6.16
 
-  * BUG: 0517 Umsatzliste: Automatische Erkennung der RechtsbÃ¼ndigkeit funktionierte nicht mehr, fÃ¼r Betrag und Zwischensumme fest auf rechtsbÃ¼ndig gestellt.
+  * BUG: 0517 Umsatzliste: Automatische Erkennung der Rechtsbündigkeit funktionierte nicht mehr, für Betrag und Zwischensumme fest auf rechtsbündig gestellt.
   * NEW: 0516 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/34ea928ea475dae9afb6a909895c07a531c4cb96
-  * NEW: 0515 Neuen Reiter "Suchbegriff" in Hibiscus->UmsÃ¤tze eingefÃ¼gt, um die alte Suche (Suchbegriff komplett Ã¼bergreifend und Regex-Support) auch hier zu haben.
+  * NEW: 0515 Neuen Reiter "Suchbegriff" in Hibiscus->Umsätze eingefügt, um die alte Suche (Suchbegriff komplett übergreifend und Regex-Support) auch hier zu haben.
   * NEW: 0514 Alle Umsatzlisten mit Zeitschieber versehen (vorher wurden dort immer nur die letzten 30 Tage angezeigt)
   * BUG: 0513 Weitere unnoetige NPE entfernt, wenn die Session noch nicht existiert
-  * CHG: 0512 Begriff "FÃ¤llig am" Ã¼berall gegen "Erinnerungstermin" ersetzt, um MissverstÃ¤ndnisse zu vermeiden. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=20006&page=last#last_post
+  * CHG: 0512 Begriff "Fällig am" überall gegen "Erinnerungstermin" ersetzt, um Missverständnisse zu vermeiden. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=20006&page=last#last_post
   * BUG: 0511 BUGZILLA 1708 - SQL-Fehler bei Postgres
-  * BUG: 0510 BUGZILLA 1707 - Zeichen ÃŸÂ°Â§Ã¼ÃœÃ¶Ã¤Ã–Ã„ nicht mehr in dem Passworten von Schluesseldateien erlauben
+  * BUG: 0510 BUGZILLA 1707 - Zeichen ß°§üÜöäÖÄ nicht mehr in dem Passworten von Schluesseldateien erlauben
   * NEW: 0509 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/5753ef50acf5e1ebba42b41964d867f656f2053d
   * BUG: 0508 BUGZILLA 1705 - Ignorieren der Leerzeichen in der Kategorie-Suche auch im Namen des Gegenkonto-Inhabers
-  * NEW: 0507 BUGZILLA 1696 - Formatierung wurde u.U. doppelt durchgefÃ¼hrt
+  * NEW: 0507 BUGZILLA 1696 - Formatierung wurde u.U. doppelt durchgeführt
 
 2016-03-29 Version 2.6.15
 
-  * NEW: 0506 Gegenkonten alter Ãœberweisungen und Lastschriften aus Archiv per Kontextmenu in Adressbuch Ã¼bernehmen
+  * NEW: 0506 Gegenkonten alter Überweisungen und Lastschriften aus Archiv per Kontextmenu in Adressbuch übernehmen
   * NEW: 0505 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/5bd4eda98283a6b37e2ee78ea6da3094ef4a0494
   * NEW: 0504 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/195e2729395774e9b1dd42882f961bfd1645cfe2
-  * NEW: 0503 BPD/UPD Caching Ã¼berarbeitet, Cleanup alle 14 Tage, UPD-Cache gelÃ¶scht, bei BPD nur noch die wirklich verwendeten Properties cachen
+  * NEW: 0503 BPD/UPD Caching überarbeitet, Cleanup alle 14 Tage, UPD-Cache gelöscht, bei BPD nur noch die wirklich verwendeten Properties cachen
   * NEW: 0502 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0501 Leerzeichen am Anfang und Ende vom Namen des Gegenkonto-Inhabers bei Umsatzbuchungen entfernen
-  * NEW: 0500 BUGZILLA 1701 - UmschaltmÃ¶glichkeit zur Anzeige aller oder der geparsten Verwendungszweck-Infos in der Detailansicht
+  * NEW: 0500 BUGZILLA 1701 - Umschaltmöglichkeit zur Anzeige aller oder der geparsten Verwendungszweck-Infos in der Detailansicht
   * NEW: 0499 Update auf SuperCSV 2.4.0 (braucht Heiner in JVerein)
   * NEW: 0498 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/aee96b80c244d49312894b853c03102ba2ee9685
-  * NEW: 0497 HÃ¶he der Box mit den Bank-Nachrichten reduziert und konfigurierbar gemacht
-  * NEW: 0496 BUGZILLA 1696 - IBAN auch beim EinfÃ¼gen aus Adressbuch formatieren
-  * NEW: 0495 AusgewÃ¤hlte Kategorie als Parent beim Anlegen einer neuen Kategorie in "UmsÃ¤tze nach Kategorien" vorauswÃ¤hlen
+  * NEW: 0497 Höhe der Box mit den Bank-Nachrichten reduziert und konfigurierbar gemacht
+  * NEW: 0496 BUGZILLA 1696 - IBAN auch beim Einfügen aus Adressbuch formatieren
+  * NEW: 0495 Ausgewählte Kategorie als Parent beim Anlegen einer neuen Kategorie in "Umsätze nach Kategorien" vorauswählen
   * CHG: 0494 Keine Leerzeichen mehr als Zeilentrenner im Verwendungszweck
   * NEW: 0493 Parameter "hbci.sepa.parsetags=false" in .jameica/cfg/de.willuhn.jameica.hbci.HBCIProperties.properties) zum Deaktivieren des SEPA-Tag-Parser
-  * BUG: 0492 Gegenkonto-Name wurde mit Wert aus ABWA Ã¼berschrieben (auch wenn dort nichts drin stand)
+  * BUG: 0492 Gegenkonto-Name wurde mit Wert aus ABWA überschrieben (auch wenn dort nichts drin stand)
   * NEW: 0491 SEPA-Tag-Parser: Leerzeichen in IBAN und BIC entfernen 
-  * NEW: 0490 SEPA-Tag ABWA bei Bedarf in Gegenkontoname Ã¼bernehmen
+  * NEW: 0490 SEPA-Tag ABWA bei Bedarf in Gegenkontoname übernehmen
   * NEW: 0489 Schnelleres Laden der Kategorien in der Auswahlbox (Tree wird jetzt komplett im Speicher aufgebaut statt durch rekursive DB-Abfragen erzeugt)
   * NEW: 0488 Aktualisierte englische Sprach-Bundles von Christian
   * NEW: 0487 SEPA Tag-Parser: Sonderfall "SVWZ+BIC:...."
-  * BUG: 0486 SEPA Tag-Parser: Sonderfall "BIC" - das Tag ist nur 3 Zeichen lang. Ausserdem IBAN nur Ã¼bernehmen, wenn sie gÃ¼ltig ist
-  * NEW: 0485 BUGZILLA 1533 - VerlÃ¤ngerung des Namens (Adressbuch und Gegenkonto-Inhaber) von 27 auf 70 Zeichen 
-  * BUG: 0484 Wenn Whitespaces im Verwendungszweck bei der Suche ignoriert werden, mÃ¼ssen sie auch im Suchbegriff selbst ignoriert werden
-  * BUG: 0483 Ãœberlange Namen von Gegenkonto-Inhabern auf 27 Zeichen kÃ¼rzen, damit die UmsÃ¤tze gespeichert werden kÃ¶nnen. - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=121802#real121802
+  * BUG: 0486 SEPA Tag-Parser: Sonderfall "BIC" - das Tag ist nur 3 Zeichen lang. Ausserdem IBAN nur übernehmen, wenn sie gültig ist
+  * NEW: 0485 BUGZILLA 1533 - Verlängerung des Namens (Adressbuch und Gegenkonto-Inhaber) von 27 auf 70 Zeichen 
+  * BUG: 0484 Wenn Whitespaces im Verwendungszweck bei der Suche ignoriert werden, müssen sie auch im Suchbegriff selbst ignoriert werden
+  * BUG: 0483 Überlange Namen von Gegenkonto-Inhabern auf 27 Zeichen kürzen, damit die Umsätze gespeichert werden können. - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=121802#real121802
   * NEW: 0482 Weitere Verbesserungen im SEPA-Tag Parser. Geht jetzt auch mit ":" als Trenner und kann IBAN/BIC extrahieren
   * NEW: 0481 HVB-Problematik (siehe auch Change-Id 0459) - alle PIN/TAN-Konfigurationen anzeigen, wenn keine passende gefunden wurde - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=121430#real121430
-  * NEW: 0480 ZeilenumbrÃ¼che im Verwendungszweck bei der Suche ignorieren - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17348
+  * NEW: 0480 Zeilenumbrüche im Verwendungszweck bei der Suche ignorieren - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17348
   * NEW: 0479 BUGZILLA 1510 - Parser fuer SEPA-Tags und Tag SVWZ on-the-fly extrahieren und als Verwendungszweck anzeigen, wenn es gefunden wird
   * NEW: 0478 Leerzeichen im Verwendungszweck auch bei Suchbegriff in Kategorie ignorieren (aber nur, wenn es kein Regex ist)
-  * BUG: 0477 Im Kalender wurde bei wiederholten AuftrÃ¤gen ggf. die letzte Wiederholung nicht angezeigt, wenn das Intervall in diesem Monat endete
+  * BUG: 0477 Im Kalender wurde bei wiederholten Aufträgen ggf. die letzte Wiederholung nicht angezeigt, wenn das Intervall in diesem Monat endete
   * NEW: 0476 Leerzeichen im Verwendungszweck bei der Suche ignorieren - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17348
-  * NEW: 0475 IBAN von fÃ¤lligen AuftrÃ¤gen in Synchronisationsaufgaben und im TAN-Dialog anzeigen
-  * BUG: 0474 BUGZILLA 1682 - Einnahmen/Ausgaben: Endsaldo falsch berechnet, wenn keine UmsÃ¤tze im Auswertungszeitraum
-  * NEW: 0473 BUGZILLA 1679 - Zeitraum nicht mehr zurÃ¼cksetzen, stattdessen Start/Ende auf den den ausgewÃ¤hlten Zeitraum zurÃ¼cksetzen. Sonst werden ALLE UmsÃ¤tze geladen
-  * BUG: 0472 BUGZILLA 1679 - Zeitraum wurde bei Klick auf "ZurÃ¼cksetzen" nicht zurÃ¼ckgesetzt, Start/Ende aber schon
+  * NEW: 0475 IBAN von fälligen Aufträgen in Synchronisationsaufgaben und im TAN-Dialog anzeigen
+  * BUG: 0474 BUGZILLA 1682 - Einnahmen/Ausgaben: Endsaldo falsch berechnet, wenn keine Umsätze im Auswertungszeitraum
+  * NEW: 0473 BUGZILLA 1679 - Zeitraum nicht mehr zurücksetzen, stattdessen Start/Ende auf den den ausgewählten Zeitraum zurücksetzen. Sonst werden ALLE Umsätze geladen
+  * BUG: 0472 BUGZILLA 1679 - Zeitraum wurde bei Klick auf "Zurücksetzen" nicht zurückgesetzt, Start/Ende aber schon
   * CHG: 0471 Keine Vorauswahl des Verfahrens mehr bei der Erstellung eines neuen Bankzugangs. Irritierte User.
-  * NEW: 0470 PrÃ¼fung des SEPA PAIN-Typs beim Import von SEPA-XML-Dateien. Siehe https://github.com/willuhn/hibiscus/pull/11
+  * NEW: 0470 Prüfung des SEPA PAIN-Typs beim Import von SEPA-XML-Dateien. Siehe https://github.com/willuhn/hibiscus/pull/11
   * NEW: 0469 Aktualisierte englische Sprach-Bundles von Christian
-  * NEW: 0468 Anzeige des zugehÃ¶rigen Auftrages im TAN-Dialog
-  * NEW: 0467 BUGZILLA 1661 - Export der UmsÃ¤tze mehrerer Kategorien
+  * NEW: 0468 Anzeige des zugehörigen Auftrages im TAN-Dialog
+  * NEW: 0467 BUGZILLA 1661 - Export der Umsätze mehrerer Kategorien
   * BUG: 0466 BUGZILLA 1672 - Einnahmen/Ausgaben: Von/Bis Cursor springt unter Windows an Anfang des Eingabefeldes
-  * NEW: 0465 IBAN beim Speichern immer in Grossbuchstaben umwandeln, damit auch bei importierten AuftrÃ¤gen immer gÃ¼ltige Buchstaben drin stehen.
-  * NEW: 0464 BUGZILLA 1661 - Export der UmsÃ¤tze einer Kategorie
+  * NEW: 0465 IBAN beim Speichern immer in Grossbuchstaben umwandeln, damit auch bei importierten Aufträgen immer gültige Buchstaben drin stehen.
+  * NEW: 0464 BUGZILLA 1661 - Export der Umsätze einer Kategorie
   * NEW: 0463 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/a9132895c1fa9c5da59a572ffa254c8a000e2847
   * NEW: 0462 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/efbea86e815361fff1cb7a9c2b0ff7d5ad7a87a1
 
 2015-09-21 Version 2.6.14
 
   * NEW: 0461 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/0e0fddca0e432d6d97d30bd2c01aafae57eae158
-  * CHG: 0460 Auswahlfeld fÃ¼r Batch-Booking umbenannt  
-  * NEW: 0459 Bei mehreren mÃ¶glichen PIN/TAN-Konfigurationen nur die plausiblen (gleiche BLZ) anzeigen
+  * CHG: 0460 Auswahlfeld für Batch-Booking umbenannt  
+  * NEW: 0459 Bei mehreren möglichen PIN/TAN-Konfigurationen nur die plausiblen (gleiche BLZ) anzeigen
   * NEW: 0458 Im Fortschrittsfenster bei der Synchronisierung in Loglevel INFO weniger Ausgaben loggen
   * NEW: 0457 HBCI-Medium in Verfahren umbenannt
   * NEW: 0456 Aktualisierte englische Sprach-Bundles von Christian
   * BUG: 0455 Passport-Auswahl war auch bei Nicht-HBCI-Backend Pflicht
   * NEW: 0454 HBCI-Passports nur bei Auswahl des HBCI-Backends anbieten
   * NEW: 0453 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/e3b6bb9b6e64b7549175f579451ba4f46708357e
-  * CHG: 0452 IBAN-Formatierung nur durchfÃ¼hren, wenn Text wie IBAN aussieht
+  * CHG: 0452 IBAN-Formatierung nur durchführen, wenn Text wie IBAN aussieht
   * NEW: 0451 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/203df0528dca0be48f39f415ef86b298ce4e07d8
   * NEW: 0450 Aktualisiertes englisches Sprach-Bundle von Christian
   * NEW: 0449 Saldo des Kontos als Start-/Endwert in Einnahmen/Ausgaben verwenden, wenn keine Buchungen vorhanden sind - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=19225
@@ -499,64 +499,64 @@ HEAD 2.9 (nightly)
   * NEW: 0446 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/baf3cdfc55e02146c3734ba3c864094eb22f088a (Neue Consors-URL)
   * NEW: 0445 Sicherstellen, dass CheckOfflineUmsatzMessageConsumer NACH OfflineSaldoMessageConsumer ausgefuehrt wird
   * NEW: 0444 BUGZILLA 1633 - ALT+S als Shortcut zum Speichern in allen Dialogen mit "Speichern"-Button
-  * BUG: 0443 Folgefehler von BUGZILLA 1283 - unabhÃ¤ngig vom Auftragsstatus wurde immer mit Fehler abgebrochen
-  * BUG: 0442 BUGZILLA 1283 - Beim Sync-Abbruch mittendrin konnte es passieren, dass die bis dahin ausgefÃ¼hrten
-              AuftrÃ¤ge nicht als ausgefÃ¼hrt markiert wurden.
-  * CHG: 0441 Ãœberlange TextschlÃ¼ssel (Ã¼ber 3 Zeichen) beim Umsatzabruf ignorieren (die OLB liefert bei einigen Konten sowas)
+  * BUG: 0443 Folgefehler von BUGZILLA 1283 - unabhängig vom Auftragsstatus wurde immer mit Fehler abgebrochen
+  * BUG: 0442 BUGZILLA 1283 - Beim Sync-Abbruch mittendrin konnte es passieren, dass die bis dahin ausgeführten
+              Aufträge nicht als ausgeführt markiert wurden.
+  * CHG: 0441 Überlange Textschlüssel (über 3 Zeichen) beim Umsatzabruf ignorieren (die OLB liefert bei einigen Konten sowas)
   * NEW: 0440 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/9b15c05dbbf370fd4659dc235ef443ae80e9ea78
-  * NEW: 0439 BUGZILLA 1093 - Ungelesen-Markierung in der Navigation endlich auch fÃ¼r Ã¼berfÃ¤llige AuftrÃ¤ge
+  * NEW: 0439 BUGZILLA 1093 - Ungelesen-Markierung in der Navigation endlich auch für überfällige Aufträge
   * NEW: 0438 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/06341e2cf42cd1d74553a7707c561fd67a6ecdaa
-  * BUG: 0437 Ungelesen-Markierung funktionierte durch Ã„nderung 0435 nicht mehr
+  * BUG: 0437 Ungelesen-Markierung funktionierte durch Änderung 0435 nicht mehr
   * NEW: 0436 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/a329b2773edcde5699219751b7539a4ebb38bf64
-  * NEW: 0435 Element "UmsÃ¤tze" in der Navigation in die oberste Ebene verschoben, damit das besser gefunden wird. 
-  * NEW: 0434 Alte Ansicht "Alle UmsÃ¤tze des Kontos" entfernt - leitet jetzt auf "Auswertungen->UmsÃ¤tze" mit Filter
+  * NEW: 0435 Element "Umsätze" in der Navigation in die oberste Ebene verschoben, damit das besser gefunden wird. 
+  * NEW: 0434 Alte Ansicht "Alle Umsätze des Kontos" entfernt - leitet jetzt auf "Auswertungen->Umsätze" mit Filter
               auf dieses Konto weiter. Die Auswertung ist erheblich flexibler als die alte Ansicht 
   * NEW: 0433 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/45cdf716c997865f049e99c34d53eeaef4748218
   * NEW: 0432 Neue obantoo-Version 2.1.12
-  * NEW: 0431 Warnhinweis anzeigen, wenn SEPA-Termin-Ãœberweisungen gelÃ¶scht werden sollen, die bereits an die Bank Ã¼bertragen wurden
+  * NEW: 0431 Warnhinweis anzeigen, wenn SEPA-Termin-Überweisungen gelöscht werden sollen, die bereits an die Bank übertragen wurden
   * NEW: 0430 chipTAN-Tester (zu finden im Menu unter Erweitert->chipTAN-Generator testen...)
 
 2015-03-01 Version 2.6.12
 
   * NEW: 0429 Neue obantoo-Version 2.1.11
   * BUG: 0428 Fehler beim Parsen von MT940-Dateien - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18677
-  * BUG: 0427 BUGZILLA 1611 - ZeilenumbrÃ¼che aus Umsatz-Attributen entfernen, die da nicht enthalten sein sollten
+  * BUG: 0427 BUGZILLA 1611 - Zeilenumbrüche aus Umsatz-Attributen entfernen, die da nicht enthalten sein sollten
   * BUG: 0426 BUGZILLA 1610 - Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/7d858fc4b383dcca5937aa6dc1280ed1ebf8949d
-  * NEW: 0425 Weitere Purpose-Codes hinzugefÃ¼gt - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=114627#real114627
-  * NEW: 0424 SEPA Purpose Codes jetzt auch bei DauerauftrÃ¤gen
-  * NEW: 0423 Automatische VervollstÃ¤ndigung von Konto/BLZ nach Eingabe von IBAN/BIC auch im Adressbuch
-  * NEW: 0422 BUGZILLA 1605 - Automatische VervollstÃ¤ndigung von Konto/BLZ in Kontodetails nach Eingabe von IBAN/BIC
-  * BUG: 0421 BUGZILLA 1604 - Anzahl der Monate in "UmsÃ¤tze nach Kategorien" auf 1200 (=100 Jahre) begrenzen
-  * NEW: 0420 Purpose-Code "NOWS" hinzugefÃ¼gt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18571
-  * CHG: 0419 PrÃ¼fen, dass in Name des Auftraggebers und Auftragnehmers nicht nur ein Leerzeichen steht.
+  * NEW: 0425 Weitere Purpose-Codes hinzugefügt - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=114627#real114627
+  * NEW: 0424 SEPA Purpose Codes jetzt auch bei Daueraufträgen
+  * NEW: 0423 Automatische Vervollständigung von Konto/BLZ nach Eingabe von IBAN/BIC auch im Adressbuch
+  * NEW: 0422 BUGZILLA 1605 - Automatische Vervollständigung von Konto/BLZ in Kontodetails nach Eingabe von IBAN/BIC
+  * BUG: 0421 BUGZILLA 1604 - Anzahl der Monate in "Umsätze nach Kategorien" auf 1200 (=100 Jahre) begrenzen
+  * NEW: 0420 Purpose-Code "NOWS" hinzugefügt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18571
+  * CHG: 0419 Prüfen, dass in Name des Auftraggebers und Auftragnehmers nicht nur ein Leerzeichen steht.
               Siehe Mail vom Bank-Verlag vom 16.01. - denen war das bei einigen Kunden aufgefallen
   * BUG: 0418 Nullpointer-Exception, wenn man in Einnahmen/Ausgaben das Start- oder End-Datum entfernt hat
-  * NEW: 0417 BUGZILLA 1599 - Alphanumerische Zeichen in Auswertungen->UmsÃ¤tze bei Gegenkonto Nummer und BIC/BLZ zulassen
-  * BUG: 0416 Zeilenumbruch zuviel in MT940-Export - fÃ¼hrte zu Fehler bei erneutem Import
+  * NEW: 0417 BUGZILLA 1599 - Alphanumerische Zeichen in Auswertungen->Umsätze bei Gegenkonto Nummer und BIC/BLZ zulassen
+  * BUG: 0416 Zeilenumbruch zuviel in MT940-Export - führte zu Fehler bei erneutem Import
   * NEW: 0415 Aktualisierte obantoo-Version 2.1.9 (Mail von Heiner vom 05.01.2015)
-  * NEW: 0414 Automatisches Mitwandern des Zeitraumes (insofern Von/Bis-Datum nicht manuell vom Benutzer geÃ¤ndert werden) - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=113598#real113598
-  * NEW: 0413 Automatisches Abrufen der TAN-Medienbezeichnungen von der Bank und Auswahldialog entsprechend vorbefÃ¼llen.
+  * NEW: 0414 Automatisches Mitwandern des Zeitraumes (insofern Von/Bis-Datum nicht manuell vom Benutzer geändert werden) - siehe http://www.onlinebanking-forum.de/forum/topic.php?p=113598#real113598
+  * NEW: 0413 Automatisches Abrufen der TAN-Medienbezeichnungen von der Bank und Auswahldialog entsprechend vorbefüllen.
               Wenn zum Bankzugang nur eine TAN-Medienbezeichnung hinterlegt ist, wird diese automatisch und ohne weitere
-              RÃ¼ckfrage verwenden. Neue HBCI-Version https://github.com/willuhn/hbci4java/commit/6d6831cfa7e4230fb64f90cf89abc688423fa276
-  * NEW: 0412 Methoden-Signaturen in AbstractHBCIJob von Package-private auf protected geÃ¤ndert, damit Sync-Plugins von
-              Dritt-Anbietern von der Klasse ableiten kÃ¶nnen.
+              Rückfrage verwenden. Neue HBCI-Version https://github.com/willuhn/hbci4java/commit/6d6831cfa7e4230fb64f90cf89abc688423fa276
+  * NEW: 0412 Methoden-Signaturen in AbstractHBCIJob von Package-private auf protected geändert, damit Sync-Plugins von
+              Dritt-Anbietern von der Klasse ableiten können.
 
 2014-12-22 Version 2.6.11
 
   * NEW: 0411 Neue obantoo-Version 2.1.9
   * BUG: 0410 Sortierung nach Monat in Sparquote korrigiert (war seit BUGZILLA 1587 falsch) 
-  * NEW: 0409 Nicht mehr nachfragen, wenn eine Adresse bereits im Adressbuch ist sondern diese Ã¼berspringen
+  * NEW: 0409 Nicht mehr nachfragen, wenn eine Adresse bereits im Adressbuch ist sondern diese überspringen
   * NEW: 0408 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/5febbbba6d780c6a11f7bcf64e066a2b3cb6bb68
   * NEW: 0407 BUGZILLA 1587 - Export der Sparquote als CSV-Datei
   * BUG: 0406 BUGZILLA 1585 - Ende-Datum einer Wiederholung auf Tagesende setzen, um sicherzustellen, dass der Termin im Laufe dieses Tages noch gilt
-  * NEW: 0405 BUGZILLA 1470 - Support fÃ¼r SEPA Purpose-Codes
-  * NEW: 0404 Support fÃ¼r erweiterte Sync-Optionen jetzt auch im HBCI-Backend
+  * NEW: 0405 BUGZILLA 1470 - Support für SEPA Purpose-Codes
+  * NEW: 0404 Support für erweiterte Sync-Optionen jetzt auch im HBCI-Backend
   * NEW: 0403 Neue HBCI4Java-Version https://github.com/willuhn/hbci4java/commit/a98560e03816bf8ad2399111506d1c7585d282ae
-  * NEW: 0402 Fehler in PrÃ¼fziffern-Methode 51c - siehe https://github.com/willuhn/hbci4java/commit/ba4a91c7064ba6d4f6e30767cc93d2a977768da4
-  * NEW: 0401 Beim "als geprÃ¼ft markieren" eine Option anbieten, um dynamische Umsatzkategorien hierbei fest zuzuordnen
-  * NEW: 0400 Support fÃ¼r alternative Synchronize-Jobs im selben Backend mittels Account-Types.
-  * NEW: 0399 Bei der Auto-Formatierung einer IBAN wurde nur der erste Buchstabe groÃŸ geschrieben
-  * NEW: 0398 Summen der BetrÃ¤ge der markierten Zeilen nicht nur bei UmsÃ¤tzen anzeigen sondern auch bei AuftrÃ¤gen
+  * NEW: 0402 Fehler in Prüfziffern-Methode 51c - siehe https://github.com/willuhn/hbci4java/commit/ba4a91c7064ba6d4f6e30767cc93d2a977768da4
+  * NEW: 0401 Beim "als geprüft markieren" eine Option anbieten, um dynamische Umsatzkategorien hierbei fest zuzuordnen
+  * NEW: 0400 Support für alternative Synchronize-Jobs im selben Backend mittels Account-Types.
+  * NEW: 0399 Bei der Auto-Formatierung einer IBAN wurde nur der erste Buchstabe groß geschrieben
+  * NEW: 0398 Summen der Beträge der markierten Zeilen nicht nur bei Umsätzen anzeigen sondern auch bei Aufträgen
   * NEW: 0397 Logik des Lastschrift-Merge in separate Klasse ausgelagert, damit das von JVerein besser genutzt werden kann.
   * NEW: 0396 Neue obantoo-Version 2.1.8
   * CHG: 0395 Alten IZV-Zahlungsverkehr in Archiv verschoben
@@ -564,32 +564,32 @@ HEAD 2.9 (nightly)
 
 2014-10-18 Version 2.6.10
 
-  * CHG: 0393 Im Adressbuch die Sammel-AuftrÃ¤gen von/an diese Adresse auf Anzeige der SEPA-AuftrÃ¤ge umgestellt
+  * CHG: 0393 Im Adressbuch die Sammel-Aufträgen von/an diese Adresse auf Anzeige der SEPA-Aufträge umgestellt
   * BUG: 0392 ChipTAN-Dialog wurde zu breit angezeigt und konnte nicht verkleinert werden
-  * BUG: 0391 Datenbank-Update 0055 konnte auf Postgres nicht ausgefÃ¼hrt werden
-  * BUG: 0390 BUGZILLA 1569 - IBANs aus unbekannten LÃ¤ndern tolerieren
+  * BUG: 0391 Datenbank-Update 0055 konnte auf Postgres nicht ausgeführt werden
+  * BUG: 0390 BUGZILLA 1569 - IBANs aus unbekannten Ländern tolerieren
 
 2014-10-07 Version 2.6.9
 
-  * BUG: 0389 BUGZILLA 1567 - BPD-Auto-Expiry konnte zu Problemen bei Banken fÃ¼hren, die keinen anonymen BPD-Abruf unterstÃ¼tzen
+  * BUG: 0389 BUGZILLA 1567 - BPD-Auto-Expiry konnte zu Problemen bei Banken führen, die keinen anonymen BPD-Abruf unterstützen
   * NEW: 0388 BUGZILLA 1565 - DPI-Zahl jetzt per Customizing konfigurierbar, maximale Breite von Flicker-Code verdreifacht
-  * BUG: 0387 Verwendungszweck wurde nicht vervollstÃ¤ndigt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18087&page=last#last_post 
+  * BUG: 0387 Verwendungszweck wurde nicht vervollständigt - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=18087&page=last#last_post 
   * CHG: 0386 Bei der Erstellung von INI-Briefen nur noch das HBCI4Java/Hibiscus-Format anbieten. Das
-              RDH2-Format unterstÃ¼tzen wir nicht komplett. 
-  * NEW: 0385 Automatische VervollstÃ¤ndigung der BIC bei Eingabe der IBAN 
-  * NEW: 0384 Umfangreichere PrÃ¼fung der IBAN bei der Eingabe mittels obantoo. Detailliertere Fehlermeldungen.
-  * NEW: 0383 GV-spezifische PAIN-Versionen berÃ¼cksichtigen. Siehe
+              RDH2-Format unterstützen wir nicht komplett. 
+  * NEW: 0385 Automatische Vervollständigung der BIC bei Eingabe der IBAN 
+  * NEW: 0384 Umfangreichere Prüfung der IBAN bei der Eingabe mittels obantoo. Detailliertere Fehlermeldungen.
+  * NEW: 0383 GV-spezifische PAIN-Versionen berücksichtigen. Siehe
               http://www.onlinebanking-forum.de/forum/topic.php?t=18038&page=last#last_post
   * NEW: 0382 Beim Import eines Datenbank-Backups die Meldungen der Protokolle nur mit DEBUG-Level
-              loggen. Dort dÃ¼rfen Fehler auftreten, denn beim Import der Datei werden vorher die Konten
-              importiert. Und deren Anlage fÃ¼hrt auch bereits zur Erstellung von Protokollen, deren
+              loggen. Dort dürfen Fehler auftreten, denn beim Import der Datei werden vorher die Konten
+              importiert. Und deren Anlage führt auch bereits zur Erstellung von Protokollen, deren
               IDs dann im Konflikt zu diesen hier stehen. 
   * NEW: 0381 BPD-Auto-Expiry - siehe https://github.com/willuhn/hbci4java/commit/9183772c20240aeb75a5710ba28abc4a2d81fba8
-  * NEW: 0380 Anzeigen/LÃ¶schen der BPD jetzt auch bei Chipkarte
-  * NEW: 0379 Support fÃ¼r SEPA-Umbuchungen
+  * NEW: 0380 Anzeigen/Löschen der BPD jetzt auch bei Chipkarte
+  * NEW: 0379 Support für SEPA-Umbuchungen
   * NEW: 0378 SEPA-Lastschrift-Art automatisch auf CORE setzen, wenn es nicht angegeben wurde
               (z.Bsp. wenn die Daten als Hibiscus-XML importiert wurden)
-  * NEW: 0377 Moegliche NullpointerException, wenn man SEPA-DauerauftrÃ¤ge abruft aber gar keine
+  * NEW: 0377 Moegliche NullpointerException, wenn man SEPA-Daueraufträge abruft aber gar keine
               eingerichtet sind.
   * NEW: 0376 Neue obantoo-Version 2.1.7
 
@@ -597,7 +597,7 @@ HEAD 2.9 (nightly)
 
   * NEW: 0375 Neue obantoo-Version 2.1.6
   * NEW: 0374 Verwendungszweck auf bei Sammelauftragsbuchungen nicht mehr Pflicht
-  * NEW: 0373 Support fÃ¼r Payment-Information ID
+  * NEW: 0373 Support für Payment-Information ID
   * NEW: 0372 Neue obantoo-Version 2.1.5
   * NEW: 0371 Neue HBCI4Java-Version
               Verwendungszweck ist jetzt optional. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17870&page=last#last_post
@@ -606,7 +606,7 @@ HEAD 2.9 (nightly)
   * BUG: 0369 Startseite nach der Synchronisierung neu laden um neu eingetroffene Nachrichten sofort anzuzeigen.
               Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17376&page=last#last_post
   * BUG: 0368 BUGZILLA 1537 - Check auf Offline-Konto beim Anlegen automatischer Gegenkonten war falsch
-  * BUG: 0367 Anzeige der nÃ¤chsten Zahlung in Detailansicht eines Dauerauftrages war falsch
+  * BUG: 0367 Anzeige der nächsten Zahlung in Detailansicht eines Dauerauftrages war falsch
               (bezog sich nicht auf heute sondern auf das Datum der ersten Zahlung)
   * NEW: 0366 IBAN formatiert anzeigen (in Vierer-Gruppen)
   * NEW: 0365 Beim Senden einer DA-Aenderung direkt im Anschluss automatisch
@@ -626,93 +626,93 @@ HEAD 2.9 (nightly)
   * NEW: 0358 Bugfixes bei RDH-Chipkarten
   * NEW: 0357 Import von SEPA-Einzel- und Sammel-Lastschriften aus SEPA-XML
   * NEW: 0356 Neue obantoo-Version 2.1.2
-  * NEW: 0355 BUGZILLA 1484 - Import von SEPA-Einzel- und Sammel-Ãœberweisungen aus SEPA-XML
+  * NEW: 0355 BUGZILLA 1484 - Import von SEPA-Einzel- und Sammel-Überweisungen aus SEPA-XML
   * NEW: 0354 Neue Exporter-Infrastruktur fuer SEPA-Auftraege, Umstellung des bisherigen
-              Exports von SEPA-AuftrÃ¤gen auf den Standard-Export-Mechanismus von Hibiscus.
-  * NEW: 0353 Erweiterte SEPA-Zeichen (insb. Umlaute) in DauerauftrÃ¤gen erlauben.
+              Exports von SEPA-Aufträgen auf den Standard-Export-Mechanismus von Hibiscus.
+  * NEW: 0353 Erweiterte SEPA-Zeichen (insb. Umlaute) in Daueraufträgen erlauben.
   * NEW: 0352 Neue HBCI4Java-Version (falsches Encoding beim Parsen des SEPA-XML), Stand
               https://github.com/willuhn/hbci4java/commit/90e5b37791643a91f9943db27f6f9b9f778af9c2
-  * NEW: 0351 BUGZILLA 1266 - UnterstÃ¼tzung fÃ¼r SEPA-DauerauftrÃ¤ge
-  * NEW: 0350 Neue HBCI4Java-Version (UnterstÃ¼tzung fÃ¼r SEPA-Bezeichner in VWZ), Stand
+  * NEW: 0351 BUGZILLA 1266 - Unterstützung für SEPA-Daueraufträge
+  * NEW: 0350 Neue HBCI4Java-Version (Unterstützung für SEPA-Bezeichner in VWZ), Stand
               https://github.com/willuhn/hbci4java/commit/9cf329c3d4eb22ed97aa8c4f120b6a70a414dff7
-  * NEW: 0349 Experimentelle UnterstÃ¼tzung fÃ¼r Kartenleser-Preset "RDH-Karte via PC/SC-Kartenleser"
+  * NEW: 0349 Experimentelle Unterstützung für Kartenleser-Preset "RDH-Karte via PC/SC-Kartenleser"
 
 2014-05-04 Version 2.6.6
 
-  * NEW: 0348 Detailansicht der Konten Ã¼berarbeitet - mehr Platz fÃ¼r UmsÃ¤tze und Saldoverlauf
+  * NEW: 0348 Detailansicht der Konten überarbeitet - mehr Platz für Umsätze und Saldoverlauf
   * BUG: 0347 BUGZILLA 1512 - Quartal in Zeitraum-Preset ein Monat zu lang
-  * NEW: 0346 HBCI-Version "2.2" nicht mehr anbieten (es sei denn, sie wurde vorher explizit ausgewÃ¤hlt)
+  * NEW: 0346 HBCI-Version "2.2" nicht mehr anbieten (es sei denn, sie wurde vorher explizit ausgewählt)
               http://www.onlinebanking-forum.de/forum/topic.php?p=106066#real106066
-  * BUG: 0345 Fehlermeldung Ã¼ber fehlendem Schreibzugriff beim Erstellen eines INI-Briefes wurde
+  * BUG: 0345 Fehlermeldung über fehlendem Schreibzugriff beim Erstellen eines INI-Briefes wurde
               nicht angezeigt. http://www.onlinebanking-forum.de/forum/topic.php?p=106085#real106085
-  * NEW: 0344 UnterstÃ¼tzung fÃ¼r Suchbegriffe in UmsÃ¤tze nach Kategorie
-  * NEW: 0343 Zeitraum-Presets auch in UmsÃ¤tze nach Kategorie und in Einnahmen/Ausgaben
-  * NEW: 0342 Erster Code fÃ¼r Zeitraum-Presets
-  * BUG: 0341 Beim Einreichen von AuftrÃ¤gen via XML-RPC/SOAP konnte es zu einer
+  * NEW: 0344 Unterstützung für Suchbegriffe in Umsätze nach Kategorie
+  * NEW: 0343 Zeitraum-Presets auch in Umsätze nach Kategorie und in Einnahmen/Ausgaben
+  * NEW: 0342 Erster Code für Zeitraum-Presets
+  * BUG: 0341 Beim Einreichen von Aufträgen via XML-RPC/SOAP konnte es zu einer
               "java.lang.ArithmeticException: Rounding necessary" kommen
-  * NEW: 0340 Benutzer- und Kundenkennung bei PIN/TAN und SchlÃ¼sseldatei Ã¤nderbar. Siehe
+  * NEW: 0340 Benutzer- und Kundenkennung bei PIN/TAN und Schlüsseldatei änderbar. Siehe
               http://www.onlinebanking-forum.de/forum/topic.php?t=16263
-  * NEW: 0339 BUGZILLA 1473 - Support fÃ¼r das automatische Anlegen von Gegenbuchungen auf Offline-Konten fÃ¼r SEPA-Buchungen
-  * NEW: 0338 Textsuche in Verwendungszwecken von UmsÃ¤tzen nicht an Wortgrenze/Leerzeichen stoppen.
+  * NEW: 0339 BUGZILLA 1473 - Support für das automatische Anlegen von Gegenbuchungen auf Offline-Konten für SEPA-Buchungen
+  * NEW: 0338 Textsuche in Verwendungszwecken von Umsätzen nicht an Wortgrenze/Leerzeichen stoppen.
               http://www.onlinebanking-forum.de/forum/topic.php?t=17348
-  * NEW: 0337 BUGZILLA 1503 - ZusammenfÃ¼hren von SEPA-Ãœberweisungen zu SammelauftrÃ¤gen. War
+  * NEW: 0337 BUGZILLA 1503 - Zusammenführen von SEPA-Überweisungen zu Sammelaufträgen. War
               schon implementiert. Nur der Menupunkt fehlte noch.
-  * CHG: 0336 Druck von SEPA-EinzelauftrÃ¤gen Ã¼berarbeitet
+  * CHG: 0336 Druck von SEPA-Einzelaufträgen überarbeitet
   * NEW: 0335 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/b788aadcc03df5d8d84ac84010e0211b07c3ab68
 
 2014-04-01 Version 2.6.5
 
-  * BUG: 0333 IZV-SammelauftrÃ¤ge konnten nicht mehr ausgefÃ¼hrt werden.
-              Fehlermeldung "ungÃ¼ltiger Indikator fÃ¼r BinÃ¤rdatenformat: 0"
-  * NEW: 0332 Creditor-ID auf PlausibilitÃ¤t prÃ¼fen, Neue HBCI4Java-Version, Stand
+  * BUG: 0333 IZV-Sammelaufträge konnten nicht mehr ausgeführt werden.
+              Fehlermeldung "ungültiger Indikator für Binärdatenformat: 0"
+  * NEW: 0332 Creditor-ID auf Plausibilität prüfen, Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/31e9842347aa13893a252bad54d6a7ee8e4789cd
-  * NEW: 0331 SEPA-Batchbook-Modus in SammelauftrÃ¤gen auswÃ¤hlbar
+  * NEW: 0331 SEPA-Batchbook-Modus in Sammelaufträgen auswählbar
   * NEW: 0330 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/1c14431d172697b1afd06c9f936aafa028cf24da
-  * NEW: 0329 Support fÃ¼r Checkboxen in erweiterten Sync-Optionen von Offline-Konten
-  * NEW: 0328 Beim Ã„ndern der HBCI-Version in einer PIN/TAN-Config das Neuladen der BPD
+  * NEW: 0329 Support für Checkboxen in erweiterten Sync-Optionen von Offline-Konten
+  * NEW: 0328 Beim Ändern der HBCI-Version in einer PIN/TAN-Config das Neuladen der BPD
               forcieren. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=17285&highlight=&page=last#last_post
-  * NEW: 0327 VervollstÃ¤ndigen des Verwendungszweck bei Auswahl einer Adresse in SEPA-AuftrÃ¤gen
+  * NEW: 0327 Vervollständigen des Verwendungszweck bei Auswahl einer Adresse in SEPA-Aufträgen
               basierend auf vorherigen Zahlungen an diese Adresse
   * NEW: 0326 Tolerieren von kaputten MT940-Daten (Zeile, die mit "-:61:" beginnt). Das "-" ist da
               eigentlich nicht erlaubt, einige Banken senden das aber so.
-  * NEW: 0325 UnterstÃ¼tzung fÃ¼r SEPA-SammelÃ¼berweisungen
+  * NEW: 0325 Unterstützung für SEPA-Sammelüberweisungen
 
 2014-03-09 Version 2.6.4
 
-  * NEW: 0324 BUGZILLA 1419 - UnterstÃ¼tzung fÃ¼r SEPA-Termin-Ãœberweisungen
+  * NEW: 0324 BUGZILLA 1419 - Unterstützung für SEPA-Termin-Überweisungen
   * NEW: 0323 Export von SEPA-Sammellastschriften im PAIN-XML-Format
-  * NEW: 0322 HTML-Export fÃ¼r SEPA-Sammellastschriften
-  * NEW: 0321 XML-Export und -Import fÃ¼r SEPA-Sammellastschriften
-  * NEW: 0320 Support fÃ¼r Suche in SEPA-Sammellastschriften
-  * NEW: 0319 Druck-Support fÃ¼r SEPA-Sammellastschriften
+  * NEW: 0322 HTML-Export für SEPA-Sammellastschriften
+  * NEW: 0321 XML-Export und -Import für SEPA-Sammellastschriften
+  * NEW: 0320 Support für Suche in SEPA-Sammellastschriften
+  * NEW: 0319 Druck-Support für SEPA-Sammellastschriften
   * NEW: 0318 Funktion zum Zusammenfassen von SEPA-Einzellastschriften zu ein oder
-              mehreren SEPA-SammelauftrÃ¤gen
+              mehreren SEPA-Sammelaufträgen
   * NEW: 0317 Beta-Markierung bei SEPA-Sammellastschriften entfernt
   * NEW: 0316 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/04ec58ac90510aae6707643a05acb536b1f0e9c3
   * NEW: 0315 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/92443f340bb5fa5cc96f713b7e4a4dde1d40b0a0
-  * NEW: 0314 Allererster Code fÃ¼r SEPA-Sammellastschriften
+  * NEW: 0314 Allererster Code für SEPA-Sammellastschriften
 
 2014-02-23 Version 2.6.3
 
   * NEW: 0313 Kontroll-Buttons in Flicker-Dialog oberhalb des Flicker-Codes anzeigen, damit man
-              die besser bedienen kann, wÃ¤hrend man den TAN-Generator an den Bildschirm hÃ¤lt. 
+              die besser bedienen kann, während man den TAN-Generator an den Bildschirm hält. 
   * NEW: 0312 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/bc2108ad8dabe468e3fca314c4314d63d9a036ef
   * NEW: 0311 Neue obantoo-Version 2.1.1
   * NEW: 0310 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/cd130fb06e910f915ea3c5feab1376006ca88131
   * BUG: 0309 BUGZILLA 1477 - Parameter "Index des HBCI-Zugangs" wurde bei PCSC-Kartenlesern nicht
-              gespeichert und Parameter "PIN-Eingabe Ã¼ber Tastatur" war nicht auswÃ¤hlbar.
-              Beide Index-Parameter geÃ¤ndert in Spinner (war vorher Freitext)
+              gespeichert und Parameter "PIN-Eingabe über Tastatur" war nicht auswählbar.
+              Beide Index-Parameter geändert in Spinner (war vorher Freitext)
   * NEW: 0308 Ueberlange Verwendungszwecke (mehr als 35 Zeichen) beim Umsatz-Abruf auf
               maximal erlaubte Laenge umbrechen
   * NEW: 0307 Abgerufene Vormerkbuchungen gegen alle in der DB vorhanden abgleichen.
-              Andernfalls kÃ¶nnten alte in der DB liegen bleiben.
-  * BUG: 0306 Umsatzliste des Kontos: Beim Eintreffen neuer UmsÃ¤tze zusÃ¤tzlich Konto checken
+              Andernfalls könnten alte in der DB liegen bleiben.
+  * BUG: 0306 Umsatzliste des Kontos: Beim Eintreffen neuer Umsätze zusätzlich Konto checken
   * NEW: 0305 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/b4694672b9feadfc6ff17e8810e6482cb7d80113
   * NEW: 0305 Leerzeichen in Mandate-ID nicht zulassen
@@ -722,12 +722,12 @@ HEAD 2.9 (nightly)
               https://github.com/willuhn/hbci4java/commit/6c4c642949aee1dafec835689e1db9f3241548dd
   * NEW: 0302 Neue HBCI4Java-Version, Stand
               https://github.com/willuhn/hbci4java/commit/e87f5a8186acf55e80da7effca0f6d82554bbb33
-  * NEW: 0301 Bei der Ermittlung des Merge-Window auch die Vormerkbuchungen berÃ¼cksichtigen. Siehe 0293.
+  * NEW: 0301 Bei der Ermittlung des Merge-Window auch die Vormerkbuchungen berücksichtigen. Siehe 0293.
   * NEW: 0300 Tracen der HBCI-Kommunikation unabhaengig vom Log moeglich. Die HBCI-Prptokolle koennen im Menu ueber Hibiscus->Erweitert gespeichert werden
   * BUG: 0299 BUGZILLA 1458 - Enum falsch aufgeloest in org.kapott.hbci.sepa.jaxb.pain_008_002_02.LocalInstrumentSEPACode.B2B
-  * CHG: 0298 Alte Konfiguration der Sicherheitsmedien unter Hibiscus->Einstellungen entfernt, wurde durch "BankzugÃ¤nge"
-              in der Navi abgelÃ¶st
-  * NEW: 0297 BUGZILLA 1272 - Shortcuts fÃ¼r neue SEPA-Ãœberweisung/-Lastschrift im Menu (lÃ¶st die fÃ¼r die IZV-Ãœberweisung/-Lastschrift ab)
+  * CHG: 0298 Alte Konfiguration der Sicherheitsmedien unter Hibiscus->Einstellungen entfernt, wurde durch "Bankzugänge"
+              in der Navi abgelöst
+  * NEW: 0297 BUGZILLA 1272 - Shortcuts für neue SEPA-Überweisung/-Lastschrift im Menu (löst die für die IZV-Überweisung/-Lastschrift ab)
 
 2014-01-09 Version 2.6.2
 
@@ -736,34 +736,34 @@ HEAD 2.9 (nightly)
   * NEW: 0295 Konten immer gleich sortieren - erst nach Kategorie, dann nach BLZ, dann Konto, dann Bezeichnung
   * NEW: 0294 Support fuer Addon-Optionen von Scripting-Konten
   * NEW: 0293 Beginn des Merge-Window nicht mehr hart basierend auf dem Datum des letzten Abrufes ermitteln sondern
-              basierend auf dem Ã¤ltesten zurÃ¼ckgemeldeten Umsatz (insofern ermittelbar). Damit kommt es nicht zu
+              basierend auf dem ältesten zurückgemeldeten Umsatz (insofern ermittelbar). Damit kommt es nicht zu
               Umsatz-Dopplern wenn die Bank beim Umsatz-Abruf das Start-Datum ignoriert und sehr alte Umsaetze liefert,
               die ausserhalb des Merge-Window (letzter Abruf minus 30 Tage) liegen
   * NEW: 0292 Neue HBCI4Java-Version mit Beruecksichtigung fuer "cannationalacc"
               https://github.com/willuhn/hbci4java/commit/1117898c8a5fc9fe203860046ce7021fd7c1ce05
-  * BUG: 0291 Wenn aus den Kontodetails den Button "Alle Umsaetze" klickt und dort UmsÃ¤tze abruft, wurden die
-              nicht live hinzugefÃ¼gt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16672
+  * BUG: 0291 Wenn aus den Kontodetails den Button "Alle Umsaetze" klickt und dort Umsätze abruft, wurden die
+              nicht live hinzugefügt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16672
               
 2013-12-30 Version 2.6.1
 
-  * BUG: 0290 BUGZILLA 1446 - beim erneuten Ã–ffnen einer Ãœberweisung war das Default-Konto vorausgewÃ¤hlt
+  * BUG: 0290 BUGZILLA 1446 - beim erneuten Öffnen einer Überweisung war das Default-Konto vorausgewählt
   * NEW: 0289 Druck-Button auch in Detailansicht eines Umsatzes anzeigen
   * NEW: 0288 Vormerkbuchungen beim Export nach CSV, HTML und PDF kenntlich machen
-  * CHG: 0287 "Kontoauszug" umbenannt in "UmsÃ¤tze" - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16617
-  * CHG: 0286 Changeset 0273 wieder rÃ¼ckgÃ¤ngig gemacht - ist sicherer so, damit nicht versehenltich jemand eine Ueberweisung absendet
-  * NEW: 0285 BUGZILLA 1442 - gruppierte Darstellung der IBAN in BestÃ¤tigungsdialog von SEPA-Ãœberweisung und -Lastschrift
+  * CHG: 0287 "Kontoauszug" umbenannt in "Umsätze" - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16617
+  * CHG: 0286 Changeset 0273 wieder rückgängig gemacht - ist sicherer so, damit nicht versehenltich jemand eine Ueberweisung absendet
+  * NEW: 0285 BUGZILLA 1442 - gruppierte Darstellung der IBAN in Bestätigungsdialog von SEPA-Überweisung und -Lastschrift
   * BUG: 0284 Export von SEPA-Lastschriften in PAIN-XML schlug u.U. fehl - siehe http://www.onlinebanking-forum.de/forum/topic.php?t=16600
 
 2013-12-18 Version 2.6.0
 
   * BUG: 0283 BUGZILLA 1437 - Beim Erstellen von SEPA-Auftraegen aus dem Adressbuch oder aus einem
-              Umsatz heraus wurde Kto/BLZ statt BIC/IBAN Ã¼bernommen
+              Umsatz heraus wurde Kto/BLZ statt BIC/IBAN übernommen
   * NEW: 0282 Bei IBANs die ersten beiden Buchstaben automatisch gegen Grossbuchstaben ersetzen
   * NEW: 0281 Neue HBCI4Java-Version - https://github.com/willuhn/hbci4java/pull/14
   * NEW: 0280 BUGZILLA 1431 - Kleinbuchstaben in BIC automatisch gegen Gross-Buchstaben ersetzen
   * NEW: 0279 IBAN-Dialog nicht-modal, damit man BIC und IBAN rauskopieren kann
   * NEW: 0278 Neue HBCI4Java-Version
-  * NEW: 0277 Beim Anlegen einer neuen PIN/TAN-Config sofort den Dialog fuer die Benutzerdaten Ã¶ffnen, spart den zusÃ¤tzlichen
+  * NEW: 0277 Beim Anlegen einer neuen PIN/TAN-Config sofort den Dialog fuer die Benutzerdaten öffnen, spart den zusätzlichen
               Klick auf "Neue Config"
   * NEW: 0276 Batch-SEPA-Konvertierung von Adressen (Rechtsklick in Adressliste "Nach SEPA konvertieren..."
   * NEW: 0275 Bei Chipkarte per Default jetzt FinTS3 statt HBCI 2.1 verwenden, wenn keine Version ermittelbar oder explizit angegeben
@@ -772,33 +772,33 @@ HEAD 2.9 (nightly)
   * NEW: 0272 Neue obantoo-Version 2.0.9 (2.0.8 enthielt eine kaputte BLZ.txt)
   * NEW: 0271 Neues Build von HBCI4Java mit zusammengefassten Generatoren fuer CORE/COR1/B2B Lastschrift via "getPainJobName"
   * NEW: 0270 Neue obantoo-Version 2.0.8
-  * NEW: 0269 Behandlung des 3072-RÃ¼ckmelde-Codes von GAD-Banken fÃ¼r die Ãœbermittlung geÃ¤nderter Anmelde-Daten
+  * NEW: 0269 Behandlung des 3072-Rückmelde-Codes von GAD-Banken für die Übermittlung geänderter Anmelde-Daten
   * NEW: 0268 Neue obantoo-Version 2.0.7
   * NEW: 0267 Neue obantoo-Version 2.0.5
   * NEW: 0266 BUGZILLA 1245 - Lastschrift-Art (CORE, COR1, B2B) sowie Faelligkeitstermin auswaehlbar
   * NEW: 0265 BUGZILLA 1245 - allererster Test-Code fuer SEPA-Lastschriften
-  * NEW: 0264 KontoauszÃ¼ge: Option "Nur ungeprÃ¼fte UmsÃ¤tze anzeigen" persistent speichern, nicht nur fÃ¼r die Session
+  * NEW: 0264 Kontoauszüge: Option "Nur ungeprüfte Umsätze anzeigen" persistent speichern, nicht nur für die Session
   * NEW: 0263 BUGZILLA 1393 - In neueren SEPA-Versionen als "SEPA-Descriptor" die URN senden
-  * NEW: 0262 In SEPA nicht zulÃ¤ssige Sonderzeichen im Inhabernamen des eigenen Kontos beim
-              Versand einer SEPA-Ãœberweisung ersetzen
-  * NEW: 0261 BUGZILLA 1265 - Support fÃ¼r End-to-End ID in SEPA-Ãœberweisungen
-  * BUG: 0260 BUGZILLA 1396 - Hinweistext geÃ¤ndert, dass nur die BIC wurde vervollstÃ¤ndigt wurde
-  * BUG: 0259 BUGZILLA 1395 - Wenn Adressbuch-Eintrag nur IBAN hat, dann nicht zusÃ¤tzlich nach Konto/BLZ in UmsÃ¤tzen suchen
+  * NEW: 0262 In SEPA nicht zulässige Sonderzeichen im Inhabernamen des eigenen Kontos beim
+              Versand einer SEPA-Überweisung ersetzen
+  * NEW: 0261 BUGZILLA 1265 - Support für End-to-End ID in SEPA-Überweisungen
+  * BUG: 0260 BUGZILLA 1396 - Hinweistext geändert, dass nur die BIC wurde vervollständigt wurde
+  * BUG: 0259 BUGZILLA 1395 - Wenn Adressbuch-Eintrag nur IBAN hat, dann nicht zusätzlich nach Konto/BLZ in Umsätzen suchen
   * NEW: 0258 BUGZILLA 1368 - Support fuer die pain-Versionen 001.001.02, 001.002.02, 001.002.03, 001.003.03
               Vielen Dank an der Stelle an Jan von evenos-consulting, der das implementiert hat
-  * NEW: 0257 Feature "Standardkonto" entfernt. Seit sich das Kontoauswahlfeld das zuletzt ausgewÃ¤hlte
-              Konto merken kann, kollidiert das regelmÃ¤ÃŸig mit dem Standardkonto. Siehe auch
+  * NEW: 0257 Feature "Standardkonto" entfernt. Seit sich das Kontoauswahlfeld das zuletzt ausgewählte
+              Konto merken kann, kollidiert das regelmäßig mit dem Standardkonto. Siehe auch
               BUGZILLA 1362 sowie http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=93624#93624 
-  * BUG: 0256 Dauerauftrag - nÃ¤chste Zahlung: Als Valuta nicht das aktuelle Datum nehmen sondern den ersten
-              AusfÃ¼hrungstermin. Beim Anlegen von neuen DauerauftrÃ¤gen weit in der Zukunft ist der nÃ¤chste Termin sonst zu frÃ¼h
-  * NEW: 0255 Deutsche Bank Ludwigshafen (BLZ 54570024) zu Deutsche-Bank-Rewriter hinzugefÃ¼gt
-  * NEW: 0254 Spalte "Notiz" auch in "UmsÃ¤tze nach Kategorien" anzeigen
+  * BUG: 0256 Dauerauftrag - nächste Zahlung: Als Valuta nicht das aktuelle Datum nehmen sondern den ersten
+              Ausführungstermin. Beim Anlegen von neuen Daueraufträgen weit in der Zukunft ist der nächste Termin sonst zu früh
+  * NEW: 0255 Deutsche Bank Ludwigshafen (BLZ 54570024) zu Deutsche-Bank-Rewriter hinzugefügt
+  * NEW: 0254 Spalte "Notiz" auch in "Umsätze nach Kategorien" anzeigen
   * BUG: 0253 BUGZILLA 1381 - Umsatz-Doppler wenn lokal und bei Bank je MEHRERE identische Umsaetze vorliegen
   * NEW: 0252 BUGZILLA 789 - Saldo beim Export von Umsaetzen ausblendbar
   * BUG: 0251 ClassCastException (hatte keine weiteren Folgen - wurde nur geloggt)
-  * BUG: 0250 BUGZILLA 879 - Eingabefelder in Lastschrift+Ãœberweisung wurden nach
-              AusfÃ¼hrung nicht unmittelbar auf readonly gesetzt 
-  * NEW: 0249 Ãœbernehmen der Warnungen von nicht ausgefÃ¼hrten AuftÃ¤gen in einem Sammler
+  * BUG: 0250 BUGZILLA 879 - Eingabefelder in Lastschrift+Überweisung wurden nach
+              Ausführung nicht unmittelbar auf readonly gesetzt 
+  * NEW: 0249 Übernehmen der Warnungen von nicht ausgeführten Auftägen in einem Sammler
   * NEW: 0248 Erster Test-Code fuer PCSC-Kartenleser. Sehr wahrscheinlich noch nicht in einem
               funktionierenden Zustand. Plus: Kartenleser-Preset fuer pcsc-ctapi-wrapper basierende
               Kartenleser.
@@ -806,48 +806,48 @@ HEAD 2.9 (nightly)
   * BUG: 0246 BUGZILLA 1362 - Standard-Konto kam nicht mehr zu Anwendung, wenn in KontoInput
               "setRememberSelection" verwendet wurde. Ausserdem: In Auftragserstellung Konto aus
               vorheriger Liste vorauswaehlen
-  * NEW: 0245 Svens Patch (vom 12.05.2013) fÃ¼r die Auswertung der Konto-Gruppen in Auswertungen und Listen 
+  * NEW: 0245 Svens Patch (vom 12.05.2013) für die Auswertung der Konto-Gruppen in Auswertungen und Listen 
   * NEW: 0244 BUGZILLA 1358 - Encoding beim CSV/HTML-Export konfigurierbar
   * NEW: 0243 BUGZILLA 1138 - Unterkategorien in Chartverlauf beruecksichtigen, Patch von Felix
   * NEW: 0242 BUGZILLA 1356 - Combobox mit Konten auch aktualisieren, wenn z.Bsp. der Name geaendert wird
   * BUG: 0241 BUGZILLA 1355 - StringIndexOutOfBoundsException beim Ermitteln der IBAN
-  * NEW: 0240 Erster Code fÃ¼r Konto-Gruppen. Dienen erstmal nur der Ãœbersicht in der Liste, werden
-              in Auswertungen noch nicht unterstÃ¼tzt
-  * NEW: 0239 IBAN/BIC im Adressbuch und bei Konten automatisch vervollstÃ¤ndigen, wenn Kto/BLZ vorhanden
+  * NEW: 0240 Erster Code für Konto-Gruppen. Dienen erstmal nur der Übersicht in der Liste, werden
+              in Auswertungen noch nicht unterstützt
+  * NEW: 0239 IBAN/BIC im Adressbuch und bei Konten automatisch vervollständigen, wenn Kto/BLZ vorhanden
   * NEW: 0238 Kleiner IBAN-Rechner im Menu unter "Erweitert"
   * NEW: 0237 neue HBCI4Java Version mit kleinem IBAN-Rechner
-  * NEW: 0236 Ausdruck von EinzelauftrÃ¤gen etwas platzsparender und ohne Seitennummer unten rechts
+  * NEW: 0236 Ausdruck von Einzelaufträgen etwas platzsparender und ohne Seitennummer unten rechts
   * NEW: 0235 BUGZILLA 1346 Sync-faehige Offline-Konten in Kontoauswahl der Sync-Optionen anbieten
   * NEW: 0234 BUGZILLA 1018 Neues Synchronize-Backend fuer Scripting
   * NEW: 0233 BUGZILLA 1346 Umbau des HBCI-Backends auf ein generisches Synchronize-Backend
 
 2013-04-02 Version 2.5.0 (nightly)
 
-  * BUG: 0232 Beim LÃ¶schen eines Sammelauftrages in der Detailansicht wurden die
-              enthaltendenen Buchungen auch dann aus der Tabelle entfernt (nicht gelÃ¶scht,
+  * BUG: 0232 Beim Löschen eines Sammelauftrages in der Detailansicht wurden die
+              enthaltendenen Buchungen auch dann aus der Tabelle entfernt (nicht gelöscht,
               nur in der Anzeige entfernt), wenn man in der Sicherheitsabfrage mit Nein
               geantwortet hat.
-  * NEW: 0231 BUGZILLA 1336 Escaping von Double-Quotes und Entfernen von ZeilenumbrÃ¼chen
+  * NEW: 0231 BUGZILLA 1336 Escaping von Double-Quotes und Entfernen von Zeilenumbrüchen
               beim CSV-Export
-  * NEW: 0230 neue Checkbox "Nur offene AuftrÃ¤ge anzeigen" in den Auftragslisten
+  * NEW: 0230 neue Checkbox "Nur offene Aufträge anzeigen" in den Auftragslisten
   * NEW: 0229 47-blz-updates.patch
-  * NEW: 0228 BUGZILLA 1334 Summen- und Trend-Linie im Salden-Chart nicht mehr fÃ¼llen - fÃ¼r bessere Ãœbersichtlichkeit
+  * NEW: 0228 BUGZILLA 1334 Summen- und Trend-Linie im Salden-Chart nicht mehr füllen - für bessere Übersichtlichkeit
   * BUG: 0227 BUGZILLA 1333 NPE beim Export der Umsatzkategorien, wenn kein Datumsbereich angegeben ist
   * NEW: 0226 BUGZILLA 1328 Im Adressbuch unter "Buchungen von/an diese Adresse" wurden
-              UmsÃ¤tze nicht gefunden, wenn sie die IBAN statt der nationalen Kontonummer
+              Umsätze nicht gefunden, wenn sie die IBAN statt der nationalen Kontonummer
               verwenden.
-  * NEW: 0225 Bezeichner "AuslÃ¤ndische Bankverbindung" in "EuropÃ¤ische Bankverbindung (SEPA)" geÃ¤ndert
-  * NEW: 0224 Beim Klick auf "Exportieren" in Auswertungen->UmsÃ¤tze nach Kategorien
+  * NEW: 0225 Bezeichner "Ausländische Bankverbindung" in "Europäische Bankverbindung (SEPA)" geändert
+  * NEW: 0224 Beim Klick auf "Exportieren" in Auswertungen->Umsätze nach Kategorien
               nur die markierten Kategorien exportieren, insofern welche markiert sind
   * NEW: 0223 BUGZILLA 1322 Unterstuetzung fuer ueberlanges HIVISS Segment in GAD BPD
   * NEW: 0222 BUGZILLA 1321 Beim Anlegen der Konten die nicht unterstuetzten explizit ausweisen
   * NEW: 0221 BUGZILLA 1312 Bezeichnung "Kommentar" einheitlich gegen "Notiz" ersetzt
   * NEW: 0220 BUGZILLA 1315 Auswahldialog fuer Kategorie-Zuordnung etwas hoeher
-  * NEW: 0219 BUGZILLA 1311 Breiteres Eingabefeld fÃ¼r Suchbegriff der Kategorie
+  * NEW: 0219 BUGZILLA 1311 Breiteres Eingabefeld für Suchbegriff der Kategorie
   * NEW: 0218 BUGZILLA 1313 Selektierte Kategorie merken
   * BUG: 0217 BUGZILLA 1309 CSV-Export Umsatzliste - doppeltes Semikolon vor letzter Spalte
   * CHG: 0216 Konto-Filter in AbstractTransferList verschoben (war redundant)
-  * NEW: 0215 Bei Kategorie-Zuordnung anhand Suchbegriff auch in "Art" (TextschlÃ¼ssel) suchen
+  * NEW: 0215 Bei Kategorie-Zuordnung anhand Suchbegriff auch in "Art" (Textschlüssel) suchen
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=14993
   * NEW: 0214 BUGZILLA 887 - 76090500 hinzugefuegt
   * CHG: 0213 BUGZILLA 1303 - Bezeichnung "Kundennummer" einheitlich gehen "Kundenkennung" ersetzt
@@ -885,11 +885,11 @@ HEAD 2.9 (nightly)
   * NEW: 0188 Neuer Menupunkt "Neue SEPA-Ueberweisung" in Umsatz- und Kontoliste, sowie Adressbuch
   * NEW: 0187 Doppler-Erkennung bei Umsatz-Abruf ueberarbeitet - siehe Kommentar in HBCIUmsatzJob
   * NEW: 0186 Flicker-Code u.U. zu schmal auf Displays mit hoher DPI-Zahl
-  * NEW: 0185 BLZ 26570090 (Deutsche Bank OsnabrÃ¼ck zu Rewriter hinzugefuegt.
+  * NEW: 0185 BLZ 26570090 (Deutsche Bank Osnabrück zu Rewriter hinzugefuegt.
               Siehe http://www.willuhn.de/blog/index.php?/archives/519-Neues-in-Hibiscus.html#c1541
-  * NEW: 0184 Quick-Select des Kontos in Konto-Details um schneller zwischen den Konten wechseln zu kÃ¶nnen
+  * NEW: 0184 Quick-Select des Kontos in Konto-Details um schneller zwischen den Konten wechseln zu können
   * BUG: 0183 BUGZILLA 1236 - ReinerSCT unter Win64 faelschlicherweise als nicht unterstuetzt angezeigt
-  * NEW: 0182 BUGZILLA 1233 - Anzahl der Monate pro Periode in Sparquote auswÃ¤hlbar
+  * NEW: 0182 BUGZILLA 1233 - Anzahl der Monate pro Periode in Sparquote auswählbar
   * BUG: 0181 BUGZILLA 1232 - Saldo des Kontos nur bei neuen Umsaetzen uebernehmen
   * NEW: 0180 Zeilenumbruch nach Doppelpunkt beim Einfuegen von Bankverbindungen aus Zwischenablage tolerieren, siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=82519#82519
@@ -902,16 +902,16 @@ HEAD 2.9 (nightly)
   * NEW: 0174 BUGZILLA 1222 - Synchronisierung kann jetzt auf der Startseite mit ALT+Y gestartet werden
   * BUG: 0173 BUGZILLA 1219 - Konsequentund einheitlich Buchngsdatum statt Valuta-Datum bei Filtern verwenden
   * BUG: 0172 39-blz-optional.patch
-  * BUG: 0171 38-bug1207.patch - BUGZILLA 1207 - TCP-Port von PIN/TAN-Config lieÃŸ sich nicht Ã¤ndern
+  * BUG: 0171 38-bug1207.patch - BUGZILLA 1207 - TCP-Port von PIN/TAN-Config ließ sich nicht ändern
   * BUG: 0170 37-bug1129.patch - BUGZILLA 1129 - Dauerauftraege konnten nicht abgerufen werden, wenn ungueltige Zeichen drin stehen
   * CHG: 0169 36-loglevel.patch
-  * BUG: 0168 BUGZILLA 1197 - AusgefÃ¼hrte AuftrÃ¤ge lieÃŸen sich nicht mehr duplizieren
+  * BUG: 0168 BUGZILLA 1197 - Ausgeführte Aufträge ließen sich nicht mehr duplizieren
   * NEW: 0167 Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine
               fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
               
 2012-02-15 Version 2.2.0
 
-  * NEW: 0166 BUGZILLA 940 - Diverse TastenkÃ¼rzel zur Navigation
+  * NEW: 0166 BUGZILLA 940 - Diverse Tastenkürzel zur Navigation
   * NEW: 0165 35-mt940-buchungsdatum.patch - Buchungsdatum des Buchungstages verwenden, wenn in Buchung nicht vorhanden
   * NEW: 0164 34-javax.smartcardio.patch
   * NEW: 0163 33-catch-exception.patch
@@ -940,7 +940,7 @@ HEAD 2.9 (nightly)
               - Grundsaetzlich einheitlich Tabs fuer Anzeige-Filter verwenden
               - Buttons in Auftragslisten oben rechts anordnen
               - getrenntes Caching von From-/To-Datum zwischen Auftrags- und Umsatzlisten 
-  * NEW: 0152 BUGZILLA 1162 - Support fÃ¼r geplante Wiederholungen von "Offline-Dauerauftraege"
+  * NEW: 0152 BUGZILLA 1162 - Support für geplante Wiederholungen von "Offline-Dauerauftraege"
               in AppointmentProvidern
   * NEW: 0151 BUGZILLA 1159 - bei Anlage einer PIN/TAN-Config den TCP-Port aus URL
               entfernen, falls vorhanden 
@@ -960,20 +960,20 @@ HEAD 2.9 (nightly)
   * BUG: 0142 Wenn Einzel-Auftraege zu einem neuen Sammel-Auftrag zusammengefasst
               wurden, wurde das Faelligkeits-Datum (aktuelles Datum) nicht eingetragen,
               wodurch der neue Sammel-Auftrag nicht gespeichert werden konnte. 
-  * NEW: 0141 BUGZILLA 182 Zeitgesteuertes Duplizieren von AuftrÃ¤gen
+  * NEW: 0141 BUGZILLA 182 Zeitgesteuertes Duplizieren von Aufträgen
   * NEW: 0140 Support zum Speichern beliebiger Meta-Daten an Entities
   * NEW: 0139 Wenn bei einer Ueberweisung ein Termin in der Zukunft ausgewaehlt wird, erscheint
               jetzt eine Sicherheitsabfrage, mit der der User darauf hingewiesen wird, den Auftrag
               ggf. als bankseitig gefuehrte Termin-Ueberweisung einzureichen
   * CHG: 0138 Neue Wiki-URL
-  * NEW: 0137 Anzeige der UmsÃ¤tze in Termin-Ansicht
+  * NEW: 0137 Anzeige der Umsätze in Termin-Ansicht
   * BUG: 0136 XML-Export von Hibiscus-Adressen funktionierte nicht mehr wegen
               "virtuellen" Konto-Adressen 
   * BUG: 0135 setText nur aufrufen, wenn Leerzeichen entfernt wurden - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78495#78495
   * NEW: 0134 Kontonummer und Saldo in Kontoliste rechtsbuendig forcieren
   * NEW: 0133 BUGZILLA 728 - Inline-Editing von Notizen direkt in Umsatzliste
-  * BUG: 0132 Datum des Saldos in Box "Finanz-Ãœbersicht" nicht ganz korrekt - siehe
+  * BUG: 0132 Datum des Saldos in Box "Finanz-Übersicht" nicht ganz korrekt - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=78121#78121
   * NEW: 0131 Mindestens 8 Zeichen Passwort-Laenge bei RDH2 - siehe Mail von "silentspeak" vom 08.09.2011
   * DEL: 0130 Biometrie-Support bei Kartenlesern entfernt - wurde nie benutzt
@@ -1022,7 +1022,7 @@ HEAD 2.9 (nightly)
   * BUG: 0105 Anzeigefehler in der Berechnung der naechsten Zahlung im Turnus - siehe
               http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=76102#76102
   * BUG: 0204 30-hbci4java-chiptan-reset.patch
-  * CHG: 0103 "Termin" umbenannt in "FÃ¤llig am", war vorher u.U. missverstaendlich, wenn es keine
+  * CHG: 0103 "Termin" umbenannt in "Fällig am", war vorher u.U. missverstaendlich, wenn es keine
               bank-gefuehrte Termin-Ueberweisung ist sondern lediglich ein Hibiscus-interner Termin
   * NEW: 0102 BUGZILLA 1082 - moegliche Race-Condition unter Windows XP (Event-Verschluckung)
   
@@ -1033,7 +1033,7 @@ HEAD 2.9 (nightly)
   * NEW: 0099 27-hbci4java-flickercode-luhnsum.patch
   * NEW: 0098 26-hbci4java-flicker-speed.patch
   * NEW: 0097 Liste der Bank-Zugaenge ueberarbeitet
-  * NEW: 0096 25-hbci4java-task-maxsegversion.patch - maximale Segment-Version fÃ¼r Jobs definierbar
+  * NEW: 0096 25-hbci4java-task-maxsegversion.patch - maximale Segment-Version für Jobs definierbar
   * BUG: 0095 24-hbci4java-hhdversion.patch - HHD-Version wurde u.U. falsch ermittelt
   * BUG: 0094 BUGZILLA 1056 - Unterkontonummer darf max. 30 Zeichen lang sein und auch Leerzeichen enthalten
   * NEW: 0093 BUGZILLA 821 - Support fuer optisches chipTAN (22-hbci4java-chiptan-opt.patch, 23-hbci4java-chiptan-opt2.patch)
@@ -1048,7 +1048,7 @@ HEAD 2.9 (nightly)
   * NEW: 0086 BUGZILLA 1038 - Auswahl des Kontos speichern
   * NEW: 0085 Funktion zum Loeschen der BPD.
   * NEW: 0084 BUGZILLA 1044 - Das erste Konto wurde nicht korrekt gezeichnet, wenn die Summen-Linie enthalten ist
-  * NEW: 0083 BUGZILLA 591 - Unterstuetzung fuer BZÃœ-Ueberweisung
+  * NEW: 0083 BUGZILLA 591 - Unterstuetzung fuer BZÜ-Ueberweisung
   * NEW: 0082 Text-Schluessel als Konstanten definiert - Teil aus dem Patch von Thomas vom 07.12.2010
   * NEW: 0081 BUGZILLA 827 - Unterstuetzung fuer Eingabe des TAN-Mediums bei smsTAN (10-hbci4java-tanmedia.patch)
   * NEW: 0080 Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer
@@ -1081,14 +1081,14 @@ HEAD 2.9 (nightly)
               nach Rueckkehr aus Umsatzdetails wiederherstellen
   * BUG: 0060 BUGZILLA 629 - Auswahl der zu zeichnenden Graphen wurde unter
               Windows ggf. nicht uebernommen
-  * NEW: 0059 Druck-Support fÃ¼r UmsÃ¤tze, Ueberweisungen und Lastschriften (via Paperclips)
+  * NEW: 0059 Druck-Support für Umsätze, Ueberweisungen und Lastschriften (via Paperclips)
   * CHG: 0058 BUGZILLA 1014 - automatisches Formatieren des Betrages nach Focus-Wechsel
               Wurde vorher auch schon in Hibiscus gemacht. Jetzt passierts direkt
               in DecimalInput
-  * CHG: 0057 Zweispaltige Anzeige in Detailansicht von DauerauftrÃ¤gen - bessere
+  * CHG: 0057 Zweispaltige Anzeige in Detailansicht von Daueraufträgen - bessere
               Anzeige auf kleinen Bildschirmen
   * CHG: 0056 Loeschen von Datensaetzen in separatem Thread entfernt - zu langsam
-  * BUG: 0055 BUGZILLA 1003 - Spalten-Dreher in HTML-Export "Ãœberweisungen"
+  * BUG: 0055 BUGZILLA 1003 - Spalten-Dreher in HTML-Export "Überweisungen"
   * BUG: 0054 BUGZILLA 1002 - MaxMsgSizeKB Bugfix in HBCI4Java - 08-hbci4java-bug-195.patch
   * NEW: 0053 BUGZILLA 999 - Dauerauftraege koennen jetzt auch nur lokal geloescht
               werden, obwohl sie auch bei der Bank vorliegen 
@@ -1138,34 +1138,34 @@ HEAD 2.9 (nightly)
   * NEW: 0025 Neuer Filter "Umsatz-Kategorie" in Auswertung "Kontoauszuege"
   * CHG: 0024 Contextmenu-Eintrage fuer neue Auftraege im Konto nur aktivieren, wenn
               ein einzelnes Konto selektiert ist. Die Menueintraege machen sonst keinen Sinn
-  * BUG: 0023 Beim LÃ¶schen eines Sammelauftrages in der Detail-View wurden die
+  * BUG: 0023 Beim Löschen eines Sammelauftrages in der Detail-View wurden die
               enthaltenen Buchungen nicht sofort aus der Liste entfernt, sodass man
               eine ObjectNotFoundException durch Doppelklick auf eine Buchung
               provozieren konnte
-  * NEW: 0022 Kalender-View mit Terminen von ZahlungsauftrÃ¤gen
+  * NEW: 0022 Kalender-View mit Terminen von Zahlungsaufträgen
   * CHG: 0021 Umstellung von Birt auf SWTChart
 
 2010-11-10 Version 1.12.0
 
-  * DEL: 0020 UnterstÃ¼tzung fÃ¼r McKoi-Datenbank entfernt.
-  * BUG: 0019 BerÃ¼cksichtigung von "Null-UmsÃ¤tzen" (Bug 804)
-  * CHG: 0018 Doppler-PrÃ¼fung beim Umsatz-Abruf Ã¼berarbeitet
+  * DEL: 0020 Unterstützung für McKoi-Datenbank entfernt.
+  * BUG: 0019 Berücksichtigung von "Null-Umsätzen" (Bug 804)
+  * CHG: 0018 Doppler-Prüfung beim Umsatz-Abruf überarbeitet
   * NEW: 0017 Import von Buchungen aus Moneyplex
-  * NEW: 0016 TextschlÃ¼ssel in DauerauftrÃ¤gen
+  * NEW: 0016 Textschlüssel in Daueraufträgen
   * NEW: 0015 Netbook-Mode
-  * NEW: 0014 Datums-Eingaben ohne Punkt zulÃ¤ssig (Bug 865)
-  * NEW: 0013 Anzeige des Gesamt-Saldos Ã¼ber alle Konten (Bug 886)
-  * NEW: 0012 Chart "Saldo-Verlauf" Ã¼berarbeitet (Bug 775)
-  * NEW: 0011 PasswÃ¶rter von SchlÃ¼sseldisketten sind jetzt Ã¤nderbar (Bug 312)
+  * NEW: 0014 Datums-Eingaben ohne Punkt zulässig (Bug 865)
+  * NEW: 0013 Anzeige des Gesamt-Saldos über alle Konten (Bug 886)
+  * NEW: 0012 Chart "Saldo-Verlauf" überarbeitet (Bug 775)
+  * NEW: 0011 Passwörter von Schlüsseldisketten sind jetzt änderbar (Bug 312)
   * NEW: 0010 Kategorien im Adressbuch (Bug 83)
-  * NEW: 0009 EXE-Launcher fÃ¼r Windows
-  * NEW: 0008 UnterstÃ¼tzung fÃ¼r mehrere parallele Kartenleser und Chipkarten (Bug 391)
+  * NEW: 0009 EXE-Launcher für Windows
+  * NEW: 0008 Unterstützung für mehrere parallele Kartenleser und Chipkarten (Bug 391)
   * NEW: 0007 Neue integrierte Spenden-Funktion
-  * NEW: 0006 Abruf von DKB-VISA-KontoauszÃ¼gen via Scripting-Plugin
-  * NEW: 0005 Abruf von Paypal-KontoauszÃ¼gen via Scripting-Plugin
-  * NEW: 0004 UnterstÃ¼tzung fÃ¼r das Ã„ndern der Benutzer-Kennung und Server-Adresse
+  * NEW: 0006 Abruf von DKB-VISA-Kontoauszügen via Scripting-Plugin
+  * NEW: 0005 Abruf von Paypal-Kontoauszügen via Scripting-Plugin
+  * NEW: 0004 Unterstützung für das Ändern der Benutzer-Kennung und Server-Adresse
               auf Chipkarten
-  * NEW: 0003 Anzeige des "verfÃ¼gbaren Betrages" falls die Bank das unterstÃ¼tzt (Bug 530)
-  * NEW: 0002 Bessere UnterstÃ¼tzung fÃ¼r die KontoauszÃ¼ge von Netbank, Spardabank und
+  * NEW: 0003 Anzeige des "verfügbaren Betrages" falls die Bank das unterstützt (Bug 530)
+  * NEW: 0002 Bessere Unterstützung für die Kontoauszüge von Netbank, Spardabank und
               Deutsche Bank (Bug 244, 887)
-  * NEW: 0001 Support fÃ¼r Offline-Konten (Bug 586)
+  * NEW: 0001 Support für Offline-Konten (Bug 586)
