@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0857 Neue grafische Auswertung in "Einnahmen/Ausgaben" - siehe https://github.com/willuhn/hibiscus/pull/53
+
 2019-11-02 Version 2.8.21
 
   * NEW: 0856 Update auf HBCI4Java 3.1.24 - Nochmal Postbank - https://homebanking-hilfe.de/forum/topic.php?p=151712#real151712
