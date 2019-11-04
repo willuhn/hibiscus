@@ -38,10 +38,12 @@ public class FeatureService
   @PostConstruct
   private void init()
   {
-    if (!this.enabled())
-      return;
-    
-    Logger.info("loading experimental features");
+    final boolean enabled = this.enabled();
+
+    if (enabled)
+      Logger.info("loading experimental features");
+
+    // Auch wenn die Features nicht genutzt werden, muessen sie dennoch geladen werden, damit sie konfiguriert werden koennen
     try
     {
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
@@ -52,11 +54,14 @@ public class FeatureService
         {
           final Feature f = service.get(c);
           this.features.add(f);
-          
-          // Aktivieren/Deaktivieren - je nach gespeichertem Zustand
-          final boolean state = this.isEnabled(f);
-          Logger.info("  " + c.getSimpleName() + ": " + state);
-          f.setEnabled(state);
+
+          if (enabled)
+          {
+            // Aktivieren/Deaktivieren - je nach gespeichertem Zustand
+            final boolean state = this.isEnabled(f);
+            Logger.info("  " + c.getSimpleName() + ": " + state);
+            f.setEnabled(state);
+          }
         }
         catch (Exception e)
         {
