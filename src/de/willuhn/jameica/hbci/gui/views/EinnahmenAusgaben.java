@@ -106,11 +106,11 @@ public class EinnahmenAusgaben extends AbstractView
     
     final TabFolder folder = new TabFolder(getParent(), SWT.NONE);
     
-    final TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarisch"),true,1);
+    final TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"),true,1);
     TreePart tree = control.getTree();
     tree.paint(tg1.getComposite());
     
-    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Balkendiagramm - Vergleich"),true,1);
+    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"),true,1);
     final EinnahmenAusgabenVerlauf chart = control.getChart();
     chart.paint(tg2.getComposite());
     

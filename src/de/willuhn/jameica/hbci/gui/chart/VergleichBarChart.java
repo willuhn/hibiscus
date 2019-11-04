@@ -1,10 +1,18 @@
+/**********************************************************************
+ *
+ * Copyright (c) 2019 Tobias Amon
+ * All rights reserved.
+ * 
+ * This software is copyrighted work licensed under the terms of the
+ * Jameica License.  Please consult the file "LICENSE" for details. 
+ *
+ **********************************************************************/
+
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.rmi.RemoteException;
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -16,31 +24,28 @@ import org.swtchart.IAxis;
 import org.swtchart.IAxisTick;
 import org.swtchart.IBarSeries;
 import org.swtchart.IGrid;
+import org.swtchart.ILegend;
 import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesLabel;
 import org.swtchart.ITitle;
 import org.swtchart.LineStyle;
 import org.swtchart.ext.InteractiveChart;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
-import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
-import de.willuhn.util.ColorGenerator;
 
 /**
  * Chart zum Anzeigen von 2 Serien: Einnahmen und Ausgaben.
- * 
- * @author Tobias Amon
- *
  */
 public class VergleichBarChart extends AbstractChart
 {
   private Composite comp = null;
-  private List data = null;
+  private List<EinnahmeAusgabeZeitraum> data = null;
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#redraw()
@@ -73,30 +78,43 @@ public class VergleichBarChart extends AbstractChart
     {
       ITitle title = getChart().getTitle();
       title.setText(this.getTitle());
-      title.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+      title.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
       title.setFont(Font.BOLD.getSWTFont());
     }
     //
     ////////////////////////////////////////////////////////////////////////////
     
     ////////////////////////////////////////////////////////////////////////////
+    // Legende
+    {
+      ILegend legend = getChart().getLegend();
+      legend.setFont(Font.SMALL.getSWTFont());
+      legend.setVisible(true);
+      legend.setPosition(SWT.RIGHT);
+      legend.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+    }
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////
     // Layout der Achsen
-    Color gray = getColor(new RGB(230,230,230));
+    Color gray = getColor(new RGB(234,234,234));
     
     // X-Achse
     {
       IAxis axis = getChart().getAxisSet().getXAxis(0);
+      axis.getTitle().setFont(Font.SMALL.getSWTFont());
       axis.getTitle().setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE)); // wenn wir den auch ausblenden, geht die initiale Skalierung kaputt. Scheint ein Bug zu sein
 
       IGrid grid = axis.getGrid();
       grid.setStyle(LineStyle.DOT);
       grid.setForeground(gray);
 
-      axis.getTick().setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-      axis.getTick().setFormat(HBCI.DATEFORMAT);
+      IAxisTick tick = axis.getTick();
+      tick.setFormat(HBCI.DATEFORMAT);
+      tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
       
-      String[] categoryNames = getCategoryNames();
-      axis.setCategorySeries(categoryNames);
+      axis.setCategorySeries(this.getCategoryNames());
       axis.enableCategory(true);
     }
     
@@ -111,51 +129,37 @@ public class VergleichBarChart extends AbstractChart
       
       IAxisTick tick = axis.getTick();
       tick.setFormat(HBCI.DECIMALFORMAT);
-      tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+      tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
     }
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    erstelleEinnahmenSerie();
-    erstelleAusgabenSerie();
+    {
+      IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,"einnahmen");
+      barSeries.setYSeries(getIncomeSeries());
+      barSeries.setDescription(i18n.tr("Einnahmen"));
+      barSeries.setBarColor(Settings.getBuchungHabenForeground());
+      ISeriesLabel label = barSeries.getLabel();
+      label.setFont(Font.SMALL.getSWTFont());
+      label.setFormat(HBCI.DECIMALFORMAT.toPattern());
+      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+      label.setVisible(true);
+    }
     
+    {
+      IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,"ausgaben");
+      barSeries.setYSeries(getExpensesSeries());
+      barSeries.setDescription(i18n.tr("Ausgaben"));
+      barSeries.setBarColor(Settings.getBuchungSollForeground());
+      ISeriesLabel label = barSeries.getLabel();
+      label.setFont(Font.SMALL.getSWTFont());
+      label.setFormat(HBCI.DECIMALFORMAT.toPattern());
+      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+      label.setVisible(true);
+    }
+
     getChart().getAxisSet().adjustRange();
     this.comp.layout(true);
-  }
-
-  private void erstelleEinnahmenSerie() throws RemoteException
-  {
-    IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,"einnahmen");
-    double[] einnahmenSerie = getIncomeSeries();
-    barSeries.setYSeries(einnahmenSerie);
-    barSeries.setDescription("Einnahmen");
-    
-    int[] cValues = ColorGenerator.create(ColorGenerator.PALETTE_OFFICE);
-    barSeries.setBarColor(getColor(new RGB(cValues[0],cValues[1],cValues[2])));
-    
-    ISeriesLabel label = barSeries.getLabel();
-    label.setFont(Font.SMALL.getSWTFont());
-    label.setFormat(HBCI.DECIMALFORMAT.toPattern()); // BUGZILLA 1123
-    label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-    label.setVisible(true);
-  }
-
-  private void erstelleAusgabenSerie() throws RemoteException
-  {
-    ISeriesLabel label;
-    IBarSeries barSeries2 = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,"ausgaben");
-    double[] ausgabenSerie = getExpensesSeries();
-    barSeries2.setYSeries(ausgabenSerie);
-    barSeries2.setDescription("Ausgaben");
-    
-    int[] cValues2 = ColorGenerator.create(ColorGenerator.PALETTE_RICH);
-    barSeries2.setBarColor(getColor(new RGB(cValues2[0],cValues2[1],cValues2[2])));
-    
-    label = barSeries2.getLabel();
-    label.setFont(Font.SMALL.getSWTFont());
-    label.setFormat(HBCI.DECIMALFORMAT.toPattern()); // BUGZILLA 1123
-    label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-    label.setVisible(true);
   }
 
   /**
@@ -175,134 +179,98 @@ public class VergleichBarChart extends AbstractChart
 
   /**
    * Setter für die anzuzeigenden Daten
-   * 
-   * @param items List von EinnahmeAusgabeTreeNode Elementen
+   * @param items Liste mit den Daten.
    * @throws RemoteException 
    */
-  public void setData(List items) throws RemoteException
+  public void setData(List<EinnahmeAusgabeZeitraum> items) throws RemoteException
   {
     this.data = items;
   }
 
+  /**
+   * Liefert die Namen der Kategorien.
+   * @return die Namen der Kategorien.
+   */
   private String[] getCategoryNames()
   {
-    if(data == null)
-      return new String[] {"No Data"};
+    if (data == null)
+      return new String[] {i18n.tr("Keine Daten")};
     
-    List<EinnahmeAusgabeTreeNode> nodes = (List<EinnahmeAusgabeTreeNode>) this.data;
-    List<String> categories = new ArrayList<>();
-    for (EinnahmeAusgabeTreeNode einnahmeAusgabeTreeNode : nodes)
+    final List<String> result = new ArrayList<String>();
+    for (EinnahmeAusgabeZeitraum n : this.data)
     {
-      categories.add(getLabel(einnahmeAusgabeTreeNode));
+      result.add(this.getLabel(n));
     }
-    return categories.toArray(new String[categories.size()]);
+    return result.toArray(new String[result.size()]);
   }
   
-  private String getLabel(EinnahmeAusgabeTreeNode node)
+  /**
+   * Liefert das Label fuer das Element.
+   * @param node das Element.
+   * @return das Label.
+   */
+  private String getLabel(EinnahmeAusgabeZeitraum node)
   {
-    Calendar startCal = new GregorianCalendar();
-    startCal.setTime(node.getStartdatum());
-    int startMonth = startCal.get(Calendar.MONTH);
-    int startYear = startCal.get(Calendar.YEAR);
+    if (node instanceof EinnahmeAusgabe)
+      return node.getText(); // Gesamtzeitraum
     
-    Calendar endCal = new GregorianCalendar();
-    endCal.setTime(node.getEnddatum());
-    int endMonth = endCal.get(Calendar.MONTH);
-    int endYear = endCal.get(Calendar.YEAR);
+    final Calendar cal = Calendar.getInstance();
+    cal.setTime(node.getStartdatum());
+    final int sm = cal.get(Calendar.MONTH);
+    final int sy = cal.get(Calendar.YEAR);
     
-    if(startMonth == endMonth) // Gleicher Monat, also Monatsweise Anzeige
-      return getMonthForInt(startMonth);
-    else if(startYear == endYear) // Anderer Monat, aber gleiches Jahr, also jahresweise Anzeige
-      return String.valueOf(startYear);
-    else
-      return "-";
-  }
-  
-  private String getMonthForInt(int num) 
-  {
-    String month = "-";
-    DateFormatSymbols dfs = new DateFormatSymbols();
-    String[] months = dfs.getMonths();
-    if (num >= 0 && num <= 11 ) {
-        month = months[num];
-    }
-    return month;
-  }
+    cal.setTime(node.getEnddatum());
+    final int em = cal.get(Calendar.MONTH);
+    final int ey = cal.get(Calendar.YEAR);
 
+    // Gruppiert nach Monat
+    if (sm == em && sy == ey)
+      return String.format("%02d",sm+1) + "/" + sy; // Monat beginnt im Calendar bei 0
+    
+    // Gruppiert nach Jahr
+    if (sy == ey)
+      return Integer.toString(sy);
+
+    // Gruppierung unbekannt
+    return node.getText();
+  }
+  
+  /**
+   * Liefert die Datenreihe mit den Einnahmen.
+   * @return Datenreihe mit den Einnahmen.
+   * @throws RemoteException
+   */
   private double[] getIncomeSeries() throws RemoteException
   {
-    if(data == null)
+    if (data == null)
       return new double[] {0.0};
     
-    List<EinnahmeAusgabeTreeNode> nodes = (List<EinnahmeAusgabeTreeNode>) this.data;
-    double[] serie = new double[nodes.size()];
-    for(int i = 0; i < nodes.size(); i++) {
-      serie[i] = getEinnahmen(nodes.get(i).getChildren());
+    double[] serie = new double[this.data.size()];
+    for (int i = 0; i < this.data.size(); i++)
+    {
+      EinnahmeAusgabeZeitraum e = this.data.get(i);
+      serie[i] = e.getEinnahmen();
     }
     return serie;
   }
 
-  private double getEinnahmen(GenericIterator children) throws RemoteException
-  {
-    if(!children.hasNext())
-      return 0.0;
-    
-    if(children.size() > 1) // Summenzeile, wenn mehrere Konten geählt sind
-    {
-      while(children.hasNext())
-      {
-        EinnahmeAusgabe ea = (EinnahmeAusgabe) children.next();
-        if(ea.isSumme())
-        {
-          return ea.getEinnahmen();
-        }
-      }
-    }
-    
-    if(children.size() == 1) // Für einzelne Konten
-    {
-      EinnahmeAusgabe ea = (EinnahmeAusgabe) children.next();
-      return ea.getEinnahmen();
-    }
-    return 0.0;
-  }
-
+  /**
+   * Liefert die Datenreihe mit den Ausgaben.
+   * @return die Datenreihe mit den Ausgaben.
+   * @throws RemoteException
+   */
   private double[] getExpensesSeries() throws RemoteException
   {
-    if(data == null)
+    if (data == null)
       return new double[] {0.0};
     
-    List<EinnahmeAusgabeTreeNode> nodes = (List<EinnahmeAusgabeTreeNode>) this.data;
-    double[] serie = new double[nodes.size()];
-    for(int i = 0; i < nodes.size(); i++) {
-      serie[i] = getExpenses(nodes.get(i).getChildren());
+    double[] serie = new double[this.data.size()];
+    for (int i = 0; i < this.data.size(); i++)
+    {
+      EinnahmeAusgabeZeitraum e = this.data.get(i);
+      serie[i] = e.getAusgaben();
     }
     return serie;
   }
 
-  private double getExpenses(GenericIterator children) throws RemoteException
-  {
-    if(!children.hasNext())
-      return 0.0;
-    
-    if(children.size() > 1) // Summenzeile, wenn mehrere Konten geählt sind
-    {
-      while(children.hasNext())
-      {
-        EinnahmeAusgabe ea = (EinnahmeAusgabe) children.next();
-        if(ea.isSumme())
-        {
-          return ea.getAusgaben();
-        }
-      }
-    }
-    
-    if(children.size() == 1) // Für einzelne Konten
-    {
-      EinnahmeAusgabe ea = (EinnahmeAusgabe) children.next();
-      return ea.getAusgaben();
-    }
-    return 0.0;
-  }
-  
 }

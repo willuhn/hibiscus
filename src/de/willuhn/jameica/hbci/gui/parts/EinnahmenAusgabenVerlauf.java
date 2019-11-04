@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.chart.VergleichBarChart;
+import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -21,13 +22,13 @@ public class EinnahmenAusgabenVerlauf implements Part
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private VergleichBarChart chart   = null;
-  private List data = null;
+  private List<EinnahmeAusgabeZeitraum> data = null;
 
   /**
    * Konstruktor mit anzuzeigenden Werten
    * @param werte
    */
-  public EinnahmenAusgabenVerlauf(List werte)
+  public EinnahmenAusgabenVerlauf(List<EinnahmeAusgabeZeitraum> werte)
   {
     this.data = werte;
   }
@@ -54,11 +55,10 @@ public class EinnahmenAusgabenVerlauf implements Part
 
   /**
    * Setzt die anzuzeigenden Werte
-   * 
-   * @param werte
+   * @param werte die Werte.
    * @throws RemoteException 
    */
-  public void setList(List werte) throws RemoteException
+  public void setList(List<EinnahmeAusgabeZeitraum> werte) throws RemoteException
   {
     this.data = werte;
     this.chart.setData(werte);

@@ -39,6 +39,7 @@ import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
+import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
@@ -285,13 +286,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return Liste mit den Werten.
    * @throws RemoteException
    */
-  private List<Object> getWerte() throws RemoteException
+  private List<EinnahmeAusgabeZeitraum> getWerte() throws RemoteException
   {
     Date start  = (Date) this.getStart().getValue();
     Date end    = (Date) this.getEnd().getValue();
 
     Interval interval = (Interval) getInterval().getValue();
-    List<Object> result=new ArrayList<Object>();
+    List<EinnahmeAusgabeZeitraum> result = new ArrayList<EinnahmeAusgabeZeitraum>();
     
     // Sonderfall "alle". Es findet keine zeitliche Gruppierung statt
     if(Interval.ALL.equals(interval))
@@ -379,7 +380,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     // Summenzeile noch hinten dran haengen
     EinnahmeAusgabe summen = new EinnahmeAusgabe();
     summen.setIsSumme(true);
-    summen.setText(i18n.tr("Summe"));
     summen.setAnfangssaldo(summeAnfangssaldo);
     summen.setAusgaben(summeAusgaben);
     summen.setEinnahmen(summeEinnahmen);

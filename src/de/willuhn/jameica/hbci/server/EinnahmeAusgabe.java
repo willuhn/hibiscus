@@ -16,14 +16,19 @@ import java.util.Date;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.I18N;
 
 /**
  * Container fuer die EinnahmeAusgabe-Daten.
  */
 public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
   private Konto konto;
   private String text;
   private double anfangssaldo;
@@ -73,21 +78,11 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   }
   
   /**
-   * Liefert den Beschreibungstext der Zeile.
-   * @return der Beschreibungstext der Zeile.
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getText()
    */
   public String getText()
   {
-    return this.text;
-  }
-
-  /**
-   * Speichert den Beschreibungstext der Zeile.
-   * @param text der Beschreibungstext.
-   */
-  public void setText(String text)
-  {
-    this.text = text;
+    return this.isSumme ? i18n.tr("Summe") : this.text;
   }
 
   /**
@@ -109,8 +104,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   }
 
   /**
-   * Liefert die Einnahmen.
-   * @return die Einnahmen.
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getEinnahmen()
    */
   public double getEinnahmen()
   {
@@ -127,8 +121,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   }
 
   /**
-   * Liefert die Ausgaben.
-   * @return die Ausgaben.
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getAusgaben()
    */
   public double getAusgaben()
   {
