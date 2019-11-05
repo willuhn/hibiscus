@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0858 Wird ein Auftrag im TAN-Dialog abgebrochen, dann wird er bei erneuter erfolgreicher Ausführung nicht als ausgeführt markiert
   * NEW: 0857 Neue grafische Auswertung in "Einnahmen/Ausgaben" - siehe https://github.com/willuhn/hibiscus/pull/53
 
 2019-11-02 Version 2.8.21
