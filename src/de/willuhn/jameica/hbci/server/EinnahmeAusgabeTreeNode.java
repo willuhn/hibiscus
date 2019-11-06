@@ -80,7 +80,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
     double sum = 0.0d;
     for (EinnahmeAusgabe e:this.children)
     {
-      if (e.isSumme()) // ueberspringen
+      if (!e.isSumme()) // ueberspringen
         sum += e.getAusgaben();
     }
     return sum;
@@ -98,7 +98,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
     double sum = 0.0d;
     for (EinnahmeAusgabe e:this.children)
     {
-      if (e.isSumme()) // ueberspringen
+      if (!e.isSumme()) // ueberspringen
         sum += e.getEinnahmen();
     }
     return sum;
