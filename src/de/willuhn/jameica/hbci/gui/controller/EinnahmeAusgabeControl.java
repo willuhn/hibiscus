@@ -39,6 +39,7 @@ import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
+import de.willuhn.jameica.hbci.gui.parts.PlusMinusVerlauf;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
@@ -66,7 +67,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private SelectInput interval     = null;
 
   private TreePart tree            = null;
-  private EinnahmenAusgabenVerlauf chart = null;
+  private EinnahmenAusgabenVerlauf einnahmenAusgabenChart = null;
+  private PlusMinusVerlauf plusMinusChart = null;
 
   /**
    * Gruppierung der Einnahmen/Ausgaben nach Zeitraum.
@@ -211,13 +213,27 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return Balkendiagramm
    * @throws RemoteException 
    */
-  public EinnahmenAusgabenVerlauf getChart() throws RemoteException
+  public EinnahmenAusgabenVerlauf getEinnahmenAusgabenChart() throws RemoteException
   {
-    if(this.chart != null)
-      return this.chart;
+    if(this.einnahmenAusgabenChart != null)
+      return this.einnahmenAusgabenChart;
     
-    this.chart = new EinnahmenAusgabenVerlauf(getWerte());
-    return chart;
+    this.einnahmenAusgabenChart = new EinnahmenAusgabenVerlauf(getWerte());
+    return einnahmenAusgabenChart;
+  }
+
+  /**
+   * Liefert ein Balkendiagramm mit den Differenen aus Einahmen und Ausgaben 
+   * @return Balkendiagramm
+   * @throws RemoteException 
+   */
+  public PlusMinusVerlauf getPlusMinusChart() throws RemoteException
+  {
+    if(this.plusMinusChart != null)
+      return this.plusMinusChart;
+    
+    this.plusMinusChart = new PlusMinusVerlauf(getWerte());
+    return plusMinusChart;
   }
 
   /**
@@ -416,9 +432,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
       tree.setList(this.getWerte());
       
-      EinnahmenAusgabenVerlauf chart = getChart();
-      chart.setList(this.getWerte());
-    }
+      EinnahmenAusgabenVerlauf einnahmenAusgabenChart = getEinnahmenAusgabenChart();
+      einnahmenAusgabenChart.setList(this.getWerte());
+
+      PlusMinusVerlauf plusMinusChart = getPlusMinusChart();
+      plusMinusChart.setList(this.getWerte());
+}
     catch (RemoteException re)
     {
       Logger.error("unable to redraw table",re);

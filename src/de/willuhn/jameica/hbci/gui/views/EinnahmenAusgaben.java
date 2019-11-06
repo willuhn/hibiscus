@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
 import de.willuhn.jameica.hbci.gui.controller.EinnahmeAusgabeControl;
 import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
+import de.willuhn.jameica.hbci.gui.parts.PlusMinusVerlauf;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -110,9 +111,13 @@ public class EinnahmenAusgaben extends AbstractView
     TreePart tree = control.getTree();
     tree.paint(tg1.getComposite());
     
-    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"),true,1);
-    final EinnahmenAusgabenVerlauf chart = control.getChart();
-    chart.paint(tg2.getComposite());
+    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Diagramm Einnahmen/Ausgaben"),true,1);
+    final EinnahmenAusgabenVerlauf einnahmenAusgabenChart = control.getEinnahmenAusgabenChart();
+    einnahmenAusgabenChart.paint(tg2.getComposite());
+    
+    final TabGroup tg3 = new TabGroup(folder,i18n.tr("Diagramm Plus/Minus"),true,1);
+    final PlusMinusVerlauf plusMinusChart = control.getPlusMinusChart();
+    plusMinusChart.paint(tg3.getComposite());
     
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
   }
