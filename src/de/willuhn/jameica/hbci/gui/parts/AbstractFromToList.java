@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
+import de.willuhn.jameica.hbci.gui.input.InputCompat;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.rmi.Transfer;
@@ -411,18 +412,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
    */
   protected boolean hasChanged()
   {
-    try
-    {
-      return (konto != null && konto.hasChanged()) ||
-             (from != null && from.hasChanged()) ||
-             (to != null && to.hasChanged()) ||
-             (text != null && text.hasChanged());
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to check change status",e);
-      return true;
-    }
+    return InputCompat.valueHasChanged(konto, from, to, text);
   }
   
   /**
