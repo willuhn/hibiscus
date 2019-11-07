@@ -12,7 +12,7 @@ public final class InputCompat
   /**
    * Prueft ob sich der Wert mindestens eines uebergebenen Inputs seit dem letzten Aufruf von
    * hasChanged() der Inputs geaendert hat. 
-   * @param hasChanged Ein bekannter Wert fuer der hasChanged()-Status.
+   * @param hasChanged Ein bekannter Wert fuer den hasChanged()-Status.
    * @param inputs Die Inputs deren hasChanged()-Methode abgefragt werden soll.
    * @return true wenn der Wert mindestens eines Inputs sich seit dem letzten Aufruf von hasChanged()
    *              der Inputs geaendert hat.
