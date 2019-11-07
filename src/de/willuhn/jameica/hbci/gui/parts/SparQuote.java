@@ -32,12 +32,17 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.ColumnLayout;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -46,10 +51,13 @@ import de.willuhn.jameica.hbci.gui.action.SparQuoteExport;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.DateFromInput;
+import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
-import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
+import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -73,18 +81,16 @@ public class SparQuote implements Part
   private TablePart table              = null;
   private LineChart chart              = null;
   private KontoInput kontoauswahl      = null;
-  private UmsatzDaysInput startAuswahl = null;
   private SpinnerInput tagAuswahl      = null;
   private SpinnerInput monatAuswahl    = null;
+  private Input from                   = null;
+  private Input to                     = null;
+  private RangeInput range             = null;
 
   private List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
   private List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
 
   private Listener listener            = null; // BUGZILLA 575
-
-  private Date start                   = null;
-  private int stichtag                 = 1;
-  private int monate                   = 1;
 
   /**
    * ct.
@@ -100,10 +106,12 @@ public class SparQuote implements Part
           if (event != null && (event.type==SWT.FocusIn || event.type==SWT.FocusOut))
             return;
           
-          load();
-          redraw();
-          if (chart != null)
-            chart.redraw();
+          if (load())
+          {
+            redraw();
+            if (chart != null)
+              chart.redraw();
+          }
         }
         catch (Exception e)
         {
@@ -114,33 +122,6 @@ public class SparQuote implements Part
         }
       }
     };
-  }
-
-  /**
-   * Berechnet Start-Datum und Stichtag.
-   * @throws RemoteException
-   */
-  private void calculateRange() throws RemoteException
-  {
-    // Stichtag
-    Integer value = (Integer) getTagAuswahl().getValue();
-    stichtag = value == null ? 1 : value.intValue();
-
-    //Monate
-    value = (Integer) getMonatAuswahl().getValue();
-    monate = value == null ? 1 : value.intValue();
-
-    // Anzahl der Tage
-    Integer days = (Integer) getStartAuswahl().getValue();
-    if (days == null || days == -1)
-    {
-      start = UmsatzUtil.getOldest(getKontoAuswahl().getValue());
-    }
-    else
-    {
-      long d = days * 24l * 60l * 60l * 1000l;
-      start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
-    }
   }
 
   /**
@@ -156,8 +137,9 @@ public class SparQuote implements Part
     this.kontoauswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoauswahl.setSupportGroups(true);
+    this.kontoauswahl.setComment(null);
     this.kontoauswahl.setRememberSelection("auswertungen.spartquote");
-    this.kontoauswahl.addListener(new DelayedListener(500,this.listener));
+    this.kontoauswahl.addListener(this.listener);
     return this.kontoauswahl;
   }
 
@@ -172,7 +154,7 @@ public class SparQuote implements Part
       return this.tagAuswahl;
 
     // BUGZILLA 337
-    this.tagAuswahl = new SpinnerInput(1,31,this.stichtag);
+    this.tagAuswahl = new SpinnerInput(1,31,1);
     this.tagAuswahl.setComment(i18n.tr(". Tag des Monats"));
     this.tagAuswahl.setName(i18n.tr("Stichtag"));
     this.tagAuswahl.setValue(settings.getInt("stichtag",1));
@@ -199,7 +181,7 @@ public class SparQuote implements Part
       return this.monatAuswahl;
 
     // BUGZILLA 1233
-    this.monatAuswahl = new SpinnerInput(1,12,this.monate);
+    this.monatAuswahl = new SpinnerInput(1,12,1);
     this.monatAuswahl.setComment(i18n.tr("Anzahl der Monate pro Periode"));
     this.monatAuswahl.setName(i18n.tr("Monate"));
     this.monatAuswahl.setValue(settings.getInt("monate",1));
@@ -214,19 +196,69 @@ public class SparQuote implements Part
     this.monatAuswahl.addListener(new DelayedListener(500,this.listener));
     return this.monatAuswahl;
   }
-
+  
   /**
-   * Liefert ein Eingabefeld fuer das Start-Datum.
-   * @return Eingabefeld.
-   * @throws RemoteException
+   * Liefert das Eingabe-Datum fuer das Start-Datum.
+   * @return Eingabe-Feld.
    */
-  private UmsatzDaysInput getStartAuswahl() throws RemoteException
+  private synchronized Input getFrom()
   {
-    if (this.startAuswahl != null)
-      return this.startAuswahl;
-    this.startAuswahl = new UmsatzDaysInput();
-    this.startAuswahl.addListener(new DelayedListener(500,this.listener));
-    return this.startAuswahl;
+    if (this.from != null)
+      return this.from;
+    
+    this.from = new DateFromInput(null,"auswertungen.spartquote.filter.from");
+    this.from.setName(i18n.tr("Von"));
+    this.from.setComment(null);
+    this.from.addListener(this.listener);
+    return this.from;
+  }
+  
+  /**
+   * Liefert das Eingabe-Datum fuer das End-Datum.
+   * @return Eingabe-Feld.
+   */
+  public synchronized Input getTo()
+  {
+    if (this.to != null)
+      return this.to;
+
+    this.to = new DateToInput(null,"auswertungen.spartquote.filter.to");
+    this.to.setName(i18n.tr("bis"));
+    this.to.setComment(null);
+    this.to.addListener(this.listener);
+    return this.to;
+  }
+  
+  /**
+   * Liefert eine Auswahl mit Zeit-Presets.
+   * @return eine Auswahl mit Zeit-Presets.
+   */
+  public RangeInput getRange()
+  {
+    if (this.range != null)
+      return this.range;
+    
+    // Wir wollen hier nur die Zeitraume haben, die mindestens 2 Monate umfassen
+    List<Range> ranges = new ArrayList<Range>();
+    for (Range r:Range.KNOWN)
+    {
+      // Wir ueberschlagen das nur grob
+      long diff = r.getEnd().getTime() - r.getStart().getTime();
+      if (diff > (2 * 30 * 24 * 60 * 60 * 1000L))
+        ranges.add(r);
+    }
+    
+    this.range = new RangeInput(ranges,this.getFrom(),this.getTo(),"auswertungen.spartquote.filter.range");
+    this.range.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        if (range.getValue() != null && range.hasChanged())
+          listener.handleEvent(event);
+      }
+    });
+    
+    return this.range;
   }
 
   /**
@@ -241,10 +273,21 @@ public class SparQuote implements Part
       folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
-      tab.addInput(getKontoAuswahl());
-      tab.addInput(getStartAuswahl());
-      tab.addInput(getTagAuswahl());
-      tab.addInput(getMonatAuswahl());
+      ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
+      
+      {
+        Container left = new SimpleContainer(cols.getComposite());
+        left.addInput(this.getKontoAuswahl());
+        left.addInput(getTagAuswahl());
+        left.addInput(getMonatAuswahl());
+      }
+      
+      {
+        Container right = new SimpleContainer(cols.getComposite());
+        right.addInput(this.getRange());
+        MultiInput range = new MultiInput(this.getFrom(),this.getTo());
+        right.addInput(range);
+      }
     }
 
     ButtonArea topButtons = new ButtonArea();
@@ -341,21 +384,27 @@ public class SparQuote implements Part
 
   /**
    * Laedt die Sparquoten des Kontos
+   * @return true, wenn das Chart neu gezeichnet werden kann.
    * @throws RemoteException
    */
-  private void load() throws RemoteException
+  private boolean load() throws RemoteException
   {
     this.data.clear();
-    calculateRange();
 
+    final Date start   = (Date) this.getFrom().getValue();
+    final Date end     = (Date) this.getTo().getValue();
+    final int monate   = ((Integer) this.getMonatAuswahl().getValue()).intValue();
+    final int stichtag = ((Integer) this.getTagAuswahl().getValue()).intValue();
+    
     ////////////////////////////////////////////////////////////////////////////
     // Wir iterieren erstmal ueber den Zeitraum und erzeugen die passenden Time-Boxen
-    Date from = DateUtil.startOfDay(start != null ? start : new Date());
+    Date from     = DateUtil.startOfDay(start != null ? start : new Date());
+    final Date to = DateUtil.endOfDay(end != null ? end : new Date());
     
     for (int i=0;i<1000;++i) // Wir machen keine Endlosschleife sondern hoeren bei maximal 1000 auf
     {
       // Wenn das Start-Datum in der Zukunft liegt, koennen wir aufhoeren
-      if (from.after(new Date()))
+      if (from.after(to))
         break;
 
       UmsatzEntry e = new UmsatzEntry();
@@ -366,7 +415,7 @@ public class SparQuote implements Part
       cal.setTime(from);
 
       // Anzahl der Monate fuer das Ende der Periode
-      cal.add(Calendar.MONTH,this.monate);
+      cal.add(Calendar.MONTH,monate);
 
       // Der Tag, ab dem die naechste Periode beginnt
       if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
@@ -387,6 +436,11 @@ public class SparQuote implements Part
     //
     ////////////////////////////////////////////////////////////////////////////
 
+    if (this.data.size() < 2)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie einen Zeitraum, der mindestens 2 Monate umfasst"),StatusBarMessage.TYPE_INFO));
+      return false;
+    }
     ////////////////////////////////////////////////////////////////////////////
     // Iterieren ueber die Umsaetze und einsortieren in die passende Timebox
 
@@ -433,6 +487,8 @@ public class SparQuote implements Part
     this.trend.clear();
     for (int i=0;i<this.data.size();++i)
       this.trend.add(getDurchschnitt(this.data,i));
+    
+    return true;
   }
 
   /**

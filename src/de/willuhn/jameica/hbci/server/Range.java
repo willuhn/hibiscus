@@ -10,7 +10,7 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -28,27 +28,46 @@ public abstract class Range
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
+  private final static Range D_7    = new LastSevenDays();
+  private final static Range D_30   = new LastThirtyDays();
+  
+  private final static Range W_THIS = new ThisWeek();
+  private final static Range W_LAST = new LastWeek();
+  private final static Range W_2LAS = new SecondLastWeek();
+
+  private final static Range M_THIS = new ThisMonth();
+  private final static Range M_LAST = new LastMonth();
+  private final static Range M_2LAS = new SecondLastMonth();
+  private final static Range M_12   = new Last12Months();
+  
+  private final static Range Q_THIS = new ThisQuarter();
+  private final static Range Q_LAST = new LastQuarter();
+  private final static Range Q_2LAS = new SecondLastQuarter();
+  
+  private final static Range Y_THIS = new ThisYear();
+  private final static Range Y_LAST = new LastYear();
+  private final static Range Y_2LAS = new SecondLastYear();
+  
   /**
    * Bekannte Zeitraeume.
    */
-  public final static List<Range> KNOWN = new ArrayList<Range>()
-  {{
-    add(new LastSevenDays());
-    add(new LastThirtyDays());
-    add(new ThisWeek());
-    add(new LastWeek());
-    add(new SecondLastWeek());
-    add(new ThisMonth());
-    add(new LastMonth());
-    add(new SecondLastMonth());
-    add(new Last12Months());
-    add(new ThisQuarter());
-    add(new LastQuarter());
-    add(new SecondLastQuarter());
-    add(new ThisYear());
-    add(new LastYear());
-    add(new SecondLastYear());
-  }};
+  public final static List<Range> KNOWN = Arrays.asList(
+    D_7,
+    D_30,
+    W_THIS,
+    W_LAST,
+    W_2LAS,
+    M_THIS,
+    M_LAST,
+    M_2LAS,
+    M_12,
+    Q_THIS,
+    Q_LAST,
+    Q_2LAS,
+    Y_THIS,
+    Y_LAST,
+    Y_2LAS
+  );
   
   /**
    * Versucht den Range anhand des Identifiers zu ermitteln.
