@@ -37,6 +37,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.input.InputCompat;
 import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -182,15 +183,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
    */
   protected boolean hasChanged()
   {
-    try
-    {
-      return (super.hasChanged() || (pending != null && pending.hasChanged()));
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to check change status",e);
-      return true;
-    }
+    return InputCompat.valueHasChanged(super.hasChanged(), pending);
   }
 
   /**

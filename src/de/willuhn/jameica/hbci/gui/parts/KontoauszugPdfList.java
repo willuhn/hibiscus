@@ -50,6 +50,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoauszugPdfSettings;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
+import de.willuhn.jameica.hbci.gui.input.InputCompat;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
@@ -410,19 +411,7 @@ public class KontoauszugPdfList extends TablePart
    */
   protected boolean hasChanged()
   {
-    try
-    {
-      return (kontoAuswahl != null && kontoAuswahl.hasChanged()) ||
-             (from != null && from.hasChanged()) ||
-             (to != null && to.hasChanged()) ||
-             (unread != null && unread.hasChanged()) ||
-             (inclusiveFilter != null && inclusiveFilter.hasChanged());
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to check change status",e);
-      return true;
-    }
+    return InputCompat.valueHasChanged(kontoAuswahl, from, to, unread, inclusiveFilter);
   }
   
   /**
@@ -471,6 +460,8 @@ public class KontoauszugPdfList extends TablePart
             {
               addItem(o);
               sort();
+              // Filter anwenden
+              handleReload(true);
             }
             
           }

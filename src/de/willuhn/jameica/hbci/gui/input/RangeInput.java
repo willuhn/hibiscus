@@ -121,6 +121,8 @@ public class RangeInput extends SelectInput
         applyRange(choosen);
       }
     });
+    // Einmalig aufrufen, um alten Wert zu initialisieren.
+    this.hasChanged();
   }
 
   /**
