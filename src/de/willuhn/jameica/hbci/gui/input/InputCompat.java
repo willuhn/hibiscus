@@ -18,7 +18,7 @@ public final class InputCompat
    *              der Inputs geaendert hat.
    */
   public static boolean valueHasChanged(boolean hasChanged, Input... inputs) {
-    return valueHasChanged(inputs) || hasChanged;
+    return hasChanged || valueHasChanged(inputs);
   }
   
   /**
@@ -30,23 +30,26 @@ public final class InputCompat
    */
   public static boolean valueHasChanged(Input... inputs)
   {
-    boolean result = false;
+    if (inputs == null || inputs.length == 0)
+      return false;
     
     try
     {
-      for(Input i : inputs)
+      for (Input i:inputs)
       {
-        if(i != null)
-        {
-          result = i.hasChanged() || result;
-        }
+        if (i == null)
+          continue;
+        
+        if (i.hasChanged())
+          return true;
       }
-    } catch(Exception e)
+    }
+    catch(Exception e)
     {
       Logger.error("unable to check change status",e);
-      result = true;
+      return true;
     }
     
-    return result;
+    return false;
   }
 }
