@@ -18,7 +18,8 @@ public final class InputCompat
    *              der Inputs geaendert hat.
    */
   public static boolean valueHasChanged(boolean hasChanged, Input... inputs) {
-    return hasChanged || valueHasChanged(inputs);
+    // Hier auch: Siehe unten: Keine Optimierung erlaubt. Erst muss "valueHasChanged" fuer alle Inputs durchlaufen werden
+    return valueHasChanged(inputs) || hasChanged;
   }
   
   /**
@@ -33,6 +34,12 @@ public final class InputCompat
     if (inputs == null || inputs.length == 0)
       return false;
     
+    // Auch wenn fuer den Rueckgabewert nur relevant ist, ob einer davon true ist, muessen
+    // dennoch alle durchlaufen werden, da das Input in "hasChanged" den internen Zustand aktualisiert.
+    // Ein erneuter Aufruf von "hasChanged" liefert dann wieder so lange false, bis tatsaechlich wieder
+    // etwas geaendert wurde.
+    
+    boolean b = false;
     try
     {
       for (Input i:inputs)
@@ -40,8 +47,7 @@ public final class InputCompat
         if (i == null)
           continue;
         
-        if (i.hasChanged())
-          return true;
+        b |= i.hasChanged();
       }
     }
     catch(Exception e)
@@ -50,6 +56,6 @@ public final class InputCompat
       return true;
     }
     
-    return false;
+    return b;
   }
 }
