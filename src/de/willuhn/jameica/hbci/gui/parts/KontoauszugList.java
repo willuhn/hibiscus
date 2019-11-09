@@ -833,6 +833,7 @@ public class KontoauszugList extends UmsatzList
   {
     try
     {
+      activateSummary(false);
       removeAll();
       
       List<Umsatz> list = getUmsaetze();
@@ -842,6 +843,7 @@ public class KontoauszugList extends UmsatzList
       
       // Zum Schluss Sortierung aktualisieren
       sort();
+      activateSummary(true);
     }
     catch (Exception e)
     {
@@ -1075,6 +1077,4 @@ public class KontoauszugList extends UmsatzList
     }
     
   }
-  
-  
 }

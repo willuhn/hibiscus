@@ -41,6 +41,7 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TableChangeListener;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.Feature;
 import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
@@ -92,6 +93,8 @@ public class UmsatzList extends TablePart implements Extendable
   private boolean disposed          = false;
   
   private List<Umsatz> umsaetze     = null;
+
+  private boolean noSummary       = false;
   
   /**
    * @param konto
@@ -245,6 +248,9 @@ public class UmsatzList extends TablePart implements Extendable
   @Override
   protected String getSummary()
   {
+    if(noSummary){
+      return "";
+    }
     try
     {
       Object o = this.getSelection();
@@ -343,7 +349,9 @@ public class UmsatzList extends TablePart implements Extendable
     if (this.filter || this.konto != null)
       kl.process(true);
 
+    activateSummary(false);
     super.paint(parent);
+    activateSummary(true);
 
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
     restoreState();
@@ -434,6 +442,7 @@ public class UmsatzList extends TablePart implements Extendable
 
             if (konto != null)
             {
+              activateSummary(false);
               // Umsaetze vom Konto neu laden
               removeAll();
               GenericIterator<Umsatz> list = konto.getUmsaetze(t);
@@ -479,6 +488,7 @@ public class UmsatzList extends TablePart implements Extendable
             }
             
             sort();
+            activateSummary(true);
           }
           catch (Exception e)
           {
@@ -680,6 +690,17 @@ public class UmsatzList extends TablePart implements Extendable
   {
     return UmsatzList.class.getName();
   }
-  
-  
+
+  protected void activateSummary(boolean activate)
+  {
+    if (activate)
+    {
+      noSummary = false;
+      featureEvent(Feature.Event.REFRESH, null);
+    } else
+    {
+      noSummary = true;
+    }
+  }
+
 }
