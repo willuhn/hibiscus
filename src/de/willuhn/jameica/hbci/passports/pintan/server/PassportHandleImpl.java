@@ -50,7 +50,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Implementierung des Passports vom Typ "Chipkarte" (DDV).
+ * Implementierung des Passports vom Typ "PIN/TAN".
  */
 public class PassportHandleImpl extends UnicastRemoteObject implements PassportHandle
 {
@@ -219,6 +219,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 		try
 		{
+		  this.saveContextData();
 	    this.handleCode3072();
 		}
 		finally
@@ -239,6 +240,37 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 	    Logger.info("pin/tan passport closed");
 		}
 		
+  }
+  
+  /**
+   * Speichert gesammelte Context-Daten in der Konfiguration.
+   */
+  private void saveContextData()
+  {
+    if (hbciPassport == null)
+      return;
+
+    final AbstractHBCIPassport ap = (AbstractHBCIPassport) this.hbciPassport;
+    if (this.config == null)
+      this.config = (PinTanConfig) ap.getPersistentData(PassportHandle.CONTEXT_CONFIG);
+    
+    if (this.config == null)
+      return;
+
+    try
+    {
+      String s1 = (String) ap.getPersistentData(PassportHandle.CONTEXT_SECMECHLIST);
+      if (s1 != null)
+        this.config.setAvailableSecMechs(s1);
+      
+      String s2 = (String) ap.getPersistentData(PassportHandle.CONTEXT_TANMEDIALIST);
+      if (s2 != null)
+        this.config.setAvailableTanMedias(s2);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to apply context data",e);
+    }
   }
   
   /**
@@ -358,6 +390,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       // BUGZILLA 200
       case HBCICallback.NEED_PT_SECMECH:
       {
+        Logger.debug("GOT PIN/TAN secmech list: " + msg + " ["+retData.toString()+"]");
+        ((AbstractHBCIPassport)passport).setPersistentData(PassportHandle.CONTEXT_SECMECHLIST,retData.toString());
+
         if (config != null)
         {
           PtSecMech mech = config.getStoredSecMech();
@@ -383,6 +418,9 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       // BUGZILLA 827
       case HBCICallback.NEED_PT_TANMEDIA:
       {
+        Logger.debug("PIN/TAN media name requested: " + msg + " ["+retData.toString()+"]");
+        ((AbstractHBCIPassport)passport).setPersistentData(PassportHandle.CONTEXT_TANMEDIALIST,retData.toString());
+        
         // Wenn wir eine Medienbezeichnung von HBCI4Java gekriegt haben und das genau
         // eine einzige ist. Dann uebernehmen wir diese ohne Rueckfrage. Der User
         // hat hier sonst eh keine andere Wahl.

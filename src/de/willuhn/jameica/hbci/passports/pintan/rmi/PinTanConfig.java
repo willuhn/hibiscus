@@ -11,6 +11,7 @@
 package de.willuhn.jameica.hbci.passports.pintan.rmi;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -200,6 +201,21 @@ public interface PinTanConfig extends GenericObject, Configuration
   public void setCurrentSecMech(PtSecMech mech) throws RemoteException;
   
   /**
+   * Liefert die Liste der verfuegbaren TAN-Verfahren.
+   * @return die Liste der verfuegbaren TAN-Verfahren.
+   * Nie NULL sondern hoechstens eine leere Liste.
+   * @throws RemoteException
+   */
+  public List<PtSecMech> getAvailableSecMechs() throws RemoteException;
+  
+  /**
+   * Speichert die Liste der verfuegbaren TAN-Verfahren.
+   * @param list die Liste der verfuegbaren TAN-Verfahren als Pipe-separierte Liste.
+   * @throws RemoteException
+   */
+  public void setAvailableSecMechs(String list) throws RemoteException;
+  
+  /**
    * Liefert true, wenn chipTAN USB verwendet werden soll.
    * @return true, wenn chipTAN USB verwendet werden soll.
    * false, wenn es nicht verwendet werden soll.
@@ -258,7 +274,22 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setTanMedias(String[] names) throws RemoteException;
+
+  /**
+   * Liefert die Liste der von der Bank gelieferten TAN-Medien-Bezeichnungen.
+   * @return Liste der von der Bank gelieferten TAN-Medien-Bezeichnungen.
+   * Nie NULL sondern hoechstens eine leere Liste.
+   * @throws RemoteException
+   */
+  public List<String> getAvailableTanMedias() throws RemoteException;
   
+  /**
+   * Speichert die Liste der von der Bank gelieferten TAN-Medien-Bezeichnungen.
+   * @param list die Liste der von der Bank gelieferten TAN-Medien-Bezeichnungen als Pipe-separierte Liste.
+   * @throws RemoteException
+   */
+  public void setAvailableTanMedias(String list) throws RemoteException;
+
   /**
    * Fuegt ein neues TAN-Medium zur Liste der bekannten hinzu.
    * @param name die neue TAN-Medien-Bezeichnung.
