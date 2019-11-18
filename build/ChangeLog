@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0860 Update auf HBCI4Java 3.1.26 - https://github.com/hbci4j/hbci4java/issues/34
   * NEW: 0859 Auswahl des Zeitraumes in "Sparquote" jetzt auch als Von/Bis statt per Schieberegler
   * BUG: 0858 Wird ein Auftrag im TAN-Dialog abgebrochen, dann wird er bei erneuter erfolgreicher Ausführung nicht als ausgeführt markiert
   * NEW: 0857 Neue grafische Auswertung in "Einnahmen/Ausgaben" - siehe https://github.com/willuhn/hibiscus/pull/53
