@@ -288,9 +288,10 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     
     Logger.info("starting " + this.getName() + " synchronization");
     this.worker = new Worker(jobs);
-    this.session = new SynchronizeSession(this.worker);
+    SynchronizeSession s = new SynchronizeSession(this.worker);
+    this.session = s;
     Application.getController().start(worker);
-    return this.session;
+    return s;
   }
   
    /**
