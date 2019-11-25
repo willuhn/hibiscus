@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0862 Update auf HBCI4Java 3.1.28 - https://github.com/hbci4j/hbci4java/commit/488a31be51b1b52d7cc6c43087ebe4f555d42f8d
   * NEW: 0861 Update auf HBCI4Java 3.1.27 - https://github.com/hbci4j/hbci4java/commit/d4da36c376eb4adadd9a3415cc02d4586e2c4e0d
   * NEW: 0860 Update auf HBCI4Java 3.1.26 - https://github.com/hbci4j/hbci4java/issues/34
   * NEW: 0859 Auswahl des Zeitraumes in "Sparquote" jetzt auch als Von/Bis statt per Schieberegler
