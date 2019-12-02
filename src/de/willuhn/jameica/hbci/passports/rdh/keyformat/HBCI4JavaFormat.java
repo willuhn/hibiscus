@@ -42,9 +42,9 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung des Schluesselformats von HBCI4Java.
  */
-public class HBCI4JavaFormat implements KeyFormat
+public class HBCI4JavaFormat extends AbstractKeyFormat
 {
-  private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  protected static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#getName()
@@ -288,5 +288,4 @@ public class HBCI4JavaFormat implements KeyFormat
         ((HBCICallbackSWT)callback).setCurrentHandle(null);
     }
   }
-
 }

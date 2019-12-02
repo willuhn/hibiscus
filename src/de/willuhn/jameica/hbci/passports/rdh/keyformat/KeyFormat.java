@@ -24,7 +24,7 @@ import de.willuhn.util.ApplicationException;
  * Implementierungen muessen der Bean-Spezifikation entsprechen,
  * also einen parameterlosen Konstruktor mit dem Modifier public besitzen.
  */
-public interface KeyFormat
+public interface KeyFormat extends Comparable<KeyFormat>
 {
   /**
    * Konstante fuer das Feature "Schluessel importieren".
@@ -77,27 +77,11 @@ public interface KeyFormat
    * @throws OperationCanceledException
    */
   public HBCIPassport load(RDHKey key) throws ApplicationException, OperationCanceledException;
+  
+  /**
+   * Liefert einen numerischen Wert fuer die Sortierung.
+   * @return numerischer Wert fuer die Sortierung.
+   * Je hoeher der Wert ist, desto weiter hinten ist er einsortiert.
+   */
+  public int getOrder();
 }
-
-
-/**********************************************************************
- * $Log: KeyFormat.java,v $
- * Revision 1.1  2010/06/17 11:26:48  willuhn
- * @B In HBCICallbackSWT wurden die RDH-Passports nicht korrekt ausgefiltert
- * @C komplettes Projekt "hbci_passport_rdh" in Hibiscus verschoben - es macht eigentlich keinen Sinn mehr, das in separaten Projekten zu fuehren
- * @N BUGZILLA 312
- * @N Neue Icons in Schluesselverwaltung
- * @N GUI-Polish in Schluesselverwaltung
- *
- * Revision 1.3  2008/07/25 11:34:56  willuhn
- * @B Bugfixing
- *
- * Revision 1.2  2008/07/25 11:06:08  willuhn
- * @N RDH-2 Format
- * @C Haufenweise Code-Cleanup
- *
- * Revision 1.1  2008/07/24 23:36:20  willuhn
- * @N Komplette Umstellung der Schluessel-Verwaltung. Damit koennen jetzt externe Schluesselformate erheblich besser angebunden werden.
- * ACHTUNG - UNGETESTETER CODE - BITTE NOCH NICHT VERWENDEN
- *
- **********************************************************************/
