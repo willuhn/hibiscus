@@ -10,7 +10,10 @@
 
 package de.willuhn.jameica.hbci.io.print;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 
@@ -33,6 +36,16 @@ public class PrintSupportSepaSammelUeberweisung extends AbstractPrintSupportSepa
    */
   String getTitle() throws ApplicationException
   {
+    try
+    {
+      if (this.getAuftrag().isTerminUeberweisung())
+        return i18n.tr("SEPA-Sammelterminüberweisung");
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("check failed",re);
+    }
+
     return i18n.tr("SEPA-Sammelüberweisung");
   }
 }

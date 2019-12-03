@@ -258,6 +258,7 @@ CREATE TABLE sepasueb (
      , konto_id int(10) NOT NULL
      , bezeichnung VARCHAR(255) NOT NULL
      , termin DATE NOT NULL
+     , banktermin int(10)
      , ausgefuehrt int(10) NOT NULL
      , ausgefuehrt_am DATETIME
      , pmtinfid VARCHAR(35)
@@ -477,4 +478,4 @@ ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
-INSERT INTO version (name,version) values ('db',66);
+INSERT INTO version (name,version) values ('db',67);

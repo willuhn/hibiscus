@@ -139,6 +139,7 @@ CREATE TABLE sepasueb (
   konto_id int(4) NOT NULL,
   bezeichnung varchar(255) NOT NULL,
   termin date NOT NULL,
+  banktermin int(1) NULL,
   ausgefuehrt int(1) NOT NULL,
   ausgefuehrt_am datetime NULL,
   pmtinfid varchar(35),
@@ -448,6 +449,6 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',66);
+INSERT INTO version (name,version) values ('db',67);
   
 COMMIT;

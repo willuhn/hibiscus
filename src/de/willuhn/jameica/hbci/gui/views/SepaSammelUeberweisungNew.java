@@ -23,8 +23,8 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
+import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.controller.SepaSammelUeberweisungControl;
 import de.willuhn.jameica.hbci.gui.parts.PanelButtonNew;
@@ -79,17 +79,19 @@ public class SepaSammelUeberweisungNew extends AbstractView
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
-      container.addHeadline(i18n.tr("Sonstige Informationen (nur Hibiscus-intern)"));
-      container.addText(i18n.tr("Diese Daten werden nicht an die Bank übertragen."),true);
-      container.addInput(control.getTermin());
+      container.addHeadline(i18n.tr("Auftragswiederholung (nur Hibiscus-intern)"));
+      container.addText(i18n.tr("Diese Information wird nicht an die Bank übertragen."),true);
       container.addInput(control.getReminderInterval());
+      container.addHeadline(i18n.tr("Sonstige Informationen"));
+      container.addInput(control.getTyp());
+      container.addInput(control.getTermin());
     }
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Sammelauftrag löschen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        new DBObjectDelete().handleAction(context);
+        new SepaSammelUeberweisungDelete().handleAction(context);
         try
         {
           // Buchungen aus der Liste entfernen, wenn der Auftrag geloescht wurde
