@@ -19,8 +19,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.ObjectUtils;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
@@ -35,6 +40,25 @@ import de.willuhn.util.TypedProperties;
  */
 public class DBPropertyUtil
 {
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(DBPropertyUtil.class);
+  private static int timeout = 0;
+
+  private static Cache<String,Map<String,DBProperty>> CACHE = null;
+  
+  static
+  {
+    // Wir muessen die Haltezeit des Caches limitieren. Denn wenn eine MySQL-Datenbank zum Einsatz kommt,
+    // koennen Datenaenderungen ja auch durch andere User erfolgen. Wuerde der Cache nicht expiren, wuerden
+    // wir diese Aenderungen bis zum Neustart des Clients nicht mitbekommen. Der Cache soll auch nur das Laden von fast identischen
+    // Properties in hoher Frequenz zusammenfassen. Z.Bsp. die Reminder-UUIDs bei Auftraegen. Siehe auch de.willuhn.jameica.hbci.server.Cache
+    // (identisch, jedoch fuer Fachobjekte)
+    timeout = settings.getInt("timeout.seconds",10);
+    Logger.info("init db property cache [timeout: " + timeout + " seconds]");
+    CacheBuilder builder = CacheBuilder.newBuilder();
+    builder.expireAfterWrite(timeout,TimeUnit.SECONDS); // Ja, write. Andernfalls koennte man das Timeout mit dauernden Reloads ja aufhalten
+    CACHE = builder.build();
+  }
+
   /**
    * Separator-Zeichen fuer die Properties.
    */
@@ -181,6 +205,13 @@ public class DBPropertyUtil
       prop.setName(localName);
       prop.setValue(value);
       prop.store();
+
+      // Wenn wir den Cache bereits haben, tragen wir den Datensatz dort ein.
+      // Wenn er nicht existiert, dann muss er eh neu geladen werden
+      final Map<String,DBProperty> cache = CACHE.getIfPresent(createScopeIdentifier(prefix,scope));
+      if (cache != null)
+        cache.put(localName,prop);
+      
       return true;
     }
     catch (ApplicationException ae)
@@ -200,6 +231,30 @@ public class DBPropertyUtil
   private static String createIdentifier(Prefix prefix, String scope, String id, String name)
   {
     StringBuilder sb = new StringBuilder();
+    sb.append(createScopeIdentifier(prefix,scope));
+    
+    if (id != null && id.length() > 0)
+    {
+      sb.append(replaceWildcards(id));
+      sb.append(SEP);
+    }
+    if (name != null && name.length() > 0)
+    {
+      sb.append(name);
+    }
+    
+    return sb.toString();
+  }
+  
+  /**
+   * Erzeugt den Identifier fuer den Scope.
+   * @param prefix der Prefix.
+   * @param scope der Scope.
+   * @return der Identifier fuer den Scope.
+   */
+  private static String createScopeIdentifier(Prefix prefix, String scope)
+  {
+    StringBuilder sb = new StringBuilder();
     if (prefix != null)
     {
       sb.append(prefix.value());
@@ -209,15 +264,6 @@ public class DBPropertyUtil
     {
       sb.append(replaceWildcards(scope));
       sb.append(SEP);
-    }
-    if (id != null && id.length() > 0)
-    {
-      sb.append(replaceWildcards(id));
-      sb.append(SEP);
-    }
-    if (name != null && name.length() > 0)
-    {
-      sb.append(name);
     }
     
     return sb.toString();
@@ -245,12 +291,18 @@ public class DBPropertyUtil
 
     try
     {
+      final Map<String,DBProperty> cache = CACHE.getIfPresent(createScopeIdentifier(prefix,scope));
+      
       // Kein Wert angegeben
       if (value == null)
       {
         // Wenn er in der DB existiert, loeschen wir ihn gleich ganz
         if (!prop.isNewObject())
+        {
           prop.delete();
+          if (cache != null)
+            cache.remove(localname);
+        }
         
         // auf jeden Fall nichts zu speichern
         return;
@@ -259,6 +311,12 @@ public class DBPropertyUtil
       // Ansonsten abspeichern
       prop.setValue(value);
       prop.store();
+
+      // Wenn wir den Cache bereits haben, aktualisieren wir ihn
+      // Wenn er nicht existiert, dann muss er eh neu geladen werden
+      if (cache != null)
+        cache.put(localname,prop);
+
     }
     catch (ApplicationException ae)
     {
@@ -278,9 +336,41 @@ public class DBPropertyUtil
    */
   public static String get(Prefix prefix, String scope, String id, String name, String defaultValue) throws RemoteException
   {
-    String localname = createIdentifier(prefix,scope,id,name);
+    // Scope aus dem Cache holen bzw. ggf. automatisch laden
+    final String localName = createIdentifier(prefix,scope,id,name);
 
-    DBProperty prop = find(localname);
+    DBProperty prop = null;
+    boolean cacheChecked = false;
+    try
+    {
+      final String localPrefix = createScopeIdentifier(prefix,scope);
+      final Map<String,DBProperty> cache = CACHE.get(localPrefix,new Callable<Map<String,DBProperty>>() {
+        /**
+         * @see java.util.concurrent.Callable#call()
+         */
+        @Override
+        public Map<String, DBProperty> call() throws Exception
+        {
+          Logger.debug("loading scope " + localPrefix + " into cache");
+          return getScope(prefix,scope);
+        }
+      });
+
+      prop = cache.get(localName);
+      cacheChecked = true;
+    }
+    catch (Exception e)
+    {
+      Logger.error("cache lookup error",e);
+    }
+
+    // Wenn prop null ist, duerfen wir nur dann in der DB schauen, wenn nicht im Cache geschaut
+    // wurde (z.Bsp. wegen einer Exception). Andernfalls wuerde fuer jedes Property, welches nicht
+    // existiert erst im Cache geschaut und dann nochmal extra in der Datenbank gesucht werden. Damit
+    // waere der Performance-Vorteil komplett dahin.
+    if (prop == null && !cacheChecked)
+      prop = find(localName);
+    
     if (prop == null)
       return defaultValue;
     String value = prop.getValue();
@@ -298,7 +388,11 @@ public class DBPropertyUtil
     if (prefix == null)
       throw new RemoteException("no prefix given");
 
-    return Settings.getDBService().executeUpdate("delete from property where name like ?",prefix.value() + ".%");
+    final int count = Settings.getDBService().executeUpdate("delete from property where name like ?",prefix.value() + ".%");
+    
+    // Wir wissen nicht, welches Scopes im Cache sind. Daher loeschen wir in dem Fall alles.
+    CACHE.invalidateAll();
+    return count;
   }
 
   /**
@@ -316,8 +410,11 @@ public class DBPropertyUtil
     if (scope == null || scope.length() == 0)
       throw new RemoteException("no scope given");
 
-    String localPrefix = prefix.value() + "." + replaceWildcards(scope);
-    return Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + ".%");
+    final String localPrefix = createScopeIdentifier(prefix,scope);
+    final int count = Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + "%");
+    
+    CACHE.invalidate(localPrefix);
+    return count;
   }
   
   /**
@@ -337,9 +434,9 @@ public class DBPropertyUtil
     
     scope = replaceWildcards(scope);
 
-    final String localPrefix = prefix.value() + "." + scope;
+    final String localPrefix = createScopeIdentifier(prefix,scope);
     DBIterator<DBProperty> list = Settings.getDBService().createList(DBProperty.class);
-    list.addFilter("name like ?",localPrefix + ".%");
+    list.addFilter("name like ?",localPrefix + "%");
     
     Map<String,DBProperty> result = new HashMap<String,DBProperty>();
     while (list.hasNext())
@@ -445,6 +542,9 @@ public class DBPropertyUtil
     //
     //////////////////////////////////////////////////////////////////////////////////////////////
     
+    // Wir loeschen den Cache des ganzen Scope
+    CACHE.invalidate(createScopeIdentifier(prefix,scope));
+
     return result;
   }
 
@@ -465,7 +565,11 @@ public class DBPropertyUtil
       throw new RemoteException("no scope given");
 
     String localPrefix = createIdentifier(prefix,scope,id,null);
-    return Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + ".%");
+    int count = Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + "%");
+    
+    // Wir loeschen den Cache des ganzen Scope
+    CACHE.invalidate(createScopeIdentifier(prefix,scope));
+    return count;
   }
 
   /**
