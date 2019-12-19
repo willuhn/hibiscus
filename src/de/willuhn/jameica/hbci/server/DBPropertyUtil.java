@@ -334,7 +334,7 @@ public class DBPropertyUtil
    * @return Wert des Parameters.
    * @throws RemoteException
    */
-  public static String get(Prefix prefix, String scope, String id, String name, String defaultValue) throws RemoteException
+  public static String get(final Prefix prefix, final String scope, String id, String name, String defaultValue) throws RemoteException
   {
     // Scope aus dem Cache holen bzw. ggf. automatisch laden
     final String localName = createIdentifier(prefix,scope,id,name);
