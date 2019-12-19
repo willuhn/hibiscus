@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+2019-12-19 Version 2.8.22
+
   * BUG: 0866 Das Konto-Icon fehlte in den HighDPI-Versionen
   * NEW: 0865 Erster experimenteller Support für SEPA-Sammelterminüberweisungen - Update auf HBCI4Java 3.1.32 - https://github.com/hbci4j/hbci4java/commit/a6483d19707245e2b23a502eeb49c48f192eba3d
   * NEW: 0864 Erster experimenteller RAH10-Code - Update auf HBCI4Java 3.1.31 - https://github.com/hbci4j/hbci4java/commit/a30f3deee65a08f4f0330f7c56fa6331d392b64c
