@@ -16,7 +16,6 @@ import de.willuhn.jameica.util.DateUtil;
  */
 public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, GenericObjectNode
 {
-
   private Date startdatum;
   private Date enddatum;
   private List<EinnahmeAusgabe> children;
@@ -59,6 +58,51 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   {
     return this == arg0;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getText()
+   */
+  @Override
+  public String getText()
+  {
+    return DateUtil.DEFAULT_FORMAT.format(this.startdatum) + " - " + DateUtil.DEFAULT_FORMAT.format(this.enddatum);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getAusgaben()
+   */
+  @Override
+  public double getAusgaben()
+  {
+    if (this.children == null || this.children.size() == 0)
+      return 0.0d;
+
+    double sum = 0.0d;
+    for (EinnahmeAusgabe e:this.children)
+    {
+      if (!e.isSumme()) // ueberspringen
+        sum += e.getAusgaben();
+    }
+    return sum;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getEinnahmen()
+   */
+  @Override
+  public double getEinnahmen()
+  {
+    if (this.children == null || this.children.size() == 0)
+      return 0.0d;
+
+    double sum = 0.0d;
+    for (EinnahmeAusgabe e:this.children)
+    {
+      if (!e.isSumme()) // ueberspringen
+        sum += e.getEinnahmen();
+    }
+    return sum;
+  }
 
   /**
    * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
@@ -67,7 +111,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   public Object getAttribute(String arg0) throws RemoteException
   {
     if("text".equals(arg0))
-      return DateUtil.DEFAULT_FORMAT.format(this.startdatum) + " - " + DateUtil.DEFAULT_FORMAT.format(this.enddatum);
+      return this.getText();
     
     if ("startdatum".equals(arg0))
       return this.startdatum;

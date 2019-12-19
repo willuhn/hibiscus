@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -29,6 +30,7 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.EinnahmeAusgabeExport;
 import de.willuhn.jameica.hbci.gui.controller.EinnahmeAusgabeControl;
+import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -102,6 +104,16 @@ public class EinnahmenAusgaben extends AbstractView
     },null,true,"view-refresh.png");
     buttons.paint(getParent());
     
-    control.getTree().paint(this.getParent());
+    final TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    
+    final TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"),true,1);
+    TreePart tree = control.getTree();
+    tree.paint(tg1.getComposite());
+    
+    final TabGroup tg2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"),true,1);
+    final EinnahmenAusgabenVerlauf chart = control.getChart();
+    chart.paint(tg2.getComposite());
+    
+    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
   }
 }

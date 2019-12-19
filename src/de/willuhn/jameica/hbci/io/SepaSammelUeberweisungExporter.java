@@ -10,6 +10,7 @@
 
 package de.willuhn.jameica.hbci.io;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 
@@ -68,6 +69,14 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       props.setProperty(SepaUtil.insertIndex("endtoendid",count),   StringUtils.trimToEmpty(b.getEndtoEndId()));
       props.setProperty(SepaUtil.insertIndex("purposecode",count),  StringUtils.trimToEmpty(b.getPurposeCode()));
       count++;
+    }
+    
+    if (u.isTerminUeberweisung())
+    {
+      SimpleDateFormat df = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
+      String date = StringUtils.trimToNull(df.format(u.getTermin()));
+      if (date != null)
+        props.setProperty("date",date);
     }
     
     // Weil wir eine Liste von Auftraegen mit Buchungen haben, muessen wir den Zaehler selbst zaehlen

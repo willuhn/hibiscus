@@ -273,7 +273,7 @@ public class ChipTANDialog extends TANDialog
     }
     else
     {
-      container.addHeadline(i18n.tr(this.usb ? "ChipTAN USB" : "Flicker-Grafik"));
+      container.addHeadline(i18n.tr("Flicker-Grafik"));
       container.addText(i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."),true);
       FlickerPart flicker = new FlickerPart(this.code);
       flicker.paint(parent);

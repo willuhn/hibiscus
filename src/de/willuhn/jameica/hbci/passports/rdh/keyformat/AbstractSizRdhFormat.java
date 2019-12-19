@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Implementierung des Schluesselformats SizRDH.
  */
-public abstract class AbstractSizRdhFormat implements KeyFormat
+public abstract class AbstractSizRdhFormat extends AbstractKeyFormat
 {
   protected static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 

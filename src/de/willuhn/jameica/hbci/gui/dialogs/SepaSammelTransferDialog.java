@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.parts.SepaSammelTransferBuchungList;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 
 /**
  * Sicherheitsabfrage beim Ausfuehren eines Auftrages.
@@ -59,6 +60,16 @@ public class SepaSammelTransferDialog extends AbstractExecuteDialog
     LabelInput betrag = new LabelInput(HBCI.DECIMALFORMAT.format(st.getSumme()) + " " + st.getKonto().getWaehrung());
     betrag.setColor(Color.ERROR);
     group.addLabelPair(i18n.tr("Summe"),betrag);
+    
+    if (this.st instanceof SepaSammelUeberweisung)
+    {
+      SepaSammelUeberweisung ueb = (SepaSammelUeberweisung) this.st;
+      if (ueb.isTerminUeberweisung())
+      {
+        Input termin = new LabelInput(HBCI.DATEFORMAT.format(ueb.getTermin()));
+        group.addLabelPair(i18n.tr("Ausführungstermin"),termin);
+      }
+    }
 
     group.addHeadline(i18n.tr("Enthaltene Buchungen"));
     TablePart buchungen = new SepaSammelTransferBuchungList(this.st,null);

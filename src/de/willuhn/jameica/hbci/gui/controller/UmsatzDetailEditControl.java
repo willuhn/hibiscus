@@ -27,6 +27,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
+import de.willuhn.jameica.hbci.gui.input.InputCompat;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -398,18 +399,17 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       
       u.store();
 
-      if (getEmpfaengerBLZ().hasChanged() ||
-          getEmpfaengerKonto().hasChanged() ||
-          getEmpfaengerName().hasChanged() ||
-          getZweck().hasChanged() ||
-          getBetrag().hasChanged() ||
-          getSaldo().hasChanged() ||
-          getDatum().hasChanged() ||
-          getValuta().hasChanged() ||
-          getPrimanota().hasChanged() ||
-          getArt().hasChanged() ||
-          getCustomerRef().hasChanged()
-         )
+      if(InputCompat.valueHasChanged(getEmpfaengerBLZ(),
+          getEmpfaengerKonto(),
+          getEmpfaengerName(),
+          getZweck(),
+          getBetrag(),
+          getSaldo(),
+          getDatum(),
+          getValuta(),
+          getPrimanota(),
+          getArt(),
+          getCustomerRef()))
       {
         String[] fields = new String[]
         {

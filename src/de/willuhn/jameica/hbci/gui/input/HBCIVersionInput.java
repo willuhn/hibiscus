@@ -33,11 +33,11 @@ public class HBCIVersionInput extends SelectInput
 
   private final static List<HBCIVersion> VERSIONS = Collections.unmodifiableList(new ArrayList<HBCIVersion>()
   {{
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_201,true));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_210,true));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_220,false));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_PLUS,true));
     add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_300,true));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_PLUS,true));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_220,false));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_210,true));
+    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_201,true));
     add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_400,false));
   }});
 

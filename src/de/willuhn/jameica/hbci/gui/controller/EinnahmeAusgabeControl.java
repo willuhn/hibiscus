@@ -38,6 +38,8 @@ import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
+import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
+import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
@@ -64,6 +66,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private SelectInput interval     = null;
 
   private TreePart tree            = null;
+  private EinnahmenAusgabenVerlauf chart = null;
 
   /**
    * Gruppierung der Einnahmen/Ausgaben nach Zeitraum.
@@ -198,9 +201,23 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if(this.interval !=null)
       return this.interval;
     
-    this.interval = new SelectInput(Interval.values(), null);
+    this.interval = new SelectInput(Interval.values(), Interval.MONTH);
     this.interval.setName(i18n.tr("Gruppierung nach"));
     return this.interval;
+  }
+  
+  /**
+   * Liefert ein Balkendiagramm bei dem Ausgaben und Einnahmen gegenübergestellt werden 
+   * @return Balkendiagramm
+   * @throws RemoteException 
+   */
+  public EinnahmenAusgabenVerlauf getChart() throws RemoteException
+  {
+    if(this.chart != null)
+      return this.chart;
+    
+    this.chart = new EinnahmenAusgabenVerlauf(getWerte());
+    return chart;
   }
 
   /**
@@ -269,13 +286,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return Liste mit den Werten.
    * @throws RemoteException
    */
-  private List<Object> getWerte() throws RemoteException
+  private List<EinnahmeAusgabeZeitraum> getWerte() throws RemoteException
   {
     Date start  = (Date) this.getStart().getValue();
     Date end    = (Date) this.getEnd().getValue();
 
     Interval interval = (Interval) getInterval().getValue();
-    List<Object> result=new ArrayList<Object>();
+    List<EinnahmeAusgabeZeitraum> result = new ArrayList<EinnahmeAusgabeZeitraum>();
     
     // Sonderfall "alle". Es findet keine zeitliche Gruppierung statt
     if(Interval.ALL.equals(interval))
@@ -363,7 +380,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     // Summenzeile noch hinten dran haengen
     EinnahmeAusgabe summen = new EinnahmeAusgabe();
     summen.setIsSumme(true);
-    summen.setText(i18n.tr("Summe"));
     summen.setAnfangssaldo(summeAnfangssaldo);
     summen.setAusgaben(summeAusgaben);
     summen.setEinnahmen(summeEinnahmen);
@@ -399,11 +415,15 @@ public class EinnahmeAusgabeControl extends AbstractControl
       }
 
       tree.setList(this.getWerte());
+      
+      EinnahmenAusgabenVerlauf chart = getChart();
+      chart.setList(this.getWerte());
     }
     catch (RemoteException re)
     {
       Logger.error("unable to redraw table",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
+    
   }
 }

@@ -55,20 +55,10 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
    */
   Print printContent() throws ApplicationException
   {
-    Object data = this.ctx;
+    T a = this.getAuftrag();
     
-    if (data == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
-    if (data instanceof TablePart)
-      data = ((TablePart)data).getSelection();
-    
-    if (!(data instanceof SepaSammelTransfer))
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-
     try
     {
-      T a = (T) data;
       Konto k = a.getKonto();
       
       // Das Haupt-Layout
@@ -128,6 +118,26 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
       Logger.error("unable to print data",re);
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
+  }
+  
+  /**
+   * Liefert den Auftrag.
+   * @return der Auftrag.
+   */
+  protected T getAuftrag() throws ApplicationException
+  {
+    Object data = this.ctx;
+    
+    if (data == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
+    
+    if (data instanceof TablePart)
+      data = ((TablePart)data).getSelection();
+    
+    if (!(data instanceof SepaSammelTransfer))
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
+
+    return (T) data;
   }
   
   /**

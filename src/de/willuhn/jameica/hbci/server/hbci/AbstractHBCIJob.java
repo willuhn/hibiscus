@@ -280,8 +280,14 @@ public abstract class AbstractHBCIJob
       }
     }
     
+    boolean tanCancel = false;
     HibiscusDBObject ctx = this.getContext();
-    boolean tanCancel = ctx != null && MetaKey.TAN_CANCEL.get(ctx) != null;
+    if (ctx != null)
+    {
+      tanCancel = MetaKey.TAN_CANCEL.get(ctx) != null;
+      if (tanCancel)
+        MetaKey.TAN_CANCEL.set(ctx,null);
+    }
     
     Logger.info("execution state: tan needed: " + tanNeeded + ", tan-cancel: " + tanCancel + ", executed: " + executed + ", success status: " + successStatus + ", error status: " + errorStatus);
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);

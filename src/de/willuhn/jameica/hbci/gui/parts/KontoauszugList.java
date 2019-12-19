@@ -61,6 +61,7 @@ import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
+import de.willuhn.jameica.hbci.gui.input.InputCompat;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
@@ -861,20 +862,21 @@ public class KontoauszugList extends UmsatzList
     {
       boolean b = this.changed;
       this.changed = false;
-      return b || getStart().hasChanged() ||
-                getEnd().hasChanged() ||
-                getUnChecked().hasChanged() ||
-                getSearch().hasChanged() || 
-                getRegex().hasChanged() ||
-                getKontoAuswahl().hasChanged() ||
-                getGegenkontoName().hasChanged() ||
-                getGegenkontoNummer().hasChanged() ||
-                getGegenkontoBLZ().hasChanged() ||
-                getMindestBetrag().hasChanged() ||
-                getHoechstBetrag().hasChanged() ||
-                getKategorie().hasChanged() ||
-                getSubKategorien().hasChanged() ||
-                getText().hasChanged();
+      return InputCompat.valueHasChanged(b, 
+          getStart(),
+          getEnd(),
+          getUnChecked(),
+          getSearch(),
+          getRegex(),
+          getKontoAuswahl(),
+          getGegenkontoName(),
+          getGegenkontoNummer(),
+          getGegenkontoBLZ(),
+          getMindestBetrag(),
+          getHoechstBetrag(),
+          getKategorie(),
+          getSubKategorien(),
+          getText());
     }
     catch (Exception e)
     {

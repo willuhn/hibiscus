@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.passports.pintan.server;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -456,6 +457,37 @@ public class PinTanConfigImpl implements PinTanConfig
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getAvailableSecMechs()
+   */
+  @Override
+  public List<PtSecMech> getAvailableSecMechs() throws RemoteException
+  {
+    List<PtSecMech> result = new ArrayList<PtSecMech>();
+    final String s = settings.getString(getID() + ".secmech.list",null);
+    if (s == null)
+      return result;
+    
+    try
+    {
+      result.addAll(PtSecMech.parse(s));
+    }
+    catch (Exception e)
+    {
+      Logger.error("unparsable secmech list",e);
+    }
+    return result;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setAvailableSecMechs(java.lang.String)
+   */
+  @Override
+  public void setAvailableSecMechs(String list) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".secmech.list",list);
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCardReader()
    */
   @Override
@@ -506,6 +538,37 @@ public class PinTanConfigImpl implements PinTanConfig
   public void setTanMedias(String[] names) throws RemoteException
   {
     settings.setAttribute(getID() + ".tanmedias",names);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getAvailableTanMedias()
+   */
+  @Override
+  public List<String> getAvailableTanMedias() throws RemoteException
+  {
+    List<String> result = new ArrayList<String>();
+    final String s = settings.getString(getID() + ".tanmedias.list",null);
+    if (s == null)
+      return result;
+    
+    try
+    {
+      result.addAll(Arrays.asList(s.split("\\|")));
+    }
+    catch (Exception e)
+    {
+      Logger.error("unparsable tan media list",e);
+    }
+    return result;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setAvailableTanMedias(java.lang.String)
+   */
+  @Override
+  public void setAvailableTanMedias(String list) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".tanmedias.list",list);
   }
 
   /**

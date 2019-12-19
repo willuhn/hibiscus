@@ -134,8 +134,7 @@ public class EinnahmeAusgabeExporter implements Exporter
    */
   private void report(EinnahmeAusgabeTreeNode treeNode, Reporter reporter) throws RemoteException
   {
-    String range = HBCI.DATEFORMAT.format(treeNode.getStartdatum()) + " - " + HBCI.DATEFORMAT.format(treeNode.getEnddatum());
-    PdfPCell cell = reporter.getDetailCell(range, Element.ALIGN_LEFT, null, null, Font.BOLD);
+    PdfPCell cell = reporter.getDetailCell(treeNode.getText(), Element.ALIGN_LEFT, null, null, Font.BOLD);
     cell.setColspan(7);
     reporter.addColumn(cell);
     reporter.setNextRecord();

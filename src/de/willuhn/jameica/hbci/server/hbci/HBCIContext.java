@@ -117,6 +117,10 @@ public class HBCIContext
       {
         SepaSammelUeberweisung r = (SepaSammelUeberweisung) object;
         Konto k = r.getKonto();
+        
+        if (r.isTerminUeberweisung())
+          return i18n.tr("{0}: ({1}) {2} {3} per {4} als SEPA-Sammelterminüberweisung absenden",k.getLongName(),r.getBezeichnung(),HBCI.DECIMALFORMAT.format(r.getSumme()),k.getWaehrung(),HBCI.DATEFORMAT.format(r.getTermin()));
+        
         return i18n.tr("{0}: ({1}) {2} {3} als SEPA-Sammelüberweisung absenden",k.getLongName(),r.getBezeichnung(),HBCI.DECIMALFORMAT.format(r.getSumme()),k.getWaehrung());
       }
 

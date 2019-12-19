@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.passports.rdh;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
@@ -84,6 +85,8 @@ public class RDHKeyFactory
     {
       Logger.error("error while loading key formats",e);
     }
+    
+    Collections.sort(list);
     return (KeyFormat[]) list.toArray(new KeyFormat[list.size()]);
   }
 

@@ -30,4 +30,23 @@ public interface EinnahmeAusgabeZeitraum extends GenericObject
    * @return das End-Datum.
    */
   public Date getEnddatum();
+  
+  /**
+   * Liefert den Beschreibungstext der Zeile.
+   * @return der Beschreibungstext der Zeile.
+   */
+  public String getText();
+
+  /**
+   * Liefert die Einnahmen.
+   * @return die Einnahmen.
+   */
+  public double getEinnahmen();
+
+  /**
+   * Liefert die Ausgaben.
+   * @return die Ausgaben.
+   */
+  public double getAusgaben();
+
 }

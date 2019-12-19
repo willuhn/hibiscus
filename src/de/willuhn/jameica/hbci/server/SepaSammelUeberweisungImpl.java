@@ -84,7 +84,8 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
       u.transactionBegin();
       u.setBezeichnung(this.getBezeichnung());
       u.setKonto(this.getKonto());
-      u.setTermin(new Date());
+      u.setTerminUeberweisung(isTerminUeberweisung());
+      u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
       u.setPmtInfId(getPmtInfId());
       u.store();
       
@@ -111,4 +112,35 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
       throw new RemoteException(text,e);
     }
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl#ueberfaellig()
+   */
+  @Override
+  public boolean ueberfaellig() throws RemoteException
+  {
+    // Termin-Auftraege werden sofort faellig gestellt, weil sie ja durch die Bank terminiert werden
+    if (isTerminUeberweisung())
+      return !ausgefuehrt();
+    
+    return super.ueberfaellig();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung#isTerminUeberweisung()
+   */
+  public boolean isTerminUeberweisung() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("banktermin");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung#setTerminUeberweisung(boolean)
+   */
+  public void setTerminUeberweisung(boolean termin) throws RemoteException
+  {
+    setAttribute("banktermin",termin ? new Integer(1) : null);
+  }
+
 }

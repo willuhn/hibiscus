@@ -11,8 +11,13 @@
 package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
+import java.util.Date;
+import java.util.Properties;
+
+import org.kapott.hbci.GV.HBCIJob;
 
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
+import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -20,6 +25,8 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransferJob<SepaSammelUeberweisung>
 {
+  private boolean isTermin = false;
+
   /**
 	 * ct.
    * @param u die auszufuehrende Sammel-Ueberweisung.
@@ -29,6 +36,7 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
   public HBCISepaSammelUeberweisungJob(SepaSammelUeberweisung u) throws ApplicationException, RemoteException
 	{
     super(u);
+    this.isTermin = u.isTerminUeberweisung();
 	}
 
   /**
@@ -36,7 +44,25 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
    */
   public String getIdentifier()
   {
+    if (this.isTermin)
+      return "TermMultiUebSEPA";
     return "MultiUebSEPA";
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
+   */
+  @Override
+  public void setJob(HBCIJob job) throws RemoteException, ApplicationException
+  {
+    if (this.isTermin)
+    {
+      Date date = this.getSammelTransfer().getTermin();
+      Properties p = job.getJobRestrictions();
+      new PreTimeRestriction(date,p).test();
+      this.setJobParam("date",date);
+    }
+    super.setJob(job);
   }
 
   /**
@@ -44,6 +70,8 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
    */
   public String getName() throws RemoteException
   {
+    if (this.isTermin)
+      return i18n.tr("SEPA-Sammelterminüberweisung {0}",getSammelTransfer().getBezeichnung());
     return i18n.tr("SEPA-Sammelüberweisung {0}",getSammelTransfer().getBezeichnung());
   }
 }

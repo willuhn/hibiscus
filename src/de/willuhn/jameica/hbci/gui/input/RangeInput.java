@@ -11,6 +11,7 @@
 package de.willuhn.jameica.hbci.gui.input;
 
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -48,7 +49,7 @@ public class RangeInput extends SelectInput
   {
     this(from,to,null);
   }
-  
+
   /**
    * ct.
    * @param from Input-Feld, in das das Start-Datum nach der Auswahl uebernommen werden soll.
@@ -57,7 +58,19 @@ public class RangeInput extends SelectInput
    */
   public RangeInput(final Input from, final Input to, final String parameter)
   {
-    super(Range.KNOWN,null);
+    this(Range.KNOWN,from,to,parameter);
+  }
+
+  /**
+   * ct.
+   * @param ranges die anzuzeigenden Zeitraeume.
+   * @param from Input-Feld, in das das Start-Datum nach der Auswahl uebernommen werden soll.
+   * @param to Input-Feld, in das das End-Datum nach der Auswahl uebernommen werden soll.
+   * @param parameter Schluessel-Name, unter dem die Auswahl gespeichert wird.
+   */
+  public RangeInput(List<Range> ranges, final Input from, final Input to, final String parameter)
+  {
+    super(ranges,null);
     this.from = from;
     this.to = to;
     this.param = parameter != null ? parameter : "transferlist.filter.range";
@@ -108,6 +121,8 @@ public class RangeInput extends SelectInput
         applyRange(choosen);
       }
     });
+    // Einmalig aufrufen, um alten Wert zu initialisieren.
+    this.hasChanged();
   }
 
   /**

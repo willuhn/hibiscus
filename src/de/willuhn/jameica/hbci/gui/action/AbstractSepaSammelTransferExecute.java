@@ -10,14 +10,18 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.SepaSammelTransferDialog;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -53,6 +57,24 @@ public abstract class AbstractSepaSammelTransferExecute implements Action
 			if (u.isNewObject())
 				u.store(); // wir speichern bei Bedarf selbst.
 
+			if (u instanceof SepaSammelUeberweisung)
+			{
+			  SepaSammelUeberweisung su = (SepaSammelUeberweisung) u;
+	      Date termin = DateUtil.startOfDay(su.getTermin());
+	      Date now    = DateUtil.startOfDay(new Date());
+	      if (!su.isTerminUeberweisung() && (termin.getTime() - now.getTime()) >= (24 * 60 * 60 * 1000))
+	      {
+	        String q = i18n.tr("Der Termin liegt mindestens 1 Tag in Zukunft.\n" +
+	                           "Soll der Auftrag stattdessen als bankseitige SEPA-Sammelterminüberweisung " +
+	                           "ausgeführt werden?");
+	        if (Application.getCallback().askUser(q))
+	        {
+	          su.setTerminUeberweisung(true);
+	          su.store();
+	        }
+	      }
+			}
+
 			SepaSammelTransferDialog d = new SepaSammelTransferDialog(u,SepaSammelTransferDialog.POSITION_CENTER);
 			try
 			{
@@ -72,11 +94,17 @@ public abstract class AbstractSepaSammelTransferExecute implements Action
 			}
 			execute(u);
 		}
-		catch (RemoteException e)
-		{
-			Logger.error("error while executing sammelauftrag",e);
-			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ausführen des Sammel-Auftrages"));
-		}
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while executing sammelauftrag",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Ausführen des Sammel-Auftrages"),StatusBarMessage.TYPE_ERROR));
+      return;
+    }
   }
 
   /**
