@@ -14,7 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kapott.hbci.passport.AbstractRDHSWFileBasedPassport;
+import org.kapott.hbci.passport.FileBasedPassport;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.passport.HBCIPassportChipcard;
 import org.kapott.hbci.passport.HBCIPassportPinTan;
@@ -331,8 +331,8 @@ public class DialogFactory
       key = ((HBCIPassportPinTan)passport).getFileName();
       
     // Schluesseldatei
-    else if (passport instanceof AbstractRDHSWFileBasedPassport)
-      key = ((AbstractRDHSWFileBasedPassport)passport).getFilename();
+    else if (passport instanceof FileBasedPassport)
+      key = ((FileBasedPassport)passport).getFilename();
       
     // Chipkarte
     else if (passport instanceof HBCIPassportChipcard)
