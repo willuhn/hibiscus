@@ -122,7 +122,9 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       }
       while (list.hasNext())
       {
-        result.add(new KontoAddress((Konto) list.next()));
+        Konto k = (Konto) list.next();
+        if(!k.hasFlag(Konto.FLAG_DISABLED))
+          result.add(new KontoAddress(k));
       }
     }
     return result;
