@@ -53,7 +53,7 @@ public class DBPropertyUtil
     // Properties in hoher Frequenz zusammenfassen. Z.Bsp. die Reminder-UUIDs bei Auftraegen. Siehe auch de.willuhn.jameica.hbci.server.Cache
     // (identisch, jedoch fuer Fachobjekte)
     timeout = settings.getInt("timeout.seconds",10);
-    Logger.info("init db property cache [timeout: " + timeout + " seconds]");
+    logCache("init [timeout: " + timeout + " seconds]");
     CacheBuilder builder = CacheBuilder.newBuilder();
     builder.expireAfterWrite(timeout,TimeUnit.SECONDS); // Ja, write. Andernfalls koennte man das Timeout mit dauernden Reloads ja aufhalten
     CACHE = builder.build();
@@ -210,7 +210,10 @@ public class DBPropertyUtil
       // Wenn er nicht existiert, dann muss er eh neu geladen werden
       final Map<String,DBProperty> cache = CACHE.getIfPresent(createScopeIdentifier(prefix,scope));
       if (cache != null)
+      {
+        logCache("added " + localName + "=" + value);
         cache.put(localName,prop);
+      }
       
       return true;
     }
@@ -301,7 +304,10 @@ public class DBPropertyUtil
         {
           prop.delete();
           if (cache != null)
+          {
+            logCache("removed " + localname);
             cache.remove(localname);
+          }
         }
         
         // auf jeden Fall nichts zu speichern
@@ -315,7 +321,10 @@ public class DBPropertyUtil
       // Wenn wir den Cache bereits haben, aktualisieren wir ihn
       // Wenn er nicht existiert, dann muss er eh neu geladen werden
       if (cache != null)
+      {
+        logCache("added " + localname + "=" + value);
         cache.put(localname,prop);
+      }
 
     }
     catch (ApplicationException ae)
@@ -351,7 +360,7 @@ public class DBPropertyUtil
         @Override
         public Map<String, DBProperty> call() throws Exception
         {
-          Logger.debug("loading scope " + localPrefix + " into cache");
+          logCache("loaded scope " + localPrefix);
           return getScope(prefix,scope);
         }
       });
@@ -391,6 +400,7 @@ public class DBPropertyUtil
     final int count = Settings.getDBService().executeUpdate("delete from property where name like ?",prefix.value() + ".%");
     
     // Wir wissen nicht, welches Scopes im Cache sind. Daher loeschen wir in dem Fall alles.
+    logCache("invalidate cache");
     CACHE.invalidateAll();
     return count;
   }
@@ -413,6 +423,7 @@ public class DBPropertyUtil
     final String localPrefix = createScopeIdentifier(prefix,scope);
     final int count = Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + "%");
     
+    logCache("invalidate scope " + localPrefix);
     CACHE.invalidate(localPrefix);
     return count;
   }
@@ -543,7 +554,9 @@ public class DBPropertyUtil
     //////////////////////////////////////////////////////////////////////////////////////////////
     
     // Wir loeschen den Cache des ganzen Scope
-    CACHE.invalidate(createScopeIdentifier(prefix,scope));
+    final String localPrefix = createScopeIdentifier(prefix,scope);
+    logCache("invalidate scope " + localPrefix);
+    CACHE.invalidate(localPrefix);
 
     return result;
   }
@@ -568,7 +581,10 @@ public class DBPropertyUtil
     int count = Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + "%");
     
     // Wir loeschen den Cache des ganzen Scope
-    CACHE.invalidate(createScopeIdentifier(prefix,scope));
+    final String localPrefix2 = createScopeIdentifier(prefix,scope);
+    logCache("invalidate scope " + localPrefix2);
+    CACHE.invalidate(localPrefix2);
+
     return count;
   }
 
@@ -595,6 +611,15 @@ public class DBPropertyUtil
     DBProperty prop = (DBProperty) service.createObject(DBProperty.class,null);
     prop.setName(name);
     return prop;
+  }
+  
+  /**
+   * Loggt Informationen zum Caching. An zentraler Stelle, damit das Loglevel dafuer hier geaendert werden kann.
+   * @param msg die zu loggende Nachricht.
+   */
+  private static void logCache(String msg)
+  {
+    Logger.debug("*** [CACHE] " + msg);
   }
   
   /**
