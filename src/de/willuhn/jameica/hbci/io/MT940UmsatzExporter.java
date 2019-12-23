@@ -49,7 +49,7 @@ public class MT940UmsatzExporter implements Exporter
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  protected final static String NL            = "\r\n";
+  protected final static String NL            = System.getProperty("line.separator","\r\n");
   protected final static DateFormat DF_YYMMDD = new SimpleDateFormat("yyMMdd");
   protected final static DateFormat DF_MMDD   = new SimpleDateFormat("MMdd");
   
