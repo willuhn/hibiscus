@@ -302,25 +302,34 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     
     EinnahmeAusgabeTreeNode node;
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(DateUtil.startOfDay(start));
-    while (calendar.getTime().before(end))
+    if (start != null && end != null)
     {
-      calendar.set(interval.type, 1);
-      Date nodeFrom = calendar.getTime();
-      
-      // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
-      calendar.add(interval.size,1);
-      calendar.setTimeInMillis(calendar.getTime().getTime()-1);
-      Date nodeTo = DateUtil.startOfDay(calendar.getTime());
-      
-      List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
-      node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(DateUtil.startOfDay(start));
+      while (calendar.getTime().before(end))
+      {
+        calendar.set(interval.type, 1);
+        Date nodeFrom = calendar.getTime();
+        
+        // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
+        calendar.add(interval.size,1);
+        calendar.setTimeInMillis(calendar.getTime().getTime()-1);
+        Date nodeTo = DateUtil.startOfDay(calendar.getTime());
+        
+        List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
+        node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
+        result.add(node);
+        
+        // ermittle den Start des nächsten Zeitraums
+        calendar.setTime(nodeFrom);
+        calendar.add(interval.size, 1);
+      }
+    }
+    else
+    {
+      node = new EinnahmeAusgabeTreeNode(new Date(), new Date(), new ArrayList<EinnahmeAusgabe>());
       result.add(node);
-      
-      // ermittle den Start des nächsten Zeitraums
-      calendar.setTime(nodeFrom);
-      calendar.add(interval.size, 1);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kein Zeitraum ausgewählt"),StatusBarMessage.TYPE_INFO));
     }
     return result;
   }

@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0870 NullPointerException, wenn bei Einnahmen/Ausgaben kein Zeitraum ausgewählt ist
   * CHG: 0869 Im Adressbuch bei den eigenen Konten nur noch die aktiven anzeigen, nicht die deaktivierten (siehe https://github.com/willuhn/hibiscus/pull/57)
   * NEW: 0868 Erste experimentelle Version eines Caches in den generischen DB-Properties (u.a. für BPD und Meta-Daten). Sollte das Laden der Meta-Daten deutlich beschleunigen
   * NEW: 0867 Weiterer experimenteller RAH10-Code - Update auf HBCI4Java 3.1.33 - https://github.com/hbci4j/hbci4java/commit/b330b56e90bf9d6fa87f733e28dc9d049f441cfb
