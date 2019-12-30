@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * CHG: 0872 Laden der Werte "Anzahl Buchungen" und "Summe" in Liste der Sammelaufträge optimiert
   * CHG: 0871 Schwarze Werte-Beschriftung im Bar-Chart - liest sich besser als weisse Schrift, wenn sie über den Balken hinaus reicht 
   * BUG: 0870 NullPointerException, wenn bei Einnahmen/Ausgaben kein Zeitraum ausgewählt ist
   * CHG: 0869 Im Adressbuch bei den eigenen Konten nur noch die aktiven anzeigen, nicht die deaktivierten (siehe https://github.com/willuhn/hibiscus/pull/57)

@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -80,6 +81,8 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
 
     final boolean bold = Settings.getBoldValues();
     
+    final CurrencyFormatter f = new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT);
+    
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         SepaSammelTransfer l = (SepaSammelTransfer) item.getData();
@@ -90,6 +93,21 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
         {
           if (bold)
             item.setFont(3,Font.BOLD.getSWTFont());
+          
+          // Summe und Anzahl Buchungen machen wir per Tableformatter.
+          // Wuerden wir es direkt in der Spalte ausgeben, wuerden die Buchungen pro Auftrag zweimal geladen werden.
+          // Einmal, um die Anzahl zu ermitteln und einmal fuer die Summe
+          int count = 0;
+          BigDecimal sum = new BigDecimal(0);
+          
+          List<SepaSammelTransferBuchung> list = l.getBuchungen();
+          for (SepaSammelTransferBuchung t:list)
+          {
+            sum = sum.add(new BigDecimal(t.getBetrag()));
+            count++;
+          }
+          item.setText(2,Integer.toString(count));
+          item.setText(3,f.format(sum));
           
           Date termin = l.getTermin();
           boolean faellig = l.ueberfaellig() && !l.ausgefuehrt();
@@ -127,8 +145,8 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
 
     addColumn(new KontoColumn());
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
-    addColumn(i18n.tr("Anzahl Buchungen"),"anzahl");
-    addColumn(i18n.tr("Summe"),"summe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
+    addColumn(i18n.tr("Anzahl Buchungen"),"dummy",null,false,Column.ALIGN_RIGHT);
+    addColumn(i18n.tr("Summe"),"dummy",f,false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
     
