@@ -161,13 +161,14 @@ public class BarChart extends AbstractChart
       
       //////////////////////////////////////////////////////////////////////////
       // Layout
-      int[] cValues = ColorGenerator.create(ColorGenerator.PALETTE_OFFICE + i);
-      barSeries.setBarColor(getColor(new RGB(cValues[0],cValues[1],cValues[2])));
+      int[] cValues = ColorGenerator.create(ColorGenerator.PALETTE_ECLIPSE + i);
+      Color color = getColor(new RGB(cValues[0],cValues[1],cValues[2]));
+      barSeries.setBarColor(color);
       
       ISeriesLabel label = barSeries.getLabel();
       label.setFont(Font.SMALL.getSWTFont());
       label.setFormat(HBCI.DECIMALFORMAT.toPattern()); // BUGZILLA 1123
-      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       label.setVisible(true);
       //
       //////////////////////////////////////////////////////////////////////////
