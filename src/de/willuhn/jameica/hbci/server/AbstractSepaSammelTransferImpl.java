@@ -127,29 +127,24 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String arg0) throws RemoteException
-  {
-    if ("konto_id".equals(arg0))
-      return Konto.class;
-    return null;
-  }
-
-  /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getKonto()
    */
   public Konto getKonto() throws RemoteException
   {
-    return (Konto) getAttribute("konto_id");
+    Integer i = (Integer) super.getAttribute("konto_id");
+    if (i == null)
+      return null; // Kein Konto zugeordnet
+   
+    Cache cache = Cache.get(Konto.class,true);
+    return (Konto) cache.get(i);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
-  public void setKonto(Konto konto) throws RemoteException
+  public void setKonto(Konto k) throws RemoteException
   {
-    setAttribute("konto_id", konto);
+    setAttribute("konto_id",(k == null || k.getID() == null) ? null : new Integer(k.getID()));
   }
 
   /**
@@ -321,6 +316,10 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
       }
       return sb.toString();
     }
+    
+    if ("konto_id".equals(arg0))
+      return getKonto();
+
     return super.getAttribute(arg0);
   }
 
