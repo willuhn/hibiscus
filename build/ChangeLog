@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0876 Update auf HBCI4Java 3.1.36 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.36
   * NEW: 0875 Update auf HBCI4Java 3.1.35 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.35
   * NEW: 0874 Update auf HBCI4Java 3.1.34 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.34
   * CHG: 0873 SQL-Optimierung: Beim Laden der Sammelaufträge die Konten cachen
