@@ -216,7 +216,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if(this.chart != null)
       return this.chart;
     
-    this.chart = new EinnahmenAusgabenVerlauf(getWerte());
+    this.chart = new EinnahmenAusgabenVerlauf(getTree().getItems());
     return chart;
   }
 
@@ -375,7 +375,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // Einschraenken auf gewaehlte Kontogruppe
       if (group != null && !ObjectUtils.equals(k.getKategorie(),group))
         continue;
-      
+
       EinnahmeAusgabe ea = new EinnahmeAusgabe(k,start,end);
       
       // Zu den Summen hinzufuegen
@@ -423,10 +423,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
         getInterval().setValue(Interval.ALL);
       }
 
-      tree.setList(this.getWerte());
+      List<EinnahmeAusgabeZeitraum> werte = this.getWerte();
+      tree.setList(werte);
       
       EinnahmenAusgabenVerlauf chart = getChart();
-      chart.setList(this.getWerte());
+      chart.setList(werte);
     }
     catch (RemoteException re)
     {
