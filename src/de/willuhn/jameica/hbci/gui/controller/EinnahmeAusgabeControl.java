@@ -65,6 +65,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private RangeInput range         = null;
   private SelectInput interval     = null;
 
+  private List<EinnahmeAusgabeZeitraum> werte = null;
   private TreePart tree            = null;
   private EinnahmenAusgabenVerlauf chart = null;
 
@@ -288,17 +289,20 @@ public class EinnahmeAusgabeControl extends AbstractControl
    */
   private List<EinnahmeAusgabeZeitraum> getWerte() throws RemoteException
   {
+    if (this.werte != null)
+      return this.werte;
+    
     Date start  = (Date) this.getStart().getValue();
     Date end    = (Date) this.getEnd().getValue();
 
     Interval interval = (Interval) getInterval().getValue();
-    List<EinnahmeAusgabeZeitraum> result = new ArrayList<EinnahmeAusgabeZeitraum>();
+    this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
     
     // Sonderfall "alle". Es findet keine zeitliche Gruppierung statt
     if(Interval.ALL.equals(interval))
     {
-      result.addAll(this.getWerte(start, end));
-      return result;
+      this.werte.addAll(this.getWerte(start, end));
+      return this.werte;
     }
     
     EinnahmeAusgabeTreeNode node;
@@ -318,7 +322,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
         
         List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
         node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
-        result.add(node);
+        this.werte.add(node);
         
         // ermittle den Start des nächsten Zeitraums
         calendar.setTime(nodeFrom);
@@ -328,10 +332,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
     else
     {
       node = new EinnahmeAusgabeTreeNode(new Date(), new Date(), new ArrayList<EinnahmeAusgabe>());
-      result.add(node);
+      this.werte.add(node);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kein Zeitraum ausgewählt"),StatusBarMessage.TYPE_INFO));
     }
-    return result;
+    return this.werte;
   }
 
   /**
@@ -409,6 +413,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       TreePart tree = this.getTree();
       tree.removeAll();
+      this.werte = null;
       
       Date tStart = (Date) getStart().getValue();
       Date tEnd = (Date) getEnd().getValue();
