@@ -260,11 +260,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     try
     {
       String s1 = (String) ap.getPersistentData(PassportHandle.CONTEXT_SECMECHLIST);
-      if (s1 != null)
+      if (s1 != null && s1.length() > 0) // sicherstellen, dass es nicht ueberschrieben wird, wenn nichts uebergeben wird
         this.config.setAvailableSecMechs(s1);
       
       String s2 = (String) ap.getPersistentData(PassportHandle.CONTEXT_TANMEDIALIST);
-      if (s2 != null)
+      if (s2 != null && s2.length() > 0) // sicherstellen, dass es nicht ueberschrieben wird, wenn nichts uebergeben wird
         this.config.setAvailableTanMedias(s2);
     }
     catch (Exception e)

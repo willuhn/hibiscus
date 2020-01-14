@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Font;
@@ -65,6 +66,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private RangeInput range         = null;
   private SelectInput interval     = null;
 
+  private List<EinnahmeAusgabeZeitraum> werte = null;
   private TreePart tree            = null;
   private EinnahmenAusgabenVerlauf chart = null;
 
@@ -232,12 +234,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
     tree = new TreePart(getWerte(), null);
     tree.addColumn(i18n.tr("Konto"),        "text");
-    tree.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    tree.addColumn(i18n.tr("Einnahmen"),    "einnahmen",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    tree.addColumn(i18n.tr("Ausgaben"),     "ausgaben",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    tree.addColumn(i18n.tr("Endsaldo"),     "endsaldo",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    tree.addColumn(i18n.tr("Plus/Minus"),   "plusminus",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
-    tree.addColumn(i18n.tr("Differenz"),    "differenz",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT));
+    tree.addColumn(i18n.tr("Anfangssaldo"), "anfangssaldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT), false, Column.ALIGN_RIGHT);
+    tree.addColumn(i18n.tr("Einnahmen"),    "einnahmen",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT), false, Column.ALIGN_RIGHT);
+    tree.addColumn(i18n.tr("Ausgaben"),     "ausgaben",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT), false, Column.ALIGN_RIGHT);
+    tree.addColumn(i18n.tr("Endsaldo"),     "endsaldo",    new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT), false, Column.ALIGN_RIGHT);
+    tree.addColumn(i18n.tr("Plus/Minus"),   "plusminus",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT), false, Column.ALIGN_RIGHT);
+    tree.addColumn(i18n.tr("Differenz"),    "differenz",   new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE, HBCI.DECIMALFORMAT), false, Column.ALIGN_RIGHT);
 
     tree.setFormatter(new TreeFormatter()
     {
@@ -288,41 +290,53 @@ public class EinnahmeAusgabeControl extends AbstractControl
    */
   private List<EinnahmeAusgabeZeitraum> getWerte() throws RemoteException
   {
+    if (this.werte != null)
+      return this.werte;
+    
     Date start  = (Date) this.getStart().getValue();
     Date end    = (Date) this.getEnd().getValue();
 
     Interval interval = (Interval) getInterval().getValue();
-    List<EinnahmeAusgabeZeitraum> result = new ArrayList<EinnahmeAusgabeZeitraum>();
+    this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
     
     // Sonderfall "alle". Es findet keine zeitliche Gruppierung statt
     if(Interval.ALL.equals(interval))
     {
-      result.addAll(this.getWerte(start, end));
-      return result;
+      this.werte.addAll(this.getWerte(start, end));
+      return this.werte;
     }
     
     EinnahmeAusgabeTreeNode node;
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(DateUtil.startOfDay(start));
-    while (calendar.getTime().before(end))
+    if (start != null && end != null)
     {
-      calendar.set(interval.type, 1);
-      Date nodeFrom = calendar.getTime();
-      
-      // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
-      calendar.add(interval.size,1);
-      calendar.setTimeInMillis(calendar.getTime().getTime()-1);
-      Date nodeTo = DateUtil.startOfDay(calendar.getTime());
-      
-      List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
-      node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
-      result.add(node);
-      
-      // ermittle den Start des nächsten Zeitraums
-      calendar.setTime(nodeFrom);
-      calendar.add(interval.size, 1);
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(DateUtil.startOfDay(start));
+      while (calendar.getTime().before(end))
+      {
+        calendar.set(interval.type, 1);
+        Date nodeFrom = calendar.getTime();
+        
+        // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
+        calendar.add(interval.size,1);
+        calendar.setTimeInMillis(calendar.getTime().getTime()-1);
+        Date nodeTo = DateUtil.startOfDay(calendar.getTime());
+        
+        List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
+        node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
+        this.werte.add(node);
+        
+        // ermittle den Start des nächsten Zeitraums
+        calendar.setTime(nodeFrom);
+        calendar.add(interval.size, 1);
+      }
     }
-    return result;
+    else
+    {
+      node = new EinnahmeAusgabeTreeNode(new Date(), new Date(), new ArrayList<EinnahmeAusgabe>());
+      this.werte.add(node);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kein Zeitraum ausgewählt"),StatusBarMessage.TYPE_INFO));
+    }
+    return this.werte;
   }
 
   /**
@@ -400,6 +414,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       TreePart tree = this.getTree();
       tree.removeAll();
+      this.werte = null;
       
       Date tStart = (Date) getStart().getValue();
       Date tEnd = (Date) getEnd().getValue();

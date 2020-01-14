@@ -460,14 +460,14 @@ public class SparQuote implements Part
       Date date = u.getDatum();
       if (date == null)
       {
-        Logger.warn("no date found for umsatz, skipping record");
+        Logger.info("no date found for umsatz, skipping record");
         continue;
       }
       
       UmsatzEntry e = this.getEntry(date);
       if (e == null)
       {
-        Logger.warn("no matching entry found for umsatz, skipping record");
+        Logger.info("no matching entry found for umsatz, skipping record");
         continue;
       }
       

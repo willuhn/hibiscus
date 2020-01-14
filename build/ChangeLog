@@ -1,3 +1,20 @@
+2020-01-14 Version 2.8.23
+
+  * NEW: 0880 Einnahmen/Ausgaben - Beträge immer rechtsbündig ausrichten
+  * NEW: 0879 Performance Einnahmen/Ausgaben - die Daten wurden hier immer doppelt geladen
+  * NEW: 0878 Neue experimentelle Funktion "SYNC_SEPAINFO" - siehe https://homebanking-hilfe.de/forum/topic.php?t=23688&page=6
+  * NEW: 0877 Update auf HBCI4Java 3.1.37 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.37
+  * NEW: 0876 Update auf HBCI4Java 3.1.36 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.36
+  * NEW: 0875 Update auf HBCI4Java 3.1.35 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.35
+  * NEW: 0874 Update auf HBCI4Java 3.1.34 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.34
+  * CHG: 0873 SQL-Optimierung: Beim Laden der Sammelaufträge die Konten cachen
+  * CHG: 0872 SQL-Optimierung: Laden der Werte "Anzahl Buchungen" und "Summe" in Liste der Sammelaufträge optimiert
+  * CHG: 0871 Schwarze Werte-Beschriftung im Bar-Chart - liest sich besser als weisse Schrift, wenn sie über den Balken hinaus reicht 
+  * BUG: 0870 NullPointerException, wenn bei Einnahmen/Ausgaben kein Zeitraum ausgewählt ist
+  * CHG: 0869 Im Adressbuch bei den eigenen Konten nur noch die aktiven anzeigen, nicht die deaktivierten (siehe https://github.com/willuhn/hibiscus/pull/57)
+  * NEW: 0868 SQL-Optimierung: Erste experimentelle Version eines Caches in den generischen DB-Properties (u.a. für BPD und Meta-Daten). Sollte das Laden der Meta-Daten deutlich beschleunigen
+  * NEW: 0867 Weiterer experimenteller RAH10-Code - Update auf HBCI4Java 3.1.33 - https://github.com/hbci4j/hbci4java/commit/b330b56e90bf9d6fa87f733e28dc9d049f441cfb
+
 2019-12-19 Version 2.8.22
 
   * BUG: 0866 Das Konto-Icon fehlte in den HighDPI-Versionen
