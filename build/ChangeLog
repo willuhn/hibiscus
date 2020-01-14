@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+2020-01-14 Version 2.8.23
+
   * NEW: 0880 Einnahmen/Ausgaben - Beträge immer rechtsbündig ausrichten
   * NEW: 0879 Performance Einnahmen/Ausgaben - die Daten wurden hier immer doppelt geladen
   * NEW: 0878 Neue experimentelle Funktion "SYNC_SEPAINFO" - siehe https://homebanking-hilfe.de/forum/topic.php?t=23688&page=6
