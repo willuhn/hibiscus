@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0880 Einnahmen/Ausgaben - Beträge immer rechtsbündig ausrichten
   * NEW: 0879 Performance Einnahmen/Ausgaben - die Daten wurden hier immer doppelt geladen
   * NEW: 0878 Neue experimentelle Funktion "SYNC_SEPAINFO" - siehe https://homebanking-hilfe.de/forum/topic.php?t=23688&page=6
   * NEW: 0877 Update auf HBCI4Java 3.1.37 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.37
