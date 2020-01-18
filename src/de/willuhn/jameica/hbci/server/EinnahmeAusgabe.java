@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import com.google.common.base.Stopwatch;
+
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
@@ -41,6 +43,32 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   
   private boolean isSumme = false;
 
+  //temporäre Stoppuhren, um zu untersuchen, welche Datenbank-Operation die meiste Zeit verbraucht
+  private static Stopwatch as;
+  private static Stopwatch es;
+  private static Stopwatch e;
+  private static Stopwatch a;
+
+
+  /**
+   * Zurücksetzen der Zeitmessung
+   * */
+  public static void resetWatches() {
+    as=Stopwatch.createUnstarted();
+    es=Stopwatch.createUnstarted();
+    a=Stopwatch.createUnstarted();
+    e=Stopwatch.createUnstarted();
+  }
+
+  /**
+   * Ausgabe der Zeitmessung
+   * */
+  public static void printWatches() {
+    System.out.println("Anfangssaldo: "+as.toString());
+    System.out.println("Einnahmen   : "+e.toString());
+    System.out.println("Ausgaben    : "+a.toString());
+    System.out.println("Endsaldo    : "+es.toString());
+  }
   /**
    * ct.
    */
@@ -53,19 +81,44 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
    * @param k das Konto.
    * @param start Start-Datum.
    * @param end End-Datum.
+   * @param vorgaengerZeitraum (null erlaubt) Werte des Vorgängerzeitraums, falls es in diesem Zeitraum keine Umsätze gab
    * @throws RemoteException
    */
-  public EinnahmeAusgabe(Konto k, Date start, Date end) throws RemoteException
+  public EinnahmeAusgabe(Konto k, Date start, Date end, EinnahmeAusgabe vorgaengerZeitraum) throws RemoteException
   {
+    //mit dem optionalen Vorgängerzeitraum sollen unnötige Saldoabfragen verhindert werden, falls es im Zeitraum keine Buchungen gab
     this.startdatum   = start;
     this.enddatum     = end;
     this.konto        = k;
     this.text         = k.getLongName();
-    
-    this.anfangssaldo = KontoUtil.getAnfangsSaldo(k,start);
-    this.einnahmen    = KontoUtil.getEinnahmen(k,start,end,true);
-    this.ausgaben     = KontoUtil.getAusgaben(k,start,end,true);
-    this.endsaldo     = KontoUtil.getEndSaldo(k,end);
+    e.start();
+    this.einnahmen = KontoUtil.getEinnahmen(k, start, end, true);
+    e.stop();
+    a.start();
+    this.ausgaben = KontoUtil.getAusgaben(k, start, end, true);
+    a.stop();
+    boolean noBookings = this.einnahmen == 0.0d && this.ausgaben == 0.0d;
+    if (noBookings && vorgaengerZeitraum != null)
+    {
+      this.anfangssaldo = vorgaengerZeitraum.getEndsaldo();
+      this.endsaldo = vorgaengerZeitraum.getEndsaldo();
+    } else
+    {
+      //falls ein Vorgägnerzeitraum vorhanden ist, und man davon ausgeht, dass der Endsaldo einer Transaktion dem Anfangssaldo der Folgetransaktion entspricht
+      //könnte man sich diese Datenbankoperation auch noch sparen
+      as.start();
+      this.anfangssaldo = KontoUtil.getAnfangsSaldo(k, start);
+      as.stop();
+      if (noBookings)
+      {
+        this.endsaldo = this.anfangssaldo;
+      } else
+      {
+        es.start();
+        this.endsaldo = KontoUtil.getEndSaldo(k, end);
+        es.stop();
+      }
+    }
   }
   
   /**

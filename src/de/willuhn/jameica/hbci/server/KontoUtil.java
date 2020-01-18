@@ -273,6 +273,14 @@ public class KontoUtil
     java.sql.Date start = datum != null ? new java.sql.Date(DateUtil.startOfDay(datum).getTime()) : null;
 
     DBIterator list = UmsatzUtil.getUmsaetze();
+    //eins der Performance-Probleme ist, dass hier scheinbar schon die gesamte Liste instantiiert wird,
+    //obwohl nur der erste (relevante) Inhalt interessiert.
+    //Mit dem Setzen eines Limits kann man die Anzahl der Datensätze einschränken,
+    //kann sich aber bei keinem Limit sicher sein, ob der relevante Eintrag dabei ist.
+    //Typischerweise könnten 100 Einträge ausreichen, was aber wenn erst der 101. einer ohne Vormerkung ist.
+    //Perfekt wäre, wenn Paging unterstützt wäre, dann könnte man die Pagegröße einschränken
+    //und es werden nicht schon alle Umsätze instantiiert, obwohl man nur einen benötigt
+//    list.setLimit(100);
     list.addFilter("konto_id = " + konto.getID());
     
     if (start != null)
@@ -289,6 +297,8 @@ public class KontoUtil
     // Im angegebenen Zeitraum waren keine Umsätze zu finden. Deshalb suchen wir
     // frühere Umsätze.
     list = UmsatzUtil.getUmsaetzeBackwards();
+    //dito
+//  list.setLimit(100);
     list.addFilter("konto_id = " + konto.getID());
     
     if (start != null)
@@ -319,6 +329,8 @@ public class KontoUtil
     java.sql.Date end = datum != null ? new java.sql.Date(DateUtil.endOfDay(datum).getTime()) : null;
 
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
+    //dito
+//    list.setLimit(100);
     list.addFilter("konto_id = " + konto.getID());
     
     if (end != null)
@@ -336,6 +348,8 @@ public class KontoUtil
     // BUGZILLA 1682 Wir checken mal, ob wir eine Buchung direkt dahinter finden. Dann nehmen
     // wir diese und generieren aus Zwischensumme und Betrag den Endsaldo
     list = UmsatzUtil.getUmsaetze();
+    //dito
+//  list.setLimit(100);
     list.addFilter("konto_id = " + konto.getID());
     
     if (end != null)

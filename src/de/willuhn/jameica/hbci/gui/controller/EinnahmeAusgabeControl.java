@@ -13,7 +13,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.TreeItem;
@@ -298,15 +300,16 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
     Interval interval = (Interval) getInterval().getValue();
     this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
-    
+    Map<String, EinnahmeAusgabe> vorZeitraumsWerte=new HashMap<String, EinnahmeAusgabe>();
     // Sonderfall "alle". Es findet keine zeitliche Gruppierung statt
     if(Interval.ALL.equals(interval))
     {
-      this.werte.addAll(this.getWerte(start, end));
+      this.werte.addAll(this.getWerte(start, end, vorZeitraumsWerte));
       return this.werte;
     }
     
     EinnahmeAusgabeTreeNode node;
+    EinnahmeAusgabe.resetWatches();
     if (start != null && end != null)
     {
       Calendar calendar = Calendar.getInstance();
@@ -321,7 +324,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
         calendar.setTimeInMillis(calendar.getTime().getTime()-1);
         Date nodeTo = DateUtil.startOfDay(calendar.getTime());
         
-        List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
+        List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo, vorZeitraumsWerte);
+        for (EinnahmeAusgabe einnahmeAusgabe : werte)
+        {
+          if(einnahmeAusgabe.getKonto()!=null) {
+            vorZeitraumsWerte.put(einnahmeAusgabe.getKonto().getID(), einnahmeAusgabe);
+          }
+        }
         node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
         this.werte.add(node);
         
@@ -336,6 +345,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       this.werte.add(node);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kein Zeitraum ausgewählt"),StatusBarMessage.TYPE_INFO));
     }
+    EinnahmeAusgabe.printWatches();
     return this.werte;
   }
 
@@ -346,7 +356,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return die Liste der Werte.
    * @throws RemoteException
    */
-  private List<EinnahmeAusgabe> getWerte(Date start, Date end) throws RemoteException
+  private List<EinnahmeAusgabe> getWerte(Date start, Date end, Map<String, EinnahmeAusgabe> vorZeitraumswerte) throws RemoteException
   {
     List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
 
@@ -359,7 +369,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     // Wird nur ein Konto ausgewertet?
     if (o != null && (o instanceof Konto))
     {
-      list.add(new EinnahmeAusgabe((Konto) o,start,end));
+      Konto k=(Konto) o;
+      list.add(new EinnahmeAusgabe(k,start,end, vorZeitraumswerte.get(k.getID())));
       return list;
     }
     
@@ -381,7 +392,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       if (group != null && !ObjectUtils.equals(k.getKategorie(),group))
         continue;
       
-      EinnahmeAusgabe ea = new EinnahmeAusgabe(k,start,end);
+      EinnahmeAusgabe ea = new EinnahmeAusgabe(k,start,end, vorZeitraumswerte.get(k.getID()));
       
       // Zu den Summen hinzufuegen
       summeAnfangssaldo += ea.getAnfangssaldo();
@@ -401,7 +412,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     summen.setEnddatum(start);
     summen.setStartdatum(end);
     list.add(summen);
-    
     return list;
   }
 
