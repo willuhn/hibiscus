@@ -256,6 +256,57 @@ public class KontoUtil
   }
 
   /**
+   * Saldo anhand von ermittelten Umsätzen, null wenn kein Umsatz existiert
+   */
+  private static Double getSaldo(Konto konto, Date datum, boolean tagesAnfang, boolean vorwaerts, boolean inklusiveStartzeit, boolean betragAbziehen)
+      throws RemoteException
+  {
+    java.sql.Date suchDatum = null;
+    if (datum != null)
+    {
+      suchDatum = tagesAnfang ? new java.sql.Date(DateUtil.startOfDay(datum).getTime()) : new java.sql.Date(DateUtil.endOfDay(datum).getTime());
+    }
+    String comparator = vorwaerts ? ">" : "<";
+    if (inklusiveStartzeit)
+    {
+      comparator = comparator + "=";
+    }
+    String datumsFilter = "datum " + comparator + " ?";
+    int limit = 10;
+    boolean nochmal = true;
+    do
+    {
+      DBIterator list = vorwaerts ? UmsatzUtil.getUmsaetze() : UmsatzUtil.getUmsaetzeBackwards();
+      list.addFilter("konto_id = " + konto.getID());
+      if (datum != null)
+      {
+        list.addFilter(datumsFilter, suchDatum);
+      }
+      list.setLimit(limit);
+
+      long umsatzAnzahl = 0;
+      while (list.hasNext())
+      {
+        Umsatz u = (Umsatz) list.next();
+        umsatzAnzahl++;
+        // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
+        // BUGZILLA 844/852: Die Vormerkbuchungen duerfen nicht mit eingerechnet werden,
+        // weil die einen Null-Saldo haben. Da es aber auch echte Buchungen gibt, bei
+        // denen der Saldo 0 ist, duerfen wir das nicht als Filterkriterium nehmen sondern
+        // das NOTBOOKED-Flag pruefen. Leider gibts in SQL keinen standardisierten
+        // Binary-AND-Operator, sodass wir das manuell machen muessen.
+        if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+        {
+          return betragAbziehen ? u.getSaldo() - u.getBetrag() : u.getSaldo();
+        }
+      }
+      nochmal = umsatzAnzahl == limit; //nur nochmal, wenn es möglich ist, dass es noch mehr Umsätze gibt
+      limit = limit * 10;
+    } while (nochmal);
+    return null;
+  }
+
+  /**
    * Liefert den Anfangssaldo eines Tages bzw. des 1. Tages nach diesem Datum mit Umsätzen
    * oder <code>0.0</code> wenn er noch nie abgefragt wurde.
    * @param konto das Konto.
@@ -265,54 +316,16 @@ public class KontoUtil
    */
   public static double getAnfangsSaldo(Konto konto, Date datum) throws RemoteException
   {
-    // BUGZILLA 844/852: Die Vormerkbuchungen duerfen nicht mit eingerechnet werden,
-    // weil die einen Null-Saldo haben. Da es aber auch echte Buchungen gibt, bei
-    // denen der Saldo 0 ist, duerfen wir das nicht als Filterkriterium nehmen sondern
-    // das NOTBOOKED-Flag pruefen. Leider gibts in SQL keinen standardisierten
-    // Binary-AND-Operator, sodass wir das manuell machen muessen.
-    java.sql.Date start = datum != null ? new java.sql.Date(DateUtil.startOfDay(datum).getTime()) : null;
-
-    DBIterator list = UmsatzUtil.getUmsaetze();
-    //eins der Performance-Probleme ist, dass hier scheinbar schon die gesamte Liste instantiiert wird,
-    //obwohl nur der erste (relevante) Inhalt interessiert.
-    //Mit dem Setzen eines Limits kann man die Anzahl der Datensätze einschränken,
-    //kann sich aber bei keinem Limit sicher sein, ob der relevante Eintrag dabei ist.
-    //Typischerweise könnten 100 Einträge ausreichen, was aber wenn erst der 101. einer ohne Vormerkung ist.
-    //Perfekt wäre, wenn Paging unterstützt wäre, dann könnte man die Pagegröße einschränken
-    //und es werden nicht schon alle Umsätze instantiiert, obwohl man nur einen benötigt
-//    list.setLimit(100);
-    list.addFilter("konto_id = " + konto.getID());
-    
-    if (start != null)
-      list.addFilter("datum >= ?", start);
-    
-    while (list.hasNext())
+    Double ersterUmsatzAnfangsSaldoSeitDatum = getSaldo(konto, datum, true, true, true, true);
+    if (ersterUmsatzAnfangsSaldoSeitDatum != null)
     {
-      Umsatz u = (Umsatz) list.next();
-      // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
-        return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
+      return ersterUmsatzAnfangsSaldoSeitDatum;
     }
-
-    // Im angegebenen Zeitraum waren keine Umsätze zu finden. Deshalb suchen wir
-    // frühere Umsätze.
-    list = UmsatzUtil.getUmsaetzeBackwards();
-    //dito
-//  list.setLimit(100);
-    list.addFilter("konto_id = " + konto.getID());
-    
-    if (start != null)
-      list.addFilter("datum < ?", start);
-    
-    while (list.hasNext())
+    Double letzterUmsatzEndSaldoVorDatum = getSaldo(konto, datum, true, false, false, false);
+    if (letzterUmsatzEndSaldoVorDatum != null)
     {
-      Umsatz u = (Umsatz) list.next();
-      // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
-        return u.getSaldo();
+      return letzterUmsatzEndSaldoVorDatum;
     }
-    
-    // Keine Umsaetze gefunden. Wir nehmen den Saldo des Kontos selbst
     return konto.getSaldo();
   }
 
@@ -326,47 +339,17 @@ public class KontoUtil
    */
   public static double getEndSaldo(Konto konto, Date datum) throws RemoteException
   {
-    java.sql.Date end = datum != null ? new java.sql.Date(DateUtil.endOfDay(datum).getTime()) : null;
 
-    DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
-    //dito
-//    list.setLimit(100);
-    list.addFilter("konto_id = " + konto.getID());
-    
-    if (end != null)
-      list.addFilter("datum <= ?", end);
-    
-    while (list.hasNext())
+    Double letzterUmsatzEndSaldoVorDatum = getSaldo(konto, datum, false, false, true, false);
+    if (letzterUmsatzEndSaldoVorDatum != null)
     {
-      Umsatz u = (Umsatz) list.next();
-      
-      // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
-        return u.getSaldo();
+      return letzterUmsatzEndSaldoVorDatum;
     }
-    
-    // BUGZILLA 1682 Wir checken mal, ob wir eine Buchung direkt dahinter finden. Dann nehmen
-    // wir diese und generieren aus Zwischensumme und Betrag den Endsaldo
-    list = UmsatzUtil.getUmsaetze();
-    //dito
-//  list.setLimit(100);
-    list.addFilter("konto_id = " + konto.getID());
-    
-    if (end != null)
-      list.addFilter("datum > ?", end);
-    
-    while (list.hasNext())
+    Double ersterUmsatzAnfangsSaldoNachDatum = getSaldo(konto, datum, false, true, false, true);
+    if (ersterUmsatzAnfangsSaldoNachDatum != null)
     {
-      Umsatz u = (Umsatz) list.next();
-      
-      // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
-      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
-      {
-        return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
-      }
+      return ersterUmsatzAnfangsSaldoNachDatum;
     }
-    
-    // Keine Umsaetze gefunden. Wir nehmen den Saldo des Kontos selbst
     return konto.getSaldo();
   }
 
