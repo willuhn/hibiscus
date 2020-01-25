@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -40,6 +41,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   private Date enddatum;
   
   private boolean isSumme = false;
+  private boolean anfangsSaldoDurchUmsatzGesetzt;
 
   /**
    * ct.
@@ -47,27 +49,59 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   public EinnahmeAusgabe()
   {
   }
-  
+
   /**
-   * ct.
-   * @param k das Konto.
-   * @param start Start-Datum.
-   * @param end End-Datum.
+   * Konstruktor für ein Konto, für das die Werte über {@link #addUmsatz(Umsatz)} hinzugefügt werden
+   * 
+   * @param k
+   *          das Konto
    * @throws RemoteException
    */
-  public EinnahmeAusgabe(Konto k, Date start, Date end) throws RemoteException
+  public EinnahmeAusgabe(Konto k) throws RemoteException
   {
-    this.startdatum   = start;
-    this.enddatum     = end;
-    this.konto        = k;
-    this.text         = k.getLongName();
-    
-    this.anfangssaldo = KontoUtil.getAnfangsSaldo(k,start);
-    this.einnahmen    = KontoUtil.getEinnahmen(k,start,end,true);
-    this.ausgaben     = KontoUtil.getAusgaben(k,start,end,true);
-    this.endsaldo     = KontoUtil.getEndSaldo(k,end);
+    this.konto = k;
+    this.text = k.getLongName();
   }
-  
+
+  /**
+   * aktualisisere Beträge und Salden anhand des Umsatzes, es wird davon ausgegangen, dass nur Umsätze des passenden Kontos in der richtigen Reihenfolge
+   * hinzugefügt werden
+   * 
+   * @param umsatz
+   *          der Umsatz
+   * @throws RemoteException
+   */
+  public void addUmsatz(Umsatz umsatz) throws RemoteException
+  {
+    if (!konto.equals(umsatz.getKonto()))
+    {
+      throw new IllegalStateException("programming error - account mismatch");
+    }
+    if (startdatum != null && umsatz.getDatum().before(startdatum))
+    {
+      throw new IllegalStateException("programming error - wrong interval chosen");
+    }
+    if (enddatum != null && umsatz.getDatum().after(enddatum))
+    {
+      throw new IllegalStateException("programming error - wrong interval chosen");
+    }
+    if (!anfangsSaldoDurchUmsatzGesetzt)
+    {
+      // die Logik in KontoUtil#getAnfangssaldo war, dass ein Umsatz im Zeitraum die höchste Priorität hat
+      // d.h. der erste Umsatz bestimmt den Anfangssaldo
+      this.anfangsSaldoDurchUmsatzGesetzt = true;
+      this.anfangssaldo = umsatz.getSaldo() - umsatz.getBetrag();
+    }
+    this.endsaldo = umsatz.getSaldo();
+    if (umsatz.getBetrag() > 0.0d)
+    {
+      this.einnahmen += umsatz.getBetrag();
+    } else
+    {
+      this.ausgaben += -umsatz.getBetrag();
+    }
+  }
+
   /**
    * Liefert das Konto.
    * @return das Konto.
