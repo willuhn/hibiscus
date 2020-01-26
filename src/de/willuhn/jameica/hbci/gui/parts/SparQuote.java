@@ -376,7 +376,13 @@ public class SparQuote implements Part
 
     this.table.removeAll();
 
-    for (UmsatzEntry e:this.data)
+    List<UmsatzEntry> tableData = new ArrayList(this.data);
+    if (tableData.size() > 1)
+    {
+      //Dummy-Eintrag für Tabellenansicht ignorieren
+      tableData.remove(tableData.size() - 1);
+    }
+    for (UmsatzEntry e : tableData)
     {
       this.table.addItem(e);
     }
@@ -433,11 +439,19 @@ public class SparQuote implements Part
       // Zur Liste hinzufuegen
       this.data.add(e);
     }
+    //Dummy-Eintrag für das nächste Intervall, da das letzte reguläre sonst
+    //aufgrund der Normalisierung auf den ersten Tag des Intervalls
+    //ggf. gar nicht angezeigt wird
+    UmsatzEntry lastEntry = new UmsatzEntry();
+    lastEntry.start=new Date(end.getTime()+1);
+    lastEntry.end=lastEntry.start;
+    this.data.add(lastEntry);
     //
     ////////////////////////////////////////////////////////////////////////////
 
     if (this.data.size() < 2)
     {
+      //TODO diese Validierung hat auch angeschlagen, wenn man "letztes Jahr" und 12 Monate pro Periode gewählt hat
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie einen Zeitraum, der mindestens 2 Monate umfasst"),StatusBarMessage.TYPE_INFO));
       return false;
     }
@@ -460,14 +474,18 @@ public class SparQuote implements Part
       Date date = u.getDatum();
       if (date == null)
       {
-        Logger.info("no date found for umsatz, skipping record");
+        Logger.debug("no date found for umsatz, skipping record");
         continue;
+      } else if (end != null && date.after(end))
+      {
+        //keine Umsätze nach dem gwünschten Zeitraum verarbeiten
+        break;
       }
       
       UmsatzEntry e = this.getEntry(date);
       if (e == null)
       {
-        Logger.info("no matching entry found for umsatz, skipping record");
+        Logger.debug("no matching entry found for umsatz, skipping record");
         continue;
       }
       
