@@ -31,17 +31,20 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 {
   private Konto konto      = null;
   private Date start       = null;
+  private Date end         = null;
   private List<Value> data = null;
   
   /**
    * ct.
    * @param k das Konto, fuer das das Diagramm gemalt werden soll.
    * @param start Start-Datum.
+   * @param end Ende-Datum.
    */
-  public ChartDataSaldoVerlauf(Konto k, Date start)
+  public ChartDataSaldoVerlauf(Konto k, Date start, Date end)
   {
     this.konto = k;
     this.start = start;
+    this.end = end == null ? new Date() : end;
   }
 
   /**
@@ -57,7 +60,8 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     if (this.konto != null)
       list.addFilter("konto_id = " + this.konto.getID());
 
-    list.addFilter("datum >= ?", new Object[]{new java.sql.Date(start.getTime())});
+    list.addFilter("datum >= ?", new Object[] { new java.sql.Date(start.getTime()) });
+    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(end.getTime()) });
     
     // Jetzt kommt die Homogenisierung ;)
     // Wir brauchen genau einen Messwert pro Tag. Das ist wichtig,
@@ -83,7 +87,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     
     Calendar cal = Calendar.getInstance();
     cal.setTime(start);
-    Date end = DateUtil.endOfDay(new Date());
+    Date end = DateUtil.endOfDay(this.end);
     
     while (!start.after(end))
     {
