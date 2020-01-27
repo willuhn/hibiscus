@@ -1,5 +1,8 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0882 Pull-Request 63 - https://github.com/willuhn/hibiscus/pull/63 - Auswahl des Zeitraumes in Saldo-Verlauf jetzt einheitlich allen anderen Auswertungen (Von/Bis/Zeitraum)
+  * BUG: 0881 Pull-Request 62 - https://github.com/willuhn/hibiscus/pull/62 - in der grafischen Darstellung der Sparquote fehlte der letzte Zeitraum 
+
 2020-01-14 Version 2.8.23
 
   * NEW: 0880 Einnahmen/Ausgaben - Beträge immer rechtsbündig ausrichten
