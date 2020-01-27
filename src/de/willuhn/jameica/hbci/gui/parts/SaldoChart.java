@@ -20,9 +20,14 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
+import com.google.common.base.Objects;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.input.DateInput;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.input.ScaleInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
@@ -38,7 +43,10 @@ import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.DateFromInput;
+import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
@@ -56,15 +64,20 @@ import de.willuhn.util.I18N;
 public class SaldoChart implements Part
 {
   
+  private static final String FORCE = "FORCE";
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private Konto konto             = null;
   private boolean tiny            = false;
   
   private KontoInput kontoauswahl = null;
-  private UmsatzDaysInput range   = null;
+  private UmsatzDaysInput rangeTiny = null;
+  private DateInput start          = null;
+  private DateInput end            = null;
+  private RangeInput range         = null;
   private Listener reloadListener = new ReloadListener();
-  
+
   private LineChart chart         = null;
   // private LineChart forecast      = null;
 
@@ -117,21 +130,67 @@ public class SaldoChart implements Part
     this.kontoauswahl.addListener(this.reloadListener);
     return this.kontoauswahl;
   }
-  
+
   /**
    * Liefert eine Auswahl fuer den Zeitraum.
    * @return Auswahl fuer den Zeitraum.
    * @throws RemoteException
    */
-  private ScaleInput getRange() throws RemoteException
+  private ScaleInput getRangeTiny() throws RemoteException
+  {
+    if (this.rangeTiny != null)
+      return this.rangeTiny;
+
+    this.rangeTiny = new UmsatzDaysInput();
+    this.rangeTiny.setRememberSelection("days.saldochart");
+    this.rangeTiny.addListener(new DelayedListener(300,this.reloadListener));
+    return this.rangeTiny;
+  }
+
+  /**
+   * Liefert eine Auswahl mit Zeit-Presets.
+   * @return eine Auswahl mit Zeit-Presets.
+   */
+  public RangeInput getRange()
   {
     if (this.range != null)
       return this.range;
-
-    this.range = new UmsatzDaysInput();
-    this.range.setRememberSelection("days.saldochart");
-    this.range.addListener(new DelayedListener(300,this.reloadListener));
+    
+    this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
+    this.range.addListener(this.reloadListener);
     return this.range;
+  }
+
+  /**
+   * Liefert ein Auswahl-Feld fuer das Start-Datum.
+   * @return Auswahl-Feld.
+   */
+  public Input getStart()
+  {
+    if (this.start != null)
+      return this.start;
+
+    this.start = new DateFromInput(null,"umsatzlist.filter.from");
+    this.start.setName(i18n.tr("Von"));
+    this.start.setComment(null);
+    this.start.addListener(new DelayedListener(300,this.reloadListener));
+    return this.start;
+  }
+
+  /**
+   * Liefert ein Auswahl-Feld fuer das End-Datum.
+   * @return Auswahl-Feld.
+   */
+  public Input getEnd()
+  {
+    if (this.end != null)
+      return this.end;
+
+    this.end = new DateToInput(null,"umsatzlist.filter.to");
+    this.end.setName(i18n.tr("bis"));
+    this.end.setComment(null);
+    this.end.addListener(new DelayedListener(300,this.reloadListener));
+    return this.end;
   }
 
   /**
@@ -149,7 +208,7 @@ public class SaldoChart implements Part
           Container left = new SimpleContainer(layout.getComposite());
           left.addInput(this.getKontoAuswahl());
           Container right = new SimpleContainer(layout.getComposite());
-          right.addInput(this.getRange());
+          right.addInput(this.getRangeTiny());
         }
         else
         {
@@ -157,8 +216,16 @@ public class SaldoChart implements Part
           folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
           TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
           
-          tab.addInput(this.getKontoAuswahl());
-          tab.addInput(this.getRange());
+          ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
+          
+          Container left = new SimpleContainer(cols.getComposite());
+          left.addInput(getKontoAuswahl());
+          
+          Container right = new SimpleContainer(cols.getComposite());
+            
+          right.addInput(getRange());
+          MultiInput range = new MultiInput(getStart(),getEnd());
+          right.addInput(range);
 
           ButtonArea buttons = new ButtonArea();
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
@@ -169,7 +236,9 @@ public class SaldoChart implements Part
              */
             public void handleAction(Object context) throws ApplicationException
             {
-              reloadListener.handleEvent(new Event());
+              Event event=new Event();
+              event.text=FORCE;
+              reloadListener.handleEvent(event);
             }
           },null,true,"view-refresh.png");
           
@@ -179,7 +248,7 @@ public class SaldoChart implements Part
       else
       {
         Container container = new SimpleContainer(parent);
-        container.addInput(this.getRange());
+        container.addInput(this.getRangeTiny());
       }
       
       this.chart = new LineChart();
@@ -216,13 +285,52 @@ public class SaldoChart implements Part
     }
   }
 
+  private Date getStartDate() throws RemoteException
+  {
+    Date date = null;
+    if (tiny)
+    {
+      int start = ((Integer) getRangeTiny().getValue()).intValue();
+      if (start >= 0)
+      {
+        long d = start * 24l * 60l * 60l * 1000l;
+        date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
+      }
+    } else if (getStart().getValue() != null)
+    {
+      date = (Date) getStart().getValue();
+    }
+    //keine Auswahl? erster Umsatz bzw. heute falls keine Umsätze
+    if (date == null)
+    {
+      date = UmsatzUtil.getOldest(konto == null ? getKontoAuswahl().getValue() : konto);
+    }
+    if (date == null)
+    {
+      date = new Date();
+    }
+    return date;
+  }
+
+  private Date getEndDate()
+  {
+    if (tiny)
+    {
+      return null;
+    } else
+    {
+      return (Date) getEnd().getValue();
+    }
+  }
+
   /**
    * Laedt den Chart neu.
    */
   private class ReloadListener implements Listener
   {
     private Object oPrev = null;
-    private int startPrev = 0;
+    private Date startPrev = new Date();
+    private Date endPrev = new Date();
     
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -234,39 +342,31 @@ public class SaldoChart implements Part
       
       try
       {
-        int start = ((Integer)getRange().getValue()).intValue();
 
         Object o = konto;
         if (o == null) // Das ist der Fall, wenn das Kontoauswahlfeld verfuegbar ist
           o = getKontoAuswahl().getValue();
         
-        if (start == startPrev && o == oPrev)
-          return; // Auswahl nicht geaendert
-          
+        Date start=getStartDate();
+        Date end=getEndDate();
+        if(event!=null && FORCE.equals(event.text)) {
+          // Aktualisieren selbst wenn sich die Auswahl nicht geändert hat
+          // ansonsten kann man sich den Knopf auch sparen
+        }else {
+          if (Objects.equal(start, startPrev) && Objects.equal(end, endPrev) && o == oPrev)
+          {
+            return; // Auswahl nicht geaendert
+          }
+        }
+        
         chart.removeAllData();
         
 //        if (forecast != null)
 //          forecast.removeAllData();
 
-        Date date = null;
-
-        if (start < 0)
-        {
-          date = UmsatzUtil.getOldest(o);
-        }
-        else
-        {
-          long d = start * 24l * 60l * 60l * 1000l;
-          date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
-        }
-        
-        if (date == null)
-        {
-          Logger.info("no start date, no entries, skipping chart");
-          return;
-        }
-
-        chart.setTitle(i18n.tr("Saldo-Verlauf seit {0}",HBCI.DATEFORMAT.format(date)));
+        String startString = start != null ? HBCI.DATEFORMAT.format(start) : "";
+        String endString = end != null ? HBCI.DATEFORMAT.format(end) : "";
+        chart.setTitle(i18n.tr("Saldo-Verlauf {0} - {1}", startString, endString));
         
 //        if (forecast != null)
 //        {
@@ -295,7 +395,7 @@ public class SaldoChart implements Part
           ChartDataSaldoSumme s = new ChartDataSaldoSumme();
           while (it.hasNext())
           {
-            ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf((Konto)it.next(),date);
+            ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf((Konto)it.next(),start, end);
             chart.addData(v);
             s.add(v.getData());
           }
@@ -307,7 +407,7 @@ public class SaldoChart implements Part
         }
         else // Ansonsten nur fuer eine
         {
-          ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o,date);
+          ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o, start, end);
           ChartDataSaldoTrend   t = new ChartDataSaldoTrend();
           t.add(s.getData());
           chart.addData(s);
@@ -325,6 +425,7 @@ public class SaldoChart implements Part
         
         oPrev = o;
         startPrev = start;
+        endPrev = end;
       }
       catch (Exception e)
       {
