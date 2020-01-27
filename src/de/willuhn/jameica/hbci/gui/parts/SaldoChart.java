@@ -79,7 +79,6 @@ public class SaldoChart implements Part
   private Listener reloadListener = new ReloadListener();
 
   private LineChart chart         = null;
-  // private LineChart forecast      = null;
 
   /**
    * ct.
@@ -125,8 +124,7 @@ public class SaldoChart implements Part
     this.kontoauswahl.setSupportGroups(true);
     this.kontoauswahl.setRememberSelection("auswertungen.saldochart");
     this.kontoauswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
-    if (tiny)
-      this.kontoauswahl.setComment(null); // Keinen Kommentar anzeigen
+    this.kontoauswahl.setComment(null); // Keinen Kommentar anzeigen
     this.kontoauswahl.addListener(this.reloadListener);
     return this.kontoauswahl;
   }
@@ -237,7 +235,7 @@ public class SaldoChart implements Part
             public void handleAction(Object context) throws ApplicationException
             {
               Event event=new Event();
-              event.text=FORCE;
+              event.data = FORCE;
               reloadListener.handleEvent(event);
             }
           },null,true,"view-refresh.png");
@@ -253,26 +251,8 @@ public class SaldoChart implements Part
       
       this.chart = new LineChart();
       
-//      if (this.tiny)
-//      {
-        this.reloadListener.handleEvent(null); // einmal initial ausloesen
-        chart.paint(parent);
-//      }
-//      else
-//      {
-//        this.forecast = new LineChart();
-//
-//        final TabFolder folder = new TabFolder(parent, SWT.NONE);
-//        folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-//        
-//        TabGroup current = new TabGroup(folder,i18n.tr("Aktuell"),true,1);
-//        TabGroup forecast = new TabGroup(folder,i18n.tr("Prognose"),true,1);
-//
-//        this.reloadListener.handleEvent(null); // einmal initial ausloesen
-//        
-//        this.chart.paint(current.getComposite());
-//        this.forecast.paint(forecast.getComposite());
-//      }
+      this.reloadListener.handleEvent(null); // einmal initial ausloesen
+      chart.paint(parent);
     }
     catch (RemoteException re)
     {
@@ -344,48 +324,27 @@ public class SaldoChart implements Part
       {
 
         Object o = konto;
+        
         if (o == null) // Das ist der Fall, wenn das Kontoauswahlfeld verfuegbar ist
           o = getKontoAuswahl().getValue();
         
-        Date start=getStartDate();
-        Date end=getEndDate();
-        if(event!=null && FORCE.equals(event.text)) {
-          // Aktualisieren selbst wenn sich die Auswahl nicht geändert hat
-          // ansonsten kann man sich den Knopf auch sparen
-        }else {
-          if (Objects.equal(start, startPrev) && Objects.equal(end, endPrev) && o == oPrev)
-          {
-            return; // Auswahl nicht geaendert
-          }
-        }
+        final Date start = getStartDate();
+        final Date end = getEndDate();
+
+        final boolean changed = !Objects.equal(start, startPrev) ||
+                                !Objects.equal(end, endPrev) ||
+                                o != oPrev;
+
+        final boolean force = event != null && event.data == FORCE;
         
+        if (!changed && !force)
+          return;
+          
         chart.removeAllData();
         
-//        if (forecast != null)
-//          forecast.removeAllData();
-
         String startString = start != null ? HBCI.DATEFORMAT.format(start) : "";
         String endString = end != null ? HBCI.DATEFORMAT.format(end) : "";
         chart.setTitle(i18n.tr("Saldo-Verlauf {0} - {1}", startString, endString));
-        
-//        if (forecast != null)
-//        {
-//          Date bis = null;
-//          Calendar cal = Calendar.getInstance();
-//          if (start < 0)
-//          {
-//            // Pauschal 3 Monate ab heute 
-//            cal.add(Calendar.MONTH,3);
-//          }
-//          else
-//          {
-//            cal.add(Calendar.DATE,start);
-//          }
-//          bis = DateUtil.endOfDay(cal.getTime());
-//          forecast.setTitle(i18n.tr("Saldo-Prognose bis {0}",HBCI.DATEFORMAT.format(bis)));
-//          ChartDataSaldoForecast f = new ChartDataSaldoForecast(k,bis);
-//          forecast.addData(f);
-//        }
         
         if (o == null || !(o instanceof Konto)) // wir zeichnen einen Stacked-Graph ueber alle Konten 
         {
@@ -418,9 +377,6 @@ public class SaldoChart implements Part
         if (event != null)
         {
           chart.redraw(); // nur neu laden, wenn via Select ausgeloest
-          
-//          if (forecast != null)
-//            forecast.redraw();
         }
         
         oPrev = o;
