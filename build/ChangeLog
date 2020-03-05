@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0884 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.03.2020
   * NEW: 0883 Pull-Request 61 - https://github.com/willuhn/hibiscus/pull/61 - Performance-Überarbeitung Einnahmen/Ausgaben
   * NEW: 0882 Pull-Request 63 - https://github.com/willuhn/hibiscus/pull/63 - Auswahl des Zeitraumes in Saldo-Verlauf jetzt einheitlich allen anderen Auswertungen (Von/Bis/Zeitraum)
   * BUG: 0881 Pull-Request 62 - https://github.com/willuhn/hibiscus/pull/62 - in der grafischen Darstellung der Sparquote fehlte der letzte Zeitraum 
