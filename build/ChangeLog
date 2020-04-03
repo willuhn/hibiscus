@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0885 Eingabe des PC/SC-Kartenleser-Namens jetzt in der Kartenleser-Konfiguration ebenfalls per kombinierter Auswahlbox (wie bei ChipTAN USB)
   * NEW: 0884 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.03.2020
   * NEW: 0883 Pull-Request 61 - https://github.com/willuhn/hibiscus/pull/61 - Performance-Überarbeitung Einnahmen/Ausgaben
   * NEW: 0882 Pull-Request 63 - https://github.com/willuhn/hibiscus/pull/63 - Auswahl des Zeitraumes in Saldo-Verlauf jetzt einheitlich allen anderen Auswertungen (Von/Bis/Zeitraum)
