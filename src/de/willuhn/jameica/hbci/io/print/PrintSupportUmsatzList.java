@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.jameica.hbci.HBCI;
@@ -127,11 +128,10 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
       border.setGapSize(3);
       look.setCellBorder(border);
       
-      GridPrint table = new GridPrint("l:42pt:n, r:20pt:n, l:90pt:n, l:p:g, r:42pt:n, r:44pt:n",look);
-      table.addHeader(new NoBreakPrint(new TextPrint(i18n.tr("Valuta/Datum"),fontTinyBold)));
+      GridPrint table = new GridPrint("l:46pt:n, r:24pt:n, l:p:g, r:50pt:n, r:50pt:n",look);
+      table.addHeader(new TextPrint(i18n.tr("Valuta\nDatum"),fontTinyBold));
       table.addHeader(new TextPrint("Nr.",fontTinyBold));
-      table.addHeader(new TextPrint(i18n.tr("Gegenkonto"),fontTinyBold));
-      table.addHeader(new TextPrint(i18n.tr("Verwendungszweck"),fontTinyBold));
+      table.addHeader(new TextPrint(i18n.tr("Gegenkonto/Zweck"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Betrag"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Saldo"),fontTinyBold));
 
@@ -151,7 +151,6 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
         // Liste der Umsaetze im Konto
         for (Umsatz u:umsaetze)
         {
-          String usage = VerwendungszweckUtil.toString(u,"\n");
           StringBuffer sb = new StringBuffer();
           {
             String name = u.getGegenkontoName();
@@ -163,17 +162,25 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
             if (kto != null && kto.length() > 0 && blz != null && blz.length() > 0)
             {
               String gi = HBCIProperties.getNameForBank(blz);
-              sb.append(i18n.tr("{0}\n{1}",kto,gi != null && gi.length() > 0 ? gi : blz));
+              sb.append(i18n.tr("{0} - {1}",kto,gi != null && gi.length() > 0 ? gi : blz));
             }
+            
+            String usage = StringUtils.trimToNull(VerwendungszweckUtil.toString(u));
+            if (usage != null)
+            {
+              if (sb.length() > 0)
+                sb.append("\n");
+              sb.append(usage);
+            }
+            
           }
 
           TextStyle typeHaben = new TextStyle().font(fontTiny).foreground(new RGB(0,0,0));
           TextStyle typeSoll = new TextStyle().font(fontTiny).foreground(new RGB(200,0,0));
 
           table.add(new TextPrint(HBCI.DATEFORMAT.format(u.getValuta()) + "\n" + HBCI.DATEFORMAT.format(u.getDatum()),fontTiny));
-          table.add(new TextPrint(u.getID(),fontTiny));
+          table.add(new NoBreakPrint(new TextPrint(u.getID(),fontTiny)));
           table.add(new TextPrint(sb.toString(),fontTiny));
-          table.add(new TextPrint(notNull(usage),fontTiny));
           table.add(new NoBreakPrint(new TextPrint(HBCI.DECIMALFORMAT.format(u.getBetrag()) + " " + k.getWaehrung(),u.getBetrag() >= 0 ? typeHaben : typeSoll)));
           table.add(new NoBreakPrint(new TextPrint(HBCI.DECIMALFORMAT.format(u.getSaldo()) + " " + k.getWaehrung(),fontTiny)));
         }

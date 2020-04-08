@@ -49,10 +49,10 @@ public abstract class AbstractPrintSupport implements PrintSupport
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   FontData fontTitle  = Font.BOLD.getSWTFont().getFontData()[0];
-  FontData fontNormal = Font.SMALL.getSWTFont().getFontData()[0];
+  FontData fontNormal = Font.DEFAULT.getSWTFont().getFontData()[0];
   FontData fontBold   = new FontData(fontNormal.getName(),fontNormal.getHeight(),SWT.BOLD);
 
-  FontData fontTiny     = new FontData(fontNormal.getName(),fontNormal.getHeight() - 2,SWT.NORMAL);
+  FontData fontTiny     = Font.SMALL.getSWTFont().getFontData()[0];
   FontData fontTinyBold = new FontData(fontTiny.getName(),fontTiny.getHeight(),SWT.BOLD);
   
   /**
