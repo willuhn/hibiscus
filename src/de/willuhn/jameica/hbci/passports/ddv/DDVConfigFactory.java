@@ -516,7 +516,7 @@ public class DDVConfigFactory
       Logger.info("  ctnumber: " + config.getCTNumber());
       HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.CTNUMBER), Integer.toString(config.getCTNumber()));
     }
-
+    
     Logger.info("  soft pin: " + config.useSoftPin());
     HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.SOFTPIN), config.useSoftPin() ? "1" : "0");
 
@@ -527,7 +527,12 @@ public class DDVConfigFactory
 
     String id = type.getIdentifier();
     Logger.info("  passport type: " + id);
-    return (HBCIPassportChipcard) AbstractHBCIPassport.getInstance(id);
+    HBCIPassportChipcard passport = (HBCIPassportChipcard) AbstractHBCIPassport.getInstance(id);
+    
+    Logger.info("  host: " + passport.getHost());
+    Logger.info("  blz: " + passport.getBLZ());
+
+    return passport;
   }
 
   
