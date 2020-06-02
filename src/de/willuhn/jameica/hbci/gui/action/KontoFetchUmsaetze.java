@@ -9,11 +9,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
 import java.util.Arrays;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
@@ -22,6 +23,7 @@ import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobKontoauszug;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -40,17 +42,24 @@ public class KontoFetchUmsaetze implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-		if (!(context instanceof Konto))
-			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
+    Konto konto = null;
+
+    final Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
+
 
 		try
 		{
-			final Konto konto = (Konto) context;
+	    if (context == null || !(context instanceof Konto))
+	    {
+	      KontoAuswahlDialog d = new KontoAuswahlDialog(null,KontoFilter.createForeign(type),KontoAuswahlDialog.POSITION_CENTER);
+	      konto = (Konto) d.open();
+	    }
+	    
+	    if (konto == null)
+	      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
 			if (konto.isNewObject())
 				konto.store();
-
-      Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
 
       BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
@@ -63,9 +72,17 @@ public class KontoFetchUmsaetze implements Action
       
       backend.execute(Arrays.asList(job));
 		}
-		catch (RemoteException e)
+		catch (ApplicationException ae)
 		{
-			Logger.error("error while refreshing umsaetze",e);
+		  throw ae;
+		}
+		catch (OperationCanceledException oce)
+		{
+		  // ignore
+		}
+		catch (Exception e)
+		{
+			Logger.error("unable to fetch bookings",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Abrufen der Umsätze"),StatusBarMessage.TYPE_ERROR));
 		}
   }
