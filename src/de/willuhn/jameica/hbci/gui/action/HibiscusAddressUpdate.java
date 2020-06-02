@@ -88,7 +88,7 @@ public class HibiscusAddressUpdate implements Action
       if (!ibanChanged && !bicChanged && !nameChanged)
         return;
   
-      if (!Application.getCallback().askUser(i18n.tr("Die Adresse wurde geändert.\nSollen die Änderungen auch in das Adressbuch übernommen werden?")))
+      if (!Application.getCallback().askUser(i18n.tr("Die Adresse wurde geändert.\nSollen die Daten im Adressbuch aktualisiert werden?")))
         return;
   
       if (ibanChanged)
