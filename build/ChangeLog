@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0889 Neue Kontextmenü-Einträge "Aktivieren/Deaktivieren" in Liste der Synchronisierungsaufgaben - siehe https://homebanking-hilfe.de/forum/topic.php?t=23981
   * NEW: 0888 Neuer Button "Umsätze abrufen..." in der Umsatzliste - siehe https://homebanking-hilfe.de/forum/topic.php?t=24007
   * NEW: 0887 $-Zeichen in Pfad beim Speichern elektronischer Kontoauszüge tolerieren, auch wenn es Teil des Jameica-Benutzerordners ist
   * NEW: 0886 Schriftgröße beim Druck von Umsätzen etwas vergrößert und die Spalten Gegenkonto und Verwendungszweck aus Platzgründen zu einer zusammengefasst
