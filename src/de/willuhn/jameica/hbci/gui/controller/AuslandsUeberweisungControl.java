@@ -32,7 +32,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.action.HibiscusAddressUpdate;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
@@ -88,6 +88,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private ReminderIntervalInput interval     = null;
 
   private CheckboxInput storeEmpfaenger      = null;
+  private HibiscusAddressUpdate aUpdate      = new HibiscusAddressUpdate();
   
   private Listener terminListener            = new TerminListener();
   
@@ -480,16 +481,14 @@ public class AuslandsUeberweisungControl extends AbstractControl
       if (input.containsInterval())
         ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
 
-      Boolean store = (Boolean) getStoreEmpfaenger().getValue();
-      if (store.booleanValue())
       {
+        final Boolean store = (Boolean) getStoreEmpfaenger().getValue();
+        this.aUpdate.setCreate(store.booleanValue());
         HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
         e.setIban(kto);
         e.setName(name);
         e.setBic(bic);
-        
-        // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
-        new EmpfaengerAdd().handleAction(e);
+        this.aUpdate.handleAction(e);
       }
       GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
       t.transactionCommit();
@@ -592,6 +591,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
         return;
       
       Address a = (Address) event.data;
+      aUpdate.setAddress(a);
 
       try {
         getEmpfaengerName().setText(a.getName());

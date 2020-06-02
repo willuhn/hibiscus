@@ -26,7 +26,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.action.HibiscusAddressUpdate;
 import de.willuhn.jameica.hbci.gui.filter.AddressFilter;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
@@ -64,6 +64,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
 
   private CheckboxInput storeEmpfaenger      = null;
+  private HibiscusAddressUpdate aUpdate      = new HibiscusAddressUpdate();
   
   /**
    * ct.
@@ -267,16 +268,14 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     
     s.store();
 
-    Boolean store = (Boolean) getStoreEmpfaenger().getValue();
-    if (store.booleanValue())
     {
+      final Boolean store = (Boolean) getStoreEmpfaenger().getValue();
+      this.aUpdate.setCreate(store.booleanValue());
       HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
       e.setIban(kto);
       e.setName(name);
       e.setBic(bic);
-      
-      // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
-      new EmpfaengerAdd().handleAction(e);
+      this.aUpdate.handleAction(e);
       
       // wenn sie in der Action gespeichert wurde, sollte sie jetzt eine ID haben und wir koennen die Meta-Daten dran haengen
       if (e.getID() != null)
@@ -285,7 +284,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
         MetaKey.ADDRESS_ID.set(s,e.getID());
       }
     }
-    
+
     Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Buchung gespeichert"),StatusBarMessage.TYPE_SUCCESS));
     MessageBus.send("hibiscus.transfer.check",s);
   }
@@ -339,6 +338,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
         return;
       
       Address a = (Address) event.data;
+      aUpdate.setAddress(a);
 
       try {
         getEmpfaengerName().setText(a.getName());

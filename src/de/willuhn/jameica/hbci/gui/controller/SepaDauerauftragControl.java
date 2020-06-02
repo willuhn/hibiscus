@@ -29,7 +29,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
+import de.willuhn.jameica.hbci.gui.action.HibiscusAddressUpdate;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragExecute;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew;
 import de.willuhn.jameica.hbci.gui.dialogs.TurnusDialog;
@@ -81,7 +81,8 @@ public class SepaDauerauftragControl extends AbstractControl
   private TextInput bic              = null;
   private PurposeCodeInput purposeCode = null;
 
-  private CheckboxInput storeEmpfaenger      = null;
+  private CheckboxInput storeEmpfaenger = null;
+  private HibiscusAddressUpdate aUpdate = new HibiscusAddressUpdate();
 	
   private SepaDauerauftrag transfer  = null;
   private TypedProperties bpd        = null;
@@ -235,6 +236,7 @@ public class SepaDauerauftragControl extends AbstractControl
 		ersteZahlung.setTitle(i18n.tr("Datum der ersten Zahlung"));
     ersteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der ersten Zahlung ein"));
     ersteZahlung.setMandatory(true);
+
     ersteZahlung.addListener(this.nextDate);
     
     if (t.isActive())
@@ -535,16 +537,14 @@ public class SepaDauerauftragControl extends AbstractControl
 
       t.store();
       
-      Boolean store = (Boolean) getStoreEmpfaenger().getValue();
-      if (store.booleanValue())
       {
+        final Boolean store = (Boolean) getStoreEmpfaenger().getValue();
+        this.aUpdate.setCreate(store.booleanValue());
         HibiscusAddress e = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
         e.setIban(kto);
         e.setName(name);
         e.setBic(bic);
-        
-        // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
-        new EmpfaengerAdd().handleAction(e);
+        this.aUpdate.handleAction(e);
       }
       GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
       t.transactionCommit();
@@ -681,6 +681,7 @@ public class SepaDauerauftragControl extends AbstractControl
         return;
       
       Address a = (Address) event.data;
+      aUpdate.setAddress(a);
 
       try {
         getEmpfaengerName().setText(a.getName());
