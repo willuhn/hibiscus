@@ -42,14 +42,13 @@ public class KontoFetchUmsaetze implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    Konto konto = null;
-
-    final Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
-
+    
+    Konto konto = (context instanceof Konto) ? (Konto) context : null;
 
 		try
 		{
-	    if (context == null || !(context instanceof Konto))
+	    final Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
+	    if (konto == null)
 	    {
 	      KontoAuswahlDialog d = new KontoAuswahlDialog(null,KontoFilter.createForeign(type),KontoAuswahlDialog.POSITION_CENTER);
 	      konto = (Konto) d.open();
