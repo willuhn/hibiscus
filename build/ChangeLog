@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0891 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.06.2020
   * NEW: 0890 Wenn in einem Auftrag ein Empfänger aus dem Adressbuch gewählt und dieser danach geändert wurde, kann diese Änderung beim Speichern im Adressbuch aktualisiert werden - siehe https://homebanking-hilfe.de/forum/topic.php?t=24006
   * NEW: 0889 Neue Kontextmenü-Einträge "Aktivieren/Deaktivieren" in Liste der Synchronisierungsaufgaben - siehe https://homebanking-hilfe.de/forum/topic.php?t=23981
   * NEW: 0888 Neuer Button "Umsätze abrufen..." in der Umsatzliste - siehe https://homebanking-hilfe.de/forum/topic.php?t=24007
