@@ -82,7 +82,7 @@ public class DBPropertyUtil
     /**
      * Prefix fuer UPDs.
      */
-    UPD("upd",new HashSet(Arrays.asList("KInfo"))),
+    UPD("upd",new HashSet(Arrays.asList("KInfo","UPA"))),
     
     /**
      *  Prefix fuer Meta-Daten.

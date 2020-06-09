@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -268,6 +269,27 @@ public class BPDUtil
     // Wir ermitteln erstmal das passende KInfo-Segment.
     
     final HBCIDBService service = Settings.getDBService();
+
+    // Checken, ob wir fuer die UPD ueberhaupt eine Aussage treffen koennen
+    {
+      String q = Prefix.UPD.value() + DBPropertyUtil.SEP + k.getKundennummer() + DBPropertyUtil.SEP + "UPA.usage";
+      final Boolean ignoreUpd = (Boolean) service.execute("select name,content from property where name = ?",new String[] {q},new ResultSetExtractor()
+      {
+        public Object extract(ResultSet rs) throws RemoteException, SQLException
+        {
+          if (rs.next())
+            return Boolean.valueOf(Objects.equals(rs.getString("content"),"1"));
+
+          return Boolean.FALSE;
+        }
+      });
+
+      // 2020-06-08: In den UPD steht "UPA.usage = 1". Heisst. Anhand der UPD kann keine Aussage darueber getroffen werden, ob der GV unterstuetzt
+      // wird. Daher zaehlen dann nur die BPD und updSupport liefert immer true.
+      // Noetig fuer die Apo-Bank - siehe https://homebanking-hilfe.de/forum/topic.php?t=24018&page=8
+      if (ignoreUpd != null && ignoreUpd.booleanValue())
+        return true;
+    }
 
     String q = Prefix.UPD.value() + DBPropertyUtil.SEP + "%" + DBPropertyUtil.SEP + "KInfo%";
     String segment = (String) service.execute("select name,content from property where name like ?",new String[] {q},new ResultSetExtractor()
