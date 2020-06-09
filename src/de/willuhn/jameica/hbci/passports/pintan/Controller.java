@@ -539,7 +539,9 @@ public class Controller extends AbstractControl
       if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
         return;
 
-      new PassportSync().handleAction(new PassportHandleImpl(getConfig()));
+      final PinTanConfig config = this.getConfig();
+      config.reload();
+      new PassportSync().handleAction(new PassportHandleImpl(config));
     }
     catch (ApplicationException ae)
     {
@@ -568,7 +570,9 @@ public class Controller extends AbstractControl
 
     try
     {
-      new PassportTest().handleAction(new PassportHandleImpl(getConfig()));
+      final PinTanConfig config = this.getConfig();
+      config.reload();
+      new PassportTest().handleAction(new PassportHandleImpl(config));
     }
     catch (ApplicationException ae)
     {

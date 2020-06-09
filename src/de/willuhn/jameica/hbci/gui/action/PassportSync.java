@@ -15,6 +15,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
@@ -161,6 +162,11 @@ public class PassportSync implements Action
           }
           monitor.log("-----------------------------");
           monitor.setPercentComplete(100);
+        }
+        finally
+        {
+          if (!Settings.getCachePin())
+            DialogFactory.clearPINCache(handler != null ? handler.getPassport() : null);
         }
       }
 

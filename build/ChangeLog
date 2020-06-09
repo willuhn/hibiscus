@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: 0894 Beim Testen und Synchronisieren des PIN/TAN-Bankzugangs wurden PINs trotz deaktivierter Option gecached (war eine Feature-Kollision mit Nr. 0601 BUGZILLA 1809)
   * NEW: 0893 Update auf HBCI4Java 3.1.39 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.39
   * BUG: 0892 "Saldo und Umsätze abrufen" aus Kontextmenü des Kontos bzw. Detailansicht des Kontos funktionierte nicht mehr - siehe https://homebanking-hilfe.de/forum/topic.php?t=23981
   * NEW: 0891 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.06.2020

@@ -350,7 +350,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       }
       finally
       {
-        if (!Settings.getCachePin()) // BUGZILLA 1827 - Wir cachen der PINs zumindest fuer die Dauer der Synchronisation
+        if (!Settings.getCachePin()) // BUGZILLA 1827 - Wir cachen die PINs zumindest fuer die Dauer der Synchronisation
           DialogFactory.clearPINCache(null);
       }
     }

@@ -158,6 +158,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
    */
   protected void markExecuted() throws RemoteException, ApplicationException
   {
+    if (true)
+      throw new ApplicationException("Testfehler");
+    
     konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
 
     // In HBCI gibts fuer Umsaetze ja keine eindeutigen IDs. Daher muessen
