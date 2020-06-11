@@ -20,6 +20,6 @@
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.40.jar" sourcepath="/hbci4j-core"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.41.jar" sourcepath="/hbci4j-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
