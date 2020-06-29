@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0897 Update auf HBCI4Java 3.1.42 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.42 - ApoBank-spezifisch - Batchbooking-Flag bei Einzelaufträgen immer mitsenden - https://homebanking-hilfe.de/forum/topic.php?p=155881#real155881
   * NEW: 0896 Update auf HBCI4Java 3.1.41 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.41 - weitere ApoBank-spezifische Fixes - https://homebanking-hilfe.de/forum/topic.php?p=155733#real155733
   * NEW: 0895 Update auf HBCI4Java 3.1.40 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.40 - ApoBank-spezifische Fixes - siehe https://homebanking-hilfe.de/forum/topic.php?t=24018
   * BUG: 0894 Beim Testen und Synchronisieren des PIN/TAN-Bankzugangs wurden PINs trotz deaktivierter Option gecached (war eine Feature-Kollision mit Nr. 0601 BUGZILLA 1809)
