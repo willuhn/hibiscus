@@ -13,11 +13,18 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.TreeItem;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -42,9 +49,11 @@ import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
 import de.willuhn.jameica.hbci.server.KontoUtil;
+import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -291,23 +300,256 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private List<EinnahmeAusgabeZeitraum> getWerte() throws RemoteException
   {
     if (this.werte != null)
-      return this.werte;
-    
-    Date start  = (Date) this.getStart().getValue();
-    Date end    = (Date) this.getEnd().getValue();
-
-    Interval interval = (Interval) getInterval().getValue();
-    this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
-    
-    // Sonderfall "alle". Es findet keine zeitliche Gruppierung statt
-    if(Interval.ALL.equals(interval))
     {
-      this.werte.addAll(this.getWerte(start, end));
       return this.werte;
     }
-    
-    EinnahmeAusgabeTreeNode node;
-    if (start != null && end != null)
+
+    Date start = (Date) this.getStart().getValue();
+    Date end = (Date) this.getEnd().getValue();
+
+    List<Konto> konten = getSelectedAccounts();
+    List<Umsatz> umsatzList = getUmsaetze(konten, start, end);
+    if (!umsatzList.isEmpty())
+    // bei offenen Zeiträumen können wir den ersten und letzten Umsatztag ermitteln
+    {
+      if (start == null)
+      {
+        start = umsatzList.get(0).getDatum();
+      }
+      if (end == null)
+      {
+        end = umsatzList.get(umsatzList.size() - 1).getDatum();
+      }
+    }
+
+    // wenn die Umsatzliste leer ist, erfolgt keine Gruppierung, es wird nur der Gesamtzeitraum
+    // ausgewertet und da keine Umsätze zugeordnet werden müssen, spielen fehlende Datumsangaben keine Rolle
+    Interval interval = umsatzList.isEmpty() ? Interval.ALL : (Interval) getInterval().getValue();
+    List<EinnahmeAusgabeTreeNode> result = createEmptyNodes(start, end, konten, interval);
+    addData(result, umsatzList);
+
+    this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
+    if (interval == Interval.ALL)
+    {
+      // Es gibt nur einen Zweig - da reichen uns die darunterliegenden Elemente
+      this.werte.addAll(getChildren(result.get(0)));
+    } else
+    {
+      this.werte.addAll(result);
+    }
+    return this.werte;
+  }
+
+  private List<Umsatz> getUmsaetze(List<Konto> konten, Date start, Date end) throws RemoteException
+  {
+    List<String> kontoIds = new ArrayList<String>();
+    for (Konto konto : konten)
+    {
+      kontoIds.add(konto.getID());
+    }
+    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
+    if (start != null)
+    {
+      umsaetze.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(start).getTime()));
+    }
+    if (end != null)
+    {
+      umsaetze.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
+    }
+    // TODO funktioniert das mit allen unterstützten Datenbankversionen?
+    umsaetze.addFilter("konto_id in (" + Joiner.on(",").join(kontoIds) + ")");
+    List<Umsatz> umsatzList = new ArrayList<Umsatz>();
+    while (umsaetze.hasNext())
+    {
+      Umsatz u = (Umsatz) umsaetze.next();
+      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+      {
+        umsatzList.add(u);
+      }
+    }
+    return umsatzList;
+  }
+
+  private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList) throws RemoteException
+  {
+    setInitialSalden(nodes.get(0), umsatzList);
+    int index = 0;
+    EinnahmeAusgabeTreeNode currentNode = null;
+    // Map der Daten für eine Konto-ID für schnelles Zuweisen der Umsätze
+    Map<String, EinnahmeAusgabe> kontoData = null;
+    for (Umsatz umsatz : umsatzList)
+    {
+      // Daten für das nächste relevante Intervall vorbereiten; 'while' da es möglich wäre, dass es für einen Zeitraum in der Mitte gar keine Umsätze gab
+      while (currentNode == null || umsatz.getDatum().after(currentNode.getEnddatum()))
+      {
+        EinnahmeAusgabeTreeNode oldNode = currentNode;
+        currentNode = nodes.get(index++);
+        saldenUebertrag(oldNode, currentNode);
+        kontoData = getKontoDataMap(currentNode);
+      }
+
+      EinnahmeAusgabe ea = kontoData.get(umsatz.getKonto().getID());
+      ea.addUmsatz(umsatz);
+    }
+    // Saldenübertrag für die verbliebenen Zeiträume (z.B. dieses Jahr monatlich gruppiert die kommenden Monate)
+    // alternativ könnte man Zeiträume ohne Daten hinten auch entfernen
+    for (int i = index - 1; i >= 0 && i < nodes.size() - 1; i++)
+    {
+      saldenUebertrag(nodes.get(i), nodes.get(i + 1));
+    }
+    calculateSums(nodes);
+  }
+
+  private Map<String, EinnahmeAusgabe> getKontoDataMap(EinnahmeAusgabeTreeNode node) throws RemoteException
+  {
+    Map<String, EinnahmeAusgabe> kontoData = new HashMap<>();
+    List<EinnahmeAusgabe> eaList = getChildren(node);
+    for (EinnahmeAusgabe ea : eaList)
+    {
+      if (ea.getKonto() != null)
+      {
+        kontoData.put(ea.getKonto().getID(), ea);
+      }
+    }
+    return kontoData;
+  }
+
+  // übernehme Salden in den Nachfolgerzeitraum, falls es dort keine Umsätze gibt, aus denen die Salden verwendet werden
+  private void saldenUebertrag(EinnahmeAusgabeTreeNode von, EinnahmeAusgabeTreeNode nach) throws RemoteException
+  {
+    if (von != null && nach != null)
+    {
+      Map<String, EinnahmeAusgabe> vonMap = getKontoDataMap(von);
+      Map<String, EinnahmeAusgabe> nachMap = getKontoDataMap(nach);
+      for (Entry<String, EinnahmeAusgabe> vonEntry : vonMap.entrySet())
+      {
+        EinnahmeAusgabe vonData = vonEntry.getValue();
+        EinnahmeAusgabe nachData = nachMap.get(vonEntry.getKey());
+        nachData.setAnfangssaldo(vonData.getEndsaldo());
+        nachData.setEndsaldo(vonData.getEndsaldo());
+      }
+    }
+  }
+
+  private void setInitialSalden(EinnahmeAusgabeTreeNode node, List<Umsatz> umsatzList) throws RemoteException
+  {
+    Date startDate = umsatzList.isEmpty() ? null : umsatzList.get(0).getDatum();
+    for (EinnahmeAusgabe ea : getChildren(node))
+    {
+      if (ea.getKonto() != null)
+      {
+        boolean umsatzGefunden = false;
+        String id = ea.getKonto().getID();
+        for (Umsatz u : umsatzList)
+        {
+          // suche ersten Umsatz des Kontos in der Umsatzliste
+          if (u.getKonto().getID().equals(id))
+          {
+            umsatzGefunden = true;
+            ea.setAnfangssaldo(u.getSaldo() - u.getBetrag());
+            ea.setEndsaldo(ea.getAnfangssaldo());
+            break;
+          }
+        }
+        // falls es keinen gibt, Fallback Bestandslogik - nicht schnell, aber nur einmal pro Konto
+        if (!umsatzGefunden)
+        {
+          double saldo = KontoUtil.getAnfangsSaldo(ea.getKonto(), startDate);
+          ea.setAnfangssaldo(saldo);
+          ea.setEndsaldo(saldo);
+        }
+      }
+    }
+  }
+
+  private void calculateSums(List<EinnahmeAusgabeTreeNode> nodes) throws RemoteException
+  {
+    for (EinnahmeAusgabeTreeNode node : nodes)
+    {
+      List<EinnahmeAusgabe> list = getChildren(node);
+      // Alle Konten
+      double summeAnfangssaldo = 0.0d;
+      double summeEinnahmen = 0.0d;
+      double summeAusgaben = 0.0d;
+      double summeEndsaldo = 0.0d;
+      EinnahmeAusgabe sumElement = null;
+      for (EinnahmeAusgabe ea : list)
+      {
+        if (!ea.isSumme())
+        {
+          summeAnfangssaldo += ea.getAnfangssaldo();
+          summeEinnahmen += ea.getEinnahmen();
+          summeAusgaben += ea.getAusgaben();
+          summeEndsaldo += ea.getEndsaldo();
+        } else if (sumElement != null)
+        {
+          throw new IllegalStateException("implementation error - there must be only one sum element");
+        } else
+        {
+          sumElement = ea;
+        }
+      }
+      if (sumElement != null)
+      {
+        sumElement.setAnfangssaldo(summeAnfangssaldo);
+        sumElement.setEndsaldo(summeEndsaldo);
+        sumElement.setEinnahmen(summeEinnahmen);
+        sumElement.setAusgaben(summeAusgaben);
+      }
+    }
+  }
+
+  private List<EinnahmeAusgabe> getChildren(EinnahmeAusgabeTreeNode treeNode) throws RemoteException
+  {
+    List<EinnahmeAusgabe> result = new ArrayList<>();
+    GenericIterator iterator = treeNode.getChildren();
+    while (iterator.hasNext())
+    {
+      result.add((EinnahmeAusgabe) iterator.next());
+    }
+    return result;
+  }
+
+  private List<Konto> getSelectedAccounts() throws RemoteException
+  {
+    List<Konto> result = new ArrayList<>();
+    Object o = getKontoAuswahl().getValue();
+    if (o instanceof Konto)
+    {
+      result.add((Konto) o);
+    } else if (o == null || (o instanceof String))
+    {
+      boolean onlyActive = ((Boolean) this.getActiveOnly().getValue()).booleanValue();
+      settings.setAttribute("umsatzlist.filter.active", onlyActive);
+      String group = o != null && (o instanceof String) ? (String) o : null;
+
+      List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
+      for (Konto k : konten)
+      {
+        if (group == null || Objects.equal(group, k.getKategorie()))
+        {
+          result.add(k);
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Erstelle die finale Struktur - nur ohne Beträge und Salden
+   */
+  private List<EinnahmeAusgabeTreeNode> createEmptyNodes(Date start, Date end, List<Konto> konten, Interval interval) throws RemoteException
+  {
+    List<EinnahmeAusgabeTreeNode> result = new ArrayList<>();
+    if (interval == Interval.ALL)
+    {
+      List<EinnahmeAusgabe> kontoNodes = getEmptyNodes(start, end, konten);
+      EinnahmeAusgabeTreeNode node = new EinnahmeAusgabeTreeNode(start, end, kontoNodes);
+      result.add(node);
+    } else if (start == null || end == null)
+    {
+      throw new IllegalStateException("programming error - if there is grouping, there must be transactions and hence both dates are set");
+    } else
     {
       Calendar calendar = Calendar.getInstance();
       calendar.setTime(DateUtil.startOfDay(start));
@@ -315,94 +557,41 @@ public class EinnahmeAusgabeControl extends AbstractControl
       {
         calendar.set(interval.type, 1);
         Date nodeFrom = calendar.getTime();
-        
+
         // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
-        calendar.add(interval.size,1);
-        calendar.setTimeInMillis(calendar.getTime().getTime()-1);
+        calendar.add(interval.size, 1);
+        calendar.setTimeInMillis(calendar.getTime().getTime() - 1);
         Date nodeTo = DateUtil.startOfDay(calendar.getTime());
-        
-        List<EinnahmeAusgabe> werte = this.getWerte(nodeFrom, nodeTo);
-        node = new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte);
-        this.werte.add(node);
-        
+
+        List<EinnahmeAusgabe> werte = getEmptyNodes(nodeFrom, nodeTo, konten);
+        result.add(new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte));
         // ermittle den Start des nächsten Zeitraums
         calendar.setTime(nodeFrom);
         calendar.add(interval.size, 1);
       }
     }
-    else
-    {
-      node = new EinnahmeAusgabeTreeNode(new Date(), new Date(), new ArrayList<EinnahmeAusgabe>());
-      this.werte.add(node);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kein Zeitraum ausgewählt"),StatusBarMessage.TYPE_INFO));
-    }
-    return this.werte;
+    return result;
   }
 
-  /**
-   * Liefert die Werte fuer den angegebenen Zeitraum.
-   * @param start Startdatum.
-   * @param end Enddatum.
-   * @return die Liste der Werte.
-   * @throws RemoteException
-   */
-  private List<EinnahmeAusgabe> getWerte(Date start, Date end) throws RemoteException
+  private List<EinnahmeAusgabe> getEmptyNodes(Date start, Date end, List<Konto> konten) throws RemoteException
   {
-    List<EinnahmeAusgabe> list = new ArrayList<EinnahmeAusgabe>();
-
-    Object o = getKontoAuswahl().getValue();
-
-    // Uhrzeit zuruecksetzen, falls vorhanden
-    if (start != null) start = DateUtil.startOfDay(start);
-    if (end != null) end = DateUtil.startOfDay(end);
-
-    // Wird nur ein Konto ausgewertet?
-    if (o != null && (o instanceof Konto))
+    List<EinnahmeAusgabe> result = new ArrayList<>();
+    for (Konto konto : konten)
     {
-      list.add(new EinnahmeAusgabe((Konto) o,start,end));
-      return list;
+      EinnahmeAusgabe ea = new EinnahmeAusgabe(konto);
+      ea.setStartdatum(start);
+      ea.setEnddatum(end);
+      result.add(ea);
     }
-    
-    // Alle Konten
-    double summeAnfangssaldo = 0.0d;
-    double summeEinnahmen    = 0.0d;
-    double summeAusgaben     = 0.0d;
-    double summeEndsaldo     = 0.0d;
-    
-    boolean onlyActive = ((Boolean)this.getActiveOnly().getValue()).booleanValue();
-    settings.setAttribute("umsatzlist.filter.active",onlyActive);
-    
-    String group = o != null && (o instanceof String) ? (String) o : null;
-
-    List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
-    for (Konto k:konten)
+    if (konten.size() > 1)
     {
-      // Einschraenken auf gewaehlte Kontogruppe
-      if (group != null && !ObjectUtils.equals(k.getKategorie(),group))
-        continue;
-      
-      EinnahmeAusgabe ea = new EinnahmeAusgabe(k,start,end);
-      
-      // Zu den Summen hinzufuegen
-      summeAnfangssaldo += ea.getAnfangssaldo();
-      summeEinnahmen    += ea.getEinnahmen();
-      summeAusgaben     += ea.getAusgaben();
-      summeEndsaldo     += ea.getEndsaldo();
-      list.add(ea);
+      EinnahmeAusgabe summe = new EinnahmeAusgabe();
+      summe.setStartdatum(start);
+      summe.setEnddatum(end);
+      summe.setIsSumme(true);
+      result.add(summe);
     }
-    
-    // Summenzeile noch hinten dran haengen
-    EinnahmeAusgabe summen = new EinnahmeAusgabe();
-    summen.setIsSumme(true);
-    summen.setAnfangssaldo(summeAnfangssaldo);
-    summen.setAusgaben(summeAusgaben);
-    summen.setEinnahmen(summeEinnahmen);
-    summen.setEndsaldo(summeEndsaldo);
-    summen.setEnddatum(start);
-    summen.setStartdatum(end);
-    list.add(summen);
-    
-    return list;
+    return result;
   }
 
   /**
@@ -423,12 +612,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
         return;
       }
-      if (tStart == null || tEnd == null)
-      {
-        // bei einem offenen Intervall ist keine Aufschlüsselung möglich
-        getInterval().setValue(Interval.ALL);
-      }
-
+      
       tree.setList(this.getWerte());
       
       EinnahmenAusgabenVerlauf chart = getChart();
@@ -439,6 +623,5 @@ public class EinnahmeAusgabeControl extends AbstractControl
       Logger.error("unable to redraw table",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
-    
   }
 }

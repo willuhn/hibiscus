@@ -539,7 +539,9 @@ public class Controller extends AbstractControl
       if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
         return;
 
-      new PassportSync().handleAction(new PassportHandleImpl(getConfig()));
+      final PinTanConfig config = this.getConfig();
+      config.reload();
+      new PassportSync().handleAction(new PassportHandleImpl(config));
     }
     catch (ApplicationException ae)
     {
@@ -568,7 +570,9 @@ public class Controller extends AbstractControl
 
     try
     {
-      new PassportTest().handleAction(new PassportHandleImpl(getConfig()));
+      final PinTanConfig config = this.getConfig();
+      config.reload();
+      new PassportTest().handleAction(new PassportHandleImpl(config));
     }
     catch (ApplicationException ae)
     {
@@ -593,7 +597,9 @@ public class Controller extends AbstractControl
       conf = PinTanConfigFactory.create();
       GUI.startView(Detail.class,conf);
       
-      GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration erfolgreich erstellt. Bitte klicken Sie \"Speichern\" zum Übernehmen."));
+      AbstractView view = GUI.getCurrentView();
+      if (view != null && (view instanceof Detail))
+        GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration erfolgreich erstellt. Bitte klicken Sie \"Speichern\" zum Übernehmen."));
     }
     catch (ApplicationException e)
     {

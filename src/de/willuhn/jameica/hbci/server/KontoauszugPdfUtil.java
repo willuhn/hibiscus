@@ -355,6 +355,23 @@ public class KontoauszugPdfUtil
   }
 
   /**
+   * Prueft den Pfad fuer den zu speichernden Kontoauszug.
+   * @param k das Konto.
+   * @param folder Template fuer den Unterordner.
+   * @param name Template fuer den Dateinamen.
+   * @return true, wenn der Pfad OK ist.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static boolean testPath(Konto k, String folder, String name) throws RemoteException, ApplicationException
+  {
+    String s = createPath(k,null,null,folder,name,true);
+    return !s.contains("{") &&
+           !s.contains("}") && 
+           !s.contains("$");
+  }
+
+  /**
    * Erzeugt den Pfad fuer den zu speichernden Kontoauszug.
    * @param k das Konto.
    * @param ka der Kontoauszug. Optional. Wenn er fehlt, werden Default-Werte verwendet.
@@ -366,6 +383,23 @@ public class KontoauszugPdfUtil
    * @throws ApplicationException
    */
   public static String createPath(Konto k, Kontoauszug ka, String path, String folder, String name) throws RemoteException, ApplicationException
+  {
+    return createPath(k,ka,path,folder,name,false);
+  }
+
+  /**
+   * Erzeugt den Pfad fuer den zu speichernden Kontoauszug.
+   * @param k das Konto.
+   * @param ka der Kontoauszug. Optional. Wenn er fehlt, werden Default-Werte verwendet.
+   * @param path Ordner, in dem die Kontoauszuege gespeichert werden.
+   * @param folder Template fuer den Unterordner.
+   * @param name Template fuer den Dateinamen.
+   * @param test true, wenn es nur ein Test ist.
+   * @return der Pfad.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  private static String createPath(Konto k, Kontoauszug ka, String path, String folder, String name, boolean test) throws RemoteException, ApplicationException
   {
     if (k == null)
       throw new ApplicationException(i18n.tr("Kein Konto angegeben"));
@@ -416,6 +450,7 @@ public class KontoauszugPdfUtil
 
     /////////////////////////////
     // Pfad
+    if (!test)
     {
       if (path == null || path.length() == 0)
         path = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath();

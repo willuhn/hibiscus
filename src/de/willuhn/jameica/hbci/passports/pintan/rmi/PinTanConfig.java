@@ -327,4 +327,10 @@ public interface PinTanConfig extends GenericObject, Configuration
    */
   public void setCustomProperty(String name, String value) throws RemoteException;
   
+  /**
+   * Forciert ein Neuladen das in der Config gespeicherten Passport.
+   * @throws RemoteException
+   */
+  public void reload() throws RemoteException;
+  
 }

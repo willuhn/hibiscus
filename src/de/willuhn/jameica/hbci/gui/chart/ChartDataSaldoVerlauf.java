@@ -31,17 +31,20 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 {
   private Konto konto      = null;
   private Date start       = null;
+  private Date end         = null;
   private List<Value> data = null;
   
   /**
    * ct.
    * @param k das Konto, fuer das das Diagramm gemalt werden soll.
    * @param start Start-Datum.
+   * @param end Ende-Datum.
    */
-  public ChartDataSaldoVerlauf(Konto k, Date start)
+  public ChartDataSaldoVerlauf(Konto k, Date start, Date end)
   {
     this.konto = k;
-    this.start = start;
+    this.start = DateUtil.startOfDay(start == null ? new Date() : start);
+    this.end = DateUtil.endOfDay(end == null ? new Date() : end);
   }
 
   /**
@@ -57,7 +60,8 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     if (this.konto != null)
       list.addFilter("konto_id = " + this.konto.getID());
 
-    list.addFilter("datum >= ?", new Object[]{new java.sql.Date(start.getTime())});
+    list.addFilter("datum >= ?", new Object[] { new java.sql.Date(start.getTime()) });
+    list.addFilter("datum <= ?", new Object[] { new java.sql.Date(end.getTime()) });
     
     // Jetzt kommt die Homogenisierung ;)
     // Wir brauchen genau einen Messwert pro Tag. Das ist wichtig,
@@ -76,23 +80,23 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     // BUGZILLA 1036
     double startSaldo = 0.0d;
     if (this.konto != null)
-      startSaldo = this.konto.getNumUmsaetze() > 0 ? KontoUtil.getAnfangsSaldo(this.konto,start) : this.konto.getSaldo();
+      startSaldo = this.konto.getNumUmsaetze() > 0 ? KontoUtil.getAnfangsSaldo(this.konto,this.start) : this.konto.getSaldo();
     
     SaldoFinder finder = new SaldoFinder(list,startSaldo);
     this.data = new ArrayList<Value>();
     
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(start);
-    Date end = DateUtil.endOfDay(new Date());
+    Date localStart = this.start;
+    final Calendar cal = Calendar.getInstance();
+    cal.setTime(this.start);
     
-    while (!start.after(end))
+    while (!localStart.after(this.end))
     {
-      Value s = new Value(start,finder.get(start));
+      Value s = new Value(localStart,finder.get(localStart));
       this.data.add(s);
       
       // Und weiter zum naechsten Tag
       cal.add(Calendar.DAY_OF_MONTH,1);
-      start = cal.getTime();
+      localStart = cal.getTime();
     }
     return this.data;
   }
@@ -107,33 +111,3 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     return i18n.tr("Alle Konten");
   }
 }
-
-
-/*********************************************************************
- * $Log: ChartDataSaldoVerlauf.java,v $
- * Revision 1.21  2012/04/05 21:27:41  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.20  2011/10/27 17:09:29  willuhn
- * @C Saldo-Bean in neue separate (und generischere) Klasse "Value" ausgelagert.
- * @N Saldo-Finder erweitert, damit der jetzt auch mit Value-Objekten arbeiten kann
- *
- * Revision 1.19  2011-05-03 08:03:17  willuhn
- * @C BUGZILLA 1036
- *
- * Revision 1.18  2011-05-02 14:43:41  willuhn
- * @B BUGZILLA 1036
- *
- * Revision 1.17  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.16  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- * Revision 1.15  2010-09-01 15:28:57  willuhn
- * @B Der letzte Tag wurde nicht beruecksichtigt - siehe Mail von Felix vom 01.09.
- *
- * Revision 1.14  2010-08-12 17:12:32  willuhn
- * @N Saldo-Chart komplett ueberarbeitet (Daten wurden vorher mehrmals geladen, Summen-Funktion, Anzeige mehrerer Konten, Durchschnitt ueber mehrere Konten, Bugfixing, echte "Homogenisierung" der Salden via SaldoFinder)
- **********************************************************************/

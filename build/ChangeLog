@@ -1,3 +1,23 @@
+2020-07-08 Version 2.8.24
+
+  * NEW: 0897 Update auf HBCI4Java 3.1.42 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.42 - ApoBank-spezifisch - Batchbooking-Flag bei Einzelaufträgen immer mitsenden - https://homebanking-hilfe.de/forum/topic.php?p=155881#real155881
+  * NEW: 0896 Update auf HBCI4Java 3.1.41 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.41 - weitere ApoBank-spezifische Fixes - https://homebanking-hilfe.de/forum/topic.php?p=155733#real155733
+  * NEW: 0895 Update auf HBCI4Java 3.1.40 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.40 - ApoBank-spezifische Fixes - siehe https://homebanking-hilfe.de/forum/topic.php?t=24018
+  * BUG: 0894 Beim Testen und Synchronisieren des PIN/TAN-Bankzugangs wurden PINs trotz deaktivierter Option gecached (war eine Feature-Kollision mit Nr. 0601 BUGZILLA 1809)
+  * NEW: 0893 Update auf HBCI4Java 3.1.39 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.39
+  * BUG: 0892 "Saldo und Umsätze abrufen" aus Kontextmenü des Kontos bzw. Detailansicht des Kontos funktionierte nicht mehr - siehe https://homebanking-hilfe.de/forum/topic.php?t=23981
+  * NEW: 0891 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.06.2020
+  * NEW: 0890 Wenn in einem Auftrag ein Empfänger aus dem Adressbuch gewählt und dieser danach geändert wurde, kann diese Änderung beim Speichern im Adressbuch aktualisiert werden - siehe https://homebanking-hilfe.de/forum/topic.php?t=24006
+  * NEW: 0889 Neue Kontextmenü-Einträge "Aktivieren/Deaktivieren" in Liste der Synchronisierungsaufgaben - siehe https://homebanking-hilfe.de/forum/topic.php?t=23981
+  * NEW: 0888 Neuer Button "Umsätze abrufen..." in der Umsatzliste - siehe https://homebanking-hilfe.de/forum/topic.php?t=24007
+  * NEW: 0887 $-Zeichen in Pfad beim Speichern elektronischer Kontoauszüge tolerieren, auch wenn es Teil des Jameica-Benutzerordners ist
+  * NEW: 0886 Schriftgröße beim Druck von Umsätzen etwas vergrößert und die Spalten Gegenkonto und Verwendungszweck aus Platzgründen zu einer zusammengefasst
+  * NEW: 0885 Eingabe des PC/SC-Kartenleser-Namens jetzt in der Kartenleser-Konfiguration ebenfalls per kombinierter Auswahlbox (wie bei ChipTAN USB)
+  * NEW: 0884 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.03.2020
+  * NEW: 0883 Pull-Request 61 - https://github.com/willuhn/hibiscus/pull/61 - Performance-Überarbeitung Einnahmen/Ausgaben
+  * NEW: 0882 Pull-Request 63 - https://github.com/willuhn/hibiscus/pull/63 - Auswahl des Zeitraumes in Saldo-Verlauf jetzt einheitlich allen anderen Auswertungen (Von/Bis/Zeitraum)
+  * BUG: 0881 Pull-Request 62 - https://github.com/willuhn/hibiscus/pull/62 - in der grafischen Darstellung der Sparquote fehlte der letzte Zeitraum 
+
 2020-01-14 Version 2.8.23
 
   * NEW: 0880 Einnahmen/Ausgaben - Beträge immer rechtsbündig ausrichten

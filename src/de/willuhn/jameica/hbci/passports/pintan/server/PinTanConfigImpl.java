@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIVersion;
@@ -24,6 +23,7 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.PassportLoader;
 import de.willuhn.jameica.hbci.passports.pintan.Detail;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
@@ -42,31 +42,18 @@ public class PinTanConfigImpl implements PinTanConfig
 
   private final static Settings settings = new Settings(PinTanConfig.class);
 
-  private HBCIPassport passport       = null;
-  private Future<HBCIPassport> future = null;
-  private File file                   = null;
+  private PassportLoader loader = null;
+  private File file             = null;
   
   /**
    * ct.
-   * @param future
+   * @param loader
    * @param file
    * @throws RemoteException
    */
-  public PinTanConfigImpl(Future<HBCIPassport> future, File file) throws RemoteException
+  public PinTanConfigImpl(PassportLoader loader, File file) throws RemoteException
   {
-    this.future = future;
-    this.file = file;
-  }
-
-  /**
-   * ct.
-   * @param p
-   * @param file
-   * @throws RemoteException
-   */
-  public PinTanConfigImpl(HBCIPassport p, File file) throws RemoteException
-  {
-    this.passport = p;
+    this.loader = loader;
     this.file = file;
   }
 
@@ -328,18 +315,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public HBCIPassport getPassport() throws RemoteException
   {
-    if (this.passport != null)
-      return this.passport;
-    
-    try
-    {
-      this.passport = this.future.get();
-      return this.passport;
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException("error while loading passport", e);
-    }
+    return this.loader.load();
   }
 
   /**
@@ -651,5 +627,14 @@ public class PinTanConfigImpl implements PinTanConfig
       return;
     
     settings.setAttribute(getID() + "." + name,value);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#reload()
+   */
+  @Override
+  public void reload() throws RemoteException
+  {
+    this.loader.reload();
   }
 }

@@ -541,8 +541,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         // Testen, ob die Platzhalter korrekt gesetzt waren. Bei dem Test darf
         // der Basis-Pfad nicht verwenden werden, weil der auch "$" enthalten kann.
         // Siehe Mail von Thomas vom 12.04.2019
-        String test = KontoauszugPdfUtil.createPath(konto,null,"",folder,name);
-        if (test.contains("{") || test.contains("}") || test.contains("$"))
+        if (!KontoauszugPdfUtil.testPath(konto,folder,name))
         {
           comment.setValue(i18n.tr("Definition der Platzhalter ungültig"));
           comment.setColor(Color.ERROR);

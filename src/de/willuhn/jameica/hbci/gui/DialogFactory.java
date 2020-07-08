@@ -244,6 +244,14 @@ public class DialogFactory
    */
   public static void dirtyPINCache(HBCIPassport passport)
   {
+    // Wenn das Speichern der PIN deaktiviert ist, gibt es keine Dirty-Markierung. Stattdessen
+    // loeschen wir die PIN.
+    if (!Settings.getCachePin())
+    {
+      clearPINCache(passport);
+      return;
+    }
+    
     if (passport != null)
     {
       String key = getCacheKey(passport);

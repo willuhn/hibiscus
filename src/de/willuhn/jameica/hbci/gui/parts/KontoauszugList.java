@@ -52,6 +52,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
@@ -217,6 +218,7 @@ public class KontoauszugList extends UmsatzList
         handlePrint();
       }
     },null,false,"document-save.png");
+    buttons.addButton(i18n.tr("Umsätze abrufen..."), new KontoFetchUmsaetze(),null,false,"mail-send-receive.png");
     buttons.addButton(i18n.tr("Filter zurücksetzen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -797,7 +799,7 @@ public class KontoauszugList extends UmsatzList
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen der Filter"), StatusBarMessage.TYPE_ERROR));
     }
   }
-
+  
   /**
    * Aktualisiert die Tabelle der angezeigten Umsaetze.
    * @param force true, wenn das Reload forciert werden soll - egal, ob sich was geaendert hat.

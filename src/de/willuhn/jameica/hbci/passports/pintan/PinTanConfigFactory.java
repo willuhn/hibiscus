@@ -14,10 +14,6 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
@@ -27,6 +23,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.PassportLoader;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.passports.pintan.server.PinTanConfigImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -56,8 +53,8 @@ public class PinTanConfigFactory
   public static synchronized PinTanConfig create() throws Exception
   {
     File f = createFilename();
-    Future<HBCIPassport> p = load(f);
-    return new PinTanConfigImpl(p,f);
+    PassportLoader l = load(f);
+    return new PinTanConfigImpl(l,f);
   }
 
   /**
@@ -201,46 +198,41 @@ public class PinTanConfigFactory
    * @param f das HBCI4Java-Config-File.
    * @return Passport. Wir liefern hier ein Future zurueck, damit das eigentliche Laden erst bei Bedarf stattfinden muss.
    */
-  public static Future<HBCIPassport> load(final File f)
+  public static PassportLoader load(final File f)
   {
     HBCIUtils.setParam("client.passport.default","PinTan");
-//    HBCIUtils.setParam("client.passport.PinTan.filename",f.getAbsolutePath());
     HBCIUtils.setParam("client.passport.PinTan.init","1");
 
     HBCIUtils.setParam("client.passport.PinTan.checkcert","1");
 
-    return new Future<HBCIPassport>() {
-      
+    return new PassportLoader() {
+
       private HBCIPassport p = null;
-      /**
-       * @see java.util.concurrent.Future#get()
-       */
+
       @Override
-      public HBCIPassport get() throws InterruptedException, ExecutionException
+      public void reload()
+      {
+        try
+        {
+          if (this.p != null)
+            this.p.close();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while closing passport",e);
+        }
+        finally
+        {
+          this.p = null;
+        }
+      }
+      
+      @Override
+      public HBCIPassport load()
       {
         if (this.p == null)
           this.p = AbstractHBCIPassport.getInstance("PinTan",f);
         return this.p;
-      }
-      @Override
-      public boolean cancel(boolean mayInterruptIfRunning)
-      {
-        return false;
-      }
-      @Override
-      public boolean isCancelled()
-      {
-        return false;
-      }
-      @Override
-      public boolean isDone()
-      {
-        return this.p != null;
-      }
-      @Override
-      public HBCIPassport get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
-      {
-        return this.get();
       }
     };
   }
@@ -345,8 +337,8 @@ public class PinTanConfigFactory
         
         try
         {
-          Future<HBCIPassport> p = load(f);
-          configs.add(new PinTanConfigImpl(p,f));
+          PassportLoader l = load(f);
+          configs.add(new PinTanConfigImpl(l,f));
         }
         catch (Exception e)
         {

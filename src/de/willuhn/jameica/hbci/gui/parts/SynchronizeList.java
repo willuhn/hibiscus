@@ -28,6 +28,8 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
@@ -77,6 +79,7 @@ public class SynchronizeList extends TablePart
     this.addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
     this.setSummary(false);
     this.setCheckable(true);
+    this.setMulti(true);
 
     // BUGZILLA 583
     this.setFormatter(new TableFormatter() {
@@ -98,8 +101,38 @@ public class SynchronizeList extends TablePart
       }
     });
     
+    final ContextMenu menu = new ContextMenu();
+    menu.addItem(new CheckedContextMenuItem(i18n.tr("Aktivieren"),new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        setChecked(true);
+      }
+    },"list-add.png"));
+    menu.addItem(new CheckedContextMenuItem(i18n.tr("Deaktivieren"),new Action() {
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        setChecked(false);
+      }
+    },"list-remove.png"));
+    this.setContextMenu(menu);
+    
     // Vorm paint() nochmal machen, damit auch XP die Spaltenbreiten hinkriegt - die werden wohl scheinbar beim paint() ermittelt
     init();
+  }
+  
+  private void setChecked(boolean b)
+  {
+    Object o = getSelection();
+    if (o == null)
+      return;
+
+    if (o instanceof Object[])
+      setChecked((Object[])o,b);
+    else
+      setChecked(o,b);
   }
   
   /**

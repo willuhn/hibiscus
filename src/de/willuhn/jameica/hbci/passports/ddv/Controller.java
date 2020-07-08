@@ -11,7 +11,14 @@ package de.willuhn.jameica.hbci.passports.ddv;
 
 import java.io.File;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CardTerminals;
+import javax.smartcardio.TerminalFactory;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.callback.HBCICallback;
@@ -48,6 +55,7 @@ import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -64,7 +72,7 @@ public class Controller extends AbstractControl
   private TablePart kontoList       = null;
 
   // Eingabe-Felder
-  private TextInput pcscName        = null;
+  private SelectInput pcscName      = null;
   private TextInput bezeichnung     = null;
   private SelectInput port          = null;
   private Input ctNumber            = null;
@@ -271,9 +279,42 @@ public class Controller extends AbstractControl
   {
     if (this.pcscName != null)
       return this.pcscName;
-    this.pcscName = new TextInput(getConfig().getPCSCName());
-    this.pcscName.setHint(i18n.tr("nur eingeben, wenn mehrere Leser vorhanden"));
+    
+    List<String> available = new ArrayList<String>();
+    
+    // Erste Zeile Leerer Eintrag.
+    // Damit das Feld auch dann leer bleiben kann, wenn der User nur einen
+    // Kartenleser hat. Der sollte dann nicht automatisch vorselektiert
+    // werden, da dessen Bezeichnung sonst unnoetigerweise hart gespeichert wird
+    available.add("");
+    try
+    {
+      TerminalFactory terminalFactory = TerminalFactory.getDefault();
+      CardTerminals terminals = terminalFactory.terminals();
+      if (terminals != null)
+      {
+        List<CardTerminal> list = terminals.list();
+        if (list != null && list.size() > 0)
+        {
+          for (CardTerminal t:list)
+          {
+            String name = StringUtils.trimToNull(t.getName());
+            if (name != null)
+            available.add(name);
+          }
+        }
+      }
+    }
+    catch (Throwable t)
+    {
+      Logger.info("unable to determine card reader list: " + t.getMessage());
+      Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
+    }
+    
+    this.pcscName = new SelectInput(available,this.getConfig().getPCSCName());
     this.pcscName.setEnabled(isPCSC());
+    this.pcscName.setEditable(true);
+    this.pcscName.setComment(i18n.tr("nur nötig, wenn mehrere Leser vorhanden"));
     this.pcscName.setName(i18n.tr("Identifier des PC/SC-Kartenlesers"));
     return this.pcscName;
   }
