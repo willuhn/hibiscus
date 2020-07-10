@@ -10,6 +10,7 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import org.kapott.hbci.manager.HBCIHandler;
+import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -20,6 +21,7 @@ import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Level;
@@ -54,7 +56,11 @@ public class PassportTest implements Action
         HBCIHandler handler = null;
         Target target       = null;
         try {
-          monitor.setStatusText(i18n.tr("Teste Sicherheits-Medium..."));
+          monitor.setStatusText(i18n.tr("Teste Bank-Zugang..."));
+          
+          final Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
+          monitor.log("  " + i18n.tr("Hibiscus-Version {0}, Build {1}, Datum {2}",mf.getVersion().toString(),mf.getBuildnumber(),mf.getBuildDate()));
+          monitor.log("  " + i18n.tr("HBCI4Java-Version {0}",HBCIUtils.version()));
 
           // Log-Ausgaben temporaer auch mit im Progressbar-Fenster
           // ausgeben
@@ -82,8 +88,8 @@ public class PassportTest implements Action
           Logger.flush();
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           monitor.setPercentComplete(100);
-          monitor.setStatusText(i18n.tr("Sicherheits-Medium erfolgreich getestet."));
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sicherheits-Medium erfolgreich getestet."), StatusBarMessage.TYPE_SUCCESS));
+          monitor.setStatusText(i18n.tr("Bank-Zugang erfolgreich getestet."));
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bank-Zugang erfolgreich getestet."), StatusBarMessage.TYPE_SUCCESS));
           removeTarget(target);
           
           if (!Application.getCallback().askUser(i18n.tr("Test erfolgreich. Konten automatisch anlegen?")))
@@ -136,7 +142,7 @@ public class PassportTest implements Action
           removeTarget(target);
 
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-          String errorText = i18n.tr("Fehler beim Testen des Sicherheits-Mediums: {0}",cause.getMessage());
+          String errorText = i18n.tr("Fehler beim Testen des Bank-Zugangs: {0}",cause.getMessage());
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(errorText, StatusBarMessage.TYPE_ERROR));
           monitor.setStatusText(errorText);
 
