@@ -154,7 +154,7 @@ public class SaldoChart implements Part
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(), "auswertungen.saldochart.filter.range");
     this.range.addListener(this.reloadListener);
     return this.range;
   }
@@ -168,7 +168,7 @@ public class SaldoChart implements Part
     if (this.start != null)
       return this.start;
 
-    this.start = new DateFromInput(null,"umsatzlist.filter.from");
+    this.start = new DateFromInput(null, "auswertungen.saldochart.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
     this.start.addListener(new DelayedListener(300,this.reloadListener));
@@ -184,7 +184,7 @@ public class SaldoChart implements Part
     if (this.end != null)
       return this.end;
 
-    this.end = new DateToInput(null,"umsatzlist.filter.to");
+    this.end = new DateToInput(null, "auswertungen.saldochart.filter.to");
     this.end.setName(i18n.tr("bis"));
     this.end.setComment(null);
     this.end.addListener(new DelayedListener(300,this.reloadListener));

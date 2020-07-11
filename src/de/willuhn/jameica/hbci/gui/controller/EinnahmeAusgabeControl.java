@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.google.common.base.Joiner;
@@ -154,7 +157,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.start != null)
       return this.start;
 
-    this.start = new DateFromInput(null,"umsatzlist.filter.from");
+    this.start = new DateFromInput(null, "auswertungen.einnahmeausgabe.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
     return this.start;
@@ -169,8 +172,19 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.onlyActive != null)
       return this.onlyActive;
     
-    this.onlyActive = new CheckboxInput(settings.getBoolean("umsatzlist.filter.active",false));
+    this.onlyActive = new CheckboxInput(settings.getBoolean("auswertungen.einnahmeausgabe.filter.active",false));
     this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
+    this.onlyActive.addListener(new org.eclipse.swt.widgets.Listener() {
+
+      @Override
+      public void handleEvent(Event event)
+      {
+        if (event.type == SWT.Selection)
+        {
+          settings.setAttribute("auswertungen.einnahmeausgabe.filter.active", (Boolean) onlyActive.getValue());
+        }
+      }
+    });
     return this.onlyActive;
   }
   
@@ -184,7 +198,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
+    this.range = new RangeInput(this.getStart(), this.getEnd(), "auswertungen.einnahmeausgabe.filter.range");
     return this.range;
   }
 
@@ -197,7 +211,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.end != null)
       return this.end;
 
-    this.end = new DateToInput(null,"umsatzlist.filter.to");
+    this.end = new DateToInput(null, "auswertungen.einnahmeausgabe.filter.to");
     this.end.setName(i18n.tr("bis"));
     this.end.setComment(null);
     return this.end;
@@ -209,11 +223,24 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * */
   public SelectInput getInterval()
   {
-    if(this.interval !=null)
+    if (this.interval != null)
       return this.interval;
-    
-    this.interval = new SelectInput(Interval.values(), Interval.MONTH);
+
+    this.interval = new SelectInput(Interval.values(), Interval.valueOf(settings.getString("auswertungen.einnahmeausgabe.filter.interval", "MONTH")));
     this.interval.setName(i18n.tr("Gruppierung nach"));
+    this.interval.addListener(new Listener() {
+
+      @Override
+      public void handleEvent(Event event)
+      {
+        if (event.type == SWT.Selection)
+        {
+          Interval value = (Interval) interval.getValue();
+          settings.setAttribute("auswertungen.einnahmeausgabe.filter.interval", value.name());
+        }
+      }
+
+    });
     return this.interval;
   }
   
