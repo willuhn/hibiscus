@@ -240,7 +240,7 @@ public class SparQuote implements Part
     
     // Wir wollen hier nur die Zeitraume haben, die mindestens 2 Monate umfassen
     List<Range> ranges = new ArrayList<Range>();
-    for (Range r:Range.KNOWN)
+    for (Range r:Range.getActiveRanges(Range.CATEGORY_AUSWERTUNG))
     {
       if(r.getStart() == null) {
         ranges.add(r);

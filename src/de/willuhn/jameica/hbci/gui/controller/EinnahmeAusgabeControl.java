@@ -56,6 +56,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
 import de.willuhn.jameica.hbci.server.KontoUtil;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -198,7 +199,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(), this.getEnd(), "auswertungen.einnahmeausgabe.filter.range");
+    this.range = new RangeInput(this.getStart(), this.getEnd(), Range.CATEGORY_AUSWERTUNG, "auswertungen.einnahmeausgabe.filter.range");
     return this.range;
   }
 

@@ -10,6 +10,7 @@
 
 package de.willuhn.jameica.hbci.server;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.Locale;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.util.I18N;
 
@@ -28,8 +30,13 @@ public abstract class Range
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
+  private final static Range ALL    = new All();
   private final static Range D_7    = new LastSevenDays();
   private final static Range D_30   = new LastThirtyDays();
+  private final static Range LY_1   = new Last356Days();
+  private final static Range LY_3   = new Last3Years();
+  private final static Range LY_5   = new Last5Years();
+  private final static Range LY_10   = new Last10Years();
   
   private final static Range W_THIS = new ThisWeek();
   private final static Range W_LAST = new LastWeek();
@@ -47,13 +54,27 @@ public abstract class Range
   private final static Range Y_THIS = new ThisYear();
   private final static Range Y_LAST = new LastYear();
   private final static Range Y_2LAS = new SecondLastYear();
-  
+
+  /**
+   * Parameterpräfix für Zahlungverkehrs-Zeiträume
+   * */
+  public final static String CATEGORY_ZAHLUNGSVERKEHR = "zahlungsverkehr";
+  /**
+   * Parameterpräfix für Auswertungs-Zeiträume
+   * */
+  public final static String CATEGORY_AUSWERTUNG = "auswertung";
+
   /**
    * Bekannte Zeitraeume.
    */
   public final static List<Range> KNOWN = Arrays.asList(
+    ALL,
     D_7,
     D_30,
+    LY_1,
+    LY_3,
+    LY_5,
+    LY_10,
     W_THIS,
     W_LAST,
     W_2LAS,
@@ -68,7 +89,42 @@ public abstract class Range
     Y_LAST,
     Y_2LAS
   );
-  
+
+  private final static List<Range> OLD_RANGES=Arrays.asList(
+      D_7,
+      D_30,
+      W_THIS,
+      W_LAST,
+      W_2LAS,
+      M_THIS,
+      M_LAST,
+      M_2LAS,
+      M_12,
+      Q_THIS,
+      Q_LAST,
+      Q_2LAS,
+      Y_THIS,
+      Y_LAST,
+      Y_2LAS
+    );
+
+  /**
+   * 
+   * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
+   * @return Liste der anzuzeigenden Zeiträume für die gegebene Kategorie 
+   * */
+  public final static List<Range> getActiveRanges(String category){
+    Settings settings=new Settings(Range.class);
+    List<Range> result=new ArrayList<Range>();
+    for (Range range : KNOWN)
+    {
+      if(settings.getBoolean(category+"."+range.getId(), OLD_RANGES.contains(range))) {
+        result.add(range);
+      }
+    }
+    return result;
+  }
+
   /**
    * Versucht den Range anhand des Identifiers zu ermitteln.
    * @param name der Name des Range.
@@ -151,7 +207,40 @@ public abstract class Range
       return i18n.tr("Woche: Diese");
     }
   }
-  
+
+  /**
+   * Zeitraum ohne Einschränkungen
+   * */
+  public static class All extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    @Override
+    public Date getStart()
+    {
+      return null;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    @Override
+    public Date getEnd()
+    {
+      return null;
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return i18n.tr("Alles");
+    }
+  }
+
   /**
    * Zeitraum fuer die letzten 7 Tage.
    */
@@ -225,6 +314,91 @@ public abstract class Range
     public String toString()
     {
       return i18n.tr("Letzte 30 Tage");
+    }
+  }
+
+  private abstract static class LastYears extends Range{
+
+    private String text;
+    private int years;
+
+    protected LastYears(int years, String text)
+    {
+      this.years=years;
+      this.text=text;
+    }
+
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    @Override
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.add(Calendar.YEAR,-years);
+      cal.add(Calendar.DATE, 1);
+      Date d = cal.getTime();
+      return DateUtil.startOfDay(d);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    @Override
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      Date d = cal.getTime();
+      return DateUtil.endOfDay(d);
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return i18n.tr(text);
+    }
+  }
+
+  /**
+   * Zeitraum ab heute vor einem Jahr
+   * */
+  public static class Last356Days extends LastYears{
+    protected Last356Days()
+    {
+       super(1, "Letzte 365 Tage");
+    }
+  }
+
+  /**
+   * Zeitraum ab heute vor drei Jahren
+   * */
+  public static class Last3Years extends LastYears{
+    protected Last3Years()
+    {
+       super(3, "Letzte 3 Jahre");
+    }
+  }
+
+  /**
+   * Zeitraum ab heute vor fünf Jahren
+   * */
+  public static class Last5Years extends LastYears{
+    protected Last5Years()
+    {
+       super(5, "Letzte 5 Jahre");
+    }
+  }
+
+  /**
+   * Zeitraum ab heute vor zehn Jahren
+   * */
+  public static class Last10Years extends LastYears{
+    protected Last10Years()
+    {
+       super(10, "Letzte 10 Jahre");
     }
   }
 

@@ -9,6 +9,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
@@ -24,6 +26,7 @@ import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -79,7 +82,18 @@ public class Settings extends AbstractView implements Extendable
     ButtonArea umsatzButtons = new ButtonArea();
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew(),null,false,"text-x-generic.png");
     umsatztypes.addButtonArea(umsatzButtons);
-    
+
+    // anzuzeigende Zeiträume in der Vorauswahl
+    TabGroup ranges = new TabGroup(getTabFolder(),i18n.tr("Zeiträume"), true, 4);
+    ranges.addHeadline(i18n.tr("für Zahlungsverkehr"));
+    ranges.addHeadline(i18n.tr("für Auswertung"));
+    List<CheckboxInput> zvRanges = control.getRanges(Range.CATEGORY_ZAHLUNGSVERKEHR);
+    List<CheckboxInput> auswertungRanges = control.getRanges(Range.CATEGORY_AUSWERTUNG);
+    for(int i=0; i<zvRanges.size(); i++) {
+      ranges.addInput(zvRanges.get(i));
+      ranges.addInput(auswertungRanges.get(i));
+    }
+
     TabGroup extended = new TabGroup(getTabFolder(),"Erweitert",true);
     extended.addHeadline(i18n.tr("Experimentelle Funktionen"));
     extended.addText(i18n.tr("Wenn die experimentellen Funktionen nicht aktiviert sind, gelten die Vorgabewerte.") + "\n",true);

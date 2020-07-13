@@ -354,7 +354,7 @@ public class KontoauszugList extends UmsatzList
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(),Range.CATEGORY_ZAHLUNGSVERKEHR,"umsatzlist.filter.range");
     this.range.addListener(new Listener()
     {
       public void handleEvent(Event event)
