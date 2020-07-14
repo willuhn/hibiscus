@@ -13,7 +13,10 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -115,21 +118,28 @@ public class UmsatzUtil
     
     if (StringUtils.trimToNull(query) != null)
     {
-      String text = "%" + query.toLowerCase() + "%";
-      list.addFilter("(LOWER(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))) LIKE ? OR " +
-          "LOWER(empfaenger_name) LIKE ? OR " +
-          "empfaenger_konto LIKE ? OR " +
-          "empfaenger_blz LIKE ? OR " +
-          "LOWER(primanota) LIKE ? OR " +
-          "LOWER(art) LIKE ? OR " +
-          "LOWER(customerref) LIKE ? OR " +
-          "LOWER(purposecode) LIKE ? OR " +
-          "LOWER(kommentar) LIKE ? OR " +
-          "LOWER(endtoendid) LIKE ? OR " +
-          "LOWER(mandateid) LIKE ? OR " +
-          "LOWER(empfaenger_name2) LIKE ? OR " +
-          "LOWER(art) LIKE ?)",
-          text,text,text,text,text,text,text,text,text,text,text,text,text);
+      final String text = "%" + query.toLowerCase() + "%";
+      String search = "(LOWER(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))) LIKE ? OR " +
+                      "LOWER(empfaenger_name) LIKE ? OR " +
+                      "empfaenger_konto LIKE ? OR " +
+                      "empfaenger_blz LIKE ? OR " +
+                      "LOWER(primanota) LIKE ? OR " +
+                      "LOWER(art) LIKE ? OR " +
+                      "LOWER(customerref) LIKE ? OR " +
+                      "LOWER(purposecode) LIKE ? OR " +
+                      "LOWER(kommentar) LIKE ? OR " +
+                      "LOWER(endtoendid) LIKE ? OR " +
+                      "LOWER(mandateid) LIKE ? OR " +
+                      "LOWER(empfaenger_name2) LIKE ? OR " +
+                      "LOWER(art) LIKE ?)";
+
+      List<String> params = new ArrayList<String>(Arrays.asList(text,text,text,text,text,text,text,text,text,text,text,text,text));
+      if (query.matches("^[0-9]{1,10}$"))
+      {
+        search = "id = ? or " + search;
+        params.add(0,query);
+      }
+      list.addFilter(search,params.toArray());
     }
     return list;
   }

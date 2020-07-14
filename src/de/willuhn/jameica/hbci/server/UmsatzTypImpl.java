@@ -276,6 +276,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String purp  = StringUtils.trimToEmpty(umsatz.getPurposeCode());
     String e2eid = StringUtils.trimToEmpty(umsatz.getEndToEndId());
     String mid   = StringUtils.trimToEmpty(umsatz.getMandateId());
+    String id    = StringUtils.trimToEmpty(umsatz.getID());
     
     if (!isRegex())
     {
@@ -307,7 +308,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
             art.indexOf(test) != -1 ||
             purp.indexOf(test) != -1 ||
             e2eid.indexOf(test) != -1 ||
-            mid.indexOf(test) != -1)
+            mid.indexOf(test) != -1 ||
+            id.equals(test))
         {
           return true;
         }
