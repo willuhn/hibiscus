@@ -42,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTree;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -153,7 +154,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(), Range.CATEGORY_AUSWERTUNG, "auswertungen.umsatztree.filter.range");
     this.range.addListener(this.changedListener(this.range));
     
     return this.range;
@@ -169,7 +170,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.start != null)
       return this.start;
 
-    this.start = new DateFromInput(null,"umsatzlist.filter.from");
+    this.start = new DateFromInput(null, "auswertungen.umsatztree.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
     this.start.addListener(this.changedListener(this.start));
@@ -186,7 +187,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.end != null)
       return this.end;
 
-    this.end = new DateToInput(null,"umsatzlist.filter.to");
+    this.end = new DateToInput(null, "auswertungen.umsatztree.filter.to");
     this.end.setName(i18n.tr("bis"));
     this.end.setComment(null);
     this.end.addListener(this.changedListener(this.end));

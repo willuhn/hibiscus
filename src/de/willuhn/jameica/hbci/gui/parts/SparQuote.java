@@ -240,12 +240,16 @@ public class SparQuote implements Part
     
     // Wir wollen hier nur die Zeitraume haben, die mindestens 2 Monate umfassen
     List<Range> ranges = new ArrayList<Range>();
-    for (Range r:Range.KNOWN)
+    for (Range r:Range.getActiveRanges(Range.CATEGORY_AUSWERTUNG))
     {
-      // Wir ueberschlagen das nur grob
-      long diff = r.getEnd().getTime() - r.getStart().getTime();
-      if (diff > (2 * 30 * 24 * 60 * 60 * 1000L))
+      if(r.getStart() == null) {
         ranges.add(r);
+      } else {
+        // Wir ueberschlagen das nur grob
+        long diff = r.getEnd().getTime() - r.getStart().getTime();
+        if (diff > (2 * 30 * 24 * 60 * 60 * 1000L))
+          ranges.add(r);
+      }
     }
     
     this.range = new RangeInput(ranges,this.getFrom(),this.getTo(),"auswertungen.spartquote.filter.range");
@@ -404,7 +408,8 @@ public class SparQuote implements Part
     
     ////////////////////////////////////////////////////////////////////////////
     // Wir iterieren erstmal ueber den Zeitraum und erzeugen die passenden Time-Boxen
-    Date from     = DateUtil.startOfDay(start != null ? start : new Date());
+    Date from = start != null ? start : UmsatzUtil.getOldest(getKontoAuswahl().getValue());
+    from          = DateUtil.startOfDay(from != null ? from : new Date());
     final Date to = DateUtil.endOfDay(end != null ? end : new Date());
     
     for (int i=0;i<1000;++i) // Wir machen keine Endlosschleife sondern hoeren bei maximal 1000 auf
@@ -442,10 +447,14 @@ public class SparQuote implements Part
     //Dummy-Eintrag für das nächste Intervall, da das letzte reguläre sonst
     //aufgrund der Normalisierung auf den ersten Tag des Intervalls
     //ggf. gar nicht angezeigt wird
-    UmsatzEntry lastEntry = new UmsatzEntry();
-    lastEntry.start=new Date(end.getTime()+1);
-    lastEntry.end=lastEntry.start;
-    this.data.add(lastEntry);
+    if (!this.data.isEmpty())
+    {
+      UmsatzEntry lastEntry = new UmsatzEntry();
+      long time = this.data.get(this.data.size() - 1).getEnd().getTime();
+      lastEntry.start = new Date(time + 1);
+      lastEntry.end = lastEntry.start;
+      this.data.add(lastEntry);
+    }
     //
     ////////////////////////////////////////////////////////////////////////////
 

@@ -31,5 +31,9 @@
 		eingeben. Umsätze werden dann bereits dieser Kategorie zugeordnet, wenn nur
 		einer der angegebenen Suchbegriffe gefunden wurde.
 	</li>
-	
+
+	<li>
+		<b>Zeiträume:</b> Sie können jeweils für die Kategorien Zahlungsverkehr und Auswertungen
+		festlegen, welche Einträge Ihnen in der Zeitraum-Vorauswahl Vorauswahl angeboten werden.
+	</li>
 </form>

@@ -47,18 +47,19 @@ public class RangeInput extends SelectInput
    */
   public RangeInput(final Input from, final Input to)
   {
-    this(from,to,null);
+    this(from, to, Range.CATEGORY_ZAHLUNGSVERKEHR, null);
   }
 
   /**
    * ct.
    * @param from Input-Feld, in das das Start-Datum nach der Auswahl uebernommen werden soll.
    * @param to Input-Feld, in das das End-Datum nach der Auswahl uebernommen werden soll.
+   * @param category Kategorie der anzuzeigenden Zeiträume (Range.CATEGORY_ZAHLUNGSVERKEHR oder Range.CATEGORY_AUSWERTUNG)
    * @param parameter Schluessel-Name, unter dem die Auswahl gespeichert wird.
    */
-  public RangeInput(final Input from, final Input to, final String parameter)
+  public RangeInput(final Input from, final Input to, final String category, final String parameter)
   {
-    this(Range.KNOWN,from,to,parameter);
+    this(Range.getActiveRanges(category),from,to,parameter);
   }
 
   /**

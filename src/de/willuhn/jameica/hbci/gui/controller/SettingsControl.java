@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.experiments.FeatureService;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
@@ -61,6 +62,7 @@ public class SettingsControl extends AbstractControl
 	private Input buchungHabenFg    				= null;
 
   private UmsatzTypTree umsatzTypTree     = null;
+  private List<CheckboxInput> ranges      = new ArrayList<CheckboxInput>();
 
   private Input ueberweisungLimit         = null;
 
@@ -85,6 +87,27 @@ public class SettingsControl extends AbstractControl
     if (umsatzTypTree == null)
       umsatzTypTree = new UmsatzTypTree(new UmsatzTypNew());
     return umsatzTypTree;
+  }
+
+  /**
+   * @param category Zeitraumkagegorie (Range.CATEGORY_ZAHLUNGSVERKEHR oder Range.CATEGORY_AUSWERTUNG)
+   * @return Liste mit Checkboxen für die Zeiträume der gegebenen Kategorie
+   * @throws RemoteException 
+   * */
+  public List<CheckboxInput> getRanges(String category) throws RemoteException
+  {
+    List<CheckboxInput> ranges = new ArrayList<CheckboxInput>();
+    List<Range> activeRangse = Range.getActiveRanges(category);
+    for (Range range : Range.KNOWN)
+    {
+      CheckboxInput b = new CheckboxInput(activeRangse.contains(range));
+      b.setName(range.toString());
+      ranges.add(b);
+      b.setData("id", category+"."+range.getId());
+      ranges.add(b);
+    }
+    this.ranges.addAll(ranges);
+    return ranges;
   }
 
   /**
@@ -376,6 +399,14 @@ public class SettingsControl extends AbstractControl
       catch (Exception e)
       {
         Logger.error("unable to reload view",e);
+      }
+    }
+
+    de.willuhn.jameica.system.Settings rangeSettings = new de.willuhn.jameica.system.Settings(Range.class);
+    for (CheckboxInput range : ranges)
+    {
+      if(range.hasChanged()) {
+        rangeSettings.setAttribute((String) range.getData("id"), (Boolean) range.getValue());
       }
     }
 

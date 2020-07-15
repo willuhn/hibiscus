@@ -49,6 +49,7 @@ import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -154,7 +155,7 @@ public class SaldoChart implements Part
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),"umsatzlist.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(),Range.CATEGORY_AUSWERTUNG, "auswertungen.saldochart.filter.range");
     this.range.addListener(this.reloadListener);
     return this.range;
   }
@@ -168,7 +169,7 @@ public class SaldoChart implements Part
     if (this.start != null)
       return this.start;
 
-    this.start = new DateFromInput(null,"umsatzlist.filter.from");
+    this.start = new DateFromInput(null, "auswertungen.saldochart.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
     this.start.addListener(new DelayedListener(300,this.reloadListener));
@@ -184,7 +185,7 @@ public class SaldoChart implements Part
     if (this.end != null)
       return this.end;
 
-    this.end = new DateToInput(null,"umsatzlist.filter.to");
+    this.end = new DateToInput(null, "auswertungen.saldochart.filter.to");
     this.end.setName(i18n.tr("bis"));
     this.end.setComment(null);
     this.end.addListener(new DelayedListener(300,this.reloadListener));
