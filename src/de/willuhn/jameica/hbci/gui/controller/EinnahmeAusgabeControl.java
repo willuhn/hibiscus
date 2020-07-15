@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
@@ -180,10 +179,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       @Override
       public void handleEvent(Event event)
       {
-        if (event.type == SWT.Selection)
-        {
-          settings.setAttribute("auswertungen.einnahmeausgabe.filter.active", (Boolean) onlyActive.getValue());
-        }
+        settings.setAttribute("auswertungen.einnahmeausgabe.filter.active", (Boolean) onlyActive.getValue());
       }
     });
     return this.onlyActive;
@@ -234,11 +230,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
       @Override
       public void handleEvent(Event event)
       {
-        if (event.type == SWT.Selection)
-        {
-          Interval value = (Interval) interval.getValue();
-          settings.setAttribute("auswertungen.einnahmeausgabe.filter.interval", value.name());
-        }
+        Interval value = (Interval) interval.getValue();
+        settings.setAttribute("auswertungen.einnahmeausgabe.filter.interval", value.name());
       }
 
     });

@@ -9,8 +9,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.views;
 
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
@@ -84,15 +82,13 @@ public class Settings extends AbstractView implements Extendable
     umsatztypes.addButtonArea(umsatzButtons);
 
     // anzuzeigende Zeiträume in der Vorauswahl
-    TabGroup ranges = new TabGroup(getTabFolder(),i18n.tr("Zeiträume"), true, 4);
-    ranges.addHeadline(i18n.tr("für Zahlungsverkehr"));
-    ranges.addHeadline(i18n.tr("für Auswertung"));
-    List<CheckboxInput> zvRanges = control.getRanges(Range.CATEGORY_ZAHLUNGSVERKEHR);
-    List<CheckboxInput> auswertungRanges = control.getRanges(Range.CATEGORY_AUSWERTUNG);
-    for(int i=0; i<zvRanges.size(); i++) {
-      ranges.addInput(zvRanges.get(i));
-      ranges.addInput(auswertungRanges.get(i));
-    }
+    TabGroup ranges = new TabGroup(getTabFolder(),i18n.tr("Zeiträume"), true,1);
+    ranges.addText(i18n.tr("Wählen Sie für die verschiedenen Bereiche der Anwendung aus, welche Zeitraum-Vorauswahlen angezeigt werden sollen."),true);
+    
+    ranges.addHeadline(i18n.tr("Für Zahlungsverkehr"));
+    ranges.addPart(control.getRanges(Range.CATEGORY_ZAHLUNGSVERKEHR));
+    ranges.addHeadline(i18n.tr("Für Auswertungen, Umsatzlisten und Kontoauszüge"));
+    ranges.addPart(control.getRanges(Range.CATEGORY_AUSWERTUNG));
 
     TabGroup extended = new TabGroup(getTabFolder(),"Erweitert",true);
     extended.addHeadline(i18n.tr("Experimentelle Funktionen"));

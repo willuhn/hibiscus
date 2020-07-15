@@ -11,7 +11,10 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -34,6 +37,7 @@ import de.willuhn.jameica.hbci.experiments.Feature;
 import de.willuhn.jameica.hbci.experiments.FeatureService;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
+import de.willuhn.jameica.hbci.gui.parts.RangeList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -62,7 +66,7 @@ public class SettingsControl extends AbstractControl
 	private Input buchungHabenFg    				= null;
 
   private UmsatzTypTree umsatzTypTree     = null;
-  private List<CheckboxInput> ranges      = new ArrayList<CheckboxInput>();
+  private Map<String,RangeList> ranges    = new HashMap<String,RangeList>();
 
   private Input ueberweisungLimit         = null;
 
@@ -90,24 +94,20 @@ public class SettingsControl extends AbstractControl
   }
 
   /**
+   * Liefert eine Liste mit den verfuegbaren Zeitraum-Auswahlen fuer die angegebene Kategorie.
    * @param category Zeitraumkagegorie (Range.CATEGORY_ZAHLUNGSVERKEHR oder Range.CATEGORY_AUSWERTUNG)
-   * @return Liste mit Checkboxen für die Zeiträume der gegebenen Kategorie
+   * @return Liste mit den Zeiträumen der gegebenen Kategorie.
    * @throws RemoteException 
    * */
-  public List<CheckboxInput> getRanges(String category) throws RemoteException
+  public RangeList getRanges(final String category) throws RemoteException
   {
-    List<CheckboxInput> ranges = new ArrayList<CheckboxInput>();
-    List<Range> activeRangse = Range.getActiveRanges(category);
-    for (Range range : Range.KNOWN)
-    {
-      CheckboxInput b = new CheckboxInput(activeRangse.contains(range));
-      b.setName(range.toString());
-      ranges.add(b);
-      b.setData("id", category+"."+range.getId());
-      ranges.add(b);
-    }
-    this.ranges.addAll(ranges);
-    return ranges;
+    RangeList list = this.ranges.get(category);
+    if (list != null)
+      return list;
+    
+    list = new RangeList(category);
+    this.ranges.put(category,list);
+    return list;
   }
 
   /**
@@ -344,6 +344,8 @@ public class SettingsControl extends AbstractControl
    */
   public void handleStore()
   {
+    boolean haveError = false;
+    
 		Color hf = (Color)getBuchungHabenForeground().getValue();
 		Color sf = (Color)getBuchungSollForeground().getValue();
 
@@ -388,8 +390,25 @@ public class SettingsControl extends AbstractControl
 		  {
 		    Logger.error("unable to store feature",e);
 		    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Speichern der experimentellen Features fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
+		    haveError = true;
 		  }
 		}
+		
+    for (Entry<String,RangeList> n:this.ranges.entrySet())
+    {
+      try
+      {
+        final String cat = n.getKey();
+        final RangeList table = n.getValue();
+        Range.setActiveRanges(cat,table.getItems(true));
+      }
+      catch (Exception e)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Speichern der Zeiträume fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
+        haveError = true;
+      }
+    }
+
     if (changed)
     {
       try
@@ -402,15 +421,8 @@ public class SettingsControl extends AbstractControl
       }
     }
 
-    de.willuhn.jameica.system.Settings rangeSettings = new de.willuhn.jameica.system.Settings(Range.class);
-    for (CheckboxInput range : ranges)
-    {
-      if(range.hasChanged()) {
-        rangeSettings.setAttribute((String) range.getData("id"), (Boolean) range.getValue());
-      }
-    }
-
-		GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert."));
+    if (!haveError)
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert."),StatusBarMessage.TYPE_SUCCESS));
   }
 }
 

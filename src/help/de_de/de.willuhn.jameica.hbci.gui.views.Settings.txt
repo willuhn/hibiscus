@@ -33,7 +33,6 @@
 	</li>
 
 	<li>
-		<b>Zeiträume:</b> Sie können jeweils für die Kategorien Zahlungsverkehr und Auswertungen
-		festlegen, welche Einträge Ihnen in der Zeitraum-Vorauswahl Vorauswahl angeboten werden.
+		<b>Zeiträume:</b> Sie können wählen, welche Zeitraum-Vorauswahlen angeboten werden.
 	</li>
 </form>

@@ -242,9 +242,13 @@ public class SparQuote implements Part
     List<Range> ranges = new ArrayList<Range>();
     for (Range r:Range.getActiveRanges(Range.CATEGORY_AUSWERTUNG))
     {
-      if(r.getStart() == null) {
+      // Zeitraeume ohne Startdatum sind immer lang genug
+      if (r.getStart() == null)
+      {
         ranges.add(r);
-      } else {
+      }
+      else
+      {
         // Wir ueberschlagen das nur grob
         long diff = r.getEnd().getTime() - r.getStart().getTime();
         if (diff > (2 * 30 * 24 * 60 * 60 * 1000L))

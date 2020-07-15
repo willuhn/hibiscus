@@ -30,6 +30,8 @@ public abstract class Range
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
+  private final static Settings settings = new Settings(Range.class);
+  
   private final static Range ALL    = new All();
   private final static Range D_7    = new LastSevenDays();
   private final static Range D_30   = new LastThirtyDays();
@@ -90,7 +92,10 @@ public abstract class Range
     Y_2LAS
   );
 
-  private final static List<Range> OLD_RANGES=Arrays.asList(
+  /**
+   * Die Default-Auswahl der aktiven Zeitraeume.
+   */
+  private final static List<Range> DEFAULT = Arrays.asList(
       D_7,
       D_30,
       W_THIS,
@@ -109,21 +114,46 @@ public abstract class Range
     );
 
   /**
-   * 
+   * Liefert die aktiven Zeitraeume fuer die angegebene Kategorie.
    * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
-   * @return Liste der anzuzeigenden Zeiträume für die gegebene Kategorie 
+   * @return Liste der anzuzeigenden Zeiträume für die gegebene Kategorie. 
    * */
-  public final static List<Range> getActiveRanges(String category){
-    Settings settings=new Settings(Range.class);
-    List<Range> result=new ArrayList<Range>();
+  public final static List<Range> getActiveRanges(final String category)
+  {
+    final List<Range> result = new ArrayList<Range>();
     for (Range range : KNOWN)
     {
-      if(settings.getBoolean(category+"."+range.getId(), OLD_RANGES.contains(range))) {
+      if (settings.getBoolean(category + "." + range.getId(), DEFAULT.contains(range)))
         result.add(range);
-      }
     }
     return result;
   }
+  
+  /**
+   * Speichert die fuer die Kategorie zu verwendenden Zeitraeume.
+   * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
+   * @param ranges Liste der anzuzeigenden Zeiträume für die gegebene Kategorie. 
+   */
+  public final static void setActiveRanges(final String category, List<Range> ranges)
+  {
+    for (Range range : KNOWN)
+    {
+      settings.setAttribute(category + "." + range.getId(), ranges.contains(range));
+    }
+  }
+  
+  /**
+   * Setzte die aktiven Zeitraeume auf die System-Vorgabe zurueck.
+   * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
+   */
+  public final static void resetActiveRanges(final String category)
+  {
+    for (Range range : KNOWN)
+    {
+      settings.setAttribute(category + "." + range.getId(), DEFAULT.contains(range));
+    }
+  }
+
 
   /**
    * Versucht den Range anhand des Identifiers zu ermitteln.
@@ -210,7 +240,7 @@ public abstract class Range
 
   /**
    * Zeitraum ohne Einschränkungen
-   * */
+   **/
   public static class All extends Range
   {
     /**
@@ -317,15 +347,18 @@ public abstract class Range
     }
   }
 
-  private abstract static class LastYears extends Range{
-
+  /**
+   * Abstrakte Basis-Implementierung der Jahres-Zeitraeume.
+   */
+  private abstract static class LastYears extends Range
+  {
     private String text;
     private int years;
 
     protected LastYears(int years, String text)
     {
-      this.years=years;
-      this.text=text;
+      this.years = years;
+      this.text = text;
     }
 
     /**

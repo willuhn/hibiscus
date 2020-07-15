@@ -287,7 +287,7 @@ public class KontoauszugPdfList extends TablePart
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getFrom(),this.getTo(),Range.CATEGORY_ZAHLUNGSVERKEHR,"kontoauszuege.filter.range");
+    this.range = new RangeInput(this.getFrom(),this.getTo(),Range.CATEGORY_AUSWERTUNG,"kontoauszuege.filter.range");
     this.range.addListener(new Listener()
     {
       public void handleEvent(Event event)
