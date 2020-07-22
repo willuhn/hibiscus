@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.io.ser.DateSerializer;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
 import de.willuhn.jameica.hbci.io.ser.ExtendedUsageSerializer;
@@ -23,7 +22,6 @@ import de.willuhn.jameica.hbci.io.ser.UmsatzTypSerializer;
 import de.willuhn.jameica.hbci.io.ser.ValueSerializer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
-import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -128,10 +126,6 @@ public class UmsatzFormat implements Format<Umsatz>
             Object context = event.context;
             if (context != null && (context instanceof Konto))
               u.setKonto((Konto)context);
-            
-            // Wenn die Verwendungszweck-Zeilen laenger als 35 Zeichen sind, fuegen wir sie neu zusammen
-            String[] lines = VerwendungszweckUtil.rewrap(HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH,VerwendungszweckUtil.toArray(u));
-            VerwendungszweckUtil.apply(u,lines);
           }
           catch (Exception e)
           {
