@@ -1,8 +1,9 @@
 HEAD 2.9 (nightly)
 
-  * Rewrappen der Zeilenumbrüche beim CSV-Import von Umsätzen entfernt, da die erste Zeile inzwischen 255 Zeichen fassen kann
-  * Konfigurierbare Auswahl der Zeitrum-Presets - siehe https://github.com/willuhn/hibiscus/pull/64
-  * Umsätze nach ID suchbar - siehe https://homebanking-hilfe.de/forum/topic.php?t=24095
+  * BUG: 0902 Update auf HBCI4Java 3.1.43 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.43 - HKTAN: Das 7. DE "Weitere TAN folgt" darf nur bei Prozess-Variante 1 und 2 belegt werden
+  * NEW: 0901 Rewrappen der Zeilenumbrüche beim CSV-Import von Umsätzen entfernt, da die erste Zeile inzwischen 255 Zeichen fassen kann
+  * NEW: 0900 Konfigurierbare Auswahl der Zeitrum-Presets - siehe https://github.com/willuhn/hibiscus/pull/64
+  * NEW: 0899 Umsätze nach ID suchbar - siehe https://homebanking-hilfe.de/forum/topic.php?t=24095
   * NEW: 0898 Versionsinformationen auch beim Testen des Bankzugangs mit loggen - siehe https://homebanking-hilfe.de/forum/topic.php?p=156239#real156239
 
 2020-07-08 Version 2.8.24
