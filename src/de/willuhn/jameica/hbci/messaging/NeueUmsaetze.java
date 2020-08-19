@@ -16,6 +16,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.Message;
@@ -113,18 +114,39 @@ public class NeueUmsaetze implements MessageConsumer
     return false;
   }
   
+  /**
+   * Setzt den Ungelesen-Zaehler der Umsaetze zurueck.
+   */
+  public static void reset()
+  {
+    if (first == null)
+      return;
+
+    try
+    {
+      first = null;
+      
+      // Anzeige aktualisieren
+      // Im Prinzip koennten wir fuer jeden Umsaetze, der vorher als neu galt, eine ObjectChangedMessage schicken
+      // Das funktioniert aber nicht ganz sauber, denn:
+      // 1) In der Umsatzliste wird der Fettdruck zwar entfernt. Da sich dabei aber die Objekt-Referenzen aendern
+      //    (die Umsaetze wuerden hier ja neu geladen werden), hat das u.U. zu Konsequenz, dass ein Umsatz nicht mehr
+      //    verschwindet, wenn man ihn direkt danach loescht. Erst beim Neuladen der View ist er weg.
+      // 2) Wenn auf der Startseite die View "Neue Umsätze" aktiv ist, würde dort nur die Fett-Markierung entfernt
+      //    werden. Stattdessen müssen die Umsätze dort aber entfernt werden.
+      
+      // Daher schicken wir keine ObjectChangeMessage sondern laden die aktuelle View neu.
+      // GUI.getCurrentView().reload() wird von vielen Views nicht implementiert. Daher starten wir die View neu
+      GUI.startView(GUI.getCurrentView(),GUI.getCurrentView().getCurrentObject());
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to refresh view",e);
+    }
+    finally
+    {
+      GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",0);
+    }
+  }
+  
 }
-
-
-/*********************************************************************
- * $Log: NeueUmsaetze.java,v $
- * Revision 1.8  2011/06/30 16:29:42  willuhn
- * @N Unterstuetzung fuer neues UnreadCount-Feature
- *
- * Revision 1.7  2011-01-05 11:20:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2011-01-05 11:19:10  willuhn
- * @N Fettdruck (bei neuen Umsaetzen) und grauer Text (bei Vormerkbuchungen) jetzt auch in "Umsaetze nach Kategorien"
- * @N NeueUmsaetze.isNew(Umsatz) zur Pruefung, ob ein Umsatz neu ist
- **********************************************************************/
