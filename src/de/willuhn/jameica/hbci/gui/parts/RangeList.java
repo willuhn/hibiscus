@@ -78,9 +78,7 @@ public class RangeList extends TablePart
     final List<Range> active = Range.getActiveRanges(category);
     for (Range r:Range.KNOWN)
     {
-      final boolean b = active.contains(r);
-      System.out.println(category + ": " + r + ": " + b);
-      this.addItem(r,b);
+      this.addItem(r,active.contains(r));
     }
   }
 
