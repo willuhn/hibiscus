@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0904 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.09.2020
   * NEW: 0903 Neue Option "Alle als gelesen markieren" im Kontextmenü der Umsatzliste
   * BUG: 0902 Update auf HBCI4Java 3.1.43 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.43 - HKTAN: Das 7. DE "Weitere TAN folgt" darf nur bei Prozess-Variante 1 und 2 belegt werden
   * NEW: 0901 Rewrappen der Zeilenumbrüche beim CSV-Import von Umsätzen entfernt, da die erste Zeile inzwischen 255 Zeichen fassen kann
