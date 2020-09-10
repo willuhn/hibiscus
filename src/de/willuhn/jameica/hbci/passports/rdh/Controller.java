@@ -521,7 +521,7 @@ public class Controller extends AbstractControl {
     catch (Exception e)
     {
       Logger.error("error while testing passport",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Synchronisieren des Bank-Zugangs: {}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Synchronisieren des Bank-Zugangs: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
 
