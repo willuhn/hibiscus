@@ -53,6 +53,7 @@ import de.willuhn.jameica.hbci.gui.input.PassportInput;
 import de.willuhn.jameica.hbci.gui.parts.ProtokollList;
 import de.willuhn.jameica.hbci.gui.parts.SaldoChart;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -740,21 +741,25 @@ public class KontoControl extends AbstractControl
   /**
    * Speichert das Konto.
    */
-  public synchronized void handleStore() {
-		try {
+  public synchronized void handleStore()
+  {
+		try
+		{
 
       boolean offline = ((Boolean)getOffline().getValue()).booleanValue();
+      
+      final Konto k = this.getKonto();
 
 			if (offline)
 			{
-        getKonto().setBackendClass(null);
-			  getKonto().setPassportClass(null);
-			  getKonto().setSaldo(((Double)getSaldo().getValue()).doubleValue());
+        k.setBackendClass(null);
+			  k.setPassportClass(null);
+			  k.setSaldo(((Double)getSaldo().getValue()).doubleValue());
 			}
 			else
 			{
         SynchronizeBackend backend = (SynchronizeBackend) getBackendAuswahl().getValue();
-        getKonto().setBackendClass(backend != null ? backend.getClass().getName() : null);
+        k.setBackendClass(backend != null ? backend.getClass().getName() : null);
         
         BeanService service = Application.getBootLoader().getBootable(BeanService.class);
         final SynchronizeBackend hbci = service.get(HBCISynchronizeBackend.class);
@@ -768,37 +773,37 @@ public class KontoControl extends AbstractControl
 	      }
 	      else
 	      {
-          getKonto().setPassportClass(p != null ? p.getClass().getName() : null);
+          k.setPassportClass(p != null ? p.getClass().getName() : null);
 	      }
 			}
 			
 			
 			applyOfflineState(offline);
 
-			getKonto().setKontonummer((String)getKontonummer().getValue());
-      getKonto().setUnterkonto((String)getUnterkonto().getValue());
-			getKonto().setBLZ((String)getBlz().getValue());
-			getKonto().setName((String)getName().getValue());
-			getKonto().setBezeichnung((String)getBezeichnung().getValue());
-      getKonto().setKundennummer((String)getKundennummer().getValue());
-      getKonto().setKommentar((String) getKommentar().getValue());
-      getKonto().setIban((String)getIban().getValue());
-      getKonto().setBic((String)getBic().getValue());
-      getKonto().setKategorie((String)getKategorie().getValue());
+			k.setKontonummer((String)getKontonummer().getValue());
+      k.setUnterkonto((String)getUnterkonto().getValue());
+			k.setBLZ((String)getBlz().getValue());
+			k.setName((String)getName().getValue());
+			k.setBezeichnung((String)getBezeichnung().getValue());
+      k.setKundennummer((String)getKundennummer().getValue());
+      k.setKommentar((String) getKommentar().getValue());
+      k.setIban((String)getIban().getValue());
+      k.setBic((String)getBic().getValue());
+      k.setKategorie((String)getKategorie().getValue());
       
-      getKonto().setAccountType((Integer) getAccountType().getValue());
+      k.setAccountType((Integer) getAccountType().getValue());
       
       // und jetzt speichern wir.
-			getKonto().store();
+			k.store();
 			
 			// die beiden Buttons aktivieren
 			this.getProtoButton().setEnabled(true);
 			this.getDelButton().setEnabled(true);
-			this.getSynchronizeOptions().setEnabled(!getKonto().hasFlag(Konto.FLAG_DISABLED));
-			GUI.getStatusBar().setSuccessText(i18n.tr("Konto gespeichert."));
-
-      // BUGZILLA 1356
-      Application.getMessagingFactory().sendMessage(new SaldoMessage(getKonto()));
+			this.getSynchronizeOptions().setEnabled(!k.hasFlag(Konto.FLAG_DISABLED));
+			
+			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Konto gespeichert."),StatusBarMessage.TYPE_SUCCESS));
+      Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(k));
+      Application.getMessagingFactory().sendMessage(new SaldoMessage(k));
 		}
 		catch (ApplicationException e1)
 		{
