@@ -541,7 +541,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     } else if (o == null || (o instanceof String))
     {
       boolean onlyActive = ((Boolean) this.getActiveOnly().getValue()).booleanValue();
-      settings.setAttribute("umsatzlist.filter.active", onlyActive);
       String group = o != null && (o instanceof String) ? (String) o : null;
 
       List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);

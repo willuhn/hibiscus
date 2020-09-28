@@ -11,7 +11,9 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -22,9 +24,9 @@ import org.eclipse.swt.widgets.TabFolder;
 
 import com.google.common.base.Objects;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.MultiInput;
@@ -37,7 +39,6 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
@@ -49,6 +50,7 @@ import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -68,6 +70,7 @@ public class SaldoChart implements Part
   private static final String FORCE = "FORCE";
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
   private Konto konto             = null;
   private boolean tiny            = false;
@@ -77,6 +80,7 @@ public class SaldoChart implements Part
   private DateInput start          = null;
   private DateInput end            = null;
   private RangeInput range         = null;
+  private CheckboxInput onlyActive = null;
   private Listener reloadListener = new ReloadListener();
 
   private LineChart chart         = null;
@@ -193,6 +197,29 @@ public class SaldoChart implements Part
   }
 
   /**
+   * Liefert die Checkbox, mit der eingestellt werden kann, ob nur aktive Konten angezeigt werden sollen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getActiveOnly()
+  {
+    if (this.onlyActive != null)
+      return this.onlyActive;
+    
+    this.onlyActive = new CheckboxInput(settings.getBoolean("auswertungen.saldochart.filter.active",false));
+    this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
+    this.onlyActive.addListener(this.reloadListener);
+    this.onlyActive.addListener(new org.eclipse.swt.widgets.Listener() {
+
+      @Override
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("auswertungen.einnahmeausgabe.filter.active", (Boolean) onlyActive.getValue());
+      }
+    });
+    return this.onlyActive;
+  }
+
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public void paint(Composite parent) throws RemoteException
@@ -219,6 +246,7 @@ public class SaldoChart implements Part
           
           Container left = new SimpleContainer(cols.getComposite());
           left.addInput(getKontoAuswahl());
+          left.addInput(this.getActiveOnly());
           
           Container right = new SimpleContainer(cols.getComposite());
             
@@ -303,6 +331,36 @@ public class SaldoChart implements Part
       return (Date) getEnd().getValue();
     }
   }
+  
+  /**
+   * Liefert die ausgewaehlten Konten.
+   * @return
+   * @throws RemoteException
+   */
+  private List<Konto> getSelectedAccounts() throws RemoteException
+  {
+    final List<Konto> result = new ArrayList<>();
+    final Object o = this.getKontoAuswahl().getValue();
+    if (o instanceof Konto)
+    {
+      result.add((Konto) o);
+    }
+    else if (o == null || (o instanceof String))
+    {
+      boolean onlyActive = ((Boolean) this.getActiveOnly().getValue()).booleanValue();
+      String group = o != null && (o instanceof String) ? (String) o : null;
+
+      List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
+      for (Konto k : konten)
+      {
+        if (group == null || Objects.equal(group, k.getKategorie()))
+        {
+          result.add(k);
+        }
+      }
+    }
+    return result;
+  }
 
   /**
    * Laedt den Chart neu.
@@ -334,6 +392,7 @@ public class SaldoChart implements Part
 
         final boolean changed = !Objects.equal(start, startPrev) ||
                                 !Objects.equal(end, endPrev) ||
+                                getActiveOnly().hasChanged() ||
                                 o != oPrev;
 
         final boolean force = event != null && event.data == FORCE;
@@ -346,26 +405,24 @@ public class SaldoChart implements Part
         String startString = start != null ? HBCI.DATEFORMAT.format(start) : "";
         String endString = end != null ? HBCI.DATEFORMAT.format(end) : "";
         chart.setTitle(i18n.tr("Saldo-Verlauf {0} - {1}", startString, endString));
-        
-        if (o == null || !(o instanceof Konto)) // wir zeichnen einen Stacked-Graph ueber alle Konten 
+
+        List<Konto> konten = getSelectedAccounts();
+        if (konten.size() > 1)
         {
-          DBIterator it = Settings.getDBService().createList(Konto.class);
-          it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
-          if (o != null && (o instanceof String)) it.addFilter("kategorie = ?", (String) o);
-          ChartDataSaldoSumme s = new ChartDataSaldoSumme();
-          while (it.hasNext())
+          // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
+          final ChartDataSaldoSumme s = new ChartDataSaldoSumme();
+          for (Konto k:konten)
           {
-            ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf((Konto)it.next(),start, end);
+            ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf(k,start, end);
             chart.addData(v);
             s.add(v.getData());
           }
-
           ChartDataSaldoTrend t = new ChartDataSaldoTrend();
           t.add(s.getData());
           chart.addData(s);
           chart.addData(t);
         }
-        else // Ansonsten nur fuer eine
+        else
         {
           ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o, start, end);
           ChartDataSaldoTrend   t = new ChartDataSaldoTrend();
@@ -373,7 +430,6 @@ public class SaldoChart implements Part
           chart.addData(s);
           chart.addData(t);
         }
-        
         
         if (event != null)
         {

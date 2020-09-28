@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0908 Option "Nur aktive Konten" jetzt auch bei "Saldo im Verlauf"
   * BUG: 0907 Update auf HBCI4Java 3.1.46 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.46
   * BUG: 0906 Update auf HBCI4Java 3.1.45 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.45
   * BUG: 0905 Update auf HBCI4Java 3.1.44 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.44
