@@ -31,7 +31,10 @@ import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -42,22 +45,22 @@ import de.willuhn.util.I18N;
 
 /**
  * Controller fuer die Umsatz-Kategorien.
- * @author willuhn
  */
 public class UmsatzTypControl extends AbstractControl
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private I18N i18n             = null;
+  private UmsatzTyp ut              = null;
 
-  private UmsatzTyp ut          = null;
-
-  private TextInput name        = null;
-  private TextInput nummer      = null;
-  private TextInput pattern     = null;
-  private CheckboxInput regex   = null;
-  private SelectInput art       = null;
-  private UmsatzTypInput parent = null;
-  private TextInput kommentar        = null;
+  private TextInput name            = null;
+  private TextInput nummer          = null;
+  private TextInput pattern         = null;
+  private CheckboxInput regex       = null;
+  private SelectInput art           = null;
+  private UmsatzTypInput parent     = null;
+  private TextInput kommentar       = null;
+  private KontoInput konto          = null;
+  private CheckboxInput skipReport  = null;
   
   private ColorInput color          = null;
   private CheckboxInput customColor = null;
@@ -68,7 +71,6 @@ public class UmsatzTypControl extends AbstractControl
   public UmsatzTypControl(AbstractView view)
   {
     super(view);
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
   
   /**
@@ -128,7 +130,7 @@ public class UmsatzTypControl extends AbstractControl
     if (this.nummer == null)
     {
       this.nummer = new TextInput(getUmsatzTyp().getNummer(),5);
-      this.nummer.setHint(i18n.tr("Wird für die Sortierung verwendet"));
+      this.nummer.setHint(i18n.tr("Wird auch für die Sortierung verwendet"));
       this.nummer.setMandatory(false);
     }
     return this.nummer;
@@ -277,6 +279,43 @@ public class UmsatzTypControl extends AbstractControl
     this.parent.setComment("");
     return this.parent;
   }
+  
+  /**
+   * Liefert ein Auswahlfeld fuer das Konto.
+   * @return Auswahl-Feld.
+   * @throws RemoteException
+   */
+  public KontoInput getKonto() throws RemoteException
+  {
+    if (this.konto != null)
+      return this.konto;
+    
+    final String kat = this.getUmsatzTyp().getKontoKategorie();
+    final Konto k = this.getUmsatzTyp().getKonto();
+    this.konto = new KontoInput(k,KontoFilter.ALL);
+    this.konto.setComment(null);
+    this.konto.setPleaseChoose("<" + i18n.tr("keine Einschränkung") + ">");
+    this.konto.setSupportGroups(true);
+    this.konto.setName(i18n.tr("Nur für Konto/Gruppe"));
+    if (kat != null && kat.length() > 0)
+      this.konto.setValue(kat);
+    return this.konto;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der festgelegt werden kann, ob eine Kategorie in den Auswertungen ignoriert werden soll.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getSkipReport() throws RemoteException
+  {
+    if (this.skipReport != null)
+      return this.skipReport;
+    
+    this.skipReport = new CheckboxInput(this.getUmsatzTyp().hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS));
+    this.skipReport.setName(i18n.tr("In Auswertungen ignorieren"));
+    return this.skipReport;
+  }
 
   /**
    * Speichert die Einstellungen.
@@ -284,7 +323,8 @@ public class UmsatzTypControl extends AbstractControl
    */
   public synchronized boolean handleStore()
   {
-    try {
+    try
+    {
       UmsatzTypObject t = (UmsatzTypObject) getArt().getValue();
       
       UmsatzTyp ut = getUmsatzTyp();
@@ -295,6 +335,38 @@ public class UmsatzTypControl extends AbstractControl
       ut.setPattern((String)getPattern().getValue());
       ut.setRegex(((Boolean)getRegex().getValue()).booleanValue());
       ut.setParent((UmsatzTyp)getParent().getValue());
+
+      //////////////////////////////////////////////////////////////
+      // Konto-Zuordnung
+      Object k = this.getKonto().getValue();
+      if (k == null)
+      {
+        ut.setKonto(null);
+        ut.setKontoKategorie(null);
+      }
+      else
+      {
+        if (k instanceof Konto)
+          ut.setKonto((Konto) k);
+        else
+          ut.setKontoKategorie((String) k);
+      }
+      //
+      //////////////////////////////////////////////////////////////
+      
+      //////////////////////////////////////////////////////////////
+      // Skip-Reports-Flag
+      final boolean skip = ((Boolean)this.getSkipReport().getValue()).booleanValue();
+      final int flags = ut.getFlags();
+      final boolean have = ut.hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS);
+      
+      if (skip && !have)
+        ut.setFlags(flags | UmsatzTyp.FLAG_SKIP_REPORTS);
+      else if (!skip && have)
+        ut.setFlags(flags ^ UmsatzTyp.FLAG_SKIP_REPORTS);
+      //
+      //////////////////////////////////////////////////////////////
+
       
       boolean b = ((Boolean)getCustomColor().getValue()).booleanValue();
       ut.setCustomColor(b);

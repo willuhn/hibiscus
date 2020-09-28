@@ -186,7 +186,10 @@ public class UmsatzTree extends TreePart
       while (list.hasNext())
       {
         Umsatz u = (Umsatz) list.next();
-        getNode(lookup,u.getUmsatzTyp()).add(u);
+        
+        UmsatzTreeNode node = getNode(lookup,u.getUmsatzTyp());
+        if (node != null)
+          node.add(u);
       }
       ////////////////////////////////////////////////////////////////
 
@@ -235,6 +238,11 @@ public class UmsatzTree extends TreePart
     if (node != null)
       return node; // haben wir schon.
     
+    // "ut" null gibt es. Das ist der Fall, wenn ein Umsatz keiner Kategorie zugeordnet ist.
+    // Wir wollen hier aber geziehlt die raus haben, die nicht in den Auswertungen erscheinen sollen.
+    if (ut != null && ut.hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS))
+      return null;
+    
     // Neu anlegen
     node = new UmsatzTreeNode(ut);
     lookup.put(ut.getID(),node);
@@ -244,6 +252,9 @@ public class UmsatzTree extends TreePart
     if (parent != null)
     {
       UmsatzTreeNode np = getNode(lookup,parent);
+      if (np == null) // Die uebergeordnete Kategorie soll schon nicht angezeigt werden - dann koennen wir hier auch draussen bleiben
+        return null;
+      
       node.setParent(np);
       np.getSubGroups().add(node);
     }

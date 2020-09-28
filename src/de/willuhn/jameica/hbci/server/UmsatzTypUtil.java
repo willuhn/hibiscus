@@ -28,6 +28,7 @@ import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.datasource.rmi.Listener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
@@ -739,6 +740,45 @@ public class UmsatzTypUtil
     public String getKommentar() throws RemoteException
     {
       return null;
+    }
+
+    @Override
+    public Konto getKonto() throws RemoteException
+    {
+      return null;
+    }
+
+    @Override
+    public void setKonto(Konto konto) throws RemoteException
+    {
+    }
+
+    @Override
+    public String getKontoKategorie() throws RemoteException
+    {
+      return null;
+    }
+
+    @Override
+    public void setKontoKategorie(String kategorie) throws RemoteException
+    {
+    }
+
+    @Override
+    public int getFlags() throws RemoteException
+    {
+      return UmsatzTyp.FLAG_NONE;
+    }
+
+    @Override
+    public void setFlags(int flags) throws RemoteException
+    {
+    }
+
+    @Override
+    public boolean hasFlag(int flag) throws RemoteException
+    {
+      return false;
     };
   }
 }

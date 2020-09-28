@@ -41,6 +41,16 @@ public interface UmsatzTyp extends DBObjectNode
    */
   public final static int MAXLENGTH_PATTERN = 1000;
   
+  /**
+   * Flag "kein Flag".
+   */
+  public final static int FLAG_NONE    = 0;
+
+  /**
+   * Flag "In Auswertungen ignorieren".
+   */
+  public final static int FLAG_SKIP_REPORTS = 1 << 0;
+  
 	/**
 	 * Liefert den Namen des Umsatz-Typs.
    * @return Name des Umsatz-Typs.
@@ -235,72 +245,60 @@ public interface UmsatzTyp extends DBObjectNode
    * @throws RemoteException
    */
   public void setCustomColor(boolean b) throws RemoteException;
+  
+  /**
+   * Liefert das optional zugeordnete Konto.
+   * @return Konto.
+   * @throws RemoteException
+   */
+  public Konto getKonto() throws RemoteException;
+  
+  /**
+   * Speichert das optional zugeordnete Konto.
+   * @param konto Konto.
+   * @throws RemoteException
+   */
+  public void setKonto(Konto konto) throws RemoteException;
+  
+  /**
+   * Liefert eine optionale Konto-Kategorie.
+   * @return eine optionale Konto-Kategorie.
+   * @throws RemoteException
+   */
+  public String getKontoKategorie() throws RemoteException;
+  
+  /**
+   * Speichert eine optionale Konto-Kategorie.
+   * @param kategorie die optionale Konto-Kategorie.
+   * @throws RemoteException
+   */
+  public void setKontoKategorie(String kategorie) throws RemoteException;
+  
+  /**
+   * Liefert ein Bit-Feld mit Flags.
+   * Ein Objekt kann mit verschiedenen Flags markiert
+   * werden. Das kann zum Beispiel "deaktiviert" sein.
+   * Damit fuer kuenftige weitere Flags nicht immer
+   * ein neues Feld zur Datenbank hinzugefuegt werden
+   * muss, verwenden wir hier ein Bitfeld. Damit koennen
+   * mehrere Flags in einem Wert codiert werden.
+   * @return Bit-Feld mit den Flags des Objektes.
+   * @throws RemoteException
+   */
+  public int getFlags() throws RemoteException;
+  
+  /**
+   * Speichert die Flags einen Objektes.
+   * @param flags die Flags in Form eines Bit-Feldes.
+   * @throws RemoteException
+   */
+  public void setFlags(int flags) throws RemoteException;
+  
+  /**
+   * Prueft, ob das angegebene Flag vorhanden ist.
+   * @param flag das zu pruefende Flag.
+   * @return true, wenn es gesetzt ist.
+   * @throws RemoteException
+   */
+  public boolean hasFlag(int flag) throws RemoteException;
 }
-
-
-/**********************************************************************
- * $Log: UmsatzTyp.java,v $
- * Revision 1.19  2012/01/02 22:32:20  willuhn
- * @N BUGZILLA 1170
- *
- * Revision 1.18  2011-07-20 15:41:36  willuhn
- * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
- *
- * Revision 1.17  2009/05/08 13:58:30  willuhn
- * @N Icons in allen Menus und auf allen Buttons
- * @N Fuer Umsatz-Kategorien koennen nun benutzerdefinierte Farben vergeben werden
- *
- * Revision 1.16  2009/02/23 23:44:50  willuhn
- * @N Etwas Code fuer Support fuer Unter-/Ober-Kategorien
- *
- * Revision 1.15  2008/08/29 16:46:24  willuhn
- * @N BUGZILLA 616
- *
- * Revision 1.14  2008/02/26 01:01:16  willuhn
- * @N Update auf Birt 2 (bessere Zeichen-Qualitaet, u.a. durch Anti-Aliasing)
- * @N Neuer Chart "Umsatz-Kategorien im Verlauf"
- * @N Charts erst beim ersten Paint-Event zeichnen. Dadurch laesst sich z.Bsp. die Konto-View schneller oeffnen, da der Saldo-Verlauf nicht berechnet werden muss
- *
- * Revision 1.13  2007/03/10 07:18:36  jost
- * Neu: Nummer für die Sortierung der Umsatz-Kategorien
- *
- * Revision 1.12  2007/03/06 20:06:40  jost
- * Neu: Umsatz-Kategorien-Übersicht
- *
- * Revision 1.11  2006/11/29 00:40:37  willuhn
- * @N Keylistener in Umsatzlist nur dann ausfuehren, wenn sich wirklich etwas geaendert hat
- * @C UmsatzTyp.matches matcht jetzt bei leeren Pattern nicht mehr
- *
- * Revision 1.10  2006/11/23 23:24:17  willuhn
- * @N Umsatz-Kategorien: DB-Update, Edit
- *
- * Revision 1.9  2006/04/03 21:39:07  willuhn
- * @N UmsatzChart
- *
- * Revision 1.8  2005/12/30 00:14:45  willuhn
- * @N first working pie charts
- *
- * Revision 1.7  2005/12/29 01:22:12  willuhn
- * @R UmsatzZuordnung entfernt
- * @B Debugging am Pie-Chart
- *
- * Revision 1.6  2005/12/20 00:03:27  willuhn
- * @N Test-Code fuer Tortendiagramm-Auswertungen
- *
- * Revision 1.5  2005/12/13 00:06:38  willuhn
- * @N UmsatzTyp erweitert
- *
- * Revision 1.4  2005/12/05 20:16:15  willuhn
- * @N Umsatz-Filter Refactoring
- *
- * Revision 1.3  2005/12/05 17:20:40  willuhn
- * @N Umsatz-Filter Refactoring
- *
- * Revision 1.2  2005/11/14 23:47:21  willuhn
- * @N added first code for umsatz categories
- *
- * Revision 1.1  2004/05/25 23:23:17  willuhn
- * @N UeberweisungTyp
- * @N Protokoll
- *
- **********************************************************************/

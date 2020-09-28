@@ -213,6 +213,9 @@ CREATE TABLE umsatztyp (
   color varchar(11) NULL,
   customcolor int(1) NULL,
   kommentar varchar(1000) NULL,
+  konto_id int(4) NULL,
+  konto_kategorie varchar(255) NULL,
+  flags int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -423,6 +426,7 @@ ALTER TABLE sepasueb ADD CONSTRAINT fk_konto11 FOREIGN KEY (konto_id) REFERENCES
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasueb1 FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id) DEFERRABLE;
 ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_konto12 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE kontoauszug ADD CONSTRAINT fk_konto13 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE umsatztyp ADD CONSTRAINT fk_konto14 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;
@@ -449,6 +453,6 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',67);
+INSERT INTO version (name,version) values ('db',68);
   
 COMMIT;

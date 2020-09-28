@@ -190,7 +190,10 @@ CREATE TABLE umsatztyp (
   parent_id integer NULL,
   color varchar(11) NULL,
   customcolor integer NULL,
-  kommentar varchar(1000) NULL
+  kommentar varchar(1000) NULL,
+  konto_id integer NULL,
+  konto_kategorie varchar(255) NULL,
+  flags integer NULL
 );
 
 CREATE TABLE dauerauftrag (
@@ -372,6 +375,7 @@ ALTER TABLE sepasueb ADD CONSTRAINT fk_konto11 FOREIGN KEY (konto_id) REFERENCES
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasueb1 FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id) DEFERRABLE;
 ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_konto12 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE kontoauszug ADD CONSTRAINT fk_konto13 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE umsatztyp ADD CONSTRAINT fk_konto14 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 INSERT INTO turnus (zeiteinheit,intervall,tag,initial)
   VALUES (2,1,1,1);
@@ -395,4 +399,4 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',67);
+INSERT INTO version (name,version) values ('db',68);

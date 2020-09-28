@@ -24,9 +24,11 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -264,6 +266,27 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         return false;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Zuordnung einer Kategorie zu einem Konto oder einer Kontogruppe
+    final String kat = this.getKontoKategorie();
+    final Konto k = this.getKonto();
+    if (k != null || (kat != null && kat.length() > 0))
+    {
+      final Konto test = umsatz.getKonto();
+      if (test != null) // sicher ist sicher
+      {
+        // Zuordnung zum Konto
+        if (k != null && !k.equals(test))
+          return false;
+        
+        // Zuordnung zur Gruppe
+        if (kat != null && !kat.equals(test.getKategorie()))
+          return false;
+      }
+    }
+    //
+    ////////////////////////////////////////////////////////////////////////
+
     String s = this.getPattern();
     if (s == null || s.trim().length() == 0)
       return false;
@@ -452,6 +475,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
+    if ("konto_id".equals(arg0))
+      return getKonto();
+
     // BUGZILLA 554
     if ("nummer-int".equals(arg0))
     {
@@ -474,6 +500,24 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       return new Double(getUmsatz());
 
     return super.getAttribute(arg0);
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#overwrite(de.willuhn.datasource.rmi.DBObject)
+   */
+  public void overwrite(DBObject object) throws RemoteException
+  {
+    // Muessen wir ueberschreiben, weil wir fuer das Konto hier eine
+    // Sonderbehandlung machen. Wuerden wir das hier nicht machen,
+    // haetten wir nach dem Overwrite ploetzlich ein Konto-Objekt
+    // statt der Konto-ID in den Properties. Das liegt eigentlich
+    // nur daran, weil wir "konto_id" hier nicht als Foreign-Key
+    // (wegen dem Cache) deklariert haben - bei "getAttribute("konto_id")"
+    // aber trotzdem das Objekt (wegen KontoColumn) zurueckliefern.
+    super.overwrite(object);
+    
+    // Jetzt ersetzen wir wieder das Konto-Objekt gegen die ID
+    this.setKonto(((AbstractHibiscusTransferImpl)object).getKonto());
   }
 
   /**
@@ -672,60 +716,90 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     t.setRegex(this.isRegex());
     t.setKommentar(this.getKommentar());
     t.setTyp(this.getTyp());
+    t.setKonto(this.getKonto());
+    t.setKontoKategorie(this.getKontoKategorie());
+    t.setFlags(this.getFlags());
     return t;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getKonto()
+   */
+  @Override
+  public Konto getKonto() throws RemoteException
+  {
+    Integer i = (Integer) super.getAttribute("konto_id");
+    if (i == null)
+      return null; // Kein Konto zugeordnet
+   
+    Cache cache = Cache.get(Konto.class,true);
+    return (Konto) cache.get(i);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
+   */
+  @Override
+  public void setKonto(Konto konto) throws RemoteException
+  {
+    final Integer id = (konto == null || konto.getID() == null) ? null : new Integer(konto.getID());
+    setAttribute("konto_id",id);
+    
+    // Eine Zuordnung kann nur zu Konto ODER Kategorie moeglich sein - nicht beides gleichzeitig
+    if (id != null)
+      this.setKontoKategorie(null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getKontoKategorie()
+   */
+  @Override
+  public String getKontoKategorie() throws RemoteException
+  {
+    return (String) this.getAttribute("konto_kategorie");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setKontoKategorie(java.lang.String)
+   */
+  @Override
+  public void setKontoKategorie(String kategorie) throws RemoteException
+  {
+    this.setAttribute("konto_kategorie",kategorie);
+    
+    // Eine Zuordnung kann nur zu Konto ODER Kategorie moeglich sein - nicht beides gleichzeitig
+    if (kategorie != null && kategorie.length() > 0)
+      this.setAttribute("konto_id",null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#hasFlag(int)
+   */
+  @Override
+  public boolean hasFlag(int flag) throws RemoteException
+  {
+    return (this.getFlags() & flag) == flag;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
+   */
+  @Override
+  public int getFlags() throws RemoteException
+  {
+    Integer i = (Integer) this.getAttribute("flags");
+    return i == null ? Konto.FLAG_NONE : i.intValue();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
+   */
+  @Override
+  public void setFlags(int flags) throws RemoteException
+  {
+    if (flags < 0)
+      return; // ungueltig
+    
+    this.setAttribute("flags",new Integer(flags));
+  }
 }
-
-/*******************************************************************************
- * $Log: UmsatzTypImpl.java,v $
- * Revision 1.66  2012/04/05 21:44:18  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.65  2012/01/02 22:32:20  willuhn
- * @N BUGZILLA 1170
- *
- * Revision 1.64  2011-07-20 15:41:36  willuhn
- * @N Neue Funktion UmsatzTyp#matches(Umsatz,boolean allowReassign) - normalerweise liefert die Funktion ohne das Boolean false, wenn der Umsatz bereits manuell einer anderen Kategorie zugeordnet ist. Andernfalls kaeme es hier ja - zumindest virtuell - zu einer Doppel-Zuordnung. Da "UmsatzList" jedoch fuer den Suchbegriff (den man oben eingeben kann) intern on-the-fly einen UmsatzTyp erstellt, mit dem die Suche erfolgt, wuerden hier bereits fest zugeordnete Umsaetze nicht mehr gefunden werden. Daher die neue Funktion.
- *
- * Revision 1.63  2011-04-27 11:07:02  willuhn
- * @B Umsaetze, die bereits fest zugeordnet sind, duerfen nicht gematcht werden
- *
- * Revision 1.62  2011-01-20 17:13:21  willuhn
- * @C HBCIProperties#startOfDay und HBCIProperties#endOfDay nach Jameica in DateUtil verschoben
- *
- * Revision 1.61  2011-01-10 22:29:24  willuhn
- * @B BUGZILLA 977
- *
- * Revision 1.60  2010-12-14 12:47:59  willuhn
- * @B Cache wurde nicht immer korrekt aktualisiert, was dazu fuehren konnte, dass sich das Aendern/Loeschen/Anlegen von Kategorien erst nach 10 Sekunden auswirkte und bis dahin Umsaetze der Kategorie "nicht zugeordnet" zugewiesen wurden, obwohl sie in einer Kategorie waren
- *
- * Revision 1.59  2010-12-14 11:54:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.58  2010-12-07 11:10:33  willuhn
- * @C Verwendungszweck beim Matching mergen
- * @N Pattern-Cache
- *
- * Revision 1.57  2010-11-24 16:27:17  willuhn
- * @R Eclipse BIRT komplett rausgeworden. Diese unsaegliche Monster ;)
- * @N Stattdessen verwenden wir jetzt SWTChart (http://www.swtchart.org). Das ist statt den 6MB von BIRT sagenhafte 250k gross
- *
- * Revision 1.56  2010-08-26 12:53:08  willuhn
- * @N Cache nur befuellen, wenn das explizit gefordert wird. Andernfalls wuerde der Cache u.U. unnoetig gefuellt werden, obwohl nur ein Objekt daraus geloescht werden soll
- *
- * Revision 1.55  2010-08-26 11:31:23  willuhn
- * @N Neuer Cache. In dem werden jetzt die zugeordneten Konten von Auftraegen und Umsaetzen zwischengespeichert sowie die Umsatz-Kategorien. Das beschleunigt das Laden der Umsaetze und Auftraege teilweise erheblich
- *
- * Revision 1.54  2010/06/02 15:32:03  willuhn
- * @N Unique-Constraint auf Spalte "name" in Tabelle "umsatztyp" entfernt. Eine Kategorie kann jetzt mit gleichem Namen beliebig oft auftreten
- * @N Auswahlbox der Oberkategorie in Einstellungen->Umsatz-Kategorien zeigt auch die gleiche Baumstruktur wie bei der Zuordnung der Kategorie in der Umsatzliste
- *
- * Revision 1.53  2010/04/11 20:56:53  willuhn
- * @N BUGZILLA #846
- *
- * Revision 1.52  2010/03/05 20:16:44  willuhn
- * @B ClassCastException - siehe BUGZILLA 686
- *
- * Revision 1.51  2010/03/05 17:54:13  willuhn
- * @C Umsatz-Kategorien nach Nummer und anschliessend nach Name sortieren
- ******************************************************************************/

@@ -32,7 +32,9 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
@@ -71,6 +73,7 @@ public class UmsatzTypList extends TablePart implements Part
         return UmsatzTypUtil.getNameForType(((Integer) o).intValue());
       }
     });
+    addColumn(i18n.tr("Konto"),"dummy");
     addColumn(i18n.tr("Kommentar"),"kommentar");
 
     this.setFormatter(new TableFormatter()
@@ -86,7 +89,17 @@ public class UmsatzTypList extends TablePart implements Part
         try
         {
           UmsatzTyp ut = (UmsatzTyp) item.getData();
-          if (ut == null || !ut.isCustomColor())
+          if (ut == null)
+            return;
+          
+          final String kat = ut.getKontoKategorie();
+          final Konto k = ut.getKonto();
+          if (k != null)
+            item.setText(4,KontoUtil.toString(k));
+          else if (kat != null)
+            item.setText(4,kat);
+
+          if (!ut.isCustomColor())
             return;
 
           int[] color = ut.getColor();

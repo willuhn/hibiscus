@@ -97,6 +97,9 @@ CREATE TABLE umsatztyp (
      , color VARCHAR(11)
      , customcolor int(1)
      , kommentar TEXT
+     , konto_id int(10) NULL
+     , konto_kategorie VARCHAR(255) NULL
+     , flags int(1)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -448,6 +451,7 @@ ALTER TABLE sepasueb ADD CONSTRAINT fk_sepasueb_konto FOREIGN KEY (konto_id) REF
 ALTER TABLE sepasuebbuchung ADD CONSTRAINT fk_sepasuebbuchung_sepasueb FOREIGN KEY (sepasueb_id) REFERENCES sepasueb (id);
 ALTER TABLE sepadauerauftrag ADD CONSTRAINT fk_sepadauerauftrag_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 ALTER TABLE kontoauszug ADD CONSTRAINT fk_kontoauszug_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE umsatztyp ADD CONSTRAINT fk_umsatztyp_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
 SET FOREIGN_KEY_CHECKS=ON;
 
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
@@ -478,4 +482,4 @@ ALTER TABLE protokoll ADD INDEX (datum);
 ALTER TABLE ueberweisung ADD INDEX (termin);
 ALTER TABLE lastschrift ADD INDEX (termin);
 
-INSERT INTO version (name,version) values ('db',67);
+INSERT INTO version (name,version) values ('db',68);

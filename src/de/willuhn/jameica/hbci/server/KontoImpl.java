@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Ueberweisung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -852,7 +853,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   public int getFlags() throws RemoteException
   {
     Integer i = (Integer) this.getAttribute("flags");
-    return i == null ? Konto.FLAG_NONE : i.intValue();
+    return i == null ? UmsatzTyp.FLAG_NONE : i.intValue();
   }
 
   /**

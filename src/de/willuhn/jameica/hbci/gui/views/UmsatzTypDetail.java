@@ -50,21 +50,22 @@ public class UmsatzTypDetail extends AbstractView
     left.addHeadline(i18n.tr("Eigenschaften"));
     left.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
     left.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
-    left.addLabelPair(i18n.tr("Art des Umsatzes"), control.getArt());
     
-    left.addSeparator();
+    left.addHeadline(i18n.tr("Zuordnung der Umsätze"));
+    left.addInput(control.getKonto());
+    left.addLabelPair(i18n.tr("Reihenfolge"), control.getNummer());
+    left.addLabelPair(i18n.tr("Art des Umsatzes"), control.getArt());
     left.addLabelPair(i18n.tr("Suchbegriff"), control.getPattern());
     left.addCheckbox(control.getRegex(),i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
-
-    left.addSeparator();
-    left.addCheckbox(control.getCustomColor(),i18n.tr("Benutzerdefinierte Farbe"));
-    left.addLabelPair(i18n.tr("Farbe"), control.getColor());
-    
-    left.addLabelPair(i18n.tr("Reihenfolge"), control.getNummer());
 
     Container right = new SimpleContainer(columns.getComposite(),true);
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());
+    
+    right.addHeadline(i18n.tr("Darstellung"));
+    right.addInput(control.getSkipReport());
+    right.addCheckbox(control.getCustomColor(),i18n.tr("Benutzerdefinierte Farbe"));
+    right.addLabelPair(i18n.tr("Farbe"), control.getColor());
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Löschen"),   new DBObjectDelete(),control.getCurrentObject(),false,"user-trash-full.png");
