@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -97,11 +98,18 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
         int count = 0;
         for (SepaSammelTransferBuchung b:buchungen)
         {
-          String usage = VerwendungszweckUtil.toString(b,"\n");
-
           children.add(new TextPrint(Integer.toString(++count),fontTiny));
-          children.add(new TextPrint(i18n.tr("{0}, IBAN {1}, BIC {2} ({3})",b.getGegenkontoName(),HBCIProperties.formatIban(b.getGegenkontoNummer()),b.getGegenkontoBLZ(),HBCIProperties.getNameForBank(b.getGegenkontoBLZ())),fontTiny));
-          children.add(new TextPrint(usage,fontTiny));
+          
+          final String bic   = b.getGegenkontoBLZ();
+          final String bank  = HBCIProperties.getNameForBank(bic);
+          String text = b.getGegenkontoName() + ", IBAN " + HBCIProperties.formatIban(b.getGegenkontoNummer());
+          if (StringUtils.trimToNull(bic) != null)
+            text += ", BIC " + bic;
+          if (StringUtils.trimToNull(bank) != null)
+            text += " (" + bank + ")";
+          
+          children.add(new TextPrint(text,fontTiny));
+          children.add(new TextPrint(VerwendungszweckUtil.toString(b,"\n"),fontTiny));
           children.add(new TextPrint(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + k.getWaehrung(),fontTiny));
         }
         grid.add(children); // Zum Haupt-Layout hinzufuegen
