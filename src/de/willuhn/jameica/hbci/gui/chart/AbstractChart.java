@@ -30,10 +30,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.swtchart.ISeries;
-import org.swtchart.ISeriesSet;
-import org.swtchart.ext.Messages;
-import org.swtchart.internal.Legend;
+import org.eclipse.swtchart.ISeries;
+import org.eclipse.swtchart.ISeriesSet;
+import org.eclipse.swtchart.extensions.charts.Messages;
+import org.eclipse.swtchart.internal.Legend;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
@@ -54,7 +54,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   private String title                = null;
   private Map<RGB,Color> colors       = new HashMap<RGB,Color>();
   private List<T> data                = new ArrayList<T>();
-  private org.swtchart.Chart chart    = null;
+  private org.eclipse.swtchart.Chart chart = null;
   private List<ChartFeature> features = new ArrayList<ChartFeature>();
 
   /**
@@ -78,7 +78,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#getChart()
    */
-  public org.swtchart.Chart getChart()
+  public org.eclipse.swtchart.Chart getChart()
   {
     return this.chart;
   }
@@ -87,7 +87,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
    * Speichert das SWT-Chart-Objekt.
    * @param chart
    */
-  protected void setChart(final org.swtchart.Chart chart)
+  protected void setChart(final org.eclipse.swtchart.Chart chart)
   {
     this.chart = chart;
     if (this.chart == null)
@@ -122,7 +122,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
    * @param l die Legende.
    * @return das Contextmenu.
    */
-  private Menu createLegendContextMenu(final org.swtchart.Chart chart, Legend l)
+  private Menu createLegendContextMenu(final org.eclipse.swtchart.Chart chart, Legend l)
   {
     Menu m = new Menu(l.getParent().getShell(), SWT.POP_UP);
     addShowMenuItem(m, i18n.tr("alle anzeigen"), true);
@@ -165,7 +165,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
    * @param y die Y-Position.
    * @return
    */
-  private ISeries getSeries(org.swtchart.Chart chart, Legend l, int x, int y)
+  private ISeries getSeries(org.eclipse.swtchart.Chart chart, Legend l, int x, int y)
   {
     ISeriesSet seriesSet = chart.getSeriesSet();
     for (ISeries s:seriesSet.getSeries())
@@ -241,7 +241,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   {
     try
     {
-      MenuItem[] items = this.chart.getPlotArea().getMenu().getItems();
+      MenuItem[] items = this.chart.getPlotArea().getControl().getMenu().getItems();
       if (items == null || items.length == 0)
         return;
 

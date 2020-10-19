@@ -60,7 +60,7 @@ public interface Chart<T extends ChartData> extends Part
    * Liefert das eigentliche SWT-Chart-Objekt.
    * @return das eigentliche SWT-Chart-Objekt.
    */
-  public org.swtchart.Chart getChart();
+  public org.eclipse.swtchart.Chart getChart();
   
   /**
    * Fuegt ein Feature hinzu.

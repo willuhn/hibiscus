@@ -5,15 +5,19 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Listener;
-import org.swtchart.Chart;
-import org.swtchart.IAxis;
-import org.swtchart.ILineSeries;
-import org.swtchart.ISeries;
+import org.eclipse.swtchart.Chart;
+import org.eclipse.swtchart.IAxis;
+import org.eclipse.swtchart.ILineSeries;
+import org.eclipse.swtchart.ISeries;
 
 import de.willuhn.jameica.hbci.HBCI;
 
@@ -43,15 +47,15 @@ public class ChartFeatureTooltip implements ChartFeature
   public void handleEvent(Event e, Context ctx)
   {
     final Chart c = ctx.chart.getChart();
-    final Composite plotArea = c.getPlotArea();
+    final Control control = c.getPlotArea().getControl();
 
-    plotArea.addListener(SWT.MouseHover, new Listener()
+    control.addMouseTrackListener(new MouseTrackAdapter()
     {
       /**
        * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
        */
       @Override
-      public void handleEvent(org.eclipse.swt.widgets.Event event)
+      public void mouseHover(MouseEvent event)
       {
         IAxis xAxis = c.getAxisSet().getXAxis(0);
         IAxis yAxis = c.getAxisSet().getYAxis(0);
@@ -72,26 +76,35 @@ public class ChartFeatureTooltip implements ChartFeature
         highlight = true;
 
         // trigger repaint (paint highlight)
-        c.getPlotArea().redraw();
+        c.getPlotArea().getControl().redraw();
       }
-    });
-
-    plotArea.addListener(SWT.MouseMove, new Listener() {
 
       @Override
-      public void handleEvent(org.eclipse.swt.widgets.Event arg0)
+      public void mouseExit(MouseEvent e)
       {
         highlight = false;
         // Tooltip ausblenden
-        plotArea.setToolTipText(null);
-        plotArea.redraw();
+        control.setToolTipText(null);
+        control.redraw();
       }
     });
 
-    plotArea.addListener(SWT.Paint, new Listener() {
+    control.addMouseMoveListener(new MouseMoveListener() {
 
       @Override
-      public void handleEvent(org.eclipse.swt.widgets.Event event)
+      public void mouseMove(MouseEvent e)
+      {
+        highlight = false;
+        // Tooltip ausblenden
+        control.setToolTipText(null);
+        control.redraw();
+      }
+    });
+
+    control.addPaintListener(new PaintListener() {
+
+      @Override
+      public void paintControl(PaintEvent event)
       {
         if (highlight)
         {
@@ -179,7 +192,7 @@ public class ChartFeatureTooltip implements ChartFeature
    * @param yAxis
    * @return
    */
-  protected Collection<SeriesData> findClosestSeries(final Chart chart, org.eclipse.swt.widgets.Event event, IAxis xAxis, IAxis yAxis)
+  protected Collection<SeriesData> findClosestSeries(final Chart chart, MouseEvent event, IAxis xAxis, IAxis yAxis)
   {
     double x = xAxis.getDataCoordinate(event.x);
     double y = yAxis.getDataCoordinate(event.y);

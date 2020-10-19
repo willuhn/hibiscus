@@ -6,8 +6,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry exported="true" kind="src" path="/jameica"/>
 	<classpathentry kind="lib" path="lib/super-csv-2.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/swtchart/org.swtchart_0.10.0.v20160212.jar"/>
-	<classpathentry kind="lib" path="lib/swtchart/org.swtchart.ext_0.10.0.v20160212.jar"/>
+	<classpathentry kind="lib" path="lib/swtchart/org.eclipse.swtchart_0.13.0.202009151159.jar"/>
+	<classpathentry kind="lib" path="lib/swtchart/org.eclipse.swtchart.extensions_0.13.0.202009151159.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="lib" path="lib/obantoo-bin-2.1.12.jar"/>
 	<classpathentry kind="lib" path="lib/konik/harness-1.0.0.jar"/>

@@ -172,7 +172,7 @@ public class UmsatzTypVerlauf implements Part
    */
   private void addGroupingMenu()
   {
-    Menu m = this.chart.getChart().getPlotArea().getMenu();
+    Menu m = this.chart.getChart().getPlotArea().getControl().getMenu();
     
     MenuItem groupMenuItem = new MenuItem(m, SWT.CASCADE, 0);
     groupMenuItem.setText(i18n.tr("Gruppierung nach"));
