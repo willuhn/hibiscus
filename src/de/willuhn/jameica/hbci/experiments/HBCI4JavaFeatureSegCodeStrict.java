@@ -15,14 +15,14 @@ import org.kapott.hbci.manager.Feature;
 /**
  * Implementierung fuer ein HBCI4Java-Feature.
  */
-public class HBCI4JavaFeatureSkipNotLastTan extends AbstractHBCI4JavaFeature
+public class HBCI4JavaFeatureSegCodeStrict extends AbstractHBCI4JavaFeature
 {
   /**
    * ct.
    */
-  public HBCI4JavaFeatureSkipNotLastTan()
+  public HBCI4JavaFeatureSegCodeStrict()
   {
-    super(Feature.PINTAN_INITANON_SKIPNOTLASTTAN);
+    super(Feature.PINTAN_SEGCODE_STRICT);
   }
   
   /**
@@ -31,7 +31,7 @@ public class HBCI4JavaFeatureSkipNotLastTan extends AbstractHBCI4JavaFeature
   @Override
   public String getDescription()
   {
-    return i18n.tr("Datenelement \"Weitere TAN folgt\" im HKTAN-Segment der anonymen FinTS-Dialoginitialisierung leer lassen (nötig u.a. bei Baader Bank)");
+    return i18n.tr("Datenelement \"Segmentkennung\" im HKTAN-Segment in TAN-Prozess 2 nicht belegen (nötig u.a. bei Baader Bank)");
   }
 
 }
