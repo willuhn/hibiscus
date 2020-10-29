@@ -74,18 +74,9 @@ public class ChartFeatureTooltip implements ChartFeature
         highlightY = yAxis.getPixelCoordinate(data.closestY);
         seriesIndex = data.seriesIndex;
         highlight = true;
-
+        
         // trigger repaint (paint highlight)
         c.getPlotArea().getControl().redraw();
-      }
-
-      @Override
-      public void mouseExit(MouseEvent e)
-      {
-        highlight = false;
-        // Tooltip ausblenden
-        control.setToolTipText(null);
-        control.redraw();
       }
     });
 
@@ -94,10 +85,19 @@ public class ChartFeatureTooltip implements ChartFeature
       @Override
       public void mouseMove(MouseEvent e)
       {
-        highlight = false;
-        // Tooltip ausblenden
-        control.setToolTipText(null);
-        control.redraw();
+        try
+        {
+          if (highlight)
+          {
+            // Tooltip ausblenden
+            control.setToolTipText(null);
+            control.redraw();
+          }
+        }
+        finally
+        {
+          highlight = false;
+        }
       }
     });
 
