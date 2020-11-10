@@ -297,6 +297,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String kom   = StringUtils.trimToEmpty(umsatz.getKommentar());
     String art   = StringUtils.trimToEmpty(umsatz.getArt());
     String purp  = StringUtils.trimToEmpty(umsatz.getPurposeCode());
+    String ref   = StringUtils.trimToEmpty(umsatz.getCustomerRef());
     String e2eid = StringUtils.trimToEmpty(umsatz.getEndToEndId());
     String mid   = StringUtils.trimToEmpty(umsatz.getMandateId());
     String id    = StringUtils.trimToEmpty(umsatz.getID());
@@ -309,6 +310,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       kom   = kom.toLowerCase();
       art   = art.toLowerCase();
       purp  = purp.toLowerCase();
+      ref   = ref.toLowerCase();
       e2eid = e2eid.toLowerCase();
       mid   = mid.toLowerCase();
 
@@ -330,6 +332,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
             kom.indexOf(test) != -1 ||
             art.indexOf(test) != -1 ||
             purp.indexOf(test) != -1 ||
+            ref.indexOf(test) != -1 ||
             e2eid.indexOf(test) != -1 ||
             mid.indexOf(test) != -1 ||
             id.equals(test))
@@ -357,9 +360,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mKom = pattern.matcher(kom);
       Matcher mArt = pattern.matcher(art);
       Matcher mPurp = pattern.matcher(purp);
+      Matcher mRef = pattern.matcher(ref);
       Matcher mE2eid = pattern.matcher(e2eid);
       Matcher mMid = pattern.matcher(mid);
-      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid + mid);
+      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid + " " + mid + " " + ref);
 
       return (mAll.matches()    ||
               mZweck.matches()  ||
@@ -368,6 +372,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
               mKom.matches()    ||
               mArt.matches()    ||
               mPurp.matches()   ||
+              mRef.matches()    ||
               mE2eid.matches()  ||
               mMid.matches()
              );

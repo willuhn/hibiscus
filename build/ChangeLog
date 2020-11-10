@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0913 Bei Kategorie-Zuordnung auch in Kundenreferenz suchen
   * BUG: 0912 Update auf HBCI4Java 3.1.49 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.49 - neues Feature-Flag PINTAN_SEGCODE_STRICT - siehe https://homebanking-hilfe.de/forum/topic.php?p=157546#real157546
   * BUG: 0911 Update auf HBCI4Java 3.1.47 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.47 - neues Feature-Flag PINTAN_INITANON_SKIPNOTLASTTAN - siehe https://homebanking-hilfe.de/forum/topic.php?p=157481#real157481
   * NEW: 0910 Neue Möglichkeit, Umsatz-Kategorien auf einzelne Konten oder Konto-Gruppen zu limitieren
