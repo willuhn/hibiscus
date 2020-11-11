@@ -142,7 +142,7 @@ public class VergleichBarChart extends AbstractChart
       ISeriesLabel label = barSeries.getLabel();
       label.setFont(Font.SMALL.getSWTFont());
       label.setFormat(HBCI.DECIMALFORMAT.toPattern());
-      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       label.setVisible(true);
     }
     
@@ -154,7 +154,7 @@ public class VergleichBarChart extends AbstractChart
       ISeriesLabel label = barSeries.getLabel();
       label.setFont(Font.SMALL.getSWTFont());
       label.setFormat(HBCI.DECIMALFORMAT.toPattern());
-      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+      label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       label.setVisible(true);
     }
 
