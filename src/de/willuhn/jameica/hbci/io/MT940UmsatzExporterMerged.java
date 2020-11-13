@@ -76,8 +76,8 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
       //////////////////////////////////////////////////////////////////////////
 
       String curr         = k.getWaehrung();
-      Boolean b           = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
-      boolean showSaldo   = (b == null || !b.booleanValue());
+      Boolean b           = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_SHOW);
+      boolean showSaldo   = (b == null || b.booleanValue());
 
       out.write(":20:Hibiscus" + NL);
       out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + NL);

@@ -103,8 +103,8 @@ public class MT940UmsatzExporter implements Exporter
       //////////////////////////////////////////////////////////////////////////
 
 
-      Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
-      boolean showSaldo = (b == null || !b.booleanValue());
+      Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_SHOW);
+      boolean showSaldo = (b == null || b.booleanValue());
       
       for (int i=0;i<list.size();++i)
       {
@@ -309,7 +309,7 @@ public class MT940UmsatzExporter implements Exporter
   @Override
   public boolean suppportsExtension(String ext)
   {
-    return ext != null && ExportSaldoExtension.KEY_SALDO_HIDE.equals(ext);
+    return ext != null && ExportSaldoExtension.KEY_SALDO_SHOW.equals(ext);
   }
   
   /**

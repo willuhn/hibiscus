@@ -36,7 +36,7 @@ public class ExportSaldoExtension implements Extension
   /**
    * Der Context-Schluessel fuer die Option zum Ausblenden des Saldo im Export.
    */
-  public final static String KEY_SALDO_HIDE = "saldo.hide";
+  public final static String KEY_SALDO_SHOW = "saldo.show";
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
@@ -54,18 +54,18 @@ public class ExportSaldoExtension implements Extension
     if (!type.isAssignableFrom(Umsatz.class))
       return;
     
-    // Erstmal per Default nicht ausblenden
-    boolean initial = ExportDialog.SETTINGS.getBoolean(KEY_SALDO_HIDE,false);
-    Exporter.SESSION.put(KEY_SALDO_HIDE,initial);
+    // Erstmal per Default einblenden
+    boolean initial = ExportDialog.SETTINGS.getBoolean(KEY_SALDO_SHOW,true);
+    Exporter.SESSION.put(KEY_SALDO_SHOW,initial);
     
     final CheckboxInput check = new CheckboxInput(initial);
-    check.setName(i18n.tr("Spalte \"Saldo\" in Export ausblenden"));
+    check.setName(i18n.tr("Spalte \"Saldo\" in der Datei anzeigen"));
     check.addListener(new Listener() {
       public void handleEvent(Event event)
       {
         Boolean value = (Boolean) check.getValue();
-        Exporter.SESSION.put(KEY_SALDO_HIDE,value);
-        ExportDialog.SETTINGS.setAttribute(KEY_SALDO_HIDE,value.booleanValue());
+        Exporter.SESSION.put(KEY_SALDO_SHOW,value);
+        ExportDialog.SETTINGS.setAttribute(KEY_SALDO_SHOW,value.booleanValue());
       }
     });
     
@@ -88,7 +88,7 @@ public class ExportSaldoExtension implements Extension
             return;
           
           Exporter exporter = exp.getExporter();
-          check.setEnabled(exporter.suppportsExtension(KEY_SALDO_HIDE));
+          check.setEnabled(exporter.suppportsExtension(KEY_SALDO_SHOW));
         }
       };
       

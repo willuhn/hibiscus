@@ -100,8 +100,8 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
     d = (Date) Exporter.SESSION.get("pdf.end");
     if (d != null) endDate = d;
     Boolean filter    = (Boolean) Exporter.SESSION.get("filtered");
-    Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_HIDE);
-    boolean showSaldo = (b == null || !b.booleanValue());
+    Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_SHOW);
+    boolean showSaldo = (b == null || b.booleanValue());
     b                 = (Boolean) Exporter.SESSION.get(ExportAddSumRowExtension.KEY_SUMROW_ADD);
     boolean addSumRow = (b != null && b.booleanValue());
     
@@ -126,6 +126,8 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
         reporter.addHeaderColumn(i18n.tr("Saldo"),                  Element.ALIGN_CENTER, 30, Reporter.COLOR_BG);
       reporter.createHeader();
 
+
+      Double sumOverall = 0.0d;
       
       // Iteration ueber Umsaetze
       List<T> groupList = new ArrayList(groupMap.values());
@@ -174,13 +176,25 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
         
         if (addSumRow) {
           reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
-          reporter.addColumn(reporter.getDetailCell(i18n.tr("Summe"), Element.ALIGN_LEFT));
+          reporter.addColumn(reporter.getDetailCell(i18n.tr("Summe"), Element.ALIGN_LEFT,null,null,Font.BOLD));
           reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
-          reporter.addColumn(reporter.getDetailCell(sumRow));
+          reporter.addColumn(reporter.getDetailCell(sumRow,null,Font.BOLD));
           if (showSaldo)
             reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
         }
+        
+        sumOverall += sumRow;
       }
+      
+      if (addSumRow) {
+        reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
+        reporter.addColumn(reporter.getDetailCell(i18n.tr("Gesamtsumme"), Element.ALIGN_LEFT,null,null,Font.BOLD));
+        reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
+        reporter.addColumn(reporter.getDetailCell(sumOverall,null,Font.BOLD));
+        if (showSaldo)
+          reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
+      }
+      
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
     catch (Exception e)
@@ -237,7 +251,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
   @Override
   public boolean suppportsExtension(String ext)
   {
-    return ext != null && (ExportAddSumRowExtension.KEY_SUMROW_ADD.equals(ext) || ExportSaldoExtension.KEY_SALDO_HIDE.equals(ext));
+    return ext != null && (ExportAddSumRowExtension.KEY_SUMROW_ADD.equals(ext) || ExportSaldoExtension.KEY_SALDO_SHOW.equals(ext));
   }
 
   /**
