@@ -851,4 +851,22 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     this.setAttribute("mandateid",id);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getGegenkontoName2()
+   */
+  @Override
+  public String getGegenkontoName2() throws RemoteException
+  {
+    return (String) this.getAttribute("empfaenger_name2");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setGegenkontoName2(java.lang.String)
+   */
+  @Override
+  public void setGegenkontoName2(String name) throws RemoteException
+  {
+    this.setAttribute("empfaenger_name2",name);
+  }
 }

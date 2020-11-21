@@ -253,4 +253,18 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    */
   public void setMandateId(String id) throws RemoteException;
 
+  /**
+   * Liefert den Namen des ultimativen Empfaengers.
+   * @return Name des ultimativen Empfaengers
+   * @throws RemoteException
+   */
+  public String getGegenkontoName2() throws RemoteException;
+
+  /**
+   * Setzt den Namen des ultimativen Empfaengers.
+   * @param name Name des ultimativen Empfaengers
+   * @throws RemoteException
+   */
+  public void setGegenkontoName2(String name) throws RemoteException;
+
 }

@@ -75,6 +75,17 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerName2()
+   */
+  public Input getEmpfaengerName2() throws RemoteException
+  {
+    Input input = super.getEmpfaengerName2();
+    if (!input.isEnabled())
+      input.setEnabled(true);
+    return input;
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerKonto()
    */
   public Input getEmpfaengerKonto() throws RemoteException
@@ -328,6 +339,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       u.setUmsatzTyp((UmsatzTyp)getUmsatzTyp().getValue());
       
       u.setGegenkontoName(((AddressInput)getEmpfaengerName()).getText());
+      u.setGegenkontoName2((String) getEmpfaengerName2().getValue());
       u.setGegenkontoNummer((String) getEmpfaengerKonto().getValue());
       u.setGegenkontoBLZ((String) getEmpfaengerBLZ().getValue());
       u.setZweck((String) getZweck().getValue());

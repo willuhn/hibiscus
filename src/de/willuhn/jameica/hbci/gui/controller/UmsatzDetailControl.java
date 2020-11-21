@@ -64,6 +64,7 @@ public class UmsatzDetailControl extends AbstractControl
 	// Eingabe-Felder
 	private Input konto				 		= null;
 	private Input empfaengerName  = null;
+	private Input empfaengerName2 = null;
 	private Input empfaengerKonto = null;
   private Input empfaengerBlz   = null;
 	private Input datum						= null;
@@ -175,6 +176,22 @@ public class UmsatzDetailControl extends AbstractControl
       this.empfaengerName.setEnabled(false);
     }
     return this.empfaengerName;
+  }
+  
+  /**
+   * Liefert ein Eingabe-Feld mit dem Namen des ultimativen Empfaengers.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getEmpfaengerName2() throws RemoteException
+  {
+    if (this.empfaengerName2 == null)
+    {
+      this.empfaengerName2 = new TextInput(getUmsatz().getGegenkontoName2());
+      this.empfaengerName2.setName(i18n.tr("Name 2"));
+      this.empfaengerName2.setEnabled(false);
+    }
+    return this.empfaengerName2;
   }
   
   /**
