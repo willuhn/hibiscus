@@ -255,6 +255,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
 
   /**
    * Liefert den Namen des ultimativen Empfaengers.
+   * Nur bei Umsaetzen vorhanden, die per CAMT abgerufen wurden.
    * @return Name des ultimativen Empfaengers
    * @throws RemoteException
    */
