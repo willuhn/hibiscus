@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: 0917 Empfänger-Name 2 bei Umsätzen anzeigen
   * NEW: 0916 Bei PDF-Auswertung und Anzeige der Summe ganz am Ende noch eine Gesamtsumme über alle Konten/Kategorien anzeigen. Ausserdem Option zur Saldo-Anzeige invertiert (nicht mehr "Saldo ausblenden" sondern "Saldo anzeigen")
   * NEW: 0915 Auswertungen->Einnahmen/Ausgaben->Grafische Auswertung - Beschriftung der Balken in Schwarz, damit sie vor weissem Hintergrund lesbar sind, wenn die Balken zu schmal fuer die Zahlen sind
   * NEW: 0914 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 07.12.2020

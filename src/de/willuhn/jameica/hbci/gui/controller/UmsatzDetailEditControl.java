@@ -414,6 +414,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       if(InputCompat.valueHasChanged(getEmpfaengerBLZ(),
           getEmpfaengerKonto(),
           getEmpfaengerName(),
+          getEmpfaengerName2(),
           getZweck(),
           getBetrag(),
           getSaldo(),

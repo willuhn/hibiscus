@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.zip.CRC32;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
@@ -493,7 +495,27 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // BUGZILLA 86 http://www.willuhn.de/bugzilla/show_bug.cgi?id=86
     if ("empfaenger".equals(arg0))
     {
-      String name = getGegenkontoName();
+      final String name = getGegenkontoName();
+      final String name2 = getGegenkontoName2();
+      
+      final boolean hasName = StringUtils.isNotBlank(name);
+      final boolean hasName2 = StringUtils.isNotBlank(name2);
+      
+      // Wenn wir nur einen von beiden Namen haben, liefern wir jeweils den einen
+      // Wenn beide vorhanden sind, liefern wir erst den zweiten, dann den ersten.
+      // Denn bei SEPA enthaelt name2 den "Ultimate Debitor". Wenn ein Zahlungsdienstleister
+      // (z.Bsp. bei einer Kartenzahlung) involviert ist, dann steht im ersten Namen
+      // i.d.R. nur der Name des Zahlungsdienstleisters und erst in Name2 der eigentliche Empfaenger.
+      if (hasName || hasName2)
+      {
+        // Beide Felder vorhanden
+        if (hasName && hasName2)
+          return name2 + " - " + name;
+
+        // Nur eins vorhanden
+        return hasName ? name : name2;
+      }
+      
       if (name != null)
         return name;
 
@@ -756,6 +778,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     copy.setFlags(this.getFlags());
     copy.setGegenkontoBLZ(this.getGegenkontoBLZ());
     copy.setGegenkontoName(this.getGegenkontoName());
+    copy.setGegenkontoName2(this.getGegenkontoName2());
     copy.setGegenkontoNummer(this.getGegenkontoNummer());
     copy.setKommentar(this.getKommentar());
     copy.setKonto(this.getKonto());

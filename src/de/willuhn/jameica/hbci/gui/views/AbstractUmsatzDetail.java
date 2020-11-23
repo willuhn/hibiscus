@@ -12,6 +12,8 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.MultiInput;
@@ -65,10 +67,12 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 
 		// BUGZILLA 23 http://www.willuhn.de/bugzilla/show_bug.cgi?id=23
     left.addHeadline(i18n.tr("Gegenkonto"));
-    left.addLabelPair(i18n.tr("Inhaber"),                       control.getEmpfaengerName());
-    if (control.getUmsatz().getGegenkontoName2() != null) {
+    left.addLabelPair(i18n.tr("Name"),                       control.getEmpfaengerName());
+
+    // Name 2 erstmal nur anzeigen, wenn was drin steht
+    if (StringUtils.isNotBlank(control.getUmsatz().getGegenkontoName2()))
       left.addInput(control.getEmpfaengerName2());
-    }
+    
     left.addInput(control.getEmpfaengerKonto());
     left.addInput(control.getEmpfaengerBLZ());
 
