@@ -166,8 +166,12 @@ public class Converter
     ////////////////////////////////////////////////////////////////////////////
     // Gegenkonto
     // und jetzt noch der Empfaenger (wenn er existiert)
-    if (u.other != null) 
+    if (u.other != null)
+    {
       umsatz.setGegenkonto(HBCIKonto2Address(u.other,u.isCamt));
+      if (u.isCamt)
+        umsatz.setGegenkontoName2(u.other.name2);
+    }
 
     if (!HBCIProperties.HBCI_SEPA_PARSE_TAGS)
       return umsatz;
