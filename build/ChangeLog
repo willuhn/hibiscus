@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0919 Option "Auswahl speichern" in den Dialogen für TAN-Verfahren und TAN-Medium jetzt per Default aktiv
   * NEW: 0918 Empfänger-Name 2 auch in Umsatzkategorien suchen
 
 2020-11-27 Version 2.10
