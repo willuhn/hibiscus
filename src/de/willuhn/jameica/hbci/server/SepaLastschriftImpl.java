@@ -14,7 +14,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
@@ -123,12 +122,6 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
 
       HBCIProperties.checkChars(s, HBCIProperties.HBCI_IBAN_VALIDCHARS);
       HBCIProperties.checkLength(s, HBCIProperties.HBCI_IBAN_MAXLENGTH);
-
-      IBAN iban = HBCIProperties.getIBAN(s);
-
-      // Automatisch aus IBAN vervollstaendigen, wenn sie fehlt
-      if (iban != null && StringUtils.trimToNull(getGegenkontoBLZ()) == null)
-        setGegenkontoBLZ(iban.getBIC());
 
       if (StringUtils.trimToNull(getGegenkontoBLZ()) != null)
         HBCIProperties.checkBIC(getGegenkontoBLZ());
