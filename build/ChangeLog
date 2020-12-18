@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0921 Markierte Umsatzbuchungen nach Änderungen der Suchkriterien wiederherstellen
   * NEW: 0920 BIC bei Zahlungen nicht mehr automatisch beim Speichern vervollständigen (nur noch nach Auswahl einer IBAN) - damit ist dann auch IBAN only möglich
   * NEW: 0919 Option "Auswahl speichern" in den Dialogen für TAN-Verfahren und TAN-Medium jetzt per Default aktiv
   * NEW: 0918 Empfänger-Name 2 auch in Umsatzkategorien suchen

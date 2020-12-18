@@ -845,6 +845,9 @@ public class KontoauszugList extends UmsatzList
       
       // Zum Schluss Sortierung aktualisieren
       sort();
+      
+      // Und die markierten Datensaetze wiederherstellen
+      restoreState();
     }
     catch (Exception e)
     {
