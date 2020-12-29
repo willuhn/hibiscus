@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class SaldoChart implements Part
   /**
    * ct.
    * Konstruktor fuer die Anzeige des Saldo-Charts von genau einem Konto.
-   * @param konto das Konto. Optional. Wenn kein konto ist, wir der Saldenverlauf ueber die Summe aller Konten berechnet.
+   * @param konto das Konto. Optional. Wenn kein Konto angegeben ist, wir der Saldenverlauf ueber die Summe aller Konten berechnet.
    */
   public SaldoChart(Konto konto)
   {
@@ -339,6 +340,9 @@ public class SaldoChart implements Part
    */
   private List<Konto> getSelectedAccounts() throws RemoteException
   {
+    if (this.konto != null)
+      return Arrays.asList(this.konto);
+    
     final List<Konto> result = new ArrayList<>();
     final Object o = this.getKontoAuswahl().getValue();
     if (o instanceof Konto)
