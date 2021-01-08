@@ -40,9 +40,11 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.accounts.balance.AccountBalanceProvider;
+import de.willuhn.jameica.hbci.accounts.balance.AccountBalanceService;
+import de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
-import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
@@ -55,6 +57,7 @@ import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -411,29 +414,25 @@ public class SaldoChart implements Part
         chart.setTitle(i18n.tr("Saldo-Verlauf {0} - {1}", startString, endString));
 
         List<Konto> konten = getSelectedAccounts();
+        
+        final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+        final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);       
+        final ChartDataSaldoSumme sum = new ChartDataSaldoSumme();
+        for (Konto konto : konten)
+        {
+          AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(konto);
+          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, end);
+          chart.addData(balance);
+          sum.add(balance.getData());
+        }
+        
+        // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
         if (konten.size() > 1)
-        {
-          // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
-          final ChartDataSaldoSumme s = new ChartDataSaldoSumme();
-          for (Konto k:konten)
-          {
-            ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf(k,start, end);
-            chart.addData(v);
-            s.add(v.getData());
-          }
-          ChartDataSaldoTrend t = new ChartDataSaldoTrend();
-          t.add(s.getData());
-          chart.addData(s);
-          chart.addData(t);
-        }
-        else
-        {
-          ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o, start, end);
-          ChartDataSaldoTrend   t = new ChartDataSaldoTrend();
-          t.add(s.getData());
-          chart.addData(s);
-          chart.addData(t);
-        }
+          chart.addData(sum);
+
+        ChartDataSaldoTrend trend = new ChartDataSaldoTrend();
+        trend.add(sum.getData());
+        chart.addData(trend);
         
         if (event != null)
         {

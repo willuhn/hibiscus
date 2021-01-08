@@ -21,7 +21,7 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractChartDataSaldo implements LineChartData
 {
-  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
