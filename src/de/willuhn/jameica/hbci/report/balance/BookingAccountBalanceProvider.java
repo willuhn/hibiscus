@@ -9,7 +9,7 @@
  * Class author: Fabian Aiteanu
  **********************************************************************/
 
-package de.willuhn.jameica.hbci.accounts.balance;
+package de.willuhn.jameica.hbci.report.balance;
 
 import java.util.Date;
 
