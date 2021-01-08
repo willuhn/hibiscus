@@ -23,17 +23,26 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 public class BookingAccountBalanceProvider implements AccountBalanceProvider
 {
 
+  /**
+   * @see de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider#supports(de.willuhn.jameica.hbci.rmi.Konto)
+   */
   @Override
   public boolean supports(Konto konto) {
     // Dies ist der Standard-Provider fuer Konten in Hibiscus und er unterstuetzt jedes Konto per Definition.
     return true;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider#getBalanceChartData(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
+   */
   @Override
   public AbstractChartDataSaldo getBalanceChartData(Konto konto, Date start, Date end) {
     return new ChartDataSaldoVerlauf(konto, start, end);
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider#getName()
+   */
   @Override
   public String getName()
   {
