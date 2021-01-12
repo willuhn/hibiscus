@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0924 Beim CSV-Export von Umsätzen beim eigenen Konto IBAN/BIC statt Kontonummer/BLZ anzeigen
   * NEW: 0923 Update auf HBCI4Java 3.1.51 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.51 - Degussa sendet in DialogInitRes unaufgefordert HITAB - siehe https://homebanking-hilfe.de/forum/topic.php?t=24405
   * BUG: 0922 In der Detailansicht eines Kontos wurden im Saldo-Verlauf u.U. alle Konten angezeigt statt nur das aktuelle
   * NEW: 0921 Markierte Umsatzbuchungen nach Änderungen der Suchkriterien wiederherstellen
