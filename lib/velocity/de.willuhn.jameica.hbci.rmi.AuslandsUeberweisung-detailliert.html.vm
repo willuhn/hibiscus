@@ -129,8 +129,16 @@
           <td class="right">$!t.gegenkontoBLZ</td>
         </tr>
         <tr>
-          <td class="left">Konto des Auftraggebers:</td>
-          <td class="right">$!t.konto.longName</td>
+          <td class="left">Name des Auftraggebers:</td>
+          <td class="right">$!t.konto.Name</td>
+        </tr>
+        <tr>
+          <td class="left">IBAN des Auftraggebers:</td>
+          <td class="right">$!t.konto.Iban</td>
+        </tr>
+        <tr>
+          <td class="left">BIC des Auftraggebers:</td>
+          <td class="right">$!t.konto.Bic</td>
         </tr>
         <tr>
           <td class="left">Verwendungszweck:</td>
