@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -457,7 +456,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
       for (Entry<String, EinnahmeAusgabe> kontoEntry : kontoMap.entrySet())
       {
         EinnahmeAusgabe ea = kontoEntry.getValue();
-        
+        if(tagEnde >= saldoProKonto.get(ea.getKonto().getID()).size()) 
+          tagEnde = saldoProKonto.get(ea.getKonto().getID()).size() - 1;
+          
         ea.setAnfangssaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagStart).getValue());
         ea.setEndsaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagEnde).getValue());
       }
@@ -651,7 +652,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return
    */
   private long getDifferenceDays(Date d1, Date d2) {
-    long diff = d2.getTime() - d1.getTime();
-    return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-}
+    java.time.LocalDate date1 = d1.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+    java.time.LocalDate date2 = d2.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+    return java.time.temporal.ChronoUnit.DAYS.between(date1, date2);
+  }
 }
