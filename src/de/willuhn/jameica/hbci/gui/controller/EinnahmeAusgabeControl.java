@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -50,8 +49,6 @@ import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.EinnahmenAusgabenVerlauf;
-import de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider;
-import de.willuhn.jameica.hbci.report.balance.AccountBalanceService;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -60,9 +57,7 @@ import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
-import de.willuhn.jameica.hbci.server.Value;
 import de.willuhn.jameica.messaging.StatusBarMessage;
-import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -347,13 +342,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
         end = umsatzList.get(umsatzList.size() - 1).getDatum();
       }
     }
-    Map<String, List<Value>> saldenProKonto = getSaldenProKonto(konten, start, end);
-    
+
     // wenn die Umsatzliste leer ist, erfolgt keine Gruppierung, es wird nur der Gesamtzeitraum
     // ausgewertet und da keine Umsätze zugeordnet werden müssen, spielen fehlende Datumsangaben keine Rolle
     Interval interval = umsatzList.isEmpty() ? Interval.ALL : (Interval) getInterval().getValue();
     List<EinnahmeAusgabeTreeNode> result = createEmptyNodes(start, end, konten, interval);
-    addData(result, umsatzList, saldenProKonto);
+    addData(result, umsatzList);
 
     this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
     if (interval == Interval.ALL)
@@ -397,39 +391,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
     return umsatzList;
   }
 
-  /**
-   * Liefert die Salden pro Konto für den angegebenen Zeitraum.
-   * Zu beachten ist, dass ein Tagessaldo immer am Ende eines Tages berechnet wird. 
-   * Da für Auswertungen ein Anfangssaldo angezeigt werden soll, welcher der Endsaldo des vorhergehenden Tages ist, 
-   * wird als erstes Element der Liste ein zusätzlicher Tag eingefügt.
-   * 
-   * Beispiel: start=7.11., end=8.11. -> Liste enthält 6.11., 7.11., 8.11. 
-   * @param konten
-   * @param start
-   * @param end
-   * @return
-   * @throws RemoteException
-   */
-  private Map<String, List<Value>> getSaldenProKonto(List<Konto> konten, Date start, Date end) throws RemoteException
+  private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList) throws RemoteException
   {
-    final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
-    final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);
-    Map<String, List<Value>> saldenProKonto = new HashMap<String, List<Value>>();
-    final Calendar cal = Calendar.getInstance();
-    cal.setTime(start);
-    cal.add(Calendar.DAY_OF_MONTH, -1); // Salden um einen Tag nach vorne verlängern, weil die Salden immer nur für das Ende eines Tages berechnet werden
-    Date saldoStart = cal.getTime();
-    for (Konto konto : konten)
-    {
-      AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(konto);
-      List<Value> balance = balanceProvider.getBalanceData(konto, saldoStart, end);
-      saldenProKonto.put(konto.getID(), balance);
-    }
-    return saldenProKonto;
-  }
-  
-  private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList, Map<String, List<Value>> saldoProKonto) throws RemoteException
-  {
+    setInitialSalden(nodes.get(0), umsatzList);
     int index = 0;
     EinnahmeAusgabeTreeNode currentNode = null;
     // Map der Daten für eine Konto-ID für schnelles Zuweisen der Umsätze
@@ -439,30 +403,20 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // Daten für das nächste relevante Intervall vorbereiten; 'while' da es möglich wäre, dass es für einen Zeitraum in der Mitte gar keine Umsätze gab
       while (currentNode == null || umsatz.getDatum().after(currentNode.getEnddatum()))
       {
+        EinnahmeAusgabeTreeNode oldNode = currentNode;
         currentNode = nodes.get(index++);
+        saldenUebertrag(oldNode, currentNode);
         kontoData = getKontoDataMap(currentNode);
       }
 
       EinnahmeAusgabe ea = kontoData.get(umsatz.getKonto().getID());
       ea.addUmsatz(umsatz);
     }
-    
-    // Salden eintragen
-    int tagStart = 0; // Tag in der Liste der Salden
-    for(EinnahmeAusgabeTreeNode node : nodes)
+    // Saldenübertrag für die verbliebenen Zeiträume (z.B. dieses Jahr monatlich gruppiert die kommenden Monate)
+    // alternativ könnte man Zeiträume ohne Daten hinten auch entfernen
+    for (int i = index - 1; i >= 0 && i < nodes.size() - 1; i++)
     {
-      Map<String, EinnahmeAusgabe> kontoMap = getKontoDataMap(node);
-      
-      int tagEnde = tagStart + (int) getDifferenceDays(node.getStartdatum(), node.getEnddatum()) + 1;
-      for (Entry<String, EinnahmeAusgabe> kontoEntry : kontoMap.entrySet())
-      {
-        EinnahmeAusgabe ea = kontoEntry.getValue();
-        
-        ea.setAnfangssaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagStart).getValue());
-        ea.setEndsaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagEnde).getValue());
-      }
-      
-      tagStart = tagEnde;
+      saldenUebertrag(nodes.get(i), nodes.get(i + 1));
     }
     calculateSums(nodes);
   }
@@ -480,7 +434,55 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     return kontoData;
   }
-  
+
+  // übernehme Salden in den Nachfolgerzeitraum, falls es dort keine Umsätze gibt, aus denen die Salden verwendet werden
+  private void saldenUebertrag(EinnahmeAusgabeTreeNode von, EinnahmeAusgabeTreeNode nach) throws RemoteException
+  {
+    if (von != null && nach != null)
+    {
+      Map<String, EinnahmeAusgabe> vonMap = getKontoDataMap(von);
+      Map<String, EinnahmeAusgabe> nachMap = getKontoDataMap(nach);
+      for (Entry<String, EinnahmeAusgabe> vonEntry : vonMap.entrySet())
+      {
+        EinnahmeAusgabe vonData = vonEntry.getValue();
+        EinnahmeAusgabe nachData = nachMap.get(vonEntry.getKey());
+        nachData.setAnfangssaldo(vonData.getEndsaldo());
+        nachData.setEndsaldo(vonData.getEndsaldo());
+      }
+    }
+  }
+
+  private void setInitialSalden(EinnahmeAusgabeTreeNode node, List<Umsatz> umsatzList) throws RemoteException
+  {
+    Date startDate = umsatzList.isEmpty() ? null : umsatzList.get(0).getDatum();
+    for (EinnahmeAusgabe ea : getChildren(node))
+    {
+      if (ea.getKonto() != null)
+      {
+        boolean umsatzGefunden = false;
+        String id = ea.getKonto().getID();
+        for (Umsatz u : umsatzList)
+        {
+          // suche ersten Umsatz des Kontos in der Umsatzliste
+          if (u.getKonto().getID().equals(id))
+          {
+            umsatzGefunden = true;
+            ea.setAnfangssaldo(u.getSaldo() - u.getBetrag());
+            ea.setEndsaldo(ea.getAnfangssaldo());
+            break;
+          }
+        }
+        // falls es keinen gibt, Fallback Bestandslogik - nicht schnell, aber nur einmal pro Konto
+        if (!umsatzGefunden)
+        {
+          double saldo = KontoUtil.getAnfangsSaldo(ea.getKonto(), startDate);
+          ea.setAnfangssaldo(saldo);
+          ea.setEndsaldo(saldo);
+        }
+      }
+    }
+  }
+
   private void calculateSums(List<EinnahmeAusgabeTreeNode> nodes) throws RemoteException
   {
     for (EinnahmeAusgabeTreeNode node : nodes)
@@ -642,16 +644,4 @@ public class EinnahmeAusgabeControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
-  /**
-   * Berechnet die Anzahl an Tagen zwischen zwei Daten. 
-   * (Sollte besser in eine andere Klasse verschoben werden, zb jameica.util.DateUtil)
-   * @param d1
-   * @param d2
-   * @return
-   */
-  private long getDifferenceDays(Date d1, Date d2) {
-    long diff = d2.getTime() - d1.getTime();
-    return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-}
 }
