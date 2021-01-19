@@ -12,9 +12,11 @@
 package de.willuhn.jameica.hbci.report.balance;
 
 import java.util.Date;
+import java.util.List;
 
 import de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.server.Value;
 
 /**
  * Interface fuer einen AccountBalance-Provider.
@@ -30,6 +32,15 @@ public interface AccountBalanceProvider
    */
   public boolean supports(Konto konto);
 
+  /**
+   * Gibt die taeglichen Salden fuer ein Konto als Liste von Werten zurueck.
+   * @param konto Konto fuer den Saldenabruf
+   * @param start Startdatum der Salden
+   * @param end Enddatum der Salden
+   * @return die taeglichen Salden fuer ein Konto als Liste von Werten
+   */
+  public List<Value> getBalanceData(Konto konto, Date start, Date end);
+  
   /**
    * Gibt die taeglichen Salden fuer ein Konto als Chart-Datenreihe zurueck.
    * @param konto Konto fuer den Saldenabruf
