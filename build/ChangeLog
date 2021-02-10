@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0927 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.03.2021
   * NEW: 0926 https://github.com/willuhn/hibiscus/pull/70 AccountBalanceProvider in Einnahmen/Ausgaben
   * NEW: 0925 Beim detaillierten HTML-Export von SEPA-Ueberweisungen Name, IBAN und BIC des Auftraggebers in dedizierten Feldern
   * NEW: 0924 Beim CSV-Export von Umsätzen beim eigenen Konto IBAN/BIC statt Kontonummer/BLZ anzeigen
