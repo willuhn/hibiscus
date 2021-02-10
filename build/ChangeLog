@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0928 IBAN-Rechner: Berechnung der IBAN automatisch starten, sobald Kontonummer und BLZ eingegeben wurden.
   * NEW: 0927 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.03.2021
   * NEW: 0926 https://github.com/willuhn/hibiscus/pull/70 AccountBalanceProvider in Einnahmen/Ausgaben
   * NEW: 0925 Beim detaillierten HTML-Export von SEPA-Ueberweisungen Name, IBAN und BIC des Auftraggebers in dedizierten Feldern
