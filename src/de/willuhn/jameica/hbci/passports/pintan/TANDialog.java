@@ -41,7 +41,8 @@ public class TANDialog extends PasswordDialog
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  protected final static int WINDOW_WIDTH = 550;
+  protected final static int WINDOW_WIDTH  = 550;
+  protected final static int WINDOW_HEIGHT = 300;
 
   protected PinTanConfig config = null;
   private HibiscusDBObject context = null;
@@ -125,7 +126,7 @@ public class TANDialog extends PasswordDialog
   protected void paint(Composite parent) throws Exception
   {
     super.paint(parent);
-    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
   }
 
   /**
