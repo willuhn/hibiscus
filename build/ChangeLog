@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0932 Bei Umsatzsuche per ID Zeitraum und Konto nicht ignorieren
   * BUG: 0931 Die Summen bei "Umsätze nach Kategorie" waren nicht korrekt und wurden nicht sofort aktualisiert
   * BUG: 0930 IndexOutOfBoundsException in Einnahmen/Ausgaben
   * NEW: 0929 Mindesthöhe von 300px bei TAN-Dialog definiert. Bei aktiviertem Netbook-Mode ist der sonst zu schmal bei manuellem ChipTAN.

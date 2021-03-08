@@ -136,7 +136,7 @@ public class UmsatzUtil
       List<String> params = new ArrayList<String>(Arrays.asList(text,text,text,text,text,text,text,text,text,text,text,text,text));
       if (query.matches("^[0-9]{1,10}$"))
       {
-        search = "id = ? or " + search;
+        search = "(id = ? or " + search + ")";
         params.add(0,query);
       }
       list.addFilter(search,params.toArray());
