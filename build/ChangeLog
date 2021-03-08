@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0930 IndexOutOfBoundsException in Einnahmen/Ausgaben
   * NEW: 0929 Mindesthöhe von 300px bei TAN-Dialog definiert. Bei aktiviertem Netbook-Mode ist der sonst zu schmal bei manuellem ChipTAN.
   * NEW: 0928 IBAN-Rechner: Berechnung der IBAN automatisch starten, sobald Kontonummer und BLZ eingegeben wurden.
   * NEW: 0927 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.03.2021

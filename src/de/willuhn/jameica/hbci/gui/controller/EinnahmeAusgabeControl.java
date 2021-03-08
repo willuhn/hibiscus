@@ -438,6 +438,15 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // Daten für das nächste relevante Intervall vorbereiten; 'while' da es möglich wäre, dass es für einen Zeitraum in der Mitte gar keine Umsätze gab
       while (currentNode == null || umsatz.getDatum().after(currentNode.getEnddatum()))
       {
+        // Bei einem User kam es zu einer IndexOutOfBoundsException. Das Szenario konnte ich mir nicht erklaeren
+        // Da es aber ohnehin unschoen ist, per Index auf eine Liste zuzugreifen, ohne in der Schleife sicherzustellen,
+        // dass die Liste ueberhaupt lang genug ist, breche ich hier einfach ab.
+        if (index >= nodes.size())
+        {
+          Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + currentNode.getEnddatum());
+          return;
+        }
+        
         currentNode = nodes.get(index++);
         kontoData = getKontoDataMap(currentNode);
       }
