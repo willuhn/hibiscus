@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0933 Wenn man aus der Detailansicht eines Kontos in der Umsatzliste unten "Alle als gelesen markieren" auswählt, kam es zu einer "Widget is disposed "Exception
   * BUG: 0932 Bei Umsatzsuche per ID Zeitraum und Konto nicht ignorieren
   * BUG: 0931 Die Summen bei "Umsätze nach Kategorie" waren nicht korrekt und wurden nicht sofort aktualisiert
   * BUG: 0930 IndexOutOfBoundsException in Einnahmen/Ausgaben
