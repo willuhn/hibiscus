@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0935 Beim PhotoTAN-Dialog auch die Fenstergröße mit speichern
   * NEW: 0934 Update auf HBCI4Java 3.1.54 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.54
   * BUG: 0933 Wenn man aus der Detailansicht eines Kontos in der Umsatzliste unten "Alle als gelesen markieren" auswählt, kam es zu einer "Widget is disposed "Exception
   * BUG: 0932 Bei Umsatzsuche per ID Zeitraum und Konto nicht ignorieren
