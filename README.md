@@ -1,8 +1,8 @@
 Hibiscus
 ========
 
-Eine freie Homebanking-Anwendung für Linux, Windows und MacOS.
-Sie basiert auf der FinTS-Implementierung [HBCI4Java](https://github.com/hbci4j/hbci4java) und läuft als Plugin in [Jameica](https://willuhn.github.io/jameica/)
+Eine freie Homebanking-Anwendung fÃ¼r Linux, Windows und MacOS.
+Sie basiert auf der FinTS-Implementierung [HBCI4Java](https://github.com/hbci4j/hbci4java) und lÃ¤uft als Plugin in [Jameica](https://github.com/willuhn/jameica/)
 
 # Developer Information
 
