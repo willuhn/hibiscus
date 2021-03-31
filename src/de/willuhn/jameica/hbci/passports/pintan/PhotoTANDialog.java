@@ -41,7 +41,7 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Dialog für die PhotoTAN-Eingabe.
+ * Dialog fÃ¼r die PhotoTAN-Eingabe.
  */
 public class PhotoTANDialog extends TANDialog
 {
@@ -80,6 +80,9 @@ public class PhotoTANDialog extends TANDialog
    */
   protected void paint(Composite parent) throws Exception
   {
+    GridLayout parentLayout = new GridLayout(2, true);
+    parent.setLayout(parentLayout);
+    
     Container container = new SimpleContainer(parent,true,1);
     container.addHeadline(i18n.tr("Matrixcode"));
 
@@ -104,7 +107,7 @@ public class PhotoTANDialog extends TANDialog
       }
     });
     Button reset = new Button(buttonComp,SWT.PUSH);
-    reset.setToolTipText(i18n.tr("Originale Bildgröße wiederherstellen"));
+    reset.setToolTipText(i18n.tr("Originale BildgrÃ¶ÃŸe wiederherstellen"));
     reset.setImage(SWTUtil.getImage("view-fullscreen.png"));
     reset.setLayoutData(new GridData());
     reset.addSelectionListener(new SelectionAdapter()
@@ -119,7 +122,7 @@ public class PhotoTANDialog extends TANDialog
     });
     Button larger = new Button(buttonComp,SWT.PUSH);
     larger.setImage(SWTUtil.getImage("list-add.png"));
-    larger.setToolTipText(i18n.tr("Bild vergrößern"));
+    larger.setToolTipText(i18n.tr("Bild vergrÃ¶ÃŸern"));
     larger.setLayoutData(new GridData());
     larger.addSelectionListener(new SelectionAdapter()
     {
