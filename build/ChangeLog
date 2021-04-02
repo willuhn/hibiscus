@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0937 Update auf HBCI4Java 3.1.55 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.55
   * BUG: 0936 Obere und untere Limits für das Vergrößern/Verkleinern der PhotoTAN-Grafik
   * NEW: 0935 Beim PhotoTAN-Dialog auch die Fenstergröße mit speichern
   * NEW: 0934 Update auf HBCI4Java 3.1.54 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.54
