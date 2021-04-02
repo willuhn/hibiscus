@@ -53,6 +53,9 @@ public class PhotoTANDialog extends TANDialog
   private Image image = null;
   private Label imageLabel = null;
   
+  private Button smaller = null;
+  private Button larger = null;
+  
   private final Listener resizeListener = new DelayedListener(new Listener() {
     @Override
     public void handleEvent(Event event)
@@ -89,11 +92,11 @@ public class PhotoTANDialog extends TANDialog
     buttonComp.setLayoutData(buttonGd);
     buttonComp.setLayout(new GridLayout(3,true));
     
-    Button smaller = new Button(buttonComp,SWT.PUSH);
-    smaller.setToolTipText(i18n.tr("Bild verkleinern"));
-    smaller.setImage(SWTUtil.getImage("list-remove.png"));
-    smaller.setLayoutData(new GridData());
-    smaller.addSelectionListener(new SelectionAdapter()
+    this.smaller = new Button(buttonComp,SWT.PUSH);
+    this.smaller.setToolTipText(i18n.tr("Bild verkleinern"));
+    this.smaller.setImage(SWTUtil.getImage("list-remove.png"));
+    this.smaller.setLayoutData(new GridData());
+    this.smaller.addSelectionListener(new SelectionAdapter()
     {
       /**
        * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -103,6 +106,8 @@ public class PhotoTANDialog extends TANDialog
         resize(currentSize - 30);
       }
     });
+    this.smaller.setEnabled(currentSize > 30);
+
     Button reset = new Button(buttonComp,SWT.PUSH);
     reset.setToolTipText(i18n.tr("Originale Bildgröße wiederherstellen"));
     reset.setImage(SWTUtil.getImage("view-fullscreen.png"));
@@ -117,11 +122,12 @@ public class PhotoTANDialog extends TANDialog
         resize(initialSize);
       }
     });
-    Button larger = new Button(buttonComp,SWT.PUSH);
-    larger.setImage(SWTUtil.getImage("list-add.png"));
-    larger.setToolTipText(i18n.tr("Bild vergrößern"));
-    larger.setLayoutData(new GridData());
-    larger.addSelectionListener(new SelectionAdapter()
+
+    this.larger = new Button(buttonComp,SWT.PUSH);
+    this.larger.setImage(SWTUtil.getImage("list-add.png"));
+    this.larger.setToolTipText(i18n.tr("Bild vergrößern"));
+    this.larger.setLayoutData(new GridData());
+    this.larger.addSelectionListener(new SelectionAdapter()
     {
       /**
        * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -131,8 +137,8 @@ public class PhotoTANDialog extends TANDialog
         resize(currentSize + 30);
       }
     });
+    this.larger.setEnabled(currentSize < 1000);
     
-
     MatrixCode code = new MatrixCode(this.hhduc);
     InputStream stream = new ByteArrayInputStream(code.getImage());
     
@@ -216,6 +222,9 @@ public class PhotoTANDialog extends TANDialog
     final Shell shell = this.getShell();
     final Point sh = shell.getSize();
     shell.setSize(sh.x,sh.y + diff);
+    
+    this.smaller.setEnabled(this.currentSize > 50);
+    this.larger.setEnabled(this.currentSize < 1000);
     
     // Neue Groesse abspeichern - pro Ausgangsproesse
     SETTINGS.setAttribute("resize." + this.initialSize,this.currentSize);
