@@ -293,6 +293,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
 
     String zweck = VerwendungszweckUtil.toString(umsatz,"");
     String name  = StringUtils.trimToEmpty(umsatz.getGegenkontoName());
+    String name2 = StringUtils.trimToEmpty(umsatz.getGegenkontoName2());
     String kto   = StringUtils.trimToEmpty(umsatz.getGegenkontoNummer());
     String kom   = StringUtils.trimToEmpty(umsatz.getKommentar());
     String art   = StringUtils.trimToEmpty(umsatz.getArt());
@@ -306,6 +307,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     {
       zweck = zweck.toLowerCase();
       name  = name.toLowerCase();
+      name2 = name2.toLowerCase();
       kto   = kto.toLowerCase();
       kom   = kom.toLowerCase();
       art   = art.toLowerCase();
@@ -318,6 +320,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       {
         zweck = StringUtils.deleteWhitespace(zweck);
         name = StringUtils.deleteWhitespace(name); // BUGZILLA 1705 - auch im Namen koennen Leerzeichen sein
+        name2 = StringUtils.deleteWhitespace(name2);
         s = StringUtils.deleteWhitespace(s);
       }
 
@@ -328,6 +331,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         String test = list[i].trim();
         if (zweck.indexOf(test) != -1 ||
             name.indexOf(test) != -1 ||
+            name2.indexOf(test) != -1 ||
             kto.indexOf(test)  != -1 ||
             kom.indexOf(test) != -1 ||
             art.indexOf(test) != -1 ||
@@ -356,6 +360,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       
       Matcher mZweck = pattern.matcher(zweck);
       Matcher mName = pattern.matcher(name);
+      Matcher mName2 = pattern.matcher(name2);
       Matcher mKto = pattern.matcher(kto);
       Matcher mKom = pattern.matcher(kom);
       Matcher mArt = pattern.matcher(art);
@@ -363,11 +368,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mRef = pattern.matcher(ref);
       Matcher mE2eid = pattern.matcher(e2eid);
       Matcher mMid = pattern.matcher(mid);
-      Matcher mAll = pattern.matcher(name + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid + " " + mid + " " + ref);
+      Matcher mAll = pattern.matcher(name + " " + name2 + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid + " " + mid + " " + ref);
 
       return (mAll.matches()    ||
               mZweck.matches()  ||
               mName.matches()   ||
+              mName2.matches()  ||
               mKto.matches()    ||
               mKom.matches()    ||
               mArt.matches()    ||

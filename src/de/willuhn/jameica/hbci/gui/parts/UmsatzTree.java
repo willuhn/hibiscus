@@ -62,6 +62,9 @@ public class UmsatzTree extends TreePart
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
+  private int umsatzCount = 0;
+  private int groupCount = 0;
+  
   /**
    * ct.
    * @param list eine Liste mit Objekten des Typs <code>Umsatz</code>
@@ -169,6 +172,9 @@ public class UmsatzTree extends TreePart
    */
   public void setList(GenericIterator list)
   {
+    this.umsatzCount = 0;
+    this.groupCount = 0;
+    
     try
     {
       ////////////////////////////////////////////////////////////////
@@ -189,7 +195,10 @@ public class UmsatzTree extends TreePart
         
         UmsatzTreeNode node = getNode(lookup,u.getUmsatzTyp());
         if (node != null)
+        {
           node.add(u);
+          this.umsatzCount++;
+        }
       }
       ////////////////////////////////////////////////////////////////
 
@@ -216,6 +225,7 @@ public class UmsatzTree extends TreePart
       ////////////////////////////////////////////////////////////////
 
       super.setList(PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[items.size()])));
+      this.featureEvent(Feature.Event.REFRESH,null);
     }
     catch (RemoteException re)
     {
@@ -245,6 +255,7 @@ public class UmsatzTree extends TreePart
     
     // Neu anlegen
     node = new UmsatzTreeNode(ut);
+    this.groupCount++;
     lookup.put(ut.getID(),node);
     
     // Parents checken
@@ -285,16 +296,10 @@ public class UmsatzTree extends TreePart
     try
     {
       Object o = this.getSelection();
-      int size = this.size();
 
-      // nichts markiert oder nur einer, dann liefern wir nur die Anzahl der Umsaetze
-      if (o == null || size == 1 || !(o instanceof Umsatz[]))
-      {
-        if (size == 1)
-          return i18n.tr("1 Umsatz");
-        else
-          return i18n.tr("{0} Umsätze",Integer.toString(size));
-      }
+      // nichts markiert, dann liefern wir nur die Anzahl der Umsaetze und Kategorien
+      if (o == null || !(o instanceof Umsatz[]))
+        return i18n.tr("Kategorien: {0}, Umsätze: {1}",Integer.toString(this.groupCount),Integer.toString(this.umsatzCount));
       
       // Andernfalls berechnen wir die Summe
       double sum = 0.0d;
@@ -309,7 +314,7 @@ public class UmsatzTree extends TreePart
       if (curr == null)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
-      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}",new String[]{Integer.toString(size),
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}",new String[]{Integer.toString(this.umsatzCount),
                                                                               Integer.toString(list.length),
                                                                               HBCI.DECIMALFORMAT.format(sum),
                                                                               curr});

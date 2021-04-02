@@ -1,3 +1,26 @@
+2021-04-02 Version 2.10.1
+
+  * NEW: 0937 Update auf HBCI4Java 3.1.55 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.55
+  * BUG: 0936 Obere und untere Limits für das Vergrößern/Verkleinern der PhotoTAN-Grafik
+  * NEW: 0935 Beim PhotoTAN-Dialog auch die Fenstergröße mit speichern
+  * NEW: 0934 Update auf HBCI4Java 3.1.54 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.54
+  * BUG: 0933 Wenn man aus der Detailansicht eines Kontos in der Umsatzliste unten "Alle als gelesen markieren" auswählt, kam es zu einer "Widget is disposed "Exception
+  * BUG: 0932 Bei Umsatzsuche per ID Zeitraum und Konto nicht ignorieren
+  * BUG: 0931 Die Summen bei "Umsätze nach Kategorie" waren nicht korrekt und wurden nicht sofort aktualisiert
+  * BUG: 0930 IndexOutOfBoundsException in Einnahmen/Ausgaben
+  * NEW: 0929 Mindesthöhe von 300px bei TAN-Dialog definiert. Bei aktiviertem Netbook-Mode ist der sonst zu schmal bei manuellem ChipTAN.
+  * NEW: 0928 IBAN-Rechner: Berechnung der IBAN automatisch starten, sobald Kontonummer und BLZ eingegeben wurden.
+  * NEW: 0927 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.03.2021
+  * NEW: 0926 https://github.com/willuhn/hibiscus/pull/70 AccountBalanceProvider in Einnahmen/Ausgaben
+  * NEW: 0925 Beim detaillierten HTML-Export von SEPA-Ueberweisungen Name, IBAN und BIC des Auftraggebers in dedizierten Feldern
+  * NEW: 0924 Beim CSV-Export von Umsätzen beim eigenen Konto IBAN/BIC statt Kontonummer/BLZ anzeigen
+  * NEW: 0923 Update auf HBCI4Java 3.1.51 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.51 - Degussa sendet in DialogInitRes unaufgefordert HITAB - siehe https://homebanking-hilfe.de/forum/topic.php?t=24405
+  * BUG: 0922 In der Detailansicht eines Kontos wurden im Saldo-Verlauf u.U. alle Konten angezeigt statt nur das aktuelle
+  * NEW: 0921 Markierte Umsatzbuchungen nach Änderungen der Suchkriterien wiederherstellen
+  * NEW: 0920 BIC bei Zahlungen nicht mehr automatisch beim Speichern vervollständigen (nur noch nach Auswahl einer IBAN) - damit ist dann auch IBAN only möglich
+  * NEW: 0919 Option "Auswahl speichern" in den Dialogen für TAN-Verfahren und TAN-Medium jetzt per Default aktiv
+  * NEW: 0918 Empfänger-Name 2 auch in Umsatzkategorien suchen
+
 2020-11-27 Version 2.10
 
   * NEW: 0917 Empfänger-Name 2 bei Umsätzen anzeigen

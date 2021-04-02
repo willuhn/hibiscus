@@ -170,7 +170,7 @@ public class TanMediaDialog extends AbstractDialog
     if (this.save != null)
       return this.save;
     
-    this.save = new CheckboxInput(false);
+    this.save = new CheckboxInput(true);
     this.save.setEnabled(this.config != null);
     return this.save;
   }

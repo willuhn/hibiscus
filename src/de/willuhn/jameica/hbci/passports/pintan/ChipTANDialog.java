@@ -173,7 +173,7 @@ public class ChipTANDialog extends TANDialog
     try
     {
       Logger.info("searching for smartcards, please wait...");
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie die bitte Chipkarte ein."),StatusBarMessage.TYPE_INFO));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie bitte die Chipkarte ein."),StatusBarMessage.TYPE_INFO));
       this.service = SmartCardService.createInstance(ChipTanCardService.class,this.config != null ? StringUtils.trimToNull(this.config.getCardReader()) : null);
 
       // Wir haben grundsaetzlich einen Kartenleser.
@@ -211,7 +211,7 @@ public class ChipTANDialog extends TANDialog
     
     if (this.usb)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie die bitte Chipkarte ein."),StatusBarMessage.TYPE_INFO));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie bitte die Chipkarte ein."),StatusBarMessage.TYPE_INFO));
 
       this.setShowPassword(true); // Bei ChipTAN USB immer die TAN anzeigen, damit der User vergleichen kann.
       container.addHeadline(i18n.tr("ChipTAN USB"));

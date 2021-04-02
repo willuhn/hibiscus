@@ -29,7 +29,6 @@ public class KontoList extends AbstractView
    */
   public void bind() throws Exception
   {
-
 		final KontoControl control = new KontoControl(this);
 		GUI.getView().setTitle(i18n.tr("Vorhandene Konten"));
 

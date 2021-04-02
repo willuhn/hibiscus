@@ -47,6 +47,7 @@ public class IbanCalcDialog extends AbstractDialog
   private TextInput iban       = null;
   private TextInput bic        = null;
   private LabelInput msg       = null;
+  private Listener listener = new CalcListener();
   
   /**
    * ct
@@ -132,6 +133,7 @@ public class IbanCalcDialog extends AbstractDialog
     this.konto.setComment("");
     this.konto.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS + " ");
     this.konto.setMandatory(true);
+    this.konto.addListener(this.listener);
     this.konto.addListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -171,6 +173,7 @@ public class IbanCalcDialog extends AbstractDialog
       return this.blz;
     this.blz = new BLZInput("");
     this.blz.setMandatory(true);
+    this.blz.addListener(this.listener);
     return this.blz;
   }
   
@@ -269,5 +272,25 @@ public class IbanCalcDialog extends AbstractDialog
     
     getIban().setValue(iban);
     getBic().setValue(bic);
+  }
+  
+  /**
+   * Startet die Neuberechnung automatisch, sobald BLZ und Kontonummer eingegeben wurden.
+   */
+  private class CalcListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    @Override
+    public void handleEvent(Event event)
+    {
+      final String kto = StringUtils.trimToNull((String) getKonto().getValue());
+      final String blz = StringUtils.trimToNull((String) getBlz().getValue());
+      if (kto != null && blz != null)
+        calc();
+    }
+    
   }
 }

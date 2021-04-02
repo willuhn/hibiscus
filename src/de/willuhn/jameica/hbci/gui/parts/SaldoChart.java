@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -39,9 +40,9 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
-import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
@@ -49,11 +50,14 @@ import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
+import de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider;
+import de.willuhn.jameica.hbci.report.balance.AccountBalanceService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -98,7 +102,7 @@ public class SaldoChart implements Part
   /**
    * ct.
    * Konstruktor fuer die Anzeige des Saldo-Charts von genau einem Konto.
-   * @param konto das Konto. Optional. Wenn kein konto ist, wir der Saldenverlauf ueber die Summe aller Konten berechnet.
+   * @param konto das Konto. Optional. Wenn kein Konto angegeben ist, wir der Saldenverlauf ueber die Summe aller Konten berechnet.
    */
   public SaldoChart(Konto konto)
   {
@@ -339,6 +343,9 @@ public class SaldoChart implements Part
    */
   private List<Konto> getSelectedAccounts() throws RemoteException
   {
+    if (this.konto != null)
+      return Arrays.asList(this.konto);
+    
     final List<Konto> result = new ArrayList<>();
     final Object o = this.getKontoAuswahl().getValue();
     if (o instanceof Konto)
@@ -407,29 +414,25 @@ public class SaldoChart implements Part
         chart.setTitle(i18n.tr("Saldo-Verlauf {0} - {1}", startString, endString));
 
         List<Konto> konten = getSelectedAccounts();
+        
+        final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+        final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);       
+        final ChartDataSaldoSumme sum = new ChartDataSaldoSumme();
+        for (Konto konto : konten)
+        {
+          AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(konto);
+          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, end);
+          chart.addData(balance);
+          sum.add(balance.getData());
+        }
+        
+        // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
         if (konten.size() > 1)
-        {
-          // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
-          final ChartDataSaldoSumme s = new ChartDataSaldoSumme();
-          for (Konto k:konten)
-          {
-            ChartDataSaldoVerlauf v = new ChartDataSaldoVerlauf(k,start, end);
-            chart.addData(v);
-            s.add(v.getData());
-          }
-          ChartDataSaldoTrend t = new ChartDataSaldoTrend();
-          t.add(s.getData());
-          chart.addData(s);
-          chart.addData(t);
-        }
-        else
-        {
-          ChartDataSaldoVerlauf s = new ChartDataSaldoVerlauf((Konto) o, start, end);
-          ChartDataSaldoTrend   t = new ChartDataSaldoTrend();
-          t.add(s.getData());
-          chart.addData(s);
-          chart.addData(t);
-        }
+          chart.addData(sum);
+
+        ChartDataSaldoTrend trend = new ChartDataSaldoTrend();
+        trend.add(sum.getData());
+        chart.addData(trend);
         
         if (event != null)
         {

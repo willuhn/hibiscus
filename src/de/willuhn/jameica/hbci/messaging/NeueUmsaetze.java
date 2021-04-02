@@ -127,7 +127,7 @@ public class NeueUmsaetze implements MessageConsumer
       first = null;
       
       // Anzeige aktualisieren
-      // Im Prinzip koennten wir fuer jeden Umsaetze, der vorher als neu galt, eine ObjectChangedMessage schicken
+      // Im Prinzip koennten wir fuer jeden Umsatz, der vorher als neu galt, eine ObjectChangedMessage schicken
       // Das funktioniert aber nicht ganz sauber, denn:
       // 1) In der Umsatzliste wird der Fettdruck zwar entfernt. Da sich dabei aber die Objekt-Referenzen aendern
       //    (die Umsaetze wuerden hier ja neu geladen werden), hat das u.U. zu Konsequenz, dass ein Umsatz nicht mehr
@@ -137,7 +137,10 @@ public class NeueUmsaetze implements MessageConsumer
       
       // Daher schicken wir keine ObjectChangeMessage sondern laden die aktuelle View neu.
       // GUI.getCurrentView().reload() wird von vielen Views nicht implementiert. Daher starten wir die View neu
-      GUI.startView(GUI.getCurrentView(),GUI.getCurrentView().getCurrentObject());
+      // Achtung: Nicht die Instanz der View wiederverwenden. Bringt keinen Vorteil. Verlangt aber, dass die View
+      // alle Resourcen sauber disposed und neu erstellt. KontoNew macht das z.Bsp. nicht, weil es den Controller
+      // als Member haelt.
+      GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
     }
     catch (Exception e)
     {
