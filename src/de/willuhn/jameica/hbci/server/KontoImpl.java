@@ -271,6 +271,16 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         um.delete();
       }
       
+      // Die fest zugeordneten Kategorien loesen
+      list = getUmsatzTypen();
+      UmsatzTyp ut = null;
+      while (list.hasNext())
+      {
+        ut = (UmsatzTyp) list.next();
+        ut.setKonto(null);
+        ut.store();
+      }
+      
       // dann die Kontoauszuege
       list = getKontoauszuege();
       Kontoauszug az = null;
@@ -521,6 +531,20 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsatzTypen()
+   */
+  @Override
+  public DBIterator getUmsatzTypen() throws RemoteException
+  {
+    HBCIDBService service = (HBCIDBService) getService();
+
+    DBIterator list = service.createList(UmsatzTyp.class);
+    list.addFilter("konto_id = " + getID());
+    list.setOrder("ORDER BY COALESCE(nummer,''),name");
+    return list;
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getAuslandsUeberweisungen()
    */
