@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0939 Bei ungültigen Größen-Angaben im PhotoTAN-Dialog das Resizen abbrechen
   * BUG: 0938 Beim Löschen eines Kontos die fest zugeordneten Kategorien lösen
   
 2021-04-02 Version 2.10.1
