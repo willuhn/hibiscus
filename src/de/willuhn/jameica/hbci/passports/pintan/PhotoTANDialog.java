@@ -204,10 +204,12 @@ public class PhotoTANDialog extends TANDialog
       
       int width = rect.width + diff;
       int height = rect.height + diff;
-      if (width < 1 || width > 1000)
+      if (width < 1 || width > 1000 || height < 1 || height > 1000)
+      {
+        Logger.warn("got invalid width/height values [" + width + "x" + height + "] - resetting to [" + rect.width + "x" + rect.height + "]");
         width = rect.width;
-      if (height < 1 || height > 1000)
         height = rect.height;
+      }
       
       Image scaled = new Image(GUI.getDisplay(), width, height);
       final GC gc = new GC(scaled);
