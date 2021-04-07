@@ -196,37 +196,51 @@ public class PhotoTANDialog extends TANDialog
    */
   private void resize(int newSize)
   {
-    int diff = newSize - this.currentSize;
-    this.currentSize = newSize;
-    final Rectangle rect = this.image.getBounds();
-    
-    int width = rect.width + diff;
-    int height = rect.height + diff;
-    Image scaled = new Image(GUI.getDisplay(), width, height);
-    final GC gc = new GC(scaled);
-    gc.setAntialias(SWT.ON);
-    gc.setInterpolation(SWT.HIGH);
-    gc.drawImage(this.image, 0, 0, rect.width, rect.height, 0, 0, width, height);
-    gc.dispose();
-    
-    if (!this.image.isDisposed())
-      this.image.dispose();
+    try
+    {
+      int diff = newSize - this.currentSize;
+      this.currentSize = newSize;
+      final Rectangle rect = this.image.getBounds();
+      
+      int width = rect.width + diff;
+      int height = rect.height + diff;
+      if (width < 1 || width > 1000 || height < 1 || height > 1000)
+      {
+        Logger.warn("got invalid width/height values [" + width + "x" + height + "] - resetting to [" + rect.width + "x" + rect.height + "]");
+        width = rect.width;
+        height = rect.height;
+      }
+      
+      Image scaled = new Image(GUI.getDisplay(), width, height);
+      final GC gc = new GC(scaled);
+      gc.setAntialias(SWT.ON);
+      gc.setInterpolation(SWT.HIGH);
+      gc.drawImage(this.image, 0, 0, rect.width, rect.height, 0, 0, width, height);
+      gc.dispose();
+      
+      if (!this.image.isDisposed())
+        this.image.dispose();
 
-    this.image = scaled;
+      this.image = scaled;
 
-    this.imageLabel.setImage(this.image);
-    this.imageLabel.setSize(width,height);
-    this.imageLabel.getParent().layout(true);
+      this.imageLabel.setImage(this.image);
+      this.imageLabel.setSize(width,height);
+      this.imageLabel.getParent().layout(true);
 
-    // Dialog-Groesse mit anpassen
-    final Shell shell = this.getShell();
-    final Point sh = shell.getSize();
-    shell.setSize(sh.x,sh.y + diff);
-    
-    this.smaller.setEnabled(this.currentSize > 50);
-    this.larger.setEnabled(this.currentSize < 1000);
-    
-    // Neue Groesse abspeichern - pro Ausgangsproesse
-    SETTINGS.setAttribute("resize." + this.initialSize,this.currentSize);
+      // Dialog-Groesse mit anpassen
+      final Shell shell = this.getShell();
+      final Point sh = shell.getSize();
+      shell.setSize(sh.x,sh.y + diff);
+      
+      this.smaller.setEnabled(this.currentSize > 50);
+      this.larger.setEnabled(this.currentSize < 1000);
+      
+      // Neue Groesse abspeichern - pro Ausgangsproesse
+      SETTINGS.setAttribute("resize." + this.initialSize,this.currentSize);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to resize photo tan dialog",e);
+    }
   }
 }

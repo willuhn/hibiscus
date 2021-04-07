@@ -1,3 +1,8 @@
+2021-04-07 Version 2.10.2
+
+  * BUG: 0939 Bei ungültigen Größen-Angaben im PhotoTAN-Dialog das Resizen abbrechen
+  * BUG: 0938 Beim Löschen eines Kontos die fest zugeordneten Kategorien lösen
+  
 2021-04-02 Version 2.10.1
 
   * NEW: 0937 Update auf HBCI4Java 3.1.55 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.55

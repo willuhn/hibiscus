@@ -247,9 +247,15 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
 	 */
 	public DBIterator getUmsaetze() throws RemoteException;
 
+	 /**
+   * Liefert die Liste der fest zugeordneten Umsatzkategorien.
+   * @return Liste der fest zugeordneten Umsatzkategorien.
+   * @throws RemoteException
+   */
+  public DBIterator getUmsatzTypen() throws RemoteException;
+
 	/**
-	 * BUGZILLA 81 http://www.willuhn.de/bugzilla/show_bug.cgi?id=81 Liefert die
-	 * Anzahl der Umsaetze auf dem Konto.
+	 * Liefert die Anzahl der Umsaetze auf dem Konto.
 	 * @return Anzahl der Umsaetze auf dem Konto.
 	 * @throws RemoteException
 	 */

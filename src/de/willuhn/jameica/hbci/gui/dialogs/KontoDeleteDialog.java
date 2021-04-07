@@ -165,6 +165,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
                 {
                   boolean added = false;
                   added |= add(i18n.tr("Umsätze"),konto.getNumUmsaetze(),null);
+                  added |= add(i18n.tr("Umsatzkategorien"),konto.getUmsatzTypen().size(),i18n.tr("Kategorien werden nicht gelöscht sondern nur die Verbindung zum Konto aufgehoben"));
                   added |= add(i18n.tr("Elektr. Kontoauszüge"),konto.getKontoauszuege().size(),i18n.tr("Die PDF-Dateien werden nicht gelöscht"));
                   added |= add(i18n.tr("Überweisungen"),konto.getAuslandsUeberweisungen().size(),i18n.tr("Gesendete Terminüberweisungen werden nicht bei der Bank gelöscht"));
                   added |= add(i18n.tr("Daueraufträge"),konto.getDauerauftraege().size(),i18n.tr("Aufträge werden nicht bei der Bank gelöscht"));
