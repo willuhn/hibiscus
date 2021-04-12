@@ -36,6 +36,7 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.system.Customizing;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -46,6 +47,8 @@ import de.willuhn.util.ApplicationException;
 public class PhotoTANDialog extends TANDialog
 {
   private final static Settings SETTINGS = new Settings(PhotoTANDialog.class);
+  
+  private static boolean SMALLDISPLAY = false;
   
   private String hhduc = null;
   private int initialSize = 0;
@@ -73,20 +76,41 @@ public class PhotoTANDialog extends TANDialog
    */
   public PhotoTANDialog(PinTanConfig config, String hhduc) throws RemoteException, ApplicationException
   {
-    super(config);
+    super(prepare(config));
+    Customizing.SETTINGS.setAttribute("application.scrollview",SMALLDISPLAY);
     this.hhduc = hhduc;
     this.setSideImage(null);
   }
+  
+  /**
+   * Bereitet den Dialog vor.
+   * @param c die PIN/TAN-Config.
+   * @return die PIN/TAN-Config.
+   */
+  private static PinTanConfig prepare(PinTanConfig c)
+  {
+    // Das ist ein bisschen ein Dirty Hack, um den Textbereich immer scrollbar zu machen, ohne dass ein neues Jameica-Release
+    // erforderlich wird. Der Text wird in PasswordDialog nur dann scrollbar gemacht, wenn "application.scrollview"=true UND
+    // der Text länger als 500 Zeichen ist. Selbst auf normalgrossen Bildschirmen passt der Dialog scheinbar nicht mehr ganz
+    // auf den Bildschirm. Siehe https://homebanking-hilfe.de/forum/topic.php?t=24574
+    // Ist setze das Flag "application.scrollview" daher mal kurz auf true, damit in PasswordDialog "this.smallDisplay" auf true
+    // geht. Danach stelle ich den originalen Wert wieder her.
+    SMALLDISPLAY = Customizing.SETTINGS.getBoolean("application.scrollview",false);
+    Customizing.SETTINGS.setAttribute("application.scrollview",true);
+    return c;
+  }
 
-	/**
+  /**
    * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#paint(org.eclipse.swt.widgets.Composite)
    */
   protected void paint(Composite parent) throws Exception
   {
-    Container container = new SimpleContainer(parent,true,1);
+    Container container = new SimpleContainer(parent,false,1);
+    
     container.addHeadline(i18n.tr("Matrixcode"));
 
     Composite buttonComp = new Composite(container.getComposite(),SWT.NONE);
+    
     GridData buttonGd = new GridData();
     buttonGd.horizontalAlignment = SWT.CENTER;
     buttonComp.setLayoutData(buttonGd);
@@ -149,26 +173,41 @@ public class PhotoTANDialog extends TANDialog
     this.imageLabel = new Label(container.getComposite(),SWT.NONE);
     GridData gd = new GridData(GridData.FILL_BOTH);
     gd.horizontalAlignment = SWT.CENTER;
+    gd.grabExcessVerticalSpace = false;
     this.imageLabel.setLayoutData(gd);
     this.imageLabel.setImage(image);
     
-    super.paint(parent);
-    
-    // Checken, ob wir gespeicherte Resize-Werte haben, wenn ja gleich resizen
-    int resized = SETTINGS.getInt("resize." + this.initialSize,0);
-    if (resized != 0)
-      this.resize(resized);
+    Composite comp = new Composite(parent,SWT.NONE);
+    {
+      final GridLayout gl = new GridLayout(1,false);
+      comp.setLayout(gl);
+      GridData gd2 = new GridData(GridData.FILL_BOTH);
+      gd2.heightHint = 300; // Eine sinnvolle Mindesthoehe
+      gd2.grabExcessVerticalSpace = true;
+      comp.setLayoutData(gd2);
+    }
+    super.paint(comp);
 
+    // Checken, ob wir gespeicherte Resize-Werte haben, wenn ja gleich resizen
+    int resize = SETTINGS.getInt("resize." + this.initialSize,this.initialSize);
+    this.resize(resize);
+    
     // Checken, ob wir eine gespeicherte Dialoggroesse haben
-    int width = this.initialSize + 250;
     int windowWidth = SETTINGS.getInt("width." + this.initialSize,0);
     int windowHeight = SETTINGS.getInt("height." + this.initialSize,0);
     if (windowWidth > 0 && windowHeight > 0)
+    {
       this.setSize(windowWidth,windowHeight);
+    }
     else
-      this.setSize(width,SWT.DEFAULT);
+    {
+      int width = resize + 100;
+      final int displayHeight = GUI.getDisplay().getBounds().height;
+      Point p = this.getShell().computeSize(width,SWT.DEFAULT);
+      int height = p.y >= displayHeight ? displayHeight : p.y;
+      this.setSize(width,height);
+    }
     
-    getShell().setMinimumSize(getShell().computeSize(width,SWT.DEFAULT));
     this.getShell().addListener(SWT.Resize,this.resizeListener);
   }
   
@@ -185,6 +224,7 @@ public class PhotoTANDialog extends TANDialog
     if (p == null)
       return;
     
+
     Logger.info("saving window size: " + p.x + "x" + p.y);
     SETTINGS.setAttribute("width." + initialSize,p.x);
     SETTINGS.setAttribute("height." + initialSize,p.y);
@@ -198,6 +238,7 @@ public class PhotoTANDialog extends TANDialog
   {
     try
     {
+      Logger.info("resize phototan image to new size: " + newSize);
       int diff = newSize - this.currentSize;
       this.currentSize = newSize;
       final Rectangle rect = this.image.getBounds();
@@ -225,6 +266,9 @@ public class PhotoTANDialog extends TANDialog
 
       this.imageLabel.setImage(this.image);
       this.imageLabel.setSize(width,height);
+
+      Logger.info("new size: " + width + "x" + height);
+
       this.imageLabel.getParent().layout(true);
 
       // Dialog-Groesse mit anpassen

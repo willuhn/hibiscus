@@ -344,7 +344,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         Logger.debug("got phototan code, using phototan dialog");
         TANDialog dialog = new PhotoTANDialog(config,retData.toString());
         dialog.setContext(this.getContext(passport));
-        dialog.setText(msg);
+        dialog.setText(msg + "\n\n\n\n\n"); // Die brauchen wir, damit wirklich alles im Scrollbereich angezeigt wird.
         retData.replace(0,retData.length(),(String)dialog.open());
         return true;
       }

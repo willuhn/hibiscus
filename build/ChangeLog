@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 0940 Anzeige des PhotoTAN-Dialogs nochmal überarbeitet
+
 2021-04-07 Version 2.10.2
 
   * BUG: 0939 Bei ungültigen Größen-Angaben im PhotoTAN-Dialog das Resizen abbrechen
