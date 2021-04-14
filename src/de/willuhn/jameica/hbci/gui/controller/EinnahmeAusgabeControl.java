@@ -444,7 +444,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
         // dass die Liste ueberhaupt lang genug ist, breche ich hier einfach ab.
         if (index >= nodes.size())
         {
-          Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + currentNode.getEnddatum());
+          Date end = currentNode != null ? currentNode.getEnddatum() : null;
+          Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + end);
           return;
         }
         
