@@ -31,6 +31,7 @@ import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -42,6 +43,7 @@ import de.willuhn.util.I18N;
 public class PtSecMechDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  private final static Settings SETTINGS = new Settings(PtSecMechDialog.class);
 
   private String options      = null;
 
@@ -110,6 +112,8 @@ public class PtSecMechDialog extends AbstractDialog
             config.setCurrentSecMech(choosen);
 
           Boolean b = (Boolean) getSave().getValue();
+          SETTINGS.setAttribute("save",b.booleanValue());
+          
           if (getSave().isEnabled() && b.booleanValue())
           {
             // BUGZILLA 218
@@ -160,7 +164,7 @@ public class PtSecMechDialog extends AbstractDialog
     if (this.save != null)
       return this.save;
     
-    this.save = new CheckboxInput(true);
+    this.save = new CheckboxInput(SETTINGS.getBoolean("save",false));
     this.save.setEnabled(this.config != null);
     return this.save;
   }
