@@ -28,14 +28,12 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
-import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.NotificationPanel;
 import de.willuhn.jameica.gui.parts.NotificationPanel.Type;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -69,6 +67,7 @@ public class TANDialog extends AbstractDialog
   private HibiscusDBObject context = null;
   
   private NotificationPanel panel = null;
+  
   private PasswordInput tanInput = null;
   private Button okButton = null;
   
@@ -91,7 +90,6 @@ public class TANDialog extends AbstractDialog
     this.setTitle(i18n.tr("TAN-Eingabe"));
     this.setText(null); // Fuer die Generierung des Default-Textes
 		this.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
-    this.setSideImage(SWTUtil.getImage("dialog-password.png"));
 
     try
     {
@@ -176,6 +174,7 @@ public class TANDialog extends AbstractDialog
     this.tanInput = new PasswordInput(null);
     this.tanInput.setName(i18n.tr("Ihre TAN-Eingabe"));
     this.tanInput.setShowPassword(this.showTan);
+    this.tanInput.focus();
     return this.tanInput;
   }
   
@@ -209,19 +208,25 @@ public class TANDialog extends AbstractDialog
     {
       final Container c = new SimpleContainer(parent);
       c.addPart(this.getPanel());
+      setInfoText(Type.INFO,i18n.tr("Bitte geben Sie die TAN ein."));
+      
+      final String auftrag = this.context != null ? HBCIContext.toString(this.context) : null;
+      final boolean haveAuftrag = StringUtils.trimToNull(auftrag) != null;
+      
+      if (this.konto != null || haveAuftrag)
+        c.addHeadline(i18n.tr("Konto und Auftrag"));
       
       if (this.konto != null)
       {
         final LabelInput l = new LabelInput(this.konto);
-        l.setName(i18n.tr("Konto"));
+        l.setName(i18n.tr("Konto") + ": ");
         c.addInput(l);
       }
       
-      final String auftrag = this.context != null ? HBCIContext.toString(this.context) : null;
-      if (StringUtils.trimToNull(auftrag) != null)
+      if (haveAuftrag)
       {
         final LabelInput l = new LabelInput(auftrag);
-        l.setName(i18n.tr("Auftrag"));
+        l.setName(i18n.tr("Auftrag") + ": ");
         c.addInput(l);
       }
     }
@@ -239,8 +244,8 @@ public class TANDialog extends AbstractDialog
       msg.setEditable(false);
     }
 
-    final TextInput tan = this.getTANInput();
     final Container c = new SimpleContainer(parent);
+    final PasswordInput tan = this.getTANInput();
     c.addInput(tan);
     
     tan.getControl().addKeyListener(new KeyAdapter() {
@@ -250,8 +255,7 @@ public class TANDialog extends AbstractDialog
       @Override
       public void keyReleased(KeyEvent e)
       {
-        final String s = (String) tan.getValue();
-        getOkButton().setEnabled(StringUtils.trimToNull(s) != null);
+        getOkButton().setEnabled(StringUtils.trimToNull((String) tan.getValue()) != null);
       }
     });
     

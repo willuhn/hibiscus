@@ -75,7 +75,6 @@ public class PhotoTANDialog extends TANDialog
   {
     super(config);
     this.hhduc = hhduc;
-    this.setSideImage(null);
   }
   
   /**
