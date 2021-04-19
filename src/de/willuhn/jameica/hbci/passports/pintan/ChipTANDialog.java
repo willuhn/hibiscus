@@ -28,13 +28,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Text;
 import org.kapott.hbci.manager.FlickerRenderer;
 import org.kapott.hbci.smartcardio.ChipTanCardService;
 import org.kapott.hbci.smartcardio.SmartCardService;
@@ -42,14 +41,14 @@ import org.kapott.hbci.smartcardio.SmartCardService;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.parts.NotificationPanel.Type;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
-import de.willuhn.jameica.hbci.JameicaCompat;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.Customizing;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
@@ -60,14 +59,23 @@ import de.willuhn.util.ApplicationException;
  */
 public class ChipTANDialog extends TANDialog
 {
-  private final static Settings settings = new Settings(ChipTANDialog.class);
+  private final static Settings SETTINGS = new Settings(ChipTANDialog.class);
+  
   private final static String PARAM_AUTOCONTINUE = "usb.autocontinue";
   
   private String code = null;
-  private boolean smallDisplay = false;
   private boolean usb = false;
   private ChipTanCardService service = null;
   private CheckboxInput autoContinue = null;
+  
+  private final Listener resizeListener = new DelayedListener(new Listener() {
+    @Override
+    public void handleEvent(Event event)
+    {
+      storeSize();
+    }
+  });
+
   
   /**
    * ct.
@@ -87,8 +95,6 @@ public class ChipTANDialog extends TANDialog
       this.setSideImage(SWTUtil.getImage("cardreader.png"));
     else
       this.setSideImage(null); // den Platz haben wir hier nicht.
-    
-    this.smallDisplay = Customizing.SETTINGS.getBoolean("application.scrollview",false);
   }
   
   /**
@@ -139,18 +145,54 @@ public class ChipTANDialog extends TANDialog
     if (this.autoContinue != null)
       return this.autoContinue;
     
-    this.autoContinue = new CheckboxInput(settings.getBoolean(PARAM_AUTOCONTINUE,false));
+    this.autoContinue = new CheckboxInput(SETTINGS.getBoolean(PARAM_AUTOCONTINUE,false));
     this.autoContinue.setName(i18n.tr("Bei Erhalt der TAN automatisch fortsetzen"));
     this.autoContinue.addListener(new Listener() {
       
       @Override
       public void handleEvent(Event event)
       {
-        settings.setAttribute(PARAM_AUTOCONTINUE,((Boolean)autoContinue.getValue()).booleanValue());
+        SETTINGS.setAttribute(PARAM_AUTOCONTINUE,((Boolean)autoContinue.getValue()).booleanValue());
       }
     });
     
     return this.autoContinue;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#paint(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
+  protected void paint(Composite parent) throws Exception
+  {
+    super.paint(parent);
+    
+    // Checken, ob wir eine gespeicherte Dialoggroesse haben
+    int windowWidth = SETTINGS.getInt("window.width",0);
+    int windowHeight = SETTINGS.getInt("window.height",0);
+    if (windowWidth > 0 && windowHeight > 0)
+      this.setSize(windowWidth,windowHeight);
+
+    this.getShell().addListener(SWT.Resize,this.resizeListener);
+  }
+  
+  /**
+   * Speichert die aktuelle Dialog-Groesse.
+   */
+  private void storeSize()
+  {
+    final Shell shell = this.getShell();
+    if (shell == null || shell.isDisposed())
+      return;
+    
+    final Point p = shell.getSize();
+    if (p == null)
+      return;
+    
+
+    Logger.debug("saving window size: " + p.x + "x" + p.y);
+    SETTINGS.setAttribute("window.width",p.x);
+    SETTINGS.setAttribute("window.height",p.y);
   }
   
   /**
@@ -202,19 +244,18 @@ public class ChipTANDialog extends TANDialog
     }
   }
 
-	/**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#paint(org.eclipse.swt.widgets.Composite)
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendTop(de.willuhn.jameica.gui.util.Container)
    */
-  protected void paint(final Composite parent) throws Exception
+  @Override
+  protected void extendTop(Container container) throws Exception
   {
-    Container container = new SimpleContainer(parent);
-    
     if (this.usb)
     {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie bitte die Chipkarte ein."),StatusBarMessage.TYPE_INFO));
+      this.setInfoText(Type.INFO,i18n.tr("Legen Sie bitte die Chipkarte ein."));
 
-      this.setShowPassword(true); // Bei ChipTAN USB immer die TAN anzeigen, damit der User vergleichen kann.
-      container.addHeadline(i18n.tr("ChipTAN USB"));
+      this.setShowTAN(true); // Bei ChipTAN USB immer die TAN anzeigen, damit der User vergleichen kann.
       container.addText(i18n.tr("Legen Sie die Chipkarte ein und folgen Sie den Anweisungen des Kartenlesers. Klicken Sie auf \"OK\", wenn die TAN korrekt übertragen wurde."),true);
 
       ProgressBar progress = new ProgressBar(container.getComposite(), SWT.INDETERMINATE);
@@ -234,7 +275,7 @@ public class ChipTANDialog extends TANDialog
             String s = StringUtils.trimToNull(service.getTan(code));
             if (s != null && !cancelled.get())
             {
-              setPassword(s,parent);
+              setTAN(s);
             }
             else
             {
@@ -246,14 +287,14 @@ public class ChipTANDialog extends TANDialog
             if (!cancelled.get())
             {
               Logger.error("unable to get tan from chipcard",e);
-              setErrorText(i18n.tr("Fehler bei TAN-Ermittlung: {0}",e.getMessage()));
+              setInfoText(Type.ERROR,i18n.tr("Fehler bei TAN-Ermittlung: {0}",e.getMessage()));
             }
           }
         }
       };
       usbThread.start();
       
-      parent.addDisposeListener(new DisposeListener() {
+      getShell().addDisposeListener(new DisposeListener() {
         @Override
         public void widgetDisposed(DisposeEvent e)
         {
@@ -273,122 +314,32 @@ public class ChipTANDialog extends TANDialog
     }
     else
     {
-      container.addHeadline(i18n.tr("Flicker-Grafik"));
-      container.addText(i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."),true);
-      FlickerPart flicker = new FlickerPart(this.code);
-      flicker.paint(parent);
-    }
-    
-    
-    // Hier stehen dann noch die Anweisungen von der Bank drin
-    super.paint(parent);
-
-    if (!this.usb)
-    {
-      // Wir muessen das Fenster wenigstens gross genug machen, damit der Flickercode reinpasst, falls
-      // der User den recht verbreitert hat
-      int width = settings.getInt("width",-1);
-      if (width > 0)
-        width +=10; // Wenigstens noch 10 Pixel Rand hinzufuegen.
-      // Wir nehmen den groesseren von beiden Werten
+      this.setInfoText(Type.INFO,i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."));
       
-      getShell().setMinimumSize(getShell().computeSize(width > WINDOW_WIDTH ? width : WINDOW_WIDTH,smallDisplay ? 520 : SWT.DEFAULT));
+      final Container c = new SimpleContainer(container.getComposite(),false,1);
+      Composite comp = new Composite(c.getComposite(),SWT.NONE);
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.horizontalAlignment = SWT.CENTER;
+      comp.setLayoutData(gd);
+      comp.setLayout(new GridLayout(1,false));
+
+      FlickerPart flicker = new FlickerPart(this.code);
+      flicker.paint(comp);
     }
   }
   
   /**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#extend(de.willuhn.jameica.gui.util.Container)
+   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendBottom(org.eclipse.swt.widgets.Composite)
    */
   @Override
-  protected void extend(Container container) throws Exception
+  protected void extendBottom(Container c) throws Exception
   {
-    super.extend(container);
-
-    if (this.usb)
-      container.addInput(this.getAutoContinue());
+    if (!this.usb)
+      return;
+    
+    c.addInput(this.getAutoContinue());
   }
   
-  /**
-   * Ueberschrieben, um Abwaertskompatibilitaet zu Jameica 2.8.0 herzustellen.
-   * Dort war es noch nicht moeglich, das Passwort per Code zu setzen.
-   * @param password das zu setzende Passwort.
-   * @param parent das Composite.
-   */
-  private void setPassword(final String password, final Composite parent)
-  {
-    GUI.getDisplay().asyncExec(new Runnable() {
-      
-      @Override
-      public void run()
-      {
-        setPassword(password);
-        
-        // Checken, ob es das Passwort-Eingabefeld schon als Member in der Klasse gibt
-        try
-        {
-          Object input = JameicaCompat.get(ChipTANDialog.this,null,"passwordInput");
-          
-          // OK, das Feld gibts. Dann ist die Version aktuell.
-          if (input != null)
-          {
-            boolean ok = settings.getBoolean(PARAM_AUTOCONTINUE,false);
-            if (password != null && password.length() > 0 && ok)
-              close();
-            return;
-          }
-
-          // Feld gibts nicht. Dann muessen wir das Eingabefeld suchen
-          applyPassword(password,parent.getChildren());
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to update password field",e);
-        }
-      }
-    });
-  }
-  
-  /**
-   * Uebernimmt das Passwort.
-   * @param password das Passwort.
-   * @param controls die Controls.
-   * @return true, wenn es uebernommen wurde.
-   */
-  private boolean applyPassword(String password, Control[] controls)
-  {
-    if (controls == null || controls.length == 0)
-      return false;
-    
-    for (Control c:controls)
-    {
-      if (c instanceof Text)
-      {
-        Text t = (Text) c;
-        if (!t.isDisposed())
-        {
-          // Das kann nur das Passwort-Feld sein.
-          String value = StringUtils.trimToNull(t.getText());
-          if (value == null)
-          {
-            t.setText(password);
-            return true;
-          }
-        }
-      }
-
-      // Rekursion
-      if (c instanceof Composite)
-      {
-        Composite comp = (Composite) c;
-        boolean b = applyPassword(password, comp.getChildren());
-        if (b)
-          return true; // gefunden
-      }
-    }
-    
-    return false;
-  }
-
   /**
    * Implementiert die Flicker-Grafik.
    */
@@ -409,7 +360,7 @@ public class ChipTANDialog extends TANDialog
     private FlickerPart(String code) throws ApplicationException
     {
       super(code);
-      setFrequency(settings.getInt("freq",FlickerRenderer.FREQUENCY_DEFAULT));
+      setFrequency(SETTINGS.getInt("freq",FlickerRenderer.FREQUENCY_DEFAULT));
     }
     
     /**
@@ -515,7 +466,7 @@ public class ChipTANDialog extends TANDialog
         final Spinner spinner = new Spinner(buttonComp,SWT.BORDER);
         spinner.setToolTipText(i18n.tr("Geschwindigkeit in Hz (1/Sekunde)"));
         spinner.setLayoutData(new GridData());
-        spinner.setSelection(settings.getInt("freq",14));
+        spinner.setSelection(SETTINGS.getInt("freq",14));
         spinner.setMinimum(FlickerRenderer.FREQUENCY_MIN);
         spinner.setMaximum(FlickerRenderer.FREQUENCY_MAX);
         spinner.setIncrement(1);
@@ -524,7 +475,7 @@ public class ChipTANDialog extends TANDialog
           public void widgetSelected(SelectionEvent e)
           {
             int freq = spinner.getSelection();
-            settings.setAttribute("freq",freq);
+            SETTINGS.setAttribute("freq",freq);
             setFrequency(freq);
           }
         });
@@ -542,10 +493,10 @@ public class ChipTANDialog extends TANDialog
         final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
         int width = SWTUtil.mm2px(60); // das muesste ca. die Breite von ReinerSCT-Geraeten sein
         if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
-        gd.widthHint = settings.getInt("width",width);
+        gd.widthHint = SETTINGS.getInt("width",width);
 
-        int height = SWTUtil.mm2px(smallDisplay ? 40 : 50);
-        if (height == -1) width = smallDisplay ? 100 : 140;
+        int height = SWTUtil.mm2px(40);
+        if (height == -1) width = 100;
         gd.heightHint = height;
         
         this.comp.setLayoutData(gd);
@@ -563,7 +514,7 @@ public class ChipTANDialog extends TANDialog
           {
             // Wir merken uns die Groesse des Canvas.
             Logger.info("saving width of flickercode: " + gd.widthHint + " px");
-            settings.setAttribute("width",gd.widthHint);
+            SETTINGS.setAttribute("width",gd.widthHint);
           }
         });
       }
