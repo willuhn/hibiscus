@@ -273,9 +273,9 @@ public class ChipTANDialog extends TANDialog
           {
             Logger.info("trying to get TAN using USB cardreader");
             String s = StringUtils.trimToNull(service.getTan(code));
-            if (s != null && !cancelled.get())
+            if (s != null && s.length() > 0 && !cancelled.get())
             {
-              setTAN(s);
+              applyTAN(s);
             }
             else
             {
@@ -326,6 +326,29 @@ public class ChipTANDialog extends TANDialog
       FlickerPart flicker = new FlickerPart(this.code);
       flicker.paint(comp);
     }
+  }
+  
+  /**
+   * Uebernimmt die TAN.
+   * @param s die TAN.
+   */
+  private void applyTAN(String s)
+  {
+    if (s == null || s.length() == 0)
+      return;
+    
+    GUI.getDisplay().asyncExec(new Runnable() {
+      
+      @Override
+      public void run()
+      {
+        setTAN(s);
+        if (SETTINGS.getBoolean(PARAM_AUTOCONTINUE,false))
+          close();
+      }
+    });
+    
+    
   }
   
   /**
