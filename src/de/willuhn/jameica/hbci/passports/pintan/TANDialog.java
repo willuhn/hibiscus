@@ -171,7 +171,7 @@ public class TANDialog extends AbstractDialog
     if (this.tanInput != null)
       return this.tanInput;
 
-    this.tanInput = new PasswordInput(null);
+    this.tanInput = new PasswordInput(this.tan);
     this.tanInput.setName(i18n.tr("Ihre TAN-Eingabe"));
     this.tanInput.setShowPassword(this.showTan);
     this.tanInput.focus();
@@ -304,9 +304,11 @@ public class TANDialog extends AbstractDialog
    * Uebernimmt die TAN manuell.
    * @param tan die TAN.
    */
-  public final void setTAN(String tan)
+  public final void setTAN(final String tan)
   {
-    this.getTANInput().setValue(tan);
+    this.tan = tan;
+    getTANInput().setValue(tan);
+    getOkButton().setEnabled(StringUtils.trimToNull(tan) != null);
   }
   
   /**
