@@ -332,7 +332,7 @@ public class ChipTANDialog extends TANDialog
    * Uebernimmt die TAN.
    * @param s die TAN.
    */
-  private void applyTAN(String s)
+  private void applyTAN(final String s)
   {
     if (s == null || s.length() == 0)
       return;
