@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+2021-04-20 Version 2.10.3
+
   * NEW: 0946 Verlustfreies Vergrößern/Verkleinern der PhotoTAN und Zusammenführen von PhotoTAN und QRTAN in einem gemeinsamen Dialog
   * NEW: 0945 Anzeige der Text-Informationen in TAN-Dialogen erneut überarbeitet
   * NEW: 0944 In Bezug auf 0919 - Auswahl nicht vorgeben sondern letzte Auswahl speichern
