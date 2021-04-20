@@ -246,14 +246,7 @@ public class PhotoTANDialog extends TANDialog
 
       // Dialog-Groesse mit anpassen
       final Shell shell = this.getShell();
-      final Point sh = shell.getSize();
-      shell.setSize(sh.x,sh.y + diff);
-      
-      // Und die des Composite
-      Composite comp = this.imageLabel.getParent();
-      final Point sc = comp.getSize();
-      comp.setSize(sc.x,sh.y + diff);
-      shell.layout(true);
+      shell.setSize(shell.computeSize(shell.getSize().x,SWT.DEFAULT));
       
       this.smaller.setEnabled(this.currentSize > 50);
       this.larger.setEnabled(this.currentSize < 1000);
