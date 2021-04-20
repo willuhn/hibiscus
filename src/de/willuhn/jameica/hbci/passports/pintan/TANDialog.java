@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2021 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -12,12 +12,29 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.jameica.gui.dialogs.PasswordDialog;
+import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.PasswordInput;
+import de.willuhn.jameica.gui.internal.buttons.Cancel;
+import de.willuhn.jameica.gui.parts.Button;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.NotificationPanel;
+import de.willuhn.jameica.gui.parts.NotificationPanel.Type;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.MetaKey;
@@ -29,7 +46,9 @@ import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -37,15 +56,26 @@ import de.willuhn.util.I18N;
  * Es muss weder Text, noch Titel oder LabelText gesetzt werden.
  * Das ist alles schon drin.
  */
-public class TANDialog extends PasswordDialog
+public class TANDialog extends AbstractDialog
 {
-  final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  protected final static int WINDOW_WIDTH  = 550;
-  protected final static int WINDOW_HEIGHT = 300;
+  protected final static int WINDOW_WIDTH  = 500;
+  protected final static int WINDOW_HEIGHT = 550;
 
   protected PinTanConfig config = null;
   private HibiscusDBObject context = null;
+  
+  private NotificationPanel panel = null;
+  
+  private PasswordInput tanInput = null;
+  private Button okButton = null;
+  
+  private String konto = null;
+  private String text = null;
+
+  private boolean showTan = true;
+  private String tan = null;
   
   /**
    * ct.
@@ -57,17 +87,19 @@ public class TANDialog extends PasswordDialog
     super(TANDialog.POSITION_CENTER);
     
     this.config = config;
-		this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
+    this.setTitle(i18n.tr("TAN-Eingabe"));
+    this.setText(null); // Fuer die Generierung des Default-Textes
+		this.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
 
-    // Deaktivierung der Anzeige von Sternen im TAN-Dialog.
-    setShowPassword(this.config != null && this.config.getShowTan());
-    
-    setLabelText(i18n.tr("TAN"));
-    
-    // Einmal aufrufen, damit der Text gesetzt wird.
-    setText(null);
+    try
+    {
+      this.showTan = this.config != null && this.config.getShowTan();
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to determine if TAN should be shown",e);
+    }
 
-    String s = null;
     try
     {
       final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
@@ -76,10 +108,12 @@ public class TANDialog extends PasswordDialog
       
       if (konto != null)
       {
-        s = konto.getBezeichnung();
+        this.konto = konto.getBezeichnung();
         String name = HBCIProperties.getNameForBank(konto.getBLZ());
         if (name != null && name.length() > 0)
-          s += " [" + name + "]";
+          this.konto += " [" + name + "]";
+
+        this.setTitle(i18n.tr("TAN-Eingabe - Konto {0}",this.konto));
       }
       
       if (session != null)
@@ -113,35 +147,188 @@ public class TANDialog extends PasswordDialog
     {
       Logger.error("unable to determine current konto",e);
     }
-
-    if (s != null) setTitle(i18n.tr("TAN-Eingabe - Konto {0}",s));
-    else           setTitle(i18n.tr("TAN-Eingabe"));
-  
   }
+  
+  /**
+   * Liefert das Notification-Panel.
+   * @return das Notification-Panel.
+   */
+  private NotificationPanel getPanel()
+  {
+    if (this.panel != null)
+      return this.panel;
+    
+    this.panel = new NotificationPanel();
+    return this.panel;
+  }
+  
+  /**
+   * Liefert das Eingabefeld fuer die TAN.
+   * @return  das Eingabefeld fuer die TAN.
+   */
+  private PasswordInput getTANInput()
+  {
+    if (this.tanInput != null)
+      return this.tanInput;
 
-	/**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#paint(org.eclipse.swt.widgets.Composite)
-   * BUGZILLA 738
+    this.tanInput = new PasswordInput(null);
+    this.tanInput.setName(i18n.tr("Ihre TAN-Eingabe"));
+    this.tanInput.setShowPassword(this.showTan);
+    this.tanInput.focus();
+    return this.tanInput;
+  }
+  
+  /**
+   * Liefert den OK-Button.
+   * @return der OK-Button.
+   */
+  private Button getOkButton()
+  {
+    if (this.okButton != null)
+      return this.okButton;
+    
+    this.okButton = new Button("    " + i18n.tr("OK") + "    ",new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        tan = (String) getTANInput().getValue();
+        close();
+      }
+    },null,true,"ok.png");
+    this.okButton.setEnabled(false);
+    return this.okButton;
+  }
+  
+  
+  /**
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
   protected void paint(Composite parent) throws Exception
   {
-    super.paint(parent);
-    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
+    // Oberer Bereich
+    {
+      final Container c = new SimpleContainer(parent);
+      c.addPart(this.getPanel());
+      setInfoText(Type.INFO,i18n.tr("Bitte geben Sie die TAN ein."));
+      
+      final String auftrag = this.context != null ? HBCIContext.toString(this.context) : null;
+      final boolean haveAuftrag = StringUtils.trimToNull(auftrag) != null;
+      
+      if (this.konto != null || haveAuftrag)
+        c.addHeadline(i18n.tr("Konto und Auftrag"));
+      
+      if (this.konto != null)
+      {
+        final LabelInput l = new LabelInput(this.konto);
+        l.setName(i18n.tr("Konto") + ": ");
+        c.addInput(l);
+      }
+      
+      if (haveAuftrag)
+      {
+        final LabelInput l = new LabelInput(auftrag);
+        l.setName(i18n.tr("Auftrag") + ": ");
+        c.addInput(l);
+      }
+    }
+
+    // Oberer Erweiterungsbereich
+    this.extendTop(new SimpleContainer(parent,false,1));
+
+    {
+      final Container c = new SimpleContainer(parent,true,1);
+      c.addHeadline(i18n.tr("Informationen der Bank"));
+      final StyledText msg = new StyledText(c.getComposite(),SWT.WRAP | SWT.READ_ONLY | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+      msg.setText(this.text);
+      msg.setLayoutData(new GridData(GridData.FILL_BOTH));
+      msg.setMargins(5,5,5,5);
+      msg.setEditable(false);
+    }
+
+    final Container c = new SimpleContainer(parent);
+    final PasswordInput tan = this.getTANInput();
+    c.addInput(tan);
+    
+    tan.getControl().addKeyListener(new KeyAdapter() {
+      /**
+       * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+       */
+      @Override
+      public void keyReleased(KeyEvent e)
+      {
+        getOkButton().setEnabled(StringUtils.trimToNull((String) tan.getValue()) != null);
+      }
+    });
+    
+    // Unterer Erweiterungsbereich
+    this.extendBottom(new SimpleContainer(parent,false,1));
+    
+    // Gemeinsamer unterer Bereich
+    Container bottom = new SimpleContainer(parent);
+    final ButtonArea buttons = new ButtonArea();
+    buttons.addButton(this.getOkButton());
+    buttons.addButton(new Cancel());
+    bottom.addButtonArea(buttons);
+
+    addShellListener(new ShellListener() {
+      public void shellClosed(ShellEvent e) {
+        throw new OperationCanceledException("dialog cancelled via close button");
+      }
+      public void shellActivated(ShellEvent e) {}
+      public void shellDeactivated(ShellEvent e) {}
+      public void shellDeiconified(ShellEvent e) {}
+      public void shellIconified(ShellEvent e) {}
+    });
+    
+    this.getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
+  }
+  
+  /**
+   * Erweitert den Dialog unten.
+   * @param c der Container.
+   * @throws Exception
+   */
+  protected void extendBottom(Container c) throws Exception
+  {
   }
 
   /**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#checkPassword(java.lang.String)
+   * Erweitert den oben..
+   * @param c der Container.
+   * @throws Exception
    */
-  protected boolean checkPassword(String password)
-	{
-		if (password == null || password.length() == 0)
-		{
-			setErrorText(i18n.tr("Bitte geben Sie eine TAN ein.") + " " + getRetryString());
-			return false;
-		}
-		return true;
-	}
+  protected void extendTop(Container c) throws Exception
+  {
+  }
+
+  /**
+   * Uebernimmt die TAN manuell.
+   * @param tan die TAN.
+   */
+  public final void setTAN(String tan)
+  {
+    this.getTANInput().setValue(tan);
+  }
   
+  /**
+   * Legt fest, ob die TAN angezeigt werden soll.
+   * @param show true, wenn die TAN angezeigt werden soll.
+   */
+  public void setShowTAN(boolean show)
+  {
+    this.showTan = show;
+  }
+
+  /**
+   * Zeigt einen Hinweis-Text an.
+   * @param type die Darstellungsform.
+   * @param text der anzuzeigende Text.
+   */
+  public final void setInfoText(Type type, String text)
+  {
+    this.getPanel().setText(type,text);
+  }
+
+
   /**
    * Speichert den zugehoerigen Auftrag, insofern ermittelbar.
    * @param context der zugehoerige Auftrag.
@@ -159,10 +346,19 @@ public class TANDialog extends PasswordDialog
   {
     return context;
   }
-
+  
   /**
-   * BUGZILLA 150
-   * @see PasswordDialog#setText(String)
+   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
+   */
+  @Override
+  protected Object getData() throws Exception
+  {
+    return this.tan;
+  }
+  
+  /**
+   * Speichert den anzuzeigenden Text.
+   * @param text der anzuzeigende Text.
    */
   public void setText(String text)
   {
@@ -200,49 +396,6 @@ public class TANDialog extends PasswordDialog
       text = text.replaceAll("<u>","");
       text = text.replaceAll("</u>","");
     }
-
-    String ctx = this.context != null ? HBCIContext.toString(this.context) : null;
-    if (ctx != null)
-    {
-      text += ("\n\n" + i18n.tr("Auftrag:\n{0}",ctx));
-    }
-    else
-    {
-      String s = null;
-      try
-      {
-        BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-        SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
-        Konto konto = session != null ? session.getKonto() : null;
-        
-        if (konto != null)
-        {
-          s = konto.getBezeichnung();
-          String name = HBCIProperties.getNameForBank(konto.getBLZ());
-          if (name != null && name.length() > 0)
-            s += " [" + name + "]";
-        }
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to determine current konto",e);
-      }
-
-      if (s != null)
-        text += ("\n\n" + i18n.tr("Konto:\n{0}",s));
-    }
-
-    super.setText(text);
+    this.text = text;
   }
-  
-  /**
-	 * Liefert einen locale String mit der Anzahl der Restversuche.
-	 * z.Bsp.: "Noch 2 Versuche.".
-   * @return String mit den Restversuchen.
-   */
-  private String getRetryString()
-	{
-		String retries = getRemainingRetries() > 1 ? i18n.tr("Versuche") : i18n.tr("Versuch");
-		return (i18n.tr("Noch") + " " + getRemainingRetries() + " " + retries + ".");
-	}
 }

@@ -89,7 +89,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
         border.setGapSize(3);
         look.setCellBorder(border);
         
-        GridPrint children = new GridPrint("r:d:n, l:d:n, l:p:g, r:p:n",look);
+        GridPrint children = new GridPrint("r:d:n, l:d:n, l:d:n, r:p:n",look);
         children.addHeader(new TextPrint(i18n.tr("Nr."),fontTinyBold));
         children.addHeader(new TextPrint(i18n.tr("Gegenkonto"),fontTinyBold));
         children.addHeader(new TextPrint(i18n.tr("Zweck"),fontTinyBold));

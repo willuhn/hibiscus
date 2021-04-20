@@ -41,17 +41,7 @@ public class ChipTanTest implements Action
     try
     {
       // 0D85012045201998041234567855
-      ChipTANDialog d = new ChipTANDialog(null,"1784011041875F051234567890041203000044302C323015")
-      {
-        /**
-         * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#checkPassword(java.lang.String)
-         */
-        @Override
-        protected boolean checkPassword(String password)
-        {
-          return true;
-        }
-      };
+      ChipTANDialog d = new ChipTANDialog(null,"1784011041875F051234567890041203000044302C323015");
       d.setTitle(i18n.tr("chipTAN-Test"));
       d.setText(i18n.tr("Verwenden Sie diese Flicker-Grafik, um die Funktionsfähigkeit Ihres TAN-Generators zu testen.\n\n" +
                         "1. Schieben Sie Ihre Bank-Karte in den TAN-Generator\n" +

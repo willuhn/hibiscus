@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -443,7 +444,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
         // dass die Liste ueberhaupt lang genug ist, breche ich hier einfach ab.
         if (index >= nodes.size())
         {
-          Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + currentNode.getEnddatum());
+          Date end = currentNode != null ? currentNode.getEnddatum() : null;
+          Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + end);
           return;
         }
         
@@ -661,8 +663,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return
    */
   private long getDifferenceDays(Date d1, Date d2) {
-    java.time.LocalDate date1 = d1.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-    java.time.LocalDate date2 = d2.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-    return java.time.temporal.ChronoUnit.DAYS.between(date1, date2);
+    long diff = Math.abs(d2.getTime() - d1.getTime());
+    return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
   }
 }

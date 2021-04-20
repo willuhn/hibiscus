@@ -1,3 +1,13 @@
+2021-04-20 Version 2.10.3
+
+  * NEW: 0946 Verlustfreies Vergrößern/Verkleinern der PhotoTAN und Zusammenführen von PhotoTAN und QRTAN in einem gemeinsamen Dialog
+  * NEW: 0945 Anzeige der Text-Informationen in TAN-Dialogen erneut überarbeitet
+  * NEW: 0944 In Bezug auf 0919 - Auswahl nicht vorgeben sondern letzte Auswahl speichern
+  * BUG: 0943 NullPointerException durch Logausgabe in Einnahmen/Ausgaben
+  * CHG: 0942 Beim Ausdruck einer Sammellastschrift die Spalten "Gegenkonto" und "Zweck" ungefähr gleich gross
+  * BUG: 0941 Bei einem User kam es zu einem Fehler bei Berechnung des Zeitraums in Einnahme/Ausgabe ("UnsupportedOperationException at java.sql/java.sql.Date.toInstant" obwohl da gar kein java.sql.Date verwendet wird)
+  * CHG: 0940 Anzeige des PhotoTAN-Dialogs nochmal überarbeitet
+
 2021-04-07 Version 2.10.2
 
   * BUG: 0939 Bei ungültigen Größen-Angaben im PhotoTAN-Dialog das Resizen abbrechen

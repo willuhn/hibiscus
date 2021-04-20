@@ -17,6 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIVersion;
+import org.kapott.hbci.manager.MatrixCode;
+import org.kapott.hbci.manager.QRCode;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.AbstractPinTanPassport;
 import org.kapott.hbci.passport.HBCIPassport;
@@ -32,7 +34,6 @@ import de.willuhn.jameica.hbci.passports.pintan.PhotoTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMechDialog;
-import de.willuhn.jameica.hbci.passports.pintan.QRTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TanMediaDialog;
@@ -342,7 +343,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       case HBCICallback.NEED_PT_PHOTOTAN:
       {
         Logger.debug("got phototan code, using phototan dialog");
-        TANDialog dialog = new PhotoTANDialog(config,retData.toString());
+        final MatrixCode code = new MatrixCode(retData.toString());
+        TANDialog dialog = new PhotoTANDialog(config,code.getImage());
         dialog.setContext(this.getContext(passport));
         dialog.setText(msg);
         retData.replace(0,retData.length(),(String)dialog.open());
@@ -352,9 +354,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       case HBCICallback.NEED_PT_QRTAN:
       {
         Logger.debug("got QR tan code, using qrtan dialog");
-        TANDialog dialog = new QRTANDialog(config,retData.toString());
+        final QRCode code = new QRCode(retData.toString(),msg);
+        TANDialog dialog = new PhotoTANDialog(config,code.getImage());
         dialog.setContext(this.getContext(passport));
-        dialog.setText(msg);
+        dialog.setText(code.getMessage());
         retData.replace(0,retData.length(),(String)dialog.open());
         return true;
       }
