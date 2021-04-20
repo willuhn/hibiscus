@@ -10,7 +10,6 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
@@ -28,7 +27,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.kapott.hbci.manager.MatrixCode;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.Container;
@@ -41,13 +39,13 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Dialog für die PhotoTAN-Eingabe.
+ * Dialog für die PhotoTAN und QRTAN-Eingabe.
  */
 public class PhotoTANDialog extends TANDialog
 {
   private final static Settings SETTINGS = new Settings(PhotoTANDialog.class);
   
-  private String hhduc = null;
+  private byte[] bytes = null;
   private int initialSize = 0;
   private int currentSize = 0;
   private Image image = null;
@@ -67,14 +65,14 @@ public class PhotoTANDialog extends TANDialog
   /**
    * ct.
    * @param config die PINTAN-Config.
-   * @param hhduc die HHDuc-Rohdaten.
+   * @param bytes die Bytes des Bildes.
    * @throws RemoteException
    * @throws ApplicationException wenn die Grafik nicht geparst werden konnte.
    */
-  public PhotoTANDialog(PinTanConfig config, String hhduc) throws RemoteException, ApplicationException
+  public PhotoTANDialog(PinTanConfig config, byte[] bytes) throws RemoteException, ApplicationException
   {
     super(config);
-    this.hhduc = hhduc;
+    this.bytes = bytes;
   }
   
   /**
@@ -138,10 +136,7 @@ public class PhotoTANDialog extends TANDialog
     });
     this.larger.setEnabled(currentSize < 1000);
     
-    MatrixCode code = new MatrixCode(this.hhduc);
-    InputStream stream = new ByteArrayInputStream(code.getImage());
-    
-    this.image = SWTUtil.getImage(stream);
+    this.image = SWTUtil.getImage(new ByteArrayInputStream(this.bytes));
     this.initialSize = this.image.getBounds().width;
     this.currentSize = this.initialSize;
     
@@ -209,47 +204,43 @@ public class PhotoTANDialog extends TANDialog
    */
   private void resize(int newSize)
   {
+    Image tmp = null;
+    
     try
     {
-      Logger.info("resize phototan image to new size: " + newSize);
-      int diff = newSize - this.currentSize;
-      this.currentSize = newSize;
-      final Rectangle rect = this.image.getBounds();
+      Logger.debug("resize phototan image to new size: " + newSize);
       
-      int width = rect.width + diff;
-      int height = rect.height + diff;
-      if (width < 1 || width > 1000 || height < 1 || height > 1000)
+      if (this.image != null && !this.image.isDisposed())
+        this.image.dispose();
+      
+      this.smaller.setEnabled(newSize > 50);
+      this.larger.setEnabled(newSize < 1000);
+
+      if (newSize < 1 || newSize > 1000)
       {
-        Logger.warn("got invalid width/height values [" + width + "x" + height + "] - resetting to [" + rect.width + "x" + rect.height + "]");
-        width = rect.width;
-        height = rect.height;
+        Logger.warn("got invalid size: " + newSize);
+        return;
       }
       
-      Image scaled = new Image(GUI.getDisplay(), width, height);
+      tmp = SWTUtil.getImage(new ByteArrayInputStream(this.bytes));
+      final Rectangle rect = tmp.getBounds();
+      final Image scaled = new Image(GUI.getDisplay(), newSize, newSize);
       final GC gc = new GC(scaled);
       gc.setAntialias(SWT.ON);
       gc.setInterpolation(SWT.HIGH);
-      gc.drawImage(this.image, 0, 0, rect.width, rect.height, 0, 0, width, height);
+      gc.drawImage(tmp, 0, 0, rect.width, rect.height, 0, 0, newSize, newSize);
       gc.dispose();
       
-      if (!this.image.isDisposed())
-        this.image.dispose();
-
-      this.image = scaled;
-
-      this.imageLabel.setImage(this.image);
-      this.imageLabel.setSize(width,height);
-
-      Logger.info("new size: " + width + "x" + height);
-
+      this.imageLabel.setImage(scaled);
+      this.imageLabel.setSize(newSize,newSize);
       this.imageLabel.getParent().layout(true);
+      this.image = scaled;
 
       // Dialog-Groesse mit anpassen
       final Shell shell = this.getShell();
       shell.setSize(shell.computeSize(shell.getSize().x,SWT.DEFAULT));
-      
-      this.smaller.setEnabled(this.currentSize > 50);
-      this.larger.setEnabled(this.currentSize < 1000);
+
+      this.currentSize = newSize;
       
       // Neue Groesse abspeichern - pro Ausgangsproesse
       SETTINGS.setAttribute("resize." + this.initialSize,this.currentSize);
@@ -257,6 +248,11 @@ public class PhotoTANDialog extends TANDialog
     catch (Exception e)
     {
       Logger.error("unable to resize photo tan dialog",e);
+    }
+    finally
+    {
+      if (tmp != null && !tmp.isDisposed())
+        tmp.dispose();
     }
   }
 }
