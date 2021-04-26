@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.Button;
@@ -217,18 +216,10 @@ public class TANDialog extends AbstractDialog
         c.addHeadline(i18n.tr("Konto und Auftrag"));
       
       if (this.konto != null)
-      {
-        final LabelInput l = new LabelInput(this.konto);
-        l.setName(i18n.tr("Konto") + ": ");
-        c.addInput(l);
-      }
+        c.addText(i18n.tr("Konto") + ": " + this.konto,true);
       
       if (haveAuftrag)
-      {
-        final LabelInput l = new LabelInput(auftrag);
-        l.setName(i18n.tr("Auftrag") + ": ");
-        c.addInput(l);
-      }
+        c.addText(i18n.tr("Auftrag") + ": " + auftrag,true);
     }
 
     // Oberer Erweiterungsbereich
