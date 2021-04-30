@@ -210,9 +210,6 @@ public class PhotoTANDialog extends TANDialog
     {
       Logger.debug("resize phototan image to new size: " + newSize);
       
-      if (this.image != null && !this.image.isDisposed())
-        this.image.dispose();
-      
       this.smaller.setEnabled(newSize > 50);
       this.larger.setEnabled(newSize < 1000);
 
@@ -234,6 +231,10 @@ public class PhotoTANDialog extends TANDialog
       this.imageLabel.setImage(scaled);
       this.imageLabel.setSize(newSize,newSize);
       this.imageLabel.getParent().layout(true);
+      
+      if (this.image != null && !this.image.isDisposed())
+        this.image.dispose();
+      
       this.image = scaled;
 
       // Dialog-Groesse mit anpassen
