@@ -158,6 +158,12 @@ public class PhotoTANDialog extends TANDialog
     
     // Checken, ob wir gespeicherte Resize-Werte haben, wenn ja gleich resizen
     int resize = SETTINGS.getInt("resize." + this.initialSize,this.initialSize);
+    if (resize <= 0)
+    {
+      Logger.warn("ignoring invalid resize value: " + resize + ", using initial size instead: " + this.initialSize);
+      resize = this.initialSize;
+    }
+    
     this.resize(resize);
     
     // Checken, ob wir eine gespeicherte Dialoggroesse haben
