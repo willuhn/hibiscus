@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -663,7 +662,27 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return
    */
   private long getDifferenceDays(Date d1, Date d2) {
-    long diff = Math.abs(d2.getTime() - d1.getTime());
-    return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    java.time.LocalDate date1 = DateUtil.startOfDay(toUtilDate(d1)).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+    java.time.LocalDate date2 = DateUtil.endOfDay(toUtilDate(d2)).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+    return java.time.temporal.ChronoUnit.DAYS.between(date1, date2);
+  }
+  
+  /**
+   * Stellt sicher, dass ein java.util.Date zurueckgeliefert wird.
+   * Unter Umstaenden kann hier ein java.sql.Date ankommen. In dem ist aber
+   * "toInstant" nicht implementiert und wirft eine NoSuchOperationException.
+   * @param d das garantierte java.util.Date.
+   * @return das potentielle java.sql.Date
+   */
+  private Date toUtilDate(Date d)
+  {
+    if (d == null)
+      return new Date();
+    
+    if (!(d instanceof java.sql.Date))
+      return d;
+    
+    java.sql.Date sql = (java.sql.Date) d;
+    return new Date(sql.getTime());
   }
 }

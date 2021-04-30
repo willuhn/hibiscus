@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0948 Nachtrag zu 0941: Die UnsupportedOperationException kam zwar nicht mehr, dafür stimmte die Berechnung aber bei Sommer-/Winterzeitwechsel nicht mehr. Vor der Verwendung das SQL-Date in Util-Date umwandeln
   * NEW: 0947 TAN-Dialog: Zeilenumbruch bei Auftrag und Konto
 
 2021-04-20 Version 2.10.3
