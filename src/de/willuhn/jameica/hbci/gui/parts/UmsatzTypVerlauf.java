@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
@@ -48,7 +50,7 @@ public class UmsatzTypVerlauf implements Part
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private List data         = null;
+  private List<UmsatzTreeNode> data = null;
   private Date start        = null;
   private Date stop         = null;
   private LineChart chart   = null;
@@ -97,9 +99,12 @@ public class UmsatzTypVerlauf implements Part
    * @param start Start-Datum.
    * @param stop Stop-Datum.
    */
-  public void setData(List data, Date start, Date stop)
+  public void setData(List<GenericObjectNode> data, Date start, Date stop)
   {
-    this.data  = data;
+    this.data  = data.stream()
+            .filter(UmsatzTreeNode.class::isInstance) // nur für UmsatzTreeNode sinnvoll anwendbar
+            .map(UmsatzTreeNode.class::cast) // benötigt, da Input vom Typ GenericObjectNode
+            .collect(Collectors.toList());
     this.start = start;
     this.stop  = stop;
   }
@@ -116,10 +121,9 @@ public class UmsatzTypVerlauf implements Part
     this.chart.removeAllData();
 
     int count = 0;
-      
-    for (int i=0;i<this.data.size();++i)
+
+    for (UmsatzTreeNode group : this.data)
     {
-      UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i); 
       ChartDataUmsatz cd = new ChartDataUmsatz(group, interval);
       if (cd.hasData)
       {
@@ -146,9 +150,8 @@ public class UmsatzTypVerlauf implements Part
       this.chart = new LineChart();
       this.chart.setStacked(false); // TODO Stacked Graph für "Umsätze nach Kategorieren" BUGZILLA 749
       this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach {0})", this.interval.toString()));
-      for (int i=0;i<this.data.size();++i)
+      for (UmsatzTreeNode group : this.data)
       {
-        UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i);
         ChartDataUmsatz cd = new ChartDataUmsatz(group, interval);
         if (cd.hasData)
           this.chart.addData(cd);

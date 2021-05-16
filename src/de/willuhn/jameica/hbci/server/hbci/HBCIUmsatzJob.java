@@ -210,10 +210,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       Logger.info("applying booked entries");
       
       UmsatzRewriter rewriter = RewriterRegistry.getRewriter(konto.getBLZ(),konto.getKontonummer());
-      
-      for (int i=0;i<booked.size();++i)
+
+      for (UmsLine umsLine : booked)
       {
-        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)booked.get(i));
+        final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(umsLine);
         umsatz.setKonto(konto); // muessen wir noch machen, weil der Converter das Konto nicht kennt
 
         if (rewriter != null)
@@ -239,7 +239,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
             fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
           }
         }
-        
+
         if (fromDB != null)
         {
           // Wir duerfen den Umsatz nur dann ueberspringen, wenn er bereits 
@@ -252,7 +252,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
             skipped++;
             continue;
           }
-          else if (countInCurrentJobResult <= counter)  
+          else if (countInCurrentJobResult <= counter)
           {
             // In der Datenbank sind mehr als bislang abgerufen -> Ueberspringen
             duplicates.put(fromDB, countInCurrentJobResult+1);
@@ -307,9 +307,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         int created = 0;
         int skipped = 0;
         Logger.info("applying not-booked (vorgemerkte) entries");
-        for (int i=0;i<unbooked.size();++i)
+        for (UmsLine umsLine : unbooked)
         {
-          final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)unbooked.get(i));
+          final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz(umsLine);
           umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
           umsatz.setSaldo(0d); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
           umsatz.setKonto(konto);
@@ -328,7 +328,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
               fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
             }
           }
-          
+
           if (fromDB != null)
           {
             // Wir duerfen den Umsatz nur dann ueberspringen, wenn er bereits 
@@ -342,7 +342,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
               skipped++;
               continue;
             }
-            else if (countInCurrentJobResult <= counter)  
+            else if (countInCurrentJobResult <= counter)
             {
               // In der Datenbank sind mehr als bislang abgerufen -> Ueberspringen
               duplicates.put(fromDB, countInCurrentJobResult+1);
@@ -350,7 +350,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
               continue;
             }
           }
-          
+
           // Vormerkposten neu anlegen
           try
           {

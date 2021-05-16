@@ -41,7 +41,7 @@ public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Umsätze aus"));
 
     UmsatzTree tree = t[0];
-    List list = tree.getUmsatzTree();
+    List<UmsatzTreeNode> list = tree.getUmsatzTree();
     
     Reporter reporter = null;
     try
@@ -53,10 +53,8 @@ public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
       reporter.createHeader();
 
       // Iteration ueber die Kategorien
-      for (int i=0;i<list.size(); ++i)
+      for (UmsatzTreeNode ug : list)
       {
-        UmsatzTreeNode ug = (UmsatzTreeNode) list.get(i);
-
         PdfPCell cell = reporter.getDetailCell((String) ug.getAttribute("name"), Element.ALIGN_LEFT);
         reporter.addColumn(cell);
         reporter.addColumn(reporter.getDetailCell((Double) ug.getAttribute("betrag")));

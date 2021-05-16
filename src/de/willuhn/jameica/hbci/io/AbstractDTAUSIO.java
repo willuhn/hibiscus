@@ -96,11 +96,11 @@ public abstract class AbstractDTAUSIO implements IO
     Class[] supported = getSupportedObjectTypes();
     if (supported == null || supported.length == 0)
       return null;
-    
-    for (int i=0;i<supported.length;++i)
+
+    for (Class supportedObjType : supported)
     {
-      if (objectType.equals(supported[i]))
-        return new IOFormat[] { new MyIOFormat(objectType) };
+      if (objectType.equals(supportedObjType))
+        return new IOFormat[]{new MyIOFormat(objectType)};
     }
     return null;
   }

@@ -178,10 +178,9 @@ public class SepaLastschriftList extends ContextMenu
         if (o instanceof SepaLastschrift)
           return !((SepaLastschrift)o).ausgefuehrt();
 
-        SepaLastschrift[] t = (SepaLastschrift[]) o;
-        for (int i=0;i<t.length;++i)
+        for (SepaLastschrift lastschrift : (SepaLastschrift[]) o)
         {
-          if (t[i].ausgefuehrt())
+          if (lastschrift.ausgefuehrt())
             return false;
         }
         return true;

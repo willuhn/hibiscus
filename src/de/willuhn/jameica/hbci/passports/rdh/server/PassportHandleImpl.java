@@ -229,15 +229,15 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 				return new Konto[]{};
 			}
 
-			ArrayList result = new ArrayList();
+			ArrayList<Konto> result = new ArrayList<>();
 			Konto k = null;
-			for (int i=0;i<konten.length;++i)
+			for (org.kapott.hbci.structures.Konto konto : konten)
 			{
-				k = Converter.HBCIKonto2HibiscusKonto(konten[i], PassportImpl.class);
+				k = Converter.HBCIKonto2HibiscusKonto(konto, PassportImpl.class);
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
-			return (Konto[]) result.toArray(new Konto[0]);
+			return result.toArray(new Konto[0]);
 		}
 		finally
 		{

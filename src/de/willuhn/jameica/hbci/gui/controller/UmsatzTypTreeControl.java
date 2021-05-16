@@ -281,10 +281,9 @@ public class UmsatzTypTreeControl extends AbstractControl
     try
     {
       TreePart tree = getTree();
-      List items = tree.getItems();
-      for (int i=0;i<items.size();++i)
+      for (Object item : tree.getItems())
       {
-        tree.setExpanded((GenericObject)items.get(i),!this.expanded,true);
+        tree.setExpanded((GenericObject) item,!this.expanded,true);
       }
       this.expanded = !this.expanded;
     }

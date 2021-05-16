@@ -210,9 +210,8 @@ public class PassportSync implements Action
     String[] stack = msg.split(System.getProperty("line.separator","\n"));
     if (stack != null && stack.length > 1)
     {
-      for (int k=0;k<stack.length;++k)
+      for (String ks : stack)
       {
-        String ks = stack[k];
         if (ks == null || ks.length() == 0)
           continue;
         if (ks.matches("\\tat.*")) // Stacktrace-Elemente

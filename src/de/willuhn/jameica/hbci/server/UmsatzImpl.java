@@ -87,9 +87,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       String[] ewz = getWeitereVerwendungszwecke();
       if (ewz != null && ewz.length > 0)
       {
-        for (int i=0;i<ewz.length;++i)
+        for (String verwendungszweck : ewz)
         {
-          HBCIProperties.checkLength(ewz[i],limit);
+          HBCIProperties.checkLength(verwendungszweck,limit);
         }
       }
 
@@ -640,7 +640,8 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       return (UmsatzTyp) cache.get(i);
 
     // Nicht fest zugeordnet, dann schauen wir mal, ob's eine dynamische Zuordnung gibt
-    for (DBObject dbObject : cache.values()) {
+    for (DBObject dbObject : cache.values())
+    {
       UmsatzTyp ut = (UmsatzTyp) dbObject;
       if (ut.matches(this))
         return ut;

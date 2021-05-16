@@ -141,15 +141,13 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
    */
   public boolean hasChild(GenericObjectNode node) throws RemoteException
   {
-    for (int i=0;i<this.umsaetze.size();++i)
+    for (Umsatz u : this.umsaetze)
     {
-      Umsatz u = this.umsaetze.get(i);
       if (u.equals(node))
         return true;
     }
-    for (int i=0;i<this.children.size();++i)
+    for (UmsatzTreeNode g : this.children)
     {
-      UmsatzTreeNode g = this.children.get(i);
       if (g.equals(node))
         return true;
     }
@@ -210,19 +208,15 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     double betrag    = 0.0d;
     double einnahmen = 0.0d;
     double ausgaben  = 0.0d;
-    
-    for (int i=0;i<this.umsaetze.size();++i)
-    {
-      Umsatz u = this.umsaetze.get(i);
+
+    for (Umsatz u : this.umsaetze) {
       double d = u.getBetrag();
       betrag += d;
       if (d > 0) einnahmen += d;
       else ausgaben += d;
     }
-    for (int i=0;i<this.children.size();++i)
+    for (UmsatzTreeNode ug : this.children)
     {
-      UmsatzTreeNode ug  = (UmsatzTreeNode) this.children.get(i);
-      
       Double d = (Double) ug.getAttribute("betrag");
       betrag += d.doubleValue();
       

@@ -50,14 +50,14 @@ public class AddressbookSearchProvider implements SearchProvider
     try
     {
       AddressbookService service = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
-      List result = service.findAddresses(search);
-      if (result == null)
+      List<Address> addresses = service.findAddresses(search);
+      if (addresses == null)
         return null;
       
-      ArrayList al = new ArrayList();
-      for (int i=0;i<result.size();++i)
+      ArrayList<MyResult> al = new ArrayList<>();
+      for (Address a : addresses)
       {
-        al.add(new MyResult((Address) result.get(i)));
+        al.add(new MyResult(a));
       }
       return al;
     }

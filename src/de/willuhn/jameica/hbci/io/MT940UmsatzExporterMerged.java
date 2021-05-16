@@ -58,14 +58,14 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
       // stammen
       Konto k = null;
       List<Umsatz> list = new LinkedList<Umsatz>();
-      for (int i=0;i<objects.length;++i)
+      for (Object o : objects)
       {
-        if (objects[i] == null || !(objects[i] instanceof Umsatz))
+        if (o == null || !(o instanceof Umsatz))
           continue;
-        
-        Umsatz u = (Umsatz) objects[i];
+
+        Umsatz u = (Umsatz) o;
         Konto konto = u.getKonto();
-        
+
         if (k == null)
           k = konto;
         else if (!k.getID().equals(konto.getID()))
