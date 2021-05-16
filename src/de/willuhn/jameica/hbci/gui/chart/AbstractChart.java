@@ -281,10 +281,8 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
       {
         try
         {
-          Iterator<Color> i = colors.values().iterator();
-          while (i.hasNext())
+          for (Color c : colors.values())
           {
-            Color c = i.next();
             if (c != null && !c.isDisposed())
               c.dispose();
           }

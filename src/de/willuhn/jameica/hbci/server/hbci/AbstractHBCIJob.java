@@ -142,11 +142,9 @@ public abstract class AbstractHBCIJob
   	{
   	  
   	}
-  	
-  	Iterator i = params.keySet().iterator();
-  	while (i.hasNext())
+
+  	for (Object key : params.keySet())
   	{
-  		Object key = i.next();
   		Object value = params.get(key);
   		
   		String name = null;
@@ -160,7 +158,7 @@ public abstract class AbstractHBCIJob
   		{
   		  name = (String) key;
   		}
-  		
+
   		if (idx != null)
   		{
         if (value instanceof Konto)

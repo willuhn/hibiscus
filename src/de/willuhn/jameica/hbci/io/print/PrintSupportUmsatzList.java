@@ -136,11 +136,8 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
       table.addHeader(new TextPrint(i18n.tr("Saldo"),fontTinyBold));
 
       // Iteration pro Konto
-      Iterator<String> konten = groups.keySet().iterator();
-      
-      while (konten.hasNext())
+      for (String id : groups.keySet())
       {
-        String id = konten.next();
         List<Umsatz> umsaetze = groups.get(id);
         
         // Header mit dem Konto
@@ -149,7 +146,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
         
         
         // Liste der Umsaetze im Konto
-        for (Umsatz u:umsaetze)
+        for (Umsatz u : umsaetze)
         {
           StringBuffer sb = new StringBuffer();
           {

@@ -96,11 +96,8 @@ public class SepaUeberweisungMerge implements Action
       }
       
       // OK, wir duerfen weiter machen. Erstmal die Sammelauftraege anlegen
-      Iterator<SepaSammelUeberweisung> list = map.values().iterator();
-      while (list.hasNext())
+      for (SepaSammelUeberweisung s : map.values())
       {
-        SepaSammelUeberweisung s = list.next();
-        
         if (tx == null)
         {
           tx = s;

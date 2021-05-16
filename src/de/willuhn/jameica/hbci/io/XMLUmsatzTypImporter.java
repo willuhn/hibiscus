@@ -65,10 +65,9 @@ public class XMLUmsatzTypImporter implements Importer
         {
           AbstractDBObjectNode object = (AbstractDBObjectNode) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
           object.setID(id);
-          Iterator i = values.keySet().iterator();
-          while (i.hasNext())
+          for (Object key : values.keySet())
           {
-            String name = (String) i.next();
+            String name = (String) key;
             object.setAttribute(name,values.get(name));
           }
           return object;
