@@ -201,10 +201,8 @@ public class CsvImporter implements Importer
           
 
           // Werte in die Bean uebernehmen
-          Iterator<String> it = values.keySet().iterator();
-          while (it.hasNext())
+          for (String name : values.keySet())
           {
-            String name = it.next();
             Object o = values.get(name);
             try
             {

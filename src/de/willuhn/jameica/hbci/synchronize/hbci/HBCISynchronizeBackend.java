@@ -438,10 +438,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     {
       Logger.debug("Job restrictions for " + job.getName());
       Properties p = job.getJobRestrictions();
-      Iterator it = p.keySet().iterator();
-      while (it.hasNext())
-      {
-        String key = (String) it.next();
+      for (Object o : p.keySet()) {
+        String key = (String) o;
         Logger.debug("  " + key + ": " + p.getProperty(key));
       }
     }

@@ -95,11 +95,8 @@ public class SepaLastschriftMerger
       }
       
       // OK, wir duerfen weiter machen. Erstmal die Sammelauftraege anlegen
-      Iterator<SepaSammelLastschrift> list = map.values().iterator();
-      while (list.hasNext())
+      for (SepaSammelLastschrift s : map.values())
       {
-        SepaSammelLastschrift s = list.next();
-        
         if (tx == null)
         {
           tx = s;
