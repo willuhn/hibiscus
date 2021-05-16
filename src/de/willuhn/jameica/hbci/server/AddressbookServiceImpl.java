@@ -50,12 +50,12 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
   {
     Addressbook[] books = getAddressbooks();
 
-    ArrayList result = new ArrayList();
-    for (int i=0;i<books.length;++i)
+    ArrayList<Address> result = new ArrayList<>();
+    for (Addressbook book : books)
     {
-      if (books[i].getClass().equals(this.getClass()))
+      if (book.getClass().equals(this.getClass()))
         continue; // WICHTIG: Uns selbst ueberspringen wir, um eine Rekursion zu vermeiden
-      List list = books[i].findAddresses(text);
+      List<Address> list = book.findAddresses(text);
 
       if (list == null)
         continue;
@@ -76,11 +76,11 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
   {
     Addressbook[] books = getAddressbooks();
 
-    for (int i=0;i<books.length;++i)
+    for (Addressbook book : books)
     {
-      if (books[i].getClass().equals(this.getClass()))
+      if (book.getClass().equals(this.getClass()))
         continue; // WICHTIG: Uns selbst ueberspringen wir, um eine Rekursion zu vermeiden
-      Address found = books[i].contains(address);
+      Address found = book.contains(address);
       if (found != null)
         return found;
     }
@@ -101,25 +101,25 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
         BeanService service = Application.getBootLoader().getBootable(BeanService.class);
         ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getClassLoader().getClassFinder();
         Class[] found = finder.findImplementors(Addressbook.class);
-        ArrayList list = new ArrayList();
+        ArrayList<Addressbook> list = new ArrayList<>();
 
         // Uns selbst tun wir immer zuerst rein.
         // Damit stehen wir immer oben in der Liste
         list.add(this);
 
-        for(int i=0;i<found.length;++i)
+        for (Class book : found)
         {
-          if (found[i].equals(this.getClass()))
+          if (book.equals(this.getClass()))
             continue; // Das sind wir selbst
           try
           {
-            Addressbook a = (Addressbook) service.get(found[i]);
+            Addressbook a = (Addressbook) service.get(book);
             Logger.info("  " + a.getName());
             list.add(a);
           }
           catch (Throwable t)
           {
-            Logger.error("unable to load addressbook " + found[i] + ", skipping");
+            Logger.error("unable to load addressbook " + book + ", skipping");
           }
         }
         this.books = (Addressbook[]) list.toArray(new Addressbook[list.size()]);

@@ -92,12 +92,12 @@ public class MT940UmsatzExporter implements Exporter
       // der Gelegenheit auch gleich, dass die Buchungen alle vom selben Konto
       // stammen
       List<Umsatz> list = new LinkedList<Umsatz>();
-      for (int i=0;i<objects.length;++i)
+      for (Object o : objects)
       {
-        if (objects[i] == null || !(objects[i] instanceof Umsatz))
+        if (o == null || !(o instanceof Umsatz))
           continue;
-        
-        list.add((Umsatz) objects[i]);
+
+        list.add((Umsatz) o);
       }
       sort(list);
       //////////////////////////////////////////////////////////////////////////

@@ -87,9 +87,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       String[] ewz = getWeitereVerwendungszwecke();
       if (ewz != null && ewz.length > 0)
       {
-        for (int i=0;i<ewz.length;++i)
+        for (String verwendungszweck : ewz)
         {
-          HBCIProperties.checkLength(ewz[i],limit);
+          HBCIProperties.checkLength(verwendungszweck,limit);
         }
       }
 

@@ -179,9 +179,9 @@ public class SepaLastschriftList extends ContextMenu
           return !((SepaLastschrift)o).ausgefuehrt();
 
         SepaLastschrift[] t = (SepaLastschrift[]) o;
-        for (int i=0;i<t.length;++i)
+        for (SepaLastschrift lastschrift : t)
         {
-          if (t[i].ausgefuehrt())
+          if (lastschrift.ausgefuehrt())
             return false;
         }
         return true;

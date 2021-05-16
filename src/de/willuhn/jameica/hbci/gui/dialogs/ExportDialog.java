@@ -282,32 +282,32 @@ public class ExportDialog extends AbstractDialog implements Extendable
     Exporter[] exporters = IORegistry.getExporters();
 
     int size             = 0;
-    ArrayList l          = new ArrayList();
+    ArrayList<ExpotFormat> l = new ArrayList<>();
     String lastFormat    = SETTINGS.getString("lastformat",null);
     ExpotFormat selected = null;
 
-    for (int i=0;i<exporters.length;++i)
-		{
-      Exporter exp = exporters[i];
+    for (Exporter exp : exporters)
+    {
       if (exp == null)
         continue;
+
       IOFormat[] formats = exp.getIOFormats(type);
       if (formats == null || formats.length == 0)
       {
         Logger.debug("exporter " + exp.getName() + " provides no export formats for " + type + " skipping");
         continue;
       }
-      for (int j=0;j<formats.length;++j)
+      for (IOFormat format : formats)
       {
         size++;
-        ExpotFormat e = new ExpotFormat(exp,formats[j]);
+        ExpotFormat e = new ExpotFormat(exp, format);
         l.add(e);
-        
+
         String lf = e.format.getName();
         if (lastFormat != null && lf != null && lf.equals(lastFormat))
           selected = e;
       }
-		}
+    }
 
 		if (size == 0)
 		{

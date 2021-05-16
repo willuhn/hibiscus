@@ -123,13 +123,13 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
     ////////////////////////////////////////////////////////////////////////////
     // 1. Nach neuen und geaenderten Dauerauftraegen suchen
     Logger.info("checking for new and changed entries [received lines: " + lines.length + "]");
-    for (int i=0;i<lines.length;++i)
+    for (Dauer standingOrder : lines)
     {
       try
       {
-        remote = this.create(lines[i]);
-        local  = find(existing,remote);
-        
+        remote = this.create(standingOrder);
+        local = find(existing,remote);
+
         if (local != null)
         {
           Logger.info("found a local copy. order id: " + remote.getOrderID() + ". Checking for modifications");

@@ -32,7 +32,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private UmsatzTyp typ = null;
-  private ArrayList umsaetze = new ArrayList();
+  private ArrayList<Umsatz> umsaetze = new ArrayList();
   
   /**
    * ct.
@@ -66,7 +66,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
    */
   public GenericIterator getChildren() throws RemoteException
   {
-    return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[umsaetze.size()]));
+    return PseudoIterator.fromArray(umsaetze.toArray(new GenericObject[umsaetze.size()]));
   }
 
   /**
@@ -98,10 +98,8 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
    */
   public boolean hasChild(GenericObjectNode node) throws RemoteException
   {
-    for (int i=0;i<this.umsaetze.size();++i)
-    {
-      GenericObject o = (GenericObject) this.umsaetze.get(i);
-      if (o.equals(node))
+    for (Umsatz u : this.umsaetze) {
+      if (u.equals(node))
         return true;
     }
     return false;
@@ -132,9 +130,8 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
       // allerdings wuerde das intern nochmal alle Umsaetze laden und haufen
       // zusaetzliche SQL-Queries ausloesen
       double betrag = 0.0d;
-      for (int i=0;i<this.umsaetze.size();++i)
+      for (Umsatz u : this.umsaetze)
       {
-        Umsatz u = (Umsatz) this.umsaetze.get(i);
         betrag+= u.getBetrag();
       }
       return new Double(betrag);

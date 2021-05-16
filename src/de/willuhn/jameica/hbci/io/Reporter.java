@@ -203,9 +203,9 @@ public class Reporter
     table.setWidthPercentage(100);
     table.setSpacingBefore(10);
     table.setSpacingAfter(0);
-    for (int i = 0; i < headers.size(); ++i)
+    for (PdfPCell header : headers)
     {
-      table.addCell(headers.get(i));
+      table.addCell(header);
     }
     table.setHeaderRows(1);
   }

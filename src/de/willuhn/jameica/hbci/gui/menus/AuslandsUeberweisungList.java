@@ -179,9 +179,9 @@ public class AuslandsUeberweisungList extends ContextMenu
           return !((AuslandsUeberweisung)o).ausgefuehrt();
 
         AuslandsUeberweisung[] t = (AuslandsUeberweisung[]) o;
-        for (int i=0;i<t.length;++i)
+        for (AuslandsUeberweisung ueberweisung : t)
         {
-          if (t[i].ausgefuehrt())
+          if (ueberweisung.ausgefuehrt())
             return false;
         }
         return true;

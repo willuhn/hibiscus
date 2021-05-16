@@ -80,16 +80,15 @@ public class LicenseControl extends AbstractControl {
     FileFinder finder = new FileFinder(new File(path + "/lib"));
     finder.matches(".*?info\\.xml$");
     File[] infos = finder.findRecursive();
-    for (int i=0;i<infos.length;++i)
-    {
-      if (!infos[i].isFile() || !infos[i].canRead())
+    for (File info : infos) {
+      if (!info.isFile() || !info.canRead())
       {
-        Logger.warn("unable to read " + infos[i] + ", skipping");
+        Logger.warn("unable to read " + info + ", skipping");
         continue;
       }
 
       try {
-        InfoReader ir = new InfoReader(new FileInputStream(infos[i]));
+        InfoReader ir = new InfoReader(new FileInputStream(info));
         buffer.append("<p>");
         buffer.append("<b>" + ir.getName() + "</b>");
         buffer.append("<br/>" + ir.getDescription());
@@ -99,6 +98,7 @@ public class LicenseControl extends AbstractControl {
       }
       catch (Exception e)
       {
+        // TODO hier auch "info" statt "infos[0]"?
         Logger.error("unable to parse " + infos[0],e);
       }
     }

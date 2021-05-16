@@ -179,9 +179,9 @@ public class SepaSammelLastschriftList extends ContextMenu
           return !((Terminable)o).ausgefuehrt();
 
         Terminable[] t = (Terminable[]) o;
-        for (int i=0;i<t.length;++i)
+        for (Terminable mitTermin : t)
         {
-          if (t[i].ausgefuehrt())
+          if (mitTermin.ausgefuehrt())
             return false;
         }
         return true;

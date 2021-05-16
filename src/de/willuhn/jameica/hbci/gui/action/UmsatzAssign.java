@@ -88,11 +88,11 @@ public class UmsatzAssign implements Action
     try
     {
       umsaetze[0].transactionBegin();
-      for (int i=0;i<umsaetze.length;++i)
+      for (final Umsatz umsatz : umsaetze)
       {
-        umsaetze[i].setUmsatzTyp(ut);
-        umsaetze[i].store();
-        Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(umsaetze[i]));
+        umsatz.setUmsatzTyp(ut);
+        umsatz.store();
+        Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(umsatz));
       }
       umsaetze[0].transactionCommit();
       

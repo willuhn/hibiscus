@@ -270,16 +270,16 @@ public class DDVConfig implements Configuration
     
     List<String> fixedIds = new ArrayList<String>();
     List<Konto> konten = new ArrayList<Konto>();
-    for (int i=0;i<ids.length;++i)
+    for (final String accountId : ids)
     {
       try
       {
-        konten.add((Konto) de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class,ids[i]));
-        fixedIds.add(ids[i]); // Wenn das Konto geladen wurde, bleibt es erhalten
+        konten.add((Konto) de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class, accountId));
+        fixedIds.add(accountId); // Wenn das Konto geladen wurde, bleibt es erhalten
       }
       catch (ObjectNotFoundException noe)
       {
-        Logger.warn("account " + ids[i] + " does not exist, removing from list");
+        Logger.warn("account " + accountId + " does not exist, removing from list");
       }
       catch (RemoteException re)
       {

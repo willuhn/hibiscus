@@ -246,9 +246,8 @@ public class RDHKeyFactory
       Konto[] verdrahtet = key.getKonten();
       if (konto != null && verdrahtet != null && verdrahtet.length > 0)
       {
-        for (int j=0;j<verdrahtet.length;++j)
+        for (Konto k : verdrahtet)
         {
-          Konto k = verdrahtet[j];
           if (konto.equals(k))
           {
             Logger.info("found config via account. url: " + key.getFilename());
@@ -293,14 +292,14 @@ public class RDHKeyFactory
 	{
 		String[] found = settings.getList("key",new String[0]);
 
-		ArrayList readable = new ArrayList();
-		for (int i=0;i<found.length;++i)
+		ArrayList<RDHKey> readable = new ArrayList<>();
+		for (String key : found)
 		{
-			if (found[i] == null || found[i].length() == 0)
+			if (key == null || key.length() == 0)
 			  continue;
-      readable.add(new RDHKeyImpl(new File(found[i])));
+			readable.add(new RDHKeyImpl(new File(key)));
 		}
-		return PseudoIterator.fromArray((RDHKey[]) readable.toArray(new RDHKey[readable.size()]));
+		return PseudoIterator.fromArray(readable.toArray(new RDHKey[readable.size()]));
 	}
 
 	/**
@@ -346,15 +345,15 @@ public class RDHKeyFactory
     {
       Logger.warn("removing key " + key.getFilename() + " from key registry");
       String[] existing = settings.getList("key",new String[0]);
-      ArrayList newList = new ArrayList();
+      ArrayList<String> newList = new ArrayList<>();
       
       if (existing.length == 0)
         return; // Nichts zu entfernen
 
       File file = new File(key.getFilename());
-      for (int i=0;i<existing.length;++i)
+      for (String k : existing)
       {
-        File f = new File(existing[i]);
+        File f = new File(k);
         if (file.equals(f))
         {
           Logger.info("removing key " + f.getAbsolutePath() + " from list");

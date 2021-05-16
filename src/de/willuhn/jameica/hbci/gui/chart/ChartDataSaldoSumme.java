@@ -44,9 +44,8 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
       // BUGZILLA 1044: Wir duerfen nicht die Saldo-Objekte von draussen
       // verwenden, weil wir sonst auf Referenzen arbeiten, die nicht uns gehoeren
       this.data = new ArrayList<Value>(data.size());
-      for (int i=0;i<data.size();++i)
+      for (Value saldo : data)
       {
-        Value saldo = data.get(i);
         Value sum = new Value(saldo.getDate(),saldo.getValue());
         this.data.add(sum);
       }

@@ -58,21 +58,21 @@ public class TerminableMarkExecuted implements Action
       Boolean b = (Boolean) d.open();
       if (b == null || !b.booleanValue())
         return;
-      
-      for (int i=0;i<t.length;++i)
+
+      for (Terminable mitTermin : t)
       {
-        t[i].setAusgefuehrt(true);
-        if (t[i] instanceof HibiscusTransfer)
+        mitTermin.setAusgefuehrt(true);
+        if (mitTermin instanceof HibiscusTransfer)
         {
-          HibiscusTransfer tr = (HibiscusTransfer) t[i];
+          HibiscusTransfer tr = (HibiscusTransfer) mitTermin;
           Konto k = tr.getKonto();
           if (k != null)
             k.addToProtokoll(i18n.tr("Auftrag \"{0}\" [Gegenkonto {1}, BLZ {2}] manuell als \"ausgeführt\" markiert",new String[]{tr.getZweck(),tr.getGegenkontoName(),tr.getGegenkontoBLZ()}),Protokoll.TYP_SUCCESS);
           Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(tr));
         }
-        else if (t[i] instanceof SammelTransfer)
+        else if (mitTermin instanceof SammelTransfer)
         {
-          SammelTransfer tr = (SammelTransfer) t[i];
+          SammelTransfer tr = (SammelTransfer) mitTermin;
           Konto k = tr.getKonto();
           if (k != null)
             k.addToProtokoll(i18n.tr("Sammel-Auftrag [Bezeichnung: {0}] manuell als \"ausgeführt\" markiert",tr.getBezeichnung()),Protokoll.TYP_SUCCESS);
