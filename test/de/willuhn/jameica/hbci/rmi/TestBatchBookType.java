@@ -10,8 +10,9 @@
 
 package de.willuhn.jameica.hbci.rmi;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Testet die Klasse "BatchBookType".
@@ -24,9 +25,9 @@ public class TestBatchBookType
   @Test
   public void testByBooleanValue()
   {
-    Assert.assertEquals(BatchBookType.NONE, BatchBookType.byValue((Boolean)null));
-    Assert.assertEquals(BatchBookType.TRUE, BatchBookType.byValue(Boolean.TRUE));
-    Assert.assertEquals(BatchBookType.FALSE,BatchBookType.byValue(Boolean.FALSE));
+    assertEquals(BatchBookType.NONE, BatchBookType.byValue((Boolean)null));
+    assertEquals(BatchBookType.TRUE, BatchBookType.byValue(Boolean.TRUE));
+    assertEquals(BatchBookType.FALSE,BatchBookType.byValue(Boolean.FALSE));
   }
 
   /**
@@ -35,9 +36,9 @@ public class TestBatchBookType
   @Test
   public void testByStringValue()
   {
-    Assert.assertEquals(null, (String) null);
-    Assert.assertEquals(BatchBookType.TRUE.getValue(), "1");
-    Assert.assertEquals(BatchBookType.FALSE.getValue(),"0");
+    assertEquals(null, (String) null);
+    assertEquals(BatchBookType.TRUE.getValue(), "1");
+    assertEquals(BatchBookType.FALSE.getValue(),"0");
   }
 
 }
