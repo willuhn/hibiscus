@@ -10,13 +10,13 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import java.util.Arrays;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Testet die Klasse "VerwendungszweckUtil".
@@ -42,11 +42,11 @@ public class TestVerwendungszweckUtil
     
     String[] result = VerwendungszweckUtil.rewrap(27,test);
     
-    Assert.assertTrue(Arrays.equals(new String[]{"123456789012345678901234567",
+    assertArrayEquals(new String[]{"123456789012345678901234567",
                                                  "890123456789012345678901234",
                                                  "567890d12345678901234567890",
                                                  "1234567"},
-                                    result));
+                                    result);
   }
   
   /**
@@ -64,10 +64,10 @@ public class TestVerwendungszweckUtil
         "ABWA+Das ist ein..Test//Text ",
         "mit Zeilen-Umbruch"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Ein komischer.Verwendungszweck auf mehreren Zeilen Hier kommt nochwas",map.get(Tag.SVWZ));
-    Assert.assertEquals("ABWA falsch","Das ist ein..Test//Text mit Zeilen-Umbruch",map.get(Tag.ABWA));
+    assertEquals("Ein komischer.Verwendungszweck auf mehreren Zeilen Hier kommt nochwas",map.get(Tag.SVWZ), "SVWZ falsch");
+    assertEquals("Das ist ein..Test//Text mit Zeilen-Umbruch",map.get(Tag.ABWA), "ABWA falsch");
   }
 
   /**
@@ -83,9 +83,9 @@ public class TestVerwendungszweckUtil
         "Fooo",
         "ABCD+Gehoert zum Verwendungszweck"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nichtFoooABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ));
+    assertEquals("Das folgende Tag gibts nichtFoooABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ), "SVWZ falsch");
   }
 
   /**
@@ -102,10 +102,10 @@ public class TestVerwendungszweckUtil
         "ABCD+Gehoert zum Verwendungszweck",
         "EREF+Aber hier kommt noch was"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nichtFooo ABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ));
-    Assert.assertEquals("EREF falsch","Aber hier kommt noch was",map.get(Tag.EREF));
+    assertEquals("Das folgende Tag gibts nichtFooo ABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ),"SVWZ falsch");
+    assertEquals("Aber hier kommt noch was",map.get(Tag.EREF), "EREF falsch");
   }
 
   /**
@@ -122,12 +122,12 @@ public class TestVerwendungszweckUtil
         "ABCD+ Leerzeichen hinter dem Tag stoeren nicht",
         "KREF+ und hier stoeren sie auch nicht, sind aber nicht teil des Value "
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nichtFooo ABCD+ Leerzeichen hinter dem Tag stoeren nicht",map.get(Tag.SVWZ));
-    Assert.assertEquals("KREF falsch","und hier stoeren sie auch nicht, sind aber nicht teil des Value",map.get(Tag.KREF));
+    assertEquals("Das folgende Tag gibts nichtFooo ABCD+ Leerzeichen hinter dem Tag stoeren nicht",map.get(Tag.SVWZ), "SVWZ falsch");
+    assertEquals("und hier stoeren sie auch nicht, sind aber nicht teil des Value",map.get(Tag.KREF), "KREF falsch");
   }
-  
+
   /**
    * Testet das Parsen der Tags.
    * @throws Exception
@@ -139,9 +139,9 @@ public class TestVerwendungszweckUtil
     {
         "SVWZ+Nur eine Zeile"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Nur eine Zeile",map.get(Tag.SVWZ));
+    assertEquals("Nur eine Zeile",map.get(Tag.SVWZ), "SVWZ falsch");
   }
 
   /**
@@ -155,9 +155,9 @@ public class TestVerwendungszweckUtil
     {
         "SVWZ+"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","",map.get(Tag.SVWZ));
+    assertEquals("",map.get(Tag.SVWZ), "SVWZ falsch");
   }
 
   /**
@@ -170,9 +170,9 @@ public class TestVerwendungszweckUtil
     String [] test =
     {
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("Map falsch",0,map.size());
+    assertEquals(0, map.size(),"Map falsch");
   }
 
   /**
@@ -188,10 +188,10 @@ public class TestVerwendungszweckUtil
         "Fooo",
         "KREF+Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das ist eine Zeile ohne Tag Fooo",map.get(Tag.SVWZ));
-    Assert.assertEquals("KREF falsch","Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck",map.get(Tag.KREF));
+    assertEquals("Das ist eine Zeile ohne Tag Fooo",map.get(Tag.SVWZ), "SVWZ falsch");
+    assertEquals("Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck",map.get(Tag.KREF),"KREF falsch");
   }
 
   /**
@@ -207,10 +207,10 @@ public class TestVerwendungszweckUtil
         "mit",
         "KREF: Doppelpunkt als Separatur umgehen"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Wir koennen auchmit",map.get(Tag.SVWZ));
-    Assert.assertEquals("KREF falsch","Doppelpunkt als Separatur umgehen",map.get(Tag.KREF));
+    assertEquals("Wir koennen auchmit",map.get(Tag.SVWZ),"SVWZ falsch");
+    assertEquals("Doppelpunkt als Separatur umgehen",map.get(Tag.KREF), "KREF falsch");
   }
 
   /**
@@ -226,10 +226,10 @@ public class TestVerwendungszweckUtil
         " gemischt ",
         "IBAN: DE1234567890 "
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das geht sogar gemischt IBAN: DE1234567890",map.get(Tag.SVWZ));
-    Assert.assertEquals("IBAN falsch","DE1234567890",map.get(Tag.IBAN));
+    assertEquals("Das geht sogar gemischt IBAN: DE1234567890",map.get(Tag.SVWZ),"SVWZ falsch");
+    assertEquals("DE1234567890",map.get(Tag.IBAN),"IBAN falsch");
   }
 
   /**
@@ -243,11 +243,11 @@ public class TestVerwendungszweckUtil
     {
         "IBAN: DE49390500000000012345 BIC: AACSDE33 ABWA: NetAachen"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("IBAN falsch","DE49390500000000012345",map.get(Tag.IBAN));
-    Assert.assertEquals("BIC falsch","AACSDE33",map.get(Tag.BIC));
-    Assert.assertEquals("ABWA falsch","NetAachen",map.get(Tag.ABWA));
+    assertEquals("DE49390500000000012345",map.get(Tag.IBAN), "IBAN falsch");
+    assertEquals("AACSDE33",map.get(Tag.BIC), "BIC falsch");
+    assertEquals("NetAachen",map.get(Tag.ABWA), "ABWA falsch");
   }
 
   /**
@@ -267,9 +267,9 @@ public class TestVerwendungszweckUtil
     };
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("IBAN falsch","DE12345678901234567890",map.get(Tag.IBAN));
-    Assert.assertEquals("BIC falsch","GENODED1SAM",map.get(Tag.BIC));
-    Assert.assertEquals("SVWZ","BIC:GENODED1SAM IBAN:DE12345678901234567890 Datum: 14.01.16 Zeit: 08:00 KD 00012345 TAN 12345 Beleg 12345  Kunde 12345",map.get(Tag.SVWZ));
+    assertEquals("DE12345678901234567890",map.get(Tag.IBAN),"IBAN falsch");
+    assertEquals("GENODED1SAM",map.get(Tag.BIC), "BIC falsch");
+    assertEquals("BIC:GENODED1SAM IBAN:DE12345678901234567890 Datum: 14.01.16 Zeit: 08:00 KD 00012345 TAN 12345 Beleg 12345  Kunde 12345",map.get(Tag.SVWZ),"SVWZ");
   }
 
   /**
@@ -288,10 +288,10 @@ public class TestVerwendungszweckUtil
     };
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Verwendungszweck",map.get(Tag.SVWZ));
-    Assert.assertEquals("EREF falsch","1234567890123456789",map.get(Tag.EREF)); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
-    Assert.assertEquals("IBAN falsch","DE12345678901234567890",map.get(Tag.IBAN)); // Hier muss das Leerzeichen raus
-    Assert.assertEquals("BIC falsch" ,"ABCDEFGH",map.get(Tag.BIC)); // Hier auch ohne Leerzeichen
+    assertEquals("Verwendungszweck",map.get(Tag.SVWZ),"SVWZ falsch");
+    assertEquals("1234567890123456789",map.get(Tag.EREF),"EREF falsch"); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
+    assertEquals("DE12345678901234567890",map.get(Tag.IBAN),"IBAN falsch"); // Hier muss das Leerzeichen raus
+    assertEquals("ABCDEFGH",map.get(Tag.BIC),"BIC falsch"); // Hier auch ohne Leerzeichen
   }
 
   /**
@@ -310,7 +310,7 @@ public class TestVerwendungszweckUtil
     };
     
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    Assert.assertEquals("SVWZ falsch","Das ist Zeile 123",map.get(Tag.SVWZ));
+    assertEquals("Das ist Zeile 123",map.get(Tag.SVWZ),"SVWZ falsch");
   }
 }
 
