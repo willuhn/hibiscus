@@ -2,7 +2,7 @@
  *
  * Copyright (c) 2004 Olaf Willuhn
  * All rights reserved.
- * 
+ *
  * This software is copyrighted work licensed under the terms of the
  * Jameica License.  Please consult the file "LICENSE" for details. 
  *
@@ -13,10 +13,12 @@ package de.willuhn.jameica.hbci.server;
 import java.util.Map;
 
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Testet die Klasse "VerwendungszweckUtil".
@@ -25,30 +27,159 @@ public class TestVerwendungszweckUtil
 {
   /**
    * Testet die Funktion" rewrap".
-   * @throws Exception
    */
-  @Test
-  public void testRewrap() throws Exception
+  @Nested
+  class Rewrap
   {
-    String[] test =
+    @Test
+    void istNullmitParameterNull() // TODO besser IllegalArgumentException?
     {
-      "123456789012345678901234567890",
-      "123456789012345678901234567890 ",
-      null,
-      "d",
-      " ",
-      "123456789012345678901234567"
-    };
-    
-    String[] result = VerwendungszweckUtil.rewrap(27,test);
-    
-    assertArrayEquals(new String[]{"123456789012345678901234567",
-                                                 "890123456789012345678901234",
-                                                 "567890d12345678901234567890",
-                                                 "1234567"},
-                                    result);
+      assertNull(VerwendungszweckUtil.rewrap(5, (String[]) null));
+    }
+
+    @Test
+    void leeresArray()
+    {
+      String[] test = {};
+      String[] result = VerwendungszweckUtil.rewrap(3, test);
+      assertArrayEquals(new String[]{}, result);
+    }
+
+    @Test
+    void nurNullImArray() // TODO besser {} als Ergebnis?
+    {
+      String[] test = {
+              null,
+              null,
+              null,
+              null
+      };
+      String[] result = VerwendungszweckUtil.rewrap(3, test);
+      assertArrayEquals(test, result);
+    }
+
+    /**
+     * Sonderfall mit ausschließlich leeren Teiltexten
+     *
+     * @see #wennZuKurzDannNichtsTun()
+     */
+    @Test
+    void leereStrings() // TODO besser { "" } als Ergebnis?
+    {
+      String[] test = {"", "", "", "", "", "", "", ""};
+      String[] result = VerwendungszweckUtil.rewrap(3, test);
+      assertArrayEquals(test, result);
+    }
+
+    @Test
+    @DisplayName("Teiltext kürzer als Limit -> nichts tun")
+    void wennZuKurzDannNichtsTun()
+    {
+      String[] test = {"a", "ab", "abc", "abcd", "abc def ghi jk"};
+      String[] result = VerwendungszweckUtil.rewrap(15, test);
+      assertArrayEquals(test, result);
+    }
+
+    @Test
+    void nullImArrayIgnorieren()
+    {
+      String[] test = {
+              "12345",
+              "67890",
+              null,
+              "abcdef",
+              "AB"
+      };
+      String[] result = VerwendungszweckUtil.rewrap(3, test);
+      String[] expected = {"123", "456", "789", "0ab", "cde", "fAB"};
+      assertArrayEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Leerzeichen am Anfang und Ende der Teilstrings werden ignoriert, in der Mitte aber nicht")
+    void leerzeichen()
+    {
+      String[] test = {
+              "123 45   ",
+              "6789  0  ",
+              "  abcd ef",
+              "       AB"
+      };
+      String[] result = VerwendungszweckUtil.rewrap(3, test);
+      String[] expected = {"123", " 45", "678", "9  ", "0ab", "cd ", "efA", "B"};
+      assertArrayEquals(expected, result);
+    }
+
+    /**
+     * @see #leerzeichen()
+     * @see #leereStrings()
+     */
+    @Test
+    void nurLeerzeichen() // TODO abweichend von den anderen Ergebnissen
+    {
+      String[] test = {"", " ", "  ", "    ", "     ", "      ", ""};
+      String[] result = VerwendungszweckUtil.rewrap(3, test);
+      String[] expected = {""};
+      assertArrayEquals(expected, result);
+    }
+
+    @Test
+    void limit1()
+    {
+      String[] test = {"Dies ", "ist", " ein Test."};
+      String[] result = VerwendungszweckUtil.rewrap(1, test);
+      String[] expected = {"D", "i", "e", "s", "i", "s", "t", "e", "i", "n", " ", "T", "e", "s", "t", "."};
+      assertArrayEquals(expected, result);
+    }
+
+    @Test
+    void limit0() // TODO besser IllegalArgumentException?
+    {
+      String[] test = {"Dies ", "ist", " ein Test."};
+      String[] result = VerwendungszweckUtil.rewrap(0, test);
+      String[] expected = {"", "D", "i", "e", "s", "i", "s", "t", "e", "i", "n", " ", "T", "e", "s", "t", "."};
+      assertArrayEquals(expected, result);
+    }
+
+    @Test
+    void limitNegativ() // TODO besser IllegalArgumentException mit besserem Hinweistext?
+    {
+      String[] test = {"Dies ", "ist", " ein Test."};
+      // wirft java.util.regex.PatternSyntaxException, welche von java.lang.IllegalArgumentException abgeleitet ist
+      assertThrows(IllegalArgumentException.class, () -> VerwendungszweckUtil.rewrap(-20, test));
+    }
+
+    @Test
+    void limitMaxInt()
+    {
+      String[] test = {"Dies ", "ist", " ein Test."};
+      String[] result = VerwendungszweckUtil.rewrap(Integer.MAX_VALUE, test);
+      assertArrayEquals(test, result);
+    }
+
+    @Test
+    void testRewrap()
+    {
+      String[] test = {
+              "123456789012345678901234567890",
+              "123456789012345678901234567890 ",
+              null,
+              "d",
+              " ",
+              "123456789012345678901234567"
+      };
+
+      String[] result = VerwendungszweckUtil.rewrap(27, test);
+      String[] expected = {
+              "123456789012345678901234567",
+              "890123456789012345678901234",
+              "567890d12345678901234567890",
+              "1234567"
+      };
+      assertArrayEquals(expected, result);
+    }
   }
-  
+
   /**
    * Testet das Parsen der Tags.
    * @throws Exception
