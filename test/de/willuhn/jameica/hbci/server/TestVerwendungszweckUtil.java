@@ -180,268 +180,298 @@ public class TestVerwendungszweckUtil
     }
   }
 
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse001() throws Exception
+  @Nested
+  @DisplayName("Parsen der Tags aus String-Array")
+  class ParseWithArray
   {
-    String [] test =
+    @Test
+    void parameterNull() throws Exception
     {
-        "SVWZ+Ein komischer.Verwendungszweck ",
-        "auf mehreren Zeilen ",
-        "Hier kommt nochwas",
-        "ABWA+Das ist ein..Test//Text ",
-        "mit Zeilen-Umbruch"
-    };
+      String[] test = null;
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertNotNull(map);
+      assertTrue(map.keySet().isEmpty());
+    }
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Ein komischer.Verwendungszweck auf mehreren Zeilen Hier kommt nochwas",map.get(Tag.SVWZ), "SVWZ falsch");
-    assertEquals("Das ist ein..Test//Text mit Zeilen-Umbruch",map.get(Tag.ABWA), "ABWA falsch");
-  }
-
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse002() throws Exception
-  {
-    String [] test =
+    @Test
+    void leeresArray() throws Exception
     {
-        "SVWZ+Das folgende Tag gibts nicht",
-        "Fooo",
-        "ABCD+Gehoert zum Verwendungszweck"
-    };
+      String[] test = {};
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertNotNull(map);
+      assertTrue(map.keySet().isEmpty());
+    }
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Das folgende Tag gibts nichtFoooABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ), "SVWZ falsch");
-  }
-
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse003() throws Exception
-  {
-    String [] test =
+    @Test
+    void nurNullImArray() throws Exception
     {
-        "SVWZ+Das folgende Tag gibts nicht",
-        "Fooo ",
-        "ABCD+Gehoert zum Verwendungszweck",
-        "EREF+Aber hier kommt noch was"
-    };
+      String[] test = {
+              null,
+              null,
+              null,
+              null
+      };
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertNotNull(map);
+      assertTrue(map.keySet().isEmpty());
+    }
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Das folgende Tag gibts nichtFooo ABCD+Gehoert zum Verwendungszweck",map.get(Tag.SVWZ),"SVWZ falsch");
-    assertEquals("Aber hier kommt noch was",map.get(Tag.EREF), "EREF falsch");
-  }
-
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse004() throws Exception
-  {
-    String [] test =
+    @Test
+    void nurLeerImArray() throws Exception
     {
-        "SVWZ+Das folgende Tag gibts nicht",
-        "Fooo ",
-        "ABCD+ Leerzeichen hinter dem Tag stoeren nicht",
-        "KREF+ und hier stoeren sie auch nicht, sind aber nicht teil des Value "
-    };
+      String[] test = {"", " ", "  ", "    ", "     ", "      ", ""};
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertNotNull(map);
+      assertTrue(map.keySet().isEmpty());
+    }
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Das folgende Tag gibts nichtFooo ABCD+ Leerzeichen hinter dem Tag stoeren nicht",map.get(Tag.SVWZ), "SVWZ falsch");
-    assertEquals("und hier stoeren sie auch nicht, sind aber nicht teil des Value",map.get(Tag.KREF), "KREF falsch");
-  }
-
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse005() throws Exception
-  {
-    String [] test =
+    @Test
+    @DisplayName("Text ganz ohne Tags")
+    void ohneTags() throws Exception
     {
-        "SVWZ+Nur eine Zeile"
-    };
+      String[] test = {"Dies ist ein Test."};
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertNotNull(map);
+      assertTrue(map.keySet().isEmpty());
+    }
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Nur eine Zeile",map.get(Tag.SVWZ), "SVWZ falsch");
-  }
-
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse006() throws Exception
-  {
-    String [] test =
+    @Test
+    void leererSvwz() throws Exception
     {
-        "SVWZ+"
-    };
+      String[] test = {"SVWZ+"};
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("",map.get(Tag.SVWZ), "SVWZ falsch");
-  }
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertEquals(1, map.keySet().size());
+      assertTrue(map.containsKey(Tag.SVWZ));
+      check(map, "SVWZ", "");
+    }
 
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse007() throws Exception
-  {
-    String [] test =
+    @Test
+    void einzeiligerSvwz() throws Exception
     {
-    };
+      String[] test = {"SVWZ+Nur eine Zeile"};
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "SVWZ", "Nur eine Zeile");
+    }
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals(0, map.size(),"Map falsch");
-  }
-
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse008() throws Exception
-  {
-    String [] test =
+    @Test
+    void mehrzeiligerSvwz() throws Exception
     {
-        "Das ist eine Zeile ohne Tag ",
-        "Fooo",
-        "KREF+Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck"
-    };
+      // Entfernen von Zeilenumbruechen im Verwendungszweck
+      String[] test = {
+              "SVWZ+Das ist Zeile 1",
+              "2",
+              "3"
+      };
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "SVWZ", "Das ist Zeile 123");
+    }
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Das ist eine Zeile ohne Tag Fooo",map.get(Tag.SVWZ), "SVWZ falsch");
-    assertEquals("Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck",map.get(Tag.KREF),"KREF falsch");
-  }
-
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse009() throws Exception
-  {
-    String [] test =
+    @Test
+    void ohneSvwzTagAberMitZweitemTagMitPlus() throws Exception
     {
-        "Wir koennen auch",
-        "mit",
-        "KREF: Doppelpunkt als Separatur umgehen"
-    };
+      String[] test = {
+              "Das ist eine Zeile ohne Tag ",
+              "Fooo",
+              "KREF+Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck"
+      };
+      String kref = "Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck";
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Wir koennen auchmit",map.get(Tag.SVWZ),"SVWZ falsch");
-    assertEquals("Doppelpunkt als Separatur umgehen",map.get(Tag.KREF), "KREF falsch");
-  }
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "SVWZ", "Das ist eine Zeile ohne Tag Fooo");
+      check(map, "KREF", kref);
+    }
 
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse010() throws Exception
-  {
-    String [] test =
+    @Test
+    void ohneSvwzTagAberMitZweitemTagMitDoppelpunkt() throws Exception
     {
-        "SVWZ+ Das geht sogar",
-        " gemischt ",
-        "IBAN: DE1234567890 "
-    };
+      String[] test = {
+              "Wir koennen auch",
+              "mit",
+              "KREF: Doppelpunkt als Separatur umgehen"
+      };
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Das geht sogar gemischt IBAN: DE1234567890",map.get(Tag.SVWZ),"SVWZ falsch");
-    assertEquals("DE1234567890",map.get(Tag.IBAN),"IBAN falsch");
-  }
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertEquals(2, map.keySet().size());
+      assertTrue(map.containsKey(Tag.SVWZ));
+      assertTrue(map.containsKey(Tag.KREF));
+      check(map, Tag.SVWZ.name(), "Wir koennen auchmit");
+      check(map, Tag.KREF.name(), "Doppelpunkt als Separatur umgehen");
+    }
 
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse011() throws Exception
-  {
-    String [] test =
+    @Test
+    void einzeiligMitMehrerenTags() throws Exception
     {
-        "IBAN: DE49390500000000012345 BIC: AACSDE33 ABWA: NetAachen"
-    };
+      String[] test = {"IBAN: DE49390500000000012345 BIC: AACSDE33 ABWA: NetAachen"};
 
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("DE49390500000000012345",map.get(Tag.IBAN), "IBAN falsch");
-    assertEquals("AACSDE33",map.get(Tag.BIC), "BIC falsch");
-    assertEquals("NetAachen",map.get(Tag.ABWA), "ABWA falsch");
-  }
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "IBAN", "DE49390500000000012345");
+      check(map, "BIC", "AACSDE33");
+      check(map, "ABWA", "NetAachen");
+    }
 
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse012() throws Exception
-  {
-    String [] test =
+    @Test
+    void sonderzeichen() throws Exception
     {
-        "SVWZ+BIC:GENODED1SAM ",
-        "IBAN:DE12345678901234567890 ",
-        "Datum: 14.01.16 Zeit: 08:00 ",
-        "KD 00012345 TAN 12345 ",
-        "Beleg 12345  Kunde 12345"
-    };
-    
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("DE12345678901234567890",map.get(Tag.IBAN),"IBAN falsch");
-    assertEquals("GENODED1SAM",map.get(Tag.BIC), "BIC falsch");
-    assertEquals("BIC:GENODED1SAM IBAN:DE12345678901234567890 Datum: 14.01.16 Zeit: 08:00 KD 00012345 TAN 12345 Beleg 12345  Kunde 12345",map.get(Tag.SVWZ),"SVWZ");
-  }
+      String[] test = {
+              "SVWZ+Ein komischer.Verwendungszweck ",
+              "auf mehreren Zeilen ",
+              "Hier kommt nochwas",
+              "ABWA+Das ist ein..Test//Text ",
+              "mit Zeilen-Umbruch"
+      };
 
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse013() throws Exception
-  {
-    String [] test =
-    {
-        "Verwendungszweck EREF: 1234",
-        "567890123456789 IBAN: DE123",
-        "45678901234567890 BIC: ABCD",
-        "EFGH"
-    };
-    
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Verwendungszweck",map.get(Tag.SVWZ),"SVWZ falsch");
-    assertEquals("1234567890123456789",map.get(Tag.EREF),"EREF falsch"); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
-    assertEquals("DE12345678901234567890",map.get(Tag.IBAN),"IBAN falsch"); // Hier muss das Leerzeichen raus
-    assertEquals("ABCDEFGH",map.get(Tag.BIC),"BIC falsch"); // Hier auch ohne Leerzeichen
-  }
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "SVWZ", "Ein komischer.Verwendungszweck auf mehreren Zeilen Hier kommt nochwas");
+      check(map, "ABWA", "Das ist ein..Test//Text mit Zeilen-Umbruch");
+    }
 
-  /**
-   * Testet das Parsen der Tags.
-   * @throws Exception
-   */
-  @Test
-  public void testParse014() throws Exception
-  {
-    // Entfernen von Zeilenumbruechen im Verwendungszweck
-    String [] test =
+    @Test
+    void vermeindlicheTagsWerdenNichtAlsWerteErkannt() throws Exception
     {
-        "SVWZ+Das ist Zeile 1",
-        "2",
-        "3"
-    };
-    
-    Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Das ist Zeile 123",map.get(Tag.SVWZ),"SVWZ falsch");
+      String[] test = {
+              "SVWZ+Das folgende Tag gibts nicht",
+              "Fooo",
+              "ABCD+Gehoert zum Verwendungszweck"
+      };
+
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      assertEquals(1, map.keySet().size());
+      assertTrue(map.containsKey(Tag.byName("SVWZ")));
+      assertNull(Tag.byName("ABCD")); // = existiert nicht
+      assertFalse(map.containsKey(Tag.byName("ABCD")));
+      check(map, "SVWZ", "Das folgende Tag gibts nichtFoooABCD+Gehoert zum Verwendungszweck");
+    }
+
+    @Test
+    void trotzVermeindlicherTagsWerdenRichtigeTagsErkannt() throws Exception
+    {
+      String[] test = {
+              "SVWZ+Das folgende Tag gibts nicht",
+              "Fooo ",
+              "ABCD+Gehoert zum Verwendungszweck",
+              "EREF+Aber hier kommt noch was"
+      };
+
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "SVWZ", "Das folgende Tag gibts nichtFooo ABCD+Gehoert zum Verwendungszweck");
+      check(map, "EREF", "Aber hier kommt noch was");
+    }
+
+    @Test
+    void leerzeichenHinterTagWerdenIgnoriert() throws Exception
+    {
+      String[] test = {
+              "SVWZ+Das folgende Tag gibts nicht",
+              "Fooo ",
+              "ABCD+ Leerzeichen hinter dem Tag stoeren nicht",
+              "KREF+ und hier stoeren sie auch nicht, sind aber nicht teil des Value "
+      };
+
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "SVWZ", "Das folgende Tag gibts nichtFooo ABCD+ Leerzeichen hinter dem Tag stoeren nicht");
+      check(map, "KREF", "und hier stoeren sie auch nicht, sind aber nicht teil des Value");
+    }
+
+    @Test
+    void gemischtePlusUndDoppelpunktWerdenErkannt() throws Exception
+    // TODO hier Code von #parse() anpassen, um noch besser zu trennen? Was ist vom Anwender gewollt?
+    {
+      String[] test = {
+              "SVWZ+ Das geht sogar",
+              " gemischt ",
+              "IBAN: DE1234567890 ",
+              "BIC: AACSDE33"
+      };
+
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      // ACHTUNG: durch die Mischung sind die Anteile mit Doppelpunkt im SVWZ enthalten!
+      check(map, "SVWZ", "Das geht sogar gemischt IBAN: DE1234567890 BIC: AACSDE33");
+      check(map, "IBAN", "DE1234567890");
+      check(map, "BIC", "AACSDE33");
+    }
+
+    //region Sonderrolle IBAN und BIC
+
+    /**
+     * ehemals "testParse012"
+     *
+     * @see #gemischtePlusUndDoppelpunktWerdenErkannt()
+     */
+    @Test
+    void beiMischungVonPlusUndDoppelpunktSindAllePunktTexteImTagMitPlusEnthalten() throws Exception
+    {
+      // TODO: hier Code von #parse() anpassen, um noch besser zu trennen? Was ist vom Anwender gewollt?
+      // Aus Code:
+      // Sonderrolle IBAN. Wir entfernen alles bis zum ersten Leerzeichen. Siehe "testParse012". Da hinter der
+      // IBAN kein vernuenftiges Tag mehr kommt, wuerde sonst der ganze Rest da mit reinfallen. Aber nur, wenn
+      // es erst nach 22 Zeichen kommt. Sonst steht es mitten in der IBAN drin. In dem Fall entfernen wir die
+      // Leerzeichen aus der IBAN (siehe "testParse013")
+      // TODO: Ist IBAN per Definition stets das letzte Tag? ("da hinter der IBAN kein vernünftiges Tag mehr kommt")
+      String[] test = {
+              "SVWZ+BIC:GENODED1SAM ",
+              "IBAN:DE12345678901234567890 ",
+              "Datum: 14.01.16 Zeit: 08:00 ",
+              "KD 00012345 TAN 12345 ",
+              "Beleg 12345  Kunde 12345"
+      };
+      // ACHTUNG: durch die Mischung sind die Anteile mit Doppelpunkt im SVWZ enthalten!
+      String svwz = "BIC:GENODED1SAM IBAN:DE12345678901234567890 Datum: 14.01.16 Zeit: 08:00 KD 00012345 TAN 12345 Beleg 12345  Kunde 12345";
+
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "IBAN", "DE12345678901234567890");
+      check(map, "BIC", "GENODED1SAM");
+      check(map, "SVWZ", svwz);
+    }
+
+    @Test
+    void leerzeichenAusBicEntfernen() throws Exception
+    {
+      String[] test = {"BIC: G E N O D E D 1 S A M   "};
+      check(VerwendungszweckUtil.parse(test), "BIC", "GENODED1SAM");
+
+      String[] test2 = {"BIC+ ", " CO", "BA ", "   DE", " FFXXX "};
+      check(VerwendungszweckUtil.parse(test2), "BIC", "COBADEFFXXX");
+    }
+
+    @Test
+    void leerzeichenAusIbanEntfernen() throws Exception
+    {
+      String[] test = {"IBAN:  DE1234 56789012 34567890  "};
+      check(VerwendungszweckUtil.parse(test), "IBAN", "DE12345678901234567890");
+
+      String[] test2 = {"IBAN+ ", " DE09", "  8765", "4321 ", "0987", "6543", "    21"};
+      check(VerwendungszweckUtil.parse(test2), "IBAN", "DE09876543210987654321");
+    }
+
+    /**
+     * ehemals "testParse013"
+     *
+     * @see #leerzeichenAusBicEntfernen()
+     * @see #leerzeichenAusIbanEntfernen()
+     */
+    @Test
+    void umbruchBeiBicUndIban() throws Exception
+    {
+      String[] test = {
+              "Verwendungszweck EREF: 12 34",
+              "567890 123456789 IBAN: DE123",
+              "45678901234567890 BIC: ABCD",
+              "EFGH"
+      };
+
+      Map<Tag, String> map = VerwendungszweckUtil.parse(test);
+      check(map, "SVWZ", "Verwendungszweck");
+      check(map, "EREF", "12 34567890 123456789"); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
+      check(map, "IBAN", "DE12345678901234567890"); // Hier muss das Leerzeichen raus
+      check(map, "BIC", "ABCDEFGH"); // Hier auch ohne Leerzeichen
+    }
+    //endregion
+
+    private void check(Map<Tag, String> map, String tag, String expected)
+    {
+      assertEquals(expected, map.get(Tag.byName(tag)), tag);
+    }
   }
 }
 
