@@ -10,6 +10,8 @@
 
 package de.willuhn.jameica.hbci.server;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
@@ -17,6 +19,8 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -471,6 +475,103 @@ public class TestVerwendungszweckUtil
     private void check(Map<Tag, String> map, String tag, String expected)
     {
       assertEquals(expected, map.get(Tag.byName(tag)), tag);
+    }
+  }
+
+  @Nested
+  class ParseWithString
+  {
+    @Test
+    void parameterNull() // TODO besser IllegalArgumentException?
+    {
+      String[] result = VerwendungszweckUtil.parse((String) null);
+      assertArrayEquals(new String[]{}, result);
+    }
+
+    @Test
+    void parameterLeererString()
+    {
+      String[] result = VerwendungszweckUtil.parse("");
+      assertArrayEquals(new String[]{}, result);
+    }
+
+    @Test
+    void nurLeerzeichen()
+    {
+      String test = "                                                                                                 ";
+      // da Methode bei 27 Zeichen umbricht, stelle sicher, dass Teststring länger ist
+      assertTrue(27 < test.length());
+      // TODO besser kürzen und {""} ?
+      String[] expected = {
+              "                           ",
+              "                           ",
+              "                           ",
+              "                "
+      };
+      String[] result = VerwendungszweckUtil.parse(test);
+      assertArrayEquals(expected, result);
+    }
+
+    @ParameterizedTest
+    @DisplayName("Teiltext kürzer als Limit -> nichts tun")
+    @ValueSource(strings = {"a", "ab", "abcd", "abc def ghi jk", "Noch ein Test!@$äöü%§", "12345678901234567890123456"})
+    void wennZuKurzDannNichtsTun(String test)
+    {
+      String[] expected = {test};
+      String[] result = VerwendungszweckUtil.parse(test);
+      assertArrayEquals(expected, result);
+    }
+
+    /**
+     * @see ParseWithArray#sonderzeichen()
+     */
+    @Test
+    void umbruchBei27ZeichenMitTextAusAnderemTest()
+    {
+      String test = "SVWZ+Ein komischer.Verwendungszweck auf mehreren Zeilen Hier kommt nochwasABWA+Das ist ein." +
+              ".Test//Text mit Zeilen-Umbruch";
+      String[] expected = {
+              "SVWZ+Ein komischer.Verwendu",
+              "ngszweck auf mehreren Zeile",
+              "n Hier kommt nochwasABWA+Da",
+              "s ist ein..Test//Text mit Z",
+              "eilen-Umbruch"
+      };
+      String[] result = VerwendungszweckUtil.parse(test);
+      assertArrayEquals(expected, result);
+    }
+
+    @Test
+    void umbruchBei27ZeichenMitLipsumText()
+    {
+      String test = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum aliquet " +
+              "faucibus. Praesent iaculis arcu eu tortor eleifend, nec interdum justo mollis. In fermentum hendrerit " +
+              "risus in sollicitudin. Vestibulum quis laoreet metus. Nunc venenatis facilisis lectus et luctus. " +
+              "Maecenas placerat augue ac sem pharetra, at aliquet tellus accumsan. Aliquam nunc dolor, elementum at " +
+              "pellentesque id, laoreet quis tellus.";
+      String[] expected = splitBy27(test);
+      String[] result = VerwendungszweckUtil.parse(test);
+      assertArrayEquals(expected, result);
+    }
+
+    /**
+     * naive Referenzimplementierung, um Text nach x Zeichen zu trennen
+     */
+    private String[] splitBy27(String text)
+    {
+      final int numberOfChars = 27;
+      List<String> result = new ArrayList<>();
+      String x = text;
+      do
+      {
+        result.add(x.substring(0, numberOfChars));
+        x = x.substring(numberOfChars);
+      } while (x.length() > numberOfChars);
+      if (!x.isEmpty())
+      {
+        result.add(x);
+      }
+      return result.toArray(new String[0]);
     }
   }
 }
