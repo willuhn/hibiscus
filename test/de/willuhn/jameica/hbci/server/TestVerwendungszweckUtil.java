@@ -185,6 +185,59 @@ public class TestVerwendungszweckUtil
   }
 
   @Nested
+  class Merge
+  {
+    @Test
+    void parameterNull()
+    {
+      String[] test = null;
+      String result = VerwendungszweckUtil.merge(test);
+      assertNull(result);
+    }
+
+    @Test
+    void leeresArray()
+    {
+      String[] test = {};
+      String result = VerwendungszweckUtil.merge(test);
+      assertNull(result);
+    }
+
+    @Test
+    void nurNullImArray()
+    {
+      String[] test = {
+              null,
+              null,
+              null,
+              null
+      };
+      String result = VerwendungszweckUtil.merge(test);
+      assertNull(result);
+    }
+
+    @Test
+    void nurLeerImArray()
+    {
+      String[] test = {" ", "  ", "    ", "     ", "      ", "       "};
+      // TODO besser kürzen und "" als Ergebnis?
+      String expected = " \n" + "  \n" + "    \n" + "     \n" + "      \n" + "       \n";
+      String result = VerwendungszweckUtil.merge(test);
+      assertEquals(expected, result);
+    }
+
+    @Test
+    void normalerText()
+    {
+      String[] test = {"Dies", "ist", "ein", "Test!"};
+      //TODO letzten Umbruch weglassen?
+      String expected = "Dies\nist\nein\nTest!\n";
+      String result = VerwendungszweckUtil.merge(test);
+      assertEquals(expected, result);
+    }
+  }
+
+  @Nested
   @DisplayName("Parsen der Tags aus String-Array")
   class ParseWithArray
   {
