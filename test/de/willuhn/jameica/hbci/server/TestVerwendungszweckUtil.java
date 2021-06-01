@@ -574,6 +574,55 @@ public class TestVerwendungszweckUtil
       return result.toArray(new String[0]);
     }
   }
+
+  @Nested
+  class Split
+  {
+    @Test
+    void parameterNull() // TODO besser IllegalArgumentException?
+    {
+      String[] result = VerwendungszweckUtil.split((String) null);
+      assertArrayEquals(new String[]{}, result);
+    }
+
+    @Test
+    void parameterLeererString()
+    {
+      String[] result = VerwendungszweckUtil.split("");
+      assertArrayEquals(new String[]{}, result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"a", "abc", "Dies ist ein Beispieltext mit einer Länge von über 27 Zeichen!"})
+    void keinUmbruchImText(String test)
+    {
+      String[] expected = {test};
+      String[] result = VerwendungszweckUtil.split(test);
+      assertArrayEquals(expected, result);
+    }
+
+    // TODO (java13+) weiteren Test mit Textblock ergänzen
+    @Test
+    void mitUmbruch()
+    {
+      // TODO bisher nur Support für \n - die beiden anderen Umbrüche (\r\n, \r) auch unterstützen?
+      String test = "Dies ist\n" +
+              "ein Text mit Umbruch\n" +
+              "und\n" +
+              "mehreren Zeilen,\ndie auf verschiedene " +
+              "Arten\ngetrennt wurden";
+      String[] expected = {
+              "Dies ist",
+              "ein Text mit Umbruch",
+              "und",
+              "mehreren Zeilen,",
+              "die auf verschiedene Arten",
+              "getrennt wurden"
+      };
+      String[] result = VerwendungszweckUtil.split(test);
+      assertArrayEquals(expected, result);
+    }
+  }
 }
 
 
