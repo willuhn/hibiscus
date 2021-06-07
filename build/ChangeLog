@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0951 Bearbeiten eines Umsatzes: Beim Übernehmen einer Adresse wurde Kto/BLZ statt IBAN/BIC übernommen 
   * NEW: 0950 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 07.06.2021
   * BUG: 0949 Ungültigen Resize-Wert im PhotoTAN-Dialog ignorieren - siehe https://homebanking-hilfe.de/forum/topic.php?p=159450#real159450
   * BUG: 0948 Nachtrag zu 0941: Die UnsupportedOperationException kam zwar nicht mehr, dafür stimmte die Berechnung aber bei Sommer-/Winterzeitwechsel nicht mehr. Vor der Verwendung das SQL-Date in Util-Date umwandeln
