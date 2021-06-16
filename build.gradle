@@ -3,7 +3,7 @@ plugins {
     id 'eclipse' // optional (to generate Eclipse project files)
     id 'idea' // optional (to generate IntelliJ IDEA project files)
 }
-apply from: "${rootProject.rootDir}/url_file.gradle"
+apply from: "${rootProject.rootDir}/gradle/url_file.gradle"
 
 group 'de.willuhn.jameica'
 version '2.10.4-SNAPSHOT'
