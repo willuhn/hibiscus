@@ -1,7 +1,7 @@
 plugins {
-    id 'java'
-    id 'eclipse' // optional (to generate Eclipse project files)
-    id 'idea' // optional (to generate IntelliJ IDEA project files)
+    id 'my.java-library-conventions'
+    id 'my.java-oldschool-project-structure'
+    id 'my.encoding.8859-1'
 }
 apply from: "${rootProject.rootDir}/gradle/url_file.gradle"
 
@@ -14,21 +14,13 @@ java {
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'ISO-8859-1'
-}
-tasks.withType(Javadoc) {
-    options.encoding = 'ISO-8859-1'
-}
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation project(':lib:util')
-    implementation project(':lib:datasource')
-    implementation project(':jameica')
+    // Dependencies appearing in the api configurations will be transitively
+    // exposed to consumers of the library, and as such will appear on the
+    // compile classpath of consumers.
+    api project(':lib:util')
+    api project(':lib:datasource')
+    api project(':jameica')
 
     implementation libs.db.postgres
     implementation libs.nanoxml
@@ -49,8 +41,6 @@ dependencies {
     // see <https://sourceforge.net/projects/obantoo/> (last update: 2015-05-10)
     // new version (Java13+) see <https://github.com/jverein/obantoo2>
     implementation urlFile('obantoo-bin-2.1.12', 'https://downloads.sourceforge.net/project/obantoo/obantoo-bin-2.1.12.jar')
-
-    testImplementation libs.junit
 }
 
 // solange noch die Logik des ANT-Builds benötigt wird, nutze einen Unterordner
@@ -59,32 +49,5 @@ jar {
     baseName "de_willuhn_${project.name}"
     manifest {
         attributes "Main-Class": "de.willuhn.jameica.Main"
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-        }
-    }
-
-    test {
-        java {
-            srcDirs = ['test']
-        }
-    }
-}
-
-eclipse {
-    classpath {
-        downloadJavadoc = true
-        downloadSources = false
-    }
-}
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = false
     }
 }
