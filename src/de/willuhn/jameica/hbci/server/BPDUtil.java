@@ -301,7 +301,7 @@ public class BPDUtil
           String name  = rs.getString("name");
           String value = rs.getString("content");
 
-          if (name == null || name.length() == 0 || value == null || name.length() == 0)
+          if (name == null || name.length() == 0 || value == null || value.length() == 0)
             continue;
 
           if (name.endsWith(".iban") && value.equals(k.getIban()))
