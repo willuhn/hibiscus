@@ -519,7 +519,7 @@ public class ChipTANDialog extends TANDialog
         gd.widthHint = SETTINGS.getInt("width",width);
 
         int height = SWTUtil.mm2px(40);
-        if (height == -1) width = 100;
+        if (height == -1) height = 100;
         gd.heightHint = height;
         
         this.comp.setLayoutData(gd);
