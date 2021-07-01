@@ -45,3 +45,9 @@ jobs:
         distribution: 'adopt'
     - name: Build with Gradle
       run: gradle build
+    - name: upload package
+      uses: actions/upload-artifact@master
+      with:
+        name: pkg
+        path: 'jameica/build/gradle/distributions/*.zip'
+
