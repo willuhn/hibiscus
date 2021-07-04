@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.forecast;
 
 import java.rmi.RemoteException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,10 +54,7 @@ public class ForecastCreator
       {
         MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
         Class<ForecastProvider>[] classes = loader.getClassFinder().findImplementors(ForecastProvider.class);
-        for (Class<ForecastProvider> c:classes)
-        {
-          providers.add(c);
-        }
+        Collections.addAll(providers, classes);
       }
       catch (ClassNotFoundException cne)
       {

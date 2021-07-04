@@ -68,9 +68,10 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
     
     Map<String,T> groupMap = new HashMap<String,T>();
 
-
-    for (final Umsatz u : umsaetze)
+    for (int i=0;i<objects.length;++i)
     {
+      Umsatz u = (Umsatz) objects[i];
+
       // Wir ermitteln bei der Gelegenheit das Maximal- und Minimal-Datum
       Date date = u.getDatum();
       if (date != null)
