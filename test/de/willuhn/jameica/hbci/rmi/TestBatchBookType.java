@@ -10,8 +10,9 @@
 
 package de.willuhn.jameica.hbci.rmi;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Testet die Klasse "BatchBookType".
@@ -19,25 +20,56 @@ import org.junit.Test;
 public class TestBatchBookType
 {
   /**
-   * Testet das Lookup per Boolean.
+   * Vollständige Auflistung der möglichen Werte stellt sicher, dass in den anderen Tests kein Fall vergessen wird.
    */
   @Test
-  public void testByBooleanValue()
+  void esGibtNurDreiWerteImEnum()
   {
-    Assert.assertEquals(BatchBookType.NONE, BatchBookType.byValue((Boolean)null));
-    Assert.assertEquals(BatchBookType.TRUE, BatchBookType.byValue(Boolean.TRUE));
-    Assert.assertEquals(BatchBookType.FALSE,BatchBookType.byValue(Boolean.FALSE));
+    BatchBookType[] expected = { BatchBookType.NONE, BatchBookType.TRUE, BatchBookType.FALSE };
+    assertArrayEquals(expected, BatchBookType.values());
   }
 
-  /**
-   * Testet das Lookup per String.
-   */
   @Test
-  public void testByStringValue()
+  public void byValueBoolean()
   {
-    Assert.assertEquals(null, (String) null);
-    Assert.assertEquals(BatchBookType.TRUE.getValue(), "1");
-    Assert.assertEquals(BatchBookType.FALSE.getValue(),"0");
+    assertEquals(BatchBookType.NONE, BatchBookType.byValue((Boolean)null));
+    assertEquals(BatchBookType.TRUE, BatchBookType.byValue(Boolean.TRUE));
+    assertEquals(BatchBookType.FALSE,BatchBookType.byValue(Boolean.FALSE));
+    assertEquals(BatchBookType.TRUE, BatchBookType.byValue(true));
+    assertEquals(BatchBookType.FALSE,BatchBookType.byValue(false));
   }
 
+  @Test
+  public void byValueString()
+  {
+    assertEquals(BatchBookType.NONE, BatchBookType.byValue(""));
+    assertEquals(BatchBookType.TRUE, BatchBookType.byValue("1"));
+    assertEquals(BatchBookType.FALSE,BatchBookType.byValue("0"));
+  }
+
+  @Test
+  public void getValueBoolean()
+  {
+    assertNull(BatchBookType.NONE.getBooleanValue());
+    assertTrue(BatchBookType.TRUE.getBooleanValue());
+    assertFalse(BatchBookType.FALSE.getBooleanValue());
+  }
+
+  @Test
+  public void getValueString()
+  {
+    assertEquals("",  BatchBookType.NONE.getValue());
+    assertEquals("1", BatchBookType.TRUE.getValue());
+    assertEquals("0", BatchBookType.FALSE.getValue());
+  }
+
+  @Test
+  public void alleWerteHabenEineBeschreibung()
+  {
+    for (BatchBookType x : BatchBookType.values())
+    {
+      assertNotNull(x.getDescription());
+      assertNotEquals(0, x.getDescription().length(), String.format("%s hat keine Beschreibung", x.name()));
+    }
+  }
 }
