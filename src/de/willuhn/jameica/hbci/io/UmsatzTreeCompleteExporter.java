@@ -44,7 +44,7 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Umsätze aus"));
 
     UmsatzTree tree = t[0];
-    List list = tree.getUmsatzTree();
+    List<UmsatzTreeNode> list = tree.getUmsatzTree();
 
     Reporter reporter = null;
     
@@ -59,9 +59,9 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
       reporter.createHeader();
 
       // Iteration ueber Umsaetze
-      for (int i=0;i<list.size(); ++i)
+      for (UmsatzTreeNode node : list)
       {
-        renderNode(reporter,(UmsatzTreeNode) list.get(i));
+        renderNode(reporter, node);
         reporter.setNextRecord();
       }
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
@@ -110,9 +110,8 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
       cell.setColspan(4);
       reporter.addColumn(cell);
 
-      for (int i=0;i<umsaetze.size();++i)
+      for (Umsatz u : umsaetze)
       {
-        Umsatz u = umsaetze.get(i);
         reporter.addColumn(reporter.getDetailCell(
             (u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "")
                 + "\n"
@@ -132,10 +131,9 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
 
     
     // Ggf. vorhandene Unter-Kategorien rendern.
-    List<UmsatzTreeNode> children = node.getSubGroups();
-    for (int i=0;i<children.size();++i)
+    for (UmsatzTreeNode child : node.getSubGroups())
     {
-      renderNode(reporter,children.get(i));
+      renderNode(reporter, child);
     }
   }
 

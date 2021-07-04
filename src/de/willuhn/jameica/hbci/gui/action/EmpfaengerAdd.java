@@ -11,6 +11,7 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,9 +73,8 @@ public class EmpfaengerAdd implements Action
       else if (context instanceof Transfer[])
       {
         Transfer[] list = (Transfer[]) context;
-        for (int i=0;i<list.length;++i)
+        for (Transfer t : list)
         {
-          Transfer t = list[i];
           items.add(create(t.getGegenkontoName(),t.getGegenkontoNummer(),t.getGegenkontoBLZ()));
         }
       }
@@ -87,10 +87,7 @@ public class EmpfaengerAdd implements Action
       else if (context instanceof HibiscusAddress[])
       {
         HibiscusAddress[] list = (HibiscusAddress[]) context;
-        for (int i=0;i<list.length;++i)
-        {
-          items.add(list[i]);
-        }
+        items.addAll(Arrays.asList(list));
       }
       ///////////////////////////////////////////////////////////////
       // Address
@@ -102,9 +99,8 @@ public class EmpfaengerAdd implements Action
       else if (context instanceof Address[])
       {
         Address[] list = (Address[]) context;
-        for (int i=0;i<list.length;++i)
+        for (Address a : list)
         {
-          Address a = list[i];
           items.add(create(a.getName(),a.getKontonummer(),a.getBlz()));
         }
       }
@@ -115,15 +111,13 @@ public class EmpfaengerAdd implements Action
       
       // Falls mehrere Eintraege markiert sind, kann es sein, dass einige
       // davon doppelt da sind, die fischen wir raus.
-      HashMap seen = new HashMap();
+      HashMap<String, HibiscusAddress> seen = new HashMap<>();
       AddressbookService book = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
 
       int count = 0;
-      for (int i=0;i<items.size();++i)
+      for (HibiscusAddress e : items)
       {
         // wir checken erstmal, ob wir den schon haben.
-        HibiscusAddress e = items.get(i);
-
         if (e.getName() == null || e.getName().length() == 0)
         {
           Logger.warn("address [kto. " + e.getKontonummer() + ", blz " + e.getBlz() + " has no name, skipping");
@@ -140,7 +134,7 @@ public class EmpfaengerAdd implements Action
           Logger.debug("address [iban. " + e.getIban() + ", bic " + e.getBic() + " already exists, skipping");
           continue;
         }
-        
+
         // OK, speichern
         e.store();
         count++;

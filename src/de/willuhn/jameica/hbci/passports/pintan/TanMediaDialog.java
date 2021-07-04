@@ -190,11 +190,7 @@ public class TanMediaDialog extends AbstractDialog
     // Die Namen von der Bank
     if (this.options != null)
     {
-      String[] names = this.options.split("\\|");
-      for (String s:names)
-      {
-        set.add(s);
-      }
+      Collections.addAll(set, this.options.split("\\|"));
     }
 
     // Und jetzt noch die gespeicherten reinmergen.
@@ -202,11 +198,7 @@ public class TanMediaDialog extends AbstractDialog
     {
       try
       {
-        String[] names = this.config.getTanMedias();
-        for (String s:names)
-        {
-          set.add(s);
-        }
+        Collections.addAll(set, this.config.getTanMedias());
       }
       catch (Exception e)
       {

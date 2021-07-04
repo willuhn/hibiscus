@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.passports.rdh;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -60,7 +61,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     
     /////////////////////////////////////////////////////////////////
     // Wir ermitteln die Liste der bereits verlinkten Konten
-    ArrayList linked = new ArrayList();
+    ArrayList<Konto> linked = new ArrayList<>();
     GenericIterator keys = RDHKeyFactory.getKeys();
     while (keys.hasNext())
     {
@@ -74,10 +75,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
       Konto[] konten = key.getKonten();
       if (konten == null || konten.length == 0)
         continue;
-      for (int i=0;i<konten.length;++i)
-      {
-        linked.add(konten[i]);
-      }
+      linked.addAll(Arrays.asList(konten));
     }
     GenericIterator exclude = PseudoIterator.fromArray((GenericObject[])linked.toArray(new GenericObject[linked.size()]));
     /////////////////////////////////////////////////////////////////

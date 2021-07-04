@@ -74,11 +74,9 @@ public class Open implements Action
     
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     Class type          =  typeGiven ? (Class) context : context.getClass();
-    
-    Iterator<Class> keys = actionMap.keySet().iterator();
-    while (keys.hasNext())
+
+    for (Class key : actionMap.keySet())
     {
-      Class key = keys.next();
       if (key.isAssignableFrom(type))
       {
         Action a = service.get(actionMap.get(key));

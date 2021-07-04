@@ -74,9 +74,9 @@ public class PinTanConfigFactory
     boolean found = false;
     if (existing != null && existing.length > 0)
     {
-      for (int i=0;i<existing.length;++i)
+      for (String configID : existing)
       {
-        if (existing[i].equals(config.getID()))
+        if (configID.equals(config.getID()))
         {
           Logger.info("updating existing config");
           found = true;
@@ -120,17 +120,15 @@ public class PinTanConfigFactory
       }
 
       Logger.debug("number of configs: " + existing.length);
-      ArrayList newList = new ArrayList();
+      ArrayList<String> newList = new ArrayList<>();
       String id = config.getID();
 
-      for (int i=0;i<existing.length;++i)
-      {
-        if (id.equals(existing[i]))
-        {
+      for (String existingID : existing) {
+        if (id.equals(existingID)) {
           Logger.info("deleting config for file " + id);
           continue;
         }
-        newList.add(existing[i]);
+        newList.add(existingID);
       }
       
       Logger.debug("new number of configs: " + newList.size());
@@ -263,9 +261,8 @@ public class PinTanConfigFactory
       Konto[] verdrahtet = config.getKonten();
       if (konto != null && verdrahtet != null && verdrahtet.length > 0)
       {
-        for (int j=0;j<verdrahtet.length;++j)
+        for (Konto k : verdrahtet)
         {
-          Konto k = verdrahtet[j];
           if (konto.equals(k))
           {
             Logger.info("found config via account. url: " + config.getURL());
@@ -326,12 +323,12 @@ public class PinTanConfigFactory
   {
     String[] found = settings.getList("config",new String[0]);
 
-    ArrayList configs = new ArrayList();
-    for (int i=0;i<found.length;++i)
+    ArrayList<PinTanConfig> configs = new ArrayList<>();
+    for (String configPathAsString : found)
     {
-      if (found[i] != null && found[i].length() > 0)
+      if (configPathAsString != null && configPathAsString.length() > 0)
       {
-        File f = toAbsolutePath(found[i]);
+        File f = toAbsolutePath(configPathAsString);
         if (!f.exists())
           continue;
         
@@ -346,7 +343,7 @@ public class PinTanConfigFactory
         }
       }
     }
-    return PseudoIterator.fromArray((PinTanConfig[]) configs.toArray(new PinTanConfig[configs.size()]));
+    return PseudoIterator.fromArray(configs.toArray(new PinTanConfig[configs.size()]));
   }
 
   /**

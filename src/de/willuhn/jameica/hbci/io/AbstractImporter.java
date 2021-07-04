@@ -153,11 +153,10 @@ public abstract class AbstractImporter implements Importer
     Class[] supported = getSupportedObjectTypes();
     if (supported == null || supported.length == 0)
       return null;
-    
-    for (int i=0;i<supported.length;++i)
-    {
-      if (objectType.equals(supported[i]))
-        return new IOFormat[] { new MyIOFormat(objectType) };
+
+    for (Class supportedObjType : supported) {
+      if (objectType.equals(supportedObjType))
+        return new IOFormat[]{new MyIOFormat(objectType)};
     }
     return null;
   }

@@ -61,11 +61,10 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
-          Iterator i = values.keySet().iterator();
-          while (i.hasNext())
+          for (Object key : values.keySet())
           {
-            String name = (String) i.next();
-            object.setAttribute(name,values.get(name));
+            String name = (String) key;
+            object.setAttribute(name, values.get(name));
           }
           return object;
         }

@@ -211,23 +211,23 @@ public class RDHKeyImpl implements RDHKey
     if (ids == null || ids.length == 0)
       return null;
     
-    ArrayList konten = new ArrayList();
-    for (int i=0;i<ids.length;++i)
+    ArrayList<Konto> konten = new ArrayList<>();
+    for (String id : ids)
     {
       try
       {
-        konten.add(de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class,ids[i]));
+        konten.add(de.willuhn.jameica.hbci.Settings.getDBService().createObject(Konto.class, id));
       }
       catch (ObjectNotFoundException noe)
       {
-        Logger.warn("konto " + ids[i] + " does not exist, skipping");
+        Logger.warn("konto " + id + " does not exist, skipping");
       }
       catch (RemoteException re)
       {
         throw re;
       }
     }
-    return (Konto[])konten.toArray(new Konto[konten.size()]);
+    return konten.toArray(new Konto[konten.size()]);
   }
 
   /**

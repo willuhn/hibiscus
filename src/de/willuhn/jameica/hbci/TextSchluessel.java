@@ -123,16 +123,13 @@ public class TextSchluessel
       return list.toArray(new TextSchluessel[list.size()]);
 
     List<TextSchluessel> l = new ArrayList<TextSchluessel>();
-    for (int i=0;i<codes.length;++i)
+    for (String code : codes)
     {
-      for (int k=0;k<list.size();++k)
+      for (TextSchluessel ts : list)
       {
-        TextSchluessel ts = list.get(k);
-        String code = ts.getCode();
-        if (code.equals(codes[i]))
+        if (code.equals(ts.getCode()))
         {
           l.add(ts);
-          continue;
         }
       }
     }
@@ -150,10 +147,8 @@ public class TextSchluessel
     if (code == null || code.length() == 0)
       return null;
 
-    for (int i=0;i<list.size();++i)
-    {
-      TextSchluessel ts = list.get(i);
-      if (ts.getCode().equals(code))
+    for (TextSchluessel ts : list) {
+      if (code.equals(ts.getCode()))
         return ts;
     }
     return null;

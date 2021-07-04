@@ -67,10 +67,9 @@ public class XMLImporter implements Importer
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
           // object.setID(id); // Keine ID angeben, da wir die Daten neu anlegen wollen
-          Iterator i = values.keySet().iterator();
-          while (i.hasNext())
+          for (Object key : values.keySet())
           {
-            String name = (String) i.next();
+            String name = (String) key;
             object.setAttribute(name,values.get(name));
           }
           return object;

@@ -420,14 +420,13 @@ public class AddressInput implements Input
       try
       {
         AddressbookService service = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
-        List l = service.findAddresses(text);
+        List<Address> l = service.findAddresses(text);
         if (l == null || l.size() == 0)
           return l;
         
-        List result = new ArrayList();
-        for (int i=0;i<l.size();++i)
+        List<Address> result = new ArrayList<>();
+        for (Address a : l)
         {
-          Address a = (Address) l.get(i);
           if (filter == null || filter.accept(a))
             result.add(a);
         }
