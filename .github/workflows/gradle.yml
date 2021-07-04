@@ -18,7 +18,6 @@ jobs:
       with:
         submodules: recursive
         repository: ruderphilipp/jmc.git
-        ref: main
     - name: Check out the triggering repository
       run: |
          declare -A SUBMODULES=( \
@@ -38,10 +37,10 @@ jobs:
             git -C ${SUBMODULES[$REPONAME]} fetch action_repo ${GITHUB_SHA}
             git -C ${SUBMODULES[$REPONAME]} checkout ${GITHUB_SHA}
          fi
-    - name: Set up JDK 11
+    - name: Set up JDK
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
+        java-version: '8'
         distribution: 'adopt'
     - name: Build with Gradle
       run: gradle build
@@ -49,5 +48,5 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: pkg
-        path: 'jameica/build/gradle/distributions/*.zip'
+        path: 'plugins/hibiscus/build/target/*.jar'
 
