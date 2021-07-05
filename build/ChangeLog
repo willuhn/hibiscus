@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0952 Option "Nur aktive Konten" in "Saldo im Verlauf" wurde nicht gespeichert
   * BUG: 0951 Bearbeiten eines Umsatzes: Beim Übernehmen einer Adresse wurde Kto/BLZ statt IBAN/BIC übernommen 
   * NEW: 0950 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 07.06.2021
   * BUG: 0949 Ungültigen Resize-Wert im PhotoTAN-Dialog ignorieren - siehe https://homebanking-hilfe.de/forum/topic.php?p=159450#real159450

@@ -217,7 +217,7 @@ public class SaldoChart implements Part
       @Override
       public void handleEvent(Event event)
       {
-        settings.setAttribute("auswertungen.einnahmeausgabe.filter.active", (Boolean) onlyActive.getValue());
+        settings.setAttribute("auswertungen.saldochart.filter.active", (Boolean) onlyActive.getValue());
       }
     });
     return this.onlyActive;
