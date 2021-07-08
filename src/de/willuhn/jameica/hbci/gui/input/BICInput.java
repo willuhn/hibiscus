@@ -42,18 +42,18 @@ public class BICInput extends AccountInput
   public BICInput(String value)
   {
     super(value,HBCIProperties.HBCI_BIC_MAXLENGTH + 4); // max. 4 Leerzeichen
-    
+
     this.listener = new BICListener();
 
     this.setValidChars(HBCIProperties.HBCI_BIC_VALIDCHARS + LOWERCASE_CHARS);
     this.setName("BIC");
     this.setComment("");
     this.addListener(this.listener);
-    
+
     // und einmal ausloesen
     this.listener.handleEvent(null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.TextInput#setValue(java.lang.Object)
    */
@@ -63,7 +63,7 @@ public class BICInput extends AccountInput
     // Bei der Gelegenheit aktualisieren wir den Kommentar
     this.listener.handleEvent(null);
   }
-  
+
   /**
    * Aktualisiert den Kommentar mit der Bankbezeichnung.
    */
@@ -85,14 +85,14 @@ public class BICInput extends AccountInput
 
           // 2. In Grossbuchstaben umwandeln
           b = b.toUpperCase();
-          
+
           // 3. BIC pruefen, ggf "XXX" anhaengen
           b = HBCIProperties.checkBIC(b);
-          
+
           // 4. Aktualisierten Wert uebernehmen.
           // Achtung: Super-Klasse aufrufen - sonst gibts eine Rekursion - siehe setValue oben
           BICInput.super.setValue(b);
-          
+
           // 5. Kommentar aktualisieren
           setComment(HBCIProperties.getNameForBank(b));
         }
@@ -114,5 +114,3 @@ public class BICInput extends AccountInput
   }
 
 }
-
-

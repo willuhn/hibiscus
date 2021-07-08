@@ -54,7 +54,6 @@ public class Duplicate implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: Duplicate.java,v $
  * Revision 1.1  2012/01/27 22:43:22  willuhn

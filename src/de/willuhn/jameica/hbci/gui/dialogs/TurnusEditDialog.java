@@ -79,7 +79,6 @@ public class TurnusEditDialog extends AbstractDialog {
 			group.addLabelPair(i18n.tr("Zahlung am"),    getTagWoechentlich());
 			group.addLabelPair("",                       getTagMonatlich());
 			group.addInput(getError());
-			
 		}
 		catch (RemoteException e)
 		{
@@ -121,7 +120,6 @@ public class TurnusEditDialog extends AbstractDialog {
   {
     return getTurnus();
   }
-
 
   /**
    * Liefert ein Label fuer Fehlermeldungen.
@@ -233,7 +231,7 @@ public class TurnusEditDialog extends AbstractDialog {
     new TagListener().handleEvent(null); // einmal ausloesen, um die readOnly-Flags zu setzen
     return tagWoechentlich;
   }
-  
+
   /**
    * Speichert den Turnus.
    */
@@ -244,7 +242,7 @@ public class TurnusEditDialog extends AbstractDialog {
       Turnus t = getTurnus();
       if (t.isInitial())
         throw new ApplicationException(i18n.tr("Turnus ist Bestandteil der System-Daten und kann nicht geändert werden."));
-        
+
       Zeiteinheit zh = (Zeiteinheit) getZeiteinheit().getValue();
       t.setZeiteinheit(zh.id);
       if (zh.id == Turnus.ZEITEINHEIT_WOECHENTLICH)
@@ -425,10 +423,7 @@ public class TurnusEditDialog extends AbstractDialog {
     }
   }
 
-
-
 }
-
 
 /**********************************************************************
  * $Log: TurnusEditDialog.java,v $

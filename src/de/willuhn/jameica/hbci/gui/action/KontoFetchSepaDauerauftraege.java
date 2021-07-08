@@ -36,7 +36,6 @@ public class KontoFetchSepaDauerauftraege implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
 	 * Fehlt das Konto, dann wird es in einem Dialog abgefragt.
@@ -74,9 +73,9 @@ public class KontoFetchSepaDauerauftraege implements Action
     SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
     SynchronizeBackend backend = engine.getBackend(type,konto);
     SynchronizeJob job         = backend.create(type,konto);
-    
+
     job.setContext(SynchronizeJob.CTX_ENTITY,konto);
-    
+
     backend.execute(Arrays.asList(job));
   }
 

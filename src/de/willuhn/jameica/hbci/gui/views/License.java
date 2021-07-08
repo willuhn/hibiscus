@@ -30,14 +30,13 @@ public class License extends AbstractView
   public void bind() throws Exception
   {
 		GUI.getView().setTitle(i18n.tr("Lizenzinformationen"));
-    
+
 		LicenseControl control = new LicenseControl(this);
 
 		Part libs = control.getLibList();
 		libs.paint(getParent());
   }
 }
-
 
 /**********************************************************************
  * $Log: License.java,v $

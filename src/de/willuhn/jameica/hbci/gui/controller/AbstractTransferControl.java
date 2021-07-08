@@ -54,7 +54,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	// Fach-Objekte
 	private Address gegenkonto 							   = null;
 	private Konto konto											   = null;
-	
+
 	// Eingabe-Felder
 	private KontoInput kontoAuswahl			       = null;
 	private Input betrag										   = null;
@@ -67,7 +67,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	private TextInput empfblz								   = null;
 
 	private CheckboxInput storeEmpfaenger 	   = null;
-	
+
 	final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
@@ -109,7 +109,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	{
 		if (this.kontoAuswahl != null)
 		  return this.kontoAuswahl;
-		
+
     Konto k = getKonto();
     KontoListener kl = new KontoListener();
 		this.kontoAuswahl = new KontoInput(k,getTransfer().isNewObject() ? KontoFilter.ONLINE : KontoFilter.ALL); // Falls nachtraeglich das Konto deaktiviert wurde
@@ -117,13 +117,13 @@ public abstract class AbstractTransferControl extends AbstractControl
 		this.kontoAuswahl.setName(i18n.tr("Persönliches Konto"));
 		this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
-    
+
     // einmal ausloesen
     kl.handleEvent(null);
 
     return this.kontoAuswahl;
 	}
-  
+
   /**
    * Liefert das Eingabe-Feld fuer den Empfaenger-Namen.
    * @return Eingabe-Feld.
@@ -140,7 +140,6 @@ public abstract class AbstractTransferControl extends AbstractControl
     return empfName;
   }
 
-  
 	/**
 	 * Liefert das Eingabe-Feld fuer den Empfaenger.
    * @return Eingabe-Feld.
@@ -219,7 +218,7 @@ public abstract class AbstractTransferControl extends AbstractControl
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Zeilen-Anzahl"), StatusBarMessage.TYPE_ERROR));
         }
       }
-    
+
     });
 		zweck2 = new DialogInput(getTransfer().getZweck2(),this.zweckDialog);
 		zweck2.setName(i18n.tr("weiterer Verwendungszweck"));
@@ -228,7 +227,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     zweck2.setValidChars(HBCIProperties.HBCI_DTAUS_VALIDCHARS);
 		return zweck2;
 	}
-  
+
 	/**
 	 * Liefert das Eingabe-Feld fuer den Betrag.
 	 * @return Eingabe-Feld.
@@ -265,7 +264,7 @@ public abstract class AbstractTransferControl extends AbstractControl
     // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
     // noch kein Gegenkonto definiert ist.
     boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
-    
+
     // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
     de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
@@ -288,7 +287,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 
 			Double d = (Double) getBetrag().getValue();
       t.setBetrag(d == null ? Double.NaN : d.doubleValue());
-			
+
 			t.setKonto((Konto)getKontoAuswahl().getValue());
 			t.setZweck((String)getZweck().getValue());
 			t.setZweck2(getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
@@ -307,9 +306,9 @@ public abstract class AbstractTransferControl extends AbstractControl
       String[] lines = (String[]) this.zweckDialog.getData();
       if (lines != null)
         t.setWeitereVerwendungszwecke(lines);
-        
+
       t.store();
-      
+
 			Boolean store = (Boolean) getStoreEmpfaenger().getValue();
 			if (store.booleanValue())
 			{
@@ -317,7 +316,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 				e.setBlz(blz);
 				e.setKontonummer(kto);
 				e.setName(name);
-        
+
         // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
         new EmpfaengerAdd().handleAction(e);
 			}
@@ -326,7 +325,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 
       if (t.getBetrag() > Settings.getUeberweisungLimit())
         GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getKonto().getWaehrung()));
-      
+
       return true;
 		}
 		catch (Exception e)
@@ -339,7 +338,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 	        Logger.error("rollback failed",xe);
 	      }
 		  }
-		  
+
 		  if (e instanceof ApplicationException)
 		  {
 		    Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
@@ -379,7 +378,7 @@ public abstract class AbstractTransferControl extends AbstractControl
 			}
 		}
 	}
-  
+
   /**
    * Listener, der die CRC-Pruefung von Kontonummer und BLZ vornimmt.
    */
@@ -407,7 +406,7 @@ public abstract class AbstractTransferControl extends AbstractControl
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen der Bankverbindung"),StatusBarMessage.TYPE_ERROR));
       }
     }
-    
+
   }
 
 	/**
@@ -429,13 +428,13 @@ public abstract class AbstractTransferControl extends AbstractControl
         getEmpfaengerName().setText(gegenkonto.getName());
 				getEmpfaengerKonto().setValue(gegenkonto.getKontonummer());
 				getEmpfaengerBlz().setValue(gegenkonto.getBlz());
-				
+
         // Listener zum Pruefen der Bankverbindung ausloesen
         new KontonummerListener().handleEvent(null);
 
 				// Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreEmpfaenger().setValue(Boolean.FALSE);
-        
+
         // BUGZILLA 408
         // Verwendungszweck automatisch vervollstaendigen
         try
@@ -444,7 +443,7 @@ public abstract class AbstractTransferControl extends AbstractControl
           String zweck2 = getZweck2().getText(); // "getText()" ist wichtig, weil das ein DialogInput ist
           if ((zweck != null && zweck.length() > 0) || (zweck2 != null && zweck2.length() > 0))
             return;
-          
+
           DBIterator list = getTransfer().getList();
           list.addFilter("empfaenger_konto = ?",new Object[]{gegenkonto.getKontonummer()});
           list.addFilter("empfaenger_blz = ?",  new Object[]{gegenkonto.getBlz()});
@@ -461,7 +460,6 @@ public abstract class AbstractTransferControl extends AbstractControl
           Logger.error("unable to autocomplete subject",e);
         }
 
-          
 			}
 			catch (RemoteException er)
 			{
@@ -471,7 +469,6 @@ public abstract class AbstractTransferControl extends AbstractControl
     }
 	}
 }
-
 
 /**********************************************************************
  * $Log: AbstractTransferControl.java,v $

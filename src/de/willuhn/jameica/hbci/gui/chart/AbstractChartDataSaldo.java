@@ -54,7 +54,7 @@ public abstract class AbstractChartDataSaldo implements LineChartData
   {
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
    */

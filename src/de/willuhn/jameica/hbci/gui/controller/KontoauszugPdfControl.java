@@ -50,10 +50,10 @@ public class KontoauszugPdfControl extends AbstractControl
 {
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoauszugPdfControl.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Kontoauszug auszug = null;
   private KontoauszugPdfList list = null;
-  
+
   private KontoInput konto = null;
   private Input datei = null;
   private Input abrufdatum = null;
@@ -67,7 +67,7 @@ public class KontoauszugPdfControl extends AbstractControl
   private Input name2 = null;
   private Input name3 = null;
   private Input quittiertAm = null;
-  
+
   /**
    * ct.
    * @param view
@@ -76,7 +76,7 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     super(view);
   }
-  
+
   /**
    * Liefert den ausgewaehlten Kontoauszug.
    * @return der ausgewaehlte Kontoauszug.
@@ -86,16 +86,16 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.auszug != null)
       return this.auszug;
-    
+
     this.auszug = (Kontoauszug) this.getCurrentObject();
-    
+
     if (this.auszug != null)
       return this.auszug;
-    
+
     this.auszug = Settings.getDBService().createObject(Kontoauszug.class,null);
     return this.auszug;
   }
-  
+
   /**
    * Liefert die Tabelle mit den Kontoauszuegen.
    * @return die Tabelle mit den Kontoauszuegen.
@@ -104,11 +104,11 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.list != null)
       return this.list;
-    
+
     this.list = new KontoauszugPdfList();
     return this.list;
   }
-  
+
   /**
    * Liefert das Auswahlfeld fuer das Konto.
    * @return das Auswahlfeld fuer das Konto.
@@ -118,19 +118,19 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.konto != null)
       return this.konto;
-    
+
     this.konto = new KontoInput(getKontoauszug().getKonto(),KontoFilter.ACTIVE);
     this.konto.setName(i18n.tr("Persönliches Konto"));
     this.konto.setRememberSelection("kontoauszug",false);
     this.konto.setMandatory(true);
-    
+
     final Listener l = new KontoListener();
     this.konto.addListener(l);
     l.handleEvent(null);
 
     return this.konto;
   }
-  
+
   /**
    * Liefert das Eingabefeld mit dem Abrufdatum.
    * @return Eingabefeld.
@@ -140,13 +140,13 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.abrufdatum != null)
       return this.abrufdatum;
-    
+
     this.abrufdatum = new DateInput(this.getKontoauszug().getAusfuehrungsdatum());
     this.abrufdatum.setName(i18n.tr("Abgerufen am"));
     this.abrufdatum.setEnabled(false);
     return this.abrufdatum;
   }
-  
+
   /**
    * Liefert das Eingabefeld mit dem Erstellungsdatum.
    * @return Eingabefeld.
@@ -156,14 +156,14 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.erstellungsdatum != null)
       return this.erstellungsdatum;
-    
+
     Date erstellt = this.getKontoauszug().getErstellungsdatum();
     this.erstellungsdatum = new TextInput(erstellt != null ? HBCI.DATEFORMAT.format(erstellt) : ("<" + i18n.tr("von der Bank nicht angegeben") + ">"));
     this.erstellungsdatum.setName(i18n.tr("Erstellt am"));
     this.erstellungsdatum.setEnabled(false);
     return this.erstellungsdatum;
   }
-  
+
   /**
    * Liefert das Eingabefeld mit dem Quittierungsdatum.
    * @return Eingabefeld.
@@ -173,7 +173,7 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.quittiertAm != null)
       return this.quittiertAm;
-    
+
     this.quittiertAm = new DateInput(this.getKontoauszug().getQuittiertAm());
     this.quittiertAm.setName(i18n.tr("Empfang quittiert am"));
     this.quittiertAm.setEnabled(false);
@@ -189,7 +189,7 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.von != null)
       return this.von;
-    
+
     this.von = new DateInput(this.getKontoauszug().getVon());
     this.von.setTitle(i18n.tr("Startdatum"));
     this.von.setText(i18n.tr("Bitte wählen Sie das Startdatum des Zeitraumes aus."));
@@ -206,7 +206,7 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.bis != null)
       return this.bis;
-    
+
     this.bis = new DateInput(this.getKontoauszug().getBis());
     this.bis.setName(i18n.tr("Bis"));
     this.bis.setTitle(i18n.tr("Enddatum"));
@@ -224,14 +224,13 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.jahr != null)
       return this.jahr;
-    
+
     Integer i = this.getKontoauszug().getJahr();
     this.jahr = new IntegerInput(i != null ? i.intValue() : -1);
     this.jahr.setName(i18n.tr("Jahr"));
     this.jahr.setEnabled(true);
     return this.jahr;
   }
-
 
   /**
    * Liefert das Eingabefeld mit der Auszugsnummer.
@@ -242,14 +241,14 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.nummer != null)
       return this.nummer;
-    
+
     Integer i = this.getKontoauszug().getNummer();
     this.nummer = new IntegerInput(i != null ? i.intValue() : -1);
     this.nummer.setName(i18n.tr("Nummer"));
     this.nummer.setEnabled(true);
     return this.nummer;
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer Name 1.
    * @return das Eingabefeld fuer Name 1.
@@ -259,12 +258,12 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.name1 != null)
       return this.name1;
-    
+
     this.name1 = new TextInput(this.getKontoauszug().getName1(),255);
     this.name1.setName(i18n.tr("Name 1"));
     return this.name1;
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer Name 2.
    * @return das Eingabefeld fuer Name 2.
@@ -274,12 +273,12 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.name2 != null)
       return this.name2;
-    
+
     this.name2 = new TextInput(this.getKontoauszug().getName2(),255);
     this.name2.setName(i18n.tr("Name 2"));
     return this.name2;
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer Name 3.
    * @return das Eingabefeld fuer Name 3.
@@ -289,7 +288,7 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.name3 != null)
       return this.name3;
-    
+
     this.name3 = new TextInput(this.getKontoauszug().getName3(),255);
     this.name3.setName(i18n.tr("Name 3"));
     return this.name3;
@@ -304,12 +303,12 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.kommentar != null)
       return this.kommentar;
-    
+
     this.kommentar = new TextAreaInput(this.getKontoauszug().getKommentar(),1000);
     this.kommentar.setName(i18n.tr("Notizen"));
     return this.kommentar;
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer die Datei.
    * @return das Eingabefeld fuer die Datei.
@@ -319,7 +318,7 @@ public class KontoauszugPdfControl extends AbstractControl
   {
     if (this.datei != null)
       return this.datei;
-    
+
     Kontoauszug k = this.getKontoauszug();
     if (StringUtils.trimToNull(k.getUUID()) != null)
     {
@@ -345,7 +344,7 @@ public class KontoauszugPdfControl extends AbstractControl
         }
       };
       this.datei.addListener(new Listener() {
-        
+
         @Override
         public void handleEvent(Event event)
         {
@@ -371,7 +370,7 @@ public class KontoauszugPdfControl extends AbstractControl
     this.datei.setName(i18n.tr("Datei"));
     return this.datei;
   }
-  
+
   /**
    * Liefert den Key, unter dem der Ordner des letzten Imports gespeichert wird.
    * @return der Key, unter dem der Ordner des letzten Imports gespeichert wird.
@@ -391,7 +390,7 @@ public class KontoauszugPdfControl extends AbstractControl
     }
     return key;
   }
-  
+
   /**
    * Oeffnet die Datei des Kontoauszuges.
    * @throws ApplicationException
@@ -405,7 +404,7 @@ public class KontoauszugPdfControl extends AbstractControl
     {
       String file = StringUtils.trimToNull((String) this.getDatei().getValue());
       File f = file != null ? new File(file) : KontoauszugPdfUtil.getFile(this.getKontoauszug());
-      
+
       if (!f.exists() || !f.canRead())
         throw new ApplicationException(i18n.tr("Datei existiert nicht oder ist nicht lesbar"));
 
@@ -422,7 +421,7 @@ public class KontoauszugPdfControl extends AbstractControl
     }
 
   }
-  
+
   /**
    * Uebernimmt die Aenderungen an dem Kontoauszug.
    * @return true, wenn das Speichern erfolgreich war.
@@ -436,7 +435,7 @@ public class KontoauszugPdfControl extends AbstractControl
       if (konto == null)
         throw new ApplicationException("Bitte wählen Sie ein Konto aus.");
       k.setKonto(konto);
-      
+
       k.setBis((Date) this.getBisDatum().getValue());
       k.setVon((Date) this.getVonDatum().getValue());
       k.setJahr((Integer) this.getJahr().getValue());
@@ -453,7 +452,7 @@ public class KontoauszugPdfControl extends AbstractControl
       String path = f != null ? f.getParent() : null;
       k.setDateiname(name);
       k.setPfad(path);
-      
+
       k.store();
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Änderungen gespeichert."),StatusBarMessage.TYPE_SUCCESS));
       return true;
@@ -469,7 +468,7 @@ public class KontoauszugPdfControl extends AbstractControl
     }
     return false;
   }
-  
+
   /**
    * Listener, der beim Wechsel des Kontos ausgeloest wird.
    */
@@ -489,11 +488,11 @@ public class KontoauszugPdfControl extends AbstractControl
         final Input nummer = getNummer();
 
         final Object k = getKonto().getValue();
-        
+
         // Wenn wir kein Konto haben, brauchen wir nichts suchen
         if (k == null || !(k instanceof Konto))
           return;
-        
+
         // Aber nur, wenn noch nichts drin steht
         if (year.getValue() != null && nummer.getValue() != null)
           return;
@@ -501,10 +500,10 @@ public class KontoauszugPdfControl extends AbstractControl
         Kontoauszug newest = KontoauszugPdfUtil.getNewestWithNumber((Konto) k);
         if (newest == null)
           return;
-        
+
         if (year.getValue() == null && newest.getJahr() != null)
           year.setValue(newest.getJahr());
-        
+
         if (nummer.getValue() == null && newest.getNummer() != null)
           nummer.setValue(newest.getNummer().intValue() + 1);
       }
@@ -513,9 +512,7 @@ public class KontoauszugPdfControl extends AbstractControl
         Logger.error("error while updating year/number",e);
       }
     }
-    
+
   }
 
 }
-
-

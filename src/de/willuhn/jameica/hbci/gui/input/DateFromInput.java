@@ -36,7 +36,7 @@ public class DateFromInput extends AbstractDateInput
   {
     this(date,"transferlist.filter.from");
   }
-  
+
   /**
    * ct.
    * @param date
@@ -61,8 +61,6 @@ public class DateFromInput extends AbstractDateInput
     return DateUtil.startOfDay(cal.getTime());
   }
 }
-
-
 
 /**********************************************************************
  * $Log: DateFromInput.java,v $

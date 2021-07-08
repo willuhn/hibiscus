@@ -53,7 +53,7 @@ import de.willuhn.util.I18N;
 public class Overview extends AbstractBox implements Box
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   // BUGZILLA 993
   private static Object konto      = null;
   private static Date startDate    = null;
@@ -64,12 +64,12 @@ public class Overview extends AbstractBox implements Box
   private Input ausgaben           = null;
   private Input einnahmen          = null;
   private Input bilanz             = null;
-  
+
   private DateInput start          = null;
   private DateInput end            = null;
-  
+
   private MessageConsumer mc = new SaldoMessageConsumer();
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
@@ -93,7 +93,7 @@ public class Overview extends AbstractBox implements Box
     group.addSeparator();
     group.addLabelPair(i18n.tr("Bilanz") + ":", getBilanz());
     refresh();
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -118,7 +118,7 @@ public class Overview extends AbstractBox implements Box
   {
     return true;
   }
-  
+
   /**
    * Liefert eine Auswahlbox fuer das Konto.
    * @return Auswahlbox.
@@ -162,7 +162,7 @@ public class Overview extends AbstractBox implements Box
   {
     if (this.start != null)
       return this.start;
-    
+
     if (startDate == null)
     {
       Calendar cal = Calendar.getInstance();
@@ -170,7 +170,7 @@ public class Overview extends AbstractBox implements Box
       cal.set(Calendar.DAY_OF_MONTH,1);
       startDate = cal.getTime();
     }
-    
+
     this.start = new DateInput(DateUtil.startOfDay(startDate),HBCI.DATEFORMAT);
     this.start.addListener(new Listener() {
       public void handleEvent(Event event)
@@ -180,7 +180,7 @@ public class Overview extends AbstractBox implements Box
     });
     return this.start;
   }
-  
+
   /**
    * Liefert ein Auswahl-Feld fuer das End-Datum.
    * @return Auswahl-Feld.
@@ -239,7 +239,7 @@ public class Overview extends AbstractBox implements Box
         d = ((Konto) konto).getSaldo();
         saldoDate = ((Konto) konto).getSaldoDatum();
       }
-      
+
       LabelInput saldo = (LabelInput) this.getSaldo();
       saldo.setValue(HBCI.DECIMALFORMAT.format(d));
       String comment = HBCIProperties.CURRENCY_DEFAULT_DE;
@@ -249,7 +249,6 @@ public class Overview extends AbstractBox implements Box
       saldo.setColor(ColorUtil.getColor(d,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
       ////////////////////////////////////////////////////////////////////////////
 
-      
       if (startDate == null || endDate == null || startDate.after(endDate))
         return;
 
@@ -286,7 +285,7 @@ public class Overview extends AbstractBox implements Box
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Berechnen der Bilanz"),StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Liefert ein Anzeige-Feld fuer die Bilanz.
    * @return Anzeige-Feld.
@@ -299,7 +298,7 @@ public class Overview extends AbstractBox implements Box
     bilanz.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     return bilanz;
   }
-  
+
   /**
    * Liefert ein Anzeige-Feld fuer die Ausgaben.
    * @return Anzeige-Feld.
@@ -327,7 +326,7 @@ public class Overview extends AbstractBox implements Box
     ((LabelInput)einnahmen).setColor(Color.SUCCESS);
     return einnahmen;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#isActive()
    */
@@ -335,7 +334,7 @@ public class Overview extends AbstractBox implements Box
   {
     return super.isActive() && !Settings.isFirstStart();
   }
-  
+
   /**
    * Wird ueber Saldo-Aenderungen benachrichtigt.
    */

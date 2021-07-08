@@ -138,7 +138,6 @@ public class TurnusDialog extends AbstractDialog
       }
     });
 
-
     // Ein Contextmenu-Eintrag zum Loeschen    
     c.addItem(new ContextMenuItem(i18n.tr("Löschen..."), new Action()
     {
@@ -178,9 +177,9 @@ public class TurnusDialog extends AbstractDialog
         return super.isEnabledFor(o);
       }
     });
-   
+
     turnusList.setContextMenu(c);
-    
+
     Container container = new SimpleContainer(parent);
     container.addPart(turnusList);
 
@@ -216,7 +215,7 @@ public class TurnusDialog extends AbstractDialog
 			{
         // Turnus entfernen
         turnus = null;
-        
+
         // und schliessen
 				close();
 			}
@@ -249,7 +248,7 @@ public class TurnusDialog extends AbstractDialog
             return;
           turnusList.addItem(t2,index); // an der gleichen Stellen wieder einfuegen
         }
-            
+
         // und markieren
         turnusList.select(t2);
       }
@@ -273,7 +272,6 @@ public class TurnusDialog extends AbstractDialog
     return turnus;
   }
 }
-
 
 /**********************************************************************
  * $Log: TurnusDialog.java,v $

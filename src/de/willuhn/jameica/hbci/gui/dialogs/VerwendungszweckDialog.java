@@ -51,7 +51,7 @@ public class VerwendungszweckDialog extends AbstractDialog
     super(pos);
     setTitle(i18n.tr("Weitere Verwendungszwecke"));
   }
-  
+
   /**
    * ct
    * @param transfer der Auftrag.
@@ -116,7 +116,7 @@ public class VerwendungszweckDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     apply.setEnabled(!this.readOnly);
-    
+
     buttons.addButton(apply);
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -124,12 +124,11 @@ public class VerwendungszweckDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     },null,false,"process-stop.png");
-    
+
     container.addButtonArea(buttons);
   }
 
 }
-
 
 /*********************************************************************
  * $Log: VerwendungszweckDialog.java,v $

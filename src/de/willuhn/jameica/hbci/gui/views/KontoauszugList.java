@@ -43,12 +43,12 @@ public class KontoauszugList extends AbstractView
     GUI.getView().setTitle(i18n.tr("Umsätze"));
 
     final de.willuhn.jameica.hbci.gui.parts.KontoauszugList list = new de.willuhn.jameica.hbci.gui.parts.KontoauszugList();
-    
+
     // Konto vorauswaehlen, wenn es als Context uebergeben wurde
     Konto konto = this.getKonto();
     if (konto != null)
       list.getKontoAuswahl().setValue(konto);
-    
+
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportUmsatzList(list));
     list.addSelectionListener(new Listener() {
       public void handleEvent(Event event)
@@ -56,7 +56,7 @@ public class KontoauszugList extends AbstractView
         print.setEnabled(list.getSelection() != null);
       }
     });
-    
+
     final PanelButton settings = new PanelButton("document-properties.png",new Action() {
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -73,14 +73,14 @@ public class KontoauszugList extends AbstractView
         }
       }
     },i18n.tr("Einstellungen"));
-    
+
     GUI.getView().addPanelButton(settings);
     GUI.getView().addPanelButton(print);
-    
+
     list.paint(getParent());
     print.setEnabled(list.getSelection() != null); // einmal initial ausloesen
   }
-  
+
   /**
    * Liefert das Konto, insofern es der View als Context mitgegeben wurde.
    * @return das Konto oder NULL.

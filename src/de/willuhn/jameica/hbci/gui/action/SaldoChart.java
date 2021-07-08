@@ -30,7 +30,6 @@ public class SaldoChart implements Action
 
 }
 
-
 /*********************************************************************
  * $Log: SaldoChart.java,v $
  * Revision 1.1  2010/08/12 17:12:32  willuhn

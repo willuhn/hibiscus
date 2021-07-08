@@ -39,7 +39,7 @@ import de.willuhn.util.I18N;
 public class SepaUeberweisungMerge implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -49,18 +49,17 @@ public class SepaUeberweisungMerge implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
     AuslandsUeberweisung[] source = null;
-    
+
     if (context instanceof AuslandsUeberweisung)
       source = new AuslandsUeberweisung[]{(AuslandsUeberweisung) context};
     else
       source = (AuslandsUeberweisung[]) context;
-    
+
     if (source.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
-    
     SepaSammelUeberweisung tx = null;
-    
+
     try
     {
       HBCIDBService service = Settings.getDBService();
@@ -81,7 +80,7 @@ public class SepaUeberweisungMerge implements Action
           map.put(key,s);
         }
       }
-      
+
       // Abfrage anzeigen, ob die Einzelauftraege geloescht werden sollen
       // a) wenn mindestens einer in der DB existierte
       // b) oder mehr als ein Sammelauftrag entsteht.
@@ -94,37 +93,36 @@ public class SepaUeberweisungMerge implements Action
         if (o != null)
           delete = ((Boolean)o).booleanValue();
       }
-      
+
       // OK, wir duerfen weiter machen. Erstmal die Sammelauftraege anlegen
       Iterator<SepaSammelUeberweisung> list = map.values().iterator();
       while (list.hasNext())
       {
         SepaSammelUeberweisung s = list.next();
-        
+
         if (tx == null)
         {
           tx = s;
           tx.transactionBegin();
         }
-        
+
         s.store();
         Application.getMessagingFactory().sendMessage(new ImportMessage(s));
       }
-      
+
       // jetzt iterieren wir nochmal ueber die Einzelauftraege und ordnen sie den
       // Sammelauftraegen zu
       for (AuslandsUeberweisung l:source)
       {
         String key = this.createKey(l);
         SepaSammelUeberweisung s = map.get(key);
-        
-        
+
         if (s == null) // WTF?
         {
           Logger.error("unable to find sepa transfer for key " + key);
           continue;
         }
-        
+
         SepaSammelUeberweisungBuchung b = s.createBuchung();
         b.setBetrag(l.getBetrag());
         b.setEndtoEndId(l.getEndtoEndId());
@@ -135,14 +133,14 @@ public class SepaUeberweisungMerge implements Action
         b.store();
         Application.getMessagingFactory().sendMessage(new ImportMessage(b));
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(s));
-        
+
         if (delete && !l.isNewObject())
         {
           l.delete();
           Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l));
         }
       }
-      
+
       tx.transactionCommit();
 
       if (count > 1)
@@ -163,18 +161,18 @@ public class SepaUeberweisungMerge implements Action
           Logger.error("unable to rollback transaction",e);
         }
 		  }
-		  
+
 		  if (e instanceof OperationCanceledException)
 		    throw (OperationCanceledException) e;
-		  
+
 		  if (e instanceof ApplicationException)
 		    throw (ApplicationException) e;
-		  
+
       Logger.error("error while merging jobs",e);
       throw new ApplicationException(i18n.tr("Zusammenfassen der Überweisungen fehlgeschlagen: {0}",e.getMessage()));
 		}
   }
-  
+
   /**
    * Generiert einen Lookup-Key fuer den Auftrag, um ihn dem Sammelauftrag zuzuordnen.
    * @param l der Auftrag.

@@ -29,7 +29,6 @@ public class DauerauftragList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
  * Revision 1.3  2005/01/19 00:16:04  willuhn

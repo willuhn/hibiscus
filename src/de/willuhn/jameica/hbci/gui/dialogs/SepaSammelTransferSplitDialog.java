@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
 public class SepaSammelTransferSplitDialog extends AbstractDialog
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	
+
   private int count           = 1;
   private boolean canDelete   = false;
   private Boolean delete      = null;
@@ -79,7 +79,7 @@ public class SepaSammelTransferSplitDialog extends AbstractDialog
       this.check.setName(i18n.tr("Sammelauftrag nach der Übernahme löschen"));
       container.addInput(this.check);
     }
- 
+
     ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Fortsetzen"), new Action()
     {

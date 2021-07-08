@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
 public class SepaLastschriftNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc = new MyMessageConsumer();
   private SepaLastschrift transfer = null;
 
@@ -55,13 +55,13 @@ public class SepaLastschriftNew extends AbstractView
 		GUI.getView().setTitle(i18n.tr("SEPA-Lastschrift bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonNew(SepaLastschrift.class));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaLastschrift(transfer)));
-		
+
     Container cl = new SimpleContainer(getParent());
     cl.addHeadline(i18n.tr("Konto"));
 		cl.addInput(control.getKontoAuswahl());
-		
+
     ColumnLayout cols = new ColumnLayout(getParent(),2);
-		
+
     // Linke Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -78,7 +78,7 @@ public class SepaLastschriftNew extends AbstractView
       container.addInput(control.getEndToEndId());
       container.addInput(control.getPmtInfId());
     }
-    
+
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -115,22 +115,22 @@ public class SepaLastschriftNew extends AbstractView
       }
     },null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
-    
+
     Button store = new Button(i18n.tr("&Speichern"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
       	control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
-    
+
     buttonArea.addButton(execute);
     buttonArea.addButton(store);
-    
+
     buttonArea.paint(getParent());
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
@@ -147,7 +147,7 @@ public class SepaLastschriftNew extends AbstractView
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -155,7 +155,7 @@ public class SepaLastschriftNew extends AbstractView
     {
       return new Class[]{ObjectChangedMessage.class};
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -163,16 +163,16 @@ public class SepaLastschriftNew extends AbstractView
     {
       if (transfer == null)
         return;
-  
+
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
-      
+
       // View neu laden
       if (transfer.equals(o))
         GUI.startView(SepaLastschriftNew.this,transfer);
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */

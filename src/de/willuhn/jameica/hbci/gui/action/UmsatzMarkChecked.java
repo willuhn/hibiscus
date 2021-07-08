@@ -31,7 +31,7 @@ public class UmsatzMarkChecked extends FlaggableChange
   {
     super(Umsatz.FLAG_CHECKED,true);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -41,7 +41,7 @@ public class UmsatzMarkChecked extends FlaggableChange
     this.assign = null;
     super.handleAction(context);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.action.FlaggableChange#postProcess(de.willuhn.jameica.hbci.rmi.Flaggable)
    */
@@ -50,14 +50,14 @@ public class UmsatzMarkChecked extends FlaggableChange
   {
     if (!(o instanceof Umsatz))
       return;
-    
+
     // Wir senden die Aenderung noch per Messaging, damit SynTAX das Geprueft-Flag bei Bedarf
     // synchronisieren kann
     Application.getMessagingFactory().getMessagingQueue("hibiscus.umsatz.markchecked").sendMessage(new QueryMessage(Boolean.TRUE.toString(),o));
-    
+
     Umsatz u = (Umsatz) o;
     UmsatzTyp ut = u.getUmsatzTyp();
-    
+
     // Wir haben gar keine Kategorie - dann eruebrigt sich die Frage.
     if (ut == null)
       return;
@@ -73,11 +73,9 @@ public class UmsatzMarkChecked extends FlaggableChange
                          "Kategorien hierbei fest zuordnen?");
       this.assign = Boolean.valueOf(Application.getCallback().askUser(s));
     }
-    
+
     if (this.assign != null && this.assign.booleanValue())
       u.setUmsatzTyp(ut);
   }
 
 }
-
-

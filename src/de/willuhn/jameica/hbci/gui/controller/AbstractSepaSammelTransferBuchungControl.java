@@ -51,7 +51,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSammelTransferBuchung> extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   // Eingabe-Felder
   private Input betrag                       = null;
   private ZweckInput zweck                   = null;
@@ -62,10 +62,9 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   private TextInput endToEndId               = null;
   private PurposeCodeInput purposeCode       = null;
 
-
   private CheckboxInput storeEmpfaenger      = null;
   private HibiscusAddressUpdate aUpdate      = new HibiscusAddressUpdate();
-  
+
   /**
    * ct.
    * @param view
@@ -90,9 +89,9 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   {
     if (empfName != null)
       return empfName;
-    
+
     SepaSammelTransferBuchung s = this.getBuchung();
-    
+
     empfName = new AddressInput(s.getGegenkontoName(), AddressFilter.FOREIGN);
     empfName.setMandatory(true);
     empfName.addListener(new EmpfaengerListener());
@@ -100,7 +99,6 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     return empfName;
   }
 
-  
   /**
    * Liefert das Eingabe-Feld fuer den Empfaenger.
    * @return Eingabe-Feld.
@@ -129,9 +127,9 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   {
     if (this.bic != null)
       return this.bic;
-    
+
     SepaSammelTransferBuchung s = this.getBuchung();
-    
+
     this.bic = new BICInput(s.getGegenkontoBLZ());
     this.bic.setEnabled(!s.getSammelTransfer().ausgefuehrt());
     return this.bic;
@@ -176,7 +174,6 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     return this.purposeCode;
   }
 
-
   /**
    * Liefert das Eingabe-Feld fuer den Verwendungszweck.
    * @return Eingabe-Feld.
@@ -203,10 +200,10 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   {
     if (betrag != null)
       return betrag;
-    
+
     SepaSammelTransferBuchung s = this.getBuchung();
     SepaSammelTransfer t        = s.getSammelTransfer();
-    
+
     double d = s.getBetrag();
     if (Math.abs(d) < 0.01d) d = Double.NaN;
     betrag = new DecimalInput(d,HBCI.DECIMALFORMAT);
@@ -232,7 +229,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
     // noch kein Gegenkonto definiert ist.
     boolean enabled = s.isNewObject() && s.getGegenkontoNummer() == null;
-    
+
     // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
     de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
@@ -250,10 +247,10 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     SepaSammelTransferBuchung s = this.getBuchung();
     if (s.getSammelTransfer().ausgefuehrt())
       return;
-    
+
     Double d = (Double) getBetrag().getValue();
     s.setBetrag(d == null ? Double.NaN : d.doubleValue());
-    
+
     s.setZweck((String)getZweck().getValue());
     s.setEndtoEndId((String) getEndToEndId().getValue());
     s.setPurposeCode((String) getPurposeCode().getValue());
@@ -265,7 +262,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     s.setGegenkontoNummer(kto);
     s.setGegenkontoName(name);
     s.setGegenkontoBLZ(bic);
-    
+
     s.store();
 
     {
@@ -276,7 +273,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
       e.setName(name);
       e.setBic(bic);
       this.aUpdate.handleAction(e);
-      
+
       // wenn sie in der Action gespeichert wurde, sollte sie jetzt eine ID haben und wir koennen die Meta-Daten dran haengen
       if (e.getID() != null)
       {
@@ -299,10 +296,10 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     {
       SepaSammelTransferBuchung s = this.getBuchung();
       SepaSammelTransfer t = s.getSammelTransfer();
-      
+
       if (t.ausgefuehrt())
         return true;
-      
+
       this.store();
       return true;
     }
@@ -333,10 +330,10 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     public void handleEvent(Event event) {
       if (event == null)
         return;
-      
+
       if (!(event.data instanceof Address))
         return;
-      
+
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
@@ -347,7 +344,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
         getStoreEmpfaenger().setValue(Boolean.FALSE);
-        
+
         try
         {
           String zweck = StringUtils.trimToNull((String) getZweck().getValue());
@@ -377,6 +374,5 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
       }
     }
   }
-
 
 }

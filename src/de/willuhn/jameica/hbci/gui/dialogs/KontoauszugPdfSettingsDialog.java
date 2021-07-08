@@ -69,7 +69,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   private final static int WINDOW_HEIGHT = 500;
 
   private Konto konto = null;
-  
+
   private KontoInput kontoAuswahl = null;
   private LabelInput hinweise = null;
   private LabelInput hinweise2 = null;
@@ -84,9 +84,9 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   private TextInput name = null;
   private LabelInput example = null;
   private LabelInput exampleText = null;
-  
+
   private Button apply = null;
-  
+
   private Listener reloadListener   = new ReloadListener();
   private Listener supportListener  = new SupportListener();
   private Listener exampleListener  = new ExampleListener();
@@ -126,14 +126,14 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       }
     };
     Container c = new SimpleContainer(scroll.getComposite());
-    
+
     c.addText(i18n.tr("Wählen Sie das Konto aus, für das Sie den Abruf der elektronischen Kontoauszüge konfigurieren möchten.\nFür weitere Informationen klicken Sie auf die Schaltfläche \"Hilfe\".") + "\n",true);
     c.addInput(this.getKontoAuswahl());
-    
+
     c.addInput(this.getHinweise());
     c.addInput(this.getHinweise2());
     c.addInput(this.getIgnoreFormat());
-    
+
     c.addHeadline(i18n.tr("Konto-Synchronisation"));
     c.addText(i18n.tr("Wählen Sie das Intervall, in dem die elektronischen Kontoauszüge bei der Konto-Synchronisation mit abgerufen werden sollen. " +
                       "Sie können außerdem festlegen, ob die Kontoauszüge auch dann abgerufen werden sollen, wenn die Bank kein PDF-Format anbietet (sondern nur MT940)."),true,Color.COMMENT);
@@ -141,9 +141,9 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     c.addInput(this.getNextFetch());
     c.addInput(this.getSendReceipt());
     c.addInput(this.getMarkRead());
-    
+
     c.addText("",true);
-    
+
     c.addHeadline(i18n.tr("Ablage-Ort der Kontoauszüge"));
     c.addText(i18n.tr("Sie können die folgenden Platzhalter zur Benennung der Unterordner und Dateinamen " +
                       "verwenden:\n\n${iban}, ${bic}, ${jahr}, ${monat}, ${tag}, ${stunde}, ${minute}, ${nummer}\n\n" +
@@ -153,16 +153,15 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     if (MessagingAvailableConsumer.haveMessaging())
       c.addInput(this.getMessaging());
 
-    
     c.addInput(this.getPath());
     c.addInput(this.getFolder());
     c.addInput(this.getName());
-    
+
     Container c2 = new SimpleContainer(scroll.getComposite());
     c2.addInput(this.getExampleText());
     c2.addInput(this.getExample());
     c2.addInput(new LabelInput("")); // Unten noch etwas Platzhalter
-    
+
     Container c3 = new SimpleContainer(parent);
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Hilfe") + "  ",new Program(),"http://www.willuhn.de/wiki/doku.php?id=handbuch:kontoauszug",false,"gtk-info.png");
@@ -175,19 +174,19 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       }
     },null,false,"window-close.png");
     c3.addButtonArea(buttons);
-    
+
     // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
     getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
-    
+
     getShell().addDisposeListener(new DisposeListener() {
-      
+
       @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Shell shell = getShell();
         if (shell == null || shell.isDisposed())
           return;
-        
+
         Point size = shell.getSize();
         Logger.debug("saving window size: " + size.x + "x" + size.y);
         settings.setAttribute("window.width",size.x);
@@ -195,7 +194,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       }
     });
   }
-  
+
   /**
    * Liefert den Apply-Button.
    * @return der Apply-Button.
@@ -204,7 +203,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.apply != null)
       return this.apply;
-    
+
     this.apply = new Button(i18n.tr("Übernehmen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -212,10 +211,10 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         handleStore();
       }
     },null,true,"ok.png");
-    
+
     return this.apply;
   }
-  
+
   /**
    * Liefert eine Auswahlbox fuer das Konto.
    * @return Auswahlbox.
@@ -235,7 +234,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
 
     return this.kontoAuswahl;
   }
-  
+
   /**
    * Liefert ein Label mit Hinweis-Texten zur Unterstützung des Geschaeftsvorfalls fuer das Konto.
    * @return Label.
@@ -245,13 +244,13 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.hinweise != null)
       return this.hinweise;
-    
+
     this.hinweise = new LabelInput("");
     this.hinweise.setColor(Color.ERROR);
     this.hinweise.setName("");
     return this.hinweise;
   }
-  
+
   /**
    * Liefert ein Label mit weiteren Hinweis-Texten zur Unterstützung des Geschaeftsvorfalls fuer das Konto.
    * @return Label.
@@ -261,13 +260,13 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.hinweise2 != null)
       return this.hinweise2;
-    
+
     this.hinweise2 = new LabelInput("");
     this.hinweise2.setColor(Color.ERROR);
     this.hinweise2.setName("");
     return this.hinweise2;
   }
-  
+
   /**
    * Liefert die Auswahl fuer das Abruf-Intervall.
    * @return die Auswahl fuer das Abruf-Intervall.
@@ -277,7 +276,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.interval != null)
       return this.interval;
-    
+
     this.interval = new SelectInput(KontoauszugInterval.KNOWN,null);
     this.interval.setName(MetaKey.KONTOAUSZUG_INTERVAL.getDescription());
     this.interval.setAttribute("name");
@@ -285,7 +284,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     this.interval.addListener(this.intervalListener);
     return this.interval;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der das Format ignoriert werden kann.
    * @return eine Checkbox, mit der das Format ignoriert werden kann.
@@ -294,7 +293,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.ignoreFormat != null)
       return this.ignoreFormat;
-    
+
     this.ignoreFormat = new CheckboxInput(false);
     this.ignoreFormat.setName(MetaKey.KONTOAUSZUG_IGNORE_FORMAT.getDescription());
     this.ignoreFormat.addListener(this.supportListener);
@@ -309,7 +308,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.markRead != null)
       return this.markRead;
-    
+
     this.markRead = new CheckboxInput(false);
     this.markRead.setName(MetaKey.KONTOAUSZUG_MARK_READ.getDescription());
     return this.markRead;
@@ -323,7 +322,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.sendReceipt != null)
       return this.sendReceipt;
-    
+
     this.sendReceipt = new CheckboxInput(false);
     this.sendReceipt.setName(MetaKey.KONTOAUSZUG_SEND_RECEIPT.getDescription());
     return this.sendReceipt;
@@ -337,13 +336,13 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.nextFetch != null)
       return this.nextFetch;
-    
+
     this.nextFetch = new LabelInput("");
     this.nextFetch.setName(i18n.tr("Nächster Abruf"));
     this.nextFetch.setComment("");
     return this.nextFetch;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der ausgewaehlt werden kann, ob die Kontoauszuege
    * per Messaging gespeichert werden sollen.
@@ -353,13 +352,13 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.messaging != null)
       return this.messaging;
-    
+
     if (!MessagingAvailableConsumer.haveMessaging())
       return null;
 
     this.messaging = new CheckboxInput(false);
     this.messaging.setName(MetaKey.KONTOAUSZUG_STORE_MESSAGING.getDescription());
-    
+
     Listener l = new Listener() {
       @Override
       public void handleEvent(Event event)
@@ -368,7 +367,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         getPath().setEnabled(!checked);
         getFolder().setEnabled(!checked);
         getName().setEnabled(!checked);
-        
+
         if (checked)
         {
           getExample().setValue("");
@@ -382,10 +381,10 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     };
     this.messaging.addListener(l);
     l.handleEvent(null);
-    
+
     return this.messaging;
   }
-  
+
   /**
    * Liefert ein Eingabefeld fuer den Ordner, in dem die Kontoauszuege gespeichert werden sollen.
    * @return Eingabefeld fuer den Ordner, in dem die Kontoauszuege gespeichert werden sollen.
@@ -394,13 +393,13 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.path != null)
       return this.path;
-    
+
     this.path = new DirectoryInput("");
     this.path.setName(MetaKey.KONTOAUSZUG_STORE_PATH.getDescription());
     this.path.addListener(this.exampleListener);
     return this.path;
   }
-  
+
   /**
    * Liefert ein Eingabefeld fuer den Unter-Ordner.
    * @return Eingabefeld fuer den Unter-Ordner.
@@ -409,13 +408,13 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.folder != null)
       return this.folder;
-    
+
     this.folder = new TextInput("");
     this.folder.setName(MetaKey.KONTOAUSZUG_TEMPLATE_PATH.getDescription());
     this.folder.addListener(this.exampleListener);
     return this.folder;
   }
-  
+
   /**
    * Liefert ein Eingabefeld fuer den Dateinamen.
    * @return Eingabefeld fuer den Dateinamen.
@@ -424,13 +423,13 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     if (this.name != null)
       return this.name;
-    
+
     this.name = new TextInput("");
     this.name.setName(MetaKey.KONTOAUSZUG_TEMPLATE_NAME.getDescription());
     this.name.addListener(this.exampleListener);
     return this.name;
   }
-  
+
   /**
    * Liefert ein Label mit einem Beispiel-Dateipfad.
    * @return Label mit einem Beispiel-Dateipfad.
@@ -442,9 +441,9 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
 
     this.example = new LabelInput("");
     this.example.addListener(this.exampleListener);
-    
+
     this.exampleListener.handleEvent(null);
-    
+
     return this.example;
   }
 
@@ -459,7 +458,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
 
     this.exampleText = new LabelInput("");
     this.exampleText.setName("");
-    
+
     return this.getExampleText();
   }
 
@@ -471,7 +470,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     return null;
   }
-  
+
   /**
    * Markiert das Formular als ungueltig.
    * @param dirty true, wenn das Formular als ungueltig gelten soll.
@@ -480,7 +479,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     this.getApply().setEnabled(!dirty);
   }
-  
+
   /**
    * Markiert das ganze Formular als unterstuetzt.
    * @param supported true, wenn alles als unterstuetzt markiert werden soll.
@@ -490,7 +489,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   {
     boolean support = supported || (Boolean) getIgnoreFormat().getValue();
     this.getIntervall().setEnabled(support);
-    
+
     this.getIgnoreFormat().setEnabled(conditional);
 
     CheckboxInput messaging = this.getMessaging();
@@ -512,11 +511,11 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       this.getMarkRead().setEnabled(support);
       this.getSendReceipt().setEnabled(support);
     }
-    
+
     if (messaging != null)
       messaging.setEnabled(support);
   }
-  
+
   /**
    * Listener, der das Pfad-Beispiel ermittelt.
    */
@@ -533,11 +532,11 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         String path   = (String) getPath().getValue();
         String folder = (String) getFolder().getValue();
         String name   = (String) getName().getValue();
-        
+
         String s = KontoauszugPdfUtil.createPath(konto,null,path,folder,name);
 
         label.setValue(s);
-        
+
         // Testen, ob die Platzhalter korrekt gesetzt waren. Bei dem Test darf
         // der Basis-Pfad nicht verwenden werden, weil der auch "$" enthalten kann.
         // Siehe Mail von Thomas vom 12.04.2019
@@ -574,7 +573,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       }
     }
   }
-  
+
   /**
    * Listener, der das Datum des naechsten Intervall ermittelt.
    */
@@ -601,7 +600,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       KontoauszugInterval i = (KontoauszugInterval) getIntervall().getValue();
       Date next = i.getNextInterval(last);
       LabelInput l = getNextFetch();
-      
+
       if (next == null)
       {
         l.setColor(Color.COMMENT);
@@ -619,7 +618,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       }
     }
   }
-  
+
   /**
    * Laedt die Daten nach Auswahl des Kontos neu.
    */
@@ -646,15 +645,15 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         getHinweise2().setValue("");
 
         konto = (Konto) o;
-        
+
         getIntervall().setValue(KontoauszugInterval.find(MetaKey.KONTOAUSZUG_INTERVAL.get(konto)));
         getIgnoreFormat().setValue(Boolean.parseBoolean(MetaKey.KONTOAUSZUG_IGNORE_FORMAT.get(konto)));
         getMarkRead().setValue(Boolean.parseBoolean(MetaKey.KONTOAUSZUG_MARK_READ.get(konto)));
         getSendReceipt().setValue(Boolean.parseBoolean(MetaKey.KONTOAUSZUG_SEND_RECEIPT.get(konto)));
-        
+
         String s = MetaKey.KONTOAUSZUG_INTERVAL_LAST.get(konto);
         getIntervall().setComment(i18n.tr("Letzter Abruf: {0}",s != null ? s : i18n.tr("nie")));
-        
+
         CheckboxInput messaging = getMessaging();
         if (messaging != null)
           getMessaging().setValue(Boolean.parseBoolean(MetaKey.KONTOAUSZUG_STORE_MESSAGING.get(konto)));
@@ -662,7 +661,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         getPath().setValue(MetaKey.KONTOAUSZUG_STORE_PATH.get(konto));
         getFolder().setValue(MetaKey.KONTOAUSZUG_TEMPLATE_PATH.get(konto));
         getName().setValue(MetaKey.KONTOAUSZUG_TEMPLATE_NAME.get(konto));
-        
+
         intervalListener.handleEvent(null);
         exampleListener.handleEvent(null);
         supportListener.handleEvent(null);
@@ -673,7 +672,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       }
     }
   }
-  
+
   /**
    * Aktualisiert den Support je nach Auswahl der Parameter.
    */
@@ -688,16 +687,16 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
       boolean ok = false;
       String text1 = null;
       String text2 = null;
-      
+
       if (konto != null)
       {
         final Support hkekp = BPDUtil.getSupport(konto,Query.KontoauszugPdf);
         final Support hkeka = BPDUtil.getSupport(konto,Query.Kontoauszug);
-        
+
         ok = (hkekp != null && hkekp.isSupported());
         if (ok)
           text1 = "HKEKP: Von Bank unterstützt und für Konto freigeschaltet";
-        
+
         // Haben wir wenigstens PDF-Format bei HKEKA?
         if (!ok)
         {
@@ -705,11 +704,11 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
           if (ok)
             text2 = "HKEKA: Von Bank unterstützt, freigeschaltet und PDF-Format vorhanden";
         }
-        
+
         if (!ok)
         {
           // Checken, ob wir den Grund genauer rausfinden koennen.
-          
+
           // Haeufiger Grund bei Sparkassen. HKEKP wird zwar unterstuetzt, ist aber laut UPD nicht freigeschaltet
           if (hkekp != null)
           {
@@ -729,21 +728,21 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
               text2 = "HKEKA: Von Bank unterstützt, jedoch nicht im PDF-Format";
           }
         }
-        
+
       }
 
       final LabelInput hinweise  = getHinweise();
       final LabelInput hinweise2 = getHinweise2();
 
       markSupported(ok,true);
-      
+
       hinweise.setColor(ok ? Color.SUCCESS : Color.ERROR);
       hinweise2.setColor(ok ? Color.SUCCESS : Color.ERROR);
       hinweise.setValue(StringUtils.trimToEmpty(text1));
       hinweise2.setValue(StringUtils.trimToEmpty(text2));
     }
   }
-  
+
   /**
    * Speichert die vorgenommenen Einstellungen.
    */
@@ -752,9 +751,9 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     try
     {
       MetaKey.KONTOAUSZUG_IGNORE_FORMAT.set(this.konto,Boolean.toString((Boolean) this.getIgnoreFormat().getValue()));
-      
+
       MetaKey.KONTOAUSZUG_INTERVAL.set(this.konto,((KontoauszugInterval) this.getIntervall().getValue()).getId());
-      
+
       // Wenn ein Intervall konfiguriert wurde, in dem die Auszuege tatsaechlich regelmaessig
       // abgerufen werden (also alles ausser "niemals") eingestellt wird, aktivieren wir
       // automatisch auch die korrespondierende Checkbox in den Sync-Optionen
@@ -763,7 +762,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
         SynchronizeOptions options = new SynchronizeOptions(this.konto);
         options.setSyncKontoauszuegePdf(true);
       }
-      
+
       CheckboxInput messaging = this.getMessaging();
       if (messaging != null)
         MetaKey.KONTOAUSZUG_STORE_MESSAGING.set(this.konto,Boolean.toString((Boolean) messaging.getValue()));
@@ -783,5 +782,3 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   }
 
 }
-
-

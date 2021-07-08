@@ -54,11 +54,10 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
   private SepaSammelUeberweisung transfer  = null;
   private SepaSammelUeberweisungList table = null;
   private TablePart buchungen              = null;
-  
+
   private SelectInput typ                  = null;
   private TerminInput termin               = null;
   private Listener terminListener          = new TerminListener();
-  
 
   private Input name                       = null;
 
@@ -80,13 +79,13 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
   {
     if (this.name != null)
       return this.name;
-    
+
     this.name = super.getName();
     if (StringUtils.trimToNull((String)this.name.getValue()) == null)
       this.name.setValue(i18n.tr("SEPA-Sammelüberweisung vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
     return this.name;
   }
-  
+
   /**
    * Liefert eine Combobox zur Auswahl des Auftragstyps.
    * Zur Wahl stehen Ueberweisung, Termin-Ueberweisung und Umbuchung.
@@ -98,7 +97,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     if (this.typ != null)
       return this.typ;
     final SepaSammelUeberweisung u = getTransfer();
-    
+
     List<Typ> list = new ArrayList<Typ>();
     list.add(new Typ(false));
     list.add(new Typ(true));
@@ -123,12 +122,12 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
         }
       }
     });
-    
+
     this.typ.addListener(this.terminListener);
     this.terminListener.handleEvent(null); // einmal initial ausloesen
     return this.typ;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getTermin()
    */
@@ -137,7 +136,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
   {
     if (this.termin != null)
       return this.termin;
-    
+
     this.termin = super.getTermin();
     this.termin.setName(this.termin.getName() + "  "); // ein kleines bisschen extra Platz lassen, damit auch "Ausführungstermin" hin passt
     this.termin.addListener(new Listener() {
@@ -147,11 +146,11 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
         {
           if (!termin.hasChanged())
             return;
-          
+
           Date date = (Date) termin.getValue();
           if (date == null)
             return;
-          
+
           // Wenn das Datum eine Woche in der Zukunft liegt, fragen wir den User, ob es vielleicht
           // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
           // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
@@ -173,10 +172,10 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
         {
           Logger.error("unable to check for termsammelueb",e);
         }
-        
+
       }
     });
-    
+
     return this.termin;
   }
 
@@ -224,14 +223,14 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
   {
     if (this.buchungen != null)
       return this.buchungen;
-    
+
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new SepaSammelUeberweisungBuchungNew().handleAction(context);
       }
     };
-    
+
     this.buchungen = new SepaSammelTransferBuchungList(getTransfer(),a);
     this.buchungen.setMulti(true);
 
@@ -245,7 +244,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     this.buchungen.setContextMenu(ctx);
     return this.buchungen;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#store()
    */
@@ -258,10 +257,10 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
 
     Typ typ = (Typ) getTyp().getValue();
     t.setTerminUeberweisung(typ.termin);
-    
+
     super.store();
   }
-  
+
   /**
    * Listener, der das Label vor dem Termin aendert, wenn es eine Bank-seitig gefuehrte Termin-Ueberweisung ist.
    */
@@ -284,7 +283,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
             if (typ != null && typ.termin)
             {
               input.setName(i18n.tr("Ausführungstermin"));
-              
+
               // Pruefen, ob es sich um eine Termin-Ueberweisung handelt. Wenn
               // das Ausfuehrungsdatum in der Vergangenheit liegt, dann Hinweis-Text anzeigen
               Date date = (Date) input.getValue();
@@ -298,7 +297,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
             {
               input.setName(i18n.tr("Erinnerungstermin"));
             }
-            
+
             // Kommentar vom Termin-Eingabefeld aktualisieren.
             input.updateComment();
           }
@@ -310,14 +309,14 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
       });
     }
   }
-  
+
   /**
    * Hilfsklasse fuer den Auftragstyp.
    */
   public class Typ
   {
     private boolean termin = false;
-    
+
     /**
      * ct.
      * @param termin true bei Termin-Ueberweisung.
@@ -326,7 +325,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     {
       this.termin = termin;
     }
-    
+
     /**
      * Liefert den sprechenden Namen des Typs.
      * @return sprechender Name des Typs.
@@ -336,7 +335,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
       if (this.termin) return i18n.tr("Bankseitige SEPA-Sammelterminüberweisung");
       return           i18n.tr("SEPA-Sammelüberweisung");
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */

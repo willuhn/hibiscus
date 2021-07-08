@@ -34,7 +34,6 @@ public class EmpfaengerNew implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $
  * Revision 1.5  2007/04/23 18:07:14  willuhn

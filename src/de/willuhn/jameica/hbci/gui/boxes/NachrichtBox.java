@@ -75,14 +75,14 @@ public class NachrichtBox extends AbstractBox implements Box
     DBIterator iterator = Settings.getDBService().createList(Nachricht.class);
     iterator.setOrder("order by datum desc"); // Neueste zuerst
     iterator.addFilter("gelesen is null or gelesen = 0");
-    
+
     this.list = new NachrichtList(iterator,new NachrichtOpen());
     this.list.setSummary(false);
     this.list.paint(parent);
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
     parent.addDisposeListener(new DisposeListener() {
-      
+
       @Override
       public void widgetDisposed(DisposeEvent e)
       {
@@ -90,7 +90,7 @@ public class NachrichtBox extends AbstractBox implements Box
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
       }
     });
-    
+
   }
 
   /**
@@ -118,7 +118,7 @@ public class NachrichtBox extends AbstractBox implements Box
     }
     return super.isEnabled();
   }
-  
+
   /**
    * Wird benachrichtigt, wenn neue Nachrichten der Bank eintreffen.
    */
@@ -132,7 +132,7 @@ public class NachrichtBox extends AbstractBox implements Box
     {
       return false;
     }
-    
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -141,7 +141,7 @@ public class NachrichtBox extends AbstractBox implements Box
     {
       return new Class[]{ImportMessage.class};
     }
-    
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -152,17 +152,17 @@ public class NachrichtBox extends AbstractBox implements Box
       GenericObject o = im.getObject();
       if (!(o instanceof Nachricht))
         return;
-      
+
       final Nachricht n = (Nachricht) o;
-      
+
       GUI.getDisplay().asyncExec(new Runnable() {
-        
+
         @Override
         public void run()
         {
           if (list == null)
             return;
-          
+
           try
           {
             list.addItem(n);
@@ -175,7 +175,7 @@ public class NachrichtBox extends AbstractBox implements Box
       });
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
    */

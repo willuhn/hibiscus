@@ -34,9 +34,9 @@ import de.willuhn.util.I18N;
 public class SynchronizeExecuteDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private List<SynchronizeJob> jobs = null;
-  
+
   /**
    * ct.
    * @param jobs die Liste der Jobs.
@@ -49,7 +49,7 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     this.setSize(470,300);
     this.jobs = jobs;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -59,13 +59,13 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     container.addText(i18n.tr("Folgende Überweisungen und Lastschriften werden jetzt " +
     		                      "an die Bank übertragen. Bitte prüfen Sie diese nochmals " +
     		                      "um sicherzustellen, dass Sie keinen Auftrag versehentlich absenden."),true);
-    
+
     TablePart table = new TablePart(this.jobs,null);
     table.addColumn(i18n.tr("Aufträge"),"name");
     table.setSummary(false);
     table.setRememberColWidths(true);
     container.addPart(table);
-    
+
     // table.paint(parent);
 
     ButtonArea buttons = new ButtonArea();
@@ -83,11 +83,11 @@ public class SynchronizeExecuteDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     },null,true,"process-stop.png");
-    
+
     container.addButtonArea(buttons);
     // buttons.paint(parent);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
@@ -97,4 +97,3 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     return null;
   }
 }
-

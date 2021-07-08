@@ -42,7 +42,7 @@ public class KontoFetchUmsaetze implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    
+
     Konto konto = (context instanceof Konto) ? (Konto) context : null;
 
 		try
@@ -53,7 +53,7 @@ public class KontoFetchUmsaetze implements Action
 	      KontoAuswahlDialog d = new KontoAuswahlDialog(null,KontoFilter.createForeign(type),KontoAuswahlDialog.POSITION_CENTER);
 	      konto = (Konto) d.open();
 	    }
-	    
+
 	    if (konto == null)
 	      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
@@ -64,11 +64,11 @@ public class KontoFetchUmsaetze implements Action
       SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
       SynchronizeBackend backend = engine.getBackend(type,konto);
       SynchronizeJob job         = backend.create(type,konto);
-      
+
       job.setContext(SynchronizeJob.CTX_ENTITY,konto);
       job.setContext(SynchronizeJobKontoauszug.CTX_FORCE_SALDO,true);
       job.setContext(SynchronizeJobKontoauszug.CTX_FORCE_UMSATZ,true);
-      
+
       backend.execute(Arrays.asList(job));
 		}
 		catch (ApplicationException ae)

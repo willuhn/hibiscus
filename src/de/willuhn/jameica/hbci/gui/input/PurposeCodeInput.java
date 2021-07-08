@@ -27,7 +27,7 @@ import de.willuhn.util.I18N;
 public class PurposeCodeInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * ct.
    * @param value der vorausgewaehlte Code.
@@ -38,7 +38,7 @@ public class PurposeCodeInput extends SelectInput
     this.setName(i18n.tr("SEPA Purpose-Code"));
     this.setEditable(true); // Man kann auch selbst Werte eingeben
     this.setComment("");
-    
+
     final Listener l = new Listener() {
       @Override
       public void handleEvent(Event event)
@@ -49,11 +49,11 @@ public class PurposeCodeInput extends SelectInput
       }
     };
     this.addListener(l);
-    
+
     // Einmal initial ausloesen
     l.handleEvent(null);
   }
-  
+
   /**
    * Liefert eine Liste der moeglichen Purpose-Codes inclusive leerem Code.
    * @return Liste der moeglichen Purpose-Codes.
@@ -65,5 +65,3 @@ public class PurposeCodeInput extends SelectInput
     return codes;
   }
 }
-
-

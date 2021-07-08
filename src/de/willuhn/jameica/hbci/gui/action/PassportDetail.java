@@ -43,7 +43,7 @@ public class PassportDetail implements Action
         GUI.startView(((Configuration) context).getConfigDialog(),context);
         return;
       }
-      
+
       Passport p = null;
       if (context instanceof Passport)
       {
@@ -70,7 +70,7 @@ public class PassportDetail implements Action
           throw new ApplicationException(i18n.tr("Fehler beim Laden: {0}",e.getMessage()));
         }
       }
-      
+
       if (p == null)
         return;
 
@@ -83,7 +83,6 @@ public class PassportDetail implements Action
     }
   }
 }
-
 
 /**********************************************************************
  * $Log: PassportDetail.java,v $

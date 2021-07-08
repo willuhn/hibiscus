@@ -75,7 +75,7 @@ import de.willuhn.util.I18N;
 public class KontoauszugPdfList extends TablePart
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc            = null;
 
   private KontoInput kontoAuswahl       = null;
@@ -107,14 +107,14 @@ public class KontoauszugPdfList extends TablePart
     };
 
     this.setFormatter(new TableFormatter() {
-      
+
       @Override
       public void format(TableItem item)
       {
         try
         {
           Kontoauszug k = (Kontoauszug) item.getData();
-          
+
           if (k.getGelesenAm() != null)
           {
             item.setFont(Font.DEFAULT.getSWTFont());
@@ -132,7 +132,7 @@ public class KontoauszugPdfList extends TablePart
         }
       }
     });
-    
+
     final DateFormatter df = new DateFormatter();
     this.addColumn(new KontoColumn());
     this.addColumn(i18n.tr("Jahr"),"jahr");
@@ -150,7 +150,7 @@ public class KontoauszugPdfList extends TablePart
     this.setMulti(true);
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoauszugPdfList());
-    
+
     this.addChangeListener(new TableChangeListener() {
       public void itemChanged(Object object, String attribute, String newValue) throws ApplicationException
       {
@@ -178,7 +178,7 @@ public class KontoauszugPdfList extends TablePart
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
 
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -189,21 +189,21 @@ public class KontoauszugPdfList extends TablePart
     TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
     ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
-    
+
     {
       Container left = new SimpleContainer(cols.getComposite());
       left.addInput(this.getKontoAuswahl());
       left.addInput(this.getInclusiveFilter());
       left.addInput(this.getUnread());
     }
-    
+
     {
       Container right = new SimpleContainer(cols.getComposite());
       right.addInput(this.getRange());
       MultiInput range = new MultiInput(this.getFrom(),this.getTo());
       right.addInput(range);
     }
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Kontoauszüge abrufen..."), new KontoAction(new KontoFetchKontoauszug()),null,false,"mail-send-receive.png");
     buttons.addButton(i18n.tr("Einstellungen"),new KontoAction(new KontoauszugPdfSettings()),null,false,"document-properties.png");
@@ -215,9 +215,9 @@ public class KontoauszugPdfList extends TablePart
       }
     },null,true,"view-refresh.png");
     buttons.paint(parent);
-   
+
     this.handleReload(true);
-    
+
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
@@ -226,7 +226,7 @@ public class KontoauszugPdfList extends TablePart
     });
     super.paint(parent);
   }
-  
+
   /**
    * Liefert eine Auswahlbox fuer das Konto.
    * @return Auswahlbox.
@@ -245,7 +245,7 @@ public class KontoauszugPdfList extends TablePart
     this.kontoAuswahl.addListener(this.listener);
     return this.kontoAuswahl;
   }
-  
+
   /**
    * Liefert das Eingabe-Datum fuer das Start-Datum.
    * @return Eingabe-Feld.
@@ -254,14 +254,14 @@ public class KontoauszugPdfList extends TablePart
   {
     if (this.from != null)
       return this.from;
-    
+
     this.from = new DateFromInput(null,"kontoauszuege.filter.from");
     this.from.setName(i18n.tr("Von"));
     this.from.setComment(null);
     this.from.addListener(this.listener);
     return this.from;
   }
-  
+
   /**
    * Liefert das Eingabe-Datum fuer das End-Datum.
    * @return Eingabe-Feld.
@@ -277,7 +277,7 @@ public class KontoauszugPdfList extends TablePart
     this.to.addListener(this.listener);
     return this.to;
   }
-  
+
   /**
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
@@ -286,7 +286,7 @@ public class KontoauszugPdfList extends TablePart
   {
     if (this.range != null)
       return this.range;
-    
+
     this.range = new RangeInput(this.getFrom(),this.getTo(),Range.CATEGORY_AUSWERTUNG,"kontoauszuege.filter.range");
     this.range.addListener(new Listener()
     {
@@ -296,10 +296,10 @@ public class KontoauszugPdfList extends TablePart
           handleReload(true);
       }
     });
-    
+
     return this.range;
   }
-  
+
   /**
    * Liefert eine Checkbox, um nur die ungelesenene Kontoauszuege anzuzeigen.
    * @return Checkbox.
@@ -308,13 +308,13 @@ public class KontoauszugPdfList extends TablePart
   {
     if (this.unread != null)
       return this.unread;
-    
+
     this.unread = new CheckboxInput(settings.getBoolean("kontoauszuege.filter.unread",false));
     this.unread.setName(i18n.tr("Nur ungelesene Kontoauszüge anzeigen"));
     this.unread.addListener(this.listener);
     return this.unread;
   }
-  
+
   /**
    * Liefert eine Checkbox, um auch nur teilweise im Zeitraum liegende Kontoauszuege anzuzeigen.
    * @return Checkbox.
@@ -323,7 +323,7 @@ public class KontoauszugPdfList extends TablePart
   {
     if (this.inclusiveFilter != null)
       return this.inclusiveFilter;
-    
+
     this.inclusiveFilter = new CheckboxInput(settings.getBoolean("kontoauszuege.filter.inclusivefilter",false));
     this.inclusiveFilter.setName(i18n.tr("Auch nur teilweise im Zeitraum liegende Kontoauszüge anzeigen"));
     this.inclusiveFilter.addListener(this.listener);
@@ -354,7 +354,7 @@ public class KontoauszugPdfList extends TablePart
       final Date dto       = (Date) getTo().getValue();
       final Boolean unread = (Boolean) getUnread().getValue();
       final Boolean inclusiveFilter = (Boolean) getInclusiveFilter().getValue();
-      
+
       if (!force)
       {
         // Wenn es kein forcierter Reload ist, pruefen wir,
@@ -382,11 +382,11 @@ public class KontoauszugPdfList extends TablePart
             GenericIterator items = KontoauszugPdfUtil.getList(konto,dfrom,dto,unread != null ? unread.booleanValue() : false, inclusiveFilter != null ? inclusiveFilter.booleanValue() : false);
             if (items == null)
               return;
-            
+
             items.begin();
             while (items.hasNext())
               addItem(items.next());
-            
+
             // Sortierung wiederherstellen
             sort();
           }
@@ -404,7 +404,7 @@ public class KontoauszugPdfList extends TablePart
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Prueft, ob seit der letzten Aktion Eingaben geaendert wurden.
    * Ist das nicht der Fall, muss die Tabelle nicht neu geladen werden.
@@ -414,7 +414,7 @@ public class KontoauszugPdfList extends TablePart
   {
     return InputCompat.valueHasChanged(kontoAuswahl, from, to, unread, inclusiveFilter);
   }
-  
+
   /**
    * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
    */
@@ -438,12 +438,12 @@ public class KontoauszugPdfList extends TablePart
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
-      
+
       if (o == null)
         return;
-      
+
       // Checken, ob uns der Transfer-Typ interessiert
       if (!(o instanceof Kontoauszug))
         return;
@@ -464,7 +464,7 @@ public class KontoauszugPdfList extends TablePart
               // Filter anwenden
               handleReload(true);
             }
-            
+
           }
           catch (Exception e)
           {
@@ -482,7 +482,7 @@ public class KontoauszugPdfList extends TablePart
       return false;
     }
   }
-  
+
   /**
    * Oeffnet die Einstellungen.
    * @throws ApplicationException
@@ -498,7 +498,7 @@ public class KontoauszugPdfList extends TablePart
   private class KontoAction implements Action
   {
     private Action redirect = null;
-    
+
     /**
      * ct.
      * @param redirect
@@ -507,7 +507,7 @@ public class KontoauszugPdfList extends TablePart
     {
       this.redirect = redirect;
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
      */
@@ -527,11 +527,9 @@ public class KontoauszugPdfList extends TablePart
       {
         Logger.error("unable to determine account",e);
       }
-      
+
       this.redirect.handleAction(k);
     }
   }
 
 }
-
-

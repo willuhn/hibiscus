@@ -60,18 +60,18 @@ public class EinnahmenAusgaben extends AbstractView
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
       ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
-      
+
       Container left = new SimpleContainer(cols.getComposite());
       left.addInput(control.getKontoAuswahl());
       left.addInput(control.getInterval());
       left.addInput(control.getActiveOnly());
-      
+
       Container right = new SimpleContainer(cols.getComposite());
-        
+
       right.addInput(control.getRange());
       MultiInput range = new MultiInput(control.getStart(),control.getEnd());
       right.addInput(range);
-      
+
     }
 
     ButtonArea buttons = new ButtonArea();
@@ -100,20 +100,20 @@ public class EinnahmenAusgaben extends AbstractView
       {
         control.handleReload();
       }
-    
+
     },null,true,"view-refresh.png");
     buttons.paint(getParent());
-    
+
     final TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-    
+
     final TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarische Auswertung"),true,1);
     TreePart tree = control.getTree();
     tree.paint(tg1.getComposite());
-    
+
     final TabGroup tg2 = new TabGroup(folder,i18n.tr("Grafische Auswertung"),true,1);
     final EinnahmenAusgabenVerlauf chart = control.getChart();
     chart.paint(tg2.getComposite());
-    
+
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
   }
 }

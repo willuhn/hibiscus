@@ -24,10 +24,10 @@ import de.willuhn.util.I18N;
 public class Export implements Action
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Class type = null;
   private Object data = null;
-  
+
   /**
    * ct.
    * @param type der zu exportierende Typ.
@@ -36,7 +36,7 @@ public class Export implements Action
   {
     this.type = type;
   }
-  
+
   /**
    * ct.
    * @param type der zu exportierende Typ.
@@ -47,19 +47,19 @@ public class Export implements Action
     this(type);
     this.data = data;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
     Object export = this.data != null ? this.data : context;
-    
+
     if (export == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
 
     Object[] objects = null;
-    
+
     if (export instanceof Object[])
       objects = (Object[]) export;
     else

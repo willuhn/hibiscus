@@ -37,7 +37,7 @@ import de.willuhn.util.I18N;
 public class SepaConvertAddress implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -48,10 +48,9 @@ public class SepaConvertAddress implements Action
       list.add((HibiscusAddress) context);
     else if (context instanceof HibiscusAddress[])
       list.addAll(Arrays.asList((HibiscusAddress[])context));
-      
+
     if (list.size() == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens eine Adresse aus"));
-      
 
     try
     {
@@ -75,7 +74,6 @@ public class SepaConvertAddress implements Action
       Logger.error("error while asking user",e);
       return;
     }
-    
 
     // Wir machen hier keine DB-Transaktion, da der Vorgang nicht atomar sein sollte
     int count = 0;
@@ -86,18 +84,18 @@ public class SepaConvertAddress implements Action
       {
         String blz  = StringUtils.trimToNull(a.getBlz());
         String bic  = StringUtils.trimToNull(a.getBic());
-        
+
         String kto  = StringUtils.trimToNull(a.getKontonummer());
         String iban = StringUtils.trimToNull(a.getIban());
 
         // hat schon IBAN/BIC
         if (bic != null && iban != null)
           continue;
-   
+
         // hat keine BLZ, dann koennen wir weder BIC noch IBAN berechnen
         if (blz == null || blz.length() != HBCIProperties.HBCI_BLZ_LENGTH)
           continue;
-        
+
         String newBic = null;
 
         if (kto != null && iban == null) // Wenn wir eine Kontonummer und noch keine IBAN haben, dann errechnen
@@ -106,14 +104,14 @@ public class SepaConvertAddress implements Action
           newBic = newIban.getBIC();
           a.setIban(newIban.getIBAN());
         }
-        
+
         if (bic == null) // Wenn wir noch keine BIC haben, dann errechnen
         {
           if (newBic == null) // nur wenn sie nicht schon von obantoo ermittelt wurde
             newBic = HBCIUtils.getBICForBLZ(blz);
           a.setBic(newBic);
         }
-        
+
         a.store();
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(a));
         count++;
@@ -128,11 +126,9 @@ public class SepaConvertAddress implements Action
       }
     }
     Logger.info("auto-completed addresses: " + count);
-    
+
     if (count > 0)
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("IBAN/BIC errechnet für {0} Adressen",Integer.toString(count)),StatusBarMessage.TYPE_SUCCESS));
   }
 
 }
-
-

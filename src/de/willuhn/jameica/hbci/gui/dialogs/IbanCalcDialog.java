@@ -41,14 +41,14 @@ public class IbanCalcDialog extends AbstractDialog
 {
   private final static int WINDOW_WIDTH = 500;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private TextInput konto      = null;
   private TextInput blz        = null;
   private TextInput iban       = null;
   private TextInput bic        = null;
   private LabelInput msg       = null;
   private Listener listener = new CalcListener();
-  
+
   /**
    * ct
    * @param position
@@ -57,10 +57,10 @@ public class IbanCalcDialog extends AbstractDialog
   {
     super(position);
     this.setTitle(i18n.tr("IBAN-Rechner"));
-    
+
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#isModeless()
    */
@@ -99,7 +99,7 @@ public class IbanCalcDialog extends AbstractDialog
     container2.addInput(this.getMessage());
 
     ButtonArea buttons = new ButtonArea();
-    
+
     buttons.addButton(i18n.tr("Berechnen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -115,10 +115,10 @@ public class IbanCalcDialog extends AbstractDialog
       }
     },null,false,"window-close.png");
     container2.addButtonArea(buttons);
-    
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer die Kontonummer.
    * @return das Eingabe-Feld fuer die Kontonummer.
@@ -127,7 +127,7 @@ public class IbanCalcDialog extends AbstractDialog
   {
     if (this.konto != null)
       return this.konto;
-    
+
     this.konto = new TextInput("",HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
     this.konto.setName(i18n.tr("Kontonummer"));
     this.konto.setComment("");
@@ -141,14 +141,14 @@ public class IbanCalcDialog extends AbstractDialog
         String s = (String) konto.getValue();
         if (s == null || s.length() == 0)
           return;
-        
+
         if (s.indexOf(" ") != -1)
           konto.setValue(s.replaceAll(" ",""));
       }
     });
     return this.konto;
   }
-  
+
   /**
    * Liefert ein Label fuer die Fehlermeldungen.
    * @return ein Label fuer die Fehlermeldungen.
@@ -157,12 +157,12 @@ public class IbanCalcDialog extends AbstractDialog
   {
     if (this.msg != null)
       return this.msg;
-    
+
     this.msg = new LabelInput("");
     this.msg.setColor(Color.ERROR);
     return this.msg;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer die BLZ.
    * @return Eingabe-Feld.
@@ -176,7 +176,7 @@ public class IbanCalcDialog extends AbstractDialog
     this.blz.addListener(this.listener);
     return this.blz;
   }
-  
+
   /**
    * Liefert das Input fuer die IBAN.
    * @return das Input fuer die IBAN.
@@ -185,12 +185,12 @@ public class IbanCalcDialog extends AbstractDialog
   {
     if (this.iban != null)
       return this.iban;
-    
+
     this.iban = new TextInput("");
     this.iban.setName(i18n.tr("IBAN"));
     return this.iban;
   }
-  
+
   /**
    * Liefert das Input fuer die BIC.
    * @return das Input fuer die BIC.
@@ -199,12 +199,12 @@ public class IbanCalcDialog extends AbstractDialog
   {
     if (this.bic != null)
       return this.bic;
-    
+
     this.bic = new TextInput("");
     this.bic.setName(i18n.tr("BIC"));
     return this.bic;
   }
-  
+
   /**
    * Berechnet die Daten.
    */
@@ -228,22 +228,22 @@ public class IbanCalcDialog extends AbstractDialog
     {
       getBlz().setComment(i18n.tr("BLZ ungültig"));
     }
-    
+
     if (kto.length() > 0 && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
     {
       boolean ok = HBCIProperties.checkAccountCRC(blz,kto);
       getKonto().setComment(i18n.tr(ok ? "Konto OK" : "BLZ/Kto ungültig, bitte prüfen"));
-      
+
       if (ok)
       {
         LabelInput msg = this.getMessage();
-        
+
         try
         {
           IBAN newIban = HBCIProperties.getIBAN(blz,kto);
           iban = newIban.getIBAN();
           bic = newIban.getBIC();
-          
+
           IBANCode code = newIban.getCode();
           if (code != null && code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
           {
@@ -269,11 +269,11 @@ public class IbanCalcDialog extends AbstractDialog
         }
       }
     }
-    
+
     getIban().setValue(iban);
     getBic().setValue(bic);
   }
-  
+
   /**
    * Startet die Neuberechnung automatisch, sobald BLZ und Kontonummer eingegeben wurden.
    */
@@ -291,6 +291,6 @@ public class IbanCalcDialog extends AbstractDialog
       if (kto != null && blz != null)
         calc();
     }
-    
+
   }
 }

@@ -31,7 +31,6 @@ public interface Filter<T>
   public boolean accept(T object) throws RemoteException;
 }
 
-
 /**********************************************************************
  * $Log: Filter.java,v $
  * Revision 1.1  2009/10/20 23:12:58  willuhn

@@ -28,8 +28,6 @@ public class PassportList implements Action
   }
 }
 
-
-
 /**********************************************************************
  * $Log: PassportList.java,v $
  * Revision 1.1  2011/04/29 11:38:57  willuhn

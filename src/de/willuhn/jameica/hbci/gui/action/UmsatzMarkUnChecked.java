@@ -27,7 +27,7 @@ public class UmsatzMarkUnChecked extends FlaggableChange
   {
     super(Umsatz.FLAG_CHECKED,false);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.action.FlaggableChange#postProcess(de.willuhn.jameica.hbci.rmi.Flaggable)
    */
@@ -36,12 +36,10 @@ public class UmsatzMarkUnChecked extends FlaggableChange
   {
     if (!(o instanceof Umsatz))
       return;
-    
+
     // Wir senden die Aenderung noch per Messaging, damit SynTAX das Geprueft-Flag bei Bedarf
     // synchronisieren kann
     Application.getMessagingFactory().getMessagingQueue("hibiscus.umsatz.markchecked").sendMessage(new QueryMessage(Boolean.FALSE.toString(),o));
   }
 
 }
-
-

@@ -35,7 +35,7 @@ import de.willuhn.util.I18N;
 public class SepaSammelLastschriftSplit implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -45,22 +45,21 @@ public class SepaSammelLastschriftSplit implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Sammelaufträge aus"));
 
     SepaSammelLastschrift[] source = null;
-    
+
     if (context instanceof SepaSammelLastschrift)
       source = new SepaSammelLastschrift[]{(SepaSammelLastschrift) context};
     else
       source = (SepaSammelLastschrift[]) context;
-    
+
     if (source.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
-    
     // Handler fuer die Transaktion
     SepaLastschrift tx = null;
-    
+
     // Die Liste der Buchungen
     List<SepaSammelLastBuchung> buchungen = new ArrayList<SepaSammelLastBuchung>();
-        
+
     try
     {
       HBCIDBService service = Settings.getDBService();
@@ -73,7 +72,7 @@ public class SepaSammelLastschriftSplit implements Action
         List<SepaSammelLastBuchung> b = l.getBuchungen();
         buchungen.addAll(b);
       }
-      
+
       // Abfrage anzeigen, ob die Einzelauftraege geloescht werden sollen wenn mindestens einer in der DB existierte
       boolean delete = false;
       if (inDb)
@@ -83,16 +82,16 @@ public class SepaSammelLastschriftSplit implements Action
         if (o != null)
           delete = ((Boolean)o).booleanValue();
       }
-      
+
       int count = 0;
-      
+
       // OK, wir duerfen weiter machen
       for (SepaSammelLastBuchung b:buchungen)
       {
         SepaSammelLastschrift st = b.getSammelTransfer();
-        
+
         SepaLastschrift u = (SepaLastschrift) service.createObject(SepaLastschrift.class,null);
-        
+
         if (tx == null)
         {
           tx = u;
@@ -118,11 +117,11 @@ public class SepaSammelLastschriftSplit implements Action
         u.setType(st.getType());
 
         u.store();
-        
+
         Application.getMessagingFactory().sendMessage(new ImportMessage(u));
         count++;
       }
-      
+
       // Jetzt noch die Sammellastschriften loeschen
       if (delete)
       {
@@ -157,13 +156,13 @@ public class SepaSammelLastschriftSplit implements Action
           Logger.error("unable to rollback transaction",e);
         }
 		  }
-		  
+
 		  if (e instanceof OperationCanceledException)
 		    throw (OperationCanceledException) e;
-		  
+
 		  if (e instanceof ApplicationException)
 		    throw (ApplicationException) e;
-		  
+
       Logger.error("error while merging jobs",e);
       throw new ApplicationException(i18n.tr("Teilen der Sammellastschriften fehlgeschlagen: {0}",e.getMessage()));
 		}

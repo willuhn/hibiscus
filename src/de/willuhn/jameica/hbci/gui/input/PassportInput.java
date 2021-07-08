@@ -36,7 +36,7 @@ public class PassportInput extends SelectInput
 {
   private final static I18N i18n          = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static List<Passport> passports = null;
-  
+
   /**
    * ct.
    * @throws RemoteException
@@ -65,12 +65,12 @@ public class PassportInput extends SelectInput
         break;
       }
     }
-    
+
     this.setPleaseChoose("Bitte wählen...");
     this.setAttribute("name");
     this.setName(i18n.tr("Verfahren"));
   }
-  
+
   /**
    * Aktualisiert die Liste der verfuegbaren Passports abhaengig vom ausgewaehlten Backend.
    * Derzeit werden hier erstmal hart alle HBCI-Passports entfernt, wenn nicht das HBCI-Backend ausgewaehlt ist.
@@ -80,10 +80,10 @@ public class PassportInput extends SelectInput
   {
     List<Passport> all = init();
     List<Passport> result = new ArrayList<Passport>();
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     boolean hb = backend != null && service.get(HBCISynchronizeBackend.class).equals(backend);
-    
+
     for (Passport p:all)
     {
       boolean hp = (p instanceof de.willuhn.jameica.hbci.passports.ddv.rmi.Passport) ||
@@ -95,11 +95,11 @@ public class PassportInput extends SelectInput
       if (hb == hp)
         result.add(p);
     }
-    
+
     this.setList(result);
     this.setEnabled(result.size() > 0);
   }
-  
+
   /**
    * Initialisiert die Passport-Liste.
    * @return Liste der Passports.
@@ -122,14 +122,13 @@ public class PassportInput extends SelectInput
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Laden der HBCI-Verfahren"),StatusBarMessage.TYPE_ERROR));
       }
     }
-    
+
     if (passports == null)
       passports = new ArrayList<Passport>();
-    
+
     return passports;
   }
 }
-
 
 /*********************************************************************
  * $Log: PassportInput.java,v $

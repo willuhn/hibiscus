@@ -29,7 +29,6 @@ public class SammelLastschriftList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
  * Revision 1.1  2005/02/28 16:28:24  web0

@@ -23,7 +23,7 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 {
   private Konto konto      = null;
   private List<Value> data = null;
-  
+
   /**
    * ct. 
    * @param konto das Konto, fuer das das Diagramm gemalt werden soll.

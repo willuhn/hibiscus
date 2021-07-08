@@ -21,7 +21,7 @@ public final class InputCompat
     // Hier auch: Siehe unten: Keine Optimierung erlaubt. Erst muss "valueHasChanged" fuer alle Inputs durchlaufen werden
     return valueHasChanged(inputs) || hasChanged;
   }
-  
+
   /**
    * Prueft ob sich der Wert mindestens eines uebergebenen Inputs seit dem letzten Aufruf von
    * hasChanged() der Inputs geaendert hat. 
@@ -33,12 +33,12 @@ public final class InputCompat
   {
     if (inputs == null || inputs.length == 0)
       return false;
-    
+
     // Auch wenn fuer den Rueckgabewert nur relevant ist, ob einer davon true ist, muessen
     // dennoch alle durchlaufen werden, da das Input in "hasChanged" den internen Zustand aktualisiert.
     // Ein erneuter Aufruf von "hasChanged" liefert dann wieder so lange false, bis tatsaechlich wieder
     // etwas geaendert wurde.
-    
+
     boolean b = false;
     try
     {
@@ -46,7 +46,7 @@ public final class InputCompat
       {
         if (i == null)
           continue;
-        
+
         b |= i.hasChanged();
       }
     }
@@ -55,7 +55,7 @@ public final class InputCompat
       Logger.error("unable to check change status",e);
       return true;
     }
-    
+
     return b;
   }
 }

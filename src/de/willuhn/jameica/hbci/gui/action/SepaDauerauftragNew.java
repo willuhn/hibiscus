@@ -75,4 +75,3 @@ public class SepaDauerauftragNew implements Action
   }
 
 }
-

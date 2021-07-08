@@ -42,7 +42,7 @@ public class PainVersionDialog extends AbstractDialog
   private final static int WINDOW_WIDTH = 400;
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Type type               = null;
   private SepaVersion painVersion = null;
   private Button ok               = null;
@@ -66,13 +66,13 @@ public class PainVersionDialog extends AbstractDialog
   {
     Container c = new SimpleContainer(parent);
     c.addText(i18n.tr("Bitte wählen Sie die zu verwendende SEPA XML-Version."),true);
-    
+
     final SelectInput version = this.getPainVersionInput();
     final LabelInput msg      = this.getMessage();
-    
+
     c.addInput(version);
     c.addInput(msg);
-    
+
     ButtonArea buttons = new ButtonArea();
     this.ok = new Button(i18n.tr("Übernehmen"),new Action()
     {
@@ -88,7 +88,7 @@ public class PainVersionDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     buttons.addButton(ok);
-    
+
     buttons.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -96,11 +96,11 @@ public class PainVersionDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     },null,false,"process-stop.png");
-    
+
     c.addButtonArea(buttons);
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Liefert ein Auswahlfeld mit der zu verwendenden PAIN-Version.
    * @return Auswahlfeld mit der PAIN-Version.
@@ -120,7 +120,7 @@ public class PainVersionDialog extends AbstractDialog
     });
     return select;
   }
-  
+
   /**
    * Liefert ein Label fuer Fehlermeldungen.
    * @return ein Label fuer Fehlermeldungen.
@@ -132,7 +132,7 @@ public class PainVersionDialog extends AbstractDialog
     label.setName("");
     return label;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
@@ -141,5 +141,3 @@ public class PainVersionDialog extends AbstractDialog
     return this.painVersion;
   }
 }
-
-

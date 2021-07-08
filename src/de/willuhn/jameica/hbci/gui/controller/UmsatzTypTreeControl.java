@@ -63,13 +63,13 @@ public class UmsatzTypTreeControl extends AbstractControl
   private DateInput start          = null;
   private DateInput end            = null;
   private RangeInput range         = null;
-  
+
   private UmsatzTree tree          = null;
   private UmsatzTypVerlauf chart   = null;
   private boolean expanded         = false;
-  
+
   private Listener listener        = null;
-  
+
   /**
    * ct.
    * 
@@ -78,7 +78,7 @@ public class UmsatzTypTreeControl extends AbstractControl
   public UmsatzTypTreeControl(AbstractView view)
   {
     super(view);
-    
+
     // bei Ausloesungen ueber SWT-Events verzoegern wir
     // das Reload, um schnell aufeinanderfolgende Updates
     // zu buendeln.
@@ -89,7 +89,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       }
     });
   }
-  
+
   /**
    * Erzeugt einen Listener, der das Event nur dann weiterleitet, wenn an
    * der Auswahl etwas geaendert wurde.
@@ -99,7 +99,7 @@ public class UmsatzTypTreeControl extends AbstractControl
   public Listener changedListener(final Input input)
   {
     return new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -121,7 +121,7 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
+
     this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.setSupportGroups(true);
@@ -130,7 +130,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.kontoAuswahl.addListener(this.changedListener(this.kontoAuswahl));
     return this.kontoAuswahl;
   }
-  
+
   /**
    * Liefert ein Eingabefeld fuer einen Suchbegriff.
    * @return Eingabefeld fuer einen Suchbegriff.
@@ -144,7 +144,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.text.setName(i18n.tr("Suchbegriff"));
     return this.text;
   }
-  
+
   /**
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
@@ -153,10 +153,10 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     if (this.range != null)
       return this.range;
-    
+
     this.range = new RangeInput(this.getStart(),this.getEnd(), Range.CATEGORY_AUSWERTUNG, "auswertungen.umsatztree.filter.range");
     this.range.addListener(this.changedListener(this.range));
-    
+
     return this.range;
   }
 
@@ -193,7 +193,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     this.end.addListener(this.changedListener(this.end));
     return this.end;
   }
-  
+
   /**
    * Liefert ein Container-Objekt zum Export des Umsatz-Tree samt Metadaten.
    * @return Umsatztree.
@@ -209,19 +209,18 @@ public class UmsatzTypTreeControl extends AbstractControl
       tree.setTitle(((Konto) konto).getBezeichnung());
     else if (konto != null && (konto instanceof String))
       tree.setTitle((String) konto);
-    
+
     Object o = getTree().getSelection();
     List<UmsatzTreeNode> selection = new LinkedList<UmsatzTreeNode>(); 
     if (o instanceof UmsatzTreeNode)
       selection.add((UmsatzTreeNode)o);
     else if (o instanceof UmsatzTreeNode[])
       selection.addAll(Arrays.asList((UmsatzTreeNode[])o));
-    
+
     tree.setUmsatzTree(selection.size() > 0 ? selection : getTree().getItems());
     return tree;
   }
 
-  
   /**
    * Liefert einen Baum von Umsatzkategorien mit den Umsaetzen.
    * @return Baum mit Umsatz-Kategorien.
@@ -231,12 +230,12 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     if (this.tree != null)
       return this.tree;
-    
+
     this.tree = new UmsatzTree(getUmsaetze());
     this.tree.setExpanded(this.expanded);
     return this.tree;
   }
-  
+
   /**
    * Liefert die anzuzeigenden Umsaetze.
    * @return die anzuzeigenden Umsaetze.
@@ -254,10 +253,10 @@ public class UmsatzTypTreeControl extends AbstractControl
 
     Konto k = (o instanceof Konto) ? (Konto) o : null;
     String kat = (o instanceof String) ? (String) o : null;
-    
+
     return UmsatzUtil.find(k,kat,von,bis,text);
   }
-  
+
   /**
    * Liefert die Chart-Ansicht der Kategorien.
    * @return die Chart-Ansicht.
@@ -267,12 +266,12 @@ public class UmsatzTypTreeControl extends AbstractControl
   {
     if (this.chart != null)
       return this.chart;
-    
+
     this.chart = new UmsatzTypVerlauf();
     this.chart.setData(getAllGroups(),(Date) getStart().getValue(),(Date) getEnd().getValue());
     return this.chart;
   }
-  
+
   /**
    * Klappt alle Elemente auf oder zu.
    */
@@ -294,7 +293,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aufklappen/Zuklappen"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Aktualisiert den Tree.
    */
@@ -312,7 +311,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Aktualisiert den Chart.
    */
@@ -324,7 +323,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       Object selection = getTree().getSelection();
 
       List l = null;
-      
+
       if (selection != null && (selection instanceof UmsatzTreeNode[])) // Mehrere Kategorien markiert?
       {
         l = Arrays.asList((UmsatzTreeNode[])selection);
@@ -348,7 +347,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Liefert alle Umsatzkategorien, die gerade angezeigt werden.
    * @return Liste aller Umsatz-Kategorien - also nicht nur die oberste Ebene.
@@ -364,6 +363,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     }
     return list;
   }
+
   /**
    * Fuegt das Element und die Kind-Elemente zur Liste hinzu.
    * @param root das Root-Element.

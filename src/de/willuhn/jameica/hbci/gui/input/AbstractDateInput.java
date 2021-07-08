@@ -31,11 +31,11 @@ public abstract class AbstractDateInput extends DateInput
 {
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static Map<String,Date> cache = new HashMap<String,Date>();
-  
+
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private String param = null;
-  
+
   /**
    * ct.
    * @param date
@@ -54,9 +54,9 @@ public abstract class AbstractDateInput extends DateInput
   {
     super(date,HBCI.DATEFORMAT);
     this.setName(i18n.tr("Datum"));
-    
+
     this.param = parameter != null ? parameter : "date";
-    
+
     // Listener zur Ueberwachung der Aenderungen
     this.addListener(new Listener() {
       public void handleEvent(Event event)
@@ -65,11 +65,10 @@ public abstract class AbstractDateInput extends DateInput
       }
     });
 
-
     // Wenn explizit ein Datum angegeben wurde, erzeugen wir keinen Vorschlag
     if (date != null)
       return;
-    
+
     // Jetzt ermitteln wir, ob wir in der aktuellen Sitzung schonmal aufgerufen wurden
     // Wenn das der Fall ist, erzeugen wir keine Vorschlaege mehr, sondern uebernehmen
     // den letzten Wert
@@ -100,7 +99,7 @@ public abstract class AbstractDateInput extends DateInput
     // b) Vorgabewert holen
     this.setValue(this.getDefault());
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.DateInput#setValue(java.lang.Object)
    */
@@ -109,7 +108,7 @@ public abstract class AbstractDateInput extends DateInput
     super.setValue(value);
     this.store();
   }
-  
+
   /**
    * Speichert das aktuelle Datum in den Settings und im Cache, damit
    * es beim naechsten Oeffnen der View wiederhergestellt wird.
@@ -121,8 +120,7 @@ public abstract class AbstractDateInput extends DateInput
     settings.setAttribute(this.param,d != null ? HBCI.DATEFORMAT.format(d) : null);
     cache.put(this.param,d);
   }
-  
-  
+
   /**
    * Liefert das zu verwendende Default-Datum.
    * @return das zu verwendende Default-Datum.

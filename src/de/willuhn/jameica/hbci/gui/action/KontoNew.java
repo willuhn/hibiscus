@@ -31,12 +31,11 @@ public class KontoNew implements Action
     {
       k = (Konto) context;
     }
-    
+
 		GUI.startView(de.willuhn.jameica.hbci.gui.views.KontoNew.class,k);
   }
 
 }
-
 
 /**********************************************************************
  * $Log: KontoNew.java,v $

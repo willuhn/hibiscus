@@ -63,7 +63,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
    * Zugriff auf die Settings des Export-Dialogs.
    */
   public final static Settings SETTINGS = new Settings(ExportDialog.class);
-  
+
   private final static int WINDOW_WIDTH = 550;
 
   private static DateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
@@ -103,9 +103,9 @@ public class ExportDialog extends AbstractDialog implements Extendable
 
     Input formats = getExporterList();
     this.group.addInput(formats);
-    
+
     this.exportEnabled = !(formats instanceof LabelInput);
-    
+
     CheckboxInput open = this.getOpenFile();
     open.setEnabled(this.exportEnabled);
     this.group.addInput(open);
@@ -131,10 +131,10 @@ public class ExportDialog extends AbstractDialog implements Extendable
 			}
 		},null,false,"process-stop.png");
 		this.group.addButtonArea(buttons);
-		
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Exportiert die Daten.
    * @throws ApplicationException
@@ -171,7 +171,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       fd.setFilterPath(path);
 
     final String s = fd.open();
-    
+
     if (s == null || s.length() == 0)
     {
       close();
@@ -179,7 +179,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     }
 
     final File file = new File(s);
-    
+
     // Wir merken uns noch das Verzeichnis vom letzten mal
     SETTINGS.setAttribute("lastdir",file.getParent());
 
@@ -203,7 +203,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
           monitor.setStatusText(i18n.tr("Daten exportiert nach {0}",s));
-          
+
           if (open)
           {
             GUI.getDisplay().asyncExec(new Runnable() {
@@ -246,6 +246,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       }
 
       public void interrupt() {}
+
       public boolean isInterrupted()
       {
         return false;
@@ -268,7 +269,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     }
     return this.openFile;
   }
-  
+
 	/**
 	 * Liefert eine Liste der verfuegbaren Exporter.
    * @return Liste der Exporter.
@@ -302,7 +303,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
         size++;
         ExpotFormat e = new ExpotFormat(exp,formats[j]);
         l.add(e);
-        
+
         String lf = e.format.getName();
         if (lastFormat != null && lf != null && lf.equals(lastFormat))
           selected = e;
@@ -330,7 +331,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
   {
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
    */
@@ -338,7 +339,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
   {
     return this.getClass().getName();
   }
-  
+
   /**
    * Liefert den Formular-Container zur Erweiterung durch Extensions.
    * @return der Formular-Container zur Erweiterung durch Extensions.
@@ -347,7 +348,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
   {
     return this.group;
   }
-  
+
   /**
    * Liefert den zu exportierenden Objekt-Typ.
    * @return der zu exportierenden Objekt-Typ.
@@ -356,7 +357,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
   {
     return this.type;
   }
-  
+
 	/**
 	 * Hilfsklasse zur Anzeige der Exporter.
    */
@@ -364,7 +365,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
 	{
 		private Exporter exporter   = null;
     private IOFormat format = null;
-		
+
 		private ExpotFormat(Exporter exporter, IOFormat format)
 		{
 			this.exporter = exporter;
@@ -412,7 +413,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
 	      return false;
 	    return this.getID().equals(arg0.getID());
     }
-    
+
     /**
      * Liefert den zugehoerigen Exporter.
      * @return der zugehoerige Exporter.

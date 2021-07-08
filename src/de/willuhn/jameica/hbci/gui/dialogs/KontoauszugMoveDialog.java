@@ -54,14 +54,14 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   private final static Settings settings = new Settings(KontoauszugMoveDialog.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static int WINDOW_WIDTH = 580;
-  
+
   private Kontoauszug[] list = null;
   private DirectoryInput target = null;
   private CheckboxInput overwrite = null;
   private CheckboxInput delete = null;
   private NotificationPanel error = null;
   private Button apply = null;
-  
+
   /**
    * ct.
    * @param list die Liste der zu verschiebenden Kontoauszuege.
@@ -70,16 +70,16 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   public KontoauszugMoveDialog(Kontoauszug[] list) throws ApplicationException
   {
     super(KontoauszugMoveDialog.POSITION_CENTER);
-    
+
     if (list == null || list.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Kontoauszüge aus"));
-    
+
     this.list = list;
-    
+
     this.setTitle(i18n.tr("Kontoauszüge verschieben"));
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer den Zielordner.
    * @return das Eingabefeld fuer den Zielordner.
@@ -91,7 +91,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
 
     String fallback = System.getProperty("user.home");
     String s = settings.getString("lastdir",fallback);
-    
+
     File dir = new File(s);
     if (!dir.exists() || !dir.canWrite() || !dir.isDirectory())
       dir = new File(fallback);
@@ -99,7 +99,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     this.target.setName(i18n.tr("Zielverzeichnis"));
 
     final Listener l = new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -109,7 +109,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     this.target.addListener(l);
     return this.target;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der eingestellt werden kann, ob vorhandene Dateien ueberschrieben werden sollen.
    * @return Checkbox, mit der eingestellt werden kann, ob vorhandene Dateien ueberschrieben werden sollen.
@@ -118,12 +118,12 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   {
     if (this.overwrite != null)
       return this.overwrite;
-    
+
     this.overwrite = new CheckboxInput(settings.getBoolean("overwrite",false));
     this.overwrite.setName(i18n.tr("Gleichnamige Dateien überschreiben, wenn sie im Zielverzeichnis bereits existieren"));
     return this.overwrite;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der eingestellt werden kann, ob die Dateien nach dem Verschieben geloescht werden sollen.
    * @return Checkbox, mit der eingestellt werden kann, ob die Dateien nach dem Verschieben geloescht werden sollen.
@@ -132,28 +132,28 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   {
     if (this.delete != null)
       return this.delete;
-    
+
     this.delete = new CheckboxInput(settings.getBoolean("delete",false));
     this.delete.setName(i18n.tr("Quelldateien nach dem Kopieren löschen"));
     return this.delete;
   }
-  
+
   /**
    * Prueft, ob die Auswahl korrekt ist.
    */
   private void check()
   {
     final String s = StringUtils.trimToNull((String) getTarget().getValue());
-    
+
     String text = null;
     boolean enable = false;
-    
+
     try
     {
       // Hier zeigen wir keinen Hinweistext an
       if (s == null)
         return;
-      
+
       // Checken, ob es ein Ordner ist und er beschreibbar ist
       File dir = new File(s);
       if (!dir.exists())
@@ -181,7 +181,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
       this.getApplyButton().setEnabled(enable);
     }
   }
-  
+
   /**
    * Liefert das Label fuer die Fehlermeldungen.
    * @return das Label fuer die Fehlermeldungen.
@@ -190,11 +190,11 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   {
     if (this.error != null)
       return this.error;
-    
+
     this.error = new NotificationPanel();
     return this.error;
   }
-  
+
   /**
    * Liefert den Apply-Button.
    * @return der Apply-Button.
@@ -203,7 +203,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   {
     if (this.apply != null)
       return this.apply;
-    
+
     this.apply = new Button(i18n.tr("Dateien jetzt verschieben"),new Action() {
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -212,7 +212,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
       }
     },null,false,"ok.png");
     this.apply.setEnabled(false); // initial deaktiviert.
-    
+
     return this.apply;
   }
 
@@ -227,7 +227,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
                           "klicken Sie anschließend auf \"Dateien jetzt verschieben\", um den Vorgang zu starten."),true);
 
     group.addInput(this.getTarget());
-    
+
     group.addHeadline(i18n.tr("Optionen"));
     group.addInput(this.getOverwrite());
     group.addInput(this.getDelete());
@@ -251,11 +251,11 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
       }
     },null,true,"process-stop.png");
     group.addButtonArea(b);
-    
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
     this.check();
   }
-  
+
   /**
    * Startet das Verschieben der Dateien.
    */
@@ -276,7 +276,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     final double factor = 100d / (double) list.length;
 
     Application.getController().start(new BackgroundTask() {
-      
+
       private boolean stop = false;
 
       @Override
@@ -284,7 +284,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
       {
         if (monitor != null)
           monitor.setStatusText(i18n.tr(delete ? "Verschiebe Dateien" : "Kopiere Dateien"));
-        
+
         for (int i=0;i<list.length;++i)
         {
           Kontoauszug k = list[i];
@@ -317,23 +317,23 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
             }
             //
             /////////////////////////////////////////////////////////////////////////////////////////
-            
+
             /////////////////////////////////////////////////////////////////////////////////////////
             // Zieldatei
             File target = new File(dir,k.getDateiname());
             //
             /////////////////////////////////////////////////////////////////////////////////////////
-            
+
             /////////////////////////////////////////////////////////////////////////////////////////
             // Kopieren
             boolean sourceExists  = source != null;
             boolean targetExists = target.exists();
             boolean same         = sourceExists && targetExists && source.getCanonicalFile().equals(target.getCanonicalFile());
-            
+
             // Wenn weder Quelle noch Ziel existieren, haben wir gar keine Datei
             if (!sourceExists && !targetExists)
               throw new ApplicationException(i18n.tr("Quell- und Zieldatei existieren nicht, kein Kopieren/Verschieben möglich"));
-            
+
             if (same)
               Logger.info("skip copying, source and target are the same file");
 
@@ -353,7 +353,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
                   if (monitor != null)
                     monitor.log("    " + i18n.tr("Überschreibe Datei {0}",target.getName()));
                 }
-                  
+
                 is = new FileInputStream(source);
                 os = new FileOutputStream(target);
                 src = is.getChannel();
@@ -391,7 +391,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
                 Logger.info("deleting " + uuid);
                 QueryMessage qm = new QueryMessage(uuid,null);
                 Application.getMessagingFactory().getMessagingQueue("jameica.messaging.del").sendSyncMessage(qm);
-                
+
                 // Die Temp-Datei "source" muessen wir nicht extra loeschen, die ist bereits mit "deleteOnExit" markiert
               }
               else
@@ -403,7 +403,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
             }
             //
             /////////////////////////////////////////////////////////////////////////////////////////
-            
+
           }
           catch (ApplicationException ae)
           {
@@ -417,7 +417,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
               monitor.log("    " + i18n.tr("fehlgeschlagen: {0}",e.getMessage()));
           }
         }
-        
+
         if (monitor != null)
         {
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
@@ -425,13 +425,13 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
           monitor.setStatusText(i18n.tr("Vorgang abgeschlossen"));
         }
       }
-      
+
       @Override
       public boolean isInterrupted()
       {
         return this.stop;
       }
-      
+
       @Override
       public void interrupt()
       {
@@ -450,5 +450,3 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   }
 
 }
-
-

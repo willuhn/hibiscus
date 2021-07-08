@@ -27,7 +27,7 @@ import de.willuhn.util.I18N;
 public class KontoauszugOpen implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -36,19 +36,17 @@ public class KontoauszugOpen implements Action
   {
     if (context == null || !(context instanceof Kontoauszug))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie den zu öffnenden Kontoauszug"));
-    
+
     Kontoauszug k = (Kontoauszug) context;
-    
+
     File file = KontoauszugPdfUtil.getFile(k);
     if (!file.exists() || !file.canRead())
       throw new ApplicationException(i18n.tr("Datei existiert nicht oder ist nicht lesbar"));
-    
+
     new Program().handleAction(file);
-    
+
     // Als gelesen markieren, sobald er geoeffnet wurde
     KontoauszugPdfUtil.markRead(true,k);
   }
 
 }
-
-

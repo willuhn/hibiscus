@@ -42,11 +42,10 @@ public class ProtokollList extends AbstractView
     }
     else
       GUI.getView().setTitle(i18n.tr("Protokoll des Kontos"));
-		
+
     control.getProtokoll().paint(getParent());
   }
 }
-
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $

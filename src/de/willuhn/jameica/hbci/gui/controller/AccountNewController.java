@@ -35,7 +35,7 @@ public class AccountNewController extends AbstractControl
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private List<InfoPanel> providers = null;
-  
+
   /**
    * ct.
    * @param view
@@ -44,7 +44,7 @@ public class AccountNewController extends AbstractControl
   {
     super(view);
   }
-  
+
   /**
    * Liefert eine Liste mit Info-Panels zu den verfuegbaren Account-Providern.
    * @return eine Liste mit Info-Panels zu den verfuegbaren Account-Providern.
@@ -57,7 +57,7 @@ public class AccountNewController extends AbstractControl
     this.providers = new ArrayList<InfoPanel>();
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     AccountService service = bs.get(AccountService.class);
-    
+
     List<AccountProvider> list = service.getProviders();
     for (final AccountProvider p:list)
     {
@@ -73,9 +73,7 @@ public class AccountNewController extends AbstractControl
       panel.addButton(button);
       this.providers.add(panel);
     }
-    
+
     return this.providers;
   }
 }
-
-

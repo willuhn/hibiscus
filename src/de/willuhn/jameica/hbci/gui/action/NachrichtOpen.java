@@ -34,7 +34,6 @@ public class NachrichtOpen implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: NachrichtOpen.java,v $
  * Revision 1.1  2009/07/17 08:42:57  willuhn

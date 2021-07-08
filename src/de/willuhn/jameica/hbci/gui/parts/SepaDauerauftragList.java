@@ -62,7 +62,7 @@ public class SepaDauerauftragList extends TablePart implements Part
     super(Settings.getDBService().createList(SepaDauerauftrag.class), action);
 
     final boolean bold = Settings.getBoldValues();
-    
+
     setFormatter(new TableFormatter()
     {
       public void format(TableItem item)
@@ -77,7 +77,7 @@ public class SepaDauerauftragList extends TablePart implements Part
             item.setFont(4,Font.BOLD.getSWTFont());
 
           item.setFont(!d.isActive() ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
-          
+
           if (d.getLetzteZahlung() != null && new Date().after(d.getLetzteZahlung()))
             item.setForeground(Color.COMMENT.getSWTColor());
         }
@@ -115,13 +115,13 @@ public class SepaDauerauftragList extends TablePart implements Part
     setRememberColWidths(true);
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SepaDauerauftragList());
-    
+
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende und geaenderte Dauerauftraege
     // informiert werden.
     this.mc = new TransferMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -159,12 +159,12 @@ public class SepaDauerauftragList extends TablePart implements Part
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
-      
+
       if (o == null)
         return;
-      
+
       // Checken, ob uns der Transfer-Typ interessiert
       if (!(o instanceof SepaDauerauftrag))
         return;
@@ -183,7 +183,7 @@ public class SepaDauerauftragList extends TablePart implements Part
               addItem(o);
               sort();
             }
-            
+
           }
           catch (Exception e)
           {

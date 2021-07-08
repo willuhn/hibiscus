@@ -88,9 +88,9 @@ public class DialogFactory
       Logger.warn("cached key seems to be wrong, asking user, passport: " + passport.getClass().getName());
       dirtyPINCache(passport);
     }
-    
+
     String pw = null;
-    
+
     if (!forceAsk && !secondTry)
     {
       PINEntry entry = getCachedPIN(passport);
@@ -142,12 +142,12 @@ public class DialogFactory
       return null;
 
     PINEntry entry = null;
-    
+
     // Cache checken - ob der fuer die ganze Sitzung stehen bleibt oder nur fuer die
     // Dauer der Synchronisierung, das entscheiden wir nicht hier sondern am Ende der
     // Synchronisierung
     entry = pinCache.get(key);
-    
+
     // Wenn wir noch nichts im Cache haben, schauen wir im Wallet - wenn das erlaubt ist
     if (entry == null && Settings.getStorePin() && (passport instanceof HBCIPassportPinTan))
     {
@@ -155,7 +155,7 @@ public class DialogFactory
       if (s != null)
       {
         byte[] data = Base64.decode(s);
-        
+
         Logger.info("pin loaded from wallet");
 
         // Uebernehmen wir gleich in den Cache, damit wir beim
@@ -165,10 +165,10 @@ public class DialogFactory
         pinCache.put(key,entry);
       }
     }
-    
+
     return entry;
   }
-  
+
   /**
    * Speichert die PIN temporaer fuer diese Session.
    * @param passport der Passport.
@@ -178,7 +178,7 @@ public class DialogFactory
   private static void setCachedPIN(HBCIPassport passport, String pin) throws Exception
   {
     String key = getCacheKey(passport);
-    
+
     // Kein Key, dann muessen wir nicht cachen
     if (key == null)
       return;
@@ -188,7 +188,7 @@ public class DialogFactory
     // Synchronisierung
     PINEntry entry = new PINEntry(pin);
     pinCache.put(key,entry);
-    
+
     // Permanentes Speichern der PIN gibts nur bei PIN/TAN, da dort ueber
     // die TAN eine weitere Autorisierung bei der Ausfuehrung von Geschaeftsvorfaellen
     // mit Geldfluss stattfindet. Bei DDV/RDH koennte man sonst beliebig Geld
@@ -201,7 +201,7 @@ public class DialogFactory
       Settings.getWallet().set(key,Base64.encode(entry.crypted));
     }
   }
-  
+
   /**
    * Loescht den PIN-Cache.
    * BUGZILLA 349
@@ -234,7 +234,7 @@ public class DialogFactory
     // Denn ohne Cache gibts auch keinen Store.
     clearPINStore(passport);
   }
-  
+
   /**
    * Markiert die PIN des Passports als Dirty - zum Beispiel aufgrund eines Fehlers.
    * Das fuehrt dazu, dass die PIN beim naechsten Mal neu erfragt wird, aber im Passwort-Dialog
@@ -251,7 +251,7 @@ public class DialogFactory
       clearPINCache(passport);
       return;
     }
-    
+
     if (passport != null)
     {
       String key = getCacheKey(passport);
@@ -261,7 +261,7 @@ public class DialogFactory
       PINEntry entry = pinCache.get(key);
       if (entry == null)
         return;
-      
+
       Logger.warn("mark pin cache dirty for single passport");
       entry.dirty = true;
       return;
@@ -276,7 +276,7 @@ public class DialogFactory
       }
     }
   }
-  
+
   /**
    * Loescht den permanenten Store mit den PINs.
    * @param passport der Passport, dessen PIN geloescht werden soll.
@@ -318,7 +318,7 @@ public class DialogFactory
       Logger.error("unable to clear pin cache",e);
     }
   }
-  
+
   /**
    * Hilfsfunktion zum Ermitteln des Keys, zu dem die PIN gespeichert ist.
    * @param passport
@@ -337,11 +337,11 @@ public class DialogFactory
     // PIN/TAN
     if (passport instanceof HBCIPassportPinTan)
       key = ((HBCIPassportPinTan)passport).getFileName();
-      
+
     // Schluesseldatei
     else if (passport instanceof FileBasedPassport)
       key = ((FileBasedPassport)passport).getFilename();
-      
+
     // Chipkarte
     else if (passport instanceof HBCIPassportChipcard)
     {
@@ -363,7 +363,7 @@ public class DialogFactory
     Logger.warn("unknown passport type [" + passport.getClass().getName() + "], don't know, how to cache pin");
     return null;
   }
-  
+
   /**
    * Kapselt einen PIN-Eintrag.
    */
@@ -371,7 +371,7 @@ public class DialogFactory
   {
     private byte[] crypted;
     private boolean dirty = false;
-    
+
     /**
      * ct.
      * @param pin die PIN.
@@ -404,7 +404,7 @@ public class DialogFactory
     {
       if (this.crypted == null)
         return null;
-      
+
       ByteArrayInputStream bis  = new ByteArrayInputStream(this.crypted);
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       Application.getSSLFactory().decrypt(bis,bos);
@@ -412,5 +412,5 @@ public class DialogFactory
       return s != null && s.length() > 0 ? s : null;
     }
   }
-  
+
 }

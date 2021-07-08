@@ -35,7 +35,7 @@ import de.willuhn.util.I18N;
 public class SepaSammelUeberweisungSplit implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -45,22 +45,21 @@ public class SepaSammelUeberweisungSplit implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Sammelaufträge aus"));
 
     SepaSammelUeberweisung[] source = null;
-    
+
     if (context instanceof SepaSammelUeberweisung)
       source = new SepaSammelUeberweisung[]{(SepaSammelUeberweisung) context};
     else
       source = (SepaSammelUeberweisung[]) context;
-    
+
     if (source.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
-    
     // Handler fuer die Transaktion
     AuslandsUeberweisung tx = null;
-    
+
     // Die Liste der Buchungen
     List<SepaSammelUeberweisungBuchung> buchungen = new ArrayList<SepaSammelUeberweisungBuchung>();
-        
+
     try
     {
       HBCIDBService service = Settings.getDBService();
@@ -73,7 +72,7 @@ public class SepaSammelUeberweisungSplit implements Action
         List<SepaSammelUeberweisungBuchung> b = l.getBuchungen();
         buchungen.addAll(b);
       }
-      
+
       // Abfrage anzeigen, ob die Einzelauftraege geloescht werden sollen wenn mindestens einer in der DB existierte
       boolean delete = false;
       if (inDb)
@@ -83,16 +82,16 @@ public class SepaSammelUeberweisungSplit implements Action
         if (o != null)
           delete = ((Boolean)o).booleanValue();
       }
-      
+
       int count = 0;
-      
+
       // OK, wir duerfen weiter machen
       for (SepaSammelUeberweisungBuchung b:buchungen)
       {
         SepaSammelUeberweisung st = b.getSammelTransfer();
-        
+
         AuslandsUeberweisung u = (AuslandsUeberweisung) service.createObject(AuslandsUeberweisung.class,null);
-        
+
         if (tx == null)
         {
           tx = u;
@@ -109,11 +108,11 @@ public class SepaSammelUeberweisungSplit implements Action
         u.setPurposeCode(b.getPurposeCode());
         u.setTermin(st.getTermin());
         u.store();
-        
+
         Application.getMessagingFactory().sendMessage(new ImportMessage(u));
         count++;
       }
-      
+
       // Jetzt noch die Sammelueberweisungen loeschen
       if (delete)
       {
@@ -148,13 +147,13 @@ public class SepaSammelUeberweisungSplit implements Action
           Logger.error("unable to rollback transaction",e);
         }
 		  }
-		  
+
 		  if (e instanceof OperationCanceledException)
 		    throw (OperationCanceledException) e;
-		  
+
 		  if (e instanceof ApplicationException)
 		    throw (ApplicationException) e;
-		  
+
       Logger.error("error while merging jobs",e);
       throw new ApplicationException(i18n.tr("Teilen der Sammelüberweisungen fehlgeschlagen: {0}",e.getMessage()));
 		}

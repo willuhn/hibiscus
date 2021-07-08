@@ -29,12 +29,11 @@ public class NachrichtList extends AbstractView
   public void bind() throws Exception {
 
 		GUI.getView().setTitle(i18n.tr("System-Nachrichten"));
-		
+
 		NachrichtControl control = new NachrichtControl(this);
     control.getListe().paint(getParent());
   }
 }
-
 
 /**********************************************************************
  * $Log: NachrichtList.java,v $

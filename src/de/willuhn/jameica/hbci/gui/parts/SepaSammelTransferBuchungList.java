@@ -73,7 +73,7 @@ public class SepaSammelTransferBuchungList extends TablePart
   public SepaSammelTransferBuchungList(final List<SepaSammelTransfer> list, Action action) throws RemoteException
   {
     super(list,action);
-    
+
     addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
       public String format(Object o)
       {
@@ -101,14 +101,14 @@ public class SepaSammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
 
     final boolean bold = Settings.getBoldValues();
-    
+
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         try {
           SepaSammelTransferBuchung b = (SepaSammelTransferBuchung) item.getData();
           if (b.getSammelTransfer().ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
-          
+
           if (bold)
             item.setFont(5,Font.BOLD.getSWTFont());
         }
@@ -119,7 +119,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     });
     setRememberColWidths(true);
     setRememberOrder(true);
-    
+
     this.addSelectionListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -128,7 +128,7 @@ public class SepaSammelTransferBuchungList extends TablePart
       }
     });
   }
- 
+
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
@@ -143,7 +143,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     });
     super.paint(parent);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
    */
@@ -155,7 +155,7 @@ public class SepaSammelTransferBuchungList extends TablePart
       Object o = this.getSelection();
       int size = this.size();
       boolean selective = (o != null && (o instanceof Object[]));
-      
+
       List items = selective ? Arrays.asList((Object[])o) : this.getItems(false);
 
       double sum = 0.0d;
@@ -164,12 +164,12 @@ public class SepaSammelTransferBuchungList extends TablePart
       for (Object item:items)
       {
         SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) item;
-        
+
         if (curr == null)
           curr = t.getSammelTransfer().getKonto().getWaehrung();
         sum += t.getBetrag();
       }
-      
+
       if (curr == null)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
@@ -184,7 +184,6 @@ public class SepaSammelTransferBuchungList extends TablePart
     return super.getSummary();
   }
 
-  
   /**
    * Hilfsklasse damit wir ueber importierte Buchungen informiert werden.
    */
@@ -214,10 +213,10 @@ public class SepaSammelTransferBuchungList extends TablePart
       if (message == null || !(message instanceof ImportMessage))
         return;
       final GenericObject o = ((ImportMessage)message).getObject();
-      
+
       if (o == null || !(o instanceof SepaSammelTransferBuchung))
         return;
-      
+
       GUI.getDisplay().syncExec(new Runnable() {
         public void run()
         {

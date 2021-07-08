@@ -50,11 +50,11 @@ public class DauerauftragControl extends AbstractTransferControl {
 	private DateInput ersteZahlung	   = null;
 	private DateInput letzteZahlung	   = null;
 	private SelectInput textschluessel = null;
-	
+
   private TypedProperties bpd        = null;
 
   private DauerauftragList list      = null;
-  
+
   /**
    * ct.
    * @param view
@@ -70,7 +70,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 	{
 	  return (Dauerauftrag) this.getCurrentObject();
 	}
-	
+
 	/**
 	 * Liefert die passenden BPD-Parameter fuer den Auftrag.
 	 * @return die BPD.
@@ -131,13 +131,13 @@ public class DauerauftragControl extends AbstractTransferControl {
 		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),td);
 		turnus.setValue(t);
     turnus.setMandatory(true);
-    
+
     if (da.isActive())
     {
       boolean changable = getBPD().getBoolean("turnuseditable",true) && getBPD().getBoolean("timeuniteditable",true);
       turnus.setEnabled(changable);
     }
-    
+
     turnus.disableClientControl(); // Client-Control generell deaktivieren - auch wenn Aenderungen erlaubt sind
 		return turnus;
 	}
@@ -164,7 +164,7 @@ public class DauerauftragControl extends AbstractTransferControl {
 	{
 		if (ersteZahlung != null)
 			return ersteZahlung;
-    
+
     final Dauerauftrag t = (Dauerauftrag) getTransfer();
     Date d = t.getErsteZahlung();
     if (d == null)
@@ -179,10 +179,10 @@ public class DauerauftragControl extends AbstractTransferControl {
     ersteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der ersten Zahlung ein"));
     ersteZahlung.setMandatory(true);
     ersteZahlung.addListener(this.nextDate);
-    
+
     if (t.isActive())
       ersteZahlung.setEnabled(getBPD().getBoolean("firstexeceditable",true));
-    
+
     this.nextDate.handleEvent(null); // einmal ausloesen fuer initialen Text
 		return ersteZahlung;
 	}
@@ -210,12 +210,11 @@ public class DauerauftragControl extends AbstractTransferControl {
         // Nur, um den Parser zu triggern
         letzteZahlung.getValue();
       }
-    
+
     });
 
     if (t.isActive())
       letzteZahlung.setEnabled(getBPD().getBoolean("lastexeceditable",true));
-    
     return letzteZahlung;
 	}
 
@@ -232,10 +231,10 @@ public class DauerauftragControl extends AbstractTransferControl {
     Dauerauftrag t = (Dauerauftrag) getTransfer();
 
     textschluessel = new SelectInput(TextSchluessel.get(TextSchluessel.SET_DAUER),TextSchluessel.get(t.getTextSchluessel()));
-    
+
     if (t.isActive())
       textschluessel.setEnabled(getBPD().getBoolean("keyeditable",true));
-    
+
     return textschluessel;
   }
 
@@ -250,7 +249,6 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
-
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
    */
@@ -260,10 +258,10 @@ public class DauerauftragControl extends AbstractTransferControl {
     Dauerauftrag t = (Dauerauftrag) getTransfer();
     if (t.isActive())
       i.setEnabled(getBPD().getBoolean("valueeditable",true));
-    
+
     return i;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerName()
    */
@@ -335,7 +333,6 @@ public class DauerauftragControl extends AbstractTransferControl {
     return true;
   }
 
-  
   /**
    * Listener, der das Datum der naechsten Zahlung aktualisiert.
    */
@@ -369,7 +366,6 @@ public class DauerauftragControl extends AbstractTransferControl {
   }
 
 }
-
 
 /**********************************************************************
  * $Log: DauerauftragControl.java,v $

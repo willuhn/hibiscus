@@ -29,7 +29,7 @@ public class ChartDataUmsatzTyp implements ChartData
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private int type = UmsatzTyp.TYP_EGAL;
   private int days = -1;
-  
+
   /**
    * @param typ Art der Umsaetze.
    * @see UmsatzTyp#TYP_AUSGABE
@@ -64,7 +64,7 @@ public class ChartDataUmsatzTyp implements ChartData
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
     if (this.type != UmsatzTyp.TYP_EGAL)
       list.addFilter("umsatztyp = " + this.type);
-    
+
     List<Entry> result = new ArrayList<Entry>();
     while (list.hasNext())
     {
@@ -96,14 +96,14 @@ public class ChartDataUmsatzTyp implements ChartData
   {
     return "name";
   }
-  
+
   /**
    * Hilfsklasse, weil wir nur Absolut-Werte wollen.
    */
   public class Entry
   {
     private UmsatzTyp ut = null;
-    
+
     /**
      * ct.
      * @param ut der Umsatz-Typ.
@@ -112,7 +112,7 @@ public class ChartDataUmsatzTyp implements ChartData
     {
       this.ut = ut;
     }
-    
+
     /**
      * Liefert den Umsatz als Absolut-Wert.
      * @return der Umsatz als Absolut-Wert.
@@ -122,7 +122,7 @@ public class ChartDataUmsatzTyp implements ChartData
     {
       return Math.abs(this.ut.getUmsatz(days));
     }
-    
+
     /**
      * Liefert den Namen der Kategorie.
      * @return der Namen der Kategorie.
@@ -134,7 +134,6 @@ public class ChartDataUmsatzTyp implements ChartData
     }
   }
 }
-
 
 /*********************************************************************
  * $Log: ChartDataUmsatzTyp.java,v $

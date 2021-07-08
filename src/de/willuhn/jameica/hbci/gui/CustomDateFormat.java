@@ -39,7 +39,7 @@ public class CustomDateFormat extends SimpleDateFormat
   {
     if (source == null || source.length() == 0)
       return null;
-    
+
     switch (source.length())
     {
       case 8:
@@ -58,7 +58,6 @@ public class CustomDateFormat extends SimpleDateFormat
     return super.parse(source);
   }
 }
-
 
 /*********************************************************************
  * $Log: CustomDateFormat.java,v $

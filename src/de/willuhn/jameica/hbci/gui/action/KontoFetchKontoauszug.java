@@ -36,7 +36,6 @@ public class KontoFetchKontoauszug implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
 	 * Fehlt das Konto, dann wird es in einem Dialog abgefragt.
@@ -47,7 +46,7 @@ public class KontoFetchKontoauszug implements Action
     Konto k = null;
     if (context instanceof Konto)
       k = (Konto) context;
-    
+
     // Wir zeigen den Dialog immer an. Auch wenn ein Konto uebergeben wurde.
     // Wenn aber eins angegeben ist, waehlen wir es vor.
     // 1) Wir zeigen einen Dialog an, in dem der User das Konto auswaehlt
@@ -76,10 +75,10 @@ public class KontoFetchKontoauszug implements Action
     SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
     SynchronizeBackend backend = engine.getBackend(type,k);
     SynchronizeJob job         = backend.create(type,k);
-    
+
     job.setContext(SynchronizeJob.CTX_ENTITY,k);
     job.setContext(SynchronizeJobKontoauszugPdf.CTX_FORCE,true);
-    
+
     backend.execute(Arrays.asList(job));
   }
 

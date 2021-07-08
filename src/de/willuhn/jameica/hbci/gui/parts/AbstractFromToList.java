@@ -61,7 +61,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
 {
   protected final static I18N i18n         = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   protected final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-  
+
   private KontoInput konto       = null;
   private Input from             = null;
   private Input to               = null;
@@ -70,7 +70,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   private Container left         = null;
 
   protected Listener listener    = null;
-  
+
   private ButtonArea buttons     = null;
 
   /**
@@ -80,9 +80,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
   public AbstractFromToList(Action action)
   {
     super(action);
-    
+
     this.buttons = new ButtonArea();
-    
+
     this.listener = new Listener() {
       public void handleEvent(Event event) {
         // Wenn das event "null" ist, kann es nicht
@@ -94,12 +94,12 @@ public abstract class AbstractFromToList extends TablePart implements Part
         handleReload(event == null);
       }
     };
-    
+
     this.setRememberOrder(true);
     this.setRememberColWidths(true);
     this.setRememberState(true);
     this.setSummary(true);
-    
+
     this.addSelectionListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -108,7 +108,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
       }
     });
   }
-  
+
   /**
    * Ueberschrieben, um die Summe zu berechnen.
    * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
@@ -126,13 +126,13 @@ public abstract class AbstractFromToList extends TablePart implements Part
       {
         return super.getSummary();
       }
-      
+
       // Andernfalls berechnen wir die Summe
       Object[] list = (Object[]) o;
       BigDecimal sum = this.calculateSum(list);
       if (sum == null)
         return super.getSummary();
-      
+
       return i18n.tr("{0} Aufträge, {1} markiert, Summe: {2} {3}",Integer.toString(size),Integer.toString(list.length),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE);
     }
     catch (Exception e)
@@ -141,7 +141,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
     return super.getSummary();
   }
-  
+
   /**
    * Liefert die Summe der angegebenen Auftraege.
    * @param selected die angegebenen Auftraege.
@@ -152,9 +152,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
     // Keine Ahnung, wie das zu berechnen ist
     if (!(selected instanceof Transfer[]))
       return null;
-    
+
     BigDecimal sum = new BigDecimal(0);
-    
+
     Transfer[] list = (Transfer[]) selected;
     for (Transfer u:list)
     {
@@ -162,7 +162,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     }
     return sum;
   }
-  
+
   /**
    * Liefert das Eingabe-Datum fuer das Start-Datum.
    * @return Eingabe-Feld.
@@ -171,14 +171,14 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     if (this.from != null)
       return this.from;
-    
+
     this.from = new DateFromInput();
     this.from.setName(i18n.tr("Von"));
     this.from.setComment(null);
     this.from.addListener(this.listener);
     return this.from;
   }
-  
+
   /**
    * Liefert ein Eingabefeld fuer einen Suchbegriff.
    * @return Eingabefeld fuer einen Suchbegriff.
@@ -192,7 +192,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.text.setName(i18n.tr("Suchbegriff"));
     return this.text;
   }
-  
+
   /**
    * Liefert ein Auswahlfeld fuer das Konto.
    * @return Auswahlfeld fuer das Konto.
@@ -202,7 +202,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     if (this.konto != null)
       return this.konto;
-    
+
     this.konto = new KontoInput(null,KontoFilter.ALL);
     this.konto.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.konto.setSupportGroups(true);
@@ -211,7 +211,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.konto.addListener(this.listener);
     return this.konto;
   }
-  
+
   /**
    * Liefert das Eingabe-Datum fuer das End-Datum.
    * @return Eingabe-Feld.
@@ -227,7 +227,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.to.addListener(this.listener);
     return this.to;
   }
-  
+
   /**
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
@@ -236,7 +236,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     if (this.range != null)
       return this.range;
-    
+
     this.range = new RangeInput(this.getFrom(),this.getTo());
     this.range.addListener(new Listener()
     {
@@ -246,10 +246,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
           handleReload(true);
       }
     });
-    
+
     return this.range;
   }
-
 
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
@@ -262,22 +261,22 @@ public abstract class AbstractFromToList extends TablePart implements Part
     TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
     ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
-    
+
     {
       this.left = new SimpleContainer(cols.getComposite());
       this.left.addInput(this.getKonto());
-      
+
       Input t = this.getText();
       this.left.addInput(t);
-      
+
       // Duerfen wir erst nach dem Zeichnen
       t.getControl().addKeyListener(new DelayedAdapter());
-      
+
     }
-    
+
     {
       Container right = new SimpleContainer(cols.getComposite());
-      
+
       right.addInput(this.getRange());
       MultiInput range = new MultiInput(this.getFrom(),this.getTo());
       right.addInput(range);
@@ -291,7 +290,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
       }
     },null,true,"view-refresh.png");
     this.buttons.paint(parent);
-   
+
     // Erstbefuellung
     GenericIterator items = getList(getKonto().getValue(),(Date)getFrom().getValue(),(Date)getTo().getValue(),(String)getText().getValue());
     if (items != null)
@@ -303,7 +302,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
     super.paint(parent);
   }
-  
+
   /**
    * Liefert den linken Container im Filter-Bereich.
    * @return der linke Container.
@@ -312,7 +311,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     return this.left;
   }
-  
+
   /**
    * Liefert die Button-Area der Komponente.
    * @return die Buttons.
@@ -321,7 +320,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     return this.buttons;
   }
-  
+
   /**
    * Liefert die Liste der fuer diesen Zeitraum geltenden Daten.
    * @param konto das Konto oder die Gruppe. Kann null sein.
@@ -332,7 +331,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
    * @throws RemoteException
    */
   protected abstract DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException;
-  
+
   /**
    * Aktualisiert die Tabelle der angezeigten Daten.
    * Die Aktualisierung geschieht um einige Millisekunden verzoegert,
@@ -348,7 +347,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
       final Date dfrom   = (Date) getFrom().getValue();
       final Date dto     = (Date) getTo().getValue();
       final String text  = (String) getText().getValue();
-      
+
       if (!force)
       {
         // Wenn es kein forcierter Reload ist, pruefen wir,
@@ -379,14 +378,14 @@ public abstract class AbstractFromToList extends TablePart implements Part
             GenericIterator items = getList(konto,dfrom,dto,text);
             if (items == null)
               return;
-            
+
             items.begin();
             while (items.hasNext())
               addItem(items.next());
-            
+
             // Sortierung wiederherstellen
             sort();
-            
+
             // Speichern der Werte aus den Filter-Feldern.
             settings.setAttribute("transferlist.filter.text",text);
           }
@@ -404,7 +403,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Tabelle"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Prueft, ob seit der letzten Aktion Eingaben geaendert wurden.
    * Ist das nicht der Fall, muss die Tabelle nicht neu geladen werden.
@@ -414,7 +413,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     return InputCompat.valueHasChanged(konto, from, to, text);
   }
-  
+
   /**
    * Da KeyAdapter/KeyListener nicht von swt.Listener abgeleitet
    * sind, muessen wir leider dieses schraege Konstrukt verenden,
@@ -432,7 +431,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
         // hier kommt dann das verzoegerte Event an.
         handleReload(true);
       }
-    
+
     });
 
     /**

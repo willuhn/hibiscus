@@ -31,7 +31,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 
 	private LastschriftList table      = null;
   private SelectInput textschluessel = null;
-	
+
   /**
    * ct.
    * @param view
@@ -40,7 +40,6 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
   {
     super(view);
   }
-
 
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
@@ -63,7 +62,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
     table = new de.willuhn.jameica.hbci.gui.parts.LastschriftList(new LastschriftNew());
 		return table;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTextSchluessel()
    */

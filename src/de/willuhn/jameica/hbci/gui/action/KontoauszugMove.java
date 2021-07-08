@@ -60,5 +60,3 @@ public class KontoauszugMove implements Action
   }
 
 }
-
-

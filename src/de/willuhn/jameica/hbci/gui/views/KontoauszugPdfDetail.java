@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public class KontoauszugPdfDetail extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
@@ -38,7 +38,7 @@ public class KontoauszugPdfDetail extends AbstractView
   public void bind() throws Exception
   {
     GUI.getView().setTitle(i18n.tr("Elektronischer Kontoauszug"));
-    
+
     final KontoauszugPdfControl control = new KontoauszugPdfControl(this);
 
     SimpleContainer cont = new SimpleContainer(getParent());
@@ -54,7 +54,7 @@ public class KontoauszugPdfDetail extends AbstractView
       left.addInput(control.getNummer());
       left.addLabelPair(i18n.tr("Von"),new MultiInput(control.getVonDatum(),control.getBisDatum()));
     }
-    
+
     left.addHeadline(i18n.tr("Abruf"));
     {
       left.addInput(control.getAbrufdatum());
@@ -100,5 +100,3 @@ public class KontoauszugPdfDetail extends AbstractView
   }
 
 }
-
-

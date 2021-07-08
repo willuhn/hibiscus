@@ -23,7 +23,6 @@ public class SaldoChart extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
@@ -36,7 +35,6 @@ public class SaldoChart extends AbstractView
   }
 
 }
-
 
 /*********************************************************************
  * $Log: SaldoChart.java,v $

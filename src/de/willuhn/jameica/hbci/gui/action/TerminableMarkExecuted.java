@@ -45,20 +45,20 @@ public class TerminableMarkExecuted implements Action
       t = new Terminable[]{(Terminable) context};
     else
       t = (Terminable[]) context;
-    
+
     YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
     d.setTitle(i18n.tr("Sicher?"));
     if (t.length == 1)
       d.setText(i18n.tr("Sind Sie sicher, dass Sie diesen Auftrag als \"ausgeführt\" markieren wollen?\nDies kann nicht rückgängig gemacht werden."));
     else
       d.setText(i18n.tr("Sind Sie sicher, dass Sie diese {0} Aufträge als \"ausgeführt\" markieren wollen?\nDies kann nicht rückgängig gemacht werden.",""+t.length));
-    
+
     try
     {
       Boolean b = (Boolean) d.open();
       if (b == null || !b.booleanValue())
         return;
-      
+
       for (int i=0;i<t.length;++i)
       {
         t[i].setAusgefuehrt(true);
@@ -97,7 +97,7 @@ public class TerminableMarkExecuted implements Action
       Logger.error("unabel to mark transfers as executed",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Markieren als \"ausgeführt\""),StatusBarMessage.TYPE_ERROR));
     }
-    
+
   }
 
 }
