@@ -30,7 +30,7 @@ public interface EinnahmeAusgabeZeitraum extends GenericObject
    * @return das End-Datum.
    */
   public Date getEnddatum();
-  
+
   /**
    * Liefert den Beschreibungstext der Zeile.
    * @return der Beschreibungstext der Zeile.

@@ -63,21 +63,21 @@ public interface Protokoll extends HibiscusDBObject {
    * @throws RemoteException
    */
   public int getTyp() throws RemoteException;
-	
+
 	/**
 	 * Speichert das Konto, zu dem dieser Log-Eintrag gehoert.
    * @param konto Konto.
    * @throws RemoteException
    */
   public void setKonto(Konto konto) throws RemoteException;
-	
+
 	/**
 	 * Speichert den Kommentar zu diesem Log-Eintrag.
    * @param kommentar Kommentar.
    * @throws RemoteException
    */
   public void setKommentar(String kommentar) throws RemoteException;
-	
+
 	/**
 	 * Speichert den Typ des Log-Eintrages.
 	 * Zur Codierung siehe die Konstanten TYP_*.
@@ -85,10 +85,8 @@ public interface Protokoll extends HibiscusDBObject {
    * @throws RemoteException
    */
   public void setTyp(int typ) throws RemoteException;
-	
-	
-}
 
+}
 
 /**********************************************************************
  * $Log: Protokoll.java,v $

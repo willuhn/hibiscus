@@ -79,12 +79,12 @@ public class HBCI extends AbstractPlugin
    * Mapper von HBCI4Java nach jameica Loglevels
    */
   public final static HashMap LOGMAPPING = new HashMap();
-  
+
   private final static String HBCI4JAVA_VERSION = "3.1.55";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
-  
+
   /**
    * ct.
    */
@@ -116,7 +116,6 @@ public class HBCI extends AbstractPlugin
         service.checkConsistency();
       }
     });
-    
 
     /////////////////////////////////////////////////////////////////
     // Passport-Verzeichnis ggf. automatisch anlegen
@@ -135,14 +134,14 @@ public class HBCI extends AbstractPlugin
   public void install() throws ApplicationException
   {
     call(new ServiceCall() {
-    
+
       public void call(HBCIDBService service) throws ApplicationException, RemoteException
       {
         service.install();
       }
     });
   }
-  
+
   /**
    * @see de.willuhn.jameica.plugin.AbstractPlugin#uninstall(boolean)
    */
@@ -150,7 +149,7 @@ public class HBCI extends AbstractPlugin
   {
     if (!deleteUserData)
       return;
-    
+
     try
     {
       Logger.info("deleting hibiscus wallet");
@@ -190,7 +189,7 @@ public class HBCI extends AbstractPlugin
       //////////////////////////////////
       // Callback erzeugen
       this.callback = null;
-      
+
       final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
 
       if (callbackClass != null && callbackClass.length() > 0)
@@ -206,7 +205,7 @@ public class HBCI extends AbstractPlugin
           Logger.error("unable to load custom callback - fallback to default",t);
         }
       }
-      
+
       if (this.callback == null)
       {
         if (Application.inServerMode())
@@ -216,16 +215,15 @@ public class HBCI extends AbstractPlugin
       }
       //////////////////////////////////
 
-
       this.hbciProps = new Properties();
-      
+
       Version v = getManifest().getVersion(); // client.product.name darf hoechstens 25 Zeichen lang sein
       this.hbciProps.put("client.product.name","A44C2953982351617D475443E"); // Das ist die offizielle Produktkennung von Hibiscus - siehe http://hbci-zka.de/register/register_faq.htm
       this.hbciProps.put("client.product.version",v.getMajor() + "." + v.getMinor()); // Maximal 5 Zeichen
-      
+
       // Default-Passport-Format Legacy
       this.hbciProps.put("passport.format",                    "LegacyFormat");
-      
+
       // Die Passports, die im Fehlerfall einfach neu erstellt werden koennen, konvetieren wir auf AESFormat
       this.hbciProps.put("passport.format.HBCIPassportPinTan", "AESFormat");
       this.hbciProps.put("passport.format.HBCIPassportDDV",    "AESFormat");
@@ -235,7 +233,7 @@ public class HBCI extends AbstractPlugin
 
       // Die Schluesseldateien lassen wir mal noch auf dem Legacy-Format. Denn wenn wir da einen Fehler haben, geht die kaputt
       this.hbciProps.put("passport.format.HBCIPassportRDHNew", "LegacyFormat");
-      
+
       //////////////////////////////////
       // Log-Level
       int logLevel = HBCIUtils.LOG_INFO; // Default
@@ -251,13 +249,13 @@ public class HBCI extends AbstractPlugin
       }
       this.hbciProps.put("log.loglevel.default",""+logLevel);
       this.hbciProps.put("client.errors.ignoreWrongDataSyntaxErrors","yes"); // BUGZILLA 1129
-      
+
       // Wenn das Jameica-Loglevel auf DEBUG oder hoeher steht, aktivieren wir per Default das SSL-Logging von HBCI4Java
       if (Logger.isLogging(Level.DEBUG))
         this.hbciProps.put("log.ssl.enable","1");
-        
+
       //////////////////////////////////
-      
+
       //////////////////////////////////
       // Generische Addon-Parameter
       File addonprops = new File(getResources().getWorkPath(),"hbci4java.properties");
@@ -269,7 +267,7 @@ public class HBCI extends AbstractPlugin
           is = new BufferedInputStream(new FileInputStream(addonprops));
           Properties p = new Properties();
           p.load(is);
-          
+
           if (p.size() > 0)
           {
             Logger.info("applying hbci4java properties from " + addonprops + ": "+ p.toString());
@@ -295,7 +293,7 @@ public class HBCI extends AbstractPlugin
       //////////////////////////////////
 
       HBCIUtils.init(this.hbciProps,this.callback);
-      
+
       final String version = HBCIUtils.version();
       if (version != null && !HBCI4JAVA_VERSION.equals(version))
       {
@@ -312,7 +310,7 @@ public class HBCI extends AbstractPlugin
       throw new ApplicationException(getResources().getI18N().tr("Fehler beim Initialisieren des HBCI-Subsystems"),e);
     }
   }
-  
+
   /**
    * Liefert den aktuellen HBCI-Callback.
    * @return liefert den verwendeten HBCICallback.
@@ -321,7 +319,7 @@ public class HBCI extends AbstractPlugin
   {
     return this.callback;
   }
-  
+
   /**
    * Liefert die Properties, mit denen HBCI4Java initialisiert wurde.
    * @return die Properties, mit denen HBCI4Java initialisiert wurde.
@@ -330,7 +328,7 @@ public class HBCI extends AbstractPlugin
   {
     return this.hbciProps;
   }
-  
+
   /**
    * Hilfsmethode zum bequemen Ausfuehren von Aufrufen auf dem Service.
    */
@@ -343,7 +341,7 @@ public class HBCI extends AbstractPlugin
      */
     public void call(HBCIDBService service) throws ApplicationException, RemoteException;
   }
-  
+
   /**
    * Hilfsmethode zum bequemen Ausfuehren von Methoden auf dem Service.
    * @param call der Call.
@@ -372,7 +370,7 @@ public class HBCI extends AbstractPlugin
       Logger.error("unable to init db service",e);
       I18N i18n = getResources().getI18N();
       String msg = i18n.tr("Hibiscus-Datenbank konnte nicht initialisiert werden.\n\n{0} ", e.getMessage());
-      
+
       // Wenn wir die H2-DB verwenden, koennte es sich um eine korrupte Datenbank handeln
       String driver = HBCIDBService.SETTINGS.getString("database.driver",null);
       if (driver != null && driver.equals(DBSupportH2Impl.class.getName()))
@@ -401,5 +399,5 @@ public class HBCI extends AbstractPlugin
       }
     }
   }
-  
+
 }

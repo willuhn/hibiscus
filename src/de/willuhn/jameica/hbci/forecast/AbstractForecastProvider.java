@@ -54,7 +54,7 @@ public abstract class AbstractForecastProvider<T extends HibiscusDBObject> imple
       Logger.warn("unable to determine schedule provider for " + this.getClass().getSimpleName());
       return result;
     }
-    
+
     List<Schedule<T>> list = provider.getSchedules(k,from,to);
 
     // In Values kopieren
@@ -85,8 +85,6 @@ public abstract class AbstractForecastProvider<T extends HibiscusDBObject> imple
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: AbstractForecastProvider.java,v $

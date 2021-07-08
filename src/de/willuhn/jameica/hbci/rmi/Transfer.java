@@ -44,21 +44,21 @@ public interface Transfer extends Remote
    * @throws RemoteException
    */
   public double getBetrag() throws RemoteException;
-	
+
 	/**
 	 * Liefert die Zeile 1 des Verwendungszwecks.
    * @return Zeile 1 des Verwendungszwecks.
    * @throws RemoteException
    */
   public String getZweck() throws RemoteException;
-	
+
 	/**
 	 * Liefert die Zeile 2 des Verwendungszwecks.
 	 * @return Zeile 2 des Verwendungszwecks.
 	 * @throws RemoteException
 	 */
 	public String getZweck2() throws RemoteException;
-  
+
   /**
    * Liefert eine Liste erweiterter Verwendungszwecke.
    * @return Liste erweiterter Verwendungszwecke.
@@ -66,7 +66,6 @@ public interface Transfer extends Remote
    */
   public String[] getWeitereVerwendungszwecke() throws RemoteException;
 }
-
 
 /**********************************************************************
  * $Log: Transfer.java,v $

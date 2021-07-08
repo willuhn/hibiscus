@@ -48,7 +48,7 @@ public class TestVerwendungszweckUtil
                                                  "1234567"},
                                     result));
   }
-  
+
   /**
    * Testet das Parsen der Tags.
    * @throws Exception
@@ -127,7 +127,7 @@ public class TestVerwendungszweckUtil
     Assert.assertEquals("SVWZ falsch","Das folgende Tag gibts nichtFooo ABCD+ Leerzeichen hinter dem Tag stoeren nicht",map.get(Tag.SVWZ));
     Assert.assertEquals("KREF falsch","und hier stoeren sie auch nicht, sind aber nicht teil des Value",map.get(Tag.KREF));
   }
-  
+
   /**
    * Testet das Parsen der Tags.
    * @throws Exception
@@ -139,7 +139,7 @@ public class TestVerwendungszweckUtil
     {
         "SVWZ+Nur eine Zeile"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","Nur eine Zeile",map.get(Tag.SVWZ));
   }
@@ -155,7 +155,7 @@ public class TestVerwendungszweckUtil
     {
         "SVWZ+"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","",map.get(Tag.SVWZ));
   }
@@ -170,7 +170,7 @@ public class TestVerwendungszweckUtil
     String [] test =
     {
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("Map falsch",0,map.size());
   }
@@ -188,7 +188,7 @@ public class TestVerwendungszweckUtil
         "Fooo",
         "KREF+Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","Das ist eine Zeile ohne Tag Fooo",map.get(Tag.SVWZ));
     Assert.assertEquals("KREF falsch","Und hier kommen ploetzlich noch Tags. Der Teil bis zum ersten Tag ist dann eigentlich der Verwendungszweck",map.get(Tag.KREF));
@@ -207,7 +207,7 @@ public class TestVerwendungszweckUtil
         "mit",
         "KREF: Doppelpunkt als Separatur umgehen"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","Wir koennen auchmit",map.get(Tag.SVWZ));
     Assert.assertEquals("KREF falsch","Doppelpunkt als Separatur umgehen",map.get(Tag.KREF));
@@ -226,7 +226,7 @@ public class TestVerwendungszweckUtil
         " gemischt ",
         "IBAN: DE1234567890 "
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","Das geht sogar gemischt IBAN: DE1234567890",map.get(Tag.SVWZ));
     Assert.assertEquals("IBAN falsch","DE1234567890",map.get(Tag.IBAN));
@@ -243,7 +243,7 @@ public class TestVerwendungszweckUtil
     {
         "IBAN: DE49390500000000012345 BIC: AACSDE33 ABWA: NetAachen"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("IBAN falsch","DE49390500000000012345",map.get(Tag.IBAN));
     Assert.assertEquals("BIC falsch","AACSDE33",map.get(Tag.BIC));
@@ -265,7 +265,7 @@ public class TestVerwendungszweckUtil
         "KD 00012345 TAN 12345 ",
         "Beleg 12345  Kunde 12345"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("IBAN falsch","DE12345678901234567890",map.get(Tag.IBAN));
     Assert.assertEquals("BIC falsch","GENODED1SAM",map.get(Tag.BIC));
@@ -286,7 +286,7 @@ public class TestVerwendungszweckUtil
         "45678901234567890 BIC: ABCD",
         "EFGH"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","Verwendungszweck",map.get(Tag.SVWZ));
     Assert.assertEquals("EREF falsch","1234567890123456789",map.get(Tag.EREF)); // Hier bleibt das Leerzeichen drin, da wir nicht wissen, ob es drin sein darf
@@ -308,10 +308,8 @@ public class TestVerwendungszweckUtil
         "2",
         "3"
     };
-    
+
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
     Assert.assertEquals("SVWZ falsch","Das ist Zeile 123",map.get(Tag.SVWZ));
   }
 }
-
-

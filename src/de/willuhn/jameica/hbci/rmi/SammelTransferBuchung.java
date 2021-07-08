@@ -78,7 +78,7 @@ public interface SammelTransferBuchung extends Transfer, HibiscusDBObject
    * @throws RemoteException
    */
   public String getTextSchluessel() throws RemoteException;
-  
+
   /**
    * Speichert den Textschluessel der Buchung.
    * @param schluessel Textschluessel.
@@ -92,14 +92,14 @@ public interface SammelTransferBuchung extends Transfer, HibiscusDBObject
    * @throws RemoteException
    */
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException;
-  
+
   /**
    * Liefert eine ggf aufgetretene Warnung bei der Ausfuehrung.
    * @return eine ggf aufgetretene Warnung bei der Ausfuehrung.
    * @throws RemoteException
    */
   public String getWarnung() throws RemoteException;
-  
+
   /**
    * Speichert eine ggf aufgetretene Warnung bei der Ausfuehrung.
    * @param warnung eine ggf aufgetretene Warnung bei der Ausfuehrung.

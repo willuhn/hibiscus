@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 public class ReminderUtil
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Uebernimmt ein Reminder-Intervall in einen Auftrag oder entfernt es wieder (wenn "interval" null ist).
    * @param order der Auftrag.
@@ -48,7 +48,7 @@ public class ReminderUtil
       Logger.info("type " + order.getClass().getName() + " does not support reminders");
       throw new ApplicationException(i18n.tr("Der Auftrag unterstützt keine Termine"));
     }
-    
+
     try
     {
       order.transactionBegin();
@@ -57,7 +57,7 @@ public class ReminderUtil
       ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
       MetaKey UUID = MetaKey.REMINDER_UUID;
-      
+
       // Reminder laden
       String uuid       = UUID.get(order);
       Reminder reminder = (uuid != null ? provider.get(uuid) : null);
@@ -95,7 +95,7 @@ public class ReminderUtil
         reminder.setData("order.class",order.getClass().getName());
         reminder.setData("order.id",order.getID());
         reminder.setReminderInterval(interval);
-        
+
         if (uuid != null) // Update
         {
           provider.update(uuid,reminder);
@@ -107,7 +107,7 @@ public class ReminderUtil
           UUID.set(order,uuid);
         }
       }
-      
+
       order.transactionCommit();
     }
     catch (Exception e)
@@ -124,8 +124,6 @@ public class ReminderUtil
     }
   }
 }
-
-
 
 /**********************************************************************
  * $Log: ReminderUtil.java,v $

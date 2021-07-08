@@ -27,47 +27,47 @@ public class TextSchluessel
    * Abbuchungsverfahren
    */
   public final static String TS_ABBUCHUNG = "04";
-  
+
   /**
    * Einzugsermaechtigung
    */
   public final static String TS_EINZUG = "05";
-  
+
   /**
    * Ueberweisung
    */
   public final static String TS_UEB = "51";
-  
+
   /**
    * Dauerauftrag
    */
   public final static String TS_DAUER = "52";
-  
+
   /**
    * Lohn/Gehalt/Rente
    */
   public final static String TS_LOHN = "53";
-  
+
   /**
    * Vermoegenswirksame Leistungen
    */
   public final static String TS_VL = "54";
-  
+
   /**
    * Rueckueberweisung
    */
   public final static String TS_RUECKUEB = "59";
-  
+
   /**
    * BZU-Ueberweisung (Beleglose Zahlungsueberweisung, pruefziffergesichert) 
    */
   public final static String TS_BZU = "67";
-  
+
   /**
    * Spendenueberweisung.
    */
   public final static String TS_SPENDE = "69";
-  
+
   /**
    * Set von zulaessigen Textschluesseln fuer Dauerauftraege.
    */
@@ -94,7 +94,7 @@ public class TextSchluessel
   public final static String[] SET_UEB = new String[]{TS_UEB,TS_LOHN,TS_VL,TS_RUECKUEB,TS_BZU};
 
   private final static List<TextSchluessel> list = new ArrayList<TextSchluessel>();
-  
+
   static
   {
     list.add(new TextSchluessel(TS_ABBUCHUNG,i18n.tr("Abbuchungsverfahren")));
@@ -110,7 +110,7 @@ public class TextSchluessel
 
   private String code = null;
   private String name = null;
-  
+
   /**
    * Liefert eine Liste der Textschluessel-Objekte mit den genannten Codes.
    * @param codes Liste der Codes oder <code>null</code>, wenn alle zurueckgeliefert werden sollen.
@@ -136,10 +136,10 @@ public class TextSchluessel
         }
       }
     }
-    
+
     return l.toArray(new TextSchluessel[l.size()]);
   }
-  
+
   /**
    * Liefert einen einzelnen Textschluessel.
    * @param code Code des Textschluessels.
@@ -158,7 +158,7 @@ public class TextSchluessel
     }
     return null;
   }
-  
+
   /**
    * ct
    * @param code Nummer des Textschlüssel.
@@ -169,7 +169,7 @@ public class TextSchluessel
     this.code = code;
     this.name = name;
   }
-  
+
   /**
    * Liefert den Textschluessel.
    * @return der Textschluessel.
@@ -178,7 +178,7 @@ public class TextSchluessel
   {
     return this.code;
   }
-  
+
   /**
    * Liefert den Namen des Textschluessels.
    * @return der Name des Textschluessels.
@@ -187,7 +187,7 @@ public class TextSchluessel
   {
     return this.name;
   }
-  
+
   /**
    * @see java.lang.Object#toString()
    */
@@ -195,7 +195,7 @@ public class TextSchluessel
   {
     return i18n.tr("[{0}] {1}", new String[]{this.code,this.name});
   }
-  
+
   /**
    * @see java.lang.Object#equals(java.lang.Object)
    */
@@ -208,7 +208,6 @@ public class TextSchluessel
     return this.code.equals(((TextSchluessel)other).getCode());
   }
 }
-
 
 /*********************************************************************
  * $Log: TextSchluessel.java,v $

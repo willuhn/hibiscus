@@ -33,18 +33,18 @@ public class JameicaCompat
   {
     if (o == null)
       return null;
-    
+
     Method m = findMethod(o,null,method);
     if (m != null)
       return m.invoke(o);
-    
+
     Field f = findField(o,field);
     if (f != null)
     {
       f.setAccessible(true);
       return f.get(o);
     }
-    
+
     return null;
   }
 
@@ -63,11 +63,11 @@ public class JameicaCompat
   {
     if (o == null)
       return;
-    
+
     Method m = findMethod(o,value,method);
     if (m != null)
       m.invoke(o,value);
-    
+
     Field f = findField(o,field);
     if (f != null)
     {
@@ -75,7 +75,7 @@ public class JameicaCompat
       f.set(o,value);
     }
   }
-  
+
   /**
    * Sucht rekursiv nach der angegebenen Methode.
    * @param o das Objekt.
@@ -87,7 +87,7 @@ public class JameicaCompat
   {
     if (o == null || name == null || name.length() == 0)
       return null;
-    
+
     Class c = o.getClass();
 
     // "getMethod" mach selbst bereits die Rekursion
@@ -101,10 +101,10 @@ public class JameicaCompat
     {
       // OK, wir suchen weiter
     }
-    
+
     return null;
   }
-  
+
   /**
    * Sucht rekursiv nach dem angegebenen Feld.
    * @param o das Objekt.
@@ -115,7 +115,7 @@ public class JameicaCompat
   {
     if (o == null || name == null || name.length() == 0)
       return null;
-    
+
     Class c = o.getClass();
 
     for (int i=0;i<20;++i) // Limitiert auf maximal 20 Schritte
@@ -130,12 +130,12 @@ public class JameicaCompat
       {
         // OK, wir suchen weiter
       }
-      
+
       c = c.getSuperclass();
       if (c == null || c.equals(Object.class))
         return null;
     }
-    
+
     return null;
   }
 }

@@ -39,7 +39,7 @@ public class FeatureServiceInitializer implements MessageConsumer
     SystemMessage msg = (SystemMessage) message;
     if (msg.getStatusCode() != SystemMessage.SYSTEM_STARTED)
       return;
-    
+
     // Triggert das Initialisieren des Feature-Service
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     bs.get(FeatureService.class);
@@ -55,5 +55,3 @@ public class FeatureServiceInitializer implements MessageConsumer
   }
 
 }
-
-

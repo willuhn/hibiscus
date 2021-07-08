@@ -34,7 +34,7 @@ import de.willuhn.util.I18N;
 public class HBCIAccountProvider implements AccountProvider
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Das Primaer-Verfahren. Der steht immer oben.
    */
@@ -50,7 +50,7 @@ public class HBCIAccountProvider implements AccountProvider
   {
     return i18n.tr("FinTS/HBCI-Bankzugang");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.accounts.AccountProvider#getInfo()
    */
@@ -65,7 +65,7 @@ public class HBCIAccountProvider implements AccountProvider
     info.setIcon("hibiscus-large.png");
     return info;
   }
-  
+
   /**
    * Liefert eine Liste der unterstuetzten HBCI-Verfahren.
    * @return Liste der HBCI-Verfahren.
@@ -74,9 +74,9 @@ public class HBCIAccountProvider implements AccountProvider
   {
     if (this.variants != null)
       return this.variants;
-    
+
     this.variants = new LinkedList<HBCIVariant>();
-    
+
     try
     {
       Logger.info("loading hbci variants");
@@ -94,7 +94,7 @@ public class HBCIAccountProvider implements AccountProvider
           Logger.error("unable to load hbci varian " + c.getName() + ", skipping",e);
         }
       }
-      
+
       Collections.sort(this.variants,new Comparator<HBCIVariant>() {
         public int compare(HBCIVariant o1, HBCIVariant o2)
         {
@@ -117,7 +117,6 @@ public class HBCIAccountProvider implements AccountProvider
     return this.variants;
   }
 
-  
   /**
    * @see de.willuhn.jameica.hbci.accounts.AccountProvider#create()
    */

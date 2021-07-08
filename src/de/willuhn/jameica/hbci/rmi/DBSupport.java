@@ -45,7 +45,7 @@ public interface DBSupport extends Serializable
    * @return das Passwort.
    */
   public String getJdbcPassword();
-  
+
   /**
    * Prueft die Datenbankverbindung.
    * @param conn die Datenbank-Connection.
@@ -60,7 +60,7 @@ public interface DBSupport extends Serializable
    * @throws RemoteException
    */
   public void execute(Connection conn, File sqlScript) throws RemoteException;
-  
+
   /**
    * Liefert einen Dateinamens-Prefix, der SQL-Scripts vorangestellt werden soll.
    * @return Dateinamens-Prefix.
@@ -76,7 +76,7 @@ public interface DBSupport extends Serializable
    * @throws RemoteException
    */
   public String getSQLTimestamp(String content) throws RemoteException;
-  
+
   /**
    * Legt fest, ob SQL-Insert-Queries mit oder ohne ID erzeugt werden sollen.
    * @return true, wenn die Insert-Queries mit ID erzeugt werden.
@@ -93,7 +93,6 @@ public interface DBSupport extends Serializable
   public int getTransactionIsolationLevel() throws RemoteException;
 
 }
-
 
 /*********************************************************************
  * $Log: DBSupport.java,v $

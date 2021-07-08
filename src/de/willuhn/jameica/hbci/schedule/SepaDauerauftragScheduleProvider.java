@@ -34,14 +34,14 @@ import de.willuhn.util.I18N;
 public class SepaDauerauftragScheduleProvider implements ScheduleProvider<SepaDauerauftrag>
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getSchedules(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
    */
   public List<Schedule<SepaDauerauftrag>> getSchedules(Konto k, Date from, Date to)
   {
     List<Schedule<SepaDauerauftrag>> result = new LinkedList<Schedule<SepaDauerauftrag>>();
-    
+
     try
     {
       HBCIDBService service = Settings.getDBService();

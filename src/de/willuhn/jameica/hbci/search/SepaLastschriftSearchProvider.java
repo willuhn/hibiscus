@@ -28,7 +28,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in SEPA-Lastschriften.
  */
@@ -49,7 +48,7 @@ public class SepaLastschriftSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator list = service.createList(SepaLastschrift.class);
@@ -69,14 +68,14 @@ public class SepaLastschriftSearchProvider implements SearchProvider
     }
     return results;
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private SepaLastschrift u = null;
-    
+
     /**
      * ct.
      * @param u
@@ -119,7 +118,7 @@ public class SepaLastschriftSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }

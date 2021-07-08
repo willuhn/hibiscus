@@ -11,9 +11,6 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-
-
-
 /**
  * Bildet eine Auslands-Ueberweisung ab.
  */
@@ -25,21 +22,21 @@ public interface AuslandsUeberweisung extends BaseUeberweisung, Duplicatable, Se
    * @throws RemoteException
    */
   public boolean isTerminUeberweisung() throws RemoteException;
-  
+
   /**
    * Legt fest, ob es sich um eine bankseitige Termin-Ueberweisung handelt.
    * @param termin true, wenn es eine bankseitige Terminueberweisung sein soll.
    * @throws RemoteException
    */
   public void setTerminUeberweisung(boolean termin) throws RemoteException;
-  
+
   /**
    * Prueft, ob es sich um einen bankinterne Umbuchung handelt.
    * @return true, wenn es eine bankinterne Umbuchung ist.
    * @throws RemoteException
    */
   public boolean isUmbuchung() throws RemoteException;
-  
+
   /**
    * Legt fest, ob es sich um eine bankinterne Umbuchung handelt.
    * @param b true, wenn es eine bankinterne Umbuchung sein soll.

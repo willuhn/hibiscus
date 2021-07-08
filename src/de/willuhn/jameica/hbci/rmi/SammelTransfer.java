@@ -35,7 +35,7 @@ public interface SammelTransfer extends HibiscusDBObject, Terminable
    * @throws RemoteException
    */
   public SammelTransferBuchung[] getBuchungenAsArray() throws RemoteException;
-  
+
   /**
    * Liefert die Summe der enthaltenen Buchungen.
    * @return Summe der enthaltenen Buchungen.
@@ -70,7 +70,7 @@ public interface SammelTransfer extends HibiscusDBObject, Terminable
    * @throws RemoteException
    */
   public void setBezeichnung(String bezeichnung) throws RemoteException;
-  
+
   /**
    * Erzeugt eine neue Buchung auf dem Sammeltransfer.
    * @return die neu erzeugte Buchung.
@@ -78,14 +78,14 @@ public interface SammelTransfer extends HibiscusDBObject, Terminable
    * @throws ApplicationException
    */
   public SammelTransferBuchung createBuchung() throws RemoteException, ApplicationException;
-  
+
   /**
    * Prueft, ob bei der Ausfuehrung des Auftrages Warnungen auftraten.
    * @return true, wenn Warnungen auftraten.
    * @throws RemoteException
    */
   public boolean hasWarnings() throws RemoteException;
-  
+
   /**
    * Legt fest, ob bei der Ausfuehrung Warnungen auftraten.
    * @param b true, wenn Warnungen auftraten.

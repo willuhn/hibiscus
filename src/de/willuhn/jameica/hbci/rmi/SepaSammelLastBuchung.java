@@ -12,8 +12,6 @@ package de.willuhn.jameica.hbci.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-
-
 /**
  * Interface fuer eine einzelne Buchung einer SEPA-Sammellastschrift.
  */
@@ -25,21 +23,21 @@ public interface SepaSammelLastBuchung extends SepaSammelTransferBuchung<SepaSam
    * @throws RemoteException
    */
   public String getMandateId() throws RemoteException;
-  
+
   /**
    * Speichert die Mandats-ID.
    * @param id die Mandats-ID.
    * @throws RemoteException
    */
   public void setMandateId(String id) throws RemoteException;
-  
+
   /**
    * Liefert die Glaeubiger-ID.
    * @return die Glaeubiger-ID.
    * @throws RemoteException
    */
   public String getCreditorId() throws RemoteException;
-  
+
   /**
    * Speichert die Glaeubiger-ID.
    * @param id die Glaeubiger-ID.
@@ -53,7 +51,7 @@ public interface SepaSammelLastBuchung extends SepaSammelTransferBuchung<SepaSam
    * @throws RemoteException
    */
   public Date getSignatureDate() throws RemoteException;
-  
+
   /**
    * Speichert das Datum der Unterschrift des Mandats.
    * @param date das Datum der Unterschrift des Mandats.

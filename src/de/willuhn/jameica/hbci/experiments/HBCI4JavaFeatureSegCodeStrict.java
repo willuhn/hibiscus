@@ -24,7 +24,7 @@ public class HBCI4JavaFeatureSegCodeStrict extends AbstractHBCI4JavaFeature
   {
     super(Feature.PINTAN_SEGCODE_STRICT);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDescription()
    */
@@ -35,5 +35,3 @@ public class HBCI4JavaFeatureSegCodeStrict extends AbstractHBCI4JavaFeature
   }
 
 }
-
-

@@ -48,7 +48,7 @@ public class HBCIProperties
 
 	private static Settings settings = new Settings(HBCIProperties.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   static
   {
     settings.setStoreWhenRead(false);
@@ -119,7 +119,6 @@ public class HBCIProperties
    */
   public final static int HBCI_TRANSFER_USAGE_MAXLENGTH = settings.getInt("hbci.transfer.usage.maxlength",27);
 
-
   /**
    * Maximale Text-Laenge einer Verwendungszweck-Zeile.
    */
@@ -158,7 +157,7 @@ public class HBCIProperties
    * 15 Stellen stehen und deklarieren es als "weiches" Limit.
    */
   public final static int HBCI_KTO_MAXLENGTH_SOFT = settings.getInt("hbci.kto.maxlength.soft",15);
-  
+
   /**
    * Das harte Limit fuer Kontonummern, die CRC-Checks bestehen sollen
    */
@@ -179,7 +178,6 @@ public class HBCIProperties
    */
   public final static int HBCI_ID_MAXLENGTH = settings.getInt("hbci.id.maxlength",30);
 
-  
   // BUGZILLA #49 http://www.willuhn.de/bugzilla/show_bug.cgi?id=49
   /**
    * Reservierter Tag fuer "Monatsletzten".
@@ -208,22 +206,22 @@ public class HBCIProperties
 	 * Maximale Laenge fuer PINs.
 	 */
 	public final static int HBCI_PIN_MAXLENGTH = settings.getInt("hbci.pin.maxlength",50);
-	
+
   /**
 	 * Minimale Laenge fuer PINs.
 	 */
 	public final static int HBCI_PIN_MINLENGTH = settings.getInt("hbci.pin.minlength",5);
-	
+
   /**
    * Default-Anzahl von anzuzeigenden Tagen in der Umsatz-Preview.
    */
   public final static int UMSATZ_DEFAULT_DAYS = settings.getInt("umsatz.default.days",30);
-  
+
   /**
    * Maximale Laenge der EndtoEnd-ID bei SEPA.
    */
   public final static int HBCI_SEPA_ENDTOENDID_MAXLENGTH = settings.getInt("hbci.sepa.endtoendid.maxlength",35);
-  
+
   /**
    * Maximale Laenge des Purpose-Codes bei SEPA.
    */
@@ -297,7 +295,7 @@ public class HBCIProperties
     }
     return sb.toString();
   }
-  
+
   /**
    * Ersetzt im Text Strings entsprechend der Replacements. 
    * @param text der Text mit den zu ersetzenden Zeichen.
@@ -309,10 +307,10 @@ public class HBCIProperties
   {
     if (text == null || text.length() == 0)
       return text;
-    
+
     return StringUtils.replaceEach(text,replacements[0],replacements[1]);
   }
-  
+
   /**
    * Prueft die uebergebenen Strings auf Vorhandensein nicht erlaubter Zeichen.
    * @param chars zu testende Zeichen.
@@ -343,12 +341,12 @@ public class HBCIProperties
   {
     if (chars == null || chars.length() == 0)
       return;
-    
+
     // Erstmal schauen, ob der Text ohne Codierung vielleicht schon zu lang ist.
     if (chars.length() > maxLength)
       throw new ApplicationException(i18n.tr("Der Text \"{0}\" ist zu lang. Bitte geben Sie maximal {1} Zeichen ein", new String[]{chars,""+maxLength}));
   }
-  
+
   /**
    * Gruppiert den String alle <code>len</code> Zeichen in Bloecke, die durch den
    * String <code>sep</code> getrennt sind.  
@@ -361,12 +359,12 @@ public class HBCIProperties
   {
     if (s == null)
       return "";
-    
+
     if (sep == null)
       sep = " ";
     return s.replaceAll("(.{" + len + "})", "$0" + sep).trim();
   }
-  
+
   /**
    * Gruppiert eine IBAN in Gruppen zu je 4 Zeichen und schreibt die ersten
    * beiden Buchstaben (Laenderkennzeichen) gross.
@@ -391,7 +389,7 @@ public class HBCIProperties
       return s;
     }
   }
-  
+
   /**
    * Ermittelt zu einer BIC oder BLZ den Namen der Bank.
    * @param bic die BIC oder BLZ.
@@ -403,16 +401,16 @@ public class HBCIProperties
     bic = StringUtils.trimToNull(bic);
     if (bic == null)
       return null;
-    
+
     Bank bank = null;
-    
+
     // Wenn sie 8 Zeichen lang ist, gehen wir davon aus, dass es eine BLZ ist.
     // Sonst versuchen wir es als BIC zu interpretieren.
     if (bic.length() == HBCI_BLZ_LENGTH)
       bank = Banken.getBankByBLZ(bic);
     else
       bank = Banken.getBankByBIC(bic);
-    
+
     if (bank == null)
       return null;
 
@@ -422,7 +420,7 @@ public class HBCIProperties
     // Das verzerrt sonst die Layouts an einigen Stellen
     return StringUtils.abbreviateMiddle(bank.getBezeichnung(),"...",24);
   }
-  
+
   /**
    * Liefert die Bankdaten fuer die Bank.
    * @param blz die BLZ.
@@ -453,7 +451,7 @@ public class HBCIProperties
       Logger.warn("blz [" + blz + "] not defined or out of range, skip crc check");
       return true;
     }
-    
+
     // Haben wir eine gueltige Kontonummer?
     if (kontonummer == null || 
         kontonummer.length() == 0 ||
@@ -462,8 +460,7 @@ public class HBCIProperties
       Logger.warn("account number [" + kontonummer + "] not defined out of range, skip crc check");
       return true;
     }
-    
-    
+
     // einen Fehlversuch erlauben wir. Das kann passieren, wenn HBCI4Java
     // noch nicht fuer den aktuellen Thread initialisiert ist.
     for (int i=0;i<2;++i)
@@ -474,7 +471,7 @@ public class HBCIProperties
           return true; // koennen wir nicht pruefen. Dann akzeptieren wir das so.
         if (HBCIUtils.checkAccountCRC(blz, kontonummer))
           return true; // CRC-Pruefung bestanden
-        
+
         if (!de.willuhn.jameica.hbci.Settings.getKontoCheckExcludeAddressbook())
           return false; // CRC-Pruefung nicht bestanden und wir sollen nicht im Adressbuch nachsehen
 
@@ -495,7 +492,7 @@ public class HBCIProperties
             Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
             HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
             HBCIUtils.initThread(plugin.getHBCIPropetries(),plugin.getHBCICallback());
-            
+
             continue; // ok, nochmal versuchen
           }
           catch (Exception e2)
@@ -509,11 +506,11 @@ public class HBCIProperties
         }
       }
     }
-    
+
     Logger.error("unable to verify account crc number");
     return true;
   }
-  
+
   /**
    * Prueft die Gueltigkeit einer IBAN anhand von Pruefziffern.
    * @see HBCIUtils#checkIBANCRC(java.lang.String)
@@ -534,7 +531,7 @@ public class HBCIProperties
       return false;
     }
   }
-  
+
   /**
    * Prueft die BIC und liefert eine ggf korrigierte Version zurueck. 
    * @param bic die zu pruefende BIC.
@@ -547,17 +544,17 @@ public class HBCIProperties
     // wir rechts mit 3 * X. Bei 11 Zeichen lassen wir es so. Bei irgendwas
     // anderem bringen wir einen Fehler.
     checkChars(bic,HBCI_BIC_VALIDCHARS);
-    
+
     int len = bic.length();
     if (len != HBCI_BIC_MAXLENGTH && len != 8)
       throw new ApplicationException(i18n.tr("Bitte prüfen Sie die Länge der BIC. Muss entweder 8 oder 11 Zeichen lang sein."));
-    
+
     if (len == 8)
       bic += "XXX";
-    
+
     return bic;
   }
-  
+
   /**
    * Prueft die Gueltigkeit einer Creditor-ID (Gläubiger-Identifikationsnummer)
    * anhand von Pruefziffern.
@@ -609,12 +606,12 @@ public class HBCIProperties
   {
     if (StringUtils.trimToNull(iban) == null)
       return null;
-    
+
     iban = StringUtils.deleteWhitespace(iban);
-    
+
     if (iban == null || iban.length() == 0)
       return null;
-    
+
     // BUGZILLA 1872: Wir checken selbst bei deaktivierter Pruefung wenigstens bei deutschen IBANs die Laenge
     if (iban.toLowerCase().startsWith("de") && iban.length() != 22)
       throw new ApplicationException(i18n.tr("Bitte prüfen Sie die Länge der IBAN"));
@@ -634,11 +631,10 @@ public class HBCIProperties
         Logger.warn("unable to verify IBAN, got error " + f + ", will be tolerated");
         return null;
       }
-      
+
       throw new ApplicationException(se.getMessage());
     }
   }
-
 
   /**
    * Prueft die IBAN auf Gueltigkeit.
@@ -699,7 +695,6 @@ public class HBCIProperties
     throw new ApplicationException(i18n.tr("IBAN ungültig: \"{0}\"",iban));
   }
 
-
   /**
    * Erzeugt die IBAN aus der uebergebenen Bankverbindung.
    * @param blz die BLZ.
@@ -712,12 +707,12 @@ public class HBCIProperties
     try
     {
       IBAN iban = new IBAN(konto, blz, "DE");
-      
+
       // Rückgabe-Code checken
       IBANCode code = iban.getCode();
       if (code == null || code == IBANCode.GUELTIG)
         return iban;
-      
+
       // Tolerieren wir ebenfalls
       if (code == IBANCode.KONTONUMMERERSETZT || 
           code == IBANCode.GEMELDETEBLZZURLOESCHUNGVORGEMERKT ||
@@ -752,7 +747,7 @@ public class HBCIProperties
       throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
     }
   }
-  
+
   /**
    * Laeuft den Stack der Exceptions bis zur urspruenglichen hoch und liefert sie zurueck.
    * HBCI4Java verpackt Exceptions oft tief ineinander. Sie werden gefangen, in eine
@@ -766,7 +761,7 @@ public class HBCIProperties
   {
     return getCause(t,null);
   }
-  
+
   /**
    * Laeuft den Stack der Exceptions bis zur urspruenglichen hoch und liefert sie zurueck.
    * HBCI4Java verpackt Exceptions oft tief ineinander. Sie werden gefangen, in eine
@@ -784,28 +779,27 @@ public class HBCIProperties
   public static Throwable getCause(Throwable t, Class<? extends Throwable> c)
   {
     Throwable cause = t;
-    
+
     for (int i=0;i<20;++i) // maximal 20 Schritte nach oben
     {
       if (c != null && c.equals(cause.getClass()))
         return cause;
-      
+
       Throwable current = cause.getCause();
 
       if (current == null)
         break; // Ende, hier kommt nichts mehr
-      
+
       if (current == cause) // Wir wiederholen uns
         break;
-      
+
       cause = current;
     }
-    
+
     // Wenn eine gesuchte Exception angegeben wurde, haben wir sie hier nicht gefunden
     return c != null ? null : cause;
   }
 
-  
   /**
    * Resettet die Uhrzeit eines Datums.
    * @param date das Datum.
@@ -827,7 +821,7 @@ public class HBCIProperties
   {
     return DateUtil.endOfDay(date);
   }
-  
+
   /**
    * Ermittelt die Customer-IDs aus dem Passport.
    * @param passport Passport.
@@ -839,7 +833,7 @@ public class HBCIProperties
 
     // Zum Vermeiden von Doppeln
     Set<String> set = new HashSet<String>();
-    
+
     set.add(passport.getCustomerId()); // Die Customer-ID des Passport selbst auf jeden Fall auch
 
     // Das macht HBCI4Java in passport.getCustomerId() genauso

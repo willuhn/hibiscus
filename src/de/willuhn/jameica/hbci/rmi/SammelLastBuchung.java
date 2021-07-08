@@ -17,7 +17,6 @@ public interface SammelLastBuchung extends SammelTransferBuchung, Duplicatable
 {
 }
 
-
 /**********************************************************************
  * $Log: SammelLastBuchung.java,v $
  * Revision 1.4  2005/09/30 00:08:50  willuhn

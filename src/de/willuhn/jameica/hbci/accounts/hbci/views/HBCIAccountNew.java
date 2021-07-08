@@ -29,11 +29,11 @@ public class HBCIAccountNew extends AbstractHBCIAccountView
   {
     GUI.getView().setTitle(i18n.tr("Neuer FinTS/HBCI-Bankzugang..."));
     HBCIAccountNewController control = new HBCIAccountNewController(this);
-    
+
     Container c = new SimpleContainer(this.getParent());
     c.addHeadline(i18n.tr("Auswahl des Verfahrens"));
     c.addText(i18n.tr("Bitte wählen Sie die Art des FinTS/HBCI-Verfahrens."),true);
-    
+
     for (InfoPanel panel:control.getVariants())
     {
       c.addPart(panel);
@@ -41,5 +41,3 @@ public class HBCIAccountNew extends AbstractHBCIAccountView
   }
 
 }
-
-

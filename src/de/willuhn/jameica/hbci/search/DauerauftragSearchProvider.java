@@ -28,7 +28,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in Dauerauftraegen.
  */
@@ -50,7 +49,7 @@ public class DauerauftragSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator list = service.createList(Dauerauftrag.class);
@@ -70,14 +69,14 @@ public class DauerauftragSearchProvider implements SearchProvider
     }
     return results;
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private Dauerauftrag u = null;
-    
+
     /**
      * ct.
      * @param u
@@ -119,11 +118,10 @@ public class DauerauftragSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }
-
 
 /**********************************************************************
  * $Log: DauerauftragSearchProvider.java,v $

@@ -22,7 +22,7 @@ public interface SepaDauerauftrag extends HibiscusTransfer, Checksum, Duplicatab
    * @throws RemoteException
    */
   public boolean canChange() throws RemoteException;
-  
+
   /**
    * Liefert true, wenn die Bank mitgeteilt hat, dass der Auftrag geloescht werden darf.
    * @return true, wenn die Bank mitgeteilt hat, dass der Auftrag geloescht werden darf.

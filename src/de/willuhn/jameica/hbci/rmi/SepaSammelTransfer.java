@@ -62,7 +62,7 @@ public interface SepaSammelTransfer<T extends SepaSammelTransferBuchung> extends
    * @throws RemoteException
    */
   public void setBezeichnung(String bezeichnung) throws RemoteException;
-  
+
   /**
    * Erzeugt eine neue Buchung auf dem Sammeltransfer.
    * @return die neu erzeugte Buchung.
@@ -70,5 +70,5 @@ public interface SepaSammelTransfer<T extends SepaSammelTransferBuchung> extends
    * @throws ApplicationException
    */
   public T createBuchung() throws RemoteException, ApplicationException;
-  
+
 }

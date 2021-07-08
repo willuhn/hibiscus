@@ -28,7 +28,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in Umsaetzen.
  */
@@ -58,14 +57,14 @@ public class UmsatzSearchProvider implements SearchProvider
     }
     return results;
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private Umsatz umsatz = null;
-    
+
     /**
      * ct.
      * @param u
@@ -120,11 +119,10 @@ public class UmsatzSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }
-
 
 /**********************************************************************
  * $Log: UmsatzSearchProvider.java,v $

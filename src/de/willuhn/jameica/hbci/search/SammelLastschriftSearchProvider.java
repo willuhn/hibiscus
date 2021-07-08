@@ -28,7 +28,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in Sammel-Lastschriften.
  */
@@ -50,12 +49,12 @@ public class SammelLastschriftSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
-    
+
     // Wir speichern die Daten erstmal in einem Hash, damit wir Duplikate rausfischen koennen
     Hashtable hash = new Hashtable();
-    
+
     // Schritt 1: Die Buchungen von Sammel-Auftraegen
     DBIterator list = Settings.getDBService().createList(SammelLastBuchung.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
@@ -72,7 +71,7 @@ public class SammelLastschriftSearchProvider implements SearchProvider
       SammelLastschrift ueb = (SammelLastschrift) buchung.getSammelTransfer();
       hash.put(ueb.getID(),new MyResult(ueb));
     }
-    
+
     // Schritt 2: Sammel-Auftraege selbst
     list = Settings.getDBService().createList(SammelLastschrift.class);
     list.addFilter("LOWER(bezeichnung) LIKE ?",text);
@@ -85,14 +84,14 @@ public class SammelLastschriftSearchProvider implements SearchProvider
 
     return Arrays.asList(hash.values().toArray(new MyResult[hash.size()]));
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private SammelLastschrift u = null;
-    
+
     /**
      * ct.
      * @param u
@@ -126,11 +125,10 @@ public class SammelLastschriftSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }
-
 
 /**********************************************************************
  * $Log: SammelLastschriftSearchProvider.java,v $

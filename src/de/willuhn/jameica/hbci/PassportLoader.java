@@ -23,12 +23,10 @@ public interface PassportLoader
    * @return der Passport.
    */
   public HBCIPassport load();
-  
+
   /**
    * Forciert ein Reload des Passports.
    */
   public void reload();
 
 }
-
-

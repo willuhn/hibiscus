@@ -25,7 +25,7 @@ import de.willuhn.util.I18N;
 public class HBCIVariantKey implements HBCIVariant
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.accounts.hbci.HBCIVariant#getName()
    */
@@ -61,5 +61,3 @@ public class HBCIVariantKey implements HBCIVariant
   }
 
 }
-
-

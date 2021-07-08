@@ -28,7 +28,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in SEPA-Sammellastschriften.
  */
@@ -50,12 +49,12 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
-    
+
     // Wir speichern die Daten erstmal in einem Hash, damit wir Duplikate rausfischen koennen
     Hashtable hash = new Hashtable();
-    
+
     // Schritt 1: Die Buchungen von Sammel-Auftraegen
     DBIterator list = Settings.getDBService().createList(SepaSammelLastBuchung.class);
     list.addFilter("LOWER(zweck) LIKE ? OR " +
@@ -73,7 +72,7 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
       SepaSammelLastschrift ueb = (SepaSammelLastschrift) buchung.getSammelTransfer();
       hash.put(ueb.getID(),new MyResult(ueb));
     }
-    
+
     // Schritt 2: Sammel-Auftraege selbst
     list = Settings.getDBService().createList(SepaSammelLastschrift.class);
     list.addFilter("LOWER(bezeichnung) LIKE ?",text);
@@ -86,14 +85,14 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
 
     return Arrays.asList(hash.values().toArray(new MyResult[hash.size()]));
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private SepaSammelLastschrift u = null;
-    
+
     /**
      * ct.
      * @param u
@@ -127,7 +126,7 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }

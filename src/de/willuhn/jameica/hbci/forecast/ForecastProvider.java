@@ -27,7 +27,7 @@ public interface ForecastProvider
    * @return sprechender Name.
    */
   public String getName();
-  
+
   /**
    * Liefert die voraussichtlichen Zahlungen fuer den angegebenen Zeitraum.
    * @param k das Konto. Wenn es fehlt, sollte der Provider die Zahlungen
@@ -41,8 +41,6 @@ public interface ForecastProvider
    */
   public List<Value> getData(Konto k, Date from, Date to) throws Exception;
 }
-
-
 
 /**********************************************************************
  * $Log: ForecastProvider.java,v $

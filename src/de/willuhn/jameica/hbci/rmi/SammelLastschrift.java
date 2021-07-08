@@ -17,7 +17,6 @@ public interface SammelLastschrift extends SammelTransfer
 {
 }
 
-
 /**********************************************************************
  * $Log: SammelLastschrift.java,v $
  * Revision 1.5  2005/09/30 00:08:50  willuhn

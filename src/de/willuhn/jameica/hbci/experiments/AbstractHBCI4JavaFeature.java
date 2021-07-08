@@ -20,9 +20,9 @@ import de.willuhn.util.I18N;
 public abstract class AbstractHBCI4JavaFeature implements Feature
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private org.kapott.hbci.manager.Feature feature = null;
-  
+
   /**
    * ct.
    * @param f das HBCI4Java-Feature.
@@ -31,7 +31,7 @@ public abstract class AbstractHBCI4JavaFeature implements Feature
   {
     this.feature = f;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.experiments.Feature#getName()
    */
@@ -69,5 +69,3 @@ public abstract class AbstractHBCI4JavaFeature implements Feature
   }
 
 }
-
-

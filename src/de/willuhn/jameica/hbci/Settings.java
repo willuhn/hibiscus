@@ -343,7 +343,7 @@ public class Settings
   {
 		if (wallet == null)
       wallet = new Wallet(HBCI.class);
-		
+
 		return wallet;
   }
 

@@ -36,7 +36,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
   {
     return new MyAppointment(schedule);
   }
-  
+
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
@@ -66,7 +66,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
         String name   = StringUtils.trimToEmpty(t.getGegenkontoName());
 
         betrag = Math.abs(betrag);
-        
+
         return i18n.tr("Umsatz: {0} {1} {2} {3}\n\n{4}\n\nKonto: {5}",HBCI.DECIMALFORMAT.format(betrag),k.getWaehrung(),rel,name,zweck,k.getLongName());
       }
       catch (RemoteException re)
@@ -132,7 +132,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
       }
       return Color.BLACK.getSWTColor().getRGB();
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#hasAlarm()
      */
@@ -143,8 +143,6 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
     }
   }
 }
-
-
 
 /**********************************************************************
  * $Log: UmsatzAppointmentProvider.java,v $

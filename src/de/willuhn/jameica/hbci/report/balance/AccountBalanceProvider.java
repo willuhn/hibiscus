@@ -40,7 +40,7 @@ public interface AccountBalanceProvider
    * @return die taeglichen Salden fuer ein Konto als Liste von Werten
    */
   public List<Value> getBalanceData(Konto konto, Date start, Date end);
-  
+
   /**
    * Gibt die taeglichen Salden fuer ein Konto als Chart-Datenreihe zurueck.
    * @param konto Konto fuer den Saldenabruf
@@ -56,5 +56,3 @@ public interface AccountBalanceProvider
    */
   public String getName();
 }
-
-

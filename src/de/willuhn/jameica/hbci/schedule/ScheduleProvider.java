@@ -27,7 +27,7 @@ public interface ScheduleProvider<T extends HibiscusDBObject>
    * @return sprechender Name fuer den Provider.
    */
   public String getName();
-  
+
   /**
    * Liefert die Termine fuer den angegebenen Zeitraum.
    * @param k optionale Angabe eines Kontos. Ist es angegeben, werden nur Zahlungen des
@@ -39,8 +39,6 @@ public interface ScheduleProvider<T extends HibiscusDBObject>
    */
   public List<Schedule<T>> getSchedules(Konto k, Date from, Date to);
 }
-
-
 
 /**********************************************************************
  * $Log: ScheduleProvider.java,v $

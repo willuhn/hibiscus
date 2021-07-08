@@ -41,7 +41,7 @@ public interface AddressbookService extends Service, Addressbook
    * @throws RemoteException
    */
   public Addressbook[] getAddressbooks() throws RemoteException;
-  
+
   /**
    * Liefert true, wenn neben dem Hibiscus-eigenen Adressbuch noch weitere gefunden wurden.
    * In diesem Fall koennte dem Benutzer z.Bsp. ein Auswahl-Dialog
@@ -51,7 +51,6 @@ public interface AddressbookService extends Service, Addressbook
    */
   public boolean hasExternalAddressbooks() throws RemoteException;
 }
-
 
 /*********************************************************************
  * $Log: AddressbookService.java,v $

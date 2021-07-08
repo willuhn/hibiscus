@@ -23,7 +23,7 @@ public interface HibiscusAddress extends Address, HibiscusDBObject
    * @throws RemoteException
    */
   public void setKontonummer(String kontonummer) throws RemoteException;
-	
+
   /**
    * Speichert die BLZ des Empfaengers.
    * @param blz BLZ.
@@ -38,14 +38,14 @@ public interface HibiscusAddress extends Address, HibiscusDBObject
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
-  
+
   /**
    * Speichert einen zusaetzlichen Kommentar fuer den Adressbuch-Eintrag.
    * @param kommentar
    * @throws RemoteException
    */
   public void setKommentar(String kommentar) throws RemoteException;
-  
+
   /**
    * Liefert den Namen der Bank.
    * Ist nur fuer auslaendische Banken sinnvoll, da HBCI4Java fuer
@@ -54,7 +54,7 @@ public interface HibiscusAddress extends Address, HibiscusDBObject
    * @throws RemoteException
    */
   public String getBank() throws RemoteException;
-  
+
   /**
    * Speichert den Namen der Bank.
    * Ist nur fuer auslaendische Banken sinnvoll, da HBCI4Java fuer
@@ -63,21 +63,21 @@ public interface HibiscusAddress extends Address, HibiscusDBObject
    * @throws RemoteException
    */
   public void setBank(String name) throws RemoteException;
-  
+
   /**
    * Speichert die BIC.
    * @param bic die BIC.
    * @throws RemoteException
    */
   public void setBic(String bic) throws RemoteException;
-  
+
   /**
    * Speichert die IBAN.
    * @param iban die IBAN.
    * @throws RemoteException
    */
   public void setIban(String iban) throws RemoteException;
-  
+
   /**
    * Speichert die Kategorie.
    * @param kategorie die Kategorie.
@@ -85,7 +85,6 @@ public interface HibiscusAddress extends Address, HibiscusDBObject
    */
   public void setKategorie(String kategorie) throws RemoteException;
 }
-
 
 /**********************************************************************
  * $Log: HibiscusAddress.java,v $

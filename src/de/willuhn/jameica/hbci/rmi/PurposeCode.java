@@ -28,52 +28,52 @@ public enum PurposeCode
    * Miete
    */
   RENT("RENT","Miete"),
-  
+
   /**
    * Einzahlung
    */
   DEPT("DEPT","Einzahlung"),
-  
+
   /**
    * Gutschrift/Rücküberweisung
    */
   REFU("REFU","Gutschrift/Rücküberweisung"),
-  
+
   /**
    * Gehaltszahlungen
    */
   SALA("SALA","Gehaltszahlungen"),
-  
+
   /**
    * Lohn
    */
   PAYR("PAYR","Lohn"),
-  
+
   /**
    * Sozialleistung
    */
   SSBE("SSBE","Sozialleistung"),
-  
+
   /**
    * Zahlung an öffentl. Kassen
    */
   GOWT("GOWT","Zahlung an öffentl. Kassen"),
-  
+
   /**
    * Vermögenswirksame Leistungen
    */
   CBFF("CBFF","Vermögenswirksame Leistungen"),
-  
+
   /**
    * Bonuszahlungen.
    */
   BONU("BONU","Bonuszahlungen"),
-  
+
   /**
    * Spendenzahlungen.
    */
   CHAR("CHAR","Spendenzahlungen"),
-  
+
   /**
    * Wiederkehrende Zahlungen / Dauerauftrag
    */
@@ -83,7 +83,7 @@ public enum PurposeCode
    * Cash Management Transfer
    */
   CASH("CASH","Cash Management Transfer"),
-  
+
   /**
    * Nicht anders vorgeschrieben 
    */
@@ -93,14 +93,14 @@ public enum PurposeCode
    * Andere
    */
   OTHR("OTHR","Andere"),
-  
+
   ;
-  
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private String code;
   private String name;
-  
+
   /**
    * ct.
    * @param code der Code.
@@ -111,7 +111,7 @@ public enum PurposeCode
     this.code = code;
     this.name = name;
   }
-  
+
   /**
    * Liefert den Code.
    * @return code der Code.
@@ -120,7 +120,7 @@ public enum PurposeCode
   {
     return code;
   }
-  
+
   /**
    * Liefert einen sprechenden Namen fuer den Purpose-Code.
    * @return sprechender Name fuer den Purpose-Code.
@@ -129,7 +129,7 @@ public enum PurposeCode
   {
     return i18n.tr(this.name);
   }
-  
+
   /**
    * Ermittelt den Purpose-Code.
    * @param code der Code. Kann NULL sein.
@@ -145,7 +145,7 @@ public enum PurposeCode
       if (pc.getCode().equals(code))
         return pc;
     }
-    
+
     return null;
   }
 
@@ -157,7 +157,7 @@ public enum PurposeCode
   {
     return this.getName();
   }
-  
+
   /**
    * Liefert die Liste der bekannten Codes.
    * @return die Liste der bekannten Codes.
@@ -169,10 +169,8 @@ public enum PurposeCode
     {
       result.add(c.getCode());
     }
-    
+
     return result;
   }
 
 }
-
-

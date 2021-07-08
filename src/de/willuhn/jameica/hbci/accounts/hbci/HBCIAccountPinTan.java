@@ -19,7 +19,7 @@ public class HBCIAccountPinTan
   private String url = null;
   private String customer = null;
   private String username = null;
-  
+
   /**
    * Liefert die BLZ.
    * @return die BLZ.
@@ -28,7 +28,7 @@ public class HBCIAccountPinTan
   {
     return blz;
   }
-  
+
   /**
    * Speichert die BLZ.
    * @param blz die BLZ.
@@ -37,7 +37,7 @@ public class HBCIAccountPinTan
   {
     this.blz = blz;
   }
-  
+
   /**
    * Liefert die URL.
    * @return die URL.
@@ -46,7 +46,7 @@ public class HBCIAccountPinTan
   {
     return url;
   }
-  
+
   /**
    * Speichert die URL.
    * @param url die URL.
@@ -91,10 +91,5 @@ public class HBCIAccountPinTan
   {
     this.username = username;
   }
-  
-  
-  
 
 }
-
-

@@ -25,65 +25,65 @@ public enum KontoType
    * Kontokorrent-/Girokonto.
    */
   GIRO(1,9,"Kontokorrent-/Girokonto"),
-  
+
   /**
    * Sparkonto.
    */
   SPAR(10,19,"Sparkonto"),
-  
+
   /**
    * Festgeldkonto (Termineinlagen).
    */
   FESTGELD(20,29,"Festgeldkonto (Termineinlagen)"),
-  
+
   /**
    * Wertpapierdepot.
    */
   WERTPAPIERDEPOT(30,39,"Wertpapierdepot"),
-  
+
   /**
    * Kredit-/Darlehenskonto.
    */
   DARLEHEN(40,49,"Kredit-/Darlehenskonto"),
-  
+
   /**
    * Kreditkartenkonto.
    */
   KREDITKARTE(50,59,"Kreditkartenkonto"),
-  
+
   /**
    * Fonds-Depot bei einer Kapitalanlagegesellschaft.
    */
   FONDSDEPOT(60,69,"Fonds-Depot bei einer Kapitalanlagegesellschaft"),
-  
+
   /**
    * Bausparvertrag.
    */
   BAUSPAR(70,79,"Bausparvertrag"),
-  
+
   /**
    * Versicherungsvertrag.
    */
   VERSICHERUNG(80,89,"Versicherungsvertrag"),
-  
+
   /**
    * Sonstige (nicht zuordenbar).
    */
   SONSTIGE(90,99,"Sonstige (nicht zuordenbar)"),
-  
+
   ;
-  
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Die Default-Kontoart.
    */
   public final static KontoType DEFAULT = GIRO;
-  
+
   private int min;
   private int max;
   private String name;
-  
+
   /**
    * ct.
    * @param min Mindest-ID.
@@ -96,7 +96,7 @@ public enum KontoType
     this.max = max;
     this.name = name;
   }
-  
+
   /**
    * Liefert einen sprechenden Namen fuer die Kontoart.
    * @return sprechender Name fuer die Kontoart.
@@ -105,7 +105,7 @@ public enum KontoType
   {
     return i18n.tr(this.name);
   }
-  
+
   /**
    * Liefert den zu verwendenden Wert, wenn diese Kontoart manuell ausgewaehlt wurde.
    * @return der zu verwendende Wert, wenn diese Kontoart manuell ausgewaehlt wurde.
@@ -114,7 +114,7 @@ public enum KontoType
   {
     return this.min;
   }
-  
+
   /**
    * Ermittelt die Kontoart fuer die ID.
    * @param id die ID. Kann NULL sein.
@@ -131,10 +131,10 @@ public enum KontoType
       if (i >= type.min && i <= type.max)
         return type;
     }
-    
+
     return null;
   }
-  
+
   /**
    * @see java.lang.Enum#toString()
    */
@@ -144,5 +144,3 @@ public enum KontoType
     return this.getName();
   }
 }
-
-

@@ -29,13 +29,13 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in Kontoauszuegen.
  */
 public class KontoauszugSearchProvider implements SearchProvider
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   /**
    * @see de.willuhn.jameica.search.SearchProvider#getName()
    */
@@ -51,7 +51,7 @@ public class KontoauszugSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator<Kontoauszug> list = service.createList(Kontoauszug.class);
@@ -74,14 +74,14 @@ public class KontoauszugSearchProvider implements SearchProvider
     }
     return results;
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private Kontoauszug u = null;
-    
+
     /**
      * ct.
      * @param u
@@ -107,11 +107,11 @@ public class KontoauszugSearchProvider implements SearchProvider
       try
       {
         Konto k = u.getKonto();
-        
+
         List<String> params = new ArrayList<String>();
         params.add(HBCI.DATEFORMAT.format(u.getAusfuehrungsdatum()));
         params.add(k.getLongName());
-        
+
         Integer jahr  = u.getJahr();
         Integer nr    = u.getNummer();
         Date erstellt = u.getErstellungsdatum();
@@ -124,11 +124,11 @@ public class KontoauszugSearchProvider implements SearchProvider
         {
           params.add(HBCI.DATEFORMAT.format(erstellt));
         }
-        
+
         String[] s = params.toArray(new String[params.size()]);
         if (s.length == 4)
           return i18n.tr("Kontoauszug {2}-{3}, abgerufen am {0} ({1})",s);
-        
+
         if (s.length == 3)
           return i18n.tr("Kontoauszug {2}, abgerufen am {0} ({1})",s);
 

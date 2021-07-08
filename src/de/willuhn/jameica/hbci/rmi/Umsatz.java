@@ -74,7 +74,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public String getArt() throws RemoteException;
-	
+
 	/**
 	 * Liefert die Kundenreferenz.
    * @return Kundenreferenz.
@@ -88,14 +88,14 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public String getKommentar() throws RemoteException;
-  
+
   /**
    * Liefert den 3-stelligen Geschaeftsvorfall-Code.
    * @return der 3-stellige Geschaeftsvorfall-Code.
    * @throws RemoteException
    */
   public String getGvCode() throws RemoteException;
-  
+
   /**
    * Speichert den 3-stelligen Geschaeftsvorfall-Code.
    * @param code der 3-stellige Geschaeftsvorfall-Code.
@@ -109,7 +109,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public String getAddKey() throws RemoteException;
-  
+
   /**
    * Speichert die 3-stellige Textschluessel-Ergaenzung.
    * @param key die 3-stellige Textschluessel-Ergaenzung.
@@ -130,7 +130,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
 	public void setDatum(Date d) throws RemoteException;
-	
+
   /**
    * Datum der Wertstellung.
    * @param d
@@ -172,21 +172,21 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public UmsatzTyp getUmsatzTyp() throws RemoteException;
-  
+
   /**
    * Speichert einen manuell zugeordneten Umsatz-Typ.
    * @param ut zugeordneter Umsatztyp oder <code>null</code> zum Entfernen der Zuordnung.
    * @throws RemoteException
    */
   public void setUmsatzTyp(UmsatzTyp ut) throws RemoteException;
-  
+
   /**
    * Liefert true, wenn der Umsatz einer Kategorie zugeordnet ist.
    * @return true, wenn der Umsatz einer Kategorie zugeordnet ist.
    * @throws RemoteException
    */
   public boolean isAssigned() throws RemoteException;
-  
+
   /**
    * Liefert eine optionale Transaktions-ID, anhand derer der Umsatz eindeutig identifiziert werden kann.
    * Die ID ist nur bei Umsaetzen vorhanden, die per CAMT abgerufen wurden.
@@ -197,7 +197,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public String getTransactionId() throws RemoteException;
-  
+
   /**
    * Speichert eine optionale Transaktions-ID, anhand derer der Umsatz eindeutig identifiziert werden kann.
    * Wichtig: Hibiscus garantiert NICHT, dass die ID eindeutig ist. Weder durch Programmlogik noch durch einen Unique-Key.
@@ -207,7 +207,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public void setTransactionId(String id) throws RemoteException;
-  
+
   /**
    * Liefert den Purpose-Code der Buchung.
    * Nur bei Umsaetzen vorhanden, die per CAMT abgerufen wurden.
@@ -215,7 +215,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public String getPurposeCode() throws RemoteException;
-  
+
   /**
    * Speichern den Purpose-Code der Buchung.
    * @param code der Purpose-Code der Buchung.
@@ -230,7 +230,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public String getEndToEndId() throws RemoteException;
-  
+
   /**
    * Speichern die EndToEnd-ID der Buchung.
    * @param id die EndToEnd-ID der Buchung.
@@ -245,7 +245,7 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    * @throws RemoteException
    */
   public String getMandateId() throws RemoteException;
-  
+
   /**
    * Speichern die Mandatsreferenz der Buchung.
    * @param id die Mandatsreferenz der Buchung.

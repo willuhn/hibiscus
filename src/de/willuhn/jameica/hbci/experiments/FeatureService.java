@@ -31,7 +31,7 @@ public class FeatureService
 {
   private Settings settings = new Settings(FeatureService.class);
   private List<Feature> features = new LinkedList<Feature>();
-  
+
   /**
    * Initialisiert den Service.
    */
@@ -74,7 +74,7 @@ public class FeatureService
       Logger.error("unable to load experimental features",e);
     }
   }
-  
+
   /**
    * Liefert die Liste der experimentellen Features.
    * @return Liste der experimentellen Features.
@@ -83,7 +83,7 @@ public class FeatureService
   {
     return this.features;
   }
-  
+
   /**
    * Liefert den aktuellen Zustand des Features.
    * @param f das Feature.
@@ -94,10 +94,10 @@ public class FeatureService
     // Wenn der Feature-Service inaktiv ist, liefern wir generell die Default-Werte
     if (!this.enabled())
       return f.getDefault();
-    
+
     return this.settings.getBoolean(f.getName(),f.getDefault());
   }
-  
+
   /**
    * Aktiviert/Deaktiviert ein Feature.
    * @param f das Feature.
@@ -109,11 +109,11 @@ public class FeatureService
 
     // 1. Feature aktivieren/deaktivieren
     f.setEnabled(enabled);
-    
+
     // 2. In den Einstellungen speichern, damit es beim naechsten Start wiederhergestellt wird.
     this.settings.setAttribute(f.getName(),enabled);
   }
-  
+
   /**
    * Liefert true, wenn die experimentellen Features verfuegbar sind.
    * @return true, wenn die experimentellen Features verfuegbar sind.
@@ -122,7 +122,7 @@ public class FeatureService
   {
     return this.settings.getBoolean("enabled",false);
   }
-  
+
   /**
    * Legt fest, ob die experimentellen Features verfuegbar sein sollen.
    * @param b true, wenn die experimentellen Features verfuegbar sein sollen.

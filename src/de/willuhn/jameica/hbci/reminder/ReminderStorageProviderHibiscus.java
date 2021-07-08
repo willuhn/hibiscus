@@ -63,17 +63,16 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
   {
     if (reminder == null)
       throw new JameicaException("no reminder given");
-    
+
     String uuid = this.createUUID();
-    
+
     DBReminder r = (DBReminder) Settings.getDBService().createObject(DBReminder.class,null);
     r.setUUID(uuid);
     r.setReminder(reminder);
     r.store();
-    
+
     return uuid;
   }
-
 
   /**
    * @see de.willuhn.jameica.reminder.ReminderStorageProvider#update(java.lang.String, de.willuhn.jameica.reminder.Reminder)
@@ -82,15 +81,15 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
   {
     if (StringUtils.trimToNull(uuid) == null)
       throw new JameicaException("no uuid given");
-    
+
     if (reminder == null)
       throw new JameicaException("no reminder given");
-    
+
     // Checken, ob wir den schon haben
     DBReminder r = this.getDBReminder(uuid);
     if (r == null)
       throw new ObjectNotFoundException("no reminder found for uuid: " + uuid);
-    
+
     // Daten uebernehmen und speichern
     r.setReminder(reminder);
     r.store();
@@ -103,14 +102,14 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
   {
     if (StringUtils.trimToNull(uuid) == null)
       throw new JameicaException("no uuid given");
-    
+
     DBReminder r = this.getDBReminder(uuid);
     if (r == null)
       return null; // den gibts gar nicht
-    
+
     Reminder reminder = r.getReminder();
     r.delete();
-    
+
     // den geloeschten Reminder noch zurueckliefern
     return reminder;
   }
@@ -128,13 +127,12 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
         {
           list.add(rs.getString(1));
         }
-        
+
         return list.toArray(new String[list.size()]);
       }
     });
   }
 
-  
   /**
    * Laedt den zugehoerigen Datensatz aus der DB.
    * @param uuid die UUID.
@@ -145,18 +143,16 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
   {
     if (StringUtils.trimToNull(uuid) == null)
       throw new JameicaException("no uuid given");
-    
+
     DBService service = Settings.getDBService();
     DBIterator i = service.createList(DBReminder.class);
     i.addFilter("uuid = ?",uuid);
     if (i.hasNext())
       return (DBReminder) i.next();
-    
+
     return null;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: ReminderStorageProviderHibiscus.java,v $

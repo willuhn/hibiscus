@@ -41,7 +41,7 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
 	 * @throws RemoteException
 	 */
 	public String getKontonummer() throws RemoteException;
-  
+
   /**
    * Liefert die Unterkonto-Nummer.
    * BUGZILLA 355
@@ -107,7 +107,7 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
    * @throws RemoteException
    */
   public String getBackendClass() throws RemoteException;
-  
+
   /**
    * Liefert die Kontoart. Kann NULL sein.
    * @return die Kontoart.
@@ -180,7 +180,7 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
    * @throws RemoteException
    */
   public void setBackendClass(String backend) throws RemoteException;
-  
+
   /**
    * Speichert die Kontoart. Kann NULL sein.
    * @param i die Kontoart.
@@ -293,7 +293,7 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
    * @throws RemoteException
    */
   public DBIterator getAuslandsUeberweisungen() throws RemoteException;
-  
+
   /**
    * Liefert eine Liste aller SEPA-Lastschriften, die ueber dieses Konto getaetigt wurden.
    * @return Liste der SEPA-Lastschriften.
@@ -389,47 +389,47 @@ public interface Konto extends HibiscusDBObject, Checksum, Flaggable
    * @throws RemoteException
    */
   public String getKommentar() throws RemoteException;
-  
+
   /**
    * Liefert die BIC.
    * @return die BIC.
    * @throws RemoteException
    */
   public String getBic() throws RemoteException;
-  
+
   /**
    * Speichert die BIC.
    * @param bic die BIC.
    * @throws RemoteException
    */
   public void setBic(String bic) throws RemoteException;
-  
+
   /**
    * Liefert die IBAN.
    * @return die IBAN.
    * @throws RemoteException
    */
   public String getIban() throws RemoteException;
-  
+
   /**
    * Speichert die IBAN.
    * @param iban die IBAN.
    * @throws RemoteException
    */
   public void setIban(String iban) throws RemoteException;
-  
+
   /**
    * Liefert einen Freitext mit der Kategorie.
    * @return Freitext mit der Kategorie.
    * @throws RemoteException
    */
   public String getKategorie() throws RemoteException;
-  
+
   /**
    * Speichert die Kategorie.
    * @param kategorie die Kategorie.
    * @throws RemoteException
    */
   public void setKategorie(String kategorie) throws RemoteException;
-  
+
 }

@@ -26,7 +26,7 @@ public interface Address extends Remote
    * @throws RemoteException
    */
   public String getKontonummer() throws RemoteException;
-  
+
   /**
    * Liefert die BLZ.
    * @return BLZ.
@@ -41,14 +41,14 @@ public interface Address extends Remote
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
-  
+
   /**
    * Liefert einen zusaetzlichen Kommentar fuer den Adressbuch-Eintrag.
    * @return Kommentar.
    * @throws RemoteException
    */
   public String getKommentar() throws RemoteException;
-  
+
   /**
    * Liefert die BIC.
    * @return die BIC.
@@ -62,16 +62,15 @@ public interface Address extends Remote
    * @throws RemoteException
    */
   public String getIban() throws RemoteException;
-  
+
   /**
    * Liefert einen Freitext mit der Kategorie.
    * @return Freitext mit der Kategorie.
    * @throws RemoteException
    */
   public String getKategorie() throws RemoteException;
-  
-}
 
+}
 
 /*********************************************************************
  * $Log: Address.java,v $

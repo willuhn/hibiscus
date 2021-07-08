@@ -11,7 +11,6 @@ package de.willuhn.jameica.hbci.rmi;
 
 import java.rmi.RemoteException;
 
-
 /**
  * Basis-Interface fuer eine SEPA-Buchung.
  */
@@ -23,7 +22,7 @@ public interface SepaBooking extends Transfer
    * @throws RemoteException
    */
   public String getEndtoEndId() throws RemoteException;
-  
+
   /**
    * Speichert die optionale End2End-ID fuer SEPA.
    * @param id die optionale End2End-ID fuer SEPA.
@@ -37,7 +36,7 @@ public interface SepaBooking extends Transfer
    * @throws RemoteException
    */
   public String getPurposeCode() throws RemoteException;
-  
+
   /**
    * Speichert den optionalen Purpose-Code.
    * @param code der optionale Purpose-Code.

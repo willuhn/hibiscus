@@ -56,13 +56,13 @@ public class HBCIVariantPinTanTest implements Action
   {
     if (!(context instanceof HBCIAccountPinTan))
       throw new ApplicationException(i18n.tr("Keine Zugangsdaten angegeben"));
-    
+
     final HBCIAccountPinTan account = (HBCIAccountPinTan) context;
 
     BackgroundTask task = new BackgroundTask() {
-      
+
       private boolean stop = false;
-      
+
       public void run(final ProgressMonitor monitor) throws ApplicationException
       {
         PinTanConfig conf     = null;
@@ -74,7 +74,7 @@ public class HBCIVariantPinTanTest implements Action
         try
         {
           monitor.setStatusText(i18n.tr("Teste Bank-Zugang..."));
-          
+
           // Log-Ausgaben temporaer auch mit im Progressbar-Fenster
           // ausgeben
           target = new Target() {
@@ -83,6 +83,7 @@ public class HBCIVariantPinTanTest implements Action
               monitor.addPercentComplete(2);
               format(monitor,msg.getText());
             }
+
             public void close() throws Exception
             {
             }
@@ -96,10 +97,10 @@ public class HBCIVariantPinTanTest implements Action
               @Override
               public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
               {
-                
+
                 if (stop)
                   throw new OperationCanceledException(i18n.tr("Vorgang abgebrochen"));
-                
+
                 monitor.addPercentComplete(3);
 
                 switch (reason)
@@ -107,27 +108,27 @@ public class HBCIVariantPinTanTest implements Action
                   case HBCICallback.NEED_COUNTRY:
                     retData.replace(0,retData.length(),"DE");
                     return true;
-  
+
                   case HBCICallback.NEED_BLZ:
                     retData.replace(0,retData.length(),account.getBlz());
                     return true;
-  
+
                   case HBCICallback.NEED_HOST:
                     retData.replace(0,retData.length(),account.getUrl());
                     return true;
-  
+
                   case HBCICallback.NEED_PORT:
                     retData.replace(0,retData.length(),"443");
                     return true;
-  
+
                   case HBCICallback.NEED_FILTER:
                     retData.replace(0,retData.length(),"Base64");
                     return true;
-  
+
                   case HBCICallback.NEED_USERID:
                     retData.replace(0,retData.length(),account.getUsername());
                     return true;
-  
+
                   case HBCICallback.NEED_CUSTOMERID:
                     retData.replace(0,retData.length(),account.getCustomer() != null ? account.getCustomer() : account.getUsername());
                     return true;
@@ -140,16 +141,16 @@ public class HBCIVariantPinTanTest implements Action
 
           conf = new PinTanConfigImpl(PinTanConfigFactory.load(f),f);
           conf.setBezeichnung(account.getBlz());
-          
+
           PinTanConfigFactory.store(conf);
-          
+
           if (stop)
             throw new OperationCanceledException();
-          
+
           PassportHandle handle = new PassportHandleImpl(conf);
           handler = handle.open();
           handle.close();
-          
+
           // Test erfolgreich. Bankzugang uebernehmen
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           String text = i18n.tr("Bank-Zugang erfolgreich angelegt");
@@ -161,14 +162,14 @@ public class HBCIVariantPinTanTest implements Action
         {
           if (conf != null)
             PinTanConfigFactory.delete(conf);
-          
+
           if ( f != null && f.exists())
             f.delete();
-          
+
           Throwable cause = HBCIProperties.getCause(t);
           if (cause == null) cause = t; // NPE proof - man weiss ja nie ;)
           Logger.error("account test failed: " + cause.getClass() + ": " + cause.getMessage(),t);
-          
+
           // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
@@ -212,15 +213,16 @@ public class HBCIVariantPinTanTest implements Action
       public void interrupt() {
         this.stop = true;
       }
+
       public boolean isInterrupted()
       {
         return this.stop;
       }
     };
-    
+
     Application.getController().start(task);
   }
-  
+
   /**
    * @param t
    */
@@ -279,7 +281,4 @@ public class HBCIVariantPinTanTest implements Action
     }
   }
 
-
 }
-
-

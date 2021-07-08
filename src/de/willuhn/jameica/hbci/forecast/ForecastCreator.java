@@ -37,7 +37,7 @@ public class ForecastCreator
 {
   private final static Settings settings = new Settings(ForecastCreator.class);
   private static List<Class<ForecastProvider>> providers = null;
-  
+
   /**
    * Liefert die Liste aller Forecast-Provider - unabhaengig davon, ob sie
    * gerade aktiv sind oder nicht.
@@ -63,9 +63,9 @@ public class ForecastCreator
         Logger.error("no forecast providers found",cne);
       }
     }
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    
+
     List<ForecastProvider> result = new LinkedList<ForecastProvider>();
     for (Class<ForecastProvider> p:providers)
     {
@@ -80,7 +80,7 @@ public class ForecastCreator
     }
     return result;
   }
-  
+
   /**
    * Erzeugt eine Liste von Salden fuer das angegebene Konto im angegebenen Zeitraum.
    * Die Liste enthaelt hierbei fuer jeden Tag einen Wert (auch wenn an diesem Tag
@@ -101,7 +101,7 @@ public class ForecastCreator
     // Start- und End-Datum vorbereiten
     if (from == null)
       from = new Date();
-    
+
     if (to == null)
     {
       Calendar cal = Calendar.getInstance();
@@ -109,7 +109,7 @@ public class ForecastCreator
       cal.add(Calendar.YEAR,1);
       to = cal.getTime();
     }
-    
+
     from = DateUtil.startOfDay(from);
     to   = DateUtil.endOfDay(to);
     //
@@ -137,7 +137,7 @@ public class ForecastCreator
             existing.setValue(existing.getValue() + v.getValue());
             continue;
           }
-          
+
           // haben wir noch nicht. Also neu anlegen
           dates.put(v.getDate(),v);
         }
@@ -149,7 +149,7 @@ public class ForecastCreator
     }
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Schritt 2: Start-Saldo ermitteln
     double startSaldo = 0.0d;
@@ -175,26 +175,26 @@ public class ForecastCreator
     // Schritt 4: Homogenisieren, sodass wir fuer jeden Tag einen Wert haben.
     List<Value> result = new LinkedList<Value>();
     SaldoFinder finder = new SaldoFinder(salden,startSaldo);
-    
+
     // Iterieren ueber den Zeitraum.
     Calendar cal = Calendar.getInstance();
     cal.setTime(from);
-    
+
     while (!from.after(to))
     {
       Value v = new Value(from,finder.get(from));
       result.add(v);
-      
+
       // Und weiter zum naechsten Tag
       cal.add(Calendar.DATE,1);
       from = cal.getTime();
     }
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     return result;
   }
-  
+
   /**
    * Liefert true, wenn der Provider aktiv ist.
    * @param provider der zu pruefende Provider.
@@ -204,7 +204,7 @@ public class ForecastCreator
   {
     return settings.getBoolean(provider.getClass().getName() + ".enabled",true);
   }
-  
+
   /**
    * Legt fest, ob der Provider verwendet werden soll.
    * @param provider der Provider.
@@ -216,8 +216,6 @@ public class ForecastCreator
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: ForecastCreator.java,v $

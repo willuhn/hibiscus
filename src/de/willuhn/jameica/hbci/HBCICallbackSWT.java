@@ -53,12 +53,12 @@ import de.willuhn.util.ProgressMonitor;
 public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	
+
 	private Map<HBCIPassport,AccountContainer> accountCache = new HashMap<HBCIPassport,AccountContainer>();
   private PassportHandle currentHandle = null;
-  
+
   @Resource private HBCISynchronizeBackend backend = null;
-  
+
   /**
    * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
    */
@@ -68,7 +68,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
     boolean mon = true;
     String type = null;
-    
+
   	switch (level)
   	{
   	  case HBCIUtils.LOG_INTERN:
@@ -76,7 +76,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
         Logger.trace(msg);
         mon = false;
         break;
-  		  
+
 			case HBCIUtils.LOG_DEBUG:
   			Logger.debug(msg);
         mon = false;
@@ -117,7 +117,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   		  {
   		    if (session != null && msg != null)
   		      session.getErrors().add(msg.replace("HBCI error code: ",""));
-  		    
+
           type = "Fehler";
           Logger.error(msg + " " + trace.toString());
           break;
@@ -146,7 +146,6 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     SynchronizeSession session = this.backend.getCurrentSession();
 
     try {
-      
       if (currentHandle != null && currentHandle.callback(passport,reason,msg,datatype,retData))
       {
         Logger.debug("callback [reason " + reason + "] handled by " + currentHandle.getClass());
@@ -154,14 +153,14 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
       }
 
 			AccountContainer container = accountCache.get(passport);
-			
+
 			switch (reason) {
-        
+
 			  // Hier kommen nur noch die PIN/TAN und DDV-Passports an. Die von RDH werden
 			  // im PassportHandle verarbeitet
 				case NEED_PASSPHRASE_LOAD:
 				case NEED_PASSPHRASE_SAVE:
-          
+
           // Passwort aus dem Wallet laden
           Wallet w = Settings.getWallet();
           String pw = (String) w.get("hbci.passport.password." + passport.getClass().getName());
@@ -171,7 +170,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
             retData.replace(0,retData.length(),pw);
             break;
           }
-            
+
           // noch kein Passwort definiert. Dann erzeugen wir ein zufaelliges.
           Logger.debug("creating new random passport key, passport: " + passport.getClass().getName());
           byte[] pass = new byte[8];
@@ -264,7 +263,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
               SynchronizeOptions o = new SynchronizeOptions(k);
               sm = o.getSyncMessages();
             }
-            
+
             if (sm)
             {
               Nachricht n = (Nachricht) Settings.getDBService().createObject(Nachricht.class,null);
@@ -285,17 +284,17 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
             Application.getCallback().notifyUser(msg);
           }
 					break;
-          
+
         case HAVE_IBAN_ERROR:
 				case HAVE_CRC_ERROR:
 				  if (Settings.getKontoCheck())
             Logger.error("IBAN/CRC error: " + msg+ " ["+retData.toString()+"]: ");
           break;
-          
+
         case WRONG_PIN:
           Logger.error("detected wrong PIN: " + msg+ " ["+retData.toString()+"]: ");
           break;
-          
+
         case USERID_CHANGED:
           Logger.info("got changed user/account data (code 3072) - saving in persistent data for later handling");
           ((AbstractHBCIPassport)passport).setPersistentData(PassportHandle.CONTEXT_USERID_CHANGED,retData.toString());
@@ -308,9 +307,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 				default:
 				  Logger.error("unknown reason " + reason + ", datatype: " + datatype + ": " + msg);
           throw new HBCI_Exception("unknown reason " + reason + ": " + msg);
-	
 			}
-
 		}
 		catch (NeedKeyAckException e)
 		{
@@ -345,7 +342,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 	      session.cancel();
 				throw (OperationCanceledException) th;
 			}
-			
+
 			// Ansonsten durchwerfen
 			if (t instanceof RuntimeException)
 				throw (RuntimeException) t;
@@ -374,7 +371,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
       monitor.log(text + "\n");
     }
 	}
-  
+
   /**
    * Schreibt den Fortschrittsbalken etwas weiter.
    */
@@ -383,11 +380,11 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     final SynchronizeSession session = this.backend.getCurrentSession();
     if (session == null)
       return;
-    
+
     ProgressMonitor m = session.getProgressMonitor();
     if (m == null)
       return;
-    
+
     // Das ist die Gesamt-Zahl der Prozentpunkte, die wir zur Verfuegung haben
     double window = session.getProgressWindow();
     if (window <= 1d)
@@ -397,10 +394,9 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     // Daher machen wir das hier nur geschaetzt
     m.addPercentComplete(1);
     session.setProgressWindow(window - 0.2d);
-    
-    
+
   }
-	
+
   /**
    * Speichert das aktuelle Handle.
    * Haesslicher Workaround.

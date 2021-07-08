@@ -34,14 +34,14 @@ import de.willuhn.util.I18N;
 public class UmsatzScheduleProvider implements ScheduleProvider<Umsatz>
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getSchedules(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
    */
   public List<Schedule<Umsatz>> getSchedules(Konto k, Date from, Date to)
   {
     List<Schedule<Umsatz>> result = new LinkedList<Schedule<Umsatz>>();
-    
+
     try
     {
       HBCIDBService service = Settings.getDBService();
@@ -74,8 +74,6 @@ public class UmsatzScheduleProvider implements ScheduleProvider<Umsatz>
     return i18n.tr("Umsätze");
   }
 }
-
-
 
 /**********************************************************************
  * $Log: UmsatzScheduleProvider.java,v $

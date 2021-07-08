@@ -28,7 +28,7 @@ public class SaldoFinder
 {
   private TreeMap<Date,Double> map = new TreeMap<Date,Double>();
   private double anfangssaldo = 0.0d;
-  
+
   /**
    * ct.
    * @param umsaetze Liste der Umsaetze, in denen gesucht werden soll.
@@ -39,7 +39,7 @@ public class SaldoFinder
   public SaldoFinder(GenericIterator umsaetze, double anfangssaldo) throws RemoteException
   {
     this.anfangssaldo = anfangssaldo;
-    
+
     // Wir fuellen die Map
     while (umsaetze.hasNext())
     {
@@ -50,7 +50,7 @@ public class SaldoFinder
       this.map.put(u.getDatum(),u.getSaldo());
     }
   }
-  
+
   /**
    * ct.
    * @param values Liste der Salden, in denen gesucht werden soll.
@@ -61,7 +61,7 @@ public class SaldoFinder
   public SaldoFinder(Collection<Value> values, double anfangssaldo) throws RemoteException
   {
     this.anfangssaldo = anfangssaldo;
-    
+
     for (Value v:values)
     {
       this.map.put(v.getDate(),v.getValue());
@@ -78,24 +78,22 @@ public class SaldoFinder
     if (date == null)
       return anfangssaldo;
     Date key = DateUtil.startOfDay(date);
-    
+
     // Checken, ob wir fuer genau diesen Tag einen Saldo haben
     Double d = this.map.get(key);
     if (d != null)
       return d;
-    
+
     // Haben wir einen Saldo zu einem frueheren Zeitpunkt?
     Date lower = this.map.lowerKey(date); // JAVA 1.6
     if (lower != null)
       return this.map.get(lower);
-    
+
     // Ne, wir haben auch keinen frueheren Saldo. Also war
     // er zu diesem Zeitpunkt noch 0 bzw der Anfangssaldo.
     return anfangssaldo;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: SaldoFinder.java,v $
