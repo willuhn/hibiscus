@@ -54,16 +54,16 @@ public class KontoSyncViaScripting implements Action
       Logger.error("error while syncing konto",e);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Synchronisieren des Kontos"));
     }
-			
+
     final AbstractView currentView = GUI.getCurrentView();
-      
+
     Application.getController().start(new BackgroundTask() {
-      
+
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         monitor.setStatus(ProgressMonitor.STATUS_RUNNING);
         monitor.setStatusText(i18n.tr("Starte Synchronisierung"));
-        
+
         QueryMessage msg = new QueryMessage("hibiscus.konto.sync",new Object[]{k,monitor});
         Application.getMessagingFactory().getMessagingQueue("jameica.scripting").sendSyncMessage(msg);
 
@@ -86,7 +86,7 @@ public class KontoSyncViaScripting implements Action
           monitor.setStatusText(i18n.tr("Synchronisierung erfolgreich beendet"));
         }
       }
-      
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
        */
@@ -94,7 +94,7 @@ public class KontoSyncViaScripting implements Action
       {
         return false;
       }
-      
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
        */
@@ -104,7 +104,6 @@ public class KontoSyncViaScripting implements Action
     });
   }
 }
-
 
 /**********************************************************************
  * $Log: KontoSyncViaScripting.java,v $

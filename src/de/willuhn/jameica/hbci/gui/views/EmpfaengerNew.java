@@ -42,7 +42,7 @@ public class EmpfaengerNew extends AbstractView
   public void bind() throws Exception
   {
 		GUI.getView().setTitle(i18n.tr("Adresse bearbeiten"));
-		
+
 		final EmpfaengerControl control = new EmpfaengerControl(this);
 
     ColumnLayout columns = new ColumnLayout(getParent(),2);
@@ -64,11 +64,11 @@ public class EmpfaengerNew extends AbstractView
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea();
-    
+
     Button delete = new Button(i18n.tr("Löschen"), new DBObjectDelete(),control.getAddress(),false,"user-trash-full.png");
     delete.setEnabled(control.isHibiscusAdresse());
     buttonArea.addButton(delete);
-    
+
     Button store = new Button(i18n.tr("&Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -80,7 +80,7 @@ public class EmpfaengerNew extends AbstractView
     buttonArea.addButton(store);
 
     buttonArea.paint(getParent());
-      
+
     new Headline(getParent(),i18n.tr("Buchungen von/an diese Adresse"));
     TabFolder folder = new TabFolder(getParent(), SWT.NONE);
     GridData gd = new GridData(GridData.FILL_BOTH);
@@ -98,7 +98,6 @@ public class EmpfaengerNew extends AbstractView
     control.getSammelUeberweisungListe().paint(tab3.getComposite());
   }
 }
-
 
 /**********************************************************************
  * $Log: EmpfaengerNew.java,v $

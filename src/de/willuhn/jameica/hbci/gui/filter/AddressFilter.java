@@ -27,7 +27,7 @@ public interface AddressFilter extends Filter<Address>
    * @see de.willuhn.jameica.hbci.gui.filter.Filter#accept(java.lang.Object)
    */
   public boolean accept(Address address) throws RemoteException;
-  
+
   /**
    * Adressfilter, der alle Adressen zulaesst.
    */
@@ -41,7 +41,7 @@ public interface AddressFilter extends Filter<Address>
       return true;
     }
   };
-  
+
   /**
    * Adressfilter, der nur Adressen mit deutscher Bankverbindung zulaesst.
    */

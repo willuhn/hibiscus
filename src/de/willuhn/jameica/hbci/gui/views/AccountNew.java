@@ -35,11 +35,11 @@ public class AccountNew extends AbstractView
   {
     GUI.getView().setTitle(i18n.tr("Neuer Bankzugang..."));
     AccountNewController control = new AccountNewController(this);
-    
+
     Container c = new SimpleContainer(this.getParent());
     c.addHeadline(i18n.tr("Art des Bankzugangs"));
     c.addText(i18n.tr("Bitte wählen Sie die Art des anzulegenden Bankzugangs."),true);
-    
+
     for (InfoPanel panel:control.getAccountProviders())
     {
       c.addPart(panel);
@@ -47,5 +47,3 @@ public class AccountNew extends AbstractView
   }
 
 }
-
-

@@ -49,7 +49,7 @@ import de.willuhn.util.I18N;
 public class KontoList extends ContextMenu implements Extendable
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Stil des Kontextmenus.
    */
@@ -59,12 +59,12 @@ public class KontoList extends ContextMenu implements Extendable
      * Stil bei den Bankzugaengen.
      */
     PASSPORT,
-    
+
     /**
      * Default-Stil.
      */
     DEFAULT,
-    
+
     ;
   }
 
@@ -76,7 +76,6 @@ public class KontoList extends ContextMenu implements Extendable
     this(Style.DEFAULT);
   }
 
-
   /**
    * Erzeugt ein Kontext-Menu fuer eine Liste von Konten.
    * @param style der Stil.
@@ -84,15 +83,15 @@ public class KontoList extends ContextMenu implements Extendable
   public KontoList(Style style)
   {
     final boolean shortMenu = style != null && style == Style.PASSPORT;
-    
+
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"), new KontoNew(),"document-open.png"));
-    
+
     if (!shortMenu)
     {
       addItem(new ContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"list-add.png"));
       addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
     }
-    
+
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new KontoauszugList(),"text-x-generic.png"));
     addItem(new AccountItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png"));
@@ -104,7 +103,7 @@ public class KontoList extends ContextMenu implements Extendable
       addItem(new AccountItem(i18n.tr("Neue Lastschrift..."),new SepaLastschriftNew(),"lastschrift.png"));
       addItem(new AccountItem(i18n.tr("Neuer Dauerauftrag..."),new SepaDauerauftragNew(),"dauerauftrag.png"));
       addItem(new AccountItem(i18n.tr("Umsatz anlegen"),new UmsatzDetailEdit(),"emblem-documents.png",true));
-      
+
       addItem(ContextMenuItem.SEPARATOR);
       addItem(new CheckedContextMenuItem(i18n.tr("Konten exportieren..."),new KontoExport(),"document-save.png"));
       addItem(new ContextMenuItem(i18n.tr("Konten importieren..."),new KontoImport(),"document-open.png"));
@@ -113,7 +112,7 @@ public class KontoList extends ContextMenu implements Extendable
 
     addItem(ContextMenuItem.SEPARATOR);
     addMenu(new ExtendedMenu(style));
-    
+
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
   }
@@ -135,7 +134,6 @@ public class KontoList extends ContextMenu implements Extendable
     {
       this(text, a, icon,false);
     }
-
 
     /**
      * ct.
@@ -163,7 +161,7 @@ public class KontoList extends ContextMenu implements Extendable
         Konto k = (Konto)o;
         if (k.hasFlag(Konto.FLAG_DISABLED))
           return false;
-        
+
         return k.hasFlag(Konto.FLAG_OFFLINE) == offline;
       }
       catch (RemoteException re)
@@ -217,7 +215,7 @@ public class KontoList extends ContextMenu implements Extendable
       {
         addItem(new CheckedSingleContextMenuItem(i18n.tr("Salden neu berechnen..."), new KontoRecalculateOfflineSaldo(),"accessories-calculator.png"));
       }
-      
+
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto deaktivieren..."), new KontoDisable(),"network-offline.png",false));
       addItem(new ChangeFlagsMenuItem(i18n.tr("Konto aktivieren..."), new FlaggableChange(Konto.FLAG_DISABLED,false),"network-transmit-receive.png",true));
     }

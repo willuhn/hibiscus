@@ -72,7 +72,7 @@ public class SepaDauerauftragControl extends AbstractControl
 	private DialogInput turnus	       = null;
 	private DateInput ersteZahlung	   = null;
 	private DateInput letzteZahlung	   = null;
-	
+
   private KontoInput kontoAuswahl    = null;
   private DecimalInput betrag        = null;
   private ZweckInput zweck           = null;
@@ -83,12 +83,12 @@ public class SepaDauerauftragControl extends AbstractControl
 
   private CheckboxInput storeEmpfaenger = null;
   private HibiscusAddressUpdate aUpdate = new HibiscusAddressUpdate();
-	
+
   private SepaDauerauftrag transfer  = null;
   private TypedProperties bpd        = null;
 
   private SepaDauerauftragList list  = null;
-  
+
   /**
    * ct.
    * @param view
@@ -111,11 +111,11 @@ public class SepaDauerauftragControl extends AbstractControl
     Object o = getCurrentObject();
     if (o != null && (o instanceof SepaDauerauftrag))
       return (SepaDauerauftrag) o;
-      
+
     transfer = (SepaDauerauftrag) Settings.getDBService().createObject(SepaDauerauftrag.class,null);
     return transfer;
 	}
-	
+
 	/**
 	 * Liefert die passenden BPD-Parameter fuer den Auftrag.
 	 * @return die BPD.
@@ -125,7 +125,7 @@ public class SepaDauerauftragControl extends AbstractControl
 	{
 	  if (this.bpd != null)
 	    return this.bpd;
-	  
+
 	  SepaDauerauftrag auftrag = this.getTransfer();
 	  if (auftrag.isActive())
 	  {
@@ -133,11 +133,10 @@ public class SepaDauerauftragControl extends AbstractControl
       this.bpd = support != null ? support.getBpd() : null;
 	  }
 
-	  
     // Der Auftrag ist noch nicht aktiv oder wir konnten keine Einschraenkungen ermitteln
 	  if (this.bpd == null)
 	    this.bpd = new TypedProperties();
-	  
+
 	  return this.bpd;
 	}
 
@@ -189,13 +188,13 @@ public class SepaDauerauftragControl extends AbstractControl
 		turnus = new DialogInput(t == null ? "" : t.getBezeichnung(),td);
 		turnus.setValue(t);
     turnus.setMandatory(true);
-    
+
     if (da.isActive())
     {
       boolean changable = getBPD().getBoolean("turnuseditable",true) && getBPD().getBoolean("timeuniteditable",true);
       turnus.setEnabled(changable);
     }
-    
+
     turnus.disableClientControl(); // Client-Control generell deaktivieren - auch wenn Aenderungen erlaubt sind
 		return turnus;
 	}
@@ -222,7 +221,7 @@ public class SepaDauerauftragControl extends AbstractControl
 	{
 		if (ersteZahlung != null)
 			return ersteZahlung;
-    
+
     final SepaDauerauftrag t = getTransfer();
     Date d = t.getErsteZahlung();
     if (d == null)
@@ -238,14 +237,14 @@ public class SepaDauerauftragControl extends AbstractControl
     ersteZahlung.setMandatory(true);
 
     ersteZahlung.addListener(this.nextDate);
-    
+
     if (t.isActive())
       ersteZahlung.setEnabled(this.canEditErsteZahlung());
-    
+
     this.nextDate.handleEvent(null); // einmal ausloesen fuer initialen Text
 		return ersteZahlung;
 	}
-  
+
   /**
    * Prueft, ob das Datum der ersten Zahlung beim Aendern von Dauerauftraegen geaendert werden darf.
    * @return true, wenn es geaendert werden darf.
@@ -279,12 +278,12 @@ public class SepaDauerauftragControl extends AbstractControl
         // Nur, um den Parser zu triggern
         letzteZahlung.getValue();
       }
-    
+
     });
 
     if (t.isActive())
       letzteZahlung.setEnabled(getBPD().getBoolean("lastexeceditable",true));
-    
+
     return letzteZahlung;
 	}
 
@@ -297,7 +296,7 @@ public class SepaDauerauftragControl extends AbstractControl
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
+
     KontoListener kl = new KontoListener();
     MyKontoFilter filter = new MyKontoFilter();
     this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
@@ -315,7 +314,7 @@ public class SepaDauerauftragControl extends AbstractControl
 
     return this.kontoAuswahl;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer den Empfaenger-Namen.
    * @return Eingabe-Feld.
@@ -325,7 +324,7 @@ public class SepaDauerauftragControl extends AbstractControl
   {
     if (empfName != null)
       return empfName;
-    
+
     SepaDauerauftrag t = getTransfer();
 
     empfName = new AddressInput(t.getGegenkontoName(), AddressFilter.FOREIGN);
@@ -367,14 +366,14 @@ public class SepaDauerauftragControl extends AbstractControl
   {
     if (this.bic != null)
       return this.bic;
-    
+
     SepaDauerauftrag t = getTransfer();
     this.bic = new BICInput(t.getGegenkontoBLZ());
     if (t.isActive())
       this.bic.setEnabled(getBPD().getBoolean("recktoeditable",true));
     return this.bic;
   }
-  
+
   /**
    * Liefert eine CheckBox ueber die ausgewaehlt werden kann,
    * ob der Empfaenger mitgespeichert werden soll.
@@ -391,7 +390,7 @@ public class SepaDauerauftragControl extends AbstractControl
     // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
     // noch kein Gegenkonto definiert ist.
     boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
-    
+
     // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
     de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
@@ -409,7 +408,7 @@ public class SepaDauerauftragControl extends AbstractControl
   {
     if (betrag != null)
       return betrag;
-    
+
     SepaDauerauftrag t = getTransfer();
     double d = t.getBetrag();
     if (d == 0.0d) d = Double.NaN;
@@ -420,7 +419,7 @@ public class SepaDauerauftragControl extends AbstractControl
     betrag.setMandatory(true);
     if (t.isActive())
       betrag.setEnabled(getBPD().getBoolean("valueeditable",true));
-    
+
     new KontoListener().handleEvent(null);
 
     return betrag;
@@ -450,7 +449,7 @@ public class SepaDauerauftragControl extends AbstractControl
   {
     if (zweck != null)
       return zweck;
-    
+
     SepaDauerauftrag t = getTransfer();
     zweck = new ZweckInput(getTransfer().getZweck());
     zweck.setMandatory(true);
@@ -458,7 +457,7 @@ public class SepaDauerauftragControl extends AbstractControl
       zweck.setEnabled(getBPD().getBoolean("usageeditable",true));
     return zweck;
   }
-  
+
   /**
    * Fuehrt den Dauerauftrag aus.
    */
@@ -467,7 +466,7 @@ public class SepaDauerauftragControl extends AbstractControl
     try
     {
       SepaDauerauftrag t = this.getTransfer();
-      
+
       if (this.handleStore())
       {
         // BUGZILLA 1740 - Beim Aendern das Datum der ersten Zahlung auf den naechsten Zahlungstermin basierend auf heute setzen
@@ -510,16 +509,16 @@ public class SepaDauerauftragControl extends AbstractControl
   public synchronized boolean handleStore()
   {
     SepaDauerauftrag t = null;
-    
+
     try
     {
       t = this.getTransfer();
-      
+
       t.transactionBegin();
 
       Double d = (Double) getBetrag().getValue();
       t.setBetrag(d == null ? Double.NaN : d.doubleValue());
-      
+
       t.setKonto((Konto)getKontoAuswahl().getValue());
       t.setErsteZahlung((Date)getErsteZahlung().getValue());
       t.setLetzteZahlung((Date)getLetzteZahlung().getValue());
@@ -536,7 +535,7 @@ public class SepaDauerauftragControl extends AbstractControl
       t.setGegenkontoBLZ(bic);
 
       t.store();
-      
+
       {
         final Boolean store = (Boolean) getStoreEmpfaenger().getValue();
         this.aUpdate.setCreate(store.booleanValue());
@@ -551,7 +550,7 @@ public class SepaDauerauftragControl extends AbstractControl
 
       if (t.getBetrag() > Settings.getUeberweisungLimit())
         GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getTransfer().getKonto().getWaehrung()));
-      
+
       return true;
     }
     catch (Exception e)
@@ -564,7 +563,7 @@ public class SepaDauerauftragControl extends AbstractControl
           Logger.error("rollback failed",xe);
         }
       }
-      
+
       if (e instanceof ApplicationException)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
@@ -578,7 +577,6 @@ public class SepaDauerauftragControl extends AbstractControl
     return false;
   }
 
-  
   /**
    * Listener, der das Datum der naechsten Zahlung aktualisiert.
    */
@@ -610,8 +608,7 @@ public class SepaDauerauftragControl extends AbstractControl
       }
     }
   }
-  
-  
+
   /**
    * Eigener ueberschriebener Kontofilter.
    */
@@ -676,10 +673,10 @@ public class SepaDauerauftragControl extends AbstractControl
     public void handleEvent(Event event) {
       if (event == null)
         return;
-      
+
       if (!(event.data instanceof Address))
         return;
-      
+
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
@@ -690,13 +687,13 @@ public class SepaDauerauftragControl extends AbstractControl
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
         getStoreEmpfaenger().setValue(Boolean.FALSE);
-        
+
         try
         {
           String zweck = (String) getZweck().getValue();
           if ((zweck != null && zweck.length() > 0))
             return;
-          
+
           DBIterator list = getTransfer().getList();
           list.addFilter("empfaenger_konto = ?",a.getIban());
           list.setOrder("order by id desc");
@@ -711,7 +708,6 @@ public class SepaDauerauftragControl extends AbstractControl
           Logger.error("unable to autocomplete subject",e);
         }
 
-          
       }
       catch (RemoteException er)
       {
@@ -720,6 +716,5 @@ public class SepaDauerauftragControl extends AbstractControl
       }
     }
   }
-
 
 }

@@ -36,7 +36,7 @@ public class KontoauszugSave implements Action
 {
   private final static Settings SETTINGS = new Settings(KontoauszugSave.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -45,15 +45,15 @@ public class KontoauszugSave implements Action
   {
     if (context == null || !(context instanceof Kontoauszug))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie den zu speichernden Kontoauszug"));
-    
+
     Kontoauszug k = (Kontoauszug) context;
-    
+
     try
     {
       FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
       fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in der der Kontoauszug gespeichert werden soll."));
       fd.setOverwrite(true);
-      
+
       String name = k.getDateiname();
       if (name == null || name.length() == 0)
       {
@@ -68,12 +68,12 @@ public class KontoauszugSave implements Action
         fd.setFilterPath(path);
 
       final String s = fd.open();
-      
+
       if (s == null || s.length() == 0)
         throw new OperationCanceledException();
 
       final File file = new File(s);
-      
+
       // Wir merken uns noch das Verzeichnis vom letzten mal
       SETTINGS.setAttribute("lastdir",file.getParent());
 
@@ -92,5 +92,3 @@ public class KontoauszugSave implements Action
   }
 
 }
-
-

@@ -78,7 +78,7 @@ public class PassportAuswahlDialog extends AbstractDialog
     c.addText(i18n.tr("Bitte wählen Sie das zu verwendende HBCI-Verfahren aus."),false);
     c.addInput(this.getInput());
     c.addInput(this.getComment());
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -106,11 +106,11 @@ public class PassportAuswahlDialog extends AbstractDialog
         throw new OperationCanceledException(i18n.tr("Vorgang abgebrochen"));
       }
     },null,false,"process-stop.png");
-    
+
     c.addButtonArea(buttons);
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Liefert das Auswahlfeld fuer den Passport.
    * @return das Auswahlfeld.
@@ -122,7 +122,7 @@ public class PassportAuswahlDialog extends AbstractDialog
       this.input = new PassportInput(this.konto);
     return this.input;
   }
-  
+
   /**
    * Liefert ein Textfeld mit Kommentar/Fehler.
    * @return Textfeld.
@@ -148,7 +148,6 @@ public class PassportAuswahlDialog extends AbstractDialog
   }
 
 }
-
 
 /*********************************************************************
  * $Log: PassportAuswahlDialog.java,v $

@@ -68,5 +68,3 @@ public class KontoauszugImport implements Action
   }
 
 }
-
-

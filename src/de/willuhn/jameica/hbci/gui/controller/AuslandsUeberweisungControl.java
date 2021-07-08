@@ -101,7 +101,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     super(view);
   }
-  
+
   /**
    * @return der Auftrag
    * @throws RemoteException
@@ -110,18 +110,18 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     if (this.transfer != null)
       return this.transfer;
-    
+
     Object o = getCurrentObject();
     if (o instanceof AuslandsUeberweisung)
     {
       this.transfer = (AuslandsUeberweisung) o;
       return this.transfer;
     }
-    
+
     this.transfer = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
     return this.transfer;
   }
-  
+
   /**
    * Liefert die Liste der Auslandsueberweisungen.
    * @return Liste der Auslandsueberweisungen.
@@ -143,7 +143,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
+
     KontoListener kl = new KontoListener();
     MyKontoFilter filter = new MyKontoFilter();
     this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
@@ -161,7 +161,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
     return this.kontoAuswahl;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer den Empfaenger-Namen.
    * @return Eingabe-Feld.
@@ -178,7 +178,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
     return empfName;
   }
 
-  
   /**
    * Liefert das Eingabe-Feld fuer den Empfaenger.
    * @return Eingabe-Feld.
@@ -228,7 +227,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     }
     return this.endToEndId;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer die PmtInf-ID.
    * @return Eingabe-Feld.
@@ -296,7 +295,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     betrag.setComment(k == null ? "" : k.getWaehrung());
     betrag.setMandatory(true);
     betrag.setEnabled(!getTransfer().ausgefuehrt());
-    
+
     new KontoListener().handleEvent(null);
 
     return betrag;
@@ -311,7 +310,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     if (this.termin != null)
       return this.termin;
-    
+
     this.termin = new TerminInput((Terminable) getTransfer());
     this.termin.setName(this.termin.getName() + "  "); // ein kleines bisschen extra Platz lassen, damit auch "Ausführungstermin" hin passt
     this.termin.addListener(new Listener() {
@@ -321,11 +320,11 @@ public class AuslandsUeberweisungControl extends AbstractControl
         {
           if (!termin.hasChanged())
             return;
-          
+
           Date date = (Date) termin.getValue();
           if (date == null)
             return;
-          
+
           // Wenn das Datum eine Woche in der Zukunft liegt, fragen wir den User, ob es vielleicht
           // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
           // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
@@ -347,10 +346,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
         {
           Logger.error("unable to check for termueb",e);
         }
-        
+
       }
     });
-    
+
     return termin;
   }
 
@@ -363,7 +362,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     if (this.interval != null)
       return this.interval;
-    
+
     this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
     return this.interval;
   }
@@ -384,7 +383,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
     // noch kein Gegenkonto definiert ist.
     boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
-    
+
     // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
     de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
@@ -392,7 +391,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
     return storeEmpfaenger;
   }
-  
+
   /**
    * Liefert eine Combobox zur Auswahl des Auftragstyps.
    * Zur Wahl stehen Ueberweisung, Termin-Ueberweisung und Umbuchung.
@@ -404,7 +403,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     if (this.typ != null)
       return this.typ;
     final AuslandsUeberweisung u = getTransfer();
-    
+
     List<Typ> list = new ArrayList<Typ>();
     list.add(new Typ(false,false));
     list.add(new Typ(true,false));
@@ -430,7 +429,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
         }
       }
     });
-    
+
     this.typ.addListener(this.terminListener);
     this.terminListener.handleEvent(null); // einmal initial ausloesen
     return this.typ;
@@ -443,18 +442,18 @@ public class AuslandsUeberweisungControl extends AbstractControl
   public synchronized boolean handleStore()
   {
     AuslandsUeberweisung t = null;
-    
+
     try
     {
       t = this.getTransfer();
       if (t.ausgefuehrt()) // BUGZILLA 1197
         return true;
-      
+
       t.transactionBegin();
 
       Double d = (Double) getBetrag().getValue();
       t.setBetrag(d == null ? Double.NaN : d.doubleValue());
-      
+
       t.setKonto((Konto)getKontoAuswahl().getValue());
       t.setZweck((String)getZweck().getValue());
       t.setTermin((Date) getTermin().getValue());
@@ -473,7 +472,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       t.setGegenkontoNummer(kto);
       t.setGegenkontoName(name);
       t.setGegenkontoBLZ(bic);
-      
+
       t.store();
 
       // Reminder-Intervall speichern
@@ -495,7 +494,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
       if (t.getBetrag() > Settings.getUeberweisungLimit())
         GUI.getView().setErrorText(i18n.tr("Warnung: Auftragslimit überschritten: {0} ", HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + getTransfer().getKonto().getWaehrung()));
-      
+
       return true;
     }
     catch (Exception e)
@@ -508,7 +507,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
           Logger.error("rollback failed",xe);
         }
       }
-      
+
       if (e instanceof ApplicationException)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
@@ -521,7 +520,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
     }
     return false;
   }
-  
+
   /**
    * Eigener ueberschriebener Kontofilter.
    */
@@ -586,10 +585,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
     public void handleEvent(Event event) {
       if (event == null)
         return;
-      
+
       if (!(event.data instanceof Address))
         return;
-      
+
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
@@ -600,13 +599,13 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
         getStoreEmpfaenger().setValue(Boolean.FALSE);
-        
+
         try
         {
           String zweck = (String) getZweck().getValue();
           if ((zweck != null && zweck.length() > 0))
             return;
-          
+
           DBIterator list = getTransfer().getList();
           list.addFilter("empfaenger_konto = ?",a.getIban());
           list.setOrder("order by id desc");
@@ -621,7 +620,6 @@ public class AuslandsUeberweisungControl extends AbstractControl
           Logger.error("unable to autocomplete subject",e);
         }
 
-          
       }
       catch (RemoteException er)
       {
@@ -630,7 +628,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       }
     }
   }
-  
+
   /**
    * Listener, der das Label vor dem Termin aendert, wenn es eine Bank-seitig gefuehrte Termin-Ueberweisung ist.
    */
@@ -655,7 +653,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
             if (typ != null && typ.termin)
             {
               input.setName(i18n.tr("Ausführungstermin"));
-              
+
               // Pruefen, ob es sich um eine Termin-Ueberweisung handelt. Wenn
               // das Ausfuehrungsdatum in der Vergangenheit liegt, dann Hinweis-Text anzeigen
               Date date = (Date) input.getValue();
@@ -669,7 +667,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
             {
               input.setName(i18n.tr("Erinnerungstermin"));
             }
-            
+
             // Kommentar vom Termin-Eingabefeld aktualisieren.
             input.updateComment();
           }
@@ -681,7 +679,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       });
     }
   }
-  
+
   /**
    * Hilfsklasse fuer den Auftragstyp.
    */
@@ -689,7 +687,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     private boolean termin = false;
     private boolean umb    = false;
-    
+
     /**
      * ct.
      * @param termin true bei Termin-Ueberweisung.
@@ -700,7 +698,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       this.termin = termin;
       this.umb    = umb;
     }
-    
+
     /**
      * Liefert den sprechenden Namen des Typs.
      * @return sprechender Name des Typs.
@@ -711,7 +709,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       if (this.umb)    return i18n.tr("Interne Umbuchung (Übertrag)");
       return           i18n.tr("Überweisung");
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */

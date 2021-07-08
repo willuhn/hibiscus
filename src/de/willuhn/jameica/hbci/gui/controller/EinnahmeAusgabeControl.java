@@ -94,7 +94,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     ALL(-1, -1, i18n.tr("Gesamtzeitraum")), 
     YEAR(Calendar.DAY_OF_YEAR, Calendar.YEAR, i18n.tr("Jahr")),
     MONTH(Calendar.DAY_OF_MONTH, Calendar.MONTH, i18n.tr("Monat")),
-    
+
     ;
 
     private String name;
@@ -154,7 +154,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setComment(null);
     this.kontoAuswahl.setRememberSelection("auswertungen.einnahmeausgabe");
-    
+
     return this.kontoAuswahl;
   }
 
@@ -172,7 +172,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     this.start.setComment(null);
     return this.start;
   }
-  
+
   /**
    * Liefert die Checkbox, mit der eingestellt werden kann, ob nur aktive Konten angezeigt werden sollen.
    * @return Checkbox.
@@ -181,7 +181,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   {
     if (this.onlyActive != null)
       return this.onlyActive;
-    
+
     this.onlyActive = new CheckboxInput(settings.getBoolean("auswertungen.einnahmeausgabe.filter.active",false));
     this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
     this.onlyActive.addListener(new org.eclipse.swt.widgets.Listener() {
@@ -194,7 +194,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     });
     return this.onlyActive;
   }
-  
 
   /**
    * Liefert eine Auswahl mit Zeit-Presets.
@@ -204,7 +203,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   {
     if (this.range != null)
       return this.range;
-    
+
     this.range = new RangeInput(this.getStart(), this.getEnd(), Range.CATEGORY_AUSWERTUNG, "auswertungen.einnahmeausgabe.filter.range");
     return this.range;
   }
@@ -247,7 +246,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     });
     return this.interval;
   }
-  
+
   /**
    * Liefert ein Balkendiagramm bei dem Ausgaben und Einnahmen gegenübergestellt werden 
    * @return Balkendiagramm
@@ -257,7 +256,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   {
     if(this.chart != null)
       return this.chart;
-    
+
     this.chart = new EinnahmenAusgabenVerlauf(getWerte());
     return chart;
   }
@@ -290,7 +289,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       {
         if (item == null || item.getData() instanceof EinnahmeAusgabeTreeNode)
           return;
-        
+
         EinnahmeAusgabe ea = (EinnahmeAusgabe) item.getData();
         boolean summe = ea.isSumme();
         try
@@ -309,7 +308,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
               item.setForeground(ColorUtil.getForeground(plusminus));
             item.setFont(ea.hasDiff() && !summe ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           }
-          
+
         }
         catch (Exception e)
         {
@@ -353,7 +352,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       }
     }
     Map<String, List<Value>> saldenProKonto = getSaldenProKonto(konten, start, end);
-    
+
     // wenn die Umsatzliste leer ist, erfolgt keine Gruppierung, es wird nur der Gesamtzeitraum
     // ausgewertet und da keine Umsätze zugeordnet werden müssen, spielen fehlende Datumsangaben keine Rolle
     Interval interval = umsatzList.isEmpty() ? Interval.ALL : (Interval) getInterval().getValue();
@@ -432,7 +431,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     return saldenProKonto;
   }
-  
+
   private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList, Map<String, List<Value>> saldoProKonto) throws RemoteException
   {
     int index = 0;
@@ -454,7 +453,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
           Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + end);
           return;
         }
-        
+
         currentNode = nodes.get(index++);
         kontoData = getKontoDataMap(currentNode);
       }
@@ -462,24 +461,24 @@ public class EinnahmeAusgabeControl extends AbstractControl
       EinnahmeAusgabe ea = kontoData.get(umsatz.getKonto().getID());
       ea.addUmsatz(umsatz);
     }
-    
+
     // Salden eintragen
     int tagStart = 0; // Tag in der Liste der Salden
     for(EinnahmeAusgabeTreeNode node : nodes)
     {
       Map<String, EinnahmeAusgabe> kontoMap = getKontoDataMap(node);
-      
+
       int tagEnde = tagStart + (int) getDifferenceDays(node.getStartdatum(), node.getEnddatum()) + 1;
       for (Entry<String, EinnahmeAusgabe> kontoEntry : kontoMap.entrySet())
       {
         EinnahmeAusgabe ea = kontoEntry.getValue();
         if(tagEnde >= saldoProKonto.get(ea.getKonto().getID()).size()) 
           tagEnde = saldoProKonto.get(ea.getKonto().getID()).size() - 1;
-          
+
         ea.setAnfangssaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagStart).getValue());
         ea.setEndsaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagEnde).getValue());
       }
-      
+
       tagStart = tagEnde;
     }
     calculateSums(nodes);
@@ -498,7 +497,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     }
     return kontoData;
   }
-  
+
   private void calculateSums(List<EinnahmeAusgabeTreeNode> nodes) throws RemoteException
   {
     for (EinnahmeAusgabeTreeNode node : nodes)
@@ -641,7 +640,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       TreePart tree = this.getTree();
       tree.removeAll();
       this.werte = null;
-      
+
       Date tStart = (Date) getStart().getValue();
       Date tEnd = (Date) getEnd().getValue();
       if (tStart != null && tEnd != null && tStart.after(tEnd))
@@ -649,9 +648,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Das Anfangsdatum muss vor dem Enddatum liegen"));
         return;
       }
-      
+
       tree.setList(this.getWerte());
-      
+
       EinnahmenAusgabenVerlauf chart = getChart();
       chart.setList(this.getWerte());
     }
@@ -661,7 +660,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Berechnet die Anzahl an Tagen zwischen zwei Daten. 
    * (Sollte besser in eine andere Klasse verschoben werden, zb jameica.util.DateUtil)
@@ -674,7 +673,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     java.time.LocalDate date2 = DateUtil.endOfDay(toUtilDate(d2)).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
     return java.time.temporal.ChronoUnit.DAYS.between(date1, date2);
   }
-  
+
   /**
    * Stellt sicher, dass ein java.util.Date zurueckgeliefert wird.
    * Unter Umstaenden kann hier ein java.sql.Date ankommen. In dem ist aber
@@ -686,10 +685,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
   {
     if (d == null)
       return new Date();
-    
+
     if (!(d instanceof java.sql.Date))
       return d;
-    
+
     java.sql.Date sql = (java.sql.Date) d;
     return new Date(sql.getTime());
   }

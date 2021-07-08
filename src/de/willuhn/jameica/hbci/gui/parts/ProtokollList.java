@@ -34,7 +34,7 @@ public class ProtokollList extends AbstractFromToList
 {
   private KontoInput kontoAuswahl = null;
   private Konto konto = null;
-  
+
   /**
    * ct.
    * @param konto
@@ -44,7 +44,7 @@ public class ProtokollList extends AbstractFromToList
   {
     super(action);
     this.konto = konto;
-    
+
     this.setFormatter(new TableFormatter()
     {
       public void format(TableItem item)
@@ -75,7 +75,7 @@ public class ProtokollList extends AbstractFromToList
     this.addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.LONGDATEFORMAT));
     this.addColumn(i18n.tr("Kommentar"),"kommentar");
   }
-  
+
   /**
    * Ueberschrieben, weil der User das hier nicht auswaehlen koennen soll.
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getKonto()
@@ -84,13 +84,13 @@ public class ProtokollList extends AbstractFromToList
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
+
     this.kontoAuswahl = new KontoInput(this.konto,KontoFilter.ALL);
     this.kontoAuswahl.setEnabled(false);
     this.kontoAuswahl.setComment(null);
     return this.kontoAuswahl;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.lang.Object, java.util.Date, java.util.Date, java.lang.String)
    */
@@ -106,11 +106,10 @@ public class ProtokollList extends AbstractFromToList
     {
       list.addFilter("LOWER(kommentar) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
     }
-    
+
     return list;
   }
 }
-
 
 /**********************************************************************
  * $Log: ProtokollList.java,v $

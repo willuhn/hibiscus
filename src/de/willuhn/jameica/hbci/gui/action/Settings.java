@@ -29,7 +29,6 @@ public class Settings implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: Settings.java,v $
  * Revision 1.2  2005/01/19 00:16:04  willuhn

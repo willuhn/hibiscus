@@ -72,7 +72,7 @@ public class SettingsControl extends AbstractControl
 
   private CheckboxInput exFeatures        = null;
   private List<CheckboxInput> experiments = null;
-  
+
   /**
    * @param view
    */
@@ -104,7 +104,7 @@ public class SettingsControl extends AbstractControl
     RangeList list = this.ranges.get(category);
     if (list != null)
       return list;
-    
+
     list = new RangeList(category);
     this.ranges.put(category,list);
     return list;
@@ -149,13 +149,13 @@ public class SettingsControl extends AbstractControl
         }
       };
       kontoCheck.addListener(l);
-      
+
       // einmal initial ausloesen
       l.handleEvent(null);
     }
     return kontoCheck;
   }
-  
+
   /**
    * Checkbox, mit der Bankverbindungen aus dem Adressbuch aus der Pruefung ausgenommen werden koennen.
    * @return Checkbox.
@@ -182,19 +182,19 @@ public class SettingsControl extends AbstractControl
         boolean b1 = (Boolean) getCachePin().getValue();
         boolean b2 = Application.getStartupParams().getPassword() == null;
         getStorePin().setEnabled(b1 && b2);
-        
+
         if (!b2)
           getStorePin().setComment(i18n.tr("Deaktiviert. Master-Passwort nicht manuell eingegeben"));
       }
     };
     this.cachePin = new CheckboxInput(Settings.getCachePin());
     this.cachePin.addListener(l);
-    
+
     // einmal ausloesen
     l.handleEvent(null);
     return this.cachePin;
   }
-  
+
   /**
    * Liefert eine Checkbox zum Aktivieren der permanenten Speicherung der PINs.
    * @return true, wenn das Speichern der PINs aktiviert ist.
@@ -203,7 +203,7 @@ public class SettingsControl extends AbstractControl
   {
     if (storePin != null)
       return storePin;
-    
+
     storePin = new CheckboxInput(Settings.getStorePin());
     storePin.setComment("");
     storePin.addListener(new Listener() {
@@ -212,7 +212,7 @@ public class SettingsControl extends AbstractControl
         // Wir loesen nur bei dem Selection-Event aus, nicht bei FocusOut/FocusIn
         if (event.type != SWT.Selection)
           return;
-        
+
         boolean enabled = ((Boolean) storePin.getValue()).booleanValue();
         if (enabled)
         {
@@ -242,7 +242,7 @@ public class SettingsControl extends AbstractControl
     });
     return storePin;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der eingestellt werden kann, ob die experimentellen Features aktiv sein sollen.
    * @return Checkbox.
@@ -258,7 +258,7 @@ public class SettingsControl extends AbstractControl
     this.exFeatures = new CheckboxInput(fs.enabled());
     this.exFeatures.setName(i18n.tr("Experimentelle Funktionen aktivieren"));
     final Listener l = new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -270,12 +270,12 @@ public class SettingsControl extends AbstractControl
       }
     };
     this.exFeatures.addListener(l);
-    
+
     l.handleEvent(null); // Einmal initial ausloesen
-    
+
     return this.exFeatures;
   }
-  
+
   /**
    * Liefert eine Liste mit Checkboxen zum Einstellen experimenteller Funktionen.
    * @return eine Liste mit Checkboxen zum Einstellen experimenteller Funktionen.
@@ -285,12 +285,12 @@ public class SettingsControl extends AbstractControl
   {
     if (this.experiments != null)
       return this.experiments;
-    
+
     final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     final FeatureService fs = bs.get(FeatureService.class);
-    
+
     this.experiments = new ArrayList<CheckboxInput>();
-    
+
     for (Feature f:fs.getFeatures())
     {
       CheckboxInput c = new CheckboxInput(fs.isEnabled(f));
@@ -299,7 +299,7 @@ public class SettingsControl extends AbstractControl
       c.setName(f.getName());
       this.experiments.add(c);
     }
-    
+
     return this.experiments;
   }
 
@@ -345,7 +345,7 @@ public class SettingsControl extends AbstractControl
   public void handleStore()
   {
     boolean haveError = false;
-    
+
 		Color hf = (Color)getBuchungHabenForeground().getValue();
 		Color sf = (Color)getBuchungSollForeground().getValue();
 
@@ -359,18 +359,18 @@ public class SettingsControl extends AbstractControl
 
     boolean storeEnabled = ((Boolean)getStorePin().getValue()).booleanValue();
     boolean cacheEnabled = ((Boolean)getCachePin().getValue()).booleanValue();
-    
+
     Settings.setCachePin(cacheEnabled);
     Settings.setStorePin(storeEnabled);
 
     // Cache und Store leeren, wenn das Feature deaktiviert wurde
     if (!cacheEnabled) DialogFactory.clearPINCache(null);
     if (!storeEnabled) DialogFactory.clearPINStore(null);
-    
+
     Double limit = (Double) getUeberweisungLimit().getValue();
 
     Settings.setUeberweisungLimit(limit == null ? 0.0d : limit.doubleValue());
-		
+
     final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     final FeatureService fs = bs.get(FeatureService.class);
     final boolean ex = ((Boolean) this.getExFeatures().getValue()).booleanValue();
@@ -393,7 +393,7 @@ public class SettingsControl extends AbstractControl
 		    haveError = true;
 		  }
 		}
-		
+
     for (Entry<String,RangeList> n:this.ranges.entrySet())
     {
       try
@@ -425,4 +425,3 @@ public class SettingsControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert."),StatusBarMessage.TYPE_SUCCESS));
   }
 }
-

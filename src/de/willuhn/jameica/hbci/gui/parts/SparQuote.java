@@ -105,7 +105,7 @@ public class SparQuote implements Part
         {
           if (event != null && (event.type==SWT.FocusIn || event.type==SWT.FocusOut))
             return;
-          
+
           if (load())
           {
             redraw();
@@ -159,7 +159,7 @@ public class SparQuote implements Part
     this.tagAuswahl.setName(i18n.tr("Stichtag"));
     this.tagAuswahl.setValue(settings.getInt("stichtag",1));
     this.tagAuswahl.addListener(new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -186,7 +186,7 @@ public class SparQuote implements Part
     this.monatAuswahl.setName(i18n.tr("Monate"));
     this.monatAuswahl.setValue(settings.getInt("monate",1));
     this.monatAuswahl.addListener(new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -196,7 +196,7 @@ public class SparQuote implements Part
     this.monatAuswahl.addListener(new DelayedListener(500,this.listener));
     return this.monatAuswahl;
   }
-  
+
   /**
    * Liefert das Eingabe-Datum fuer das Start-Datum.
    * @return Eingabe-Feld.
@@ -205,14 +205,14 @@ public class SparQuote implements Part
   {
     if (this.from != null)
       return this.from;
-    
+
     this.from = new DateFromInput(null,"auswertungen.spartquote.filter.from");
     this.from.setName(i18n.tr("Von"));
     this.from.setComment(null);
     this.from.addListener(this.listener);
     return this.from;
   }
-  
+
   /**
    * Liefert das Eingabe-Datum fuer das End-Datum.
    * @return Eingabe-Feld.
@@ -228,7 +228,7 @@ public class SparQuote implements Part
     this.to.addListener(this.listener);
     return this.to;
   }
-  
+
   /**
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
@@ -237,7 +237,7 @@ public class SparQuote implements Part
   {
     if (this.range != null)
       return this.range;
-    
+
     // Wir wollen hier nur die Zeitraume haben, die mindestens 2 Monate umfassen
     List<Range> ranges = new ArrayList<Range>();
     for (Range r:Range.getActiveRanges(Range.CATEGORY_AUSWERTUNG))
@@ -255,7 +255,7 @@ public class SparQuote implements Part
           ranges.add(r);
       }
     }
-    
+
     this.range = new RangeInput(ranges,this.getFrom(),this.getTo(),"auswertungen.spartquote.filter.range");
     this.range.addListener(new Listener()
     {
@@ -265,7 +265,7 @@ public class SparQuote implements Part
           listener.handleEvent(event);
       }
     });
-    
+
     return this.range;
   }
 
@@ -282,14 +282,14 @@ public class SparQuote implements Part
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
       ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
-      
+
       {
         Container left = new SimpleContainer(cols.getComposite());
         left.addInput(this.getKontoAuswahl());
         left.addInput(getTagAuswahl());
         left.addInput(getMonatAuswahl());
       }
-      
+
       {
         Container right = new SimpleContainer(cols.getComposite());
         right.addInput(this.getRange());
@@ -335,7 +335,7 @@ public class SparQuote implements Part
     this.table.addColumn(i18n.tr("Sparquote"), "sparquote", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.table.setRememberOrder(true);
     this.table.setRememberColWidths(true);
-    
+
     final boolean bold = de.willuhn.jameica.hbci.Settings.getBoldValues();
     this.table.setFormatter(new TableFormatter() {
       public void format(TableItem item)
@@ -344,7 +344,7 @@ public class SparQuote implements Part
           return;
         UmsatzEntry ue = (UmsatzEntry) item.getData();
         item.setForeground(ColorUtil.getForeground(ue.einnahmen - ue.ausgaben));
-        
+
         if (bold)
           item.setFont(3,Font.BOLD.getSWTFont());
       }
@@ -409,13 +409,13 @@ public class SparQuote implements Part
     final Date end     = (Date) this.getTo().getValue();
     final int monate   = ((Integer) this.getMonatAuswahl().getValue()).intValue();
     final int stichtag = ((Integer) this.getTagAuswahl().getValue()).intValue();
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Wir iterieren erstmal ueber den Zeitraum und erzeugen die passenden Time-Boxen
     Date from = start != null ? start : UmsatzUtil.getOldest(getKontoAuswahl().getValue());
     from          = DateUtil.startOfDay(from != null ? from : new Date());
     final Date to = DateUtil.endOfDay(end != null ? end : new Date());
-    
+
     for (int i=0;i<1000;++i) // Wir machen keine Endlosschleife sondern hoeren bei maximal 1000 auf
     {
       // Wenn das Start-Datum in der Zukunft liegt, koennen wir aufhoeren
@@ -425,7 +425,7 @@ public class SparQuote implements Part
       UmsatzEntry e = new UmsatzEntry();
       e.start = from;
       e.text = DATEFORMAT.format(e.start);
-      
+
       Calendar cal = Calendar.getInstance();
       cal.setTime(from);
 
@@ -437,7 +437,7 @@ public class SparQuote implements Part
 
       // Merken wir uns fuer den naechsten Durchlauf
       from = DateUtil.startOfDay(cal.getTime());
-      
+
       // Das Ende des Vortages ist das Ende der aktuellen Periode
       cal.add(Calendar.DATE,-1);
       e.end = DateUtil.endOfDay(cal.getTime());
@@ -491,14 +491,14 @@ public class SparQuote implements Part
         //keine Umsätze nach dem gwünschten Zeitraum verarbeiten
         break;
       }
-      
+
       UmsatzEntry e = this.getEntry(date);
       if (e == null)
       {
         Logger.debug("no matching entry found for umsatz, skipping record");
         continue;
       }
-      
+
       double betrag = u.getBetrag();
       if (betrag > 0)
         e.einnahmen += betrag;
@@ -507,7 +507,7 @@ public class SparQuote implements Part
       //
       ////////////////////////////////////////////////////////////////////////////
     }
-    
+
     // Trend ermitteln
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Glättungsverfahren
     // http://de.wikibooks.org/wiki/Mathematik:_Statistik:_Trend_und_Saisonkomponente
@@ -515,7 +515,7 @@ public class SparQuote implements Part
     this.trend.clear();
     for (int i=0;i<this.data.size();++i)
       this.trend.add(getDurchschnitt(this.data,i));
-    
+
     return true;
   }
 
@@ -528,7 +528,7 @@ public class SparQuote implements Part
   {
     if (date == null)
       return null;
-    
+
     for (UmsatzEntry e:this.data)
     {
       if (!e.start.after(date) && !e.end.before(date))
@@ -536,7 +536,6 @@ public class SparQuote implements Part
     }
     return null;
   }
-
 
   /**
    * Liefert einen synthetischen Umsatz-Entry basierend auf den
@@ -594,7 +593,7 @@ public class SparQuote implements Part
     {
       return this.einnahmen;
     }
-    
+
     /**
      * Liefert das Start-Datum.
      * @return das Start-Datum.
@@ -603,7 +602,7 @@ public class SparQuote implements Part
     {
       return start;
     }
-    
+
     /**
      * Liefert das End-Datum.
      * @return das End-Datum.
@@ -641,7 +640,6 @@ public class SparQuote implements Part
       return einnahmen - ausgaben;
     }
   }
-
 
   /**
    * Implementierung eines Datensatzes fuer die Darstellung der Sparquote.

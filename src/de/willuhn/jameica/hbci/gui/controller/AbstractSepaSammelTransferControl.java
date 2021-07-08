@@ -78,7 +78,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
    * @throws RemoteException
    */
   public abstract T getTransfer() throws RemoteException;
-  
+
   /**
    * Liefert die Synchronize-Job-Art.
    * @return die Synchronize-Job-Art.
@@ -108,7 +108,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
+
     KontoListener kl = new KontoListener();
     MyKontoFilter filter = new MyKontoFilter();
     this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
@@ -136,7 +136,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
   {
     if (this.batchbook != null)
       return this.batchbook;
-    
+
     T t = this.getTransfer();
     this.batchbook = new BatchBookInput(t.getKonto(),t);
     this.batchbook.setEnabled(!getTransfer().ausgefuehrt());
@@ -164,7 +164,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
   {
     if (this.interval != null)
       return this.interval;
-    
+
     this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
     return this.interval;
   }
@@ -183,7 +183,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     name.setEnabled(!getTransfer().ausgefuehrt());
     return name;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer die PmtInf-ID.
    * @return Eingabe-Feld.
@@ -225,7 +225,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     String value = batch != null ? batch.getValue() : null;
     MetaKey.SEPA_BATCHBOOK.set(t,value);
     MetaKey.SEPA_BATCHBOOK.set(k,t.getClass().getSimpleName(),value);
-    
+
     // Reminder-Intervall speichern
     ReminderIntervalInput input = this.getReminderInterval();
     if (input.containsInterval())
@@ -245,9 +245,9 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
       SepaSammelTransfer t = this.getTransfer();
       if (t.ausgefuehrt())
         return true;
-      
+
       this.store();
-      
+
       return true;
     }
     catch (Exception e)
@@ -286,7 +286,6 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     }
   }
 
-
   /**
    * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
    * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
@@ -309,7 +308,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
         // Wird u.a. benoetigt, damit anhand des Auftrages ermittelt werden
         // kann, wieviele Zeilen Verwendungszweck jetzt moeglich sind
         transfer.setKonto(konto);
-        
+
         // Fuer den Fall, dass der Auftrag noch keinen Batchbook-Type hat,
         // das neu ausgewaehlte Konto jedoch einen anderen als den momentanen.
         getBatchBook().update(konto,transfer);
@@ -333,7 +332,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     {
       super(i18n.tr("Buchung(en) löschen..."),new DBObjectDelete(), "user-trash-full.png");
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -352,7 +351,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
       return false;
     }
   }
-  
+
   /**
    * Contextmenu-Item zum Erstellen einer Buchung.
    */
@@ -388,7 +387,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
         }
       },"text-x-generic.png");
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */

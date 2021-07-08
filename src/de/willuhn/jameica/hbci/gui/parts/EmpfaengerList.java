@@ -64,7 +64,7 @@ import de.willuhn.util.I18N;
 public class EmpfaengerList extends TablePart implements Part
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Addressbook book       = null;
   private TextInput search       = null;
   private KeyAdapter listener    = null;
@@ -73,7 +73,7 @@ public class EmpfaengerList extends TablePart implements Part
 
   private MessageConsumer mcImport = null;
   private MessageConsumer mcChanged = null;
-  
+
   private static Settings mySettings = new Settings(EmpfaengerList.class);
 
   /**
@@ -107,7 +107,7 @@ public class EmpfaengerList extends TablePart implements Part
   public EmpfaengerList(Action action, AddressFilter filter, boolean createButton) throws RemoteException
   {
     super(action);
-    
+
     this.filter = filter;
     this.listener = new DelayedAdapter();
     this.createButton = createButton;
@@ -151,7 +151,7 @@ public class EmpfaengerList extends TablePart implements Part
         return s.substring(0,29) + "...";
       }
     });
-    
+
     this.setFormatter(new TableFormatter()
     {
       /**
@@ -175,24 +175,24 @@ public class EmpfaengerList extends TablePart implements Part
         }
       }
     });
-    
+
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.EmpfaengerList());
 
     this.setMulti(true);
 
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
     this.setRememberOrder(true);
-    
+
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     this.setRememberColWidths(true);
-    
+
     this.setRememberState(true);
 
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Adressen informiert werden.
     this.mcImport = new EmpfaengerImportMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mcImport);
-    
+
     // Und noch ein Message-Consumer fuer geaenderte Adressen
     this.mcChanged = new EmpfaengerChangedMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
@@ -253,7 +253,7 @@ public class EmpfaengerList extends TablePart implements Part
       buttons.addButton(i18n.tr("Neue Adresse"),new EmpfaengerNew(),null,true,"contact-new.png");
       buttons.paint(parent);
     }
-    
+
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -271,7 +271,6 @@ public class EmpfaengerList extends TablePart implements Part
     super.sort();
   }
 
-  
   /**
    * Hilfsklasse damit wir ueber importierte Empfaenger informiert werden.
    */
@@ -301,10 +300,10 @@ public class EmpfaengerList extends TablePart implements Part
       if (message == null || !(message instanceof ImportMessage))
         return;
       final GenericObject o = ((ImportMessage)message).getObject();
-      
+
       if (o == null || !(o instanceof Address))
         return;
-      
+
       // Falls ein ganzer Pulk von Update kommt, machen wir
       // nicht jedesmal ein Reload - sondern feuern einfach
       // nur das Event fuer "Text in Suchfeld eingegeben".
@@ -324,7 +323,7 @@ public class EmpfaengerList extends TablePart implements Part
       return false;
     }
   }
-  
+
   /**
    * Message-Consumer der ueber geaenderte Adressen benachrichtigt wird.
    */

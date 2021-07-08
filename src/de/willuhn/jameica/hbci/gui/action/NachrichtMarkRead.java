@@ -76,7 +76,6 @@ public class NachrichtMarkRead implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: NachrichtMarkRead.java,v $
  * Revision 1.1  2005/05/09 17:26:56  web0

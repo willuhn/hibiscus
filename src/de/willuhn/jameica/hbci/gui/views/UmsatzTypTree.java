@@ -63,13 +63,13 @@ public class UmsatzTypTree extends AbstractView
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
       ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
-      
+
       Container left = new SimpleContainer(cols.getComposite());
       left.addInput(control.getKontoAuswahl());
-      
+
       Input t = control.getText();
       left.addInput(t);
-      
+
       // Duerfen wir erst nach dem Zeichnen
       final Listener l = control.changedListener(t);
       t.getControl().addKeyListener(new KeyAdapter(){
@@ -81,9 +81,9 @@ public class UmsatzTypTree extends AbstractView
           l.handleEvent(null);
         }
       });
-      
+
       Container right = new SimpleContainer(cols.getComposite());
-        
+
       right.addInput(control.getRange());
       MultiInput range = new MultiInput(control.getStart(),control.getEnd());
       right.addInput(range);
@@ -92,7 +92,7 @@ public class UmsatzTypTree extends AbstractView
     ButtonArea buttons = new ButtonArea();
 
     buttons.addButton(i18n.tr("Alle aufklappen/zuklappen"), new Action() {
-    
+
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleExpand();
@@ -136,11 +136,11 @@ public class UmsatzTypTree extends AbstractView
       }
     });
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-    
+
     TabGroup tg1 = new TabGroup(folder,i18n.tr("Tabellarisch"),true,1);
     TreePart tree = control.getTree();
     tree.paint(tg1.getComposite());
-    
+
     final TabGroup tg2 = new TabGroup(folder,i18n.tr("Im Verlauf"),true,1);
     UmsatzTypVerlauf chart = control.getChart();
     chart.paint(tg2.getComposite());

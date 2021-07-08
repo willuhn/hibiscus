@@ -57,7 +57,7 @@ public class AccountContainerDialog extends AbstractDialog
 	private SelectInput filter	= null;
 	private Input userid			  = null;
 	private Input customerid	  = null;
-	
+
 	private LabelInput text     = null;
 
   /**
@@ -104,10 +104,10 @@ public class AccountContainerDialog extends AbstractDialog
       	container.customerid 	= (String) getCustomerId().getValue();
       	container.filter 			= (String) getFilter().getValue();
       	container.host 				= (String) getHost().getValue();
-      	
+
       	Integer i = ((Integer) getPort().getValue());
       	container.port 				= i != null ? i.intValue() : -1;
-      	
+
       	// Check der Pflichtfelder
         if (container.userid == null || container.userid.length() == 0)
         {
@@ -129,7 +129,7 @@ public class AccountContainerDialog extends AbstractDialog
           getText().setValue(i18n.tr("Bitte geben Sie den TCP-Port des Bankservers ein."));
           return;
         }
-      	
+
       	close();
       }
     },null,true,"ok.png");
@@ -152,7 +152,7 @@ public class AccountContainerDialog extends AbstractDialog
   {
     return container;
   }
-  
+
   /**
    * Liefert ein Label mit einem Hinweistext.
    * @return Label.
@@ -175,7 +175,7 @@ public class AccountContainerDialog extends AbstractDialog
 	{
 	  if (this.blz != null)
 	    return this.blz;
-	  
+
 	  this.blz = new BLZInput(this.passport.getBLZ());
 	  this.blz.setMandatory(true);
 	  this.blz.addListener(new Listener()
@@ -187,10 +187,10 @@ public class AccountContainerDialog extends AbstractDialog
           String host = (String) getHost().getValue();
           if (host == null || host.length() == 0)
           {
-            
+
             String b = (String) blz.getValue();
             BankInfo bi = HBCIProperties.getBankInfo(b);
-            
+
             if (bi != null)
             {
               String clazz = passport.getClass().getName();
@@ -217,7 +217,7 @@ public class AccountContainerDialog extends AbstractDialog
     });
 		return this.blz;
 	}
-	
+
 	/**
 	 * Liefert ein Eingabefeld fuer den Hostnamen des Bank-Servers.
 	 * @return Eingabefeld.
@@ -238,7 +238,7 @@ public class AccountContainerDialog extends AbstractDialog
         return cleanUrl(s);
       }
     };
-    
+
     // BUGZILLA 381
     this.host.addListener(new Listener() {
       public void handleEvent(Event event)
@@ -246,13 +246,13 @@ public class AccountContainerDialog extends AbstractDialog
         // Triggert den Code zum Entfernen des "https://" und der Leerzeichen
         getHost().setValue(getHost().getValue());
       }
-    
+
     });
 		this.host.setComment(i18n.tr("Bitte ohne \"https://\" eingeben"));
 		this.host.setMandatory(true);
 		return this.host;
 	}
-	
+
 	/**
 	 * Liefert ein Eingabefeld fuer den TCP-Port.
 	 * @return
@@ -283,7 +283,7 @@ public class AccountContainerDialog extends AbstractDialog
 		}
 		return this.userid;
 	}
-	
+
 	/**
 	 * Liefert ein Eingabefeld fuer die Kundenkennung.
 	 * @return Eingabefeld.
@@ -315,7 +315,7 @@ public class AccountContainerDialog extends AbstractDialog
 		}
     return this.filter;
 	}
-	
+
 	/**
 	 * Entfernt das "https://" und die Port-Angabe aus der URL.
 	 * @param url die zu bereinigende URL.
@@ -326,16 +326,15 @@ public class AccountContainerDialog extends AbstractDialog
 	  url = StringUtils.trimToEmpty(url); // BUGZILLA 381
 	  if (url.length() == 0)
 	    return url;
-	  
+
     if (url.startsWith("https://"))
       url = url.replaceFirst("https://","");
-    
+
     url = url.replaceFirst(":[0-9]{1,5}/","/"); // BUGZILLA 1159
     return url;
 	}
 
 }
-
 
 /**********************************************************************
  * $Log: AccountContainerDialog.java,v $

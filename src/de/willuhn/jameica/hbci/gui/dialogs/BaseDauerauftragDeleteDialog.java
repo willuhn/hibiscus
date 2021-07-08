@@ -65,7 +65,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
   	group.addText(i18n.tr("Bitte wählen Sie das Datum aus, zu dem Sie den Dauerauftrag löschen wollen\n" +                          "Hinweis: Es ist durchaus möglich, dass Ihre Bank das Löschen eines\n" +
                           "Dauerauftrages zu einem definierten Datum nicht unterstützt.\n" +
                           "Wählen Sie in diesem Fall bitte \"Zum nächstmöglichen Zeitpunkt\""),true);
-    
+
     box = new CheckboxInput(true);
     box.addListener(new Listener()
     {
@@ -123,7 +123,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
     comment = new LabelInput("");
     comment.setColor(Color.ERROR);
     group.addLabelPair("",comment);
-    
+
     ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Jetzt bei der Bank löschen"), new Action()
     {
@@ -162,7 +162,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     },null,true,"process-stop.png");
-		
+
 		group.addButtonArea(b);
   }
 
@@ -172,6 +172,5 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
   protected Object getData() throws Exception {
     return date;
   }
-
 
 }

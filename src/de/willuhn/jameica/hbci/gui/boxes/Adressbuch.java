@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
 public class Adressbuch extends AbstractBox implements Box
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
@@ -80,7 +80,6 @@ public class Adressbuch extends AbstractBox implements Box
     return super.isActive() && !Settings.isFirstStart();
   }
 }
-
 
 /*********************************************************************
  * $Log: Adressbuch.java,v $

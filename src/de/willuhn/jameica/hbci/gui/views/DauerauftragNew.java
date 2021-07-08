@@ -38,7 +38,7 @@ public class DauerauftragNew extends AbstractView
 
 		GUI.getView().setTitle(i18n.tr("Dauerauftrag bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportDauerauftrag((Dauerauftrag) control.getTransfer())));
-		
+
     Container konten = new SimpleContainer(getParent());
     konten.addHeadline(i18n.tr("Konten"));
 		konten.addLabelPair(i18n.tr("Persönliches Konto"),			  control.getKontoAuswahl());
@@ -62,7 +62,7 @@ public class DauerauftragNew extends AbstractView
       right.addLabelPair(i18n.tr("Erste Zahlung"),            control.getErsteZahlung());
       right.addLabelPair(i18n.tr("Letzte Zahlung"),           control.getLetzteZahlung());
     }
-		
+
     Container details = new SimpleContainer(getParent());
     details.addHeadline(i18n.tr("Details"));
     details.addLabelPair(i18n.tr("Verwendungszweck"),          control.getZweck());

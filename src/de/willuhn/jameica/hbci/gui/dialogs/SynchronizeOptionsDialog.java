@@ -63,9 +63,9 @@ import de.willuhn.util.I18N;
 public class SynchronizeOptionsDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private final static int WINDOW_WIDTH = 500;
-  
+
   private Konto konto                   = null;
   private boolean offline               = false;
   private boolean syncAvail             = false;
@@ -81,7 +81,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   private CheckboxInput useCamt         = null;
   private LabelInput error              = null;
   private Button apply                  = null;
-  
+
   private Map<SynchronizeBackend,List<Input>> properties = new HashMap<SynchronizeBackend,List<Input>>();
 
   /**
@@ -98,11 +98,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     this.konto = konto;
     this.options = new SynchronizeOptions(konto);
     this.offline = konto.hasFlag(Konto.FLAG_OFFLINE);
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeEngine engine = service.get(SynchronizeEngine.class);
     this.syncAvail = engine.supports(SynchronizeJobKontoauszug.class,konto);
-    
+
     // checken, ob wir Addon-Properties haben
     if (this.syncAvail)
     {
@@ -126,7 +126,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       }
     }
   }
-  
+
   /**
    * Erzeugt ein Custom-Property-Input fuer den angegebenen Property-Namen.
    * @param name der Name des Custom-Property.
@@ -168,16 +168,16 @@ public class SynchronizeOptionsDialog extends AbstractDialog
 
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei der " +
     		                  "Synchronisierung des Kontos ausgeführt werden sollen."),true);
-    
+
     this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        
+
         if (!offline || syncAvail) // Entweder bei Online-Konten oder bei welchen mit neuem Scripting-Support
         {
           options.setSyncSaldo(((Boolean)getSyncSaldo().getValue()).booleanValue());
           options.setSyncKontoauszuege(((Boolean)getSyncUmsatz().getValue()).booleanValue());
-          
+
           Support support = BPDUtil.getSupport(konto,Query.UmsatzCamt);
           if (support != null && support.isSupported())
           {
@@ -193,7 +193,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
             }
           }
         }
-        
+
         if (offline)
         {
           options.setSyncOffline(((Boolean)getSyncOffline().getValue()).booleanValue());
@@ -206,7 +206,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           options.setSyncAuslandsUeberweisungen(((Boolean)getSyncAueb().getValue()).booleanValue());
           options.setSyncSepaLastschriften(((Boolean)getSyncSepaLast().getValue()).booleanValue());
         }
-        
+
         try
         {
           for (List<Input> l:properties.values())
@@ -226,7 +226,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         close();
       }
     },null,true,"ok.png");
-    
+
     Input i1  = this.getSyncSaldo();
     Input i2  = this.getSyncUmsatz();
     Input i3  = this.getSyncOffline();
@@ -242,15 +242,15 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     {
       // Wir stellen die Option nur zur Verfuegung, wenn das Konto es prinzipiell unterstuetzt
       Support support = BPDUtil.getSupport(this.konto,Query.UmsatzCamt);
-      
+
       // Wichtig: Das Input muss erzeugt werden, bevor getSyncUmsatz gezeichnet wird. Sonst wird der Listener nicht mehr registriert
       if (!offline && support != null && support.isSupported())
         camt = this.getUseCamt();
-      
+
       group.addInput(i1);
       group.addInput(i2);
     }
-    
+
     if (offline)
     {
       group.addInput(i3);
@@ -259,12 +259,12 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     {
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeEngine engine = service.get(SynchronizeEngine.class);
-      
+
       if (engine.supports(SynchronizeJobKontoauszugPdf.class,this.konto)) group.addInput(i8);
       if (engine.supports(SynchronizeJobSepaUeberweisung.class,this.konto)) group.addInput(i4);
       if (engine.supports(SynchronizeJobSepaLastschrift.class,this.konto)) group.addInput(i5);
       if (engine.supports(SynchronizeJobSepaDauerauftragList.class,this.konto)) group.addInput(i6);
-      
+
       // Abrufen der Nachrichten lassen wir immer zu.
       group.addInput(i7);
     }
@@ -286,7 +286,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         }
       }
     }
-    
+
     group.addInput(getErrorLabel());
 
     ButtonArea buttons = new ButtonArea();
@@ -297,11 +297,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
         close();
       }
     },null,false,"process-stop.png");
-    
+
     group.addButtonArea(buttons);
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Liefert eine Checkbox fuer die Aktivierung der Synchronisierung der Salden.
    * @return Checkbox.
@@ -342,11 +342,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     {
       this.useCamt = new CheckboxInput(KontoUtil.useCamt(this.konto,false));
       this.useCamt.setName(i18n.tr("Umsätze im neuen SEPA CAMT-Format abrufen"));
-      
+
       final CheckboxInput syncUms = this.getSyncUmsatz();
-      
+
       final Listener l = new Listener() {
-        
+
         @Override
         public void handleEvent(Event event)
         {
@@ -354,11 +354,11 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           useCamt.setEnabled((Boolean)syncUms.getValue());
         }
       };
-      
+
       syncUms.addListener(l);
       l.handleEvent(null);
     }
-    
+
     return this.useCamt;
   }
 
@@ -370,18 +370,18 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     if (this.syncKontoauszug != null)
       return this.syncKontoauszug;
-    
+
     this.syncKontoauszug = new CheckboxInput(options.getSyncKontoauszuegePdf());
     this.syncKontoauszug.setName(i18n.tr("Elektronischen Kontoauszug abrufen"));
-    
+
     // Option fuer die PDF-Kontoauszuege nur aktivieren, wenn es laut BPD unterstuetzt wird
     boolean supported = KontoauszugPdfUtil.supported(this.konto);
     this.syncKontoauszug.setEnabled(supported);
-    
+
     // Wenn es nicht unterstuetzt wird, nehmen wir auch das Haekchen raus. Egal, was der User eingestellt hatte
     if (!supported)
       this.syncKontoauszug.setValue(supported); 
-    
+
     return this.syncKontoauszug;
   }
 
@@ -435,21 +435,21 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     if (this.syncMessages != null)
       return this.syncMessages;
-    
+
     this.syncMessages = new CheckboxInput(options.getSyncMessages());
     this.syncMessages.setName(i18n.tr("Banknachrichten abrufen"));
-    
+
     final Input i1 = getSyncSaldo();
     final Input i2 = getSyncUmsatz();
     final Input i3 = getSyncAueb();
     final Input i4 = getSyncSepaLast();
     final Input i5 = getSyncSepaDauer();
     final Input i6 = getSyncKontoauszug();
-    
+
     // Wir haengen hier noch einen Listener dran, der bewirkt, dass die Option nur dann auswaehlbar ist,
     // wenn wenigstens ein HBCI-Geschaeftsvorfall durchgefuehrt wird
     final Listener l = new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -469,10 +469,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     i4.addListener(l);
     i5.addListener(l);
     i6.addListener(l);
-    
+
     // einmal initial ausloesen
     l.handleEvent(null);
-    
+
     return this.syncMessages;
   }
 
@@ -506,7 +506,6 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     return this.error;
   }
 
-
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
@@ -514,7 +513,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   {
     return null;
   }
-  
+
   /**
    * Offline und Umsatz-Abruf schliessen sich gegenseitig aus.
    */
@@ -534,7 +533,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
           getErrorLabel().setValue(i18n.tr("Umsatzabruf und Anlegen von Gegenbuchungen\nkönnen nicht zusammen aktiviert werden."));
         else
           getErrorLabel().setValue("\n");
-        
+
         apply.setEnabled(!(a && b));
       }
     }

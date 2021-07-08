@@ -45,7 +45,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
   public void bind() throws Exception {
 
     final UmsatzDetailControl control = getControl();
-    
+
     // BUGZILLA 38 http://www.willuhn.de/bugzilla/show_bug.cgi?id=38
     Konto k = control.getUmsatz().getKonto();
 
@@ -72,7 +72,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
     // Name 2 erstmal nur anzeigen, wenn was drin steht
     if (StringUtils.isNotBlank(control.getUmsatz().getGegenkontoName2()))
       left.addInput(control.getEmpfaengerName2());
-    
+
     left.addInput(control.getEmpfaengerKonto());
     left.addInput(control.getEmpfaengerBLZ());
 

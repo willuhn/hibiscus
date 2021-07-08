@@ -55,10 +55,10 @@ public class KontoNew extends AbstractView
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private KontoControl control = null;
-  
+
   @Resource
   private SynchronizeEngine synchronizeEngine = null;
-  
+
   /**
    * ct,
    */
@@ -66,6 +66,7 @@ public class KontoNew extends AbstractView
   {
     this.control = new KontoControl(this);
   }
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
@@ -98,7 +99,7 @@ public class KontoNew extends AbstractView
 
           if (k.equals(choice))
             return; // kein Wechsel stattgefunden
-          
+
           new de.willuhn.jameica.hbci.gui.action.KontoNew().handleAction(choice);
         }
         catch (OperationCanceledException oce)
@@ -129,7 +130,7 @@ public class KontoNew extends AbstractView
       left.addInput(control.getAccountType());
       left.addLabelPair(i18n.tr("Kontoinhaber"),             control.getName());
       left.addLabelPair(i18n.tr("Saldo"),                    control.getSaldo());
-      
+
       Input avail = control.getSaldoAvailable();
       if (avail != null)
         left.addLabelPair(i18n.tr("Verfügbarer Betrag"),avail);
@@ -138,7 +139,6 @@ public class KontoNew extends AbstractView
       right.addHeadline(i18n.tr("Notizen"));
       right.addPart(control.getKommentar());
     }
-
 
     TabGroup account = new TabGroup(lf,i18n.tr("Zugangsdaten"));
     {
@@ -156,11 +156,11 @@ public class KontoNew extends AbstractView
       right.addLabelPair(i18n.tr("BIC"),                      control.getBic());
       right.addInput(control.getOffline());
     }
-    
+
     // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(control.getSynchronizeOptions());
-    
+
     buttonArea.addButton(control.getProtoButton());
 		buttonArea.addButton(control.getDelButton());
 		buttonArea.addButton(i18n.tr("&Speichern"),new Action()
@@ -172,7 +172,6 @@ public class KontoNew extends AbstractView
     },null,false,"document-save.png");
 		buttonArea.paint(getParent());
 
-    
     TabFolder folder = new TabFolder(getParent(), SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -211,11 +210,11 @@ public class KontoNew extends AbstractView
     }
     fetch.setEnabled(!konto.hasFlag(Konto.FLAG_DISABLED));
     buttons.addButton(fetch);
-    
+
     buttons.addButton(i18n.tr("Alle Umsätze anzeigen"),new KontoauszugList(),konto,false,"text-x-generic.png");
     buttons.paint(getParent());
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#reload()
    */
@@ -224,7 +223,7 @@ public class KontoNew extends AbstractView
     control.handleReload();
     super.reload();
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */

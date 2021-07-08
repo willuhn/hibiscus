@@ -100,7 +100,6 @@ public class DauerauftragList extends TablePart implements Part
 
 }
 
-
 /**********************************************************************
  * $Log: DauerauftragList.java,v $
  * Revision 1.8  2011/10/20 16:19:04  willuhn

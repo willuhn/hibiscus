@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypChart implements Part
 {
-  
+
   private I18N i18n   = null;
   private int start   = UmsatzDaysInput.getDefaultDays();
 
@@ -63,10 +63,10 @@ public class UmsatzTypChart implements Part
       final Container group = new SimpleContainer(parent,true);
       final ChartData eData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_EINNAHME,start);
       final ChartData aData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_AUSGABE,start);
-      
+
       final BarChart einnahmen = new BarChart();
       final BarChart ausgaben  = new BarChart();
-      
+
       if (start < 0)
       {
         einnahmen.setTitle(i18n.tr("Einnahmen (alle Umsätze)"));
@@ -85,6 +85,7 @@ public class UmsatzTypChart implements Part
       {
         private ChartData myEData = null;
         private ChartData myAData = null;
+
         public void handleEvent(Event event)
         {
           try
@@ -94,7 +95,7 @@ public class UmsatzTypChart implements Part
               return;
 
             start = newStart;
-            
+
             if (myEData != null) einnahmen.removeData(myEData);
             else                 einnahmen.removeData(eData);
             if (myAData != null) ausgaben.removeData(myAData);
@@ -125,9 +126,8 @@ public class UmsatzTypChart implements Part
         }
       }));
 
-
       group.addInput(i);
-      
+
       final Composite comp = new Composite(group.getComposite(),SWT.NONE);
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.horizontalSpan = 2;
@@ -139,7 +139,7 @@ public class UmsatzTypChart implements Part
       layout.marginHeight = 0;
       layout.marginWidth = 0;
       comp.setLayout(layout);
-      
+
       einnahmen.paint(comp);
       ausgaben.paint(comp);
     }
@@ -154,7 +154,6 @@ public class UmsatzTypChart implements Part
     }
   }
 }
-
 
 /*********************************************************************
  * $Log: UmsatzTypChart.java,v $

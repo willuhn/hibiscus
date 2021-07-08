@@ -29,7 +29,6 @@ public class LastschriftList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: LastschriftList.java,v $
  * Revision 1.1  2005/01/19 00:16:04  willuhn

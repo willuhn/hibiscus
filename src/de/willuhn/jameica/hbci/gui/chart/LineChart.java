@@ -46,7 +46,7 @@ import de.willuhn.util.ColorGenerator;
 public class LineChart extends AbstractChart<LineChartData>
 {
   private boolean stacked = false;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#redraw()
    */
@@ -54,7 +54,7 @@ public class LineChart extends AbstractChart<LineChartData>
   {
     if (getChart() == null || getChart().isDisposed())
       return;
-    
+
     // Cleanup, falls noetig
     {
       ISeriesSet set = getChart().getSeriesSet();
@@ -62,7 +62,7 @@ public class LineChart extends AbstractChart<LineChartData>
       for (ISeries s:series)
         set.deleteSeries(s.getId());
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Neu zeichnen
     List<LineChartData> data = getData();
@@ -70,7 +70,7 @@ public class LineChart extends AbstractChart<LineChartData>
     {
       final List<Date> labelLine   = new LinkedList<Date>();
       final List<Number> dataLine  = new LinkedList<Number>();
-      
+
       LineChartData cd      = data.get(i);
       List list             = cd.getData();
       String dataAttribute  = cd.getDataAttribute();
@@ -88,7 +88,7 @@ public class LineChart extends AbstractChart<LineChartData>
         {
           Object value = BeanUtil.get(o,dataAttribute);
           Object label = BeanUtil.get(o,labelAttribute);
-          
+
           if (label == null || value == null || !(value instanceof Number) || !(label instanceof Date))
             continue;
 
@@ -100,12 +100,11 @@ public class LineChart extends AbstractChart<LineChartData>
       String id = Integer.toString(i+1) + ". ";
       if (cd.getLabel() != null)
         id += " " + cd.getLabel();
-      
+
       ILineSeries lineSeries = (ILineSeries) getChart().getSeriesSet().createSeries(SeriesType.LINE,id);
       lineSeries.setXDateSeries(labelLine.toArray(new Date[labelLine.size()]));
       lineSeries.setYSeries(toArray(dataLine));
-      
-      
+
       //////////////////////////////////////////////////////////////////////////
       // Layout
       lineSeries.setSymbolType(PlotSymbolType.NONE);
@@ -127,7 +126,7 @@ public class LineChart extends AbstractChart<LineChartData>
       //
       //////////////////////////////////////////////////////////////////////////
     }
-    
+
     getChart().getAxisSet().adjustRange();
   }
 
@@ -138,7 +137,7 @@ public class LineChart extends AbstractChart<LineChartData>
   {
     if (getChart() != null)
       return;
-    
+
     this.addFeature(new ChartFeatureTooltip()); // Bei Linecharts per Default Tooltips unterstuetzen
     this.setChart(new InteractiveChart(parent,SWT.BORDER));
     this.getChart().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -149,7 +148,7 @@ public class LineChart extends AbstractChart<LineChartData>
     this.getChart().setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Titel des Charts
     {
@@ -160,7 +159,7 @@ public class LineChart extends AbstractChart<LineChartData>
     }
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Legende
     {
@@ -175,7 +174,7 @@ public class LineChart extends AbstractChart<LineChartData>
     ////////////////////////////////////////////////////////////////////////////
     // Layout der Achsen
     Color gray = getColor(new RGB(234,234,234));
-    
+
     // X-Achse
     {
       IAxis axis = getChart().getAxisSet().getXAxis(0);
@@ -190,7 +189,7 @@ public class LineChart extends AbstractChart<LineChartData>
       tick.setFormat(HBCI.DATEFORMAT);
       tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
     }
-    
+
     // Y-Achse
     {
       IAxis axis = getChart().getAxisSet().getYAxis(0);
@@ -199,7 +198,7 @@ public class LineChart extends AbstractChart<LineChartData>
       IGrid grid = axis.getGrid();
       grid.setStyle(LineStyle.DOT);
       grid.setForeground(gray);
-      
+
       IAxisTick tick = axis.getTick();
       tick.setFormat(HBCI.DECIMALFORMAT);
       tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -210,7 +209,7 @@ public class LineChart extends AbstractChart<LineChartData>
     redraw();
     super.paint(parent);
   }
-  
+
   /**
    * Wandelt die Liste in ein Array von doubles um.
    * @param list die Liste.
@@ -225,7 +224,7 @@ public class LineChart extends AbstractChart<LineChartData>
     }
     return values;
   }
-  
+
   /**
    * Liefert true, wenn die Linien uebereinandergestapelt werden sollen (stacked).
    * @return true, wenn die Linien stacked gezeichnet werden sollen.
@@ -234,7 +233,7 @@ public class LineChart extends AbstractChart<LineChartData>
   {
     return this.stacked;
   }
-  
+
   /**
    * Legt fest, ob die Linien uebereinandergestapelt werden sollen (stacked).
    * @param b true, wenn die Linien stacked gezeichnet werden sollen.

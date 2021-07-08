@@ -43,21 +43,20 @@ import de.willuhn.util.I18N;
 public class KontoAuswahlDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private final static int WINDOW_WIDTH = 500;
-  
+
   private String text        = null;
   private Konto choosen      = null;
   private Konto preselected  = null;
 	private KontoFilter filter = null;
-	
+
 	private Button apply        = null;
 	private KontoInput auswahl  = null;
 	private LabelInput institut = null;
   private LabelInput name     = null;
 	private LabelInput saldo    = null;
-	
-  
+
   /**
    * ct.
    * @param position
@@ -103,7 +102,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     group.addInput(getInstitut());
     group.addInput(getName());
     group.addInput(getSaldo());
-    
+
     // Button-Area
 		ButtonArea b = new ButtonArea();
 		b.addButton(this.getApplyButton());
@@ -116,7 +115,7 @@ public class KontoAuswahlDialog extends AbstractDialog
       }
     },null,false,"process-stop.png");
 		group.addButtonArea(b);
-		
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
     getKontoAuswahl().focus(); // damit wir direkt mit dem Cursor die Auswahl treffen koennen
   }
@@ -130,7 +129,7 @@ public class KontoAuswahlDialog extends AbstractDialog
   {
     return choosen;
   }
-  
+
   /**
    * Liefert die Auswahlbox fuer das Konto.
    * @return die Auswahlbox fuer das Konto.
@@ -163,7 +162,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     });
     return this.auswahl;
   }
-  
+
   /**
    * Liefert ein Label mit dem Namen der Bank.
    * @return Label mit dem Namen der Bank.
@@ -179,7 +178,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     }
     return this.institut;
   }
-  
+
   /**
    * Aktualisiert die Anzeige des Institut.
    */
@@ -193,7 +192,7 @@ public class KontoAuswahlDialog extends AbstractDialog
         getInstitut().setValue(name);
     }
   }
-  
+
   /**
    * Liefert den Namen des Kontos.
    * @return Label mit dem Namen des Kontos.
@@ -209,7 +208,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     }
     return this.name;
   }
-  
+
   /**
    * Aktualisiert den Namen des Kontos.
    * @throws RemoteException
@@ -218,19 +217,19 @@ public class KontoAuswahlDialog extends AbstractDialog
   {
     getName().setValue("");
     getName().setComment("");
-    
+
     if (this.preselected != null)
     {
       String name = this.preselected.getBezeichnung();
       if (name != null && name.length() > 0)
         getName().setValue(name);
-      
+
       String owner = this.preselected.getName();
       if (owner != null && owner.length() > 0)
         getName().setComment(owner);
     }
   }
-  
+
   /**
    * Liefert ein Label mit dem Saldo des Kontos.
    * @return ein Label mit dem Saldo des Kontos.
@@ -246,7 +245,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     }
     return this.saldo;
   }
-  
+
   /**
    * Aktualisiert den Saldo.
    * @throws RemoteException
@@ -262,11 +261,11 @@ public class KontoAuswahlDialog extends AbstractDialog
       {
         double saldo = this.preselected.getSaldo();
         getSaldo().setColor(ColorUtil.getColor(saldo,Color.ERROR,Color.SUCCESS,Color.FOREGROUND));
-        
+
         String curr = this.preselected.getWaehrung();
         if (curr == null || curr.length() == 0)
           curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-        
+
         getSaldo().setValue(HBCI.DECIMALFORMAT.format(saldo) + " " + curr);
         getSaldo().setComment(i18n.tr("aktualisiert am {0}",HBCI.LONGDATEFORMAT.format(date)));
       }
@@ -277,7 +276,7 @@ public class KontoAuswahlDialog extends AbstractDialog
       }
     }
   }
-  
+
   /**
    * Liefert den Uebernehmen-Button.
    * @return der Uebernehmen-Button.
@@ -286,7 +285,7 @@ public class KontoAuswahlDialog extends AbstractDialog
   {
     if (this.apply != null)
       return this.apply;
-    
+
     this.apply = new Button(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -298,7 +297,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     apply.setEnabled(this.preselected != null);
     return this.apply;
   }
-  
+
   /**
    * Optionale Angabe des anzuzeigenden Textes.
    * Wird hier kein Wert gesetzt, wird ein Standard-Text angezeigt.
@@ -310,7 +309,6 @@ public class KontoAuswahlDialog extends AbstractDialog
   }
 
 }
-
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $

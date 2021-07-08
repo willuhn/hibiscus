@@ -66,7 +66,7 @@ public class DebugDialog extends AbstractDialog
     sb.append(i18n.tr("JDBC-URL: {0}\n",driver.getJdbcUrl()));
     sb.append(i18n.tr("JDBC-Username: {0}\n",driver.getJdbcUsername()));
     sb.append(i18n.tr("JDBC-Passwort: {0}\n",driver.getJdbcPassword()));
-    
+
     Container container = new SimpleContainer(parent);
     container.addHeadline(i18n.tr("Datenbank-Einstellungen"));
     TextAreaInput text = new TextAreaInput(sb.toString());
@@ -80,12 +80,11 @@ public class DebugDialog extends AbstractDialog
       }
     },null,true,"window-close.png");
     container.addButtonArea(buttons);
-    
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
 }
-
 
 /*********************************************************************
  * $Log: DebugDialog.java,v $

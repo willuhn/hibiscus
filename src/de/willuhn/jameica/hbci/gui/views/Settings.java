@@ -45,7 +45,7 @@ public class Settings extends AbstractView implements Extendable
    * Der Tabfolder.
    */
   private TabFolder folder = null;
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
@@ -54,7 +54,7 @@ public class Settings extends AbstractView implements Extendable
 		GUI.getView().setTitle(i18n.tr("Einstellungen"));
 
 		final SettingsControl control = new SettingsControl(this);
-		
+
 		// Grund-Einstellungen
     TabGroup system = new TabGroup(getTabFolder(),i18n.tr("Grundeinstellungen"));
     system.addHeadline(i18n.tr("Sicherheit"));
@@ -84,7 +84,7 @@ public class Settings extends AbstractView implements Extendable
     // anzuzeigende Zeiträume in der Vorauswahl
     TabGroup ranges = new TabGroup(getTabFolder(),i18n.tr("Zeiträume"), true,1);
     ranges.addText(i18n.tr("Wählen Sie für die verschiedenen Bereiche der Anwendung aus, welche Zeitraum-Vorauswahlen angezeigt werden sollen."),true);
-    
+
     ranges.addHeadline(i18n.tr("Für Zahlungsverkehr"));
     ranges.addPart(control.getRanges(Range.CATEGORY_ZAHLUNGSVERKEHR));
     ranges.addHeadline(i18n.tr("Für Auswertungen, Umsatzlisten und Kontoauszüge"));
@@ -115,7 +115,7 @@ public class Settings extends AbstractView implements Extendable
     if (lastActiveTab != null)
       getTabFolder().setSelection(lastActiveTab.intValue());
   }
-  
+
   /**
    * Liefert den Tab-Folder, in dem die einzelnen Module der Einstellungen
    * untergebracht sind.
@@ -125,7 +125,7 @@ public class Settings extends AbstractView implements Extendable
   {
     if (this.folder != null)
       return this.folder;
-    
+
     this.folder = new TabFolder(getParent(), SWT.NONE);
     this.folder.setLayoutData(new GridData(GridData.FILL_BOTH));
     return this.folder;
@@ -139,7 +139,7 @@ public class Settings extends AbstractView implements Extendable
     // Wir merken uns das aktive Tab
     lastActiveTab = new Integer(getTabFolder().getSelectionIndex());
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
    */

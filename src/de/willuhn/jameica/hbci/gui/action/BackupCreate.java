@@ -90,11 +90,11 @@ public class BackupCreate implements Action
     String f = fd.open();
     if (f == null || f.length() == 0)
       return;
-    
+
     final File file = new File(f);
     Application.getController().start(new BackgroundTask() {
       private boolean cancel = false;
-    
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
        */
@@ -111,11 +111,9 @@ public class BackupCreate implements Action
           backup(TurnusImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
-          
           monitor.setStatusText(i18n.tr("Speichere Umsatz-Kategorien"));
           backupTree(UmsatzTypImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
-
 
           monitor.setStatusText(i18n.tr("Speichere Adressbuch"));
           backup(HibiscusAddressImpl.class,writer,monitor);
@@ -129,7 +127,7 @@ public class BackupCreate implements Action
           monitor.setStatusText(i18n.tr("Speichere Umsätze"));
           backup(UmsatzImpl.class,writer,monitor);
           monitor.addPercentComplete(20);
-          
+
           monitor.setStatusText(i18n.tr("Speichere Daueraufträge"));
           backup(DauerauftragImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
@@ -190,9 +188,9 @@ public class BackupCreate implements Action
           monitor.setStatusText(i18n.tr("Speichere Protokolle"));
           backup(ProtokollImpl.class,writer,monitor);
           monitor.addPercentComplete(20);
-          
+
           // Die Versionstabelle wird nicht mit kopiert
-          
+
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           monitor.setStatusText("Backup erstellt");
           monitor.setPercentComplete(100);
@@ -214,7 +212,7 @@ public class BackupCreate implements Action
           }
         }
       }
-    
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
        */
@@ -222,7 +220,7 @@ public class BackupCreate implements Action
       {
         return this.cancel;
       }
-    
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
        */
@@ -230,10 +228,10 @@ public class BackupCreate implements Action
       {
         this.cancel = true;
       }
-    
+
     });
   }
-  
+
   /**
    * Hilfsfunktion.
    * @param type der Typ der zu speichernden Objekte.
@@ -295,7 +293,7 @@ public class BackupCreate implements Action
       }
     }
   }
-  
+
   /**
    * Sichert den Knoten und dessen Kinder.
    * @param der Knoten.
@@ -309,7 +307,7 @@ public class BackupCreate implements Action
     {
       // erst der Knoten selbst
       writer.write(node);
-      
+
       // und jetzt rekursiv die Kinder
       GenericIterator children = node.getChildren();
       if (children != null)
@@ -326,6 +324,5 @@ public class BackupCreate implements Action
       monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(node),e.getMessage()}));
     }
   }
-  
 
 }

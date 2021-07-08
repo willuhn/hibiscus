@@ -33,12 +33,12 @@ public class TerminInput extends DateInput
    * Queue, die bei Aenderungen benachrichtigt wird.
    */
   public final static String QUEUE_TERMIN_CHANGED = "hibiscus.termin.changed";
-  
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Terminable auftrag = null;
   private Listener listener  = null;
-  
+
   /**
    * ct.
    * @param auftrag der terminierbare Auftrag.
@@ -48,22 +48,22 @@ public class TerminInput extends DateInput
   {
     super(getPreset(auftrag),HBCI.DATEFORMAT);
     this.auftrag = auftrag;
-    
+
     // Deaktivieren, wenn ein ausgefuehrter Auftrag uebergeben wurde
     if (auftrag != null)
       this.setEnabled(!auftrag.ausgefuehrt());
-    
+
     this.setName(i18n.tr("Erinnerungstermin"));
     this.setTitle(i18n.tr("Erinnerung"));
     this.setText(i18n.tr("Bitte wählen Sie ein Datum aus, zu dem\nHibiscus Sie an den Auftrag erinnern soll."));
     this.setComment("");
     this.setMandatory(true);
-    
+
     this.listener = new MyListener();
     this.listener.handleEvent(null); // einmal ausloesen
     this.addListener(this.listener);
   }
-  
+
   /**
    * Liefert das Vorgabedatum fuer den Auftrag.
    * @param auftrag
@@ -77,7 +77,7 @@ public class TerminInput extends DateInput
     Date date = auftrag.getTermin();
     return date != null ? date : new Date();
   }
-  
+
   /**
    * Aktualisiert den Kommentar basierend auf den aktuellen Eigenschaften des Auftrages.
    */
@@ -109,7 +109,7 @@ public class TerminInput extends DateInput
         }
 
         Application.getMessagingFactory().getMessagingQueue(QUEUE_TERMIN_CHANGED).sendMessage(new QueryMessage(date));
-        
+
         // Wir muessen den Termin im Objekt setzen, damit wir die
         // Faelligkeits-Entscheidung treffen koennen
         auftrag.setTermin(date);
@@ -134,8 +134,6 @@ public class TerminInput extends DateInput
     }
   }
 }
-
-
 
 /**********************************************************************
  * $Log: TerminInput.java,v $

@@ -60,7 +60,7 @@ public class PINDialog extends PasswordDialog
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
     Konto konto = session != null ? session.getKonto() : null;
-    
+
     if (konto != null)
     {
       try
@@ -77,7 +77,7 @@ public class PINDialog extends PasswordDialog
         Logger.error("unable to determine account data",e);
       }
     }
-    
+
     if (s != null)
     {
       setTitle(i18n.tr("PIN-Eingabe. Konto: {0}",s));
@@ -113,7 +113,7 @@ public class PINDialog extends PasswordDialog
 
     return true;
 	}
-  
+
 	/**
 	 * Liefert einen locale String mit der Anzahl der Restversuche.
 	 * z.Bsp.: "Noch 2 Versuche.".

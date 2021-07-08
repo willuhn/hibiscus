@@ -48,7 +48,7 @@ public class SammelLastschriftList extends ContextMenu
       }
     },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelLastschriftExport(),"document-save.png"));
-		
+
 	}
 
   /**
@@ -65,6 +65,7 @@ public class SammelLastschriftList extends ContextMenu
     {
       super(text,action,icon);
     }
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */

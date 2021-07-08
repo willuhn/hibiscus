@@ -79,7 +79,7 @@ public class BackupRestore implements Action
       Logger.error("unable to notify user",e);
       throw new ApplicationException(i18n.tr("Datenbank-Import fehlgeschlagen"));
     }
-    
+
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.OPEN);
     fd.setFileName("hibiscus-backup-" + BackupCreate.DATEFORMAT.format(new Date()) + ".xml");
     fd.setFilterExtensions(new String[]{"*.xml"});
@@ -87,14 +87,14 @@ public class BackupRestore implements Action
     String f = fd.open();
     if (f == null || f.length() == 0)
       return;
-    
+
     final File file = new File(f);
     if (!file.exists())
       return;
 
     Application.getController().start(new BackgroundTask() {
       private boolean cancel = false;
-    
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
        */
@@ -109,7 +109,7 @@ public class BackupRestore implements Action
         {
           InputStream is = new BufferedInputStream(new FileInputStream(file));
           reader = new XmlReader(is,new ObjectFactory() {
-          
+
             public GenericObject create(String type, String id, Map values) throws Exception
             {
               AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
@@ -122,9 +122,9 @@ public class BackupRestore implements Action
               }
               return object;
             }
-          
+
           });
-          
+
           long count = 1;
           GenericObject o = null;
           while ((o = reader.read()) != null)
@@ -151,7 +151,7 @@ public class BackupRestore implements Action
             if (count++ % 100 == 0)
               monitor.addPercentComplete(1);
           }
-          
+
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           monitor.setStatusText("Backup importiert");
           monitor.setPercentComplete(100);
@@ -174,7 +174,7 @@ public class BackupRestore implements Action
           }
         }
       }
-    
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
        */
@@ -182,7 +182,7 @@ public class BackupRestore implements Action
       {
         return this.cancel;
       }
-    
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
        */
@@ -190,11 +190,10 @@ public class BackupRestore implements Action
       {
         this.cancel = true;
       }
-    
+
     });
   }
 }
-
 
 /*********************************************************************
  * $Log: BackupRestore.java,v $

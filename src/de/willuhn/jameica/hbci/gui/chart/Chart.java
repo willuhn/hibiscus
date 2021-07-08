@@ -25,25 +25,25 @@ public interface Chart<T extends ChartData> extends Part
    * @param title Titel.
    */
   public void setTitle(String title);
-  
+
   /**
    * Liefert den Titel des Charts.
    * @return Titel.
    */
   public String getTitle();
-  
+
   /**
    * Fuegt dem Chart eine Datenreihe hinzu,
    * @param data
    */
   public void addData(T data);
-  
+
   /**
    * Entfernt eine Datenreihe aus dem Chart.
    * @param data
    */
   public void removeData(T data);
-  
+
   /**
    * Entfernt alle Datenreihen.
    */
@@ -55,13 +55,13 @@ public interface Chart<T extends ChartData> extends Part
    * @throws RemoteException
    */
   public void redraw() throws RemoteException;
-  
+
   /**
    * Liefert das eigentliche SWT-Chart-Objekt.
    * @return das eigentliche SWT-Chart-Objekt.
    */
   public org.eclipse.swtchart.Chart getChart();
-  
+
   /**
    * Fuegt ein Feature hinzu.
    * @param feature das Feature.

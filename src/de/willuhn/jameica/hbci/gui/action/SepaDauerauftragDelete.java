@@ -101,7 +101,7 @@ public class SepaDauerauftragDelete implements Action
 
 	      BaseDauerauftragDeleteDialog d2 = new BaseDauerauftragDeleteDialog(BaseDauerauftragDeleteDialog.POSITION_CENTER);
 	      Date date = (Date) d2.open();
-	      
+
 	      Konto konto = da.getKonto();
 	      Class<SynchronizeJobSepaDauerauftragDelete> type = SynchronizeJobSepaDauerauftragDelete.class;
 
@@ -109,10 +109,10 @@ public class SepaDauerauftragDelete implements Action
 	      SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
 	      SynchronizeBackend backend = engine.getBackend(type,konto);
 	      SynchronizeJob job         = backend.create(type,konto);
-	      
+
 	      job.setContext(SynchronizeJob.CTX_ENTITY,da);
 	      job.setContext(SynchronizeJobSepaDauerauftragDelete.CTX_DATE,date);
-	      
+
         // Das Loeschen der Entity uebernimmt der HBCISepaDauerauftragDeleteJob selbst in "markExecuted"
 	      backend.execute(Arrays.asList(job));
 	    }

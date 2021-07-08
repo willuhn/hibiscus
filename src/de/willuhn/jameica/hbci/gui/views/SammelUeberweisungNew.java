@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
 public class SammelUeberweisungNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc = new MyMessageConsumer();
   private SammelTransfer transfer = null;
 
@@ -54,14 +54,14 @@ public class SammelUeberweisungNew extends AbstractView
 
 		GUI.getView().setTitle(i18n.tr("Sammel-Überweisung bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSammelUeberweisung(transfer)));
-		
+
 		Container group = new SimpleContainer(getParent());
 		group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Zu belastendes Konto"),control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
     group.addInput(control.getTermin());
     group.addInput(control.getReminderInterval());
-		
+
 		group.addSeparator();
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
 
@@ -88,17 +88,17 @@ public class SammelUeberweisungNew extends AbstractView
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
-    
+
     buttons.addButton(store);
-    
+
     buttons.paint(getParent());
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
@@ -108,7 +108,7 @@ public class SammelUeberweisungNew extends AbstractView
     this.transfer = null;
     Application.getMessagingFactory().unRegisterMessageConsumer(this.mc);
   }
-  
+
   /**
    * Wird beanchrichtigt, wenn der Auftrag ausgefuehrt wurde und laedt die
    * View dann neu.
@@ -135,7 +135,7 @@ public class SammelUeberweisungNew extends AbstractView
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
-      
+
       // View neu laden
       if (transfer.equals(o))
         GUI.startView(SammelUeberweisungNew.this,transfer);

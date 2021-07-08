@@ -39,7 +39,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 	// Fach-Objekte
 	private SammelTransferBuchung buchung	  = null;
   private SelectInput textschluessel      = null;
-	
+
 	private I18N i18n                       = null;
 
   /**
@@ -69,14 +69,13 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 	public synchronized void handleStore(boolean next)
 	{
 		try {
-  		
 			getBuchung().transactionBegin();
 
       Double db = (Double)getBetrag().getValue();
       getBuchung().setBetrag(db == null ? Double.NaN : db.doubleValue());
 			getBuchung().setZweck((String)getZweck().getValue());
       getBuchung().setZweck2((String)getZweck2().getText());  // "getText()" ist wichtig, weil das ein DialogInput ist
-      
+
       TextSchluessel ts = (TextSchluessel) getTextSchluessel().getValue();
       getBuchung().setTextSchluessel(ts == null ? null : ts.getCode());
 
@@ -93,7 +92,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
       String[] lines = (String[]) this.zweckDialog.getData();
       if (lines != null)
         getBuchung().setWeitereVerwendungszwecke(lines);
-			
+
 			getBuchung().store();
 
 			Boolean store = (Boolean) getStoreAddress().getValue();
@@ -103,7 +102,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
         e.setBlz(blz);
         e.setKontonummer(kto);
         e.setName(name);
-        
+
         // Zu schauen, ob die Adresse bereits existiert, ueberlassen wir der Action
         new EmpfaengerAdd().handleAction(e);
 			}
@@ -118,7 +117,6 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
             HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + w));
       }
 
-      
       // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
       if (next)
         new SammelUeberweisungBuchungNew().handleAction(getBuchung().getSammelTransfer());
@@ -147,7 +145,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Buchung"));
 		}
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferBuchungControl#getTextSchluessel()
    */

@@ -52,13 +52,13 @@ import de.willuhn.util.I18N;
 public class ReminderIntervalInput implements Input
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Terminable order              = null;
   private Input input                   = null;
   private ReminderIntervalDialog dialog = null;
   private boolean containsInterval      = false;
   private Date end                      = null;
-  
+
   /**
    * ct.
    * @param terminable der Auftrag.
@@ -70,7 +70,7 @@ public class ReminderIntervalInput implements Input
     this.order = terminable;
 
     final HibiscusDBObject bean = (HibiscusDBObject) order;
-    
+
     // Fuer Auftraege, die bereits selbst via Reminder erzeugt wurden, duerfen keine
     // neuen Reminder angelegt werden. Daher nehmen wir hier ein LinkInput, welches
     // auf die Kopier-Vorlage verlinkt.
@@ -91,15 +91,15 @@ public class ReminderIntervalInput implements Input
           }
         }
       });
-      
+
       // Raus. Nichts weiter zu tun.
       return;
     }
-    
+
     this.containsInterval = true;
     String uuid = MetaKey.REMINDER_UUID.get(bean);
     ReminderInterval ri = null;
-    
+
     if (uuid != null)
     {
       try
@@ -124,7 +124,7 @@ public class ReminderIntervalInput implements Input
         throw new RemoteException("unable to load reminder",e);
       }
     }
-    
+
     this.input = new DialogInput(this.toString(ri,end));
     this.input.setName(i18n.tr("Wiederholung"));
     this.input.setValue(ri);
@@ -170,9 +170,9 @@ public class ReminderIntervalInput implements Input
         }
       });
     }
-  
+
   }
-  
+
   /**
    * Liefert eine String-Repraesentation des Intervalls.
    * @param ri das Intervall.
@@ -183,13 +183,13 @@ public class ReminderIntervalInput implements Input
   {
     if (ri == null)
       return "<" + i18n.tr("keine") + ">";
-    
+
     String text = ri.toString();
     if (end != null)
       text += ", " + i18n.tr("bis {0}",HBCI.DATEFORMAT.format(end));
     return text;
   }
-  
+
   /**
    * Liefert true, wenn es sich hier tatsaechlich um ein Auswahlfeld
    * fuer das Intervall handelt. Ist der Auftrag jedoch ein Clone, liefert
@@ -200,7 +200,7 @@ public class ReminderIntervalInput implements Input
   {
     return this.containsInterval;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.Input#getValue()
    */
@@ -216,7 +216,7 @@ public class ReminderIntervalInput implements Input
   {
     this.input.setValue(value);
   }
-  
+
   /**
    * Liefert das optionale End-Datum.
    * @return das optionale End-Datum.
@@ -266,7 +266,7 @@ public class ReminderIntervalInput implements Input
     this.input.paint(parent);
     if (!(this.input instanceof DialogInput))
       return;
-    
+
     // wir registrieren hier noch einen Message-Consumer, damit wir benachrichtigt werden,
     // wenn das Datum geaendert wurde.
     final MessageConsumer mc = new DateChangedConsumer();
@@ -396,12 +396,12 @@ public class ReminderIntervalInput implements Input
     {
       if (dialog == null)
         return;
-      
+
       QueryMessage msg = (QueryMessage) message;
       Object data = msg.getData();
       if (!(data instanceof Date))
         return;
-      
+
       dialog.setDate((Date) data);
     }
 
@@ -415,8 +415,6 @@ public class ReminderIntervalInput implements Input
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: ReminderIntervalInput.java,v $

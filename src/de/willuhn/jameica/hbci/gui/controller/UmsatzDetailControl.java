@@ -55,12 +55,12 @@ import de.willuhn.util.I18N;
 public class UmsatzDetailControl extends AbstractControl
 {
   private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-  
+
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   // Fachobjekte
   private Umsatz umsatz = null;
-	
+
 	// Eingabe-Felder
 	private Input konto				 		= null;
 	private Input empfaengerName  = null;
@@ -79,11 +79,11 @@ public class UmsatzDetailControl extends AbstractControl
 	private TextInput endToEndId  = null;
   private TextInput mandateId   = null;
 	private TextInput gvcode      = null;
-  
+
   private Input kommentar       = null;
-  
+
   private SelectInput umsatzTyp = null;
-  
+
   private CheckboxInput zweckSwitch = null;
 
   /**
@@ -119,7 +119,7 @@ public class UmsatzDetailControl extends AbstractControl
     this.kommentar.setEnabled(!getUmsatz().hasFlag(Umsatz.FLAG_NOTBOOKED));
     return this.kommentar;
   }
-  
+
   /**
    * Prueft, ob sich das Gegenkonto im Adressbuch befindet.
    * @return die ggf. gefundene Adresse oder null.
@@ -177,7 +177,7 @@ public class UmsatzDetailControl extends AbstractControl
     }
     return this.empfaengerName;
   }
-  
+
   /**
    * Liefert ein Eingabe-Feld mit dem Namen des ultimativen Empfaengers.
    * @return Eingabe-Feld.
@@ -193,7 +193,7 @@ public class UmsatzDetailControl extends AbstractControl
     }
     return this.empfaengerName2;
   }
-  
+
   /**
    * Liefert eine Auswahlbox fuer die Umsatz-Kategorie.
    * @return Umsatz-Kategorie.
@@ -208,16 +208,16 @@ public class UmsatzDetailControl extends AbstractControl
 
     Umsatz u = getUmsatz();
     UmsatzTyp ut = u != null ? u.getUmsatzTyp() : null;
-    
+
     // wenn noch keine Kategorie zugeordnet ist, bieten wir nur die passenden an.
     if (u != null && ut == null && u.getBetrag() != 0)
       typ = (u.getBetrag() > 0 ? UmsatzTyp.TYP_EINNAHME : UmsatzTyp.TYP_AUSGABE);
-    
+
     // Ansonsten alle - damit die zugeordnete Kategorie auch dann noch
     // noch angeboten wird, der User nachtraeglich den Kat-Typ geaendert hat.
     this.umsatzTyp = new UmsatzTypInput(ut,typ, false);
     this.umsatzTyp.setComment("");
-    
+
     this.umsatzTyp.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED));
     return this.umsatzTyp;
   }
@@ -231,9 +231,9 @@ public class UmsatzDetailControl extends AbstractControl
   {
     if (this.empfaengerKonto != null)
       return this.empfaengerKonto;
-    
+
     String s = getUmsatz().getGegenkontoNummer();
-    
+
     if (StringUtils.trimToEmpty(s).length() > 10)
     {
       this.empfaengerKonto = new IBANInput(s,null);
@@ -244,11 +244,11 @@ public class UmsatzDetailControl extends AbstractControl
       this.empfaengerKonto = new TextInput(s,HBCIProperties.HBCI_IBAN_MAXLENGTH);
       this.empfaengerKonto.setName(i18n.tr("Konto/IBAN"));
     }
-    
+
     this.empfaengerKonto.setEnabled(false);
     return this.empfaengerKonto;
   }
-  
+
   /**
    * Liefert ein Eingabe-Feld mit der BLZ des Empfaengers.
    * @return Eingabe-Feld.
@@ -258,7 +258,7 @@ public class UmsatzDetailControl extends AbstractControl
   {
     if (this.empfaengerBlz != null)
       return this.empfaengerBlz;
-    
+
     String value = getUmsatz().getGegenkontoBLZ();
     boolean isBic = value == null || value.trim().length() == 0; // Per Default ist es eine BIC
     try
@@ -270,7 +270,7 @@ public class UmsatzDetailControl extends AbstractControl
     {
       isBic = true;
     }
-    
+
     this.empfaengerBlz = isBic ? new BICInput(value) : new BLZInput(value);
     this.empfaengerBlz.setName(i18n.tr(isBic ? "BIC" : "BLZ"));
     this.empfaengerBlz.setEnabled(false);
@@ -286,7 +286,7 @@ public class UmsatzDetailControl extends AbstractControl
   {
     if (betrag != null)
       return betrag;
-    
+
     double s = getUmsatz().getBetrag();
     betrag = new LabelInput(HBCI.DECIMALFORMAT.format(s));
     betrag.setComment(getUmsatz().getKonto().getWaehrung());
@@ -333,7 +333,7 @@ public class UmsatzDetailControl extends AbstractControl
 	{
 		if (saldo != null)
 			return saldo;
-    
+
     double s = getUmsatz().getSaldo();
 		saldo = new LabelInput(HBCI.DECIMALFORMAT.format(s));
 		saldo.setComment(getUmsatz().getKonto().getWaehrung());
@@ -396,11 +396,11 @@ public class UmsatzDetailControl extends AbstractControl
     if (this.endToEndId == null)
     {
       String eref = StringUtils.trimToNull(getUmsatz().getEndToEndId());
-      
+
       // Fuer die Abwaertskompatibilitaet
       if (eref == null)
         eref = VerwendungszweckUtil.getTag(getUmsatz(),Tag.EREF);
-        
+
       this.endToEndId = new TextInput(eref,HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       this.endToEndId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
       this.endToEndId.setName(i18n.tr("End-to-End ID"));
@@ -420,15 +420,14 @@ public class UmsatzDetailControl extends AbstractControl
    if (this.mandateId == null)
    {
      String mref = StringUtils.trimToNull(getUmsatz().getMandateId());
-     
+
      // Fuer die Abwaertskompatibilitaet
      if (mref == null)
        mref = VerwendungszweckUtil.getTag(getUmsatz(),Tag.MREF);
-       
+
      this.mandateId = new TextInput(mref,HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
      this.mandateId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
      this.mandateId.setEnabled(false);
-
    }
    return this.mandateId;
  }
@@ -444,7 +443,7 @@ public class UmsatzDetailControl extends AbstractControl
 	  {
 	    String gv  = getUmsatz().getGvCode();
 	    String add = getUmsatz().getAddKey();
-	    
+
 	    // Aus Platzgruenden zeigen wir das kombiniert an.
 	    if (gv == null)
 	      gv = "";
@@ -456,7 +455,7 @@ public class UmsatzDetailControl extends AbstractControl
 	  }
 	  return this.gvcode;
 	}
-	
+
 	/**
 	 * Liefert ein Eingabe-Feld fuer den Verwendungszweck.
 	 * @return Eingabe-Feld.
@@ -465,7 +464,7 @@ public class UmsatzDetailControl extends AbstractControl
 	{
 	  if (this.zweck != null)
 	    return this.zweck;
-	  
+
     this.zweck = new TextAreaInput("");
     this.zweck.setEnabled(false);
 	  return this.zweck;
@@ -481,11 +480,11 @@ public class UmsatzDetailControl extends AbstractControl
 	{
 	  if (this.zweckSwitch != null)
 	    return this.zweckSwitch;
-	  
+
 	  boolean b = settings.getBoolean("usage.display.all",true);
 	  this.zweckSwitch = new CheckboxInput(b);
 	  this.zweckSwitch.setName(i18n.tr("Alle Daten des Verwendungszwecks anzeigen"));
-	  
+
 	  Listener l = new Listener() {
       @Override
       public void handleEvent(Event event)
@@ -493,7 +492,7 @@ public class UmsatzDetailControl extends AbstractControl
         // Wert speichern
         boolean b2 = ((Boolean) zweckSwitch.getValue()).booleanValue();
         settings.setAttribute("usage.display.all",b2);
-        
+
         // Verwendungszweck-Anzeige aktualisieren
         String usage = getUsage(b2);
         getZweck().setValue(usage);
@@ -501,10 +500,10 @@ public class UmsatzDetailControl extends AbstractControl
     };
 	  this.zweckSwitch.addListener(l);
 	  l.handleEvent(null); // einmal initial ausloesen
-	  
+
     return this.zweckSwitch;
 	}
-	
+
 	/**
 	 * Liefert den anzuzeigenden Verwendungszweck in Abhaengigkeit der aktuellen Einstellung.
 	 * @param showAll true, wenn der rohe Verwendungszweck angezeigt werden soll.
@@ -515,7 +514,7 @@ public class UmsatzDetailControl extends AbstractControl
     try
     {
       Umsatz u = this.getUmsatz();
-      
+
       // Wir zeigen den Verwendungszweck in einer Zeile an.
       // Das Zeilenlimit ist nicht relevant, wenn wir hier eh nicht bearbeiten koennen.
       if (showAll)
@@ -528,7 +527,7 @@ public class UmsatzDetailControl extends AbstractControl
       Logger.error("unable to display usage text",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Verwendungszweck: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
-    
+
     return "";
 	}
 

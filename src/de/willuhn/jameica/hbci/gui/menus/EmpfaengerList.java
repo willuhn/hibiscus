@@ -68,7 +68,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
   {
     return this.getClass().getName();
   }
-  
+
   /**
    * Ueberschrieben, um nur "echte" Hibiscus-Adressen aus der DB zuzulassen.
    */
@@ -83,7 +83,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     {
       super(text,action,icon);
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -92,11 +92,11 @@ public class EmpfaengerList extends ContextMenu implements Extendable
       // erstmal checken, ob ueberhaupt was ausgewaehlt wurde
       if (!super.isEnabledFor(o))
         return false;
-      
+
       // Einzelner Datensatz?
       if (o instanceof HibiscusAddress)
         return true;
-      
+
       // Liste von Datensaetzen?
       if ((Address[].class.isAssignableFrom(o.getClass())))
       {
@@ -108,14 +108,14 @@ public class EmpfaengerList extends ContextMenu implements Extendable
           if (!(a instanceof HibiscusAddress))
             return false;
         }
-        
+
         return true; // Sieht gut aus
       }
-      
+
       // nichts von dem
       return false;
     }
-    
+
   }
 
   /**
@@ -133,7 +133,6 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     }
   }
 }
-
 
 /**********************************************************************
  * $Log: EmpfaengerList.java,v $

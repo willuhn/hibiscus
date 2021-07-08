@@ -28,7 +28,7 @@ import de.willuhn.util.I18N;
 public class OpenReminderTemplate implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -36,17 +36,17 @@ public class OpenReminderTemplate implements Action
   {
     if (!(context instanceof HibiscusDBObject))
       return;
-    
+
     try
     {
       HibiscusDBObject object = (HibiscusDBObject) context;
       String id = MetaKey.REMINDER_TEMPLATE.get(object);
       if (id == null)
         return;
-      
+
       // Checken, ob wir den Datensatz laden koennen
       DBObject o = Settings.getDBService().createObject(object.getClass(),id);
-      
+
       // Wir versuchen, ihn zu oeffnen
       new Open().handleAction(o);
     }
@@ -66,8 +66,6 @@ public class OpenReminderTemplate implements Action
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: OpenReminderTemplate.java,v $

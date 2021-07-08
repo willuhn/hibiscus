@@ -29,7 +29,6 @@ public class UeberweisungList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: UeberweisungList.java,v $
  * Revision 1.3  2005/01/19 00:16:04  willuhn

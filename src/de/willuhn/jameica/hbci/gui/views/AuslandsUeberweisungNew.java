@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
 public class AuslandsUeberweisungNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc = new MyMessageConsumer();
   private AuslandsUeberweisung transfer = null;
 
@@ -55,13 +55,13 @@ public class AuslandsUeberweisungNew extends AbstractView
 		GUI.getView().setTitle(i18n.tr("SEPA-Überweisung bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonNew(AuslandsUeberweisung.class));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportAuslandsUeberweisung(transfer)));
-		
+
     Container cl = new SimpleContainer(getParent());
     cl.addHeadline(i18n.tr("Konto"));
 		cl.addInput(control.getKontoAuswahl());
-		
+
     ColumnLayout cols = new ColumnLayout(getParent(),2);
-		
+
     // Linke Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -70,12 +70,12 @@ public class AuslandsUeberweisungNew extends AbstractView
       container.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
       container.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
       container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
-      
+
       container.addHeadline(i18n.tr("Auftragswiederholung (nur Hibiscus-intern)"));
       container.addText(i18n.tr("Diese Information wird nicht an die Bank übertragen."),true);
       container.addInput(control.getReminderInterval());
     }
-    
+
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -110,22 +110,22 @@ public class AuslandsUeberweisungNew extends AbstractView
       }
     },null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
-    
+
     Button store = new Button(i18n.tr("&Speichern"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
       	control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
-    
+
     buttonArea.addButton(execute);
     buttonArea.addButton(store);
-    
+
     buttonArea.paint(getParent());
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
@@ -142,7 +142,7 @@ public class AuslandsUeberweisungNew extends AbstractView
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -150,7 +150,7 @@ public class AuslandsUeberweisungNew extends AbstractView
     {
       return new Class[]{ObjectChangedMessage.class};
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -158,16 +158,16 @@ public class AuslandsUeberweisungNew extends AbstractView
     {
       if (transfer == null)
         return;
-  
+
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
-      
+
       // View neu laden
       if (transfer.equals(o))
         GUI.startView(AuslandsUeberweisungNew.this,transfer);
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */

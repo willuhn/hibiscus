@@ -29,9 +29,9 @@ public class EmpfaengerList extends AbstractView
   public void bind() throws Exception
   {
 		GUI.getView().setTitle(i18n.tr("Vorhandene Adressen"));
-		
+
 		EmpfaengerControl control = new EmpfaengerControl(this);
-		
+
     control.getEmpfaengerListe().paint(getParent());
   }
 }

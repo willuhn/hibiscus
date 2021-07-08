@@ -89,38 +89,38 @@ public class UmsatzTypInput extends SelectInput
   {
     super((List) null, preselected != null ? new UmsatzTypBean(preselected) : null);
     List<Object> choices=new ArrayList<Object>(UmsatzTypUtil.getList(skip,typ));
-    
+
     if (unassigned)
       choices.add(0,new UmsatzTypBean(UmsatzTypUtil.UNASSIGNED));
-    
+
     this.setList(choices);
     this.setAttribute("indented");
     this.setName(i18n.tr("Umsatz-Kategorie"));
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
-    
+
     // Checken, ob wir ueberhaupt irgendwelche Kategorien mit Kommentaren haben
     this.haveComments = Settings.getDBService().execute("select count(id) from umsatztyp where kommentar is not null and kommentar != ''", null, new ResultSetExtractor() {
-      
+
       @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         return (rs.next() && rs.getInt(1) > 0 ? Boolean.TRUE : null);
       }
     }) != null;
-    
+
     refreshComment();
-    
+
     // Kommentar aktualisieren
     this.addListener(new Listener() {
-    
+
       public void handleEvent(Event event)
       {
         refreshComment();
       }
-    
+
     });
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
    */
@@ -130,7 +130,7 @@ public class UmsatzTypInput extends SelectInput
     UmsatzTypBean b = (UmsatzTypBean) super.getValue();
     return b != null ? b.getTyp() : null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.AbstractInput#setComment(java.lang.String)
    */
@@ -142,10 +142,10 @@ public class UmsatzTypInput extends SelectInput
 
     if (!this.haveCustomComment && !this.haveAutoComment)
       return;
-    
+
     super.setComment(comment);
   }
-  
+
   /**
    * Aktualisiert den Kommentar.
    */
@@ -153,10 +153,10 @@ public class UmsatzTypInput extends SelectInput
   {
     if (this.haveCustomComment)
       return;
-    
+
     if (!this.haveAutoComment)
       return;
-    
+
     try
     {
       UmsatzTyp ut = (UmsatzTyp) getValue();
@@ -165,14 +165,14 @@ public class UmsatzTypInput extends SelectInput
         super.setComment("");
         return;
       }
-      
+
       String comment = ut.getKommentar();
       if (StringUtils.trimToNull(comment) == null)
       {
         super.setComment("");
         return;
       }
-      
+
       super.setComment(StringUtils.abbreviateMiddle(comment,"...",40));
     }
     catch (Exception e)

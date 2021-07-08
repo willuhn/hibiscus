@@ -37,7 +37,7 @@ public class KontoFetchFromPassport implements Action
   public void handleAction(Object context) throws ApplicationException
   {
     Passport passport = null;
-    
+
     try
     {
       if (context instanceof Konto)
@@ -80,7 +80,6 @@ public class KontoFetchFromPassport implements Action
       Logger.error("unable to select passport",e);
       throw new ApplicationException(i18n.tr("Auswahl des Bank-Zugangs fehlgeschlagen"),e);
     }
-    
 
 		final Passport p = passport;
 

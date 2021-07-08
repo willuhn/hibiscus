@@ -58,7 +58,6 @@ public class UmsatzTypImport implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: UmsatzTypImport.java,v $
  * Revision 1.2  2011/05/11 10:20:28  willuhn

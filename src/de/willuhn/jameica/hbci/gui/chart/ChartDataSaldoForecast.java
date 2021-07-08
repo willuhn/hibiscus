@@ -26,7 +26,7 @@ public class ChartDataSaldoForecast extends AbstractChartDataSaldo
   private Konto konto      = null;
   private Date end         = null;
   private List<Value> data = null;
-  
+
   /**
    * ct.
    * @param k das Konto, fuer das das Diagramm gemalt werden soll.
@@ -45,7 +45,7 @@ public class ChartDataSaldoForecast extends AbstractChartDataSaldo
   {
     if (this.data != null)
       return this.data;
-    
+
     this.data = ForecastCreator.create(this.konto,new Date(),this.end);
     return this.data;
   }

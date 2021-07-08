@@ -77,18 +77,18 @@ public class Synchronize implements Action
       }
       result.add(sync);
     }
-    
+
     this.checkNonRecurring(nonRecurring);
-    
+
     Logger.info("synchronizing " + result.size() + " backends");
     this.list = result.iterator();
-    
+
     MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_RUNNING);
     // Auf die Events registrieren, um die Folge-Backends zu starten
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mc);
     this.sync();
   }
-  
+
   /**
    * Zeigt nochmal einen Warndialog an, wenn in der Synchronisation Auftraege
    * enthalten, die Geld bewegen. Dann hat der User die Chance, den Vorgang
@@ -103,7 +103,7 @@ public class Synchronize implements Action
   {
     if (jobs == null || jobs.size() == 0)
       return;
-    
+
     if (Application.inServerMode())
       return;
 
@@ -126,7 +126,7 @@ public class Synchronize implements Action
       throw new ApplicationException(i18n.tr("Fehler beim Ausführen der Aufträge: {0}",e.getMessage()));
     }
   }
-  
+
   /**
    * Startet den naechsten Durchlauf.
    * @throws ApplicationException
@@ -139,7 +139,7 @@ public class Synchronize implements Action
       finish(ProgressMonitor.STATUS_DONE);
       return;
     }
-    
+
     try
     {
       // Sonst naechste Iteration starten
@@ -162,7 +162,7 @@ public class Synchronize implements Action
       MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_CANCEL);
     }
   }
-  
+
   /**
    * Beendet die Synchronisierung mit dem angegebenen Status.
    * @param status der Status.
@@ -172,7 +172,7 @@ public class Synchronize implements Action
     MessageBus.send(SynchronizeEngine.STATUS,status);
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
   }
-  
+
   /**
    * Wird ueber die Status-Events der Backends benachrichtigt und startet dann das naechste
    */
@@ -198,7 +198,7 @@ public class Synchronize implements Action
         Logger.warn("got unknown data: " + data);
         return;
       }
-      
+
       int status = ((Integer) data).intValue();
       if (status == ProgressMonitor.STATUS_DONE)
       {

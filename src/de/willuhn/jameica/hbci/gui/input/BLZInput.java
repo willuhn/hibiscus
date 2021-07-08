@@ -43,7 +43,7 @@ public class BLZInput extends AccountInput
   public BLZInput(String value)
   {
     super(value, HBCIProperties.HBCI_BLZ_LENGTH + 3);
-    
+
     this.i18n     = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     this.listener = new BLZListener();
 
@@ -51,11 +51,11 @@ public class BLZInput extends AccountInput
     this.setName(i18n.tr("BLZ"));
     this.setComment("");
     this.addListener(this.listener);
-    
+
     // und einmal ausloesen
     this.listener.handleEvent(null);
   }
-  
+
   /**
    * Registriert einen Listener, der ausgeloest wird, sobald eine bekannte BLZ eingegeben wurde.
    * Das passiert sofort nach Eingabe, nicht erst bei Focus-Wechsel.
@@ -64,9 +64,9 @@ public class BLZInput extends AccountInput
   public void addBLZListener(Listener l)
   {
     this.blzListener.add(l);
-    
+
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.TextInput#getControl()
    */
@@ -74,7 +74,7 @@ public class BLZInput extends AccountInput
   public Control getControl()
   {
     Control c = super.getControl();
-    
+
     // wir haengen noch einen Keyup-Listener an, um sofort bei Eingabe der BLZ ausloesen zu koennen
     c.addListener(SWT.KeyUp, new DelayedListener(this.listener));
 
@@ -89,19 +89,19 @@ public class BLZInput extends AccountInput
         String b = (String) getValue();
         if (b == null || b.length() == 0)
           return;
-        
+
         if (b.indexOf(' ') != -1)
           b = b.replaceAll(" ","");
-        
+
         int len = b.length();
-       
+
         // Wenn bereits 8 Zeichen eingegeben wurden, dann lassen wir keine weiteren Zeichen mehr zu
         // sondern nur noch Steuerzeichen - z.Bsp. zum Loeschen/Aendern der Eingabe
         if (len >= HBCIProperties.HBCI_BLZ_LENGTH)
           event.doit = !Character.isDigit(event.character);
       }
     });
-    
+
     return c;
   }
 
@@ -133,7 +133,7 @@ public class BLZInput extends AccountInput
           // Wir schnipseln gleich noch Leerzeichen raus - aber nur, wenn welche drin stehen
           if (b.indexOf(' ') != -1)
             b = b.replaceAll(" ","");
-          
+
           // Wenn exakt die Laenge einer BLZ eingegeben wurde, dann den Namen der Bank ermitteln
           if (b.length() == HBCIProperties.HBCI_BLZ_LENGTH)
           {
@@ -158,5 +158,5 @@ public class BLZInput extends AccountInput
       }
     }
   }
-  
+
 }

@@ -31,7 +31,7 @@ public class NachrichtControl extends AbstractControl {
   public NachrichtControl(AbstractView view) {
     super(view);
   }
-  
+
   /**
    * Liefert die aktuelle Nachricht.
    * @return die aktuelle Nachricht.
@@ -55,7 +55,6 @@ public class NachrichtControl extends AbstractControl {
     return list;
 	}
 }
-
 
 /**********************************************************************
  * $Log: NachrichtControl.java,v $

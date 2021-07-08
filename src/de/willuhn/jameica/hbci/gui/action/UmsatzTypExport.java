@@ -76,7 +76,6 @@ public class UmsatzTypExport implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: UmsatzTypExport.java,v $
  * Revision 1.2  2011/05/11 10:20:29  willuhn

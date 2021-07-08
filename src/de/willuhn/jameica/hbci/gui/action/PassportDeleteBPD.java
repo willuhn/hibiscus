@@ -35,7 +35,7 @@ import de.willuhn.util.I18N;
 public class PassportDeleteBPD implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    * Erwartet ein Objekt vom Typ HBCIPassport.
@@ -45,12 +45,12 @@ public class PassportDeleteBPD implements Action
   {
     if (context == null || !(context instanceof AbstractHBCIPassport))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Bank-Zugang aus."));
-    
+
     AbstractHBCIPassport passport = (AbstractHBCIPassport) context;
 
     Logger.info("deleting BPD");
     passport.clearBPD();
-    
+
     // Das triggert beim naechsten Verbindungsaufbau
     // HBCIHandler.<clinit>
     // -> HBCIHandler.registerUser()
@@ -59,7 +59,7 @@ public class PassportDeleteBPD implements Action
     // -> HBCIUser.fetchSysId() - und das holt die BPD beim naechsten mal ueber einen nicht-anonymen Dialog
     Logger.info("mark sys id to be synced");
     passport.syncSysId();
-    
+
     // Ausserdem muessen wir noch sicherstellen, dass die UPD-Versionen 0 ist damit *beide*
     // beim naechsten Mal definitiv neu abgerufen werden
     Properties upd = passport.getUPD();
@@ -68,7 +68,7 @@ public class PassportDeleteBPD implements Action
       Logger.info("setting UPD version to 0");
       upd.setProperty("UPA.version","0");
     }
-    
+
     passport.saveChanges();
 
     // Caches loeschen
@@ -109,7 +109,7 @@ public class PassportDeleteBPD implements Action
       {
         Logger.error("error while deleting upd cache",re);
       }
-      
+
       // Wir markieren ausserdem auch noch den Cache als expired
       Logger.info("mark upd/bpd caches expired");
       BPDUtil.expireCache(passport,Prefix.BPD);
@@ -118,5 +118,3 @@ public class PassportDeleteBPD implements Action
   }
 
 }
-
-

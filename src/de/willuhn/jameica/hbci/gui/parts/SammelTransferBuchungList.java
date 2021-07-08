@@ -122,7 +122,7 @@ public class SammelTransferBuchungList extends TablePart
     setRememberColWidths(true);
     setRememberOrder(true);
   }
- 
+
   /**
    * ct.
    * @param a der Sammel-Auftrag, fuer den die Buchungen angezeigt werden sollen.
@@ -149,7 +149,7 @@ public class SammelTransferBuchungList extends TablePart
           blz += " [" + name + "]";
         return blz;
       }
-    
+
     });
     Konto k = a.getKonto();
     String curr = k != null ? k.getWaehrung() : "";
@@ -168,7 +168,7 @@ public class SammelTransferBuchungList extends TablePart
         catch (RemoteException e) { /*ignore */}
       }
     });
-    
+
     setRememberColWidths(true);
     setRememberOrder(true);
     setMulti(true); // BUGZILLA 1118
@@ -192,7 +192,7 @@ public class SammelTransferBuchungList extends TablePart
     });
     super.paint(parent);
   }
-  
+
   /**
    * Hilfsklasse damit wir ueber importierte Buchungen informiert werden.
    */
@@ -222,10 +222,10 @@ public class SammelTransferBuchungList extends TablePart
       if (message == null || !(message instanceof ImportMessage))
         return;
       final GenericObject o = ((ImportMessage)message).getObject();
-      
+
       if (o == null || !(o instanceof SammelTransferBuchung))
         return;
-      
+
       GUI.getDisplay().syncExec(new Runnable() {
         public void run()
         {

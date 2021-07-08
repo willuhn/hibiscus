@@ -27,7 +27,7 @@ public class DateToInput extends AbstractDateInput
   {
     this(null);
   }
-  
+
   /**
    * ct.
    * @param date
@@ -36,7 +36,7 @@ public class DateToInput extends AbstractDateInput
   {
     this(date,"transferlist.filter.to");
   }
-  
+
   /**
    * ct.
    * @param date

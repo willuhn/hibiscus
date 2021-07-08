@@ -43,7 +43,7 @@ public class UmsatzAssign implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsätze aus"));
 
     Umsatz[] umsaetze = null;
-    
+
     if (context instanceof Umsatz)
       umsaetze = new Umsatz[]{(Umsatz) context};
     else
@@ -53,11 +53,11 @@ public class UmsatzAssign implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsätze aus"));
 
     UmsatzTyp ut = null;
-    
+
     try
     {
       int typ = UmsatzTyp.TYP_EGAL;
-      
+
       if (umsaetze.length == 1)
       {
         // Mal schauen, ob der Umsatz schon einen Typ hat
@@ -83,7 +83,6 @@ public class UmsatzAssign implements Action
       Logger.error("error while choosing umsatztyp",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Auswählen der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
     }
-      
 
     try
     {
@@ -95,7 +94,7 @@ public class UmsatzAssign implements Action
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(umsaetze[i]));
       }
       umsaetze[0].transactionCommit();
-      
+
       if (ut == null)
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Zuordnung der Kategorie entfernt"), StatusBarMessage.TYPE_SUCCESS));
       else
@@ -113,7 +112,7 @@ public class UmsatzAssign implements Action
 			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zuordnen der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
 		}
   }
-  
+
   private void rollback(DBObject o)
   {
     if (o == null)
@@ -129,7 +128,6 @@ public class UmsatzAssign implements Action
     }
   }
 }
-
 
 /**********************************************************************
  * $Log: UmsatzAssign.java,v $

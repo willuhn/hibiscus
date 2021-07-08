@@ -30,7 +30,7 @@ import de.willuhn.util.ApplicationException;
 public class IBANInput extends TextInput
 {
   private Input bicInput = null;
-  
+
   /**
    * ct.
    * @param value die IBAN.
@@ -44,7 +44,7 @@ public class IBANInput extends TextInput
     this.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS);
     this.setName("IBAN");
     this.bicInput = bicInput;
-    
+
     this.addListener(new Listener()
     {
       public void handleEvent(Event event)
@@ -57,7 +57,7 @@ public class IBANInput extends TextInput
       }
     });
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.TextInput#setValue(java.lang.Object)
    */
@@ -65,26 +65,26 @@ public class IBANInput extends TextInput
   public void setValue(Object value)
   {
     super.setValue(value != null ? HBCIProperties.formatIban(value.toString()) : null);
-    
+
     if (value == null)
       return;
-    
+
     // Formatierungsleerzeichen zum Testen entfernen
     String s = StringUtils.trimToNull(StringUtils.deleteWhitespace(value.toString()));
     if (s == null)
       return;
-    
+
     try
     {
       // 1. IBAN sofort checken
       IBAN iban = HBCIProperties.getIBAN(s);
-      
+
       if (iban == null) // Keine IBAN
         return;
 
       if (this.bicInput == null)
         return;
-      
+
       // 2. Wenn wir ein BICInput haben, dann gleich noch die BIC ermitteln und
       // vervollstaendigen. Aber nur, wenn nicht schon eine BIC eingetragen ist.
       if (StringUtils.trimToNull((String)this.bicInput.getValue()) != null)
@@ -101,7 +101,7 @@ public class IBANInput extends TextInput
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Ueberschrieben, um sicherzustellen, dass die IBAN keine Leerzeichen enthaelt.
    * @see de.willuhn.jameica.gui.input.TextInput#getValue()
@@ -112,10 +112,10 @@ public class IBANInput extends TextInput
     String s = (String) super.getValue();
     if (s == null)
       return s;
-    
+
     return StringUtils.deleteWhitespace(s);
   }
-  
+
   /**
    * Ueberschrieben, um zusaetzlich noch die Leerzeichen zuzulassen.
    * @see de.willuhn.jameica.gui.input.AbstractInput#setValidChars(java.lang.String)
@@ -125,7 +125,5 @@ public class IBANInput extends TextInput
   {
     super.setValidChars(chars + " ");
   }
-  
 }
-
 

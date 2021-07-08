@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
 public class SammelLastschriftNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc = new MyMessageConsumer();
   private SammelTransfer transfer = null;
 
@@ -55,14 +55,14 @@ public class SammelLastschriftNew extends AbstractView
 
 		GUI.getView().setTitle(i18n.tr("Sammel-Lastschrift bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSammelLastschrift(transfer)));
-		
+
 		Container group = new SimpleContainer(getParent());
 		group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Gutschriftskonto"),control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Bezeichnung"),control.getName());
     group.addInput(control.getTermin());
     group.addInput(control.getReminderInterval());
-		
+
 		group.addSeparator();
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
 
@@ -89,14 +89,14 @@ public class SammelLastschriftNew extends AbstractView
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
-    
+
     buttons.addButton(store);
-    
+
     buttons.paint(getParent());
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
 
@@ -116,7 +116,7 @@ public class SammelLastschriftNew extends AbstractView
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -124,7 +124,7 @@ public class SammelLastschriftNew extends AbstractView
     {
       return new Class[]{ObjectChangedMessage.class};
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -132,16 +132,16 @@ public class SammelLastschriftNew extends AbstractView
     {
       if (transfer == null)
         return;
-  
+
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
-      
+
       // View neu laden
       if (transfer.equals(o))
         GUI.startView(SammelLastschriftNew.this,transfer);
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */

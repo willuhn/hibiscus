@@ -61,7 +61,7 @@ public class SynchronizeList extends TablePart
 {
   // Wir cachen die Liste der vom User explizit abgewaehlten Aufgaben waehrend der Sitzung
   private static Map<String,Boolean> uncheckedCache = new HashMap<String,Boolean>();
-  
+
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private MessageConsumer mcSync  = new SyncMessageConsumer();
   private MessageConsumer mcCache = new CacheMessageConsumer();
@@ -100,10 +100,10 @@ public class SynchronizeList extends TablePart
         }
       }
     });
-    
+
     final ContextMenu menu = new ContextMenu();
     menu.addItem(new CheckedContextMenuItem(i18n.tr("Aktivieren"),new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -118,11 +118,11 @@ public class SynchronizeList extends TablePart
       }
     },"list-remove.png"));
     this.setContextMenu(menu);
-    
+
     // Vorm paint() nochmal machen, damit auch XP die Spaltenbreiten hinkriegt - die werden wohl scheinbar beim paint() ermittelt
     init();
   }
-  
+
   private void setChecked(boolean b)
   {
     Object o = getSelection();
@@ -134,7 +134,7 @@ public class SynchronizeList extends TablePart
     else
       setChecked(o,b);
   }
-  
+
   /**
    * Initialisiert die Liste der Synchronisierungsaufgaben
    * @throws RemoteException
@@ -142,9 +142,9 @@ public class SynchronizeList extends TablePart
   private void init() throws RemoteException
   {
     this.syncList.clear();
-    
+
     this.removeAll(); // leer machen
-    
+
     // Liste der Sync-Jobs hinzufuegen
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     List<SynchronizeBackend> backends = service.get(SynchronizeEngine.class).getBackends();
@@ -171,7 +171,7 @@ public class SynchronizeList extends TablePart
 
           sync.getJobs().add(job);
         }
-        
+
         // Die Synchronisation brauchen wir nur dann zur Liste tun, wenn Jobs vorhanden sind
         if (jobs.size() > 0)
           this.syncList.add(sync);
@@ -189,7 +189,7 @@ public class SynchronizeList extends TablePart
   {
     if (this.syncButton != null)
       return;
-    
+
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mcSync);
     Application.getMessagingFactory().getMessagingQueue("jameica.gui.view.unbind").registerMessageConsumer(this.mcCache);
     parent.addDisposeListener(new DisposeListener() {
@@ -201,21 +201,21 @@ public class SynchronizeList extends TablePart
     });
 
     this.syncButton = new Button(i18n.tr("S&ynchronisierung starten"),new SyncStart(),null,true,"mail-send-receive.png");
-    
+
     // Aktualisieren den Button-Status je nach Auswahl
     this.addSelectionListener(this.syncButtonListener);
-    
+
     super.paint(parent);
-    
+
     // Erst nach dem paint() machen, damit der initiale Checked-State aus dem Cache beachtet wird
     this.init();
-    
+
     ButtonArea b = new ButtonArea();
     b.addButton(i18n.tr("Synchronisierungsoptionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
     b.addButton(this.syncButton);
     b.paint(parent);
   }
-  
+
   /**
    * Cached die Liste der abgewaehlten Aufgaben.
    */
@@ -240,7 +240,7 @@ public class SynchronizeList extends TablePart
       Logger.error("unable to cache unchecked items",e);
     }
   }
-  
+
   /**
    * Oeffnet den Dialog mit den Synchronisierungsoptionen.
    */
@@ -257,7 +257,7 @@ public class SynchronizeList extends TablePart
         Object o = getSelection();
         if (o instanceof SynchronizeJob)
           k = ((SynchronizeJob)o).getKonto();
-        
+
         // Konto erfragen
         if (k == null)
         {
@@ -278,13 +278,13 @@ public class SynchronizeList extends TablePart
                              "Synchronisierungsoptionen ändern möchten."));
           k = (Konto) d1.open();
         }
-        
+
         if (k == null)
           return;
 
         SynchronizeOptionsDialog d = new SynchronizeOptionsDialog(k,SynchronizeOptionsDialog.POSITION_CENTER);
         d.open();
-        
+
         // So, jetzt muessen wir die Liste der Sync-Jobs neu befuellen
         init();
       }
@@ -303,7 +303,7 @@ public class SynchronizeList extends TablePart
       }
     }
   }
-  
+
   /**
    * Startet die Synchronisierung der Konten.
    */
@@ -318,7 +318,7 @@ public class SynchronizeList extends TablePart
       try
       {
         cacheUnchecked();
-        
+
         Logger.info("Collecting synchronize jobs");
         List<SynchronizeJob> selected = getItems(true);
 
@@ -333,17 +333,17 @@ public class SynchronizeList extends TablePart
             if (selected.contains(job)) // in den selektierten enthalten?
               toExecute.add(job);
           }
-          
+
           // Gar kein Job in dem Backend ausgewaehlt
           if (toExecute.size() == 0)
             continue;
-          
+
           Synchronization rs = new Synchronization();
           rs.setBackend(s.getBackend());
           rs.setJobs(toExecute);
           result.add(rs);
         }
-        
+
         Synchronize sync = new Synchronize();
         sync.handleAction(result);
       }
@@ -379,11 +379,11 @@ public class SynchronizeList extends TablePart
     {
       if (!(context instanceof SynchronizeJob))
         return;
-      
+
       ((SynchronizeJob)context).configure();
     }
   }
-  
+
   /**
    * Hilfsklasse zum Abfragen der Status-Codes der SynchronizeEngine.
    */
@@ -422,7 +422,7 @@ public class SynchronizeList extends TablePart
               return;
 
             int i = status.intValue();
-            
+
             if (i == ProgressMonitor.STATUS_RUNNING)
             {
               syncButton.setEnabled(false); // Sync-Button deaktivieren
@@ -440,7 +440,7 @@ public class SynchronizeList extends TablePart
       });
     }
   }
-  
+
   /**
    * Wird beim unbind der View benachrichtigt und speichert die aktuelle Auswahl
    * der abgewaehlten Sync-Aufgaben.
@@ -454,7 +454,7 @@ public class SynchronizeList extends TablePart
     {
       return false;
     }
-    
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -462,7 +462,7 @@ public class SynchronizeList extends TablePart
     {
       return new Class[]{QueryMessage.class};
     }
-    
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -471,7 +471,7 @@ public class SynchronizeList extends TablePart
       cacheUnchecked();
     }
   }
-  
+
   /**
    * Aktualisiert den Status des Sync-Buttons.
    */
@@ -485,7 +485,7 @@ public class SynchronizeList extends TablePart
     {
       if (syncButton == null)
         return;
-      
+
       try
       {
         List<SynchronizeJob> selected = getItems(true);

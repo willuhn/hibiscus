@@ -74,7 +74,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   {
     super(action);
     setMulti(true);
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
@@ -128,13 +128,13 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     addColumn(i18n.tr("Summe"),"summe", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
-    
+
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Lastschriften informiert werden.
     this.mc = new TransferMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * Liefert eine Checkbox mit der festgelegt werden kann, ob nur offene Auftraege angezeigt werden sollen.
    * @return Checkbox.
@@ -143,7 +143,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   {
     if (this.pending != null)
       return this.pending;
-    
+
     this.pending = new CheckboxInput(settings.getBoolean("transferlist.filter.pending",false));
     this.pending.setName(i18n.tr("Nur offene Aufträge anzeigen"));
     this.pending.addListener(this.listener);
@@ -170,7 +170,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    
+
     DBIterator list = service.createList(getObjectType());
     if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
     if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
@@ -178,7 +178,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     {
       list.addFilter("LOWER(bezeichnung) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
     }
-    
+
     if (konto != null && (konto instanceof Konto))
       list.addFilter("konto_id = " + ((Konto) konto).getID());
     else if (konto != null && (konto instanceof String))
@@ -191,7 +191,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
   }
-  
+
   /**
    * Liefert die Art der zu ladenden Objekte zurueck.
    * @return Art der zu ladenden Objekte.
@@ -210,17 +210,17 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
       }
     });
     super.paint(parent);
-    
+
     this.getLeft().addInput(this.getPending());
   }
-  
+
   /**
    * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
    */
   public class TransferMessageConsumer implements MessageConsumer
   {
     private DelayedListener delayed = null;
-    
+
     /**
      * ct.
      */
@@ -229,7 +229,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
       if (listener != null)
         this.delayed = new DelayedListener(listener);
     }
-    
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -248,12 +248,12 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
-      
+
       if (o == null)
         return;
-      
+
       // Checken, ob uns der Transfer-Typ interessiert
       if (!(o instanceof SammelTransfer) && !(o instanceof SammelTransferBuchung))
         return;
@@ -275,7 +275,7 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
         });
         return;
       }
-      
+
       // Wir forcieren das Reload. Da in den Eingabefeldern
       // nichts geaendert wurde, wuerde das Reload sonst nicht
       // stattfinden.

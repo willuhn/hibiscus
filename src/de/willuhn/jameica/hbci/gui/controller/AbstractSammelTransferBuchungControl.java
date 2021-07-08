@@ -46,7 +46,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 	// Fach-Objekte
 	private Address gegenKonto				 = null;
-	
+
 	// Eingabe-Felder
 	private Input betrag							 = null;
 	private TextInput zweck            = null;
@@ -92,7 +92,6 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     gkName.addListener(new GegenkontoListener());
     return gkName;
   }
-
 
   /**
 	 * Liefert das Eingabe-Feld fuer das Gegenkonto.
@@ -178,7 +177,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Zeilen-Anzahl"), StatusBarMessage.TYPE_ERROR));
         }
       }
-    
+
     });
     zweck2 = new DialogInput(getBuchung().getZweck2(),this.zweckDialog);
     zweck2.setButtonText(i18n.tr(buttonText,String.valueOf(getBuchung().getWeitereVerwendungszwecke().length)));
@@ -188,8 +187,6 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
       zweck2.disableClientControl();
     return zweck2;
   }
-  
-
 
 	/**
 	 * Liefert das Eingabe-Feld fuer den Betrag.
@@ -200,7 +197,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 	{
 		if (betrag != null)
 			return betrag;
-    
+
     SammelTransferBuchung b = getBuchung();
     double d = b.getBetrag();
     if (d == 0.0d) d = Double.NaN;
@@ -210,7 +207,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
     betrag.setEnabled(!getBuchung().getSammelTransfer().ausgefuehrt());
 
 		// wir loesen den KontoListener aus, um die Waehrung sofort anzuzeigen
-		
+
 		try
 		{
 			String curr = getBuchung().getSammelTransfer().getKonto().getWaehrung();
@@ -223,7 +220,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		}
 		return betrag;
 	}
-  
+
   /**
    * Liefert ein Auswahlfeld fuer den Textschluessel.
    * @return Auswahlfeld.
@@ -276,7 +273,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 				getGegenkontoName().setText(gegenKonto.getName());
 				// Wenn die Adresse aus dem Adressbuch kommt, deaktivieren wir die Checkbox
 				getStoreAddress().setValue(Boolean.FALSE);
-        
+
         // BUGZILLA 408
         // Verwendungszweck automatisch vervollstaendigen
         try
@@ -285,7 +282,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
           String zweck2 = (String) getZweck2().getText();
           if ((zweck != null && zweck.length() > 0) || (zweck2 != null && zweck2.length() > 0))
             return;
-          
+
           DBIterator list = getBuchung().getList();
           list.addFilter("gegenkonto_nr = ?",new Object[]{gegenKonto.getKontonummer()});
           list.addFilter("gegenkonto_blz = ?",  new Object[]{gegenKonto.getBlz()});

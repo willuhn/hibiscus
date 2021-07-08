@@ -66,7 +66,7 @@ public class PassportPropertyDialog extends AbstractDialog
     container.addText(i18n.tr("Bank-Parameter (BPD) und User-Parameter (UPD) dieses Sicherheitsmediums"),true);
     final PassportPropertyList table = new PassportPropertyList(this.passport);
     table.paint(parent);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("BPD löschen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -79,12 +79,12 @@ public class PassportPropertyDialog extends AbstractDialog
         {
           if (!Application.getCallback().askUser(s))
             return;
-          
+
           new PassportDeleteBPD().handleAction(passport);
 
           // Aus der Tabelle in der Anzeige loeschen
           table.clearBPD();
-          
+
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("BPD gelöscht"),StatusBarMessage.TYPE_SUCCESS));
         }
         catch (OperationCanceledException oce)

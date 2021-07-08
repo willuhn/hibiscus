@@ -47,7 +47,7 @@ public class FirstStart extends AbstractBox
     // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
     return Settings.isFirstStart();
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
@@ -56,7 +56,7 @@ public class FirstStart extends AbstractBox
     // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
     return Settings.isFirstStart();
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
    */
@@ -64,7 +64,7 @@ public class FirstStart extends AbstractBox
   {
     return 0;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getName()
    */
@@ -72,7 +72,7 @@ public class FirstStart extends AbstractBox
   {
     return "Hibiscus: " + i18n.tr("Bank-Zugang einrichten");
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#isEnabled()
    */
@@ -82,7 +82,7 @@ public class FirstStart extends AbstractBox
     Manifest mf = Application.getPluginLoader().getManifest(HBCI.class);
     return  mf.isInstalled() && Settings.isFirstStart();
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -92,21 +92,21 @@ public class FirstStart extends AbstractBox
     // Unter Windows und OSX sieht es ohne Rahmen und ohne Hintergrund besser aus
     org.eclipse.swt.graphics.Color bg = null;
     int border = SWT.NONE;
-    
+
     int os = Application.getPlatform().getOS();
     if (os != Platform.OS_WINDOWS && os != Platform.OS_WINDOWS_64 && os != Platform.OS_MAC)
     {
       bg = GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE);
       border = SWT.BORDER;
     }
-    
+
     // 2-spaltige Anzeige. Links das Icon, rechts Text und Buttons
     Composite comp = new Composite(parent,border);
     comp.setBackground(bg);
     comp.setBackgroundMode(SWT.INHERIT_FORCE);
     comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     comp.setLayout(new GridLayout(2,false));
-    
+
     // Linke Spalte mit dem Icon
     {
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING);
@@ -116,7 +116,7 @@ public class FirstStart extends AbstractBox
       icon.setLayoutData(gd);
       icon.setImage(SWTUtil.getImage("hibiscus-large.png"));
     }
-    
+
     // Ueberschrift
     {
       Label title = new Label(comp,SWT.NONE);
@@ -125,7 +125,7 @@ public class FirstStart extends AbstractBox
       title.setFont(Font.H2.getSWTFont());
       title.setText(i18n.tr("Sie starten Hibiscus zum ersten Mal."));
     }
-    
+
     // Text
     {
       Label desc = new Label(comp,SWT.WRAP);
@@ -135,7 +135,7 @@ public class FirstStart extends AbstractBox
           "Wechseln Sie anschließend zur Konten-Übersicht und prüfen Sie die angelegten Konten. " +
           "Falls sie nicht automatisch angelegt wurden, dann erstellen Sie das Konto bitte manuell."));
     }
-      
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Bank-Zugang einrichten"),new PassportDetail(),null,true,"system-users.png");
     buttons.addButton(i18n.tr("Konten-Übersicht"),new KontoList(),null,false,"wallet-open.png");

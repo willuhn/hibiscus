@@ -26,7 +26,7 @@ import de.willuhn.util.I18N;
 public class AuslandsUeberweisungDelete extends DBObjectDelete
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.action.DBObjectDelete#handleAction(java.lang.Object)
    */
@@ -41,12 +41,11 @@ public class AuslandsUeberweisungDelete extends DBObjectDelete
       Logger.warn("wrong type to delete: " + context.getClass());
       return;
     }
-    
-    
+
     try
     {
       boolean array = (context instanceof AuslandsUeberweisung[]);
-      
+
       AuslandsUeberweisung[] list = null;
       if (array)
         list = (AuslandsUeberweisung[]) context;
@@ -59,11 +58,11 @@ public class AuslandsUeberweisungDelete extends DBObjectDelete
         if (!a.isNewObject() && a.ausgefuehrt() && a.isTerminUeberweisung())
           count++;
       }
-      
+
       if (count > 0)
       {
         String msg = null;
-        
+
         if (array)
         {
           if (count == 1)
@@ -91,7 +90,7 @@ public class AuslandsUeberweisungDelete extends DBObjectDelete
                         "wenn er nicht ausgeführt werden soll.\n\n" +
                         "Auftrag lokal in Hibiscus löschen?");
         }
-        
+
         if (!Application.getCallback().askUser(msg))
           return;
       }
@@ -105,10 +104,8 @@ public class AuslandsUeberweisungDelete extends DBObjectDelete
       Logger.error("error while checking object",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auftrag wurde bereits als Termin-Überweisung an Bank übertragen"),StatusBarMessage.TYPE_INFO));
     }
-    
+
     super.handleAction(context);
   }
 
 }
-
-

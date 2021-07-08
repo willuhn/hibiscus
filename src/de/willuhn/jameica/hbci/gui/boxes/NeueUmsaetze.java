@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public class NeueUmsaetze extends AbstractBox
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
    */
@@ -74,7 +74,7 @@ public class NeueUmsaetze extends AbstractBox
   {
     return super.isActive() && !Settings.isFirstStart();
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
    */

@@ -29,7 +29,6 @@ public class KontoList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: KontoList.java,v $
  * Revision 1.3  2005/01/19 00:16:04  willuhn

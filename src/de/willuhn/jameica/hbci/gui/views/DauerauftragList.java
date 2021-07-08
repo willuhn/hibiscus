@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 public class DauerauftragList extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc = new MyMessageConsumer();
 
   /**
@@ -42,7 +42,7 @@ public class DauerauftragList extends AbstractView
   public void bind() throws Exception
   {
     DauerauftragControl control = new DauerauftragControl(this);
-    
+
     final de.willuhn.jameica.hbci.gui.parts.DauerauftragList table = control.getDauerauftragListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportDauerauftrag(table));
     table.addSelectionListener(new Listener() {
@@ -54,7 +54,7 @@ public class DauerauftragList extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Vorhandene Daueraufträge"));
     GUI.getView().addPanelButton(print);
-		
+
     table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
   }
@@ -74,7 +74,7 @@ public class DauerauftragList extends AbstractView
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -82,7 +82,7 @@ public class DauerauftragList extends AbstractView
     {
       return new Class[]{ObjectChangedMessage.class};
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -91,12 +91,12 @@ public class DauerauftragList extends AbstractView
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
-      
+
       // View neu laden
       if (o instanceof Konto)
         GUI.startView(DauerauftragList.this,null);
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */

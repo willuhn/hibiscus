@@ -86,10 +86,10 @@ public class KontoList extends TablePart implements Part, Extendable
   private TextInput search = null;
   private CheckboxInput onlyActive = null;
   private SelectInput accountType = null;
-  
+
   private MessageConsumer mc = null;
   private boolean showFilter = true;
-  
+
   private Listener listener = new MyListener();
   private KeyListener delayed = new MyDelayedListener();
 
@@ -164,16 +164,16 @@ public class KontoList extends TablePart implements Part, Extendable
             item.setText(saldocolumn,"");
           else
             item.setText(saldocolumn,HBCI.DECIMALFORMAT.format(saldo) + " " + k.getWaehrung());
-          
+
           double avail = k.getSaldoAvailable();
           if ((avail == 0 && k.getSaldoDatum() == null) || Double.isNaN(avail))
             item.setText(saldocolumn+1,"");
           else
             item.setText(saldocolumn+1,HBCI.DECIMALFORMAT.format(avail) + " " + k.getWaehrung());
-          
+
           if (bold)
             item.setFont(saldocolumn,Font.BOLD.getSWTFont());
-          
+
           item.setForeground(saldocolumn+1,ColorUtil.getForeground(k.getSaldoAvailable()));
 
           // Deaktivierte Konten grau
@@ -217,10 +217,10 @@ public class KontoList extends TablePart implements Part, Extendable
         featureEvent(Feature.Event.REFRESH,null);
       }
     });
-    
+
     ExtensionRegistry.extend(this);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
    */
@@ -253,21 +253,21 @@ public class KontoList extends TablePart implements Part, Extendable
       TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
 
       ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
-      
+
       {
         Container c = new SimpleContainer(cols.getComposite());
         TextInput search = this.getText();
         c.addInput(search);
         search.getControl().addKeyListener(this.delayed);
-        
+
         c.addInput(this.getActiveOnly());
       }
-      
+
       {
         Container c = new SimpleContainer(cols.getComposite());
         c.addInput(this.getAccountType());
       }
-      
+
       ButtonArea buttons = new ButtonArea();
       buttons.addButton(i18n.tr("Konten über den Bank-Zugang importieren..."), new Action() {
         public void handleAction(Object context) throws ApplicationException
@@ -285,10 +285,10 @@ public class KontoList extends TablePart implements Part, Extendable
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
       }
     });
-    
+
     super.paint(parent);
   }
-  
+
   /**
    * Liefert das Eingabefeld mit dem Suchbegriff.
    * @return das Eingabefeld mit dem Suchbegriff.
@@ -297,12 +297,12 @@ public class KontoList extends TablePart implements Part, Extendable
   {
     if (this.search != null)
       return this.search;
-    
+
     this.search = new TextInput(settings.getString("kontolist.filter.text",null),255);
     this.search.setName(i18n.tr("Suchbegriff"));
     return this.search;
   }
-  
+
   /**
    * Liefert die Checkbox, mit der eingestellt werden kann, ob nur aktive Konten angezeigt werden sollen.
    * @return Checkbox.
@@ -311,13 +311,13 @@ public class KontoList extends TablePart implements Part, Extendable
   {
     if (this.onlyActive != null)
       return this.onlyActive;
-    
+
     this.onlyActive = new CheckboxInput(settings.getBoolean("kontolist.filter.active",false));
     this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
     this.onlyActive.addListener(this.listener);
     return this.onlyActive;
   }
-  
+
   /**
    * Liefert eine Auswahlbox mit der Kontoart.
    * @return eine Auswahlbox mit der Kontoart.
@@ -326,7 +326,7 @@ public class KontoList extends TablePart implements Part, Extendable
   {
     if (this.accountType != null)
       return this.accountType;
-    
+
     this.accountType = new KontoartInput(settings.getInt("kontolist.filter.type",-1));
     this.accountType.addListener(this.listener);
     return this.accountType;
@@ -338,7 +338,7 @@ public class KontoList extends TablePart implements Part, Extendable
   private void reload()
   {
     GUI.startSync(new Runnable() {
-      
+
       @Override
       public void run()
       {
@@ -353,7 +353,7 @@ public class KontoList extends TablePart implements Part, Extendable
 
           for (Konto k:konten)
             addItem(k);
-          
+
           // Sortierung wiederherstellen
           sort();
         }
@@ -365,7 +365,7 @@ public class KontoList extends TablePart implements Part, Extendable
       }
     });
   }
-  
+
   /**
    * Liefert die Liste der gefundenen Konten.
    * @return die Liste der Konten.
@@ -376,7 +376,7 @@ public class KontoList extends TablePart implements Part, Extendable
     final String text = (String) this.getText().getValue();
     final boolean activeOnly = ((Boolean)this.getActiveOnly().getValue()).booleanValue();
     final Integer type = (Integer) getAccountType().getValue();
-    
+
     Integer flags = activeOnly ? Konto.FLAG_DISABLED : null;
     List<Konto> list = KontoUtil.getKonten(KontoFilter.SEARCH(text,flags,type));
 
@@ -384,10 +384,10 @@ public class KontoList extends TablePart implements Part, Extendable
     settings.setAttribute("kontolist.filter.text",text);
     settings.setAttribute("kontolist.filter.active",activeOnly);
     settings.setAttribute("kontolist.filter.type",type != null ? type.intValue() : -1);
-    
+
     return list;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.TablePart#createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event, java.lang.Object)
    */
@@ -399,7 +399,7 @@ public class KontoList extends TablePart implements Part, Extendable
       ctx.addon.put(FeatureSummary.CTX_KEY_TEXT,this.getSummaryText());
     return ctx;
   }
-  
+
   /**
    * Liefert die Summenzeile.
    * @return die Summenzeile.
@@ -429,14 +429,14 @@ public class KontoList extends TablePart implements Part, Extendable
 
       if (selected)
         return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}",new String[]{Integer.toString(items.size()),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
-      
+
       return i18n.tr("Gesamt-Saldo: {0} {1}",new String[]{HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
     }
     catch (Exception ex)
     {
       Logger.error("error while updating summary",ex);
     }
-    
+
     return null;
   }
 
@@ -513,7 +513,7 @@ public class KontoList extends TablePart implements Part, Extendable
       return false;
     }
   }
-  
+
   /**
    * Listener zum Neuladen der Daten.
    */

@@ -48,9 +48,9 @@ public class SammelUeberweisungList extends ContextMenu
       }
     },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SammelUeberweisungExport(),"document-save.png"));
-		
+
 	}
-	
+
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
    */
@@ -65,6 +65,7 @@ public class SammelUeberweisungList extends ContextMenu
     {
       super(text,action,icon);
     }
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */

@@ -22,7 +22,7 @@ import de.willuhn.jameica.hbci.gui.parts.PassportTree;
 public class PassportControl extends AbstractControl
 {
   private PassportTree passports = null;
-  
+
   /**
    * ct.
    * @param view
@@ -44,8 +44,6 @@ public class PassportControl extends AbstractControl
     return this.passports;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: PassportControl.java,v $

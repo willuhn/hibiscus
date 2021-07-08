@@ -25,7 +25,7 @@ public interface ChartFeature
      */
     PAINT,
   }
-  
+
   /**
    * Hilfsklasse mit Meta-Informationen fuer das Feature.
    */
@@ -35,20 +35,20 @@ public interface ChartFeature
      * Das Chart selbst.
      */
     public Chart chart;
-    
+
     /**
      * Das ausgeloeste Event.
      */
     public Event event;
   }
-  
+
   /**
    * Liefert true, wenn das Feature auf das angegebene Event reagieren soll.
    * @param e das Event.
    * @return true, wenn es auf das angegebene Event reagieren soll.
    */
   public boolean onEvent(Event e);
-  
+
   /**
    * Wird aufgerufen, wenn das angegebene Event ausgeloest wurde.
    * @param e das Event.

@@ -40,7 +40,7 @@ public class SammelLastBuchungNew extends AbstractView
 
     SammelTransfer l = control.getBuchung().getSammelTransfer();
     GUI.getView().setTitle(i18n.tr("Sammel-Lastschrift {0}: Buchung bearbeiten",l.getBezeichnung()));
-		
+
     SimpleContainer group = new SimpleContainer(getParent());
     group.addHeadline(i18n.tr("Zahlungspflichtiger"));
     group.addLabelPair(i18n.tr("Name"),                       control.getGegenkontoName());
@@ -67,7 +67,7 @@ public class SammelLastBuchungNew extends AbstractView
     },null,false,"document-save.png");
     store.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store);
-    
+
     // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
     Button store2 = new Button(i18n.tr("Speichern und nächste Buchung"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -76,11 +76,10 @@ public class SammelLastBuchungNew extends AbstractView
     },null,!l.ausgefuehrt(),"go-next.png");
     store2.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store2);
-    
+
     buttonArea.paint(getParent());
   }
 }
-
 
 /**********************************************************************
  * $Log: SammelLastBuchungNew.java,v $

@@ -57,7 +57,6 @@ public class AuslandsUeberweisungImport implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: AuslandsUeberweisungImport.java,v $
  * Revision 1.3  2011/05/11 10:20:28  willuhn

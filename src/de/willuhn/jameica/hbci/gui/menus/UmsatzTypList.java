@@ -109,7 +109,6 @@ public class UmsatzTypList extends ContextMenu implements Extendable
   }
 }
 
-
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $
  * Revision 1.5  2010/10/10 21:26:35  willuhn

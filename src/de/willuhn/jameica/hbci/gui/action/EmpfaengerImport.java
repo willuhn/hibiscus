@@ -58,7 +58,6 @@ public class EmpfaengerImport implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: EmpfaengerImport.java,v $
  * Revision 1.3  2011/05/11 10:20:29  willuhn

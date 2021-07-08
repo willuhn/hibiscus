@@ -47,13 +47,13 @@ public abstract class AbstractSepaSammelTransferExecute implements Action
 		try
 		{
 			final SepaSammelTransfer u = (SepaSammelTransfer) context;
-			
+
 			if (u.ausgefuehrt())
         throw new ApplicationException(i18n.tr("SEPA-Sammelauftrag wurde bereits ausgeführt"));
 
 			if (u.getBuchungen().size() == 0)
         throw new ApplicationException(i18n.tr("SEPA-Sammelauftrag enthält keine Buchungen"));
-			
+
 			if (u.isNewObject())
 				u.store(); // wir speichern bei Bedarf selbst.
 

@@ -42,14 +42,14 @@ public class KontoMerge implements Action
       return;
 
     final boolean kontoCheck = Settings.getKontoCheck();
-    
+
     try
     {
       // Die Pruefung der BIC/IBAN muessen wir waehrend des Merge kurzfristig abschalten - fuer
       // den Fall, dass die Bank selbst ungueltige Konten liefert. Die koennten wir sonst nicht
       // anlegen. Tritt z.Bsp. bei Demo-Konten auf
       Settings.setKontoCheck(false);
-      
+
       List<Konto> konten = new ArrayList<Konto>();
 
       if (context instanceof Konto)        konten.add((Konto) context);
@@ -82,7 +82,7 @@ public class KontoMerge implements Action
           // Kontonummer stimmt nicht ueberein.
           if (!check.getKontonummer().equals(konto.getKontonummer()))
             continue;
-          
+
           // Kundenkennung stimmt nicht ueberein
           if (!check.getKundennummer().equals(konto.getKundennummer()))
             continue;

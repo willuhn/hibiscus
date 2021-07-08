@@ -47,7 +47,7 @@ public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
   {
     Container group = new SimpleContainer(parent);
     group.addHeadline(i18n.tr("Details der SEPA-Überweisung"));
-			
+
 		Input kto = new LabelInput(ueb.getKonto().getKontonummer());
 		kto.setComment(ueb.getKonto().getBezeichnung());
 		group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
@@ -74,7 +74,7 @@ public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
 
     group.addHeadline(i18n.tr("Verwendungszweck"));
     group.addText(VerwendungszweckUtil.toString(ueb,"\n"),false);
-    
+
     super.paint(parent);
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }

@@ -44,7 +44,7 @@ public class NachrichtList extends ContextMenu
     addItem(ContextMenuItem.SEPARATOR);
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
 	}
-	
+
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
    */
@@ -60,6 +60,7 @@ public class NachrichtList extends ContextMenu
     {
       super(text,action,icon);
     }
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -72,7 +73,6 @@ public class NachrichtList extends ContextMenu
   }
 
 }
-
 
 /**********************************************************************
  * $Log: NachrichtList.java,v $

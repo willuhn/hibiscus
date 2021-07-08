@@ -36,7 +36,7 @@ public class SepaLastschriftList extends AbstractView
   public void bind() throws Exception
   {
     SepaLastschriftControl control = new SepaLastschriftControl(this);
-    
+
     final de.willuhn.jameica.hbci.gui.parts.SepaLastschriftList table = control.getSepaLastschriftListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportSepaLastschriftList(table));
     table.addSelectionListener(new Listener() {

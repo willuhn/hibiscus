@@ -19,7 +19,7 @@ public class SepaSammelUeberweisungBuchungControl extends AbstractSepaSammelTran
 {
 	// Fach-Objekte
 	private SepaSammelUeberweisungBuchung buchung = null;
-	
+
   /**
    * ct.
    * @param view
@@ -27,7 +27,7 @@ public class SepaSammelUeberweisungBuchungControl extends AbstractSepaSammelTran
   public SepaSammelUeberweisungBuchungControl(AbstractView view)
   {
     super(view);
-		
+
   }
 
   /**

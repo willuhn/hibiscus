@@ -39,7 +39,7 @@ public class PinPad implements Part
 
   private Composite comp      = null;
   private PasswordInput input = null;
-  
+
   /**
    * ct.
    * @param input das Eingabe-Feld, auf welches die Klicks uebertragen werden sollen.
@@ -56,7 +56,7 @@ public class PinPad implements Part
   {
     if (this.comp != null)
       return;
-    
+
     this.comp = new Composite(parent,SWT.NONE);
     GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
     this.comp.setLayoutData(gridData);
@@ -73,10 +73,10 @@ public class PinPad implements Part
     {
       addButton(i);
     }
-    
+
     // Button 0
     addButton(0);
-    
+
     // Button Backspace
     final Button b = GUI.getStyleFactory().createButton(this.comp);
     b.setText(i18n.tr("Löschen"));
@@ -91,7 +91,7 @@ public class PinPad implements Part
       }
     });
   }
-  
+
   /**
    * Fuegt den Button mit der genannten Nummer hinzu.
    * @param i Nummer.
@@ -119,7 +119,6 @@ public class PinPad implements Part
   }
 
 }
-
 
 /**********************************************************************
  * $Log: PinPad.java,v $

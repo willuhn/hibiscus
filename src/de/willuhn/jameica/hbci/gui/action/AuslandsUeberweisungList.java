@@ -30,7 +30,6 @@ public class AuslandsUeberweisungList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $
  * Revision 1.1  2009/03/13 00:25:11  willuhn

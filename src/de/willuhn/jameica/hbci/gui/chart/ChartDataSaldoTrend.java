@@ -24,7 +24,7 @@ import de.willuhn.logging.Logger;
 public class ChartDataSaldoTrend extends AbstractChartDataSaldo
 {
   private List<Value> data = null;
-  
+
   /**
    * Fuegt weitere Daten hinzu.
    * @param data weitere Daten.
@@ -55,7 +55,6 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
       }
     }
   }
-
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
@@ -100,10 +99,10 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
       {
         Value current = list.get(pos + i);
         found++;
-        
+
         if (first == null)
           first = current.getDate();
-        
+
         item.setValue(item.getValue() + current.getValue());
       }
       catch (Exception e)
@@ -111,12 +110,12 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
         // Ignore
       }
     }
-    
+
     // Durchschnittswert bilden
     item.setValue(item.getValue() / found);
     return item;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isFilled()
    */

@@ -61,10 +61,10 @@ public class UmsatzTree extends TreePart
   private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
-  
+
   private int umsatzCount = 0;
   private int groupCount = 0;
-  
+
   /**
    * ct.
    * @param list eine Liste mit Objekten des Typs <code>Umsatz</code>
@@ -75,16 +75,16 @@ public class UmsatzTree extends TreePart
     super(list, new UmsatzDetail());
     this.addFeature(new FeatureShortcut());
     this.addFeature(new FeatureSummary());
-    
+
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
     this.setRememberState(true);
     this.setMulti(true);
-    
+
     final boolean bold = Settings.getBoldValues();
-    
+
     this.setFormatter(new TreeFormatter() {
-    
+
       public void format(TreeItem item)
       {
         if (item == null || item.getData() == null)
@@ -95,9 +95,9 @@ public class UmsatzTree extends TreePart
           Object value = i.getAttribute("betrag");
           if (value == null || !(value instanceof Double))
             return;
-          
+
           Double betrag = (Double) value;
-          
+
           if (bold)
             item.setFont(3,Font.BOLD.getSWTFont());
 
@@ -117,7 +117,7 @@ public class UmsatzTree extends TreePart
             ut = ((UmsatzTreeNode)i).getUmsatzTyp();
           else if (i instanceof Umsatz)
             ut = ((Umsatz)i).getUmsatzTyp();
-          
+
           if (ut != null)
           {
             if (ut.isCustomColor())
@@ -144,7 +144,7 @@ public class UmsatzTree extends TreePart
           Logger.error("error while formatting item",e);
         }
       }
-    
+
     });
     this.addColumn(i18n.tr("Bezeichnung"),      "name");
     if (settings.getBoolean("usage.list.all",false))
@@ -156,7 +156,7 @@ public class UmsatzTree extends TreePart
     this.addColumn(i18n.tr("Notiz"),            "kommentar");
 
     this.setContextMenu(new UmsatzList());
-    
+
     this.addSelectionListener(new Listener() {
       @Override
       public void handleEvent(org.eclipse.swt.widgets.Event event)
@@ -166,7 +166,6 @@ public class UmsatzTree extends TreePart
     });
   }
 
-  
   /**
    * @see de.willuhn.jameica.gui.parts.TreePart#setList(de.willuhn.datasource.GenericIterator)
    */
@@ -174,7 +173,7 @@ public class UmsatzTree extends TreePart
   {
     this.umsatzCount = 0;
     this.groupCount = 0;
-    
+
     try
     {
       ////////////////////////////////////////////////////////////////
@@ -188,11 +187,11 @@ public class UmsatzTree extends TreePart
 
       Map<String,UmsatzTreeNode> lookup = new HashMap<String,UmsatzTreeNode>();
       lookup.put(null,new UmsatzTreeNode(null)); // Pseudo-Kategorie "Nicht zugeordnet"
-      
+
       while (list.hasNext())
       {
         Umsatz u = (Umsatz) list.next();
-        
+
         UmsatzTreeNode node = getNode(lookup,u.getUmsatzTyp());
         if (node != null)
         {
@@ -213,7 +212,7 @@ public class UmsatzTree extends TreePart
         if (u.getParent() == null)
           items.add(u);
       }
-      
+
       try
       {
         Collections.sort(items);
@@ -233,7 +232,7 @@ public class UmsatzTree extends TreePart
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erzeugen der Baum-Ansicht: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Liefert den passenden Knoten fuer den Umsatz.
    * Fehlende Knoten werden automatisch erstellt.
@@ -247,17 +246,17 @@ public class UmsatzTree extends TreePart
     UmsatzTreeNode node = lookup.get(ut != null ? ut.getID() : null);
     if (node != null)
       return node; // haben wir schon.
-    
+
     // "ut" null gibt es. Das ist der Fall, wenn ein Umsatz keiner Kategorie zugeordnet ist.
     // Wir wollen hier aber geziehlt die raus haben, die nicht in den Auswertungen erscheinen sollen.
     if (ut != null && ut.hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS))
       return null;
-    
+
     // Neu anlegen
     node = new UmsatzTreeNode(ut);
     this.groupCount++;
     lookup.put(ut.getID(),node);
-    
+
     // Parents checken
     UmsatzTyp parent = (UmsatzTyp) ut.getParent();
     if (parent != null)
@@ -265,14 +264,14 @@ public class UmsatzTree extends TreePart
       UmsatzTreeNode np = getNode(lookup,parent);
       if (np == null) // Die uebergeordnete Kategorie soll schon nicht angezeigt werden - dann koennen wir hier auch draussen bleiben
         return null;
-      
+
       node.setParent(np);
       np.getSubGroups().add(node);
     }
-    
+
     return node;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.TreePart#createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event, java.lang.Object)
    */
@@ -280,13 +279,13 @@ public class UmsatzTree extends TreePart
   protected Context createFeatureEventContext(Event e, Object data)
   {
     Context ctx = super.createFeatureEventContext(e, data);
-    
+
     if (this.hasEvent(FeatureSummary.class,e))
       ctx.addon.put(FeatureSummary.CTX_KEY_TEXT,this.getSummary());
-    
+
     return ctx;
   }
-  
+
   /**
    * Liefert den Summen-Text.
    * @return der Summen-Text.
@@ -300,7 +299,7 @@ public class UmsatzTree extends TreePart
       // nichts markiert, dann liefern wir nur die Anzahl der Umsaetze und Kategorien
       if (o == null || !(o instanceof Umsatz[]))
         return i18n.tr("Kategorien: {0}, Umsätze: {1}",Integer.toString(this.groupCount),Integer.toString(this.umsatzCount));
-      
+
       // Andernfalls berechnen wir die Summe
       double sum = 0.0d;
       Umsatz[] list = (Umsatz[]) o;

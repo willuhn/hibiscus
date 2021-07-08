@@ -69,7 +69,7 @@ public class SepaDauerauftragNew extends AbstractView
       right.addLabelPair(i18n.tr("Erste Zahlung"),            control.getErsteZahlung());
       right.addLabelPair(i18n.tr("Letzte Zahlung"),           control.getLetzteZahlung());
     }
-		
+
     Container details = new SimpleContainer(getParent());
     details.addHeadline(i18n.tr("Details"));
     details.addLabelPair(i18n.tr("Verwendungszweck"),          control.getZweck());
@@ -77,7 +77,7 @@ public class SepaDauerauftragNew extends AbstractView
 	  details.addSeparator();
     details.addInput(control.getPurposeCode());
 	  details.addLabelPair(i18n.tr("Auftragsnummer"),            control.getOrderID());
-    
+
 		ButtonArea buttonArea = new ButtonArea();
 		String s = i18n.tr("Jetzt ausführen...");
 		if (da.isActive())
@@ -98,7 +98,7 @@ public class SepaDauerauftragNew extends AbstractView
 				control.handleStore();
 			}
     },null,true,"document-save.png");
-		
+
 		buttonArea.paint(getParent());
   }
 }

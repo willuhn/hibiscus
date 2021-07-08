@@ -74,7 +74,6 @@ public class LicenseControl extends AbstractControl {
       buffer.append("</p>");
     }
 
-
     String path = plugin.getManifest().getPluginDir();
 
     FileFinder finder = new FileFinder(new File(path + "/lib"));
@@ -108,7 +107,6 @@ public class LicenseControl extends AbstractControl {
     return libList;
   }
 }
-
 
 /**********************************************************************
  * $Log: LicenseControl.java,v $

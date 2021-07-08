@@ -38,7 +38,7 @@ public class SepaSammelTransferDialog extends AbstractExecuteDialog
   {
     super(position);
     this.st = s;
-    
+
     // Wird sonst entweder zu flach oder zu schmal
     this.setSize(550,440);
   }
@@ -50,7 +50,7 @@ public class SepaSammelTransferDialog extends AbstractExecuteDialog
   {
     Container group = new SimpleContainer(parent,false);
     group.addHeadline(i18n.tr("Details des SEPA-Sammelauftrages"));
-			
+
     group.addLabelPair(i18n.tr("Bezeichnung"),new LabelInput(this.st.getBezeichnung()));
 
     Input kto = new LabelInput(st.getKonto().getIban());
@@ -60,7 +60,7 @@ public class SepaSammelTransferDialog extends AbstractExecuteDialog
     LabelInput betrag = new LabelInput(HBCI.DECIMALFORMAT.format(st.getSumme()) + " " + st.getKonto().getWaehrung());
     betrag.setColor(Color.ERROR);
     group.addLabelPair(i18n.tr("Summe"),betrag);
-    
+
     if (this.st instanceof SepaSammelUeberweisung)
     {
       SepaSammelUeberweisung ueb = (SepaSammelUeberweisung) this.st;
@@ -78,7 +78,7 @@ public class SepaSammelTransferDialog extends AbstractExecuteDialog
     buchungen.paint(parent);
 
     super.paint(parent);
-  
+
   }
 
 }

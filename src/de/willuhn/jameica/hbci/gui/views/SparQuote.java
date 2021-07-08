@@ -37,7 +37,6 @@ public class SparQuote extends AbstractView
 
 }
 
-
 /*********************************************************************
  * $Log: SparQuote.java,v $
  * Revision 1.2  2007/03/21 16:56:56  willuhn

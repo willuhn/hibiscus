@@ -54,7 +54,7 @@ public class AddressInput implements Input
   private SuggestInput input     = null;
   private Button button          = null;
   private String validChars      = HBCIProperties.HBCI_DTAUS_VALIDCHARS;
-  
+
   /**
    * ct.
    * @param name Anzuzeigender Name.
@@ -102,7 +102,7 @@ public class AddressInput implements Input
       }
     });
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.Input#addListener(org.eclipse.swt.widgets.Listener)
    */
@@ -184,7 +184,7 @@ public class AddressInput implements Input
   {
     return this.input.isMandatory();
   }
-  
+
   /**
    * Liefert den angezeigten Text.
    * @return der angezeigte Text.
@@ -193,7 +193,7 @@ public class AddressInput implements Input
   {
     return this.input.getText();
   }
-  
+
   /**
    * Speichert den uebergebenden Text.
    * @param text der anzuzeigende Text.
@@ -230,7 +230,7 @@ public class AddressInput implements Input
 
     final GridData g = new GridData(GridData.FILL_HORIZONTAL);
     comp.setLayoutData(g);
-    
+
     this.input.paint(comp);
 
     try
@@ -307,7 +307,6 @@ public class AddressInput implements Input
   {
     return this.data.get(key);
   }
-  
 
   /**
    * Hilfsklasse fuer das Suggest.
@@ -363,15 +362,15 @@ public class AddressInput implements Input
     {
       if (bean == null)
         return null;
-      
+
       if (!(bean instanceof Address))
         return bean.toString();
-      
+
       try
       {
         Address a = (Address) bean;
         StringBuffer sb = new StringBuffer(a.getName());
-        
+
         String blz = a.getBlz();
         if (blz != null && blz.length() > 0)
         {
@@ -403,7 +402,6 @@ public class AddressInput implements Input
       }
     }
 
-
     /**
      * @see de.willuhn.jameica.gui.input.SearchInput#setValue(java.lang.Object)
      */
@@ -423,7 +421,7 @@ public class AddressInput implements Input
         List l = service.findAddresses(text);
         if (l == null || l.size() == 0)
           return l;
-        
+
         List result = new ArrayList();
         for (int i=0;i<l.size();++i)
         {
@@ -446,7 +444,6 @@ public class AddressInput implements Input
     }
   }
 }
-
 
 /**********************************************************************
  * $Log: AddressInput.java,v $

@@ -50,7 +50,7 @@ public class UmsatzTypList extends TablePart implements Part
 
   private I18N i18n = null;
   private MessageConsumer mc = null;
-  
+
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
 
   /**
@@ -91,7 +91,7 @@ public class UmsatzTypList extends TablePart implements Part
           UmsatzTyp ut = (UmsatzTyp) item.getData();
           if (ut == null)
             return;
-          
+
           final String kat = ut.getKontoKategorie();
           final Konto k = ut.getKonto();
           if (k != null)
@@ -105,7 +105,7 @@ public class UmsatzTypList extends TablePart implements Part
           int[] color = ut.getColor();
           if (color == null || color.length != 3)
             return;
-          
+
           RGB rgb = new RGB(color[0],color[1],color[2]);
           Color c = colorCache.get(rgb.toString());
           if (c == null)
@@ -127,11 +127,11 @@ public class UmsatzTypList extends TablePart implements Part
     this.setRememberColWidths(true);
     this.setRememberOrder(true);
     this.setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzTypList());
-    
+
     this.mc = new MyMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -146,7 +146,6 @@ public class UmsatzTypList extends TablePart implements Part
     super.paint(parent);
   }
 
-  
   /**
    * Hierueber werden wir ueber importierte Umsatz-Typen informiert und aktualisieren
    * die Tabelle.
@@ -200,10 +199,9 @@ public class UmsatzTypList extends TablePart implements Part
       });
 
     }
-    
+
   }
 }
-
 
 /**********************************************************************
  * $Log: UmsatzTypList.java,v $

@@ -70,7 +70,7 @@ import de.willuhn.util.I18N;
  */
 public class SaldoChart implements Part
 {
-  
+
   private static final String FORCE = "FORCE";
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -78,7 +78,7 @@ public class SaldoChart implements Part
 
   private Konto konto             = null;
   private boolean tiny            = false;
-  
+
   private KontoInput kontoauswahl = null;
   private UmsatzDaysInput rangeTiny = null;
   private DateInput start          = null;
@@ -98,7 +98,7 @@ public class SaldoChart implements Part
   {
     this(null);
   }
-  
+
   /**
    * ct.
    * Konstruktor fuer die Anzeige des Saldo-Charts von genau einem Konto.
@@ -108,7 +108,7 @@ public class SaldoChart implements Part
   {
     this.konto = konto;
   }
-  
+
   /**
    * Aktiviert die platzsparende Anzeige der Controls.
    * @param b true, wenn die Anzeige platzsparend erfolgen soll.
@@ -162,7 +162,7 @@ public class SaldoChart implements Part
   {
     if (this.range != null)
       return this.range;
-    
+
     this.range = new RangeInput(this.getStart(),this.getEnd(),Range.CATEGORY_AUSWERTUNG, "auswertungen.saldochart.filter.range");
     this.range.addListener(this.reloadListener);
     return this.range;
@@ -208,7 +208,7 @@ public class SaldoChart implements Part
   {
     if (this.onlyActive != null)
       return this.onlyActive;
-    
+
     this.onlyActive = new CheckboxInput(settings.getBoolean("auswertungen.saldochart.filter.active",false));
     this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
     this.onlyActive.addListener(this.reloadListener);
@@ -245,15 +245,15 @@ public class SaldoChart implements Part
           final TabFolder folder = new TabFolder(parent, SWT.NONE);
           folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
           TabGroup tab = new TabGroup(folder,i18n.tr("Anzeige einschränken"));
-          
+
           ColumnLayout cols = new ColumnLayout(tab.getComposite(),2);
-          
+
           Container left = new SimpleContainer(cols.getComposite());
           left.addInput(getKontoAuswahl());
           left.addInput(this.getActiveOnly());
-          
+
           Container right = new SimpleContainer(cols.getComposite());
-            
+
           right.addInput(getRange());
           MultiInput range = new MultiInput(getStart(),getEnd());
           right.addInput(range);
@@ -261,7 +261,7 @@ public class SaldoChart implements Part
           ButtonArea buttons = new ButtonArea();
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
           {
-          
+
             /**
              * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
              */
@@ -272,7 +272,7 @@ public class SaldoChart implements Part
               reloadListener.handleEvent(event);
             }
           },null,true,"view-refresh.png");
-          
+
           buttons.paint(parent);
         }
       }
@@ -281,9 +281,9 @@ public class SaldoChart implements Part
         Container container = new SimpleContainer(parent);
         container.addInput(this.getRangeTiny());
       }
-      
+
       this.chart = new LineChart();
-      
+
       this.reloadListener.handleEvent(null); // einmal initial ausloesen
       chart.paint(parent);
     }
@@ -335,7 +335,7 @@ public class SaldoChart implements Part
       return (Date) getEnd().getValue();
     }
   }
-  
+
   /**
    * Liefert die ausgewaehlten Konten.
    * @return
@@ -345,7 +345,7 @@ public class SaldoChart implements Part
   {
     if (this.konto != null)
       return Arrays.asList(this.konto);
-    
+
     final List<Konto> result = new ArrayList<>();
     final Object o = this.getKontoAuswahl().getValue();
     if (o instanceof Konto)
@@ -377,7 +377,7 @@ public class SaldoChart implements Part
     private Object oPrev = null;
     private Date startPrev = new Date();
     private Date endPrev = new Date();
-    
+
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
@@ -385,15 +385,15 @@ public class SaldoChart implements Part
     {
       if (chart == null)
         return;
-      
+
       try
       {
 
         Object o = konto;
-        
+
         if (o == null) // Das ist der Fall, wenn das Kontoauswahlfeld verfuegbar ist
           o = getKontoAuswahl().getValue();
-        
+
         final Date start = getStartDate();
         final Date end = getEndDate();
 
@@ -403,18 +403,18 @@ public class SaldoChart implements Part
                                 o != oPrev;
 
         final boolean force = event != null && event.data == FORCE;
-        
+
         if (!changed && !force)
           return;
-          
+
         chart.removeAllData();
-        
+
         String startString = start != null ? HBCI.DATEFORMAT.format(start) : "";
         String endString = end != null ? HBCI.DATEFORMAT.format(end) : "";
         chart.setTitle(i18n.tr("Saldo-Verlauf {0} - {1}", startString, endString));
 
         List<Konto> konten = getSelectedAccounts();
-        
+
         final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
         final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);       
         final ChartDataSaldoSumme sum = new ChartDataSaldoSumme();
@@ -425,7 +425,7 @@ public class SaldoChart implements Part
           chart.addData(balance);
           sum.add(balance.getData());
         }
-        
+
         // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
         if (konten.size() > 1)
           chart.addData(sum);
@@ -433,12 +433,12 @@ public class SaldoChart implements Part
         ChartDataSaldoTrend trend = new ChartDataSaldoTrend();
         trend.add(sum.getData());
         chart.addData(trend);
-        
+
         if (event != null)
         {
           chart.redraw(); // nur neu laden, wenn via Select ausgeloest
         }
-        
+
         oPrev = o;
         startPrev = start;
         endPrev = end;

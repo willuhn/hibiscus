@@ -33,7 +33,7 @@ public class RangeList extends TablePart
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private String category = null;
-  
+
   /**
    * ct.
    * @param category die Kategorie.
@@ -51,7 +51,7 @@ public class RangeList extends TablePart
 
     final ContextMenu ctx = new ContextMenu();
     ctx.addItem(new ContextMenuItem(i18n.tr("Zurücksetzen"), new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -66,7 +66,7 @@ public class RangeList extends TablePart
     this.setContextMenu(ctx);
 
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -74,7 +74,7 @@ public class RangeList extends TablePart
   public synchronized void paint(Composite parent) throws RemoteException
   {
     super.paint(parent);
-    
+
     final List<Range> active = Range.getActiveRanges(category);
     for (Range r:Range.KNOWN)
     {

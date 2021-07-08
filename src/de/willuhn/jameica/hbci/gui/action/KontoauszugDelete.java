@@ -46,7 +46,7 @@ public class KontoauszugDelete implements Action
       list = new Kontoauszug[]{(Kontoauszug)context};
     else if (context instanceof Kontoauszug[])
       list = (Kontoauszug[]) context;
-    
+
     if (list == null || list.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Kontoauszüge aus"));
 
@@ -54,14 +54,14 @@ public class KontoauszugDelete implements Action
 		{
 	    final int size = list.length;
 	    final String file = size == 1 ? list[0].getDateiname() : null;
-	    
+
 	    final CheckboxInput check = new CheckboxInput(false);
 	    YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER)
 	    {
 	      protected void extend(Container container) throws Exception
 	      {
 	        String text = null;
-	        
+
 	        if (file != null)
 	        {
             text = i18n.tr("Datei \"{0}\" ebenfalls löschen",file);
@@ -75,7 +75,7 @@ public class KontoauszugDelete implements Action
 	          else
               text = i18n.tr("Zugehörige Datei ebenfalls löschen");
 	        }
-	        
+
           final LabelInput warn = new LabelInput("");
           warn.setColor(Color.ERROR);
           check.addListener(new Listener() {

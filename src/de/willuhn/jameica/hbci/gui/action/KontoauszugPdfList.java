@@ -30,5 +30,3 @@ public class KontoauszugPdfList implements Action
   }
 
 }
-
-

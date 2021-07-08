@@ -40,7 +40,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 	// Eingabe-Felder
 	private TerminInput termin             = null;
 	private ReminderIntervalInput interval = null;
-	
+
   /**
    * ct.
    * @param view
@@ -59,11 +59,11 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 	{
 		if (this.termin != null)
 	    return this.termin;
-		
+
     this.termin = new TerminInput((Terminable) getTransfer());
     return this.termin;
 	}
-  
+
   /**
    * Liefert das Intervall fuer die zyklische Ausfuehrung.
    * @return Auswahlfeld.
@@ -73,18 +73,18 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   {
     if (this.interval != null)
       return this.interval;
-    
+
     this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
     return this.interval;
   }
-  
+
   /**
    * Liefert ein Auswahlfeld fuer den Textschluessel.
    * @return Auswahlfeld.
    * @throws RemoteException
    */
   public abstract Input getTextSchluessel() throws RemoteException;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
    */
@@ -96,10 +96,10 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
       bu = (BaseUeberweisung) getTransfer();
       if (bu.ausgefuehrt()) // BUGZILLA 1197
         return true;
-      
+
 			Date termin = (Date) getTermin().getValue();
 			bu.setTermin(termin);
-      
+
       TextSchluessel s = (TextSchluessel) getTextSchluessel().getValue();
       bu.setTextSchluessel(s == null ? null : s.getCode());
 
@@ -129,7 +129,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
           Logger.error("rollback failed",xe);
         }
       }
-      
+
       if (e instanceof ApplicationException)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
@@ -237,7 +237,6 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 		return i;
   }
 }
-
 
 /**********************************************************************
  * $Log: AbstractBaseUeberweisungControl.java,v $

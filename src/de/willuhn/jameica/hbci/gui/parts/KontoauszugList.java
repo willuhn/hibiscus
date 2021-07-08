@@ -90,10 +90,10 @@ import de.willuhn.util.I18N;
 public class KontoauszugList extends UmsatzList
 {
   private final static Settings settings = new Settings(KontoauszugList.class);
-  
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings syssettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-  
+
   private UmsatzTyp searchTyp          = null;
   private SearchInput search           = null;
   private CheckboxInput regex          = null;
@@ -116,7 +116,7 @@ public class KontoauszugList extends UmsatzList
   private DecimalInput betragTo        = null;
 
   private Listener listener            = null;
-  
+
   private boolean disposed             = false; // BUGZILLA 462
   private boolean changed              = false;
   private int filterCount              = 0;
@@ -129,7 +129,7 @@ public class KontoauszugList extends UmsatzList
   {
     super((GenericIterator)null,new UmsatzDetail());
     this.setFilterVisible(false);
-    
+
     this.searchTyp = de.willuhn.jameica.hbci.Settings.getDBService().createObject(UmsatzTyp.class,null);
 
     // bei Ausloesungen ueber SWT-Events verzoegern wir
@@ -172,19 +172,19 @@ public class KontoauszugList extends UmsatzList
       TabGroup tab = new TabGroup(folder,i18n.tr("Konto/Kategorie/Zeitraum"));
 
       ColumnLayout columns = new ColumnLayout(tab.getComposite(),2);
-      
+
       Container left = new SimpleContainer(columns.getComposite());
       left.addLabelPair(i18n.tr("Konto"),                   this.getKontoAuswahl());
       left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorie());
       left.addCheckbox(this.getSubKategorien(),i18n.tr("Untergeordnete Kategorien einbeziehen"));
-      
+
       Container right = new SimpleContainer(columns.getComposite());
 
       right.addInput(this.getRange());
       MultiInput range = new MultiInput(this.getStart(),this.getEnd());
       right.addInput(range);
     }
-    
+
     {
       TabGroup tab = new TabGroup(folder,i18n.tr("Gegenkonto/Zweck/Betrag"));
 
@@ -199,7 +199,7 @@ public class KontoauszugList extends UmsatzList
       right.addLabelPair(i18n.tr("BIC oder BLZ enthält"),           this.getGegenkontoBLZ());
       right.addLabelPair(i18n.tr("Name des Kontoinhabers enthält"), this.getGegenkontoName());
     }
-    
+
     // Wir merken uns das aktive Tab.
     Integer tab = (Integer) cache.get("tab");
     if (tab != null) folder.setSelection(tab);
@@ -209,7 +209,7 @@ public class KontoauszugList extends UmsatzList
         cache.put("tab",folder.getSelectionIndex());
       }
     });
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
     {
@@ -249,9 +249,9 @@ public class KontoauszugList extends UmsatzList
         handleReload(true);
       }
     },null,true,"view-refresh.png");
-    
+
     buttons.paint(parent);
-    
+
     parent.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
       {
@@ -265,7 +265,7 @@ public class KontoauszugList extends UmsatzList
     // Machen wir explizit nochmal, weil wir die paint()-Methode ueberschrieben haben
     restoreState();
   }
-  
+
   /**
    * Liefert ein Eingabefeld fuer eine generische Suche.
    * @return Eingabefeld fuer eine generische Suche.
@@ -275,11 +275,11 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.search != null)
       return this.search;
-    
+
     this.search = new SearchInput();
     return this.search;
   }
-  
+
   /**
    * Liefert eine Checkbox zur Entscheidung, ob der Suchbegriff ein regulaerer Ausdruck ist.
    * @return Checkbox.
@@ -289,7 +289,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.regex != null)
       return this.regex;
-    
+
     Boolean b = (Boolean) cache.get("kontoauszug.list.regex");
     this.regex = new CheckboxInput(b != null && b.booleanValue());
     this.regex.setName(i18n.tr("Suchbegriff ist ein regulärer Ausdruck"));
@@ -324,11 +324,12 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.unchecked != null)
       return this.unchecked;
-    
+
     this.unchecked = new CheckboxInput(settings.getBoolean("kontoauszug.list.unchecked",false));
     this.unchecked.addListener(this.listener);
     return this.unchecked;
   }
+
   /**
    * Liefert ein Auswahl-Feld fuer das Start-Datum.
    * @return Auswahl-Feld.
@@ -337,14 +338,14 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.start != null)
       return this.start;
-    
+
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
     this.start.addListener(this.listener);
     return this.start;
   }
-  
+
   /**
    * Liefert ein Auswahl-Feld fuer das End-Datum.
    * @return Auswahl-Feld.
@@ -360,7 +361,7 @@ public class KontoauszugList extends UmsatzList
     this.end.addListener(this.listener);
     return this.end;
   }
-  
+
   /**
    * Liefert eine Auswahl mit Zeit-Presets.
    * @return eine Auswahl mit Zeit-Presets.
@@ -369,7 +370,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.range != null)
       return this.range;
-    
+
     this.range = new RangeInput(this.getStart(),this.getEnd(),Range.CATEGORY_AUSWERTUNG,"umsatzlist.filter.range");
     this.range.addListener(new Listener()
     {
@@ -379,10 +380,10 @@ public class KontoauszugList extends UmsatzList
           handleReload(true);
       }
     });
-    
+
     return this.range;
   }
-  
+
   /**
    * Liefert ein Auswahl-Feld fuer die Kategorie. 
    * @return Auswahl-Feld.
@@ -392,7 +393,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.kategorie != null)
       return this.kategorie;
-    
+
     UmsatzTyp preset = (UmsatzTyp) cache.get("kontoauszug.list.kategorie");
     if (preset == null || preset.getID() == null)
       preset = null; // wurde zwischenzeitlich geloescht
@@ -400,7 +401,7 @@ public class KontoauszugList extends UmsatzList
     this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
     this.kategorie.setComment("");
     this.kategorie.addListener(this.listener);
-    
+
     // Wenn in der Kategorie-Auswahl "<Alle Kategorien>" ausgewaehlt wurde, deaktivieren wir uns
     this.kategorie.addListener(new Listener()
     {
@@ -416,10 +417,10 @@ public class KontoauszugList extends UmsatzList
         }
       }
     });
-    
+
     return this.kategorie;
   }
-  
+
   /**
    * Liefert eine Checkbox die angibt ob Unterkategorien ermittelt werden sollen.
    * @return Checkbox.
@@ -429,14 +430,14 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.subKategorien != null)
       return this.subKategorien;
-    
+
     Boolean b = (Boolean) cache.get("kontoauszug.list.subkategorien");
     this.subKategorien = new CheckboxInput(b != null && b.booleanValue());
     this.subKategorien.addListener(this.listener);
     this.subKategorien.setEnabled(this.getKategorie().getValue() != null); // initial nur aktiviert, wenn eine Kategorie ausgewaehlt ist
     return this.subKategorien;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer die Kontonummer des Gegenkontos.
    * @return Eingabe-Feld.
@@ -464,7 +465,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.gegenkontoBLZ != null)
       return this.gegenkontoBLZ;
-    
+
     this.gegenkontoBLZ = new BLZInput((String)cache.get("kontoauszug.list.gegenkonto.blz"));
     this.gegenkontoBLZ.setValidChars(HBCIProperties.HBCI_IBAN_VALIDCHARS); // nicht BIC sondern IBAN - dort sind auch die Kleinbuchstaben mit drin 
     this.gegenkontoBLZ.setComment(null);
@@ -486,7 +487,7 @@ public class KontoauszugList extends UmsatzList
     this.gegenkontoName.addListener(this.listener);
     return this.gegenkontoName;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer Verwendungszweck/Kommentar.
    * @return Eingabe-Feld.
@@ -510,7 +511,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.betragFrom != null)
       return this.betragFrom;
-    
+
     this.betragFrom = new DecimalInput((Double)cache.get("kontoauszug.list.betrag.from"), HBCI.DECIMALFORMAT);
     this.betragFrom.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragFrom.addListener(this.listener);
@@ -553,7 +554,7 @@ public class KontoauszugList extends UmsatzList
   {
     if (this.betragTo != null)
       return this.betragTo;
-    
+
     this.betragTo = new DecimalInput((Double)cache.get("kontoauszug.list.betrag.to"), HBCI.DECIMALFORMAT);
     this.betragTo.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
     this.betragTo.addListener(this.listener);
@@ -581,7 +582,7 @@ public class KontoauszugList extends UmsatzList
     boolean unchecked = ((Boolean) getUnChecked().getValue()).booleanValue();
     boolean subKategorien = ((Boolean) getSubKategorien().getValue()).booleanValue();
     boolean regex         = ((Boolean) getRegex().getValue()).booleanValue();
-    
+
     // Aktuelle Werte speichern
     cache.put("kontoauszug.list.gegenkonto.nummer",gkNummer);
     cache.put("kontoauszug.list.gegenkonto.blz",   gkBLZ);
@@ -593,13 +594,12 @@ public class KontoauszugList extends UmsatzList
     cache.put("kontoauszug.list.subkategorien",    subKategorien);
     cache.put("kontoauszug.list.regex",            regex);
     cache.put("kontoauszug.list.search",           search);
-    
-    
+
     // geprueft/ungeprueft Flag speichern wir permanent
     settings.setAttribute("kontoauszug.list.unchecked",unchecked);
 
     DBIterator umsaetze = UmsatzUtil.getUmsaetzeBackwards();
-    
+
     // BUGZILLA 449
     this.filterCount = 0;
 
@@ -635,7 +635,7 @@ public class KontoauszugList extends UmsatzList
       this.filterCount++;
     }
     /////////////////////////////////////////////////////////////////
-    
+
     /////////////////////////////////////////////////////////////////
     // Zweck/Kommentar
     if (zk != null && zk.length() > 0)
@@ -667,22 +667,22 @@ public class KontoauszugList extends UmsatzList
 
     if (this.filterCount > 0)
     Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)),StatusBarMessage.TYPE_INFO));
-    
+
     if (search != null)
     {
       this.searchTyp.setPattern(search);
       this.searchTyp.setRegex(regex);
     }
-    
+
     boolean logged = false;
-    
+
     List<Umsatz> result = new LinkedList<Umsatz>();
     while (umsaetze.hasNext())
     {
       Umsatz u = (Umsatz) umsaetze.next();
       if (typ != null && !matches(typ, u, subKategorien))
         continue;
-      
+
       try
       {
         if (search != null && !this.searchTyp.matches(u,true))
@@ -696,12 +696,12 @@ public class KontoauszugList extends UmsatzList
           logged = true;
         }
       }
-      
+
       result.add(u);
     }
     return result;
   }
-  
+
   /**
    * Prueft, ob der Umsatz zur Kategorie passt.
    * @param typ die zu pruefende Kategorie.
@@ -721,21 +721,21 @@ public class KontoauszugList extends UmsatzList
     // des Umsatzes nach oben iterieren. Wenn wir dabei auf die gesuchte
     // Kategorie stossen, passts.
     UmsatzTyp t = u.getUmsatzTyp();
-    
+
     if (t == null)
       return false; // nichts zum Suchen da
-    
+
     for (int i=0;i<100;++i) // maximal 100 Iterationen - fuer den (eigentlich unmoeglichen Fall), dass eine Rekursion existiert
     {
       if (t == null)
         return false; // oben angekommen und nichts gefunden
-      
+
       if (t.equals(typ))
         return true; // passt!
-      
+
       t = (UmsatzTyp) t.getParent(); // weiter nach oben gehen
     }
-    
+
     // nichts gefunden
     return false;
   }
@@ -764,7 +764,7 @@ public class KontoauszugList extends UmsatzList
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Keine zu exportierenden Umsätze"), StatusBarMessage.TYPE_ERROR));
         return;
       }
-      
+
       // Start- und End-Datum als Contextparameter an Exporter uebergeben
       Exporter.SESSION.put("filtered",this.filterCount > 0);
       Exporter.SESSION.put("pdf.start",getStart().getValue());
@@ -783,7 +783,7 @@ public class KontoauszugList extends UmsatzList
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Exportieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Resettet alle Filter-Eingaben.
    */
@@ -815,7 +815,7 @@ public class KontoauszugList extends UmsatzList
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen der Filter"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Aktualisiert die Tabelle der angezeigten Umsaetze.
    * @param force true, wenn das Reload forciert werden soll - egal, ob sich was geaendert hat.
@@ -825,12 +825,12 @@ public class KontoauszugList extends UmsatzList
   {
     if (disposed)
       return;
-    
+
     if (!force && !hasChanged())
       return;
-    
+
     GUI.getDisplay().asyncExec(new Runnable() {
-      
+
       @Override
       public void run()
       {
@@ -844,7 +844,7 @@ public class KontoauszugList extends UmsatzList
       }
     });
   }
-  
+
   /**
    * Laedt die Daten.
    */
@@ -853,15 +853,14 @@ public class KontoauszugList extends UmsatzList
     try
     {
       removeAll();
-      
+
       List<Umsatz> list = getUmsaetze();
       for(Umsatz u:list)
         addItem(u);
 
-      
       // Zum Schluss Sortierung aktualisieren
       sort();
-      
+
       // Und die markierten Datensaetze wiederherstellen
       restoreState();
     }
@@ -871,7 +870,7 @@ public class KontoauszugList extends UmsatzList
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Aktualisieren der Umsätze"), StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Prueft, ob seit der letzten Aktion Eingaben geaendert wurden.
    * Ist das nicht der Fall, muss die Tabelle nicht neu geladen werden.
@@ -905,7 +904,7 @@ public class KontoauszugList extends UmsatzList
       return false;
     }
   }
-  
+
   /**
    * Listener, der bei Auswahl der Adresse die restlichen Daten vervollstaendigt.
    */
@@ -967,7 +966,7 @@ public class KontoauszugList extends UmsatzList
                 String text = (String) search.getValue();
                 if (text == null || text.length() == 0)
                   return;
-                
+
                 // Mal schauen, obs den Typ schon gibt
                 DBIterator existing = de.willuhn.jameica.hbci.Settings.getDBService().createList(UmsatzTyp.class);
                 existing.addFilter("pattern = ?", new Object[]{text});
@@ -976,7 +975,7 @@ public class KontoauszugList extends UmsatzList
                 {
                   if (!Application.getCallback().askUser(i18n.tr("Eine Umsatz-Kategorie mit diesem Suchbegriff existiert bereits. Überschreiben?")))
                     return;
-                  
+
                   // OK, ueberschreiben
                   typ = (UmsatzTyp) existing.next();
                 }
@@ -1006,7 +1005,7 @@ public class KontoauszugList extends UmsatzList
               }
             }
           });
-          
+
           new MenuItem(menu, SWT.SEPARATOR);
           try
           {
@@ -1032,7 +1031,7 @@ public class KontoauszugList extends UmsatzList
                 }
               });
             }
-            
+
           }
           catch (Exception ex)
           {
@@ -1061,7 +1060,7 @@ public class KontoauszugList extends UmsatzList
 
       text = GUI.getStyleFactory().createText(parent);
       // BUGZILLA 258
-      
+
       String s = (String) cache.get("kontoauszug.list.search");
       this.setValue(s);
       this.hasChanged(); // Einmal initial triggern, damit bereits die erste Text-Eingabe als Aenderung erkannt wird
@@ -1094,10 +1093,9 @@ public class KontoauszugList extends UmsatzList
       if (text == null || text.isDisposed())
         return;
       text.setText(value != null ? value.toString() : "");
-      
+
     }
-    
+
   }
-  
-  
+
 }

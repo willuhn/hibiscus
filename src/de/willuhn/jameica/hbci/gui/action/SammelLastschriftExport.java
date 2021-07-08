@@ -28,7 +28,6 @@ public class SammelLastschriftExport extends AbstractSammelTransferExport
 
 }
 
-
 /*********************************************************************
  * $Log: SammelLastschriftExport.java,v $
  * Revision 1.2  2006/08/17 10:06:32  willuhn

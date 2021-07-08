@@ -30,9 +30,9 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
   public void bind() throws Exception
   {
     super.bind();
-    
+
     final UmsatzDetailEditControl control = this.getControl();
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
@@ -62,7 +62,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
         }
       },null,false,"go-next.png");
     }
-    
+
     buttons.paint(getParent());
   }
 

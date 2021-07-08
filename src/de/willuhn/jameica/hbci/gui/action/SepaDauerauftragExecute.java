@@ -37,7 +37,6 @@ public class SepaDauerauftragExecute implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-
   /**
    * Erwartet einen SepaDauerauftrag als Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -50,7 +49,7 @@ public class SepaDauerauftragExecute implements Action
 		try
 		{
 			final SepaDauerauftrag d = (SepaDauerauftrag) context;
-			
+
 			SepaDauerauftragDialog dd = new SepaDauerauftragDialog(d,SepaDauerauftragDialog.POSITION_CENTER);
 			try
 			{
@@ -76,9 +75,9 @@ public class SepaDauerauftragExecute implements Action
       SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
       SynchronizeBackend backend = engine.getBackend(type,konto);
       SynchronizeJob job         = backend.create(type,konto);
-      
+
       job.setContext(SynchronizeJob.CTX_ENTITY,d);
-      
+
       backend.execute(Arrays.asList(job));
 		}
 		catch (RemoteException e)

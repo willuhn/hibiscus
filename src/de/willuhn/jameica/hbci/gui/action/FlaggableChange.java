@@ -25,10 +25,10 @@ import de.willuhn.util.I18N;
 public class FlaggableChange implements Action
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private int flags   = 0;
   private boolean add = true;
-  
+
   /**
    * ct.
    * @param flags die zu setzenden Flags.
@@ -53,7 +53,7 @@ public class FlaggableChange implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Datensätze aus"));
 
     Flaggable[] objects = null;
-    
+
     if (context instanceof Flaggable)
       objects = new Flaggable[]{(Flaggable) context};
     else
@@ -73,10 +73,10 @@ public class FlaggableChange implements Action
           objects[i].setFlags(current | this.flags);
         else if (!this.add && have)
           objects[i].setFlags(current ^ this.flags);
-        
+
         this.postProcess(objects[i]);
         objects[i].store();
-        
+
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(objects[i]));
       }
       objects[0].transactionCommit();
@@ -90,7 +90,7 @@ public class FlaggableChange implements Action
 	    catch (Exception e1) {
 	      Logger.error("unable to rollback transaction",e1);
 	    }
-	    
+
 	    if (e instanceof ApplicationException)
 	      throw (ApplicationException) e;
 
@@ -98,7 +98,7 @@ public class FlaggableChange implements Action
 			throw new ApplicationException(i18n.tr("Fehler beim Speichern der Änderungen"));
 		}
   }
-  
+
   /**
    * Optionales Postprocessing.
    * Kann von abgeleiteten Klassen ueberschrieben werden.
@@ -108,7 +108,7 @@ public class FlaggableChange implements Action
   protected void postProcess(Flaggable o) throws Exception
   {
   }
-  
+
   /**
    * Liefert die zu setzenden Flags.
    * @return flags
@@ -117,7 +117,7 @@ public class FlaggableChange implements Action
   {
     return flags;
   }
-  
+
   /**
    * Liefert true, wenn die Flags gesetzt werden sollen.
    * @return true, wenn die Flags gesetzt werden sollen.

@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
 public class AccountNew implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -40,26 +40,24 @@ public class AccountNew implements Action
     // koennen wir direkt auf die zweite Seite springen.
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     AccountService service = bs.get(AccountService.class);
-    
+
     List<AccountProvider> list = service.getProviders();
-    
+
     if (list.size() == 0)
     {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Die Installation unterstützt keine Bank-Zugänge"),StatusBarMessage.TYPE_ERROR));
       return;
     }
-    
+
     // Wir haben mehrere Account-Provider. Dann auf zu Seite 1.
     if (list.size() > 1)
     {
       GUI.startView(de.willuhn.jameica.hbci.gui.views.AccountNew.class,null);
       return;
     }
-    
+
     // Wir haben nur einen Account-Provider. Dann direkt zu Seite 2.
     list.get(0).create();
   }
 
 }
-
-

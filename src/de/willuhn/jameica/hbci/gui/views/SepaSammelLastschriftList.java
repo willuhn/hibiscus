@@ -36,7 +36,7 @@ public class SepaSammelLastschriftList extends AbstractView
   public void bind() throws Exception
   {
     SepaSammelLastschriftControl control = new SepaSammelLastschriftControl(this);
-    
+
     final de.willuhn.jameica.hbci.gui.parts.SepaSammelLastschriftList table = control.getListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportSepaSammelLastschrift(table));
     table.addSelectionListener(new Listener() {
@@ -45,7 +45,7 @@ public class SepaSammelLastschriftList extends AbstractView
         print.setEnabled(table.getSelection() != null);
       }
     });
-    
+
     GUI.getView().setTitle(i18n.tr("Vorhandene SEPA-Sammellastschriften"));
     GUI.getView().addPanelButton(print);
 

@@ -50,16 +50,15 @@ public class HBCIVersionInput extends SelectInput
   {
     if (id == null)
       return null;
-    
+
     for (HBCIVersion version:VERSIONS)
     {
       if (id.equals(version.getId()))
         return version;
     }
-    
+
     return null;
   }
-
 
   /**
    * ct.
@@ -80,7 +79,7 @@ public class HBCIVersionInput extends SelectInput
   {
     super(createList(passport,selected),findById(selected));
     this.setName(i18n.tr("HBCI-Version"));
-    
+
     // Default-Wert (ohne Versionsnummer) - nur, wenn Passport da
     if (passport != null)
       this.setPleaseChoose(i18n.tr("Version aus Sicherheitsmedium lesen"));
@@ -95,7 +94,7 @@ public class HBCIVersionInput extends SelectInput
   private static List createList(HBCIPassport passport, String selected)
   {
     List<String> list = null;
-    
+
     if (passport != null)
     {
       String[] s = passport.getSuppVersions(); // Wir haben einen Passport, dann nur die unterstuetzten anzeigen
@@ -129,7 +128,7 @@ public class HBCIVersionInput extends SelectInput
         versions.add(version);
       }
     }
-    
+
     // Rauswerfen der inaktiven HBCI-Versionen, wenn sie nicht gerade verwendet werden
     List<HBCIVersion> result = new ArrayList<HBCIVersion>();
     for (HBCIVersion v:versions)
@@ -146,10 +145,10 @@ public class HBCIVersionInput extends SelectInput
           result.add(v);
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * Liefert die ID der ausgwaehlten HBCI-Version als <code>java.lang.String</code>.
    * Moegliche Rueckgabe-Werte:<br>
@@ -184,7 +183,7 @@ public class HBCIVersionInput extends SelectInput
   {
     super.setValue((o instanceof String) ? findById((String) o) : null);
   }
-  
+
   /**
    * Bean, die die HBCI-Version kapselt.
    */
@@ -203,7 +202,7 @@ public class HBCIVersionInput extends SelectInput
       this.version = version;
       this.active = active;
     }
-    
+
     /**
      * Liefert die ID der Version.
      * @return die ID der Version.
@@ -222,5 +221,5 @@ public class HBCIVersionInput extends SelectInput
       return this.version.getName();
     }
   }
-  
+
 }

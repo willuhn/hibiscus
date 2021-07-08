@@ -48,9 +48,9 @@ public class UmsatzTypTree extends TreePart
 {
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
-  
+
   /**
    * Initialisiert die Liste der Root-Elemente.
    * @return Liste der Root-Elemente.
@@ -60,7 +60,7 @@ public class UmsatzTypTree extends TreePart
   {
     return UmsatzTypUtil.getRootElements();
   }
-  
+
   /**
    * ct.
    * @param action
@@ -82,7 +82,7 @@ public class UmsatzTypTree extends TreePart
     });
     addColumn(i18n.tr("Konto"),"dummy");
     addColumn(i18n.tr("Kommentar"),"kommentar");
-    
+
     this.setFormatter(new TreeFormatter()
     {
       /**
@@ -98,7 +98,7 @@ public class UmsatzTypTree extends TreePart
           UmsatzTyp ut = (UmsatzTyp) item.getData();
           if (ut == null)
             return;
-          
+
           final String kat = ut.getKontoKategorie();
           final Konto k = ut.getKonto();
           if (k != null)
@@ -112,7 +112,7 @@ public class UmsatzTypTree extends TreePart
           int[] color = ut.getColor();
           if (color == null || color.length != 3)
             return;
-          
+
           RGB rgb = new RGB(color[0],color[1],color[2]);
           Color c = colorCache.get(rgb.toString());
           if (c == null)
@@ -135,9 +135,7 @@ public class UmsatzTypTree extends TreePart
     this.setRememberState(true);
     this.setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzTypList());
   }
-  
-  
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.TreePart#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -188,7 +186,7 @@ public class UmsatzTypTree extends TreePart
       GenericObject o = msg.getObject();
       if (!(o instanceof UmsatzTyp))
         return;
-      
+
       GUI.getDisplay().asyncExec(new Runnable()
       {
         public void run()
@@ -204,10 +202,9 @@ public class UmsatzTypTree extends TreePart
         }
       });
     }
-    
+
   }
 }
-
 
 /**********************************************************************
  * $Log: UmsatzTypTree.java,v $

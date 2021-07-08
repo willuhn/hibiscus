@@ -78,7 +78,6 @@ public class UmsatzList extends TablePart implements Extendable
 
   // Cache fuer die Filter-Einstellungen des Users fuer die Dauer der Sitzung.
   static Map cache = new HashMap();
-  
 
   private MessageConsumer mcChanged = null;
   private MessageConsumer mcNew     = null;
@@ -86,14 +85,13 @@ public class UmsatzList extends TablePart implements Extendable
   private UmsatzDaysInput days      = null;
 
   private Konto konto               = null;
-  
+
   private KL kl                     = new KL();
   private boolean filter            = true;
-  
+
   private boolean disposed          = false;
-  
+
   private List<Umsatz> umsaetze     = null;
-  
   /**
    * @param konto
    * @param action
@@ -113,17 +111,17 @@ public class UmsatzList extends TablePart implements Extendable
   public UmsatzList(GenericIterator<Umsatz> list, Action action) throws RemoteException
   {
     super(list,action);
-    
+
     // Wir arbeiten nur auf dieser Liste
     if (list != null)
       this.umsaetze = PseudoIterator.asList(list);
-    
+
     this.addFeature(new FeatureShortcut()); // Wir unterstuetzen Shortcuts
 
     final DateFormatter df  = new DateFormatter(HBCI.DATEFORMAT);
     final DateFormatter dfs = new DateFormatter(HBCI.SHORTDATEFORMAT);
     final boolean bold = Settings.getBoldValues();
-    
+
     setMulti(true);
     setFormatter(new TableFormatter()
     {
@@ -162,7 +160,7 @@ public class UmsatzList extends TablePart implements Extendable
             item.setImage(1,SWTUtil.getImage("emblem-default.png"));
           else
             item.setImage(1,null); // Image wieder entfernen. Noetig, weil wir auch bei Updates aufgerufen werden
-        
+
         }
         catch (RemoteException e)
         {
@@ -176,12 +174,12 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn("#","id-int");
     addColumn(i18n.tr("Flags"),                     "flags");
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
-    
+
     if (settings.getBoolean("usage.list.all",false))
       addColumn(i18n.tr("Verwendungszweck"),        "mergedzweck");
     else
       addColumn(i18n.tr("Verwendungszweck"),        Tag.SVWZ.name());
-    
+ 
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", df);
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);
@@ -191,10 +189,10 @@ public class UmsatzList extends TablePart implements Extendable
 
     // BUGZILLA 84 http://www.willuhn.de/bugzilla/show_bug.cgi?id=84
     setRememberOrder(true);
-    
+
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     setRememberColWidths(true);
-    
+
     // BUGZILLA 468 http://www.willuhn.de/bugzilla/show_bug.cgi?id=468
     setRememberState(true);
 
@@ -212,7 +210,7 @@ public class UmsatzList extends TablePart implements Extendable
         refreshSummary();
       }
     });
-    
+
     this.addChangeListener(new TableChangeListener() {
       public void itemChanged(Object object, String attribute, String newValue) throws ApplicationException
       {
@@ -233,11 +231,11 @@ public class UmsatzList extends TablePart implements Extendable
         }
       }
     });
-    
+
     // Wir geben die Tabelle jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
   }
-  
+
   /**
    * Schaltet die Anzeige der Umsatzfilter an oder aus.
    * @param visible true, wenn die Umsatzfilter angezeigt werden sollen. Default: true.
@@ -246,7 +244,7 @@ public class UmsatzList extends TablePart implements Extendable
   {
     this.filter = visible;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
    */
@@ -266,7 +264,7 @@ public class UmsatzList extends TablePart implements Extendable
         else
           return i18n.tr("{0} Umsätze",Integer.toString(size));
       }
-      
+
       // Andernfalls berechnen wir die Summe
       double sum = 0.0d;
       double income = 0.0d;
@@ -277,10 +275,10 @@ public class UmsatzList extends TablePart implements Extendable
       {
         if (curr == null)
           curr = u.getKonto().getWaehrung();
-        
+
         double betrag = u.getBetrag();
         sum += betrag;
-        
+
         if (betrag >= 0.01d)
           income += betrag;
         else
@@ -302,7 +300,7 @@ public class UmsatzList extends TablePart implements Extendable
     }
     return super.getSummary();
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -316,7 +314,7 @@ public class UmsatzList extends TablePart implements Extendable
         disposed = true;
         Application.getMessagingFactory().unRegisterMessageConsumer(mcChanged);
         Application.getMessagingFactory().unRegisterMessageConsumer(mcNew);
-        
+
         // Fuer den Fall, dass wir verlassen worden, bevor das letzte Aktualisierungstimeout
         // ausgelaufen war. Das wuerde sonst ausgeloest werden, obwohl die Widgets alle disposed sind
         if (kl != null && kl.timeout != null)
@@ -332,7 +330,7 @@ public class UmsatzList extends TablePart implements Extendable
         }
       }
     });
-    
+
     if (this.filter)
     {
       Container c = new SimpleContainer(parent);
@@ -345,7 +343,7 @@ public class UmsatzList extends TablePart implements Extendable
       }));
       c.addInput(this.days);
     }
-    
+
     // Und einmal starten bitte, wenn wir entweder einen Filter
     // haben oder ein Konto angegeben ist, von dem wir die Umsaetze on-the-fly laden 
     if (this.filter || this.konto != null)
@@ -357,18 +355,17 @@ public class UmsatzList extends TablePart implements Extendable
     restoreState();
   }
 
-
   private class KL extends KeyAdapter
   {
     private boolean sleep = true;
     private Thread timeout = null;
     private Calendar cal = null;
-   
+
     private KL() throws RemoteException
     {
       this.cal = Calendar.getInstance();
     }
-    
+
     /**
      * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
@@ -381,7 +378,7 @@ public class UmsatzList extends TablePart implements Extendable
         sleep = true;
         return;
       }
-      
+
       // Ein neuer Timer
       timeout = new Thread("UmsatzList")
       {
@@ -412,7 +409,7 @@ public class UmsatzList extends TablePart implements Extendable
       };
       timeout.start();
     }
-    
+
     /**
      * 
      */
@@ -428,7 +425,7 @@ public class UmsatzList extends TablePart implements Extendable
     {
       if (disposed)
         return;
-      
+
       GUI.startSync(new Runnable()
       {
         public void run()
@@ -437,7 +434,7 @@ public class UmsatzList extends TablePart implements Extendable
           {
             if (!force && !hasChanged())
               return;
-              
+
             int t = days != null ? ((Integer) days.getValue()).intValue() : 0;
 
             if (konto != null)
@@ -465,7 +462,6 @@ public class UmsatzList extends TablePart implements Extendable
                 cal.set(Calendar.MILLISECOND,0);
                 limit = cal.getTime();
               }
-              
 
               for (int i=0;i<umsaetze.size();++i)
               {
@@ -485,7 +481,7 @@ public class UmsatzList extends TablePart implements Extendable
                 addItem(u);
               }
             }
-            
+
             sort();
           }
           catch (Exception e)
@@ -498,7 +494,7 @@ public class UmsatzList extends TablePart implements Extendable
   }
 
   private Integer lastDays = null;
-  
+
   /**
    * Prueft, ob sich an den Such-Eingaben etwas geaendert hat.
    * @return true, wenn sich den Eingaben etwas geaendert hat.
@@ -508,7 +504,7 @@ public class UmsatzList extends TablePart implements Extendable
     // Such-Filter ist ueberhaupt nicht aktiv
     if (!this.filter || this.days == null)
       return false;
-    
+
     Integer i = (Integer) this.days.getValue();  // liefert nie null
     try
     {
@@ -520,7 +516,6 @@ public class UmsatzList extends TablePart implements Extendable
     }
   }
 
-  
   /**
    * Hilfsklasse damit wir ueber importierte Umsaetze informiert werden.
    */
@@ -570,12 +565,12 @@ public class UmsatzList extends TablePart implements Extendable
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
 
       if (o == null || !(o instanceof Umsatz))
         return;
-      
+
       // wir machen das Update in einer Bulk-Operation, damit die Summen-Zeile nicht
       // 100 mal aktualisiert werden muss, wenn 100 Umsaetze angefasst wurden
       this.bulk.add((Umsatz)o);
@@ -590,7 +585,6 @@ public class UmsatzList extends TablePart implements Extendable
       return false;
     }
   }
-
 
   /**
    * Hilfsklasse damit wir ueber importierte Umsaetze informiert werden.
@@ -608,7 +602,7 @@ public class UmsatzList extends TablePart implements Extendable
     }
 
     DelayedListener updateKontoListListener = new DelayedListener(new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -624,7 +618,7 @@ public class UmsatzList extends TablePart implements Extendable
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
 
       if (o == null || !(o instanceof Umsatz))
@@ -636,7 +630,7 @@ public class UmsatzList extends TablePart implements Extendable
           try
           {
             Umsatz newUmsatz = (Umsatz) o;
-            
+
             // BUGZILLA 692 haben wir den schon?
             if (umsaetze != null)
             {
@@ -646,7 +640,7 @@ public class UmsatzList extends TablePart implements Extendable
                   return;
               }
             }
-            
+
             // Checken, ob der Umsatz ueberhaupt zum Konto passt
             // Wenn man waehrend der Synchronisierung in ein anderes Konto klickt, koennte es sonst
             // passieren, dass ein Umsatz hier temporaer in der Liste landet, weil halt zufaellig grad
@@ -661,7 +655,7 @@ public class UmsatzList extends TablePart implements Extendable
               umsaetze.add(newUmsatz);
             else
               addItem(newUmsatz);
-            
+
             updateKontoListListener.handleEvent(null);
           }
           catch (Exception e)
@@ -680,7 +674,7 @@ public class UmsatzList extends TablePart implements Extendable
       return false;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
    */
@@ -688,6 +682,5 @@ public class UmsatzList extends TablePart implements Extendable
   {
     return UmsatzList.class.getName();
   }
-  
-  
+
 }

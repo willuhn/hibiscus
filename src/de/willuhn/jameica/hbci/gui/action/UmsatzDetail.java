@@ -33,7 +33,7 @@ public class UmsatzDetail implements Action
     // wir.
     if (!(context instanceof Umsatz))
       return;
-    
+
     // Automatisch in die Edit-View wechseln, falls es ein Offline-Konto ist
     // Siehe BUGZILLA 989
     try
@@ -50,12 +50,11 @@ public class UmsatzDetail implements Action
     {
       Logger.error("unable to switch to edit view, opening read only view",e);
     }
-    
+
 		GUI.startView(de.willuhn.jameica.hbci.gui.views.UmsatzDetail.class,context);
   }
 
 }
-
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $

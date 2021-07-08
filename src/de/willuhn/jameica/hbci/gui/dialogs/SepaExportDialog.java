@@ -52,7 +52,7 @@ public class SepaExportDialog extends AbstractDialog
 
   private final static DateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Type type               = null;
   private SepaVersion painVersion = null;
   private File file               = null;
@@ -68,7 +68,7 @@ public class SepaExportDialog extends AbstractDialog
     this.setTitle(i18n.tr("SEPA-Datei exportieren"));
     this.type = type;
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
-    
+
     this.addCloseListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -87,15 +87,15 @@ public class SepaExportDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     Container c = new SimpleContainer(parent);
-    
+
     final SelectInput version = this.getPainVersionInput();
     final FileInput target    = this.getFileInput();
     final LabelInput msg      = this.getMessage();
-    
+
     c.addInput(version);
     c.addInput(target);
     c.addInput(msg);
-    
+
     ButtonArea buttons = new ButtonArea();
     this.ok = new Button(i18n.tr("Export starten"),new Action()
     {
@@ -107,14 +107,14 @@ public class SepaExportDialog extends AbstractDialog
           msg.setValue(i18n.tr("Bitte wählen Sie eine Schema-Version aus."));
           return;
         }
-        
+
         String s = StringUtils.trimToNull((String) target.getValue());
         if (s == null)
         {
           msg.setValue(i18n.tr("Bitte wählen Sie eine Datei aus"));
           return;
         }
-        
+
         file = new File(s);
         if (file.exists() && file.canRead())
         {
@@ -137,7 +137,7 @@ public class SepaExportDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     buttons.addButton(ok);
-    
+
     buttons.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -145,11 +145,11 @@ public class SepaExportDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     },null,false,"process-stop.png");
-    
+
     c.addButtonArea(buttons);
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Liefert ein Auswahlfeld mit der zu verwendenden PAIN-Version.
    * @return Auswahlfeld mit der PAIN-Version.
@@ -169,7 +169,7 @@ public class SepaExportDialog extends AbstractDialog
     });
     return select;
   }
-  
+
   /**
    * Liefert ein Label fuer Fehlermeldungen.
    * @return ein Label fuer Fehlermeldungen.
@@ -181,7 +181,7 @@ public class SepaExportDialog extends AbstractDialog
     label.setName("");
     return label;
   }
-  
+
   /**
    * Liefert ein Eingabefeld mit der Ziel-Datei, in die geschrieben wird.
    * @return Eingabefeld mit der Ziel-Datei.
@@ -192,9 +192,9 @@ public class SepaExportDialog extends AbstractDialog
     String name = this.type.getName();
     name = name.replace(" ","-");
     name = "hibiscus-sepa-" + name + "-" + DATEFORMAT.format(new Date()) + ".xml";
-    
+
     File f = new File(path,name);
-    
+
     final FileInput input = new FileInput(f.getAbsolutePath(),true)
     {
       protected void customize(FileDialog fd)
@@ -225,7 +225,7 @@ public class SepaExportDialog extends AbstractDialog
   {
     return this.getFile();
   }
-  
+
   /**
    * Liefert die ausgewaehlte Ziel-Datei.
    * @return die ausgewaehlte Ziel-Datei.
@@ -234,7 +234,7 @@ public class SepaExportDialog extends AbstractDialog
   {
     return this.file;
   }
-  
+
   /**
    * Liefert die ausgewaehlte PAIN-Version.
    * @return die ausgewaehlte PAIN-Version.
@@ -245,5 +245,3 @@ public class SepaExportDialog extends AbstractDialog
   }
 
 }
-
-

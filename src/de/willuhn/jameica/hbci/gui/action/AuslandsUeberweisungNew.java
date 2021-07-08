@@ -85,7 +85,7 @@ public class AuslandsUeberweisungNew implements Action
         if (kto.length() <= 10 && kto.length() > 0 && blz.length() > 0) // aber nur, wenn wir auch was zum Suchen im Adressbuch haben
         {
           // kann keine IBAN sein. Die ist per Definition laenger
-          
+
           // Also im Adressbuch schauen
           HibiscusAddress address = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
           address.setBlz(blz);
@@ -95,8 +95,7 @@ public class AuslandsUeberweisungNew implements Action
           kto = a != null ? a.getIban() : null;
           blz = a != null ? a.getBic() : null;
         }
-        
-        
+
         // BUGZILLA 1835 - BIC nur uebernehmen, wenn es wirklich eine ist
         // Ansonsten ermitteln wir die BIC aus der IBAN
         if (blz == null || blz.length() != HBCIProperties.HBCI_BIC_MAXLENGTH)
@@ -108,7 +107,6 @@ public class AuslandsUeberweisungNew implements Action
         u.setGegenkontoBLZ(blz);
         u.setGegenkontoNummer(kto);
 
-        
         // die weiteren Verwendungszweck-Zeilen gibts bei SEPA-Ueberweisungen nicht.
         // Daher landen die alle in einer Zeile
         u.setZweck(VerwendungszweckUtil.toString(umsatz));
@@ -126,7 +124,7 @@ public class AuslandsUeberweisungNew implements Action
           u.setGegenkontoNummer(b.getGegenkontoNummer());
           u.setZweck(b.getZweck());
           u.setEndtoEndId(b.getEndtoEndId());
-          
+
           if (st != null)
           {
             u.setKonto(st.getKonto());
@@ -162,4 +160,3 @@ public class AuslandsUeberweisungNew implements Action
   }
 
 }
-

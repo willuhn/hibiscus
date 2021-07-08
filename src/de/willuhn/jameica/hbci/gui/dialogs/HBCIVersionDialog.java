@@ -57,10 +57,10 @@ public class HBCIVersionDialog extends AbstractDialog
   {
     Container group = new SimpleContainer(parent);
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende HBCI-Version"),true);
-    
+
     final HBCIVersionInput input = new HBCIVersionInput();
     group.addInput(input);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -74,12 +74,11 @@ public class HBCIVersionDialog extends AbstractDialog
       {
         throw new OperationCanceledException("cancelled while choosing hbci version");
       }
-    
+
     },null,false,"process-stop.png");
     group.addButtonArea(buttons);
   }
 }
-
 
 /*********************************************************************
  * $Log: HBCIVersionDialog.java,v $

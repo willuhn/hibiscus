@@ -24,7 +24,7 @@ import de.willuhn.util.I18N;
 public class KontoauszugMarkUnread implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -36,13 +36,11 @@ public class KontoauszugMarkUnread implements Action
       list = new Kontoauszug[]{(Kontoauszug)context};
     else if (context instanceof Kontoauszug[])
       list = (Kontoauszug[]) context;
-    
+
     if (list == null || list.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Kontoauszüge aus"));
-    
+
     KontoauszugPdfUtil.markRead(false, list);
   }
 
 }
-
-

@@ -30,7 +30,6 @@ public class EinnahmenAusgaben implements Action
 
 }
 
-
 /*********************************************************************
  * $Log: EinnahmenAusgaben.java,v $
  * Revision 1.1  2007/06/04 15:57:39  jost

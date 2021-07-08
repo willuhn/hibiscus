@@ -38,7 +38,6 @@ public class SepaLastschriftExecute implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-
   /**
 	 * Erwartet ein Objekt vom Typ <code>SepaLastschrift</code> als Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -51,7 +50,7 @@ public class SepaLastschriftExecute implements Action
 		try
 		{
 			final SepaLastschrift u = (SepaLastschrift) context;
-			
+
 			if (u.ausgefuehrt())
 				throw new ApplicationException(i18n.tr("Lastschrift wurde bereits ausgeführt"));
 
@@ -83,9 +82,9 @@ public class SepaLastschriftExecute implements Action
 	    SynchronizeEngine engine   = bs.get(SynchronizeEngine.class);
 	    SynchronizeBackend backend = engine.getBackend(type,konto);
 	    SynchronizeJob job         = backend.create(type,konto);
-	    
+
 	    job.setContext(SynchronizeJob.CTX_ENTITY,u);
-	    
+
 	    backend.execute(Arrays.asList(job));
 		}
 		catch (RemoteException e)

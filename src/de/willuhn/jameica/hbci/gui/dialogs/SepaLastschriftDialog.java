@@ -47,7 +47,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
   {
     Container group = new SimpleContainer(parent);
     group.addHeadline(i18n.tr("Details der SEPA-Lastschrift"));
-			
+
 		Input kto = new LabelInput(last.getKonto().getIban());
 		kto.setComment(last.getKonto().getBezeichnung());
 		group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
@@ -70,7 +70,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
 
     group.addHeadline(i18n.tr("Verwendungszweck"));
     group.addText(VerwendungszweckUtil.toString(last,"\n"),false);
-    
+
     super.paint(parent);
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }

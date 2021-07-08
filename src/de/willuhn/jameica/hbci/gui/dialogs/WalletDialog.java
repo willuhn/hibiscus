@@ -69,7 +69,7 @@ public class WalletDialog extends AbstractDialog
       String key = (String) e.nextElement();
       entries.add(new Entry(key,wallet.get(key)));
     }
-    
+
     TablePart table = new TablePart(entries,null);
     table.addColumn(i18n.tr("Name"),"name");
     table.addColumn(i18n.tr("Wert"),"value");
@@ -77,7 +77,7 @@ public class WalletDialog extends AbstractDialog
 
     Container container = new SimpleContainer(parent);
     container.addText(i18n.tr("Inhalt der Wallet-Datei"),true);
-    
+
     table.paint(parent);
 
     ButtonArea buttons = new ButtonArea();
@@ -87,10 +87,10 @@ public class WalletDialog extends AbstractDialog
         close();
       }
     },null,true,"window-close.png");
-    
+
     buttons.paint(parent);
   }
-  
+
   /**
    * Hilfsklasse zum Anzeigen der Name-/Wert-Paare 
    */
@@ -98,13 +98,13 @@ public class WalletDialog extends AbstractDialog
   {
     private String name  = null;
     private String value = null;
-    
+
     private Entry(String name, Serializable s)
     {
       this.name = name;
       this.value = s != null ? s.toString() : null;
     }
-    
+
     /**
      * Liefert den Namen.
      * @return der Name.
@@ -113,7 +113,7 @@ public class WalletDialog extends AbstractDialog
     {
       return this.name;
     }
-    
+
     /**
      * Liefert den Wert.
      * @return der Wert.
@@ -122,11 +122,10 @@ public class WalletDialog extends AbstractDialog
     {
       return this.value;
     }
-    
+
   }
 
 }
-
 
 /*********************************************************************
  * $Log: WalletDialog.java,v $

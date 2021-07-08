@@ -47,13 +47,13 @@ import de.willuhn.util.I18N;
 public class UmsatzTypVerlauf implements Part
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private List data         = null;
   private Date start        = null;
   private Date stop         = null;
   private LineChart chart   = null;
   private Interval interval = Interval.MONTH;
-  
+
   /**
    * Enum fuer die Intervall-Varianten.
    */
@@ -62,13 +62,13 @@ public class UmsatzTypVerlauf implements Part
     YEAR(Calendar.DAY_OF_YEAR,Calendar.YEAR,i18n.tr("Jahr")),
     MONTH(Calendar.DAY_OF_MONTH,Calendar.MONTH,i18n.tr("Monat")),
     WEEK(Calendar.DAY_OF_WEEK,Calendar.WEEK_OF_YEAR,i18n.tr("Woche")),
-    
+
     ;
-    
+
     private int type;
     private int size;
     private String name;
-    
+
     /**
      * ct.
      * @param type
@@ -80,7 +80,7 @@ public class UmsatzTypVerlauf implements Part
       this.size = size;
       this.name = name;
     }
-    
+
     /**
      * @see java.lang.Enum#toString()
      */
@@ -90,7 +90,7 @@ public class UmsatzTypVerlauf implements Part
       return this.name;
     }
   }
-  
+
   /**
    * Speichert die anzuzeigenden Daten.
    * @param data Liste mit Objekten des Typs "UmsatzGroup".
@@ -103,7 +103,7 @@ public class UmsatzTypVerlauf implements Part
     this.start = start;
     this.stop  = stop;
   }
-  
+
   /**
    * Aktualisiert das Chart.
    * @throws RemoteException
@@ -116,7 +116,7 @@ public class UmsatzTypVerlauf implements Part
     this.chart.removeAllData();
 
     int count = 0;
-      
+
     for (int i=0;i<this.data.size();++i)
     {
       UmsatzTreeNode group = (UmsatzTreeNode) this.data.get(i); 
@@ -127,12 +127,12 @@ public class UmsatzTypVerlauf implements Part
         count = cd.entries.size();
       }
     }
-    
+
     if (count <= 1)
       this.chart.setTitle(i18n.tr("Bitte wählen Sie einen größeren Zeitraum"));
     else
       this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach {0})", this.interval.toString()));
-    
+
     this.chart.redraw();
   }
 
@@ -173,10 +173,10 @@ public class UmsatzTypVerlauf implements Part
   private void addGroupingMenu()
   {
     Menu m = this.chart.getChart().getPlotArea().getControl().getMenu();
-    
+
     MenuItem groupMenuItem = new MenuItem(m, SWT.CASCADE, 0);
     groupMenuItem.setText(i18n.tr("Gruppierung nach"));
-    
+
     new MenuItem(m,SWT.SEPARATOR,1);
 
     Menu groupMenu = new Menu(groupMenuItem);
@@ -192,15 +192,15 @@ public class UmsatzTypVerlauf implements Part
       public void widgetSelected(SelectionEvent e)
       {
         MenuItem item = (MenuItem) e.getSource();
-        
+
         for (MenuItem i:items)
         {
           i.setSelection(i == item);
         }
-        
+
         // aktuellen Wert uebernehmen
         interval = (Interval) item.getData();
-        
+
         // Und neu zeichnen
         try
         {
@@ -235,7 +235,7 @@ public class UmsatzTypVerlauf implements Part
     private boolean hasData      = false;
     private Date chartStartDate  = null;
     private Date chartStopDate   = null;
-    
+
     private List<Umsatz> getRecursiveUmsaetze(UmsatzTreeNode group) {
       List<Umsatz> result = new ArrayList<Umsatz>();
       result.addAll(group.getUmsaetze());
@@ -244,7 +244,7 @@ public class UmsatzTypVerlauf implements Part
       }
       return result;
     }
-    
+
     /**
      * Erzeugt eine Liste mit den aggregierten Daten für eine Linie des Charts 
      * @param group
@@ -268,7 +268,7 @@ public class UmsatzTypVerlauf implements Part
         this.hasData = true;
         calendar.setTime(DateUtil.startOfDay(umsatz.getDatum()));
         calendar.set(interval.type, 1);
-        
+
         Date key = calendar.getTime();
         double aggMonatsWert = verteilung.containsKey(key) ? verteilung.get(key) : 0;
         verteilung.put(key, umsatz.getBetrag() + aggMonatsWert);
@@ -309,7 +309,7 @@ public class UmsatzTypVerlauf implements Part
     {
       Date min = new Date();
       Date max = new Date();
-      
+
       if (!chartDates.isEmpty())
       {
         min = Collections.min(chartDates);
@@ -371,16 +371,16 @@ public class UmsatzTypVerlauf implements Part
     public int[] getColor() throws RemoteException
     {
       UmsatzTyp ut = this.group.getUmsatzTyp();
-      
+
       if (ut == null)
         return null; // "nicht zugeordnet"
 
       if (!ut.isCustomColor())
         return null; // keine benutzerdefinierte Farbe angegeben
-      
+
       return ut.getColor();
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
      */
@@ -389,7 +389,7 @@ public class UmsatzTypVerlauf implements Part
       return true;
     }
   }
-  
+
   /**
    * Hilfsobjekt zum Gruppieren pro Monat.
    */
@@ -445,6 +445,6 @@ public class UmsatzTypVerlauf implements Part
     {
       return "betrag";
     }
-    
+
   }
 }

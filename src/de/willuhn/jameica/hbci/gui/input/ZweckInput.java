@@ -29,7 +29,7 @@ public class ZweckInput extends TextInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static String VALID = HBCIProperties.HBCI_SEPA_VALIDCHARS;
-  
+
   private Control control = null;
 
   /**
@@ -42,7 +42,7 @@ public class ZweckInput extends TextInput
     this.setValidChars(VALID);
     this.setName(i18n.tr("Verwendungszweck"));
   }
-  
+
   /**
    * Ueberschrieben, um die in SEPA-Verwendungszwecken erlaubten Zeichen automatisch zu entfernen.
    * Dann kann der User per Zwischenablage auch unerlaubte Zeichen einfuegen. Hibiscus schneidet die
@@ -54,9 +54,9 @@ public class ZweckInput extends TextInput
   {
     if (this.control != null)
       return this.control;
-    
+
     this.control = super.getControl();
-    
+
     // BUGZILLA 1495 - nicht erlaubte Zeichen automatisch rausschneiden
     this.control.addListener(SWT.Verify, new Listener()
     {
@@ -64,10 +64,10 @@ public class ZweckInput extends TextInput
       {
         if (e.text == null || e.text.length() == 0)
           return;
-        
+
         String backup = e.text;
         e.text = HBCIProperties.clean(e.text,VALID);
-        
+
         int diff = backup.length() - e.text.length();
         if (diff > 0)
         {
@@ -76,9 +76,9 @@ public class ZweckInput extends TextInput
         }
       }
     });
-    
+
     return this.control;
-    
+
   }
 
 }

@@ -59,7 +59,7 @@ public class ImportDialog extends AbstractDialog
   private Input importerListe     = null;
   private GenericObject context   = null;	
   private Class type              = null;
-  
+
   private Settings  settings      = null;
   private BackgroundTask task     = null;
 
@@ -74,7 +74,7 @@ public class ImportDialog extends AbstractDialog
 
     this.context = context;
     this.type = type;
-    
+
 		this.setTitle(i18n.tr("Daten-Import"));
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
 
@@ -146,7 +146,6 @@ public class ImportDialog extends AbstractDialog
       fd.setFilterPath(path);
 
     final String s = fd.open();
-    
 
     if (s == null || s.length() == 0)
     {
@@ -157,7 +156,7 @@ public class ImportDialog extends AbstractDialog
     final File file = new File(s);
     if (!file.exists() || !file.isFile())
       throw new ApplicationException(i18n.tr("Datei existiert nicht oder ist nicht lesbar"));
-    
+
     // Wir merken uns noch das Verzeichnis vom letzten mal
     settings.setAttribute("lastdir",file.getParent());
 
@@ -170,7 +169,7 @@ public class ImportDialog extends AbstractDialog
     this.task = new BackgroundTask()
     {
       private boolean interrupted = false;
-      
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
        */
@@ -212,7 +211,7 @@ public class ImportDialog extends AbstractDialog
       {
         this.interrupted = true;
       }
-      
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
        */
@@ -292,7 +291,7 @@ public class ImportDialog extends AbstractDialog
 	{
 		private Importer importer = null;
     private IOFormat format   = null;
-		
+
 		private Imp(Importer importer, IOFormat format)
 		{
 			this.importer = importer;

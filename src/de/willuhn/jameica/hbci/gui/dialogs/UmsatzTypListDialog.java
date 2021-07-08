@@ -60,18 +60,18 @@ public class UmsatzTypListDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypListDialog.class);
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
-  
+
   private final static int WINDOW_WIDTH = 370;
   private final static int WINDOW_HEIGHT = 500;
 
   private List<UmsatzTypBean> list = null;
   private UmsatzTyp choosen        = null;
   private int typ                  = UmsatzTyp.TYP_EGAL;
-  
+
   private TextInput search         = null;
   private TablePart table          = null;
   private Button apply             = null;
-  
+
   /**
    * ct.
    * @param position
@@ -87,7 +87,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     super(position);
     this.choosen = preselected;
     this.typ = typ;
-    
+
     this.list =  UmsatzTypUtil.getList(null,this.typ);
 
     this.setTitle(i18n.tr("Auswahl der Kategorie"));
@@ -101,14 +101,14 @@ public class UmsatzTypListDialog extends AbstractDialog
   {
     return choosen;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent,true);
-    
+
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
     TextInput text = this.getSearch();
     group.addInput(text);
@@ -118,10 +118,9 @@ public class UmsatzTypListDialog extends AbstractDialog
     // geht erst nach dem Paint
     if (this.choosen != null)
       this.getTable().select(new UmsatzTypBean(this.choosen));
-    
-    
+
     text.getControl().addKeyListener(new DelayedAdapter());
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(this.getApplyButton());
     buttons.addButton(i18n.tr("K&eine Kategorie"), new Action()
@@ -139,21 +138,21 @@ public class UmsatzTypListDialog extends AbstractDialog
         throw new OperationCanceledException();
       }
     },null,false,"process-stop.png");
-    
+
     group.addButtonArea(buttons);
-    
+
     // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
     getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
-    
+
     getShell().addDisposeListener(new DisposeListener() {
-      
+
       @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Shell shell = getShell();
         if (shell == null || shell.isDisposed())
           return;
-        
+
         Point size = shell.getSize();
         Logger.debug("saving window size: " + size.x + "x" + size.y);
         settings.setAttribute("window.width",size.x);
@@ -161,7 +160,7 @@ public class UmsatzTypListDialog extends AbstractDialog
       }
     });
   }
-  
+
   /**
    * Liefert den Apply-Button.
    * @return der Apply-Button.
@@ -170,12 +169,12 @@ public class UmsatzTypListDialog extends AbstractDialog
   {
     if (this.apply != null)
       return this.apply;
-    
+
     this.apply = new Button(i18n.tr("Übernehmen"),new Apply(),null,true,"ok.png");
     this.apply.setEnabled(false); // initial deaktiviert
     return this.apply;
   }
-  
+
   /**
    * Liefert das Such-Feld.
    * @return das Such-Feld.
@@ -184,13 +183,13 @@ public class UmsatzTypListDialog extends AbstractDialog
   {
     if (this.search != null)
       return this.search;
-    
+
     this.search = new TextInput("");
     this.search.focus();
     this.search.setName(i18n.tr("Suchbegriff"));
     return this.search;
   }
-  
+
   /**
    * Liefert die Tabelle mit den Kategorien.
    * @return die Tabelle mit den Kategorien.
@@ -220,11 +219,11 @@ public class UmsatzTypListDialog extends AbstractDialog
           UmsatzTypBean b = (UmsatzTypBean) item.getData();
           if (b == null)
             return;
-          
+
           UmsatzTyp ut = b.getTyp();
           if (ut == null)
             return;
-          
+
           // Uebergeordnete Kategorie nur anzeigen, wenn sie derzeit aufgrund eines Filters nicht angezeigt wird
           String q = (String) getSearch().getValue();
           if (StringUtils.trimToNull(q) != null) // Wenn nichts in der Suche steht, muss die Eltern-Kategorie da sein
@@ -234,15 +233,15 @@ public class UmsatzTypListDialog extends AbstractDialog
             if (parent != null && !table.getItems().contains(parent))
               item.setText(0,b.getPathName());
           }
-          
+
           Color c = null;
-          
+
           if (ut.isCustomColor())
           {
             int[] color = ut.getColor();
             if (color == null || color.length != 3)
               return;
-            
+
             RGB rgb = new RGB(color[0],color[1],color[2]);
             c = colorCache.get(rgb.toString());
             if (c == null)
@@ -269,7 +268,7 @@ public class UmsatzTypListDialog extends AbstractDialog
         }
       }
     });
-    
+
     this.table.addSelectionListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -279,7 +278,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     this.getApplyButton().setEnabled(this.choosen != null);
     return this.table;
   }
-  
+
   /**
    * Action fuer das Uebernehmen der Auswahl.
    */
@@ -293,7 +292,7 @@ public class UmsatzTypListDialog extends AbstractDialog
         close();
     }
   }
-  
+
   /**
    * Da KeyAdapter/KeyListener nicht von swt.Listener abgeleitet
    * sind, muessen wir leider dieses schraege Konstrukt verenden,
@@ -310,7 +309,7 @@ public class UmsatzTypListDialog extends AbstractDialog
       {
         TablePart table = getTable();
         table.removeAll();
-        
+
         String text = (String) getSearch().getValue();
         text = text.trim().toLowerCase();
         try
@@ -322,7 +321,7 @@ public class UmsatzTypListDialog extends AbstractDialog
               table.addItem(t);
               continue;
             }
-            
+
             if (t.getTyp().getName().toLowerCase().contains(text))
               table.addItem(t);
           }
@@ -332,7 +331,7 @@ public class UmsatzTypListDialog extends AbstractDialog
           Logger.error("error while adding items to table",re);
         }
       }
-    
+
     });
 
     /**
@@ -343,5 +342,5 @@ public class UmsatzTypListDialog extends AbstractDialog
       forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
     }
   }
-  
+
 }

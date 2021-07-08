@@ -36,7 +36,7 @@ public class SepaSammelUeberweisungList extends AbstractView
   public void bind() throws Exception
   {
     SepaSammelUeberweisungControl control = new SepaSammelUeberweisungControl(this);
-    
+
     final de.willuhn.jameica.hbci.gui.parts.SepaSammelUeberweisungList table = control.getListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportSepaSammelUeberweisung(table));
     table.addSelectionListener(new Listener() {
@@ -45,7 +45,7 @@ public class SepaSammelUeberweisungList extends AbstractView
         print.setEnabled(table.getSelection() != null);
       }
     });
-    
+
     GUI.getView().setTitle(i18n.tr("Vorhandene SEPA-Sammelüberweisungen"));
     GUI.getView().addPanelButton(print);
 

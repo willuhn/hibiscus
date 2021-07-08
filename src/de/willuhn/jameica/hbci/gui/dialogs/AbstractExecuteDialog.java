@@ -27,7 +27,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractExecuteDialog extends AbstractDialog
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
 	private Boolean choosen = Boolean.FALSE;
 
   /**
@@ -74,7 +74,6 @@ public abstract class AbstractExecuteDialog extends AbstractDialog
     group.addButtonArea(b);
   }
 }
-
 
 /**********************************************************************
  * $Log: AbstractExecuteDialog.java,v $

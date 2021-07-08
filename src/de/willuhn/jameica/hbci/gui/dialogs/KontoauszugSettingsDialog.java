@@ -36,7 +36,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private final static int WINDOW_WIDTH = 500;
-  
+
   private CheckboxInput displayAll = null;
 
   /**
@@ -48,7 +48,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
     this.setTitle(i18n.tr("Anzeige-Einstellungen"));
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -57,9 +57,9 @@ public class KontoauszugSettingsDialog extends AbstractDialog
   {
     final Container c = new SimpleContainer(parent);
     c.addInput(this.getDisplayAll());
-    
+
     final Button apply = new Button(i18n.tr("Übernehmen"),new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -67,15 +67,15 @@ public class KontoauszugSettingsDialog extends AbstractDialog
         close();
       }
     },null,true,"ok.png");
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(apply);
     buttons.addButton(new Cancel());
     c.addButtonArea(buttons);
-    
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
@@ -84,7 +84,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
   {
     return null;
   }
-  
+
   /**
    * Liefert die Checkbox, mit der eingestellt werden kann, ob alle Daten des Verwendungszwecks angezeigt werden sollen.
    * @return Checkbox.
@@ -93,12 +93,10 @@ public class KontoauszugSettingsDialog extends AbstractDialog
   {
     if (this.displayAll != null)
       return this.displayAll;
-    
+
     this.displayAll = new CheckboxInput(settings.getBoolean("usage.list.all",false));
     this.displayAll.setName(i18n.tr("Alle Daten des Verwendungszwecks anzeigen"));
     return this.displayAll;
   }
 
 }
-
-

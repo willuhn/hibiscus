@@ -27,5 +27,3 @@ public class KontoauszugNew implements Action
   }
 
 }
-
-

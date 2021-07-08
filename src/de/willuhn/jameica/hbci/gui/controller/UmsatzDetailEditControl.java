@@ -49,7 +49,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   private Input zweck  = null;
   private Input betrag = null;
   private Input saldo  = null;
-  
+
 	/**
    * ct.
    * @param view
@@ -73,7 +73,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     }
     return input;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerName2()
    */
@@ -84,7 +84,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       input.setEnabled(true);
     return input;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerKonto()
    */
@@ -95,7 +95,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       input.setEnabled(true);
     return input;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerBLZ()
    */
@@ -114,14 +114,14 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   {
     if (this.betrag != null)
       return this.betrag;
-    
+
     this.betrag = new DecimalInput(getUmsatz().getBetrag(),HBCI.DECIMALFORMAT);
     this.betrag.setMandatory(true);
-    
+
     final Konto konto = getUmsatz().getKonto();
-    
+
     this.betrag.setComment(konto == null ? "" : konto.getWaehrung());
-    
+
     final Listener l = new Listener() {
       public void handleEvent(Event event) {
         try
@@ -140,10 +140,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       }
     };
     this.betrag.addListener(l);
-    
+
     // BUGZILLA 1833 - Einmal initial ausloesen
     l.handleEvent(null);
-    
+
     return this.betrag;
   }
 
@@ -156,12 +156,12 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     {
       this.saldo = new DecimalInput(getUmsatz().getSaldo(),HBCI.DECIMALFORMAT);
       this.saldo.setMandatory(true);
-      
+
       // Bei neuen Umsaetzen auf Offline-Konten automatisch den Saldo des Kontos uebernehmen
       Konto konto = getUmsatz().getKonto();
       if (konto.hasFlag(Konto.FLAG_OFFLINE) && getUmsatz().isNewObject())
         this.saldo.setValue(konto.getSaldo());
-      
+
       this.saldo.setComment(konto == null ? "" : konto.getWaehrung());
     }
     return this.saldo;
@@ -243,7 +243,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       input.setEnabled(true);
     return input;
 	}
-	
+
 	/**
 	 * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEndToEndId()
 	 */
@@ -255,7 +255,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 	    input.setEnabled(true);
 	  return input;
 	}
-	
+
 	/**
 	 * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getMandateId()
 	 */
@@ -278,7 +278,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       input.setEnabled(true);
     return input;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweckSwitch()
    */
@@ -289,7 +289,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     input.setEnabled(false);
     return input;
   }
-  
+
   /**
    * Ueberschrieben, um den Verwendungszweck bei Bedarf umgebrochen anzuzeigen. 
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getUsage(boolean)
@@ -299,12 +299,12 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     try
     {
       Umsatz u = this.getUmsatz();
-      
+
       if (showAll)
         return VerwendungszweckUtil.toString(u,"\n"); // Wir zeigen den rohen Verwendungszweck an
 
       String usage = (String) BeanUtil.get(u,Tag.SVWZ.name());
-      
+
       // Achtung: Das Extrahieren des Tags SVWZ hat ein integriertes Fallback. Wenn naemlich
       // gar kein Tag vorhanden ist (das ist bei den alten Buchungen der Fall), dann wird
       // der komplette Verwendungszweck in einer Zeile zurueckgeliefert, um das neue SEPA-Verhalten
@@ -313,7 +313,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       final int limit = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
       if (usage == null || usage.length() <= limit)
         return usage;
-      
+
       return VerwendungszweckUtil.merge(VerwendungszweckUtil.rewrap(limit,usage));
     }
     catch (RemoteException re)
@@ -321,7 +321,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       Logger.error("unable to display usage text",re);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anzeigen des Verwendungszweck: {0}",re.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
-    
+
     return "";
   }
 
@@ -337,19 +337,19 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 
       u.setKommentar((String)getKommentar().getValue());
       u.setUmsatzTyp((UmsatzTyp)getUmsatzTyp().getValue());
-      
+
       u.setGegenkontoName(((AddressInput)getEmpfaengerName()).getText());
       u.setGegenkontoName2((String) getEmpfaengerName2().getValue());
       u.setGegenkontoNummer((String) getEmpfaengerKonto().getValue());
       u.setGegenkontoBLZ((String) getEmpfaengerBLZ().getValue());
       u.setZweck((String) getZweck().getValue());
       u.setArt((String)getArt().getValue());
-      
+
       Double betrag = (Double) getBetrag().getValue();
       u.setBetrag(betrag != null ? betrag : 0.0d);
-      
+
       Double su = (Double)getSaldo().getValue();
-      
+
       // BUGZILLA 586
       u.setSaldo(su);
       Konto k = u.getKonto();
@@ -359,15 +359,15 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
         k.store();
         Application.getMessagingFactory().sendMessage(new SaldoMessage(k));
       }
-      
+
       u.setCustomerRef((String)getCustomerRef().getValue());
       u.setPrimanota((String)getPrimanota().getValue());
       u.setEndToEndId((String)getEndToEndId().getValue());
       u.setMandateId((String)getMandateId().getValue());
-      
+
       Date valuta = (Date) getValuta().getValue();
       Date datum  = (Date) getDatum().getValue();
-      
+
       if (valuta == null)
       {
         valuta = datum;
@@ -378,10 +378,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
         datum = valuta;
         getDatum().setValue(datum);
       }
-      
+
       u.setValuta(valuta);
       u.setDatum(datum);
-      
+
       String gvcode = (String) getGvCode().getValue();
       String add = null;
       if (gvcode != null && gvcode.indexOf('/') != -1)
@@ -399,16 +399,16 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       u.setAddKey(add);
 
       String z = (String) getZweck().getValue();
-      
+
       // Erstmal die Zeilen loeschen
       u.setZweck(null);
       u.setZweck2(null);
       u.setWeitereVerwendungszwecke(null);
-      
+
       // Und jetzt neu verteilen
       String[] lines = VerwendungszweckUtil.split(z);
       VerwendungszweckUtil.apply(u,lines);
-      
+
       u.store();
 
       if(InputCompat.valueHasChanged(getEmpfaengerBLZ(),

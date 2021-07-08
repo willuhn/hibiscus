@@ -30,7 +30,7 @@ import de.willuhn.util.ApplicationException;
 public class UmsatzDetail extends AbstractUmsatzDetail
 {
   private Button checked = null;
-  
+
   private UmsatzDetailControl control = null;
 
   /**
@@ -41,11 +41,11 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     super.bind();
 
     ButtonArea buttons = new ButtonArea();
-    
+
     Umsatz u = getControl().getUmsatz();
-    
+
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportUmsatzList(u)));
-    
+
     this.checked = new Button(i18n.tr("Geprüft"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -56,7 +56,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     },u,false,"emblem-default.png");
     checked.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED) && !u.hasFlag(Umsatz.FLAG_CHECKED));
     buttons.addButton(checked);
-    
+
     Button ab = null;
     final Address found = getControl().getAddressbookEntry();
     if (found != null)
@@ -103,7 +103,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
       store.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED));
       buttons.addButton(store);
     }
-    
+
     buttons.paint(getParent());
   }
 
@@ -117,7 +117,6 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     return this.control;
   }
 }
-
 
 /**********************************************************************
  * $Log: UmsatzDetail.java,v $

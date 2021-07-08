@@ -73,12 +73,12 @@ public abstract class AbstractTransferList extends AbstractFromToList
   public AbstractTransferList(Action action)
   {
     super(action);
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
     final boolean bold = Settings.getBoldValues();
-    
+
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         Terminable l = (Terminable) item.getData();
@@ -125,7 +125,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
         {
           Logger.error("unable to format line",e);
         }
-        
+
       }
     });
 
@@ -138,7 +138,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
 
   }
-  
+
   /**
    * Initialisiert die Spalten
    */
@@ -161,7 +161,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
   {
     if (this.pending != null)
       return this.pending;
-    
+
     this.pending = new CheckboxInput(settings.getBoolean("transferlist.filter.pending",false));
     this.pending.setName(i18n.tr("Nur offene Aufträge anzeigen"));
     this.pending.addListener(this.listener);
@@ -173,7 +173,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
     });
     return this.pending;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#hasChanged()
    */
@@ -181,7 +181,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
   {
     return InputCompat.valueHasChanged(super.hasChanged(), pending);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -195,7 +195,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
       }
     });
     super.paint(parent);
-    
+
     this.getLeft().addInput(this.getPending());
   }
 
@@ -205,7 +205,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    
+
     DBIterator list = service.createList(getObjectType());
     if (from != null) list.addFilter("termin >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
     if (to   != null) list.addFilter("termin <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
@@ -214,7 +214,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
       list.addFilter("konto_id = " + ((Konto) konto).getID());
     else if (konto != null && (konto instanceof String))
       list.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) konto);
-    
+
     boolean pending = ((Boolean) this.getPending().getValue()).booleanValue();
     if (pending)
       list.addFilter("ausgefuehrt = 0");
@@ -222,13 +222,12 @@ public abstract class AbstractTransferList extends AbstractFromToList
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
   }
-  
+
   /**
    * Liefert die Art der zu ladenden Objekte zurueck.
    * @return Art der zu ladenden Objekte.
    */
   protected abstract Class getObjectType();
-
 
   /**
    * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
@@ -236,7 +235,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
   public class TransferMessageConsumer implements MessageConsumer
   {
     private DelayedListener delayed = null;
-    
+
     /**
      * ct.
      */
@@ -245,7 +244,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
       if (listener != null)
         this.delayed = new DelayedListener(listener);
     }
-    
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -264,16 +263,16 @@ public abstract class AbstractTransferList extends AbstractFromToList
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
-      
+
       if (o == null)
         return;
-      
+
       // Checken, ob uns der Transfer-Typ interessiert
       if (!getObjectType().isAssignableFrom(o.getClass()))
         return;
-      
+
       if (message instanceof ObjectChangedMessage)
       {
         GUI.startSync(new Runnable() {

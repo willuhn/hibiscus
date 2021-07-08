@@ -38,7 +38,6 @@ public class AuslandsUeberweisungExecute implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-
   /**
 	 * Erwartet ein Objekt vom Typ <code>AuslandsUeberweisung</code> als Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -51,7 +50,7 @@ public class AuslandsUeberweisungExecute implements Action
 		try
 		{
 			final AuslandsUeberweisung u = (AuslandsUeberweisung) context;
-			
+
 			if (u.ausgefuehrt())
 				throw new ApplicationException(i18n.tr("Überweisung wurde bereits ausgeführt"));
 

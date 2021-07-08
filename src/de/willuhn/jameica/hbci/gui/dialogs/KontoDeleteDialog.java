@@ -46,7 +46,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
 
   private final static int WINDOW_WIDTH = 800;
   private final static int WINDOW_HEIGHT= 400;
-  
+
   private Konto konto         = null;
   private TablePart deps      = null;
   private CheckboxInput check = null;
@@ -77,15 +77,15 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     c.addText(i18n.tr("Wollen Sie das Konto wirklich löschen?\nHierbei werden auch alle Daten gelöscht, die diesem Konto zugeordnet sind.") + "\n",true);
     c.addPart(this.getDependencies());
     c.addInput(this.getCheck());
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(getApply());
     buttons.addButton(new Cancel());
     c.addButtonArea(buttons);
-    
+
     this.getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
   }
-  
+
   /**
    * Liefert eine Checkbox, die der User ankreuzen muss, um den Loesch-Button freizuschalten.
    * @return Checkbox.
@@ -94,11 +94,11 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
   {
     if (this.check != null)
       return this.check;
-    
+
     this.check = new CheckboxInput(false);
     this.check.setName(i18n.tr("Konto und alle zugeordneten Daten löschen"));
     this.check.addListener(new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -107,7 +107,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     });
     return this.check;
   }
-  
+
   /**
    * Liefert den Apply-Button.
    * @return der Apply-Button.
@@ -116,9 +116,9 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
   {
     if (this.apply != null)
       return this.apply;
-    
+
     this.apply = new Button(i18n.tr("Jetzt löschen"),new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -127,10 +127,10 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
       }
     },null,false,"user-trash-full.png");
     this.apply.setEnabled(false);
-    
+
     return this.apply;
   }
-  
+
   /**
    * Liefert die Liste der Daten, die beim Loeschen des Kontos ebenfalls geloescht werden.
    * @return Liste der abhaengigen Daten.
@@ -140,24 +140,24 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
   {
     if (this.deps != null)
       return this.deps;
-    
+
     this.deps = new TablePart(null);
     this.deps.removeFeature(FeatureSummary.class);
     this.deps.addColumn(i18n.tr("Art der zugeordneten Daten"),"name");
     this.deps.addColumn(i18n.tr("Anzahl"),"size",null,false,Column.ALIGN_RIGHT);
     this.deps.addColumn(i18n.tr("Bemerkung"),"comment");
-    
+
     // Wir laden die Daten im Hintergrund. Das kann sonst bei vielen Daten laenger dauern
     new Thread()
     {
       public void run() {
         GUI.getDisplay().asyncExec(new Runnable() {
-          
+
           @Override
           public void run()
           {
             BusyIndicator.showWhile(GUI.getDisplay(), new Runnable() {
-              
+
               @Override
               public void run()
               {
@@ -172,7 +172,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
                   added |= add(i18n.tr("Lastschriften"),konto.getSepaLastschriften().size(),null);
                   added |= add(i18n.tr("Sammelüberweisungen"),konto.getSepaSammelUeberweisungen().size(),null);
                   added |= add(i18n.tr("Sammellastschriften"),konto.getSepaSammelLastschriften().size(),null);
-                  
+
                   if (!added)
                   {
                     getDependencies().addItem(new Dep("-",0,i18n.tr("Keine weiteren zugeordneten Daten")));
@@ -189,10 +189,10 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
         });
       };
     }.start();
-    
+
     return this.deps;
   }
-  
+
   /**
    * Fuegt den Eintrag zur Liste hinzu, wenn data Daten enthaelt.
    * @param name Name des Eintrages.
@@ -205,7 +205,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
   {
     if (size == 0)
       return false;
-    
+
     this.getDependencies().addItem(new Dep(name,size,comment));
     return true;
   }
@@ -218,7 +218,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
   {
     return choice;
   }
-  
+
   /**
    * Kapselt eine Zeile in den Abhaengigkeiten
    */
@@ -227,7 +227,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     private String name = null;
     private int size = 0;
     private String comment = null;
-    
+
     /**
      * ct.
      * @param name
@@ -240,7 +240,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
       this.size = size;
       this.comment = comment;
     }
-    
+
     /**
      * Liefert einen sprechenden Namen.
      * @return sprechender Name.
@@ -249,7 +249,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     {
       return this.name;
     }
-    
+
     /**
      * Speichert den Namen.
      * Methode noetig wegen Bean-Spezifikation.
@@ -259,7 +259,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     {
       this.name = name;
     }
-    
+
     /**
      * Liefert die Anzahl der Datensaetze.
      * @return Anzahl der Datensaetze.
@@ -268,7 +268,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     {
       return this.size;
     }
-    
+
     /**
      * Speichert die Anzahl-
      * Methode noetig wegen Bean-Spezifikation.
@@ -278,7 +278,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     {
       this.size = size;
     }
-    
+
     /**
      * Liefert einen Kommentar.
      * @return Kommentar.
@@ -287,7 +287,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     {
       return this.comment;
     }
-    
+
     /**
      * Speichert den Kommentar.
      * Methode noetig wegen Bean-Spezifikation.

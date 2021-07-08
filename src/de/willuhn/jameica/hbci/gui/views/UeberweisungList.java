@@ -34,7 +34,7 @@ public class UeberweisungList extends AbstractView
   public void bind() throws Exception
   {
     UeberweisungControl control = new UeberweisungControl(this);
-    
+
     final de.willuhn.jameica.hbci.gui.parts.UeberweisungList table = control.getUeberweisungListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportUeberweisungList(table));
     table.addSelectionListener(new Listener() {
@@ -43,10 +43,10 @@ public class UeberweisungList extends AbstractView
         print.setEnabled(table.getSelection() != null);
       }
     });
-    
+
 		GUI.getView().setTitle(i18n.tr("Vorhandene Überweisungen"));
     GUI.getView().addPanelButton(print);
-    
+
 		table.paint(getParent());
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
   }

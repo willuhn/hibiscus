@@ -46,7 +46,7 @@ public class PassportPropertyList implements Part
 
   private final static String PREFIX_BPD = "BPD";
   private final static String PREFIX_UPD = "UPD";
-  
+
   private HBCIPassport passport = null;
   private List<Value> list      = new ArrayList<Value>();
   private PropertyTable table   = null;
@@ -60,8 +60,7 @@ public class PassportPropertyList implements Part
   {
     this.passport = passport;
   }
-  
-  
+
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -76,11 +75,11 @@ public class PassportPropertyList implements Part
     this.search.setName(i18n.tr("Suche"));
     container.addInput(this.search);
     this.search.getControl().addKeyListener(new DelayedAdapter());
-    
+
     this.table = new PropertyTable();
     this.table.paint(parent);
   }
-  
+
   /**
    * Loescht alle BPD aus der Tabelle.
    */
@@ -95,7 +94,7 @@ public class PassportPropertyList implements Part
     this.list = newList;
     reload();
   }
-  
+
   /**
    * Initialisiert die Liste der Werte.
    * @param prefix BPD/UPD.
@@ -116,7 +115,7 @@ public class PassportPropertyList implements Part
       l.add(new Value(prefix,key,props.getProperty(key)));
     return l;
   }
-  
+
   /**
    * Aktualisiert die Daten.
    */
@@ -139,11 +138,11 @@ public class PassportPropertyList implements Part
         String prefix = v.prefix;
         String name = v.name;
         String value = v.value;
-        
+
         if (name == null) name = "";
         if (value == null) value = "";
         if (lower == null) lower = text.toLowerCase();
-        
+
         if (name.toLowerCase().indexOf(lower) != -1 || 
             value.toLowerCase().indexOf(lower) != -1 ||
             prefix.toLowerCase().indexOf(lower) != -1)
@@ -176,7 +175,7 @@ public class PassportPropertyList implements Part
         // hier kommt dann das verzoegerte Event an.
         reload();
       }
-    
+
     });
 
     /**
@@ -187,7 +186,7 @@ public class PassportPropertyList implements Part
       forward.handleEvent(null);
     }
   }
-    
+
   /**
    * Kapslet eine Tabelle mit BPD/UPD-Properties.
    */
@@ -201,7 +200,7 @@ public class PassportPropertyList implements Part
       super(list,null);
       this.setRememberColWidths(true);
       this.setSummary(true);
-      
+
       this.addColumn(i18n.tr("BPD/UPD"),"prefix");
       this.addColumn(i18n.tr("Parameter"),"name");
       this.addColumn(i18n.tr("Wert"),"value");
@@ -216,7 +215,7 @@ public class PassportPropertyList implements Part
     private String prefix = null;
     private String name   = null;
     private String value  = null;
-    
+
     /**
      * ct.
      * @param prefix
@@ -278,7 +277,6 @@ public class PassportPropertyList implements Part
   }
 
 }
-
 
 /**********************************************************************
  * $Log: PassportPropertyList.java,v $

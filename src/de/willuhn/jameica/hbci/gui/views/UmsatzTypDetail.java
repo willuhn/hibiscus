@@ -46,11 +46,11 @@ public class UmsatzTypDetail extends AbstractView
     ColumnLayout columns = new ColumnLayout(getParent(),2);
 
     Container left = new SimpleContainer(columns.getComposite());
-    
+
     left.addHeadline(i18n.tr("Eigenschaften"));
     left.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
     left.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
-    
+
     left.addHeadline(i18n.tr("Zuordnung der Umsätze"));
     left.addInput(control.getKonto());
     left.addLabelPair(i18n.tr("Reihenfolge"), control.getNummer());
@@ -61,12 +61,12 @@ public class UmsatzTypDetail extends AbstractView
     Container right = new SimpleContainer(columns.getComposite(),true);
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());
-    
+
     right.addHeadline(i18n.tr("Darstellung"));
     right.addInput(control.getSkipReport());
     right.addCheckbox(control.getCustomColor(),i18n.tr("Benutzerdefinierte Farbe"));
     right.addLabelPair(i18n.tr("Farbe"), control.getColor());
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Löschen"),   new DBObjectDelete(),control.getCurrentObject(),false,"user-trash-full.png");
     buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
@@ -93,7 +93,7 @@ public class UmsatzTypDetail extends AbstractView
         control.handleStore();
       }
     },null,true,"document-save.png");
-    
+
     buttons.paint(getParent());
   }
 }

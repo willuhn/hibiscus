@@ -29,10 +29,10 @@ import de.willuhn.util.I18N;
 public class HibiscusAddressUpdate implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private HibiscusAddress address = null;
   private boolean create = false;
-  
+
   /**
    * Speichert die Adresse, die auf Veraenderungen geprueft werden soll.
    * @param a Adresse, die auf Veraenderungen geprueft werden soll.
@@ -42,7 +42,7 @@ public class HibiscusAddressUpdate implements Action
     if (a instanceof HibiscusAddress) // Checken, ob es ueberhaupt eine Adresse aus dem Adressbuch ist
       this.address = (HibiscusAddress) a;
   }
-  
+
   /**
    * Legt fest, ob die Adresse ggf. neu angelegt werden soll.
    * @param b true, wenn die Adresse ggf. neu angelegt werden soll.
@@ -51,7 +51,7 @@ public class HibiscusAddressUpdate implements Action
   {
     this.create = b;
   }
-  
+
   /**
    * Erwartet ein Objekt vom Typ <code>Address</code>.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -64,44 +64,43 @@ public class HibiscusAddressUpdate implements Action
     {
       if (this.create)
         new EmpfaengerAdd().handleAction(context);
-      
+
       return;
     }
 
     // Wir haben keine Daten. Damit haben wir nichts zu pruefen
     if (context == null || !(context instanceof HibiscusAddress))
       return;
-    
+
     final HibiscusAddress newAddress = (HibiscusAddress) context;
 
     try
     {
       // Wenn der User eine existierende Adresse gewaehlt hat, checken wir auf Aenderungen.
       // Auch dann, wenn die Checkbox "Zum Adressbuch hinzufügen" nicht aktiviert wurde.
-  
       // Checken, ob sich ueberhaupt was geaendert hat
       final boolean ibanChanged = this.changed(this.address.getIban(),newAddress.getIban(),false);
       final boolean bicChanged  = this.changed(this.address.getBic(),newAddress.getBic(),false);
       final boolean nameChanged = this.changed(this.address.getName(),newAddress.getName(),true);
-      
+
       // Wenn sich nichts geaendert hat, brauchen wir den User auch nicht fragen, ob wir aktualisieren sollen.
       if (!ibanChanged && !bicChanged && !nameChanged)
         return;
-  
+
       if (!Application.getCallback().askUser(i18n.tr("Die Adresse wurde geändert.\nSollen die Daten im Adressbuch aktualisiert werden?")))
         return;
-  
+
       if (ibanChanged)
         this.address.setIban(newAddress.getIban());
-      
+
       if (bicChanged)
         this.address.setBic(newAddress.getBic());
-      
+
       if (nameChanged)
         this.address.setName(newAddress.getName());
-  
+
       this.address.store();
-      
+
       // Wir muessen in der uebergebenen Adresse (wir wurde ja nur on-the-fly erstellt) die ID der existierenden speichern.
       // Wird beim Aufrufer fuer das Speichern von MetaKey.ADDRESS_ID und der Mandats-Daten verwendet
       if (newAddress instanceof HibiscusAddressImpl)
@@ -120,7 +119,7 @@ public class HibiscusAddressUpdate implements Action
 			throw new ApplicationException(i18n.tr("Speichern der Adresse fehlgeschlagen: {0}",e.getMessage()));
 		}
   }
-  
+
   /**
    * Vergleicht die beiden Werte.
    * @param s1 Wert 1.
@@ -132,10 +131,10 @@ public class HibiscusAddressUpdate implements Action
   {
     if (exact)
       return !Objects.equals(s1,s2);
-    
+
     return !Objects.equals(this.prepare(s1),this.prepare(s2));
   }
-  
+
   /**
    * Bereitet eine IBAN/BIC auf den Vergleich vor.
    * @param s der String.
@@ -145,7 +144,7 @@ public class HibiscusAddressUpdate implements Action
   {
     if (s == null)
       return s;
-    
+
     return s.replace(" ","").toLowerCase();
   }
 }

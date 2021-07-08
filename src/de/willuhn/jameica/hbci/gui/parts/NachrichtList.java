@@ -122,7 +122,6 @@ public class NachrichtList extends TablePart implements Part
   }
 }
 
-
 /**********************************************************************
  * $Log: NachrichtList.java,v $
  * Revision 1.7  2011/06/30 16:29:41  willuhn

@@ -92,7 +92,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     this.chart = chart;
     if (this.chart == null)
       return;
-    
+
     final Legend l = (Legend) chart.getLegend();
     l.addMouseListener(new MouseAdapter()
     {
@@ -112,7 +112,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
         }
       }
     });
-    
+
     l.setMenu(createLegendContextMenu(chart, l));
   }
 
@@ -212,7 +212,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   {
     return this.data;
   }
-  
+
   /**
    * Erzeugt eine Farbe, die automatisch disposed wird.
    * Die Funktion hat einen internen Cache. Wenn die Farbe schon im Cache
@@ -226,12 +226,12 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     Color c = this.colors.get(rgb);
     if (c != null && !c.isDisposed())
       return c;
-    
+
     c = new Color(GUI.getDisplay(),rgb);
     this.colors.put(rgb,c);
     return c;
   }
-  
+
   /**
    * Entfernt den Menu-Eintrag "Properties" aus dem InteractiveChart,
    * weil das nur in Eclipse funktioniert. In Jameica wuerde das
@@ -254,7 +254,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
         if (text.equals(Messages.PROPERTIES))
         {
           mi.dispose();
-          
+
           // Den Separator davor gleich noch entfernen
           if (i > 0) items[i-1].dispose();
           return;
@@ -266,7 +266,6 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
       // Dann halt nicht ;)
     }
   }
-  
 
   /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
@@ -298,7 +297,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     cleanMenu();
     this.featureEvent(Event.PAINT);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#addFeature(de.willuhn.jameica.hbci.gui.chart.ChartFeature)
    */
@@ -307,7 +306,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   {
     this.features.add(feature);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#removeFeature(de.willuhn.jameica.hbci.gui.chart.ChartFeature)
    */
@@ -316,7 +315,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   {
     this.features.remove(feature);
   }
-  
+
   /**
    * Loest ein Feature-Event aus.
    * @param e das Event.
@@ -325,11 +324,11 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   {
     if (this.features.size() == 0)
       return;
-    
+
     Context ctx = new Context();
     ctx.chart = this;
     ctx.event = e;
-    
+
     for (ChartFeature f:this.features)
     {
       if (f.onEvent(e))

@@ -64,7 +64,7 @@ public class ChartFeatureTooltip implements ChartFeature
 
         if (foundSeries.isEmpty())
           return;
-        
+
         // set tooltip of closest data point
         c.getPlotArea().setToolTipText(getTooltipText(foundSeries));
 
@@ -74,7 +74,7 @@ public class ChartFeatureTooltip implements ChartFeature
         highlightY = yAxis.getPixelCoordinate(data.closestY);
         seriesIndex = data.seriesIndex;
         highlight = true;
-        
+
         // trigger repaint (paint highlight)
         c.getPlotArea().getControl().redraw();
       }
@@ -127,14 +127,14 @@ public class ChartFeatureTooltip implements ChartFeature
   protected String getTooltipText(Collection<SeriesData> foundData)
   {
     StringBuilder text = new StringBuilder();
-    
+
     // Zuerst alle betroffenen Datenserien
     for (SeriesData data : foundData)
     {
       text.append(formatSeriesLabel(data));
       text.append("\n");
     }
-    
+
     // jetzt einmal die Daten
     SeriesData data = foundData.iterator().next();
     text.append(this.formatSeriesValue(data));
@@ -150,7 +150,7 @@ public class ChartFeatureTooltip implements ChartFeature
   {
     return data.closestSerie.getId();
   }
-  
+
   /**
    * Liefert den anzuzeigenden Tooltip-Text.
    * @param data der Datensatz, fuer den der Tooltip angezeigt werden soll.
@@ -164,7 +164,7 @@ public class ChartFeatureTooltip implements ChartFeature
     sb.append(HBCI.DECIMALFORMAT.format(data.closestY));
     return sb.toString();
   }
-  
+
   /**
    * Zeichnet einen Indikator an die aktuelle Chart-Position, auf die sich der Tooltip bezieht.
    * @param gc
@@ -197,7 +197,7 @@ public class ChartFeatureTooltip implements ChartFeature
 
     ISeries[] series = chart.getSeriesSet().getSeries();
     double minDist = Double.MAX_VALUE;
-    
+
     Collection<SeriesData> foundSeries = new ArrayList<SeriesData>();
 
     for (int k=0;k<series.length;++k)
@@ -226,7 +226,7 @@ public class ChartFeatureTooltip implements ChartFeature
     }
     return foundSeries;
   }
-  
+
   /**
    * Haelt die Werte des ausgewaehlten Datensatzes.
    */
@@ -236,7 +236,7 @@ public class ChartFeatureTooltip implements ChartFeature
     double closestY = 0;
     int seriesIndex = 0;
     ISeries closestSerie = null;
-    
+
     /**
      * ct.
      * @param serie
@@ -251,7 +251,7 @@ public class ChartFeatureTooltip implements ChartFeature
       closestY = y;
       seriesIndex = idx;
     }
-    
+
   }
 
 }

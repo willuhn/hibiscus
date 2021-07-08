@@ -49,7 +49,6 @@ public class About implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: About.java,v $
  * Revision 1.5  2011/05/11 10:20:28  willuhn

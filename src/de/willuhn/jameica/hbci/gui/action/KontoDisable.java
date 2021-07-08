@@ -96,7 +96,6 @@ public class KontoDisable implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: KontoDisable.java,v $
  * Revision 1.2  2010/04/22 16:10:43  willuhn

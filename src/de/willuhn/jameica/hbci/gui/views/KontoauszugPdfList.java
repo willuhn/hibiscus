@@ -34,13 +34,12 @@ public class KontoauszugPdfList extends AbstractView
   public void bind() throws Exception
   {
     GUI.getView().setTitle(i18n.tr("Elektronische Kontoauszüge"));
-    
+
     final KontoauszugPdfControl control = new KontoauszugPdfControl(this);
     final de.willuhn.jameica.hbci.gui.parts.KontoauszugPdfList list = control.getList();
 
-    
     list.paint(getParent());
-    
+
     PanelButton button = new PanelButton("document-properties.png",new Action() {
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -51,5 +50,5 @@ public class KontoauszugPdfList extends AbstractView
     GUI.getView().addPanelButton(button);
 
   }
-  
+
 }

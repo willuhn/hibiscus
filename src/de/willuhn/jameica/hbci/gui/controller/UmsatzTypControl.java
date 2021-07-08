@@ -61,10 +61,10 @@ public class UmsatzTypControl extends AbstractControl
   private TextInput kommentar       = null;
   private KontoInput konto          = null;
   private CheckboxInput skipReport  = null;
-  
+
   private ColorInput color          = null;
   private CheckboxInput customColor = null;
-  
+
   /**
    * @param view
    */
@@ -72,7 +72,7 @@ public class UmsatzTypControl extends AbstractControl
   {
     super(view);
   }
-  
+
   /**
    * Liefert den aktuellen Umsatz-Typ.
    * @return der aktuelle Umsatz-Typ.
@@ -86,7 +86,7 @@ public class UmsatzTypControl extends AbstractControl
     this.ut = (UmsatzTyp) getCurrentObject();
     if (this.ut != null)
       return this.ut;
-    
+
     this.ut = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
     return this.ut;
   }
@@ -115,7 +115,7 @@ public class UmsatzTypControl extends AbstractControl
   {
     if (this.kommentar != null)
       return this.kommentar;
-    
+
     this.kommentar = new TextAreaInput(this.getUmsatzTyp().getKommentar(),1000);
     return this.kommentar;
   }
@@ -136,7 +136,6 @@ public class UmsatzTypControl extends AbstractControl
     return this.nummer;
   }
 
-  
   /**
    * Erzeugt das Eingabe-Feld fuer den Such-Pattern.
    * @return Eingabe-Feld.
@@ -150,7 +149,7 @@ public class UmsatzTypControl extends AbstractControl
       this.pattern.setHint(i18n.tr("Für automatische Zuordnung anhand von Suchbegriffen"));
       this.pattern.addListener(new Listener()
       {
-      
+
         public void handleEvent(Event event)
         {
           // Wir testen sofort, ob der regulaere Ausdruck vielleicht
@@ -178,12 +177,12 @@ public class UmsatzTypControl extends AbstractControl
             Logger.error("unable to verify pattern",e);
           }
         }
-      
+
       });
     }
     return this.pattern;
   }
-  
+
   /**
    * Liefert eine Checkbox zur Aktivierung von regulaeren Ausdruecken.
    * @return Checkbox.
@@ -227,7 +226,7 @@ public class UmsatzTypControl extends AbstractControl
     });
     return this.customColor;
   }
-  
+
   /**
    * Feld zur Auswahl der Farbe.
    * @return Auswahlfeld.
@@ -259,12 +258,12 @@ public class UmsatzTypControl extends AbstractControl
       list.add(new UmsatzTypObject(UmsatzTyp.TYP_EGAL));
       list.add(new UmsatzTypObject(UmsatzTyp.TYP_EINNAHME));
       list.add(new UmsatzTypObject(UmsatzTyp.TYP_AUSGABE));
-      
+
       this.art = new SelectInput(list,new UmsatzTypObject(getUmsatzTyp().getTyp()));
     }
     return this.art;
   }
-  
+
   /**
    * Liefert eine Auswahlbox fuer die Eltern-Kategorie.
    * @return Auswahlbox.
@@ -274,12 +273,12 @@ public class UmsatzTypControl extends AbstractControl
   {
     if (this.parent != null)
       return this.parent;
-    
+
     this.parent = new UmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp(),UmsatzTyp.TYP_EGAL, false);
     this.parent.setComment("");
     return this.parent;
   }
-  
+
   /**
    * Liefert ein Auswahlfeld fuer das Konto.
    * @return Auswahl-Feld.
@@ -289,7 +288,7 @@ public class UmsatzTypControl extends AbstractControl
   {
     if (this.konto != null)
       return this.konto;
-    
+
     final String kat = this.getUmsatzTyp().getKontoKategorie();
     final Konto k = this.getUmsatzTyp().getKonto();
     this.konto = new KontoInput(k,KontoFilter.ALL);
@@ -301,7 +300,7 @@ public class UmsatzTypControl extends AbstractControl
       this.konto.setValue(kat);
     return this.konto;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der festgelegt werden kann, ob eine Kategorie in den Auswertungen ignoriert werden soll.
    * @return Checkbox.
@@ -311,7 +310,7 @@ public class UmsatzTypControl extends AbstractControl
   {
     if (this.skipReport != null)
       return this.skipReport;
-    
+
     this.skipReport = new CheckboxInput(this.getUmsatzTyp().hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS));
     this.skipReport.setName(i18n.tr("In Auswertungen ignorieren"));
     return this.skipReport;
@@ -326,7 +325,7 @@ public class UmsatzTypControl extends AbstractControl
     try
     {
       UmsatzTypObject t = (UmsatzTypObject) getArt().getValue();
-      
+
       UmsatzTyp ut = getUmsatzTyp();
       ut.setTyp(t == null ? UmsatzTyp.TYP_EGAL : t.typ);
       ut.setName((String)getName().getValue());
@@ -353,13 +352,13 @@ public class UmsatzTypControl extends AbstractControl
       }
       //
       //////////////////////////////////////////////////////////////
-      
+
       //////////////////////////////////////////////////////////////
       // Skip-Reports-Flag
       final boolean skip = ((Boolean)this.getSkipReport().getValue()).booleanValue();
       final int flags = ut.getFlags();
       final boolean have = ut.hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS);
-      
+
       if (skip && !have)
         ut.setFlags(flags | UmsatzTyp.FLAG_SKIP_REPORTS);
       else if (!skip && have)
@@ -367,7 +366,6 @@ public class UmsatzTypControl extends AbstractControl
       //
       //////////////////////////////////////////////////////////////
 
-      
       boolean b = ((Boolean)getCustomColor().getValue()).booleanValue();
       ut.setCustomColor(b);
       if (b)
@@ -383,8 +381,7 @@ public class UmsatzTypControl extends AbstractControl
           ut.setColor(new int[]{rgb.red,rgb.green,rgb.blue});
         }
       }
-      
-      
+
       ut.store();
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Umsatz-Kategorie gespeichert"), StatusBarMessage.TYPE_SUCCESS));
       return true;
@@ -400,14 +397,14 @@ public class UmsatzTypControl extends AbstractControl
     }
     return false;
   }
-  
+
   /**
    * Hilfsklasse fuer die Art der Kategorie.
    */
   public static class UmsatzTypObject implements GenericObject
   {
     private int typ = UmsatzTyp.TYP_EGAL;
-    
+
     /**
      * ct
      * @param typ der Umsatz-Typ.
@@ -416,7 +413,7 @@ public class UmsatzTypControl extends AbstractControl
     {
       this.typ = typ;
     }
-    
+
     /**
      * Liefert den Typ.
      * @return der Typ.

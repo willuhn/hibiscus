@@ -36,11 +36,11 @@ public class NachrichtDetails extends AbstractView {
   public void bind() throws Exception {
 
     NachrichtControl control = new NachrichtControl(this);
-    
+
     Nachricht n = control.getNachricht();
 
 		GUI.getView().setTitle(i18n.tr("System-Nachricht vom {0}", HBCI.DATEFORMAT.format(n.getDatum())));
-		
+
     SimpleContainer container = new SimpleContainer(getParent(),true,1);
     String name = HBCIProperties.getNameForBank(n.getBLZ());
     if (name != null)
