@@ -20,19 +20,19 @@ public interface Feature
    * @return eindeutiger Name fuer das Feature.
    */
   public String getName();
-  
+
   /**
    * Liefert die Beschreibung des Features.
    * @return die Beschreibung des Features.
    */
   public String getDescription();
-  
+
   /**
    * Liefert true, wenn das Feature per Default aktiv sein soll.
    * @return true, wenn das Feature per Default aktiv sein soll.
    */
   public boolean getDefault();
-  
+
   /**
    * Aktiviert/deaktiviert das Feature.
    * Wird automatisch beim Start von Hibiscus aufgerufen, um den gewuenschten Feature-Zustand herzustellen.
@@ -40,5 +40,3 @@ public interface Feature
    */
   public void setEnabled(boolean enabled);
 }
-
-

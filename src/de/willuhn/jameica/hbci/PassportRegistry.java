@@ -33,7 +33,7 @@ public class PassportRegistry {
 	{
     if (passportsByClass != null || passportsByName != null)
       return;
-    
+
     passportsByClass = new Hashtable();
     passportsByName  = new Hashtable();
 
@@ -77,7 +77,7 @@ public class PassportRegistry {
   {
     if (c == null)
       return null;
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     Passport p = (Passport) service.get(c);
     Logger.debug("[" + c.getName() + "][" + p.getName() + "] instantiated successfully");
@@ -130,7 +130,6 @@ public class PassportRegistry {
 		return passports;
 	}
 }
-
 
 /**********************************************************************
  * $Log: PassportRegistry.java,v $

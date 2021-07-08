@@ -9,9 +9,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
-
-
-
 /**
  * Interface fuer eine einzelne Buchung einer SEPA-Sammelueberweisung.
  */

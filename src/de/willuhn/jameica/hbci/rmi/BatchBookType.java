@@ -14,7 +14,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
-
 /**
  * Die verschiedenen Varianten des Batch-Booking-Flags.
  */
@@ -24,28 +23,28 @@ public enum BatchBookType
    * BatchBooking-Flag gar nicht mitschicken.
    */
   NONE(null,"","nach Vorgabewert der Bank ausweisen (Standard)"),
-  
+
   /**
    * BatchBooking-Flag als true senden.
    */
   TRUE(Boolean.TRUE,"1","als Sammelbuchung ausweisen"),
-  
+
   /**
    * BatchBooking-Flag als false senden.
    */
   FALSE(Boolean.FALSE,"0","als Einzelbuchungen ausweisen (erfordert ggf. Bankvereinbarung)"),
-  
+
   ;
-  
+
   /**
    * Der Default-Typ (NONE).
    */
   public static BatchBookType DEFAULT = NONE;
-  
+
   private Boolean bv = null;
   private String value = null;
   private String description = null;
-  
+
   /**
    * ct.
    * @param bv der interne Boolean-Wert.
@@ -58,7 +57,7 @@ public enum BatchBookType
     this.value       = value;
     this.description = description;
   }
-  
+
   /**
    * Liefert den zugehoerigen Property-Wert.
    * @return der zugehoerige Property-Wert.
@@ -67,7 +66,7 @@ public enum BatchBookType
   {
     return this.value;
   }
-  
+
   /**
    * Liefert den zugehoerigen Boolean-Wert.
    * @return der zugehoerige Boolean-Wert.
@@ -76,7 +75,7 @@ public enum BatchBookType
   {
     return this.bv;
   }
-  
+
   /**
    * Liefert einen sprechenden Namen fuer den Typ.
    * @return sprechender Name fuer den Typ.
@@ -85,7 +84,7 @@ public enum BatchBookType
   {
     return this.description;
   }
-  
+
   /**
    * Liefert den passenden Batchbook-Typ fuer den angegebenen Wert.
    * @param value der Wert.
@@ -101,10 +100,10 @@ public enum BatchBookType
           return type;
       }
     }
-    
+
     return null;
   }
-  
+
   /**
    * Liefert den passenden Batchbook-Typ fuer den angegebenen Wert.
    * @param value der Wert.
@@ -120,7 +119,7 @@ public enum BatchBookType
       if (value != null && value.equals(type.bv))
         return type;
     }
-    
+
     return null;
   }
 
@@ -134,5 +133,3 @@ public enum BatchBookType
     return this.name() + ": " + i18n.tr(this.getDescription());
   }
 }
-
-

@@ -23,21 +23,20 @@ public interface HibiscusTransfer extends Transfer, HibiscusDBObject
    * @throws RemoteException
    */
   public Konto getKonto() throws RemoteException;
-	
+
 	/**
 	 * Speichert das Konto, das zur Bezahlung verwendet werden soll.
    * @param konto Konto, das verwendet werden soll.
    * @throws RemoteException
    */
   public void setKonto(Konto konto) throws RemoteException;
-	
+
 	/**
 	 * Speichert die Kontonummer des Gegenkontos.
    * @param konto Kontonummer des Gegenkontos.
    * @throws RemoteException
    */
   public void setGegenkontoNummer(String konto) throws RemoteException;
-	
 	/**
 	 * Speichert die BLZ des Gegenkontos.
 	 * @param blz BLZ des Gegenkontos.
@@ -65,14 +64,14 @@ public interface HibiscusTransfer extends Transfer, HibiscusDBObject
    * @throws RemoteException
    */
   public void setBetrag(double betrag) throws RemoteException;
-	
+
 	/**
 	 * Speichert den Zweck der Ueberweisung.
    * @param zweck Zweck der Ueberweisung.
    * @throws RemoteException
    */
   public void setZweck(String zweck) throws RemoteException;
-	
+
 	/**
 	 * Speichert Zeile 2 des Verwendungszwecks.
    * @param zweck2 Zeile 2 des Verwendungszwecks.
@@ -87,7 +86,6 @@ public interface HibiscusTransfer extends Transfer, HibiscusDBObject
    */
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException;
 }
-
 
 /**********************************************************************
  * $Log: HibiscusTransfer.java,v $

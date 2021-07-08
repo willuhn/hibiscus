@@ -34,7 +34,7 @@ public class ScheduleProviderFactory
     BeanService service        = Application.getBootLoader().getBootable(BeanService.class);
     MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
     ClassFinder finder         = loader.getClassFinder();
-      
+
     try
     {
       Class<ScheduleProvider>[] classes = finder.findImplementors(ScheduleProvider.class);
@@ -56,10 +56,10 @@ public class ScheduleProviderFactory
     {
       Logger.error("no schedule providers found",e);
     }
-    
+
     return null;
   }
-  
+
   /**
    * Prueft, ob der Typ der Klasse zum angegebenen Typ passt.
    * @param c die zu testende Klasse.
@@ -72,8 +72,6 @@ public class ScheduleProviderFactory
     return concrete != null && concrete.equals(type);
   }
 }
-
-
 
 /**********************************************************************
  * $Log: ScheduleProviderFactory.java,v $

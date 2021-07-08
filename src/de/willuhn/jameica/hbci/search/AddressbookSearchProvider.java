@@ -53,7 +53,7 @@ public class AddressbookSearchProvider implements SearchProvider
       List result = service.findAddresses(search);
       if (result == null)
         return null;
-      
+
       ArrayList al = new ArrayList();
       for (int i=0;i<result.size();++i)
       {
@@ -78,7 +78,7 @@ public class AddressbookSearchProvider implements SearchProvider
   private class MyResult implements Result
   {
     private Address address = null;
-    
+
     /**
      * ct.
      * @param a
@@ -114,11 +114,10 @@ public class AddressbookSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }
-
 
 /*********************************************************************
  * $Log: AddressbookSearchProvider.java,v $

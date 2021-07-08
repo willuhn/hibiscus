@@ -28,7 +28,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in Lastschriften.
  */
@@ -50,7 +49,7 @@ public class LastschriftSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator list = service.createList(Lastschrift.class);
@@ -70,14 +69,14 @@ public class LastschriftSearchProvider implements SearchProvider
     }
     return results;
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private Lastschrift l = null;
-    
+
     /**
      * ct.
      * @param l
@@ -120,11 +119,10 @@ public class LastschriftSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }
-
 
 /**********************************************************************
  * $Log: LastschriftSearchProvider.java,v $

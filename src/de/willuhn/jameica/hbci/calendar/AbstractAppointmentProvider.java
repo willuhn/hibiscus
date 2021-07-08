@@ -42,9 +42,9 @@ import de.willuhn.util.I18N;
 public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> implements AppointmentProvider
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private ScheduleProvider provider = null;
-  
+
   /**
    * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getAppointments(java.util.Date, java.util.Date)
    */
@@ -58,7 +58,7 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
       Logger.warn("unable to determine schedule provider for " + this.getClass().getSimpleName());
       return result;
     }
-    
+
     List<Schedule<T>> list = provider.getSchedules(null,from,to);
 
     // In Appointments kopieren
@@ -68,7 +68,7 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
     }
     return result;
   }
-  
+
   /**
    * Liefert den passenden Schedule-Provider.
    * @return der Schedule-Provider.
@@ -102,7 +102,7 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
   abstract class AbstractHibiscusAppointment extends AbstractAppointment
   {
     protected Schedule<T> schedule = null;
-    
+
     /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()
      */
@@ -137,7 +137,7 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
       // aber noch nicht existiert
       if (this.schedule.isPlanned() || !this.hasAlarm())
         return Color.COMMENT.getSWTColor().getRGB();
-      
+
       return Settings.getBuchungSollForeground().getRGB();
     }
 
@@ -149,7 +149,7 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
       // Ist geplant - also benachrichtigen
       if (this.schedule.isPlanned())
         return true;
-          
+
       try
       {
         T t = this.schedule.getContext();
@@ -162,7 +162,7 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
       }
       return super.hasAlarm();
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getUid()
      */
@@ -181,8 +181,6 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
     }
   }
 }
-
-
 
 /**********************************************************************
  * $Log: AbstractAppointmentProvider.java,v $

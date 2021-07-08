@@ -9,14 +9,12 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.rmi;
 
-
 /**
  * Interface fuer eine einzelne Buchung einer Sammelueberweisung.
  */
 public interface SammelUeberweisungBuchung extends SammelTransferBuchung
 {
 }
-
 
 /**********************************************************************
  * $Log: SammelUeberweisungBuchung.java,v $

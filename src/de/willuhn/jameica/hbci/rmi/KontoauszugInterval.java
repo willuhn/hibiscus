@@ -29,12 +29,12 @@ import de.willuhn.util.I18N;
 public abstract class KontoauszugInterval
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Das Default-Intervall.
    */
   public static KontoauszugInterval DEFAULT = new IntervalNever();
-  
+
   /**
    * Die Liste der bekannten Intervalle.
    */
@@ -58,7 +58,7 @@ public abstract class KontoauszugInterval
     KontoauszugInterval type = find(MetaKey.KONTOAUSZUG_INTERVAL.get(k));
     if (type == null)
       return null;
-    
+
     // Datum des letzten Abrufs ermitteln
     Date last = null;
     String s = null;
@@ -72,10 +72,10 @@ public abstract class KontoauszugInterval
     {
       Logger.error("unparsable date: " + s,e);
     }
-    
+
     return type.getNextInterval(last);
   }
-  
+
   /**
    * Liefert das Intervall basierend auf der ID.
    * @param id die ID des Intervall.
@@ -85,35 +85,35 @@ public abstract class KontoauszugInterval
   {
     if (id == null || id.length() == 0)
       return null;
-    
+
     for (KontoauszugInterval k:KNOWN)
     {
       if (k.getId().equals(id))
         return k;
     }
-    
+
     return null;
   }
-  
+
   /**
    * Ermittelt das naechste Intervall basierend auf dem letzten Termin.
    * @param last der letzte Termin. Kann NULL sein.
    * @return das naechste Datum oder NULL, wenn keines existiert.
    */
   public abstract Date getNextInterval(Date last);
-  
+
   /**
    * Liefert einen Identifier fuer das Intervall.
    * @return ein Identifier fuer das Intervall.
    */
   public abstract String getId();
-  
+
   /**
    * Liefert einen sprechenden Namen fuer das Intervall.
    * @return sprechender Name fuer das Intervall.
    */
   public abstract String getName();
-  
+
   /**
    * Intervall fuer niemals.
    */
@@ -179,7 +179,7 @@ public abstract class KontoauszugInterval
       return i18n.tr("immer");
     }
   }
-  
+
   /**
    * Intervall fuer woechentlich.
    */
@@ -194,7 +194,7 @@ public abstract class KontoauszugInterval
     {
       if (last == null)
         return DateUtil.startOfDay(new Date());
-      
+
       Calendar cal = Calendar.getInstance();
       cal.setTime(last);
       cal.add(Calendar.DATE,7);
@@ -220,7 +220,6 @@ public abstract class KontoauszugInterval
     }
   }
 
-  
   /**
    * Intervall fuer zwei-woechentlich.
    */
@@ -235,7 +234,7 @@ public abstract class KontoauszugInterval
     {
       if (last == null)
         return DateUtil.startOfDay(new Date());
-      
+
       Calendar cal = Calendar.getInstance();
       cal.setTime(last);
       cal.add(Calendar.DATE,14);
@@ -261,7 +260,6 @@ public abstract class KontoauszugInterval
     }
   }
 
-  
   /**
    * Intervall fuer monatlich.
    */
@@ -276,7 +274,7 @@ public abstract class KontoauszugInterval
     {
       if (last == null)
         return DateUtil.startOfDay(new Date());
-      
+
       Calendar cal = Calendar.getInstance();
       cal.setTime(last);
       cal.add(Calendar.MONTH,1);
@@ -302,5 +300,3 @@ public abstract class KontoauszugInterval
     }
   }
 }
-
-

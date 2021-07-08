@@ -61,17 +61,17 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
     start = DateUtil.startOfDay(start == null ? new Date() : start);
     end = DateUtil.endOfDay(end == null ? new Date() : end);
     ArrayList<Value> data = new ArrayList<Value>();
-    
+
     try
     {
       // Wir holen uns erstmal alle Umsaetze im Zeitraum
       DBIterator list = UmsatzUtil.getUmsaetze();
       if (konto != null)
         list.addFilter("konto_id = " + konto.getID());
-  
+
       list.addFilter("datum >= ?", new Object[] { new java.sql.Date(start.getTime()) });
       list.addFilter("datum <= ?", new Object[] { new java.sql.Date(end.getTime()) });
-      
+
       // Jetzt kommt die Homogenisierung ;)
       // Wir brauchen genau einen Messwert pro Tag. Das ist wichtig,
       // damit auch unterschiedliche Konten in einem Chart ueberlagernd
@@ -85,23 +85,23 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
       // schauen wir, ob wir einen Umsatz haben. Liegt keiner vor, nehmen
       // wir den letzten Umsatz, der vor diesem Tag liegt, da der dort
       // angegebene Saldo ja zum gesuchten Tag noch gilt.
-  
+
       // BUGZILLA 1036
       double startSaldo = 0.0d;
       if (konto != null)
         startSaldo = konto.getNumUmsaetze() > 0 ? KontoUtil.getAnfangsSaldo(konto, start) : konto.getSaldo();
-      
+
       SaldoFinder finder = new SaldoFinder(list,startSaldo);
-      
+
       Date localStart = start;
       final Calendar cal = Calendar.getInstance();
       cal.setTime(start);
-      
+
       while (!localStart.after(end))
       {
         Value s = new Value(localStart,finder.get(localStart));
         data.add(s);
-        
+
         // Und weiter zum naechsten Tag
         cal.add(Calendar.DAY_OF_MONTH,1);
         localStart = cal.getTime();
@@ -112,7 +112,7 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
     }
     return data;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider#getName()
    */
@@ -122,5 +122,3 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
     return "BookingAccountBalanceProvider";
   }
 }
-
-

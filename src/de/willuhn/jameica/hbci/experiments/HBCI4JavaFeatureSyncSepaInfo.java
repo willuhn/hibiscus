@@ -25,7 +25,7 @@ public class HBCI4JavaFeatureSyncSepaInfo extends AbstractHBCI4JavaFeature
   {
     super(Feature.SYNC_SEPAINFO);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDescription()
    */
@@ -37,5 +37,3 @@ public class HBCI4JavaFeatureSyncSepaInfo extends AbstractHBCI4JavaFeature
   }
 
 }
-
-

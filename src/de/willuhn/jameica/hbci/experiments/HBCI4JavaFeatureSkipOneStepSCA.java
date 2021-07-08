@@ -24,7 +24,7 @@ public class HBCI4JavaFeatureSkipOneStepSCA extends AbstractHBCI4JavaFeature
   {
     super(Feature.PINTAN_INIT_SKIPONESTEPSCA);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDescription()
    */
@@ -35,5 +35,3 @@ public class HBCI4JavaFeatureSkipOneStepSCA extends AbstractHBCI4JavaFeature
   }
 
 }
-
-

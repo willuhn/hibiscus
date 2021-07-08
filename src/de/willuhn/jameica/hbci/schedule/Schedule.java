@@ -23,7 +23,7 @@ public class Schedule<T extends HibiscusDBObject>
   private Date date = null;
   private T context = null;
   private boolean planned = false;
-  
+
   /**
    * ct.
    * @param date der Termin des Auftrages.
@@ -36,7 +36,7 @@ public class Schedule<T extends HibiscusDBObject>
     this.context = context;
     this.planned = planned;
   }
-  
+
   /**
    * Liefert den Termin.
    * @return der Termin.
@@ -45,7 +45,7 @@ public class Schedule<T extends HibiscusDBObject>
   {
     return this.date;
   }
-  
+
   /**
    * Liefert den Auftrag.
    * @return der Auftrag.
@@ -54,7 +54,7 @@ public class Schedule<T extends HibiscusDBObject>
   {
     return this.context;
   }
-  
+
   /**
    * Liefert true, wenn der Auftrag noch nicht existiert sondern lediglich geplant ist.
    * @return true, wenn er noch nicht existiert sondern lediglich geplant ist.
@@ -64,8 +64,6 @@ public class Schedule<T extends HibiscusDBObject>
     return this.planned;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: Schedule.java,v $

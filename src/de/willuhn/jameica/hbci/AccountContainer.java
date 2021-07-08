@@ -33,28 +33,27 @@ public class AccountContainer
 	 * Host.
 	 */
 	public String host 				= null;
-	
+
   /**
    * TCP-Port.
    */
   public int 		port				= 3000;
-	
+
   /**
    * Filter.
    */
   public String filter			= null;
-	
+
   /**
    * Benutzer-Kennung.
    */
   public String userid			= null;
-	
+
   /**
    * Kunden-Kennung.
    */
   public String customerid	= null;
 }
-
 
 /**********************************************************************
  * $Log: AccountContainer.java,v $

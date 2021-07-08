@@ -29,5 +29,3 @@ public class HBCIAccountNew implements Action
   }
 
 }
-
-

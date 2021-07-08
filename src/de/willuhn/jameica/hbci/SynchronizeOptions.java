@@ -38,7 +38,7 @@ public class SynchronizeOptions implements Serializable
   public static List<Konto> getSynchronizeKonten()
   {
     List<Konto> l = new LinkedList<Konto>();
-    
+
     try
     {
       DBIterator konten = de.willuhn.jameica.hbci.Settings.getDBService().createList(Konto.class);
@@ -47,7 +47,7 @@ public class SynchronizeOptions implements Serializable
       // aufeinander folgen. Das ermoeglicht eine spaetere Gruppierung in einem HBCI-Dialog
       // Anschliessend noch Bezeichnung wegen BUGZILLA 1346, Kommentar 12
       konten.setOrder("order by blz,bic,passport_class,bezeichnung");
-      
+
       while (konten.hasNext())
       {
         Konto k = (Konto) konten.next();
@@ -77,7 +77,7 @@ public class SynchronizeOptions implements Serializable
     this.disabled = k.hasFlag(Konto.FLAG_DISABLED);
     this.id = k.getID();
   }
-  
+
   /**
    * Prueft, ob irgendeine Synchronisierungsoption fuer das Konto aktiviert ist.
    * @return true, wenn irgendeine Option aktiv ist.
@@ -91,7 +91,7 @@ public class SynchronizeOptions implements Serializable
            getSyncAuslandsUeberweisungen() ||
            getSyncSepaLastschriften();
   }
-  
+
   /**
    * Aendert den Synchronisierungsstatus aller Auftragstypen.
    * @param status neuer Status.
@@ -183,7 +183,7 @@ public class SynchronizeOptions implements Serializable
   {
     return !this.disabled && settings.getBoolean("sync.konto." + id + ".offline",true);
   }
-  
+
   /**
    * Aktiviert/deaktiviert die automatische Saldenberechnung fuer Offlinekonten.
    * Wenn dieses Setting fals liefert, wird unter keinen Umstaenden der Saldo
@@ -195,7 +195,7 @@ public class SynchronizeOptions implements Serializable
   {
     return !this.disabled && this.offline && settings.getBoolean("sync.konto." + id + ".autosaldo",true);
   }
-  
+
   /**
    * Aktiviert/deaktiviert die automatische Saldenberechnung fuer Offlinekonten.
    * Wenn dieses Setting fals liefert, wird unter keinen Umstaenden der Saldo
@@ -207,7 +207,7 @@ public class SynchronizeOptions implements Serializable
   {
     settings.setAttribute("sync.konto." + id + ".autosaldo",b);
   }
-  
+
   /**
    * Legt fest, ob die Banknachrichten abgerufen werden sollen.
    * @param b true, wenn die Banknachrichten abgerufen werden sollen.
@@ -216,7 +216,7 @@ public class SynchronizeOptions implements Serializable
   {
     settings.setAttribute("sync.konto." + id + ".messages",b);
   }
-  
+
   /**
    * Legt fest, ob die Kontoauszuege abgerufen werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.
@@ -225,7 +225,7 @@ public class SynchronizeOptions implements Serializable
   {
     settings.setAttribute("sync.konto." + id + ".kontoauszug",b);
   }
-  
+
   /**
    * Legt fest, ob die PDF-Kontoauszuege abgerufen werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.
@@ -234,7 +234,7 @@ public class SynchronizeOptions implements Serializable
   {
     settings.setAttribute("sync.konto." + id + ".kontoauszugpdf",b);
   }
-  
+
   /**
    * Legt fest, ob die Salden abgerufen werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.
@@ -252,7 +252,7 @@ public class SynchronizeOptions implements Serializable
   {
     settings.setAttribute("sync.konto." + id + ".sepadauer",b);
   }
-  
+
   /**
    * Legt fest, ob offene und ueberfaellige Auslandsueberweisungen eingereicht werden sollen.
    * @param b true, wenn sie synchronisiert werden sollen.

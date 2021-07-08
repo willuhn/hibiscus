@@ -48,13 +48,13 @@ public class HBCIVariantPinTanController extends AbstractControl
   private URLInput url = null;
   private TextInput customer = null;
   private TextInput username = null;
-  
+
   private Button step1 = null;
   private Button step2 = null;
-  
+
   private Listener step1Listener = new Step1Listener();
   private Listener step2Listener = new Step2Listener();
-  
+
   /**
    * ct.
    */
@@ -62,7 +62,7 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     super(null);
   }
-  
+
   /**
    * Liefert das Suchfeld fuer die Bank.
    * @return das Eingabefeld.
@@ -71,12 +71,12 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     if (this.bank != null)
       return this.bank;
-    
+
     this.bank = new BankInfoInput(this.account.getBlz());
     if (this.bank.getValue() == null) // Falls es keine bekannte BLZ war
       this.bank.setValue(this.account.getBlz());
     this.bank.addListener(new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
@@ -96,7 +96,7 @@ public class HBCIVariantPinTanController extends AbstractControl
           bank.setComment("");
           return;
         }
-        
+
         String url = info.getPinTanAddress();
         if (url != null && url.length() > 0)
         {
@@ -115,7 +115,7 @@ public class HBCIVariantPinTanController extends AbstractControl
     this.bank.setMandatory(true);
     return this.bank;
   }
-  
+
   /**
    * Liefert die URL des HBCI-Servers.
    * @return die URL des HBCI-Servers.
@@ -124,13 +124,13 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     if (this.url != null)
       return this.url;
-    
+
     this.url = new URLInput(this.account.getUrl());
     this.url.addListener(this.step1Listener);
     this.url.setMandatory(true);
     return this.url;
   }
-  
+
   /**
    * Liefert den Listener zur Freigabe des ersten Weiter-Buttons.
    * @return der Listener zur Freigabe des ersten Weiter-Buttons.
@@ -139,7 +139,7 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     return this.step1Listener;
   }
-  
+
   /**
    * Liefert den Listener zur Freigabe des zweiten Weiter-Buttons.
    * @return der Listener zur Freigabe des zweiten Weiter-Buttons.
@@ -148,7 +148,7 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     return this.step2Listener;
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer die Kundenkennung.
    * @return das Eingabefeld fuer die Kundenkennung.
@@ -157,14 +157,14 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     if (this.customer != null)
       return this.customer;
-    
+
     this.customer = new TextInput(null,50);
     this.customer.setHint(i18n.tr("Kundenkennung (oft identisch mit Benutzerkennung)"));
     this.customer.setComment("");
     this.customer.addListener(this.step2Listener);
     return this.customer;
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer die Benutzerkennung.
    * @return das Eingabefeld fuer die Benutzerkennung.
@@ -173,17 +173,17 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     if (this.username != null)
       return this.username;
-    
+
     this.username = new TextInput(null,50);
     this.username.setHint(i18n.tr("Benutzerkennung"));
-    
+
     this.username.setComment(this.getBankText());
     this.username.setMandatory(true);
     this.username.addListener(this.step2Listener);
     this.username.focus();
     return this.username;
   }
-  
+
   /**
    * Liefert den Weiter-Button.
    * @return der Weiter-Button.
@@ -192,7 +192,7 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     if (this.step1 != null)
       return this.step1;
-    
+
     this.step1 = new Button(i18n.tr("Weiter ..."),new Action() {
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -207,7 +207,7 @@ public class HBCIVariantPinTanController extends AbstractControl
     this.step1.setEnabled(false);
     return this.step1;
   }
-  
+
   /**
    * Liefert den Weiter-Button.
    * @return der Weiter-Button.
@@ -216,12 +216,12 @@ public class HBCIVariantPinTanController extends AbstractControl
   {
     if (this.step2 != null)
       return this.step2;
-    
+
     this.step2 = new Button(i18n.tr("Weiter ..."),new HBCIVariantPinTanTest(),this.account,true,"mail-send-receive.png");
     this.step2.setEnabled(false);
     return this.step2;
   }
-  
+
   /**
    * Liefert einen sprechenden Text fuer die ausgewaehlte Bank insofern verfuegbar.
    * @return sprechender Text fuer die ausgewaehlte Bank insofern verfuegbar.
@@ -252,7 +252,7 @@ public class HBCIVariantPinTanController extends AbstractControl
       super(url);
       this.setHint(i18n.tr("Adresse des Bankservers"));
       this.setComment("");
-      
+
       this.addListener(new Listener()
       {
         /**
@@ -266,7 +266,7 @@ public class HBCIVariantPinTanController extends AbstractControl
         }
       });
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.input.TextInput#getValue()
      */
@@ -279,7 +279,7 @@ public class HBCIVariantPinTanController extends AbstractControl
         return null;
       return this.cleanUrl(s);
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.input.TextInput#setValue(java.lang.Object)
      */
@@ -300,10 +300,10 @@ public class HBCIVariantPinTanController extends AbstractControl
       url = StringUtils.trimToEmpty(url);
       if (url.length() == 0)
         return url;
-      
+
       if (url.startsWith("https://"))
         url = url.replaceFirst("https://","");
-      
+
       url = url.replaceFirst(":[0-9]{1,5}/","/"); // BUGZILLA 1159
       return url;
     }
@@ -323,7 +323,7 @@ public class HBCIVariantPinTanController extends AbstractControl
       String url = (String) getURL().getValue();
       boolean enabled = url != null && url.trim().length() > 0;
       getStep1Button().setEnabled(enabled);
-      
+
       if (enabled)
       {
         account.setUrl(url);
@@ -349,7 +349,7 @@ public class HBCIVariantPinTanController extends AbstractControl
       String s = (String) getUsername().getValue();
       boolean enabled = s != null && s.trim().length() > 0;
       getStep2Button().setEnabled(enabled);
-      
+
       if (enabled)
       {
         account.setUsername(s);

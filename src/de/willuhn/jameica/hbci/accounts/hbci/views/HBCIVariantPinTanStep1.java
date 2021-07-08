@@ -45,28 +45,25 @@ public class HBCIVariantPinTanStep1 extends AbstractHBCIAccountView
     Container c = new SimpleContainer(this.getParent());
     c.addHeadline(i18n.tr("Auswahl der Bank"));
     c.addText(i18n.tr("Bitte wählen Sie die Bank aus, zu der Sie einen Zugang einrichten möchten."),true);
-    
+
     InfoPanel panel = this.variant.getInfo();
     c.addPart(panel);
-    
-    
+
     Composite comp = this.getComposite(panel);
     Container cs = new SimpleContainer(comp);
     cs.addText("\n" + i18n.tr("Bitte geben Sie die BLZ, BIC oder den Namen Ihrer Bank ein.\nHibiscus wird anschließend versuchen, die Adresse des Bankservers zu ermitteln."),true);
-    
+
     final Input bank    = control.getBank();
     final Input url     = control.getURL();
     cs.addPart(bank);
     cs.addPart(url);
-    
+
     bank.getControl().addListener(SWT.KeyUp,control.getStep1Listener());
     url.getControl().addListener(SWT.KeyUp,control.getStep1Listener());
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(new Back());
     buttons.addButton(control.getStep1Button());
     buttons.paint(comp);
   }
 }
-
-

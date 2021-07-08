@@ -24,18 +24,16 @@ public interface AccountProvider
    * @return sprechender Name fuer den Provider.
    */
   public String getName();
-  
+
   /**
    * Liefert ein vorausgefuelltes Info-Panel fuer den Bankzugang.
    * @return ein vorausgefuelltes Info-Panel fuer den Bankzugang.
    */
   public InfoPanel getInfo();
-  
+
   /**
    * Startet den Assistenten zur Erzeugung eines neuen Bankzugangs.
    * @throws ApplicationException
    */
   public void create() throws ApplicationException;
 }
-
-

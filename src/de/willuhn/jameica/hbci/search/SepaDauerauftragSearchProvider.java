@@ -28,7 +28,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche in SEPA-Dauerauftraegen.
  */
@@ -50,7 +49,7 @@ public class SepaDauerauftragSearchProvider implements SearchProvider
   {
     if (search == null || search.length() == 0)
       return null;
-    
+
     String text = "%" + search.toLowerCase() + "%";
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     DBIterator list = service.createList(SepaDauerauftrag.class);
@@ -68,14 +67,14 @@ public class SepaDauerauftragSearchProvider implements SearchProvider
     }
     return results;
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private SepaDauerauftrag u = null;
-    
+
     /**
      * ct.
      * @param u
@@ -118,5 +117,5 @@ public class SepaDauerauftragSearchProvider implements SearchProvider
       }
     }
   }
-  
+
 }

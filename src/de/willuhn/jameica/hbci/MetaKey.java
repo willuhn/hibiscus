@@ -26,17 +26,17 @@ public enum MetaKey
   @SuppressWarnings("javadoc") REMINDER_TEMPLATE("reminder.template",null, null),
   @SuppressWarnings("javadoc") REMINDER_CREATOR("reminder.creator",  null, "unknown"),
   @SuppressWarnings("javadoc") ADDRESS_ID("address.id",              null, null),
-  
+
   /**
    * SEPA-Mandatsreferenz.
    */
   SEPA_MANDATE_ID("sepa.mandateid", "SEPA-Mandatsreferenz",null),
-  
+
   /**
    * Signatur-Datum des Mandats.
    */
   SEPA_MANDATE_SIGDATE("sepa.sigdate", "Signatur-Datum des Mandats",null),
-  
+
   /**
    * SEPA-Lastschrift Sequenz-Typ.
    */
@@ -46,7 +46,7 @@ public enum MetaKey
    * Gläubiger-Identifikation.
    */
   SEPA_CREDITOR_ID("sepa.creditor.id", "Gläubiger-Identifikation",null),
-  
+
   /**
    * Batch-Book-Flag.
    */
@@ -71,7 +71,7 @@ public enum MetaKey
    * Abruf-Intervall fuer die Kontoauszuege im PDF-Format.
    */
   KONTOAUSZUG_INTERVAL("kontoauszug.interval","Intervall",KontoauszugInterval.DEFAULT.getId()),
-  
+
   /**
    * Datum des letzten Abrufs der Kontoauszuege im PDF-Format.
    */
@@ -96,12 +96,12 @@ public enum MetaKey
    * Template fuer den Dateinamen.
    */
   KONTOAUSZUG_TEMPLATE_NAME("kontoauszug.template.name","Vorlage für Dateinamen","${jahr}-${nummer}"),
-  
+
   /**
    * Legt fest, ob CAMT fuer den Umsatz-Abruf verwendet werden soll.
    */
   UMSATZ_CAMT("umsatz.camt","CAMT-Format für Umsatz-Abruf verwenden",null),
-  
+
   /**
    * TAN-Eingabe abgebrochen
    */
@@ -112,7 +112,7 @@ public enum MetaKey
   private String name         = null;
   private String description  = null;
   private String defaultValue = null;
-  
+
   /**
    * ct.
    * @param name
@@ -125,7 +125,7 @@ public enum MetaKey
     this.description  = description;
     this.defaultValue = defaultValue;
   }
-  
+
   /**
    * Liefert den Namen des Meta-Keys.
    * @return der Name des Meta-Keys.
@@ -134,7 +134,7 @@ public enum MetaKey
   {
     return this.name;
   }
-  
+
   /**
    * Liefert einen optionalen Beschreibungstext zu dem Meta-Key.
    * @return optionaler Beschreibungstext zu dem Meta-Key.
@@ -143,7 +143,7 @@ public enum MetaKey
   {
     return this.description;
   }
-  
+
   /**
    * Liefert den Default-Wert.
    * @return der Default-Wert.
@@ -152,7 +152,7 @@ public enum MetaKey
   {
     return this.defaultValue;
   }
-  
+
   /**
    * Liefert den Wert des Meta-Keys fuer das Objekt.
    * @param o das Objekt.
@@ -163,7 +163,7 @@ public enum MetaKey
   {
     return this.get(o,null);
   }
-  
+
   /**
    * Speichert den Wert des Meta-Keys fuer das Objekt.
    * @param o das Objekt.
@@ -174,7 +174,7 @@ public enum MetaKey
   {
     this.set(o,null,value);
   }
-  
+
   /**
    * Liefert den Wert des Meta-Keys fuer das Objekt.
    * @param o das Objekt.
@@ -189,7 +189,7 @@ public enum MetaKey
       key = key + "." + suffix;
     return o.getMeta(key,this.defaultValue);
   }
-  
+
   /**
    * Speichert den Wert des Meta-Keys fuer das Objekt.
    * @param o das Objekt.
@@ -206,5 +206,3 @@ public enum MetaKey
   }
 
 }
-
-
