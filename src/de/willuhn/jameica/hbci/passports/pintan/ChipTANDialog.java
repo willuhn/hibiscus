@@ -319,7 +319,7 @@ public class ChipTANDialog extends TANDialog
       final Container c = new SimpleContainer(container.getComposite(),false,1);
       Composite comp = new Composite(c.getComposite(),SWT.NONE);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      gd.horizontalAlignment = SWT.CENTER;
+      gd.grabExcessHorizontalSpace = true;
       comp.setLayoutData(gd);
       comp.setLayout(new GridLayout(1,false));
 
@@ -428,6 +428,7 @@ public class ChipTANDialog extends TANDialog
       {
         Composite buttonComp = new Composite(parent,SWT.NONE);
         GridData buttonGd = new GridData();
+        buttonGd.grabExcessHorizontalSpace = true;
         buttonGd.horizontalAlignment = SWT.CENTER;
         buttonComp.setLayoutData(buttonGd);
         buttonComp.setLayout(new GridLayout(5,false));
@@ -511,12 +512,16 @@ public class ChipTANDialog extends TANDialog
       // Das Composite fuer den Flicker-Code
       {
         this.comp = new Composite(parent,SWT.BORDER);
+
         this.comp.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 
         final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
         int width = SWTUtil.mm2px(60); // das muesste ca. die Breite von ReinerSCT-Geraeten sein
         if (width == -1) width = 206;  // falls die Umrechnung nicht klappte
         gd.widthHint = SETTINGS.getInt("width",width);
+
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.CENTER;
 
         int height = SWTUtil.mm2px(40);
         if (height == -1) height = 100;
