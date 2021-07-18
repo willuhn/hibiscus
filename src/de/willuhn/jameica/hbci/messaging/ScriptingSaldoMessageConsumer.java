@@ -46,8 +46,6 @@ public class ScriptingSaldoMessageConsumer implements MessageConsumer
   }
 }
 
-
-
 /**********************************************************************
  * $Log: ScriptingSaldoMessageConsumer.java,v $
  * Revision 1.2  2010/07/29 23:49:42  willuhn

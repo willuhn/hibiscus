@@ -41,11 +41,11 @@ public class MarkOverdueInitialMessageConsumer implements MessageConsumer
   {
     if (Application.inServerMode())
       return;
-    
+
     SystemMessage msg = (SystemMessage) message;
     if (msg.getStatusCode() != SystemMessage.SYSTEM_STARTED)
       return;
-    
+
     consumer.updateAll();
   }
 
@@ -57,6 +57,5 @@ public class MarkOverdueInitialMessageConsumer implements MessageConsumer
   {
     return true;
   }
-  
 
 }

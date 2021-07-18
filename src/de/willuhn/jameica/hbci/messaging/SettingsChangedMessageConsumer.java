@@ -63,7 +63,6 @@ public class SettingsChangedMessageConsumer implements MessageConsumer
 
 }
 
-
 /*********************************************************************
  * $Log: SettingsChangedMessageConsumer.java,v $
  * Revision 1.2  2009/10/14 14:29:35  willuhn

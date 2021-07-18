@@ -29,7 +29,6 @@ public class ObjectDeletedMessage extends ObjectMessage
 
 }
 
-
 /*********************************************************************
  * $Log: ObjectDeletedMessage.java,v $
  * Revision 1.1  2010/03/05 15:24:53  willuhn

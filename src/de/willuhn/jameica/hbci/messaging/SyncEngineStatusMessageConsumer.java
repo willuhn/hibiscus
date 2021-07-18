@@ -28,7 +28,7 @@ import de.willuhn.util.ProgressMonitor;
 public class SyncEngineStatusMessageConsumer implements MessageConsumer
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -48,9 +48,9 @@ public class SyncEngineStatusMessageConsumer implements MessageConsumer
     Object data = msg.getData();
     if (!(data instanceof Integer))
       return;
-    
+
     final int status = ((Integer) data).intValue();
-    
+
     // finaler Status.
     if (status == ProgressMonitor.STATUS_CANCEL ||
         status == ProgressMonitor.STATUS_DONE || 
@@ -66,15 +66,15 @@ public class SyncEngineStatusMessageConsumer implements MessageConsumer
             Logger.info("Reloading start view");
             GUI.startView(Start.class,null);
           }
-          
+
           int statusbarType = StatusBarMessage.TYPE_SUCCESS;
           if (status == ProgressMonitor.STATUS_ERROR)
             statusbarType = StatusBarMessage.TYPE_ERROR;
           else if (status == ProgressMonitor.STATUS_CANCEL)
             statusbarType = StatusBarMessage.TYPE_INFO;
-          
+
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Synchronisierung beendet"),statusbarType));
-          
+
         }
       });
     }
@@ -91,5 +91,3 @@ public class SyncEngineStatusMessageConsumer implements MessageConsumer
   }
 
 }
-
-

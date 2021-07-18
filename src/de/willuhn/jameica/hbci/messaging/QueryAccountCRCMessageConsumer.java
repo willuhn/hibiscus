@@ -15,7 +15,6 @@ import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
 
-
 /**
  * Message-Consumer, der eine Konto/BLZ-Kombination auf Gueltigkeit pruefen kann.
  */
@@ -46,7 +45,7 @@ public class QueryAccountCRCMessageConsumer implements MessageConsumer
   {
     if (message == null || !(message instanceof QueryMessage))
       return;
-    
+
     QueryMessage qm = (QueryMessage) message;
     Object data = qm.getData();
     if (data == null)
@@ -61,12 +60,11 @@ public class QueryAccountCRCMessageConsumer implements MessageConsumer
       qm.setData(Boolean.FALSE);
       return;
     }
-    
+
     qm.setData(new Boolean(HBCIProperties.checkAccountCRC(s[0],s[1])));
   }
 
 }
-
 
 /**********************************************************************
  * $Log: QueryAccountCRCMessageConsumer.java,v $
