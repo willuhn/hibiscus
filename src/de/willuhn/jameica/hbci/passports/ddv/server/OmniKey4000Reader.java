@@ -38,7 +38,7 @@ public class OmniKey4000Reader extends AbstractReader
     {
       case Platform.OS_WINDOWS:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "ctdeutin.dll";
-      
+
       default:
         return "";
     }
@@ -69,7 +69,6 @@ public class OmniKey4000Reader extends AbstractReader
   }
 
 }
-
 
 /**********************************************************************
  * $Log: OmniKey4000Reader.java,v $

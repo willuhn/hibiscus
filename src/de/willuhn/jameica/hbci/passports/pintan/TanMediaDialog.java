@@ -53,7 +53,7 @@ public class TanMediaDialog extends AbstractDialog
 
   private String options      = null;
   private String choosen      = null;
-  
+
   /**
    * ct.
    * @param config die PINTAN-Config.
@@ -64,14 +64,14 @@ public class TanMediaDialog extends AbstractDialog
     super(TanMediaDialog.POSITION_CENTER);
     this.config = config;
     this.options = options;
-    
+
     String s = null;
     try
     {
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
       Konto konto = session != null ? session.getKonto() : null;
-      
+
       if (konto != null)
       {
         s = konto.getBezeichnung();
@@ -95,15 +95,15 @@ public class TanMediaDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);
-    
+
     group.addText(i18n.tr("Bitte wählen Sie die Bezeichnung des gewünschten TAN-Medium aus\n" +
     		                  "oder geben Sie die Bezeichnung neu ein.\n\n" +
     		                  "Beim smsTAN/mTAN-Verfahren ist das die Bezeichnung (nicht die Telefonnummer)\n" +
     		                  "Ihres Mobiltelefons, die Sie bei Ihrer Bank hinterlegt haben."),true);
-    
+
     group.addLabelPair(i18n.tr("Bezeichnung"), getMedia());
     group.addCheckbox(getSave(),i18n.tr("Auswahl speichern"));
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -111,13 +111,13 @@ public class TanMediaDialog extends AbstractDialog
         try
         {
           choosen = (String) getMedia().getValue();
-          
+
           if (choosen != null && config != null && choosen.length() > 0)
           {
             // Wir merken uns das gewaehlte TAN-Medium, damit der User es beim
             // naechsten Mal nicht neu eintippen kann sondern direkt auswaehlen
             config.addTanMedia(choosen);
-            
+
             // User noch fragen, ob er seine Auswahl speichern will
             Boolean b = (Boolean) getSave().getValue();
             if (getSave().isEnabled() && b.booleanValue())
@@ -169,12 +169,12 @@ public class TanMediaDialog extends AbstractDialog
   {
     if (this.save != null)
       return this.save;
-    
+
     this.save = new CheckboxInput(true);
     this.save.setEnabled(this.config != null);
     return this.save;
   }
-  
+
   /**
    * Erzeugt eine Combo-Box mit der Auswahl der verfuegbaren TAN-Medien.
    * @return Auswahl-Feld.
@@ -186,7 +186,7 @@ public class TanMediaDialog extends AbstractDialog
       return this.media;
 
     Set<String> set = new HashSet<String>();
-    
+
     // Die Namen von der Bank
     if (this.options != null)
     {
@@ -213,11 +213,11 @@ public class TanMediaDialog extends AbstractDialog
         Logger.error("unable to get previous tan medias",e);
       }
     }
-    
+
     List<String> result = new ArrayList<String>();
     result.addAll(set);
     Collections.sort(result);
-    
+
     this.media = new SelectInput(result,null);
     this.media.setEditable(true);
     return this.media;

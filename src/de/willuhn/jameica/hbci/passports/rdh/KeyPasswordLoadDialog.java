@@ -52,7 +52,7 @@ public class KeyPasswordLoadDialog extends PasswordDialog
   {
     super(POSITION_CENTER);
     setSize(550,SWT.DEFAULT);
-    
+
     if (password != null && password.length() > 0)
     {
       try
@@ -71,7 +71,7 @@ public class KeyPasswordLoadDialog extends PasswordDialog
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
       Konto konto = session != null ? session.getKonto() : null;
-      
+
       if (konto != null)
       {
         s = konto.getBezeichnung();
@@ -84,7 +84,7 @@ public class KeyPasswordLoadDialog extends PasswordDialog
     {
       Logger.error("unable to determine current konto",e);
     }
-    
+
     String text = null;
     if (s != null)
     {
@@ -96,14 +96,14 @@ public class KeyPasswordLoadDialog extends PasswordDialog
       setTitle(i18n.tr("Schlüsseldatei"));
       text = i18n.tr("Bitte geben Sie das Passwort der Schlüsseldatei ein.");
     }
-    
+
     if (passport != null && (passport instanceof HBCIPassportRDHNew))
       this.filename = ((HBCIPassportRDHNew)passport).getFilename();
 
     setText(text);
     setLabelText(i18n.tr("Ihr Passwort"));
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#extend(de.willuhn.jameica.gui.util.Container)
    */
@@ -111,7 +111,7 @@ public class KeyPasswordLoadDialog extends PasswordDialog
   {
     if (this.filename == null)
       return;
-    
+
     Part p = new Part() {
       public void paint(Composite parent) throws RemoteException
       {

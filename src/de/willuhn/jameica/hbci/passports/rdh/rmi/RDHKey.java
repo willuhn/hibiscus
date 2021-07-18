@@ -89,21 +89,21 @@ public interface RDHKey extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setEnabled(boolean enabled) throws RemoteException;
-  
+
   /**
    * Liefert einen optionalen Alias-Namen fuer den Schluessel.
    * @return Alias-Name.
    * @throws RemoteException
    */
   public String getAlias() throws RemoteException;
-  
+
   /**
    * Speichert einen zusaetzlichen Alias-Namen fuer den Schluessel.
    * @param alias Alias-Name.
    * @throws RemoteException
    */
   public void setAlias(String alias) throws RemoteException;
-  
+
   /**
    * Liefert den Passport des Schluessels.
    * @return der Passport.

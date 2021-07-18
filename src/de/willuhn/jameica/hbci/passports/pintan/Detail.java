@@ -50,7 +50,7 @@ public class Detail extends AbstractView
       group.addInput(control.getFilterType());
       group.addInput(control.getHBCIVersion());
     }
-    
+
     {
       Container group = new SimpleContainer(layout.getComposite());
       group.addHeadline(i18n.tr("Benutzerdaten"));
@@ -58,7 +58,7 @@ public class Detail extends AbstractView
       group.addInput(control.getCustomerId());
       group.addInput(control.getBLZ());
     }
-    
+
     {
       Container group = new SimpleContainer(getParent());
 
@@ -70,11 +70,11 @@ public class Detail extends AbstractView
       if (secMech != null && secMech.useUSB())
       {
         group.addHeadline(i18n.tr("ChipTAN USB"));
-        
+
         CheckboxInput check = control.getChipTANUSB();
         group.addInput(check);
         group.addInput(control.getCardReaders());
-        
+
         // Wenn der User die Entscheidung noch nicht getroffen hat, dann ausgrauen
         if (control.getConfig().isChipTANUSB() == null)
         {
@@ -83,7 +83,7 @@ public class Detail extends AbstractView
         }
       }
     }
-    
+
     {
       PtSecMech secMech = control.getConfig().getStoredSecMech();
       ButtonArea buttons = new ButtonArea();
@@ -137,7 +137,7 @@ public class Detail extends AbstractView
     },null,false,"document-save.png");
     buttons.paint(getParent());
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#canBookmark()
    */

@@ -57,7 +57,7 @@ public class View extends AbstractView
 			}
 		},null,false,"document-new.png");
 		buttons.paint(getParent());
-		
+
     control.getKeyList().paint(getParent());
   }
 }

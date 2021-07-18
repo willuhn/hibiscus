@@ -28,7 +28,7 @@ public class PtSecMech
 
   private String id   = null;
   private String name = null;
-  
+
   /**
    * Parst die Liste der TAN-Verfahren aus dem String.
    * @param text String mit den TAN-Verfahren. 
@@ -39,7 +39,6 @@ public class PtSecMech
   {
     if (text == null || text.length() == 0)
       throw new ApplicationException(i18n.tr("Keine TAN-Verfahren verfügbar"));
-
 
     List<PtSecMech> list = new ArrayList<PtSecMech>();
     String[] lines = text.split("\\|");
@@ -53,10 +52,10 @@ public class PtSecMech
       }
       list.add(mech);
     }
-    
+
     return list;
   }
-  
+
   /**
    * Prueft, ob die ID des angegebenen TAN-Verfahrens in der Liste enthalten ist.
    * @param text der Text mit den TAN-Verfahren.
@@ -70,7 +69,7 @@ public class PtSecMech
       Logger.warn("no tan mechs or no id given");
       return null;
     }
-    
+
     try
     {
       List<PtSecMech> list = PtSecMech.parse(text);
@@ -85,11 +84,11 @@ public class PtSecMech
       Logger.error("unable to find tan mech " + id + " in list " + text,e);
       return null;
     }
-    
+
     Logger.warn("tan mech " + id + " not found in list " + text);
     return null;
   }
-  
+
   /**
    * Erzeugt ein PTSechMech-Objekt aus dem Text.
    * Der Text ist fuer gewoehnlich so zusammengesetzt: "{@code <id>:<name>}".
@@ -108,7 +107,7 @@ public class PtSecMech
     PtSecMech result = new PtSecMech();
     result.id   = text.substring(0,pos);
     result.name = text.substring(pos+1);
-    
+
     return result;
   }
 
@@ -130,7 +129,7 @@ public class PtSecMech
     PtSecMech result = new PtSecMech();
     result.id   = text;
     result.name = i18n.tr("TAN-Verfahren"); // Dummy-Name
-    
+
     return result;
   }
 
@@ -151,7 +150,7 @@ public class PtSecMech
   {
     return name;
   }
-  
+
   /**
    * Liefert den Namen des TAN-Verfahrens mit der ID.
    * @return der Name des TAN-Verfahrens mit der ID.
@@ -172,7 +171,7 @@ public class PtSecMech
     String id = ((PtSecMech)obj).getId();
     return this.id.equals(id);
   }
-  
+
   /**
    * Liefert true, wenn es ein Verfahren ist, das prinzipiell USB-tauglich ist.
    * @return true, wenn es ein Verfahren ist, das prinzipiell USB-tauglich ist.
@@ -181,7 +180,7 @@ public class PtSecMech
   {
     if (this.name == null)
       return false;
-    
+
     String s = this.name.toLowerCase();
     return s.contains("usb") ||
            s.contains("optic") ||
@@ -190,7 +189,7 @@ public class PtSecMech
            s.contains("komfort") ||
            s.contains("comfort");
   }
-  
+
   /**
    * @see java.lang.Object#toString()
    */

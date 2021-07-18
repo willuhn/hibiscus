@@ -51,10 +51,10 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
     // Checken, ob die Datei lesbar ist.
     if (file == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"));
-    
+
     if (!file.canRead() || !file.isFile())
       throw new ApplicationException(i18n.tr("Schlüsseldatei nicht lesbar"));
-    
+
     // Das ist ein Hibiscus-Schluessel. Wir lassen den Schluessel gleich dort, wo er ist
     try
     {
@@ -79,7 +79,7 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
     {
       String filename = key.getFilename();
       Logger.error("load key " + filename);
-      
+
       HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
       callback = plugin.getHBCICallback();
       if (callback != null && (callback instanceof HBCICallbackSWT))
@@ -99,7 +99,7 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
       OperationCanceledException oce = (OperationCanceledException) HBCIProperties.getCause(e,OperationCanceledException.class);
       if (oce != null)
         throw oce;
-        
+
       ApplicationException ae = (ApplicationException) HBCIProperties.getCause(e,ApplicationException.class);
       if (ae != null)
         throw ae;
@@ -115,7 +115,6 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
   }
 
 }
-
 
 /**********************************************************************
  * $Log: SizRdhDirectFormat.java,v $

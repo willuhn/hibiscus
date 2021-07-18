@@ -27,7 +27,7 @@ public class RDHReader extends PCSCReader
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("RDH-Karte via PC/SC-Kartenleser");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getType()
    */
@@ -35,7 +35,7 @@ public class RDHReader extends PCSCReader
   {
     return Type.RDH_PCSC;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
    */

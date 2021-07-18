@@ -53,7 +53,6 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 	private HBCIHandler handler = null;
 	private RDHKey key = null;
 
-
   /**
    * @param passport
    * @throws RemoteException
@@ -94,14 +93,14 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 		Logger.info("open rdh passport");
 		try {
-	
+
       RDHKey activeKey = this.key != null ? this.key : RDHKeyFactory.findByKonto(passport != null ? passport.getKonto() : null);
-      
+
       if (activeKey == null)
         throw new ApplicationException(i18n.tr("Keine Schlüsseldatei für dieses Konto definiert"));
 
       String filename = activeKey.getFilename();
-      
+
       File f = new File(filename);
       if (!f.exists())
       {
@@ -110,7 +109,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         if (b == null || !b.booleanValue())
           throw new OperationCanceledException(i18n.tr("Schlüsseldatei nicht eingelegt oder nicht lesbar"));
       }
-      
+
       Logger.info("using passport file " + filename);
 
       String hbciVersion = activeKey.getHBCIVersion();
@@ -125,7 +124,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         if (data == null || !(data instanceof String))
           throw new ApplicationException(i18n.tr("HBCI-Version nicht ermittelbar"));
         hbciVersion = (String) msg.getData();
-        
+
         // Wir merken uns die Auswahl damit wir den User nicht immer wieder fragen muessen
         // Siehe auch http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=14883
         if (hbciVersion != null)
@@ -136,7 +135,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       }
 
       hbciPassport = activeKey.load();
-      
+
       // Wir speichern die verwendete PIN/TAN-Config im Passport. Dann wissen wir
       // spaeter in den HBCI-Callbacks noch, aus welcher Config der Passport
       // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt.
@@ -199,7 +198,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 	    Logger.info("rdh passport closed");
 		}
   }
-  
+
   /**
    * Behandelt die GAD-spezifische Rueckmeldung zur Aenderung der Kundenkennung
    */
@@ -207,7 +206,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   {
     if (hbciPassport == null)
       return;
-    
+
     try
     {
       new PassportProcessCode3072().handleAction(hbciPassport);

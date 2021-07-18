@@ -44,7 +44,7 @@ public class PinTanConfigImpl implements PinTanConfig
 
   private PassportLoader loader = null;
   private File file             = null;
-  
+
   /**
    * ct.
    * @param loader
@@ -102,11 +102,11 @@ public class PinTanConfigImpl implements PinTanConfig
 
       boolean haveName = (name != null && name.trim().length() > 0);
       boolean haveBank = (bank != null && bank.length() > 0);
-      
+
       // wenn wir weder Name noch Bank haben, nehmen wir die URL
       if (!haveBank && !haveName)
         return url;
-      
+
       // wenn wir Name und Bank haben, nehmen wir beides
       if (haveBank && haveName)
         return name + " - " + bank;
@@ -114,7 +114,7 @@ public class PinTanConfigImpl implements PinTanConfig
       // Ansonsten das, was da ist
       if (haveName)
         return name;
-      
+
       return bank;
     }
     catch (Exception e)
@@ -131,7 +131,7 @@ public class PinTanConfigImpl implements PinTanConfig
       }
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()
    */
@@ -343,7 +343,7 @@ public class PinTanConfigImpl implements PinTanConfig
     String[] ids = settings.getList(getID() + ".konto",null);
     if (ids == null || ids.length == 0)
       return null;
-    
+
     List<String> fixedIds = new ArrayList<String>();
     List<Konto> konten = new ArrayList<Konto>();
     for (int i=0;i<ids.length;++i)
@@ -380,7 +380,7 @@ public class PinTanConfigImpl implements PinTanConfig
       settings.setAttribute(getID() + ".konto",(String[]) null);
       return;
     }
-    
+
     String[] ids = new String[k.length];
     for (int i=0;i<k.length;++i)
     {
@@ -388,7 +388,7 @@ public class PinTanConfigImpl implements PinTanConfig
     }
     settings.setAttribute(getID() + ".konto",ids);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getStoredSecMech()
    */
@@ -409,7 +409,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".secmech",mech != null ? mech.toString() : null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCurrentSecMech()
    */
@@ -418,11 +418,11 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     // Checken, ob es ein aktuell ausgewaehltes gibt. Das hat Vorrang.
     PtSecMech mech = PtSecMech.create(settings.getString(getID() + ".secmech.current",null));
-    
+
     // Wenn kein aktuelles vorhanden ist, nehmen wir das persistierte
     return mech != null ? mech : this.getStoredSecMech();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCurrentSecMech(de.willuhn.jameica.hbci.passports.pintan.PtSecMech)
    */
@@ -431,7 +431,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".secmech.current",mech != null ? mech.toString() : null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getAvailableSecMechs()
    */
@@ -442,7 +442,7 @@ public class PinTanConfigImpl implements PinTanConfig
     final String s = settings.getString(getID() + ".secmech.list",null);
     if (s == null)
       return result;
-    
+
     try
     {
       result.addAll(PtSecMech.parse(s));
@@ -453,7 +453,7 @@ public class PinTanConfigImpl implements PinTanConfig
     }
     return result;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setAvailableSecMechs(java.lang.String)
    */
@@ -462,7 +462,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".secmech.list",list);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCardReader()
    */
@@ -471,7 +471,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     return settings.getString(getID() + ".cardreader",null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCardReader(java.lang.String)
    */
@@ -480,7 +480,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".cardreader",name);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isChipTANUSB()
    */
@@ -490,7 +490,7 @@ public class PinTanConfigImpl implements PinTanConfig
     String s = StringUtils.trimToNull(settings.getString(getID() + ".chiptan.usb.enabled",null));
     return s != null ? Boolean.valueOf(s) : null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setChipTANUSB(java.lang.Boolean)
    */
@@ -499,7 +499,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".chiptan.usb.enabled",(String) (b != null ? b.toString() : null));
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedias()
    */
@@ -515,7 +515,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".tanmedias",names);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getAvailableTanMedias()
    */
@@ -526,7 +526,7 @@ public class PinTanConfigImpl implements PinTanConfig
     final String s = settings.getString(getID() + ".tanmedias.list",null);
     if (s == null)
       return result;
-    
+
     try
     {
       result.addAll(Arrays.asList(s.split("\\|")));
@@ -537,7 +537,7 @@ public class PinTanConfigImpl implements PinTanConfig
     }
     return result;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setAvailableTanMedias(java.lang.String)
    */
@@ -554,7 +554,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     if (name == null || name.length() == 0)
       return;
-    
+
     // Bisherige Werte
     String[] current = this.getTanMedias();
     List<String> list = new ArrayList<String>();
@@ -567,7 +567,7 @@ public class PinTanConfigImpl implements PinTanConfig
         continue;
       list.add(s);
     }
-    
+
     // Am Anfang neu einfuegen.
     // Dann steht die letzte Auswahl immer vorn
     list.add(0,name);
@@ -607,7 +607,7 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     settings.setAttribute(getID() + ".showtan",show);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCustomProperty(java.lang.String)
    */
@@ -617,7 +617,7 @@ public class PinTanConfigImpl implements PinTanConfig
       return null;
     return settings.getString(getID() + "." + name,null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCustomProperty(java.lang.String, java.lang.String)
    */
@@ -625,10 +625,10 @@ public class PinTanConfigImpl implements PinTanConfig
   {
     if (name == null)
       return;
-    
+
     settings.setAttribute(getID() + "." + name,value);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#reload()
    */

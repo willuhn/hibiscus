@@ -15,7 +15,6 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
-
 /**
  * Implementierung des Schluesselformats fuer RDH2.
  * http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=50285
@@ -47,7 +46,6 @@ public class RDH2Format extends HBCI4JavaFormat
     Logger.warn("unknown feature " + feature);
     return false;
   }
-
 
   /**
    * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.HBCI4JavaFormat#getPassportType()

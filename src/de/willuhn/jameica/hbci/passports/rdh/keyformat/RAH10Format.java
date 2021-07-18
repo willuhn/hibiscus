@@ -22,7 +22,7 @@ public class RAH10Format extends HBCI4JavaFormat
   {
     return i18n.tr("RAH10-Format (experimentell - derzeit ungetestet)");
   }
-  
+
   /**
    * Liefert den Passport-Typ gemaess HBCI4Java.
    * @return Passport-Typ.
@@ -31,7 +31,7 @@ public class RAH10Format extends HBCI4JavaFormat
   {
     return "RAH10"; 
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.AbstractKeyFormat#getOrder()
    */

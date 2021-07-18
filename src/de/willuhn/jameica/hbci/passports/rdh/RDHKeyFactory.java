@@ -41,12 +41,12 @@ public class RDHKeyFactory
 	private static Settings settings = new Settings(RDHKeyFactory.class);
 
 	private static I18N i18n;
-	
+
 	static
 	{
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	}
-  
+
   /**
    * Durchsucht den Classpath nach unterstuetzten Schluesselformaten.
    * @param neededFeature das benoetigte Feature der Datei.
@@ -85,7 +85,7 @@ public class RDHKeyFactory
     {
       Logger.error("error while loading key formats",e);
     }
-    
+
     Collections.sort(list);
     return (KeyFormat[]) list.toArray(new KeyFormat[list.size()]);
   }
@@ -171,11 +171,10 @@ public class RDHKeyFactory
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Datei nicht auswählbar: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
         return false;
       }
-      
 
       final int ft = KeyFormat.FEATURE_CREATE;
       KeyFormat[] formats = RDHKeyFactory.getKeyFormats(ft);
-      
+
       KeyFormat format = null;
       if (formats != null && formats.length == 1)
       {
@@ -188,7 +187,7 @@ public class RDHKeyFactory
         KeyFormatDialog d = new KeyFormatDialog(KeyFormatDialog.POSITION_CENTER,ft);
         format = (KeyFormat) d.open();
       }
-      
+
       addKey(format.createKey(f));
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüsseldatei erfolgreich erstellt"),StatusBarMessage.TYPE_SUCCESS));
       return true;
@@ -201,7 +200,7 @@ public class RDHKeyFactory
     catch (final ApplicationException ae)
     {
       Logger.error(ae.getMessage());
-      
+
       // Meldung wurde sonst nicht in der GUI angezeigt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?p=106085#real106085
       GUI.getDisplay().asyncExec(new Runnable() {
         public void run()
@@ -233,7 +232,6 @@ public class RDHKeyFactory
 			throw new ApplicationException(i18n.tr("Bitte erstellen Sie zuerst eine Schlüsseldatei"));
 
     RDHKey key = null;
-    
 
     ArrayList keys = new ArrayList();
 		while (i.hasNext())
@@ -256,10 +254,10 @@ public class RDHKeyFactory
           }
         }
       }
-      
+
 			keys.add(key);
     }
-    
+
 		// Wir haben nur einen in Frage kommenden Schluessel
     if (keys.size() == 1)
       return (RDHKey) keys.get(0);
@@ -317,7 +315,7 @@ public class RDHKeyFactory
     }
     String file = key.getFilename();
     Logger.info("adding key " + file + " to list");
-    
+
 		String[] existing = settings.getList("key",new String[0]);
 		if (existing.length == 0)
 		{
@@ -347,7 +345,7 @@ public class RDHKeyFactory
       Logger.warn("removing key " + key.getFilename() + " from key registry");
       String[] existing = settings.getList("key",new String[0]);
       ArrayList newList = new ArrayList();
-      
+
       if (existing.length == 0)
         return; // Nichts zu entfernen
 
@@ -361,7 +359,7 @@ public class RDHKeyFactory
           continue;
         }
         newList.add(f.getAbsolutePath());
-        
+
       }
       settings.setAttribute("key",(String[]) newList.toArray(new String[newList.size()]));
     }

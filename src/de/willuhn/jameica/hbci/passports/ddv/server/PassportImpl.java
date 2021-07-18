@@ -94,7 +94,6 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
   }
 }
 
-
 /**********************************************************************
  * $Log: PassportImpl.java,v $
  * Revision 1.8  2011/04/29 09:17:35  willuhn

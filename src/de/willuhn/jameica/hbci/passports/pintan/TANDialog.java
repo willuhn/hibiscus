@@ -64,18 +64,18 @@ public class TANDialog extends AbstractDialog
 
   protected PinTanConfig config = null;
   private HibiscusDBObject context = null;
-  
+
   private NotificationPanel panel = null;
-  
+
   private PasswordInput tanInput = null;
   private Button okButton = null;
-  
+
   private String konto = null;
   private String text = null;
 
   private boolean showTan = true;
   private String tan = null;
-  
+
   /**
    * ct.
    * @param config die PINTAN-Config.
@@ -84,7 +84,7 @@ public class TANDialog extends AbstractDialog
   public TANDialog(PinTanConfig config) throws RemoteException
   {
     super(TANDialog.POSITION_CENTER);
-    
+
     this.config = config;
     this.setTitle(i18n.tr("TAN-Eingabe"));
     this.setText(null); // Fuer die Generierung des Default-Textes
@@ -104,7 +104,7 @@ public class TANDialog extends AbstractDialog
       final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       final SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
       final Konto konto = session != null ? session.getKonto() : null;
-      
+
       if (konto != null)
       {
         this.konto = konto.getBezeichnung();
@@ -114,11 +114,11 @@ public class TANDialog extends AbstractDialog
 
         this.setTitle(i18n.tr("TAN-Eingabe - Konto {0}",this.konto));
       }
-      
+
       if (session != null)
       {
         this.addCloseListener(new Listener() {
-          
+
           @Override
           public void handleEvent(Event event)
           {
@@ -147,7 +147,7 @@ public class TANDialog extends AbstractDialog
       Logger.error("unable to determine current konto",e);
     }
   }
-  
+
   /**
    * Liefert das Notification-Panel.
    * @return das Notification-Panel.
@@ -156,11 +156,11 @@ public class TANDialog extends AbstractDialog
   {
     if (this.panel != null)
       return this.panel;
-    
+
     this.panel = new NotificationPanel();
     return this.panel;
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer die TAN.
    * @return  das Eingabefeld fuer die TAN.
@@ -176,7 +176,7 @@ public class TANDialog extends AbstractDialog
     this.tanInput.focus();
     return this.tanInput;
   }
-  
+
   /**
    * Liefert den OK-Button.
    * @return der OK-Button.
@@ -185,7 +185,7 @@ public class TANDialog extends AbstractDialog
   {
     if (this.okButton != null)
       return this.okButton;
-    
+
     this.okButton = new Button("    " + i18n.tr("OK") + "    ",new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -196,8 +196,7 @@ public class TANDialog extends AbstractDialog
     this.okButton.setEnabled(false);
     return this.okButton;
   }
-  
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -208,16 +207,16 @@ public class TANDialog extends AbstractDialog
       final Container c = new SimpleContainer(parent);
       c.addPart(this.getPanel());
       setInfoText(Type.INFO,i18n.tr("Bitte geben Sie die TAN ein."));
-      
+
       final String auftrag = this.context != null ? HBCIContext.toString(this.context) : null;
       final boolean haveAuftrag = StringUtils.trimToNull(auftrag) != null;
-      
+
       if (this.konto != null || haveAuftrag)
         c.addHeadline(i18n.tr("Konto und Auftrag"));
-      
+
       if (this.konto != null)
         c.addText(i18n.tr("Konto") + ": " + this.konto,true);
-      
+
       if (haveAuftrag)
         c.addText(i18n.tr("Auftrag") + ": " + auftrag,true);
     }
@@ -238,7 +237,7 @@ public class TANDialog extends AbstractDialog
     final Container c = new SimpleContainer(parent);
     final PasswordInput tan = this.getTANInput();
     c.addInput(tan);
-    
+
     tan.getControl().addKeyListener(new KeyAdapter() {
       /**
        * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
@@ -249,10 +248,10 @@ public class TANDialog extends AbstractDialog
         getOkButton().setEnabled(StringUtils.trimToNull((String) tan.getValue()) != null);
       }
     });
-    
+
     // Unterer Erweiterungsbereich
     this.extendBottom(new SimpleContainer(parent,false,1));
-    
+
     // Gemeinsamer unterer Bereich
     Container bottom = new SimpleContainer(parent);
     final ButtonArea buttons = new ButtonArea();
@@ -269,10 +268,10 @@ public class TANDialog extends AbstractDialog
       public void shellDeiconified(ShellEvent e) {}
       public void shellIconified(ShellEvent e) {}
     });
-    
+
     this.getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
   }
-  
+
   /**
    * Erweitert den Dialog unten.
    * @param c der Container.
@@ -301,7 +300,7 @@ public class TANDialog extends AbstractDialog
     getTANInput().setValue(tan);
     getOkButton().setEnabled(StringUtils.trimToNull(tan) != null);
   }
-  
+
   /**
    * Legt fest, ob die TAN angezeigt werden soll.
    * @param show true, wenn die TAN angezeigt werden soll.
@@ -321,7 +320,6 @@ public class TANDialog extends AbstractDialog
     this.getPanel().setText(type,text);
   }
 
-
   /**
    * Speichert den zugehoerigen Auftrag, insofern ermittelbar.
    * @param context der zugehoerige Auftrag.
@@ -330,7 +328,7 @@ public class TANDialog extends AbstractDialog
   {
     this.context = context;
   }
-  
+
   /**
    * Liefert den zugehoerigen Auftrag, insofern ermittelbar.
    * @return transfer der zugehoerige Auftrag.
@@ -339,7 +337,7 @@ public class TANDialog extends AbstractDialog
   {
     return context;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
@@ -348,7 +346,7 @@ public class TANDialog extends AbstractDialog
   {
     return this.tan;
   }
-  
+
   /**
    * Speichert den anzuzeigenden Text.
    * @param text der anzuzeigende Text.
@@ -367,12 +365,12 @@ public class TANDialog extends AbstractDialog
       // Seite 127. Das muss noch beachtet werden
       // Eigentlich kann man in den BPD noch nachschauen, ob fuer das TAN-Verfahren "ischallengestructured=J",
       // aber das brauchen wir nicht. Wenn HTML-Tags drin stehen, ersetzen wir sie gegen Formatierungen.
-      
+
       text = text.replaceAll("<br>","\n");
       text = text.replaceAll("<p>","\n\n");
-      
+
       text = text.replaceAll("<p>","\n\n");
-      
+
       text = text.replaceAll("<ul>","\n");
       text = text.replaceAll("</ul>","");
       text = text.replaceAll("<ol>","\n");

@@ -15,7 +15,6 @@ import java.util.List;
 
 import de.willuhn.jameica.hbci.rmi.Konto;
 
-
 /**
  * Basis-Interface aller Passports.
  * Insofern ein Passport (Sicherheitsmedium) beim Start der Anwendung
@@ -25,7 +24,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
  * <i>de.willuhn.jameica.passports.ddv.server.PassportImpl</i> dienen.
  */
 public interface Passport extends Remote {
-
 
 	/**
 	 * Diese Funktion wird von Hibiscus aufgerufen, wenn der Passport
@@ -49,7 +47,7 @@ public interface Passport extends Remote {
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
-  
+
   /**
    * Liefert einen Info-Text, den die Passport-Klasse frei implementieren kann.
    * Sie kann hier z.Bsp. die Anzahl vorhandener PIN/TAN-Konfigurationen oder
@@ -59,7 +57,7 @@ public interface Passport extends Remote {
    * @throws RemoteException
    */
   public String getInfo() throws RemoteException;
-	
+
 	/**
 	 * Liefert das Passport-Handle.
 	 * Das ist im Prinzip die direkte Schnittstelle zu HBCI4Java.
@@ -80,7 +78,7 @@ public interface Passport extends Remote {
    * @throws RemoteException
    */
   public Class getConfigDialog() throws RemoteException;
-  
+
   /**
    * Liefert die Liste der Konfigurationen.
    * @return die Liste der Konfigurationen.

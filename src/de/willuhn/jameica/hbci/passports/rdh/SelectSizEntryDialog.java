@@ -58,7 +58,7 @@ public class SelectSizEntryDialog extends AbstractDialog
   {
     Container group = new SimpleContainer(parent);
     group.addText(i18n.tr("Bitte wählen Sie den zu verwendenden Schlüssel aus"),true);
-    
+
     List<Entry> list = new ArrayList<Entry>();
 
     StringTokenizer tok = new StringTokenizer(data,"|");
@@ -67,7 +67,7 @@ public class SelectSizEntryDialog extends AbstractDialog
       Entry e = new Entry(tok.nextToken());
       list.add(e);
     }
-    
+
     final TablePart table = new TablePart(list, new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -83,7 +83,7 @@ public class SelectSizEntryDialog extends AbstractDialog
     table.setMulti(false);
     table.setSummary(false);
     table.paint(parent);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -123,7 +123,7 @@ public class SelectSizEntryDialog extends AbstractDialog
     private String id     = null;
     private String userid = null;
     private String bank   = null;
-    
+
     private Entry(String data)
     {
       StringTokenizer tok = new StringTokenizer(data,";");
@@ -131,7 +131,7 @@ public class SelectSizEntryDialog extends AbstractDialog
       this.id     = tok.nextToken();
       this.bank   = tok.nextToken();
       this.userid = tok.nextToken();
-      
+
       try
       {
         String bankName = HBCIProperties.getNameForBank(this.bank);
@@ -152,7 +152,7 @@ public class SelectSizEntryDialog extends AbstractDialog
     {
       return this.userid;
     }
-    
+
     /**
      * Liefert die Bank.
      * @return die Bank.
@@ -172,7 +172,6 @@ public class SelectSizEntryDialog extends AbstractDialog
     }
   }
 }
-
 
 /*********************************************************************
  * $Log: SelectSizEntryDialog.java,v $

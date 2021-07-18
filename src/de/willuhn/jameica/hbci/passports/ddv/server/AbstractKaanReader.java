@@ -31,7 +31,7 @@ public abstract class AbstractKaanReader extends AbstractReader
         File f32 = new File("/usr/lib/libct.so");
         if (f32.exists())
           return f32.getAbsolutePath();
-        
+
         // Ne, dann nehmen wir den mitgelieferten
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "libct.so";
       case Platform.OS_LINUX_64:
@@ -43,7 +43,7 @@ public abstract class AbstractKaanReader extends AbstractReader
 
       case Platform.OS_WINDOWS:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "CT32.dll";
-      
+
       default:
         return "";
     }
@@ -68,9 +68,7 @@ public abstract class AbstractKaanReader extends AbstractReader
     return false;
   }
 
-  
 }
-
 
 /**********************************************************************
  * $Log: AbstractKaanReader.java,v $

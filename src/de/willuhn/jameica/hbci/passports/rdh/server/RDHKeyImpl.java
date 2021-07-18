@@ -210,7 +210,7 @@ public class RDHKeyImpl implements RDHKey
     String[] ids = settings.getList(getID() + ".konto",null);
     if (ids == null || ids.length == 0)
       return null;
-    
+
     ArrayList konten = new ArrayList();
     for (int i=0;i<ids.length;++i)
     {
@@ -240,7 +240,7 @@ public class RDHKeyImpl implements RDHKey
       settings.setAttribute(getID() + ".konto",(String[]) null);
       return;
     }
-    
+
     String[] ids = new String[k.length];
     for (int i=0;i<k.length;++i)
     {
@@ -256,7 +256,7 @@ public class RDHKeyImpl implements RDHKey
   {
     return getFormat().load(this);
   }
-  
+
   /**
    * Liefert das Schluesselformat.
    * @return das Schluesselformat.
@@ -268,7 +268,7 @@ public class RDHKeyImpl implements RDHKey
     {
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       MultipleClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
-      
+
       // Als Default nehmen wir das Eigenformat
       String s = settings.getString(getID() + ".format",HBCI4JavaFormat.class.getName());
       Class c = loader.load(s);

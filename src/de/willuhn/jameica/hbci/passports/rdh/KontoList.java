@@ -57,7 +57,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     // Erst das Parent zeichnen, damit wir anschliessend die
     // Konten checkable machen koennen.
     super.paint(parent);
-    
+
     /////////////////////////////////////////////////////////////////
     // Wir ermitteln die Liste der bereits verlinkten Konten
     ArrayList linked = new ArrayList();
@@ -67,7 +67,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
       RDHKey key = (RDHKey) keys.next();
       if (!key.isEnabled())
         continue;
-      
+
       if (this.myKey != null && this.myKey.equals(key))
         continue; // Das sind wir selbst
 
@@ -97,7 +97,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
       konten.add(k);
     }
     /////////////////////////////////////////////////////////////////
-    
+
     /////////////////////////////////////////////////////////////////
     // Tabelle erzeugen und nur die relevanten markieren
     GenericIterator all = PseudoIterator.fromArray((Konto[]) konten.toArray(new Konto[konten.size()]));

@@ -25,7 +25,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Abstrakte Basis-Implementierung des Schluesselformats SizRDH.
  */
@@ -74,7 +73,7 @@ public abstract class AbstractSizRdhFormat extends AbstractKeyFormat
     Manifest mf         = p.getManifest();
 
     String file = null;
-  
+
     switch (Application.getPlatform().getOS())
     {
       case Platform.OS_LINUX:

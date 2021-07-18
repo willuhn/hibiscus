@@ -9,7 +9,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.ddv.rmi;
 
-
 /**
  * Passport fuer das Sicherheitsmedium "Chipkarte" (DDV).
  */

@@ -60,14 +60,14 @@ import de.willuhn.util.ApplicationException;
 public class ChipTANDialog extends TANDialog
 {
   private final static Settings SETTINGS = new Settings(ChipTANDialog.class);
-  
+
   private final static String PARAM_AUTOCONTINUE = "usb.autocontinue";
-  
+
   private String code = null;
   private boolean usb = false;
   private ChipTanCardService service = null;
   private CheckboxInput autoContinue = null;
-  
+
   private final Listener resizeListener = new DelayedListener(new Listener() {
     @Override
     public void handleEvent(Event event)
@@ -76,7 +76,6 @@ public class ChipTANDialog extends TANDialog
     }
   });
 
-  
   /**
    * ct.
    * @param config die PINTAN-Config.
@@ -90,13 +89,13 @@ public class ChipTANDialog extends TANDialog
     this.code = code;
     this.checkUSB();
     Logger.info("using chiptan " + (this.usb ? "USB" : "OPTIC"));
-    
+
     if (this.usb)
       this.setSideImage(SWTUtil.getImage("cardreader.png"));
     else
       this.setSideImage(null); // den Platz haben wir hier nicht.
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#setText(java.lang.String)
    */
@@ -117,7 +116,7 @@ public class ChipTANDialog extends TANDialog
         super.setText(text);
         return;
       }
-      
+
       // Alles bis zum Ende des zweiten Tocken abschneiden
       text = text.substring(t2Start + token2.length());
 
@@ -130,11 +129,11 @@ public class ChipTANDialog extends TANDialog
           text = text.substring(4);
       }
     }
-    
+
     super.setText(text);
     return;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der man einstellen kann, ob bei Erhalt der TAN via USB automatisch fortgesetzt werden soll.
    * @return die Checkbox.
@@ -144,21 +143,21 @@ public class ChipTANDialog extends TANDialog
   {
     if (this.autoContinue != null)
       return this.autoContinue;
-    
+
     this.autoContinue = new CheckboxInput(SETTINGS.getBoolean(PARAM_AUTOCONTINUE,false));
     this.autoContinue.setName(i18n.tr("Bei Erhalt der TAN automatisch fortsetzen"));
     this.autoContinue.addListener(new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
         SETTINGS.setAttribute(PARAM_AUTOCONTINUE,((Boolean)autoContinue.getValue()).booleanValue());
       }
     });
-    
+
     return this.autoContinue;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -166,7 +165,7 @@ public class ChipTANDialog extends TANDialog
   protected void paint(Composite parent) throws Exception
   {
     super.paint(parent);
-    
+
     // Checken, ob wir eine gespeicherte Dialoggroesse haben
     int windowWidth = SETTINGS.getInt("window.width",0);
     int windowHeight = SETTINGS.getInt("window.height",0);
@@ -175,7 +174,7 @@ public class ChipTANDialog extends TANDialog
 
     this.getShell().addListener(SWT.Resize,this.resizeListener);
   }
-  
+
   /**
    * Speichert die aktuelle Dialog-Groesse.
    */
@@ -184,17 +183,16 @@ public class ChipTANDialog extends TANDialog
     final Shell shell = this.getShell();
     if (shell == null || shell.isDisposed())
       return;
-    
+
     final Point p = shell.getSize();
     if (p == null)
       return;
-    
 
     Logger.debug("saving window size: " + p.x + "x" + p.y);
     SETTINGS.setAttribute("window.width",p.x);
     SETTINGS.setAttribute("window.height",p.y);
   }
-  
+
   /**
    * Findet heraus, ob alle Vorbedingungen fuer die Nutzung von ChipTAN USB erfuellt sind.
    * @throws RemoteException
@@ -205,7 +203,7 @@ public class ChipTANDialog extends TANDialog
     PtSecMech mech = config != null ? config.getCurrentSecMech() : null;
     if (mech == null || !mech.useUSB())
       return; // brauchen wir gar nicht weiter ueberlegen
-    
+
     // Checken, ob der User schon entschieden hatte, dass er chipTAN USB NICHT nutzen moechte
     Boolean use = config != null ? config.isChipTANUSB() : null;
     if (use != null && !use.booleanValue())
@@ -222,14 +220,14 @@ public class ChipTANDialog extends TANDialog
       if (this.service != null && this.config != null)
       {
         Logger.info("found smartcard, to be used: " + (use != null ? use : "<asking user>"));
-        
+
         // User hat explizit entschieden, den Kartenleser per USB zu nutzen.
         if (use != null && use.booleanValue())
         {
           this.usb = this.config.isChipTANUSB();
           return;
         }
-        
+
         // User fragen, ob er ihn auch nutzen moechte, wenn wir das noch nicht getan haben
         // Das Speichern der Antwort koennen wir nicht Jameica selbst ueberlassen, weil
         // die Entscheidung ja pro PIN/TAN-Config gelten soll und nicht global.
@@ -262,7 +260,7 @@ public class ChipTANDialog extends TANDialog
       final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.horizontalSpan = 2;
       progress.setLayoutData(gd);
-      
+
       final AtomicBoolean cancelled = new AtomicBoolean(false);
 
       final Thread usbThread = new Thread()
@@ -293,7 +291,7 @@ public class ChipTANDialog extends TANDialog
         }
       };
       usbThread.start();
-      
+
       getShell().addDisposeListener(new DisposeListener() {
         @Override
         public void widgetDisposed(DisposeEvent e)
@@ -315,7 +313,7 @@ public class ChipTANDialog extends TANDialog
     else
     {
       this.setInfoText(Type.INFO,i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."));
-      
+
       final Container c = new SimpleContainer(container.getComposite(),false,1);
       Composite comp = new Composite(c.getComposite(),SWT.NONE);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -327,7 +325,7 @@ public class ChipTANDialog extends TANDialog
       flicker.paint(comp);
     }
   }
-  
+
   /**
    * Uebernimmt die TAN.
    * @param s die TAN.
@@ -336,9 +334,9 @@ public class ChipTANDialog extends TANDialog
   {
     if (s == null || s.length() == 0)
       return;
-    
+
     GUI.getDisplay().asyncExec(new Runnable() {
-      
+
       @Override
       public void run()
       {
@@ -347,10 +345,9 @@ public class ChipTANDialog extends TANDialog
           close();
       }
     });
-    
-    
+
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendBottom(org.eclipse.swt.widgets.Composite)
    */
@@ -359,10 +356,10 @@ public class ChipTANDialog extends TANDialog
   {
     if (!this.usb)
       return;
-    
+
     c.addInput(this.getAutoContinue());
   }
-  
+
   /**
    * Implementiert die Flicker-Grafik.
    */
@@ -371,10 +368,10 @@ public class ChipTANDialog extends TANDialog
     private Composite comp = null;
     private Canvas canvas  = null;
     private boolean[] bits = new boolean[5];
-    
+
     private Color black = GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK);
     private Color white = GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-    
+
     /**
      * ct.
      * @param code der anzuzeigende Flicker-Code.
@@ -385,7 +382,7 @@ public class ChipTANDialog extends TANDialog
       super(code);
       setFrequency(SETTINGS.getInt("freq",FlickerRenderer.FREQUENCY_DEFAULT));
     }
-    
+
     /**
      * @see org.kapott.hbci.manager.FlickerRenderer#paint(boolean, boolean, boolean, boolean, boolean)
      */
@@ -396,10 +393,10 @@ public class ChipTANDialog extends TANDialog
       this.bits[2] = b3;
       this.bits[3] = b4;
       this.bits[4] = b5;
-      
+
       if (canvas == null || canvas.isDisposed())
         return;
-      
+
       // Redraw ausloesen
       // Wir sind hier nicht im Event-Dispatcher-Thread von SWT. Daher uebergeben wir das an diesen
       canvas.getDisplay().syncExec(new Runnable() {
@@ -408,7 +405,7 @@ public class ChipTANDialog extends TANDialog
           // Wir muessen hier nochmal checken, weil das inzwischen disposed sein kann.
           if (canvas.isDisposed())
             return;
-            
+
           // Neu zeichnen
           canvas.redraw();
         }
@@ -432,11 +429,11 @@ public class ChipTANDialog extends TANDialog
         buttonGd.horizontalAlignment = SWT.CENTER;
         buttonComp.setLayoutData(buttonGd);
         buttonComp.setLayout(new GridLayout(5,false));
-        
+
         final Label label1 = new Label(buttonComp,SWT.NONE);
         label1.setLayoutData(new GridData());
         label1.setText(i18n.tr("Breite"));
-        
+
         Button smaller = new Button(buttonComp,SWT.PUSH);
         smaller.setToolTipText(i18n.tr("Flicker-Code verkleinern"));
         smaller.setLayoutData(new GridData());
@@ -452,7 +449,7 @@ public class ChipTANDialog extends TANDialog
             if (gd.widthHint < SWTUtil.mm2px(20)) // unplausibel
               return;
             gd.widthHint -= 8;
-            
+
             Point newSize = new Point(gd.widthHint,comp.getSize().y);
             comp.setSize(newSize);
             parent.layout(); // zentriert den Flicker-Code wieder
@@ -470,7 +467,7 @@ public class ChipTANDialog extends TANDialog
           public void widgetSelected(SelectionEvent e)
           {
             GridData gd = (GridData) comp.getLayoutData();
-            
+
             // Eigentlich sollten 120mm als Grenze reichen. Wenn aber ein HighDPI-System falsche
             // DPI-Zahlen zurueckliefert, koennte das zu wenig sein. Siehe BUGZILLA 1565
             if (gd.widthHint > SWTUtil.mm2px(400))
@@ -482,11 +479,11 @@ public class ChipTANDialog extends TANDialog
             parent.layout(); // zentriert den Flicker-Code wieder
           }
         });
-        
+
         final Label label2 = new Label(buttonComp,SWT.NONE);
         label2.setLayoutData(new GridData());
         label2.setText(i18n.tr("Geschwindigkeit"));
-        
+
         final Spinner spinner = new Spinner(buttonComp,SWT.BORDER);
         spinner.setToolTipText(i18n.tr("Geschwindigkeit in Hz (1/Sekunde)"));
         spinner.setLayoutData(new GridData());
@@ -506,7 +503,6 @@ public class ChipTANDialog extends TANDialog
       }
       //
       ////////////////////////////////////////////////////////////////////////
-      
 
       //////////////////////////////////////////////////////////////////////////
       // Das Composite fuer den Flicker-Code
@@ -526,7 +522,7 @@ public class ChipTANDialog extends TANDialog
         int height = SWTUtil.mm2px(40);
         if (height == -1) height = 100;
         gd.heightHint = height;
-        
+
         this.comp.setLayoutData(gd);
 
         // Wir lassen etwas Abstand zum Rand
@@ -534,7 +530,7 @@ public class ChipTANDialog extends TANDialog
         gl.marginHeight = 20;
         gl.marginWidth = 20;
         this.comp.setLayout(gl);
-        
+
         // Beim Disposen stoppen wir den Flicker-Thread.
         this.comp.addDisposeListener(new DisposeListener()
         {
@@ -554,7 +550,7 @@ public class ChipTANDialog extends TANDialog
       this.canvas = new Canvas(this.comp,SWT.NONE);
       this.canvas.setBackground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       this.canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
-      
+
       // Bei jedem Paint-Event aktualisieren wir die Balken
       this.canvas.addPaintListener(new PaintListener()
       {
@@ -573,8 +569,6 @@ public class ChipTANDialog extends TANDialog
       //
       //////////////////////////////////////////////////////////////////////////
 
-
-      
       // Und los gehts
       this.start();
     }
@@ -589,24 +583,24 @@ public class ChipTANDialog extends TANDialog
       int margin = barwidth / 4;
       barwidth -= margin; // Rand noch abziehen
       barwidth += margin/4; // und dann nochmal ein Viertel des Randes dran, damit wir am Ende keinen schwarzen Rand haben
-      
+
       Point size = canvas.getSize();
       for (int i=0;i<this.bits.length;++i)
       {
         ctx.setBackground(this.bits[i] ? white : black);
         ctx.fillRectangle(i*(barwidth+margin),12,barwidth,size.y-12); // die 12 sind der Abstand von oben (wegen den Dreiecken)
       }
-      
+
       // Die Kalibrierungs-Dreiecke noch reinmalen
       ctx.setBackground(white);
-      
+
       // Breite und Hoehe der Dreiecke
       int width  = 12;
       int height = 6;
-      
+
       // Abstand vom Rand -> halbe Balkenbreite minus halbe Dreieck-Breite
       int gap = barwidth / 2 - (width/2);
-      
+
       int[] left  = new int[]{gap,0,               gap+width,0,    gap+(width/2),height};
       int[] right = new int[]{size.x-gap-width,0,  size.x-gap,0,   size.x-gap-(width/2),height};
       ctx.fillPolygon(left);
@@ -614,4 +608,3 @@ public class ChipTANDialog extends TANDialog
     }
   }
 }
-

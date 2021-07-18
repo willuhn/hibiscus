@@ -57,13 +57,13 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     // Checken, ob die Datei lesbar ist.
     if (file == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"));
-    
+
     if (!file.canRead() || !file.isFile())
       throw new ApplicationException(i18n.tr("Schlüsseldatei nicht lesbar"));
 
     HBCI plugin           = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
     PluginResources res   = plugin.getResources();
-    
+
     // Wir fragen den User, wo er den Schluessel hinhaben will.
     FileDialog dialog = new FileDialog(GUI.getShell(), SWT.SAVE);
     dialog.setText(Application.getI18n().tr("Bitte wählen einen Pfad und Dateinamen, an dem der importierte Schlüssel gespeichert werden soll."));
@@ -71,10 +71,10 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     dialog.setOverwrite(true);
     dialog.setFilterPath(res.getWorkPath());
     String newFile = dialog.open();
-    
+
     if (newFile == null || newFile.length() == 0)
       throw new ApplicationException(i18n.tr("Keine Datei ausgewählt"));
-    
+
     File newKey = new File(newFile);
     if (!newKey.getParentFile().canWrite())
       throw new ApplicationException(i18n.tr("Keine Schreibberechtigung"));
@@ -90,10 +90,10 @@ public class SizRdhFormat extends AbstractSizRdhFormat
       Logger.info("loading sizrdh key");
       if (callback != null && (callback instanceof HBCICallbackSWT))
         ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
-      
+
       // Abfrage des Passwortes erzwingen
       settings.setAttribute("hbcicallback.askpassphrase.force",true);
-      
+
       HBCIUtils.setParam("client.passport.SIZRDHFile.filename",file.getAbsolutePath());
       HBCIUtils.setParam("client.passport.SIZRDHFile.libname",getRDHLib());
       HBCIUtils.setParam("client.passport.SIZRDHFile.init","0");
@@ -119,14 +119,14 @@ public class SizRdhFormat extends AbstractSizRdhFormat
       target.setHBCIVersion(source.getHBCIVersion());
       target.setBPD(source.getBPD());
       target.setUPD(source.getUPD());
-          
+
       ((HBCIPassportRDHNew)target).setInstSigKey(source.getInstSigKey());
       ((HBCIPassportRDHNew)target).setInstEncKey(source.getInstEncKey());
       ((HBCIPassportRDHNew)target).setMyPublicSigKey(source.getMyPublicSigKey());
       ((HBCIPassportRDHNew)target).setMyPrivateSigKey(source.getMyPrivateSigKey());
       ((HBCIPassportRDHNew)target).setMyPublicEncKey(source.getMyPublicEncKey());
       ((HBCIPassportRDHNew)target).setMyPrivateEncKey(source.getMyPrivateEncKey());
-          
+
       target.saveChanges();
       target.close();
       source.close();
@@ -148,7 +148,7 @@ public class SizRdhFormat extends AbstractSizRdhFormat
       OperationCanceledException oce = (OperationCanceledException) HBCIProperties.getCause(e,OperationCanceledException.class);
       if (oce != null)
         throw oce;
-        
+
       ApplicationException ae = (ApplicationException) HBCIProperties.getCause(e,ApplicationException.class);
       if (ae != null)
         throw ae;
@@ -175,9 +175,7 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     return new HBCI4JavaFormat().load(key);
   }
 
-
 }
-
 
 /**********************************************************************
  * $Log: SizRdhFormat.java,v $

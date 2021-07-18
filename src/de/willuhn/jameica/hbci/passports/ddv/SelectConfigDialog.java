@@ -23,7 +23,6 @@ import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 /**
  * Ein Dialog zur Auswahl der zu verwendenden DDV-Config.
  */
@@ -50,7 +49,7 @@ public class SelectConfigDialog extends AbstractDialog
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Konfiguration"));
     group.addText(text == null ? i18n.tr("Bitte wählen Sie die zu verwendende Kartenleser-Konfiguration aus") : text,true);
-    
+
     final TablePart table = new TablePart(DDVConfigFactory.getConfigs(), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -66,7 +65,7 @@ public class SelectConfigDialog extends AbstractDialog
     table.setMulti(false);
     table.setSummary(false);
     table.paint(parent);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -94,7 +93,7 @@ public class SelectConfigDialog extends AbstractDialog
   {
     this.text = text;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
@@ -104,7 +103,6 @@ public class SelectConfigDialog extends AbstractDialog
   }
 
 }
-
 
 /*********************************************************************
  * $Log: SelectConfigDialog.java,v $

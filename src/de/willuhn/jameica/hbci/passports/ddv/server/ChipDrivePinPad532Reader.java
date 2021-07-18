@@ -47,7 +47,6 @@ public class ChipDrivePinPad532Reader extends AbstractReader
   }
 }
 
-
 /**********************************************************************
  * $Log: ChipDrivePinPad532Reader.java,v $
  * Revision 1.2  2010/09/07 15:28:05  willuhn

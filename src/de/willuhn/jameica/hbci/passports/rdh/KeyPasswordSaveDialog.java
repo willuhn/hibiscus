@@ -23,7 +23,7 @@ import de.willuhn.util.I18N;
 public class KeyPasswordSaveDialog extends NewPasswordDialog
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	
+
 	// BUGZILLA 1707
   private final static char[] INVALID_CHARS = new char[]
   {
@@ -38,7 +38,7 @@ public class KeyPasswordSaveDialog extends NewPasswordDialog
       246, // ö
       252, // ü
   };
-	
+
   /**
    * ct.
    * @param position Position des Dialogs.
@@ -50,16 +50,16 @@ public class KeyPasswordSaveDialog extends NewPasswordDialog
 
     setTitle(i18n.tr("Passwort-Eingabe"));
     setLabelText(i18n.tr("Ihr Passwort"));
-    
+
     String text = i18n.tr("Bitte vergeben Sie ein Passwort, mit dem der zu speichernde\nSchlüssel geschützt werden soll.");
-    
+
     if (passport instanceof HBCIPassportRDHXFile)
       text += "\n\n" + i18n.tr("Geben Sie bitte mindestens 8 Zeichen ein.");
     else
       text += "\n\n" + i18n.tr("Die folgenden Zeichen dürfen nicht enthalten sein: {0}",String.copyValueOf(INVALID_CHARS));
     setText(text + "\n");
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.NewPasswordDialog#checkPassword(java.lang.String, java.lang.String)
    */
@@ -69,7 +69,7 @@ public class KeyPasswordSaveDialog extends NewPasswordDialog
     // Erstmal checken, ob die Passwoerter grundsaetzlich ok sind.
     if (!super.checkPassword(password, password2))
       return false;
-    
+
     // Jetzt checken wir noch, ob eines der unerlaubten Zeichen enthalten ist.
     for (char c:password.toCharArray())
     {
@@ -82,8 +82,8 @@ public class KeyPasswordSaveDialog extends NewPasswordDialog
         }
       }
     }
-    
+
     return true;
   }
-  
+
 }

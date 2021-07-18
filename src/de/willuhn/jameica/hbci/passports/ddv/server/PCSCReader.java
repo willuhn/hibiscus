@@ -60,7 +60,7 @@ public class PCSCReader implements Reader
   public boolean isSupported()
   {
     int os = Application.getPlatform().getOS();
-    
+
     return os == Platform.OS_WINDOWS ||
            os == Platform.OS_WINDOWS_64 ||
            os == Platform.OS_LINUX ||
@@ -83,7 +83,7 @@ public class PCSCReader implements Reader
   {
     return Type.DDV_PCSC;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
    */
@@ -99,7 +99,7 @@ public class PCSCReader implements Reader
   {
     return this.getName();
   }
-  
+
   /**
    * @see java.lang.Object#equals(java.lang.Object)
    */
@@ -107,7 +107,7 @@ public class PCSCReader implements Reader
   {
     if (!(obj instanceof Reader))
       return false;
-    
+
     Reader other = (Reader) obj;
     String s1 = this.getClass().getName()  + this.getName();
     String s2 = other.getClass().getName() + other.getName();
