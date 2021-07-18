@@ -16,7 +16,6 @@ import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.util.ApplicationException;
 
-
 /**
  * Message-Consumer, der eine IBAN auf Gueltigkeit pruefen kann.
  */
@@ -47,7 +46,7 @@ public class QueryIBANCRCMessageConsumer implements MessageConsumer
   {
     if (message == null || !(message instanceof QueryMessage))
       return;
-    
+
     QueryMessage qm = (QueryMessage) message;
     Object data = qm.getData();
     if (data == null)
@@ -66,5 +65,5 @@ public class QueryIBANCRCMessageConsumer implements MessageConsumer
       qm.setData(Boolean.FALSE);
     }
   }
-
 }
+

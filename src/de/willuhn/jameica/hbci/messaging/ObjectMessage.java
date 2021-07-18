@@ -28,7 +28,7 @@ public class ObjectMessage implements Message
   {
     this.object = object;
   }
-  
+
   /**
    * Liefert das betreffende Objekt.
    * @return das Objekt.
@@ -39,7 +39,6 @@ public class ObjectMessage implements Message
   }
 
 }
-
 
 /*********************************************************************
  * $Log: ObjectMessage.java,v $

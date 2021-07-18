@@ -128,7 +128,6 @@ public class OrderReminderMessageConsumer implements MessageConsumer
 
 }
 
-
 /**********************************************************************
  * $Log: OrderReminderMessageConsumer.java,v $
  * Revision 1.4  2012/03/28 22:47:18  willuhn

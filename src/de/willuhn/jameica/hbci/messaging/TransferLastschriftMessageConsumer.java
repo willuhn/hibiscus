@@ -28,7 +28,6 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
-
 /**
  * Empfaengt Nachrichten mit generischen Parameter-Maps,
  * aus denen dann Lastschriften erstellt werden.
@@ -64,7 +63,7 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
   {
     if (message == null || !(message instanceof QueryMessage))
       return;
-    
+
     Object data = ((QueryMessage)message).getData();
     if (data == null || !(data instanceof Map))
     {
@@ -73,30 +72,30 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
     }
 
     Lastschrift ls = null;
-    
+
     try
     {
       Map params        = (Map) data;
       DBService service = Settings.getDBService();
       ls                = (Lastschrift) service.createObject(Lastschrift.class,null);
-      
+
       Number betrag = (Number) params.get("value");
       if (betrag != null)
         ls.setBetrag(betrag.doubleValue());
-      
+
       String type = (String) params.get("type");
       if (type != null)
         ls.setTextSchluessel(type);
 
       Date termin = (Date) params.get("date");
       ls.setTermin(termin != null ? termin : new Date());
-      
+
       ls.setZweck((String) params.get("usage.1"));
       ls.setZweck2((String) params.get("usage.2"));
       ls.setGegenkontoName((String) params.get("other.name"));
       ls.setGegenkontoNummer((String) params.get("other.account"));
       ls.setGegenkontoBLZ((String) params.get("other.blz"));
-      
+
       // Jetzt schauen wir noch, ob wir das Konto finden,
       // ueber das der Auftrag abgewickelt werden soll.
       String konto = (String) params.get("my.account");
@@ -147,7 +146,6 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
   }
 
 }
-
 
 /**********************************************************************
  * $Log: TransferLastschriftMessageConsumer.java,v $

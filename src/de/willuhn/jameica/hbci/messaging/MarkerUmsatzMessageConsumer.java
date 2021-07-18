@@ -30,7 +30,7 @@ import de.willuhn.logging.Logger;
 public class MarkerUmsatzMessageConsumer implements MessageConsumer
 {
   private DelayedListener listener = new DelayedListener(1000,new Worker());
-  
+
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -48,7 +48,7 @@ public class MarkerUmsatzMessageConsumer implements MessageConsumer
       return;
 
     GenericObject o = ((ObjectMessage)message).getObject();
-    
+
     if (o == null || !(o instanceof Umsatz))
       return; // interessiert uns nicht
 
@@ -65,7 +65,7 @@ public class MarkerUmsatzMessageConsumer implements MessageConsumer
   {
     return true;
   }
-  
+
   /**
    * Der eigentliche Worker.
    */
@@ -87,6 +87,6 @@ public class MarkerUmsatzMessageConsumer implements MessageConsumer
         Logger.write(Level.DEBUG,"unable to update navigation",t);
       }
     }
-    
+
   }
 }

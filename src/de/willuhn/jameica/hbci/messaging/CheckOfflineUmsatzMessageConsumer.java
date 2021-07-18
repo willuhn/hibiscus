@@ -58,12 +58,12 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     // Wenn es keine Import-Message ist ignorieren wir die folgenden
     if (message == null || !(message instanceof ImportMessage))
       return;
-    
+
     GenericObject o = ((ImportMessage)message).getObject();
-    
+
     if (!(o instanceof Umsatz))
       return; // interessiert uns nicht
-    
+
     // wir haben einen Umsatz, den es zu bearbeiten gilt...
     Umsatz u = (Umsatz) o;
 
@@ -76,7 +76,7 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
       Logger.debug("skip, is not-booked entry");
       return;
     }
-    
+
     // Wenn der Umsatz schon von einem Offline-Konto kommt, legen
     // wir keine Gegenbuchung mehr an. Das fuehrt sonst zu einem Ping-Pong-Spiel ;)
     Konto k = u.getKonto();
@@ -94,7 +94,7 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
       Logger.debug("skip, have no account number for counter entry");
       return;
     }
-    
+
     if (s.length() > 10)
     {
       // Das ist eine IBAN
@@ -108,15 +108,15 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
       Logger.debug("searching for offline account with kto: " + s + ", blz: " + blz);
       gegenkonto = KontoUtil.find(s, blz,Konto.FLAG_OFFLINE);
     }
-    
+
     if (gegenkonto == null)
     {
       Logger.debug("skip, no matching account found");
       return; // Das Konto haben wir nicht
     }
-    
+
     Logger.debug("found account [id: " + gegenkonto.getID() + "]");
-    
+
     // Checken, ob fuer das Konto automatisch Umsaetze angelegt werden sollen
     SynchronizeOptions options = new SynchronizeOptions(gegenkonto);
     if (!options.getSyncOffline())
@@ -138,20 +138,20 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     gegenbuchung.setGegenkontoNummer(k.getKontonummer());
     gegenbuchung.setGegenkontoBLZ(k.getBLZ());
     gegenbuchung.setGegenkontoName(k.getName());
-    
+
     // Art des Umsatzes setzen, Laenge ggf. auf DB-Feldlaenge küuerzen
     String art = i18n.tr("Auto-Buchung Offline-Konto");
     if (art.length()>100) art = art.substring(0, 100);
     gegenbuchung.setArt(art);
-    
+
     // Saldo berechnen
     gegenbuchung.setSaldo(gegenkonto.getSaldo() + gegenbuchung.getBetrag());
-    
+
     // Umsatztyp loeschen
     gegenbuchung.setUmsatzTyp(null);
 
     gegenbuchung.store(); // Umsatz speichern
-    
+
     // neuen Umsatz bekannt geben
     Application.getMessagingFactory().sendMessage(new ImportMessage(gegenbuchung));
   }

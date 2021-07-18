@@ -41,16 +41,16 @@ public class SyntaxBuchungMarkCheckedMessageConsumer implements MessageConsumer
     final QueryMessage m = (QueryMessage) message;
     final String state   = m.getName();
     final Object data    = m.getData();
-    
+
     if (state == null || state.length() == 0 || data == null)
       return;
-    
+
     final String id = data.toString();
     if (id == null || id.length() == 0)
       return;
 
     final boolean set = Boolean.valueOf(state);
-    
+
     try
     {
       Umsatz u = Settings.getDBService().createObject(Umsatz.class,id);
@@ -61,7 +61,7 @@ public class SyntaxBuchungMarkCheckedMessageConsumer implements MessageConsumer
         u.setFlags(current | flag);
       else
         u.setFlags(current ^ flag);
-      
+
       u.store();
     }
     catch (ObjectNotFoundException oe)
@@ -81,5 +81,3 @@ public class SyntaxBuchungMarkCheckedMessageConsumer implements MessageConsumer
   }
 
 }
-
-

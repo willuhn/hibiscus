@@ -56,19 +56,19 @@ public class OfflineSaldoMessageConsumer implements MessageConsumer
 
     // Andernfalls wurde der Umsatz geloescht
     boolean isImport = (message instanceof ImportMessage);
-    
+
     GenericObject o = ((ObjectMessage)message).getObject();
-    
+
     if (!(o instanceof Umsatz))
       return; // interessiert uns nicht
-    
+
     // wir haben einen Umsatz, den es zu bearbeiten gilt...
     Umsatz u = (Umsatz) o;
 
     Konto k = u.getKonto();
     if (k == null)
       return;
-    
+
     // Offline-Konto?
     if (!k.hasFlag(Konto.FLAG_OFFLINE))
       return;
@@ -77,16 +77,16 @@ public class OfflineSaldoMessageConsumer implements MessageConsumer
     SynchronizeOptions options = new SynchronizeOptions(k);
     if (!options.getAutoSaldo())
       return;
-    
+
     // Wenn fuer das Offline-Konto das Synchronisieren des Saldos
     // aktiv ist, halten wir uns raus
     // Siehe Mail von Sebastian vom 08.05.2013
-    
+
     // Update 2013-07-23: Das macht aber nur Sinn, wenn Scripting fuer
     // das Konto verfuegbar ist.
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeEngine engine = service.get(SynchronizeEngine.class);
-    
+
     // Also wir haben prinzipiell Scripting fuer das Konto. Also checken,
     // ob das Abrufen des Saldos dort schon aktiviert ist
     if (engine.supports(SynchronizeJobKontoauszug.class,k))
@@ -112,7 +112,7 @@ public class OfflineSaldoMessageConsumer implements MessageConsumer
       k.setSaldo(saldo - betrag);
 
     k.store();
-    
+
     // Geaendertes Konto bekanntmachen
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(k));
   }

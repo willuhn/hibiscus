@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public class CheckLimitMessageConsumer implements MessageConsumer
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -54,10 +54,10 @@ public class CheckLimitMessageConsumer implements MessageConsumer
       Logger.warn("got invalid data: " + o);
       return;
     }
-    
+
     Transfer t = (Transfer) o;
     double limit = Settings.getUeberweisungLimit();
-    
+
     String curr = HBCIProperties.CURRENCY_DEFAULT_DE;
     if (t instanceof HibiscusTransfer)
     {
@@ -78,5 +78,3 @@ public class CheckLimitMessageConsumer implements MessageConsumer
   }
 
 }
-
-

@@ -46,7 +46,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
 {
   private final static ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
   private final static Map<String,AtomicLong> counters = new HashMap<String, AtomicLong>();
-  
+
   private final static Map<Class,String> types = new HashMap<Class,String>()
   {{
     put(AuslandsUeberweisung.class,   "hibiscus.navi.transfer.uebforeign");
@@ -73,18 +73,18 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
   {
     if (Application.inServerMode())
       return;
-    
+
     QueryMessage msg = (QueryMessage) message;
     final Entry<Class,String> type = this.getType(msg.getData());
 
     // unbekannter Typ
     if (type == null)
       return;
-    
+
     final long currentValue = this.getCounter(type.getValue()).incrementAndGet();
-    
+
     worker.schedule(new Runnable() {
-      
+
       @Override
       public void run()
       {
@@ -98,7 +98,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
           Logger.debug("ignoring frequent overdue counter updates for " + typeId);
           return;
         }
-        
+
         update(type.getKey(), typeId);
       }
     },300,TimeUnit.MILLISECONDS);
@@ -129,7 +129,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
   {
     if (o == null)
       return null;
-    
+
     // Checken, ob wir einen passenden Typ haben
     final Class type = o.getClass();
     for (Entry<Class,String> e:types.entrySet())
@@ -137,10 +137,10 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
       if (e.getKey().isAssignableFrom(type))
         return e;
     }
-    
+
     return null;
   }
-  
+
   /**
    * Aktualisiert einmalig alle Uberfaellig-Counter.
    */
@@ -151,7 +151,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
       update(e.getKey(),e.getValue());
     }
   }
-  
+
   /**
    * Aktualisiert den Zaehler fuer den angegebenen Typ.
    * @param type der Typ.
@@ -161,7 +161,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
   {
     if (type == null || id == null)
       return;
-    
+
     try
     {
       Logger.debug("updating overdue counter for " + id);
@@ -197,7 +197,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
           GUI.getNavigation().setUnreadCount(id,result);
         }
       });
-      
+
     }
     catch (Exception e)
     {
@@ -214,6 +214,5 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     // Per Manifest
     return false;
   }
-  
 
 }

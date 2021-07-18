@@ -28,7 +28,6 @@ public class SaldoMessage extends ObjectMessage
   }
 }
 
-
 /*********************************************************************
  * $Log: SaldoMessage.java,v $
  * Revision 1.2  2007/08/29 10:04:42  willuhn

@@ -51,10 +51,10 @@ public class DeleteBookmarkMessageConsumer implements MessageConsumer
     HibiscusDBObject o = (HibiscusDBObject) data;
     if (o.isNewObject())
       return;
-    
+
     String id        = o.getID();
     String className = o.getClass().getName();
-    
+
     List<Bookmark> bookmarks = service.getBookmarks();
     for (int i=0;i<bookmarks.size();++i)
     {
@@ -62,7 +62,7 @@ public class DeleteBookmarkMessageConsumer implements MessageConsumer
       Context c = b.getContext();
       if (c == null)
         continue;
-      
+
       String cClassName = c.getClassName();
       if (cClassName == null || !cClassName.equals(className))
         continue;
@@ -74,7 +74,7 @@ public class DeleteBookmarkMessageConsumer implements MessageConsumer
         // hier kein Break, weil eine Entity auf mehreren Seiten gebookmarkt
         // sein kann. Zum Beispiel ein Umsatz in UmsatzDetail und in UmsatzEditDetail
       }
-      
+
     }
   }
 

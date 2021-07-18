@@ -50,7 +50,6 @@ public class QueryHBCIVersionMessageConsumer implements MessageConsumer
   }
 }
 
-
 /*********************************************************************
  * $Log: QueryHBCIVersionMessageConsumer.java,v $
  * Revision 1.1  2008/07/28 09:31:10  willuhn

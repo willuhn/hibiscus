@@ -56,16 +56,15 @@ public class NeueUmsaetze implements MessageConsumer
     // ignorieren wir die folgenden
     if (first != null || message == null || !(message instanceof ImportMessage))
       return;
-    
+
     GenericObject o = ((ImportMessage)message).getObject();
-    
+
     if (o == null || !(o instanceof Umsatz) || o.getID() == null)
       return; // interessiert uns nicht
-    
-    
+
     first = o.getID();
   }
-  
+
   /**
    * Liefert eine Liste mit allen in der aktuellen Sitzung hinzugekommenen Umsaetzen.
    * @return Liste der neuen Umsaetze.
@@ -82,7 +81,7 @@ public class NeueUmsaetze implements MessageConsumer
       first = null; // Wenn nichts gefunden wurde, resetten wir uns
     return list;
   }
-  
+
   /**
    * Liefert die ID des ersten in der aktuellen Sitzung eingetroffenen
    * Umsatzes oder <code>null</code>, wenn noch keine neuen Umsaetze hinzugekommen sind.
@@ -113,7 +112,7 @@ public class NeueUmsaetze implements MessageConsumer
     }
     return false;
   }
-  
+
   /**
    * Setzt den Ungelesen-Zaehler der Umsaetze zurueck.
    */
@@ -125,7 +124,7 @@ public class NeueUmsaetze implements MessageConsumer
     try
     {
       first = null;
-      
+
       // Anzeige aktualisieren
       // Im Prinzip koennten wir fuer jeden Umsatz, der vorher als neu galt, eine ObjectChangedMessage schicken
       // Das funktioniert aber nicht ganz sauber, denn:
@@ -134,7 +133,7 @@ public class NeueUmsaetze implements MessageConsumer
       //    verschwindet, wenn man ihn direkt danach loescht. Erst beim Neuladen der View ist er weg.
       // 2) Wenn auf der Startseite die View "Neue Umsätze" aktiv ist, würde dort nur die Fett-Markierung entfernt
       //    werden. Stattdessen müssen die Umsätze dort aber entfernt werden.
-      
+
       // Daher schicken wir keine ObjectChangeMessage sondern laden die aktuelle View neu.
       // GUI.getCurrentView().reload() wird von vielen Views nicht implementiert. Daher starten wir die View neu
       // Achtung: Nicht die Instanz der View wiederverwenden. Bringt keinen Vorteil. Verlangt aber, dass die View
@@ -151,5 +150,5 @@ public class NeueUmsaetze implements MessageConsumer
       GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",0);
     }
   }
-  
+
 }

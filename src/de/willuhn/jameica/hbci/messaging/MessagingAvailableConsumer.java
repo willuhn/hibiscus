@@ -25,7 +25,7 @@ import de.willuhn.jameica.system.Application;
 public class MessagingAvailableConsumer implements MessageConsumer
 {
   private static Boolean HAVE_MESSAGING = null;
-  
+
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -42,7 +42,7 @@ public class MessagingAvailableConsumer implements MessageConsumer
   public void handleMessage(Message message) throws Exception
   {
     new Thread(new Runnable() {
-      
+
       @Override
       public void run()
       {
@@ -50,7 +50,7 @@ public class MessagingAvailableConsumer implements MessageConsumer
       }
     }).start();
   }
-  
+
   /**
    * Prueft, ob das Speichern per Messaging grundsaetzlich moeglich ist.
    * @return true, wenn das Speichern per Messaging grundsaetzlich moeglich ist.
@@ -59,14 +59,14 @@ public class MessagingAvailableConsumer implements MessageConsumer
   {
     if (HAVE_MESSAGING != null)
       return HAVE_MESSAGING;
-    
+
     // Messaging-Plugin ist lokal installiert
     HAVE_MESSAGING = Application.getPluginLoader().getPlugin("de.willuhn.jameica.messaging.Plugin") != null;
-    
+
     // Alternativ per TCP-Connector auf einer anderen Instanz
     if (!HAVE_MESSAGING)
       HAVE_MESSAGING = LookupService.lookup("tcp:de.willuhn.jameica.messaging.Plugin.connector.tcp") != null;
-    
+
     return HAVE_MESSAGING;
   }
 
@@ -80,5 +80,3 @@ public class MessagingAvailableConsumer implements MessageConsumer
   }
 
 }
-
-
