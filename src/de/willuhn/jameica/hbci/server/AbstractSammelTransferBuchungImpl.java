@@ -30,7 +30,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @throws java.rmi.RemoteException
    */
@@ -62,7 +62,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
 
       if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die Kontonummer des Gegenkontos ein"));
-      
+
       if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie die BLZ des Gegenkontos ein"));
 
@@ -85,7 +85,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
 
       if (!HBCIProperties.checkAccountCRC(getGegenkontoBLZ(),getGegenkontoNummer()))
         throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
-        
+
       if (getZweck() == null || "".equals(getZweck()))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Verwendungszweck ein"));
 
@@ -94,7 +94,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
 
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
-      
+
       VerwendungszweckUtil.checkMaxUsage(this);
     }
     catch (RemoteException e)
@@ -254,7 +254,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
   {
     setAttribute("typ",schluessel);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
    */
@@ -270,7 +270,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
   {
     setAttribute("zweck3",VerwendungszweckUtil.merge(list));
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getWarnung()
    */
@@ -278,7 +278,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
   {
     return (String) getAttribute("warnung");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setWarnung(java.lang.String)
    */

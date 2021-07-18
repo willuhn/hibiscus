@@ -36,7 +36,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     // H2-Datenbank verwendet uppercase Identifier
     Logger.info("switching dbservice to uppercase");
     System.setProperty(HBCIDBServiceImpl.class.getName() + ".uppercase","true");
-    
+
     try
     {
       Method m = Class.forName("org.h2.engine.Constants").getMethod("getVersion",(Class[]) null);
@@ -47,7 +47,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       Logger.warn("unable to determine h2 version");
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
@@ -76,7 +76,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
         byte[] data = new byte[20];
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
         random.nextBytes(data);
-        
+
         // Jetzt noch verschluesselt abspeichern
         Logger.info("encrypting password with system certificate");
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -84,7 +84,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 
         // Verschluesseltes Passwort als Base64 speichern
         HBCIDBService.SETTINGS.setAttribute("database.driver.h2.encryption.encryptedpassword",Base64.encode(bos.toByteArray()));
-        
+
         // Entschluesseltes Passwort als Base64 zurueckliefern, damit keine Binaer-Daten drin sind.
         // Die Datenbank will es doppelt mit Leerzeichen getrennt haben.
         // Das erste ist fuer den User. Das zweite fuer die Verschluesselung.
@@ -95,7 +95,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       Logger.debug("decrypting database password");
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       Application.getSSLFactory().decrypt(new ByteArrayInputStream(Base64.decode(password)),bos);
-      
+
       String encoded = Base64.encode(bos.toByteArray());
       return encoded + " " + encoded;
     }
@@ -121,7 +121,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       Logger.warn("#############################################################");
       url += ";RECOVER=1";
     }
-    
+
     String addon = HBCIDBService.SETTINGS.getString("database.driver.h2.parameters",null);
     if (addon != null)
       url += ";" + addon;
@@ -171,7 +171,6 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     // brauchen wir bei nicht, da Embedded
   }
 }
-
 
 /*********************************************************************
  * $Log: DBSupportH2Impl.java,v $

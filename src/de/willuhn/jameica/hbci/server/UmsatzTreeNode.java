@@ -39,11 +39,11 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   private UmsatzTreeNode parent         = null;
   private List<UmsatzTreeNode> children = new ArrayList<UmsatzTreeNode>();
   private List<Umsatz> umsaetze         = new ArrayList<Umsatz>();
-  
+
   private Double betrag                 = null;
   private Double einnahmen              = null;
   private Double ausgaben               = null;
-  
+
   /**
    * ct.
    * @param typ
@@ -52,7 +52,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   {
     this.typ = typ;
   }
-  
+
   /**
    * Liefert den zugehoerigen Umsatztyp.
    * @return der zugehoerige Umsatztyp.
@@ -61,7 +61,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   {
     return this.typ;
   }
-  
+
   /**
    * Fuegt der Gruppe einen neuen Umsatz hinzu.
    * @param umsatz
@@ -79,7 +79,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   {
     this.parent = parent;
   }
-  
+
   /**
    * Liefert die Umsaetze der Kategorie.
    * @return Umsaetze der Kategorie.
@@ -88,7 +88,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   {
     return this.umsaetze;
   }
-  
+
   /**
    * Liefert ggf. vorhandene Unter-Kategorien.
    * @return Liste der Unter-Kategorien.
@@ -104,7 +104,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   public GenericIterator getChildren() throws RemoteException
   {
     List all = new ArrayList();
-    
+
     List<UmsatzTreeNode> children = this.getSubGroups();
     Collections.sort(children);
     all.addAll(children);
@@ -173,7 +173,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
   {
     if (this.typ == null && "name".equalsIgnoreCase(arg0))
       return  i18n.tr("Nicht zugeordnet");
-   
+
     if ("betrag".equalsIgnoreCase(arg0))
     {
       calculateSums();
@@ -189,10 +189,10 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
       calculateSums();
       return this.ausgaben;
     }
-    
+
     return this.typ == null ? null : this.typ.getAttribute(arg0);
   }
-  
+
   /**
    * Berechnet die Summen neu.
    * @throws RemoteException
@@ -202,7 +202,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     // haben wir schon ausgerechnet
     if (this.betrag != null && this.einnahmen != null && this.ausgaben != null)
       return;
-    
+
     // Rechnen wir manuell zusammen, damit der vom User eingegebene Datumsbereich
     // uebereinstimmt. Wir koennten zwar auch typ.getUmsatz(Date,Date) aufrufen,
     // allerdings wuerde das intern nochmal alle Umsaetze laden und haufen
@@ -210,7 +210,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     double betrag    = 0.0d;
     double einnahmen = 0.0d;
     double ausgaben  = 0.0d;
-    
+
     for (int i=0;i<this.umsaetze.size();++i)
     {
       Umsatz u = this.umsaetze.get(i);
@@ -222,17 +222,17 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     for (int i=0;i<this.children.size();++i)
     {
       UmsatzTreeNode ug  = (UmsatzTreeNode) this.children.get(i);
-      
+
       Double d = (Double) ug.getAttribute("betrag");
       betrag += d.doubleValue();
-      
+
       d = (Double) ug.getAttribute("einnahmen");
       einnahmen += d.doubleValue();
 
       d = (Double) ug.getAttribute("ausgaben");
       ausgaben += d.doubleValue();
     }
-    
+
     this.betrag    = betrag;
     this.einnahmen = einnahmen;
     this.ausgaben  = ausgaben;
@@ -282,6 +282,6 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
       Logger.error("unable to compare categories",re);
     }
     return 0;
-    
+
   }
 }

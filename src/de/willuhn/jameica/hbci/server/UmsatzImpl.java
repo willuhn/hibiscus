@@ -39,7 +39,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 {
 
 	private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @throws RemoteException
    */
@@ -75,12 +75,11 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
 			if (getKonto() == null)
 				throw new ApplicationException(i18n.tr("Umsatz muss einem Konto zugewiesen sein."));
-
 			if (getValuta() == null)
 				throw new ApplicationException(i18n.tr("Valuta fehlt."));
-			
+
       HBCIProperties.checkLength(getZweck(),255);
-      
+
       int limit = HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH;
       HBCIProperties.checkLength(getZweck2(),limit);
       String[] ewz = getWeitereVerwendungszwecke();
@@ -94,7 +93,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
       HBCIProperties.checkLength(this.getGvCode(),HBCIProperties.HBCI_GVCODE_MAXLENGTH);
       HBCIProperties.checkLength(this.getAddKey(),HBCIProperties.HBCI_ADDKEY_MAXLENGTH);
-      
+
       // Bei TX-ID und PurposeCode muessen wir die Laenge nicht checken. Das sind CAMT-Umsaetze.
       // Und die kommen schema-validiert im XML-Format. Hier extra nochmal zu pruefen, waere redundant.
       // Zumal die korrespondierenden Datebank-Felder vorsorglich ohnehin deutlich laenger definiert
@@ -135,7 +134,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     Integer i = (Integer) super.getAttribute("konto_id");
     if (i == null)
       return null; // Kein Konto zugeordnet
-   
+
     Cache cache = Cache.get(Konto.class,true);
     return (Konto) cache.get(i);
   }
@@ -162,7 +161,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     return (String) getAttribute("empfaenger_blz");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
    */
@@ -208,19 +207,19 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 	{
     if (e == null)
       return;
-    
+
     // IBAN und BIC haben Vorrang.
     String kto = e.getIban();
     String blz  = e.getBic();
-    
+
     // Fallback auf alte Kontonummer, wenn die IBAN fehlt
     if (kto == null || kto.length() == 0)
       kto = e.getKontonummer();
-    
+
     // Fallback auf alte BLZ, wenn die BIC fehlt.
     if (blz == null || blz.length() == 0)
       blz = e.getBlz();
-    
+
     this.setGegenkontoNummer(kto);
     this.setGegenkontoBLZ(blz);
     this.setGegenkontoName(e.getName());
@@ -239,14 +238,14 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 	public void setGegenkontoNummer(String konto) throws RemoteException {
     setAttribute("empfaenger_konto",konto);
   }
-  
+
 	/**
 	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoBLZ(java.lang.String)
 	 */
 	public void setGegenkontoBLZ(String blz) throws RemoteException {
     setAttribute("empfaenger_blz",blz);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
@@ -311,13 +310,13 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 			String id2 = other.getID();
 			if (id1 != null && id2 != null)
 			  return id1.equals(id2);
-			
+
 			// Wenn beide eine TX-ID haben, brauchen wir nur anhand der TX-ID vergleichen.
 			id1 = this.getTransactionId();
 			id2 = other.getTransactionId();
       if (id1 != null && id2 != null)
         return id1.equals(id2);
-			
+
 			return other.getChecksum() == getChecksum();
 		}
 		catch (Exception e)
@@ -398,10 +397,10 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // BUGZILLA 184
     Date datum   = getDatum();
     Date valuta  = getValuta();
-    
+
     String sd  = "";
     String sv  = "";
-    
+
     if (datum != null)
     {
       try {
@@ -420,7 +419,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
         sv = valuta.toString();
       }
     }
-    
+
     String s = (""+getArt()).toUpperCase() +
                getKonto().getID() + // wenigstens die ID vom Konto muss mit rein. Andernfalls haben zwei gleich aussehende Umsaetze auf verschiedenen Konten die gleiche Checksumme
                getBetrag() +
@@ -442,7 +441,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // Buchungen gleich bleiben
     if (hasFlag(FLAG_NOTBOOKED))
       s += "notbooked";
-    
+
 		CRC32 crc = new CRC32();
 		crc.update(s.getBytes());
     return crc.getValue();
@@ -456,10 +455,10 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     if ("umsatztyp".equals(arg0))
       return getUmsatzTyp();
-    
+
     if ("konto_id".equals(arg0))
       return getKonto();
-    
+
     // Fuer Kategoriebaum
     if ("name".equals(arg0))
       return getGegenkontoName();
@@ -497,10 +496,10 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     {
       final String name = getGegenkontoName();
       final String name2 = getGegenkontoName2();
-      
+
       final boolean hasName = StringUtils.isNotBlank(name);
       final boolean hasName2 = StringUtils.isNotBlank(name2);
-      
+
       // Wenn wir nur einen von beiden Namen haben, liefern wir jeweils den einen
       // Wenn beide vorhanden sind, liefern wir erst den zweiten, dann den ersten.
       // Denn bei SEPA enthaelt name2 den "Ultimate Debitor". Wenn ein Zahlungsdienstleister
@@ -515,7 +514,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
         // Nur eins vorhanden
         return hasName ? name : name2;
       }
-      
+
       if (name != null)
         return name;
 
@@ -529,7 +528,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
     return super.getAttribute(arg0);
   }
-  
+
   /**
    * BUGZILLA 394
    * Haengt an das Datumsfeld eine Pseudouhrzeit basierend auf der ID des Datensatzes an.
@@ -572,7 +571,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       Konto k = this.getKonto();
 
       super.delete();
-      
+
       if (k != null)
       {
         String[] fields = new String[] {
@@ -586,7 +585,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
         if (!this.hasFlag(Umsatz.FLAG_NOTBOOKED))
           k.addToProtokoll(i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Datum {3}, Zweck: {4}] {5} gelöscht",fields),Protokoll.TYP_SUCCESS);
       }
-      
+
       this.transactionCommit();
     }
     catch (RemoteException re)
@@ -729,7 +728,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     if (flags < 0)
       return; // ungueltig
-    
+
     this.setAttribute("flags",new Integer(flags));
   }
 
@@ -802,7 +801,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
     return copy;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getTransactionId()
    */
@@ -811,7 +810,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     return (String) this.getAttribute("txid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setTransactionId(java.lang.String)
    */
@@ -820,7 +819,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     this.setAttribute("txid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getPurposeCode()
    */
@@ -829,7 +828,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     return (String) this.getAttribute("purposecode");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setPurposeCode(java.lang.String)
    */
@@ -838,7 +837,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     this.setAttribute("purposecode",code);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEndToEndId()
    */
@@ -847,7 +846,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     return (String) this.getAttribute("endtoendid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEndToEndId(java.lang.String)
    */
@@ -856,7 +855,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     this.setAttribute("endtoendid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getMandateId()
    */
@@ -865,7 +864,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     return (String) this.getAttribute("mandateid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setMandateId(java.lang.String)
    */
@@ -874,7 +873,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     this.setAttribute("mandateid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getGegenkontoName2()
    */
@@ -883,7 +882,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     return (String) this.getAttribute("empfaenger_name2");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setGegenkontoName2(java.lang.String)
    */

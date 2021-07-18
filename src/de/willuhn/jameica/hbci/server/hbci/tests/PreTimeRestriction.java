@@ -27,7 +27,7 @@ public class PreTimeRestriction implements Restriction
 {
 	private Properties p  = null;
 	private Date date     = null;
-	
+
 	private I18N i18n;
 
   /**
@@ -39,7 +39,7 @@ public class PreTimeRestriction implements Restriction
   {
   	this.date = DateUtil.startOfDay(ersteZahlung);
   	this.p = jobRestrictions;
-  	
+
   	this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
@@ -71,7 +71,7 @@ public class PreTimeRestriction implements Restriction
 			Logger.warn("unable to parse job restriction value for \"minpretime\": " + min);
 			return;
 		}
-		
+
 		Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
 		cal.add(Calendar.DATE, i);
     Date test = DateUtil.startOfDay(cal.getTime());
@@ -99,7 +99,7 @@ public class PreTimeRestriction implements Restriction
 			Logger.warn("unable to parse job restriction value for \"maxpretime\": " + max);
 			return;
 		}
-		
+
 		Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
 		cal.add(Calendar.DATE, i);
     Date test = DateUtil.endOfDay(cal.getTime());
@@ -110,7 +110,6 @@ public class PreTimeRestriction implements Restriction
 	}
 
 }
-
 
 /**********************************************************************
  * $Log: PreTimeRestriction.java,v $

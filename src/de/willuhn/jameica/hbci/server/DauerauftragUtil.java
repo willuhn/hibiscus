@@ -37,20 +37,20 @@ public class DauerauftragUtil
     Date de       = t.getErsteZahlung();
     Date dl       = t.getLetzteZahlung();
     Turnus turnus = t.getTurnus();
-    
+
     if (from == null)
       from = new Date();
-    
+
     List<Date> result = new ArrayList<Date>();
-    
+
     // Auftrag faengt erst spaeter an
     if (de != null && to != null && de.after(to))
       return result;
-    
+
     // Auftrag ist schon abgelaufen
     if (dl != null && dl.before(from))
       return result;
-    
+
     // Wir machen maximal 100 Iterationen. Das hab ich jetzt willkuerlich
     // festgelegt. Wenn das Zeitfenster 1 Monat ist, koennen es ohnehin nur
     // maximal 5 Termine sein. Fuer den Fall, dass das Zeitfenster aber mal
@@ -58,15 +58,15 @@ public class DauerauftragUtil
     Date start = from;
     if (de.after(start)) // Der Auftrag faengt erst mitten im Zeitraum an
       start = de;
-    
+
     for (int i=0;i<100;++i)
     {
       if (to != null && start.after(to))
         break; // Wir sind raus
-      
+
       // Als Valuta nehmen wir den ersten des Monats
       Date d = TurnusHelper.getNaechsteZahlung(de,dl,turnus,start);
-      
+
       // Wir haben keine weiteren Termine mehr gefunden oder sind aus dem Zeitfenster raus
       if (d == null || (to != null && d.after(to)))
         break;
@@ -79,10 +79,10 @@ public class DauerauftragUtil
       cal.setTime(d);
       cal.add(Calendar.DAY_OF_MONTH,1);
       d = cal.getTime();
-        
+
       // Und wir machen beim naechsten Tag weiter
       start = d;
-      
+
     }
     return result;
   }

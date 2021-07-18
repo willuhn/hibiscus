@@ -58,18 +58,18 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
     String kto  = u.getGegenkontoNummer();
     if (kto != null && kto.length() > 0)
       return; // Steht schon was drin
-    
+
     String blz  = u.getGegenkontoBLZ();
     if (blz != null && blz.length() > 0)
       return; // Steht schon was drin
-    
+
     String[] s = VerwendungszweckUtil.toArray(u);
     List<String> lines = new ArrayList<String>();
     lines.addAll(Arrays.asList(s));
-    
+
     if (lines.size() == 0)
       return; // Kein Verwendungszweck da
-    
+
     for (int i=0;i<lines.size();++i)
     {
       if (applyGegenkonto(u,lines.get(i)))
@@ -82,13 +82,13 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
         u.setZweck(null);
         u.setZweck2(null);
         u.setWeitereVerwendungszwecke(null);
-        
+
         if (lines.size() < 2)
           return;
 
         // Gegenkonto-Inhaber
         u.setGegenkontoName(lines.get(1).trim());
-        
+
         if (i >= 2)
         {
           List<String> list = new ArrayList<String>(lines.subList(2,i));
@@ -108,7 +108,7 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
       }
     }
   }
-  
+
   /**
    * Versucht, aus der uebergebenen Verwendungszweck-Zeile Gegenkonto/BLZ zu parsen
    * und dem Umsatz zuzuordnen.
@@ -120,11 +120,11 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
   {
     if (s == null || s.length() == 0 || u == null)
       return false;
-    
+
     String gk = s.trim();
     if (!gk.matches("^KTO([ ]{1,7})[0-9]{3,10} BLZ [0-9]{8}"))
       return false;
-    
+
     gk = gk.replaceAll("[a-zA-Z]","").trim();
     String[] sl = gk.split(" {1,7}");
     if (sl.length != 2)
@@ -134,8 +134,6 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
     return true;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: DeutscheBankUmsatzRewriter.java,v $

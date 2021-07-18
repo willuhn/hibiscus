@@ -224,7 +224,6 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 
 }
 
-
 /**********************************************************************
  * $Log: TurnusImpl.java,v $
  * Revision 1.17  2011/10/18 09:28:14  willuhn

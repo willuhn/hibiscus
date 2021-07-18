@@ -97,7 +97,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
       try
       {
         Logger.info("loading addressbooks");
-        
+
         BeanService service = Application.getBootLoader().getBootable(BeanService.class);
         ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getClassLoader().getClassFinder();
         Class[] found = finder.findImplementors(Addressbook.class);
@@ -204,7 +204,6 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     this.started = false;
   }
 }
-
 
 /*********************************************************************
  * $Log: AddressbookServiceImpl.java,v $

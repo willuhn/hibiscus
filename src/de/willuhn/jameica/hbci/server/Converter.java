@@ -133,12 +133,12 @@ public class Converter
       // in 27-Zeichen lange Haeppchen
       if (lines.length == 0)
         lines = VerwendungszweckUtil.parse(u.additional);
-      
+
       // Es gibt eine erste Bank, die 40 Zeichen lange Verwendungszwecke lieferte.
       // Siehe Mail von Frank vom 06.02.2014
       lines = VerwendungszweckUtil.rewrap(HBCIProperties.HBCI_TRANSFER_USAGE_DB_MAXLENGTH,lines);
       VerwendungszweckUtil.apply(umsatz,lines);
-      
+
       // Wir checken mal, ob wir eine EndToEnd-ID haben. Falls ja, tragen wir die gleich
       // in das dedizierte Feld ein. Aber nur, wenn wir noch keine haben
       String eref = umsatz.getEndToEndId();
@@ -236,7 +236,7 @@ public class Converter
     ////////////////////////////////////////////////////////////////////////////
     return umsatz;
   }
-  
+
   /**
    * Bereinigt eine SEPA-Kennung.
    * Bei einem User kam es vor, dass die ID nicht korrekt geparst wurde und daher auch den ganzen
@@ -251,7 +251,7 @@ public class Converter
     text = clean(text);
     if (text == null || text.length() == 0 || text.length() <= 100)
       return text;
-    
+
     // Wir koennten jetzt hier nach 100 Zeichen abschneiden. Dann wuerde aber vermutlich auch
     // Quatsch mit drin stehen. Da die EREF aber in aller Regel keine Leerzeichen enthaelt,
     // schneiden wir erstmal nach dem ersten Leerzeichen ab. Wenn es dann immer noch zu lang
@@ -259,10 +259,10 @@ public class Converter
     int pos = text.indexOf(' ');
     if (pos > 0 && pos < 100)
       text = text.substring(0,pos);
-    
+
     if (text.length() > 100)
       text = text.substring(0,100);
-    
+
     return text;
   }
 
@@ -275,9 +275,9 @@ public class Converter
   public static UmsLine HibiscusUmsatz2HBCIUmsatz(Umsatz u) throws RemoteException
   {
     final UmsLine line = new UmsLine();
-    
+
     final de.willuhn.jameica.hbci.rmi.Konto k = u.getKonto();
-    
+
     final String iban = u.getGegenkontoNummer();
     final String bic  = u.getGegenkontoBLZ();
     final boolean isSepa = iban != null && iban.length() > HBCIProperties.HBCI_KTO_MAXLENGTH_HARD;
@@ -293,7 +293,7 @@ public class Converter
       other.number = iban;
       other.blz = bic;
     }
-    
+
     line.addkey = u.getAddKey();
     line.bdate = u.getDatum();
     line.customerref = u.getCustomerRef();
@@ -312,7 +312,7 @@ public class Converter
     line.usage = Arrays.asList(VerwendungszweckUtil.toArray(u));
     line.value = new Value(new BigDecimal(u.getBetrag()),k.getWaehrung());
     line.valuta = u.getValuta();
-    
+
     return line;
   }
 
@@ -373,7 +373,7 @@ public class Converter
     auftrag.setTurnus(TurnusHelper.createByDauerAuftrag(d));
     return auftrag;
   }
-  
+
   /**
    * Konvertiert einen abgerufenen Kontoauszug von HBCI4Java in  das Format von Hibiscus.
    * Achtung: Die Binaer-Daten werden hierbei ignoriert. Es ist Aufgabe des Aufrufers, die
@@ -388,28 +388,28 @@ public class Converter
       throws RemoteException, ApplicationException
   {
     Kontoauszug kh = Settings.getDBService().createObject(Kontoauszug.class,null);
-    
+
     final Date createDate = k.getDate();
     final Date startDate  = k.getStartDate();
     final Date endDate    = k.getEndDate();
-    
+
     kh.setVon(startDate);
     kh.setBis(endDate);
     kh.setErstellungsdatum(createDate);
-    
+
     Format f = k.getFormat();
     kh.setFormat(f != null ? f.getCode() : null);
 
     ///////////////////////////////////////////////////////////////////
     //
     int year = k.getYear();
-    
+
     // Kein Jahr mitgeschickt?
-    
+
     // 1. Startdatum versuchen.
     if (year == 0)
       year = getYear(startDate);
-    
+
     // 2. Enddatum versuchen.
     if (year == 0)
       year = getYear(endDate);
@@ -425,16 +425,16 @@ public class Converter
     kh.setJahr(year > 0 ? Integer.valueOf(year) : null);
     //
     ///////////////////////////////////////////////////////////////////
-    
+
     kh.setKonto(kt);
     kh.setName1(k.getName());
     kh.setName2(k.getName2());
     kh.setName3(k.getName3());
-    
+
     ///////////////////////////////////////////////////////////////////
     // Kontoauszugsnummer
     int number = k.getNumber();
-    
+
     // Wenn wir keine Nummer haben, laden wir die Liste der letzten Auszuege und zaehlen von dort die Nummer hoch,
     // insofern eine vorhanden ist
     if (number == 0)
@@ -450,13 +450,13 @@ public class Converter
     kh.setNummer(number > 0 ? Integer.valueOf(number) : null);
     //
     ///////////////////////////////////////////////////////////////////
-    
+
     kh.setDateiname(k.getFilename());
     kh.setQuittungscode(k.getReceipt());
-    
+
     return kh;
   }
-  
+
   /**
    * Extrahiert das Jahr aus dem Datum.
    * @param date das Datum.
@@ -518,7 +518,7 @@ public class Converter
 
     if (konto.customerid != null && konto.customerid.length() > 0)
       list.addFilter("kundennummer = ?",konto.customerid);
-    
+
     String type = StringUtils.trimToNull(konto.acctype);
     Integer accType = null;
     if (type != null)
@@ -603,7 +603,7 @@ public class Converter
     e.setIban(konto.iban);
 
     String name  = StringUtils.trimToEmpty(konto.name);
-    
+
     if (!camt)
     {
       String name2 = StringUtils.trimToEmpty(konto.name2);

@@ -122,7 +122,7 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
       this.setAttribute("content",null);
       return;
     }
-    
+
     XMLEncoder encoder = null;
     try
     {
@@ -154,8 +154,6 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
     return "reminder";
   }
 }
-
-
 
 /**********************************************************************
  * $Log: DBReminderImpl.java,v $

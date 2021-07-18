@@ -72,7 +72,7 @@ public class KontoUtil
       return null;
     if (blz == null || blz.length() == 0)
       return null;
-    
+
     // BUGZILLA 365
     // Fuehrende Nullen abschneiden
     if (kontonummer.startsWith("0"))
@@ -81,7 +81,7 @@ public class KontoUtil
     // Kontonummer bestand offensichtlich nur aus Nullen ;)
     if (kontonummer.length() == 0)
       return null;
-    
+
     DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
     DBIterator konten = service.createList(Konto.class);
     konten.addFilter("kontonummer like ?", new Object[]{"%" + kontonummer});
@@ -105,7 +105,7 @@ public class KontoUtil
         if (!konto.hasFlag(flag))
           continue;
       }
-      
+
       String kTest = konto.getKontonummer();
       if (kTest == null || kTest.length() == 0)
         continue;
@@ -113,15 +113,15 @@ public class KontoUtil
       // Fuehrende Nullen abschneiden
       if (kTest.startsWith("0"))
         kTest = kTest.replaceAll("^0{1,}","");
-      
+
       // Mal schauen, ob die Kontonummern jetzt uebereinstimmen
       if (kTest.equals(kontonummer))
         return konto;
     }
-    
+
     return null;
   }
-  
+
   /**
    * Prueft, ob die Umsaetze eines Kontos per CAMT abgerufen werden sollen.
    * @param k das zu pruefende Konto.
@@ -145,24 +145,24 @@ public class KontoUtil
         Logger.debug("unable to determine CAMT support");
         return false;
       }
-      
+
       if (!support.isSupported())
       {
         Logger.debug("account does not support CAMT");
         return false;
       }
-      
+
       // Also grundsaetzlich haben wir Support.
       // Jetzt checken, wir, was fuer das Konto konfiguriert ist.
       String value = StringUtils.trimToNull(MetaKey.UMSATZ_CAMT.get(k));
-      
+
       // Wenn ein Wert drin steht, hat sich der User entschieden, dann halten wir uns dran
       if (value != null)
       {
         Logger.debug("CAMT usage configured as: " + value);
         return Boolean.valueOf(value);
       }
-      
+
       // Wenn als Wert noch nichts drin steht, dann hat der User es noch nicht konfigutiert. In dem Fall entscheiden
       // wir erstmal basierend auf den vorhandenen Umsaetzen. Wenn das Konto noch keine Umsaetze hat, verwenden wir
       // CAMT und speichern das auch als Wert. Damit wird kuenftig bei neuen Usern automatisch CAMT verwendet.
@@ -204,7 +204,7 @@ public class KontoUtil
       return false;
     }
   }
-  
+
   /**
    * Extrahiert aus den BPD die Zeitspanne, fuer die laut Bank Umsaetze eines Kontos abgerufen werden koennen.
    * @param k das betreffende Konto.
@@ -237,7 +237,6 @@ public class KontoUtil
     return timeRange;
   }
 
-
   /**
    * Sucht das Konto in der Datenbank.
    * @param iban die IBAN.
@@ -248,7 +247,7 @@ public class KontoUtil
   {
     return findByIBAN(iban,-1);
   }
-  
+
   /**
    * Sucht das Konto in der Datenbank.
    * @param iban die IBAN.
@@ -261,7 +260,7 @@ public class KontoUtil
     iban = StringUtils.trimToNull(iban);
     if (iban == null)
       return null;
-    
+
     DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
     DBIterator konten = service.createList(Konto.class);
     konten.addFilter("lower(iban) = ?", iban.toLowerCase()); // case insensitive
@@ -283,10 +282,10 @@ public class KontoUtil
         if (!konto.hasFlag(flag))
           continue;
       }
-      
+
       return konto;
     }
-    
+
     return null;
   }
 
@@ -309,10 +308,10 @@ public class KontoUtil
 
     DBIterator list = UmsatzUtil.getUmsaetze();
     list.addFilter("konto_id = " + konto.getID());
-    
+
     if (start != null)
       list.addFilter("datum >= ?", start);
-    
+
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
@@ -325,10 +324,10 @@ public class KontoUtil
     // frühere Umsätze.
     list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
-    
+
     if (start != null)
       list.addFilter("datum < ?", start);
-    
+
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
@@ -336,7 +335,7 @@ public class KontoUtil
       if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
         return u.getSaldo();
     }
-    
+
     // Keine Umsaetze gefunden. Wir nehmen den Saldo des Kontos selbst
     return konto.getSaldo();
   }
@@ -355,38 +354,38 @@ public class KontoUtil
 
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
-    
+
     if (end != null)
       list.addFilter("datum <= ?", end);
-    
+
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
-      
+
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
       if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
         return u.getSaldo();
     }
-    
+
     // BUGZILLA 1682 Wir checken mal, ob wir eine Buchung direkt dahinter finden. Dann nehmen
     // wir diese und generieren aus Zwischensumme und Betrag den Endsaldo
     list = UmsatzUtil.getUmsaetze();
     list.addFilter("konto_id = " + konto.getID());
-    
+
     if (end != null)
       list.addFilter("datum > ?", end);
-    
+
     while (list.hasNext())
     {
       Umsatz u = (Umsatz) list.next();
-      
+
       // Wir nehmen den ersten Umsatz, der kein Vormerk-Flag hat
       if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
       {
         return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
       }
     }
-    
+
     // Keine Umsaetze gefunden. Wir nehmen den Saldo des Kontos selbst
     return konto.getSaldo();
   }
@@ -418,7 +417,7 @@ public class KontoUtil
   {
     return getSumme(konto, from, to, false, onlyBooked);
   }
-  
+
   /**
    * Liefert eine Liste der verfuegbaren Konto-Kategorien.
    * @return Liste der verfuegbaren Konto-Kategorien. Niemals NULL sondern hoechstens eine leere Liste.
@@ -459,7 +458,7 @@ public class KontoUtil
     ArrayList params = new ArrayList();
 
     String sql = "select SUM(betrag) from umsatz where konto_id = " + konto.getID() + " and betrag " + (ausgaben ? "<" : ">") + " 0";
-    
+
     if (onlyBooked)
       sql += " and (flags is null or flags < " + Umsatz.FLAG_NOTBOOKED + ")";
 
@@ -488,7 +487,7 @@ public class KontoUtil
     Double d = (Double) service.execute(sql, params.toArray(), rs);
     return d == null ? 0.0d : Math.abs(d.doubleValue());
   }
-  
+
   /**
    * Liefert die Liste der Konten.
    * @param filter optionaler Filter.
@@ -510,7 +509,7 @@ public class KontoUtil
     }
     return l;
   }
-  
+
   /**
    * Liefert eine ausfuehrliche String-Repraesentation des Kontos.
    * Sie enthaelt Name, IBAN und BIC.

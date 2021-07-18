@@ -46,7 +46,7 @@ import de.willuhn.util.ProgressMonitor;
 public class HBCIKontoauszugJob extends AbstractHBCIJob
 {
 	private Konto konto = null;
-	
+
 	private List<AbstractHBCIJob> followers = new ArrayList<AbstractHBCIJob>();
 
   /**
@@ -66,12 +66,12 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
 				konto.store();
 
 			this.konto = konto;
-			
+
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         konto.setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-			
+
 			// Format bei Bedarf mitschicken - nur bei "HKEKA" noetig ("HKEKP" ist eh immer PDF)
 			if (this.getIdentifier().equals(GVKontoauszug.getLowlevelName()))
 			{
@@ -86,7 +86,6 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
 	        if (formats.contains(Format.PDF))
 	          setJobParam("format",GVRKontoauszug.Format.PDF.getCode());
 			  }
-			      
 			}
     }
 		catch (RemoteException e)
@@ -119,11 +118,11 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
   public String getIdentifier()
   {
     // Ist abhaengig davon, welche Job-Variante fuer das Konto unterstuetzt werden:
-    
+
     Support support = BPDUtil.getSupport(this.konto,BPDUtil.Query.KontoauszugPdf);
     if (support != null && support.isSupported())
       return GVKontoauszugPdf.getLowlevelName();
-    
+
     return GVKontoauszug.getLowlevelName();
   }
 
@@ -134,7 +133,7 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
   {
     return i18n.tr("Elektronische Kontoauszüge {0}",konto.getLongName());
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
@@ -142,10 +141,10 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
   {
     GVRKontoauszug result = (GVRKontoauszug) getJobResult();
     List<GVRKontoauszugEntry> entries = result.getEntries();
-    
+
     // Datum des letzten Abrufs in den Meta-Daten speichern - auch dann, wenn keine neuen vorlagen
     MetaKey.KONTOAUSZUG_INTERVAL_LAST.set(this.konto,HBCI.LONGDATEFORMAT.format(new Date()));
-    
+
     if (entries != null && entries.size() > 0)
     {
       for (GVRKontoauszugEntry entry:entries)
@@ -156,7 +155,7 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
           if (data == null || data.length == 0)
           {
             Logger.info("no new account statements");
-            
+
             BeanService service = Application.getBootLoader().getBootable(BeanService.class);
             SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
 
@@ -165,19 +164,19 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
 
             return;
           }
-          
+
           Kontoauszug ka = Converter.HBCIKontoauszug2HibiscusKontoauszug(this.konto,entry);
-          
+
           if (Boolean.parseBoolean(MetaKey.KONTOAUSZUG_MARK_READ.get(this.konto)))
             ka.setGelesenAm(new Date());
-          
+
           Logger.info("received new account statement for range " + ka.getVon() + " - " + ka.getBis());
           ka.store();
           KontoauszugPdfUtil.receive(ka,entry.getData());
-          
+
           Application.getMessagingFactory().sendMessage(new ImportMessage(ka));
           konto.addToProtokoll(i18n.tr("Elektronische Kontoauszüge abgerufen"),Protokoll.TYP_SUCCESS);
-          
+
           // Wenn wir eine Quittung haben, senden wir sie an die Bank, um den Empfang zu bestaetigen.
           // Aber nur, wenn das auch aktiviert ist
           boolean sendReceipt = Boolean.parseBoolean(MetaKey.KONTOAUSZUG_SEND_RECEIPT.get(this.konto));
@@ -197,7 +196,7 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
     }
 
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getFollowerJobs()
    */
@@ -206,7 +205,7 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
   {
     return this.followers;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */

@@ -47,7 +47,7 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
   protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
-    
+
     // Wir checken noch die Plausi fuer Umbuchungen
     try
     {
@@ -60,7 +60,7 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
           Logger.error("SUSPECT: the gui should block both - \"umbuchung\" and \"terminueberweisung\"");
           throw new ApplicationException(i18n.tr("Eine Umbuchung kann nicht als Termin-Auftrag gesendet werden"));
         }
-        
+
         // Checken, ob Ziel-BLZ identisch mit Quell-BLZ
         // NULL-Checks brauchen wir hier nicht - das ist bereits in super.insertCheck() gemacht worden
         String dest = getGegenkontoBLZ();
@@ -68,7 +68,7 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
         if (!dest.equals(src))
           throw new ApplicationException(i18n.tr("Umbuchungen sind nur zu einem Konto bei Ihrer eigenen Bank möglich"));
       }
-      
+
       String key = this.getTextSchluessel();
       if (key != null && key.equals(TextSchluessel.TS_BZU))
       {
@@ -126,7 +126,7 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
     // BUGZILLA 370 Termin-Ueberweisungen gelten sofort als faellig
     if (isTerminUeberweisung())
       return !ausgefuehrt();
-    
+
     return super.ueberfaellig();
   }
 

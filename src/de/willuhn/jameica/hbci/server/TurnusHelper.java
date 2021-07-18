@@ -44,8 +44,7 @@ public class TurnusHelper
       Calendar.SATURDAY,
       Calendar.SUNDAY
     };
-  
-  
+
   /**
    * Liefert ein String-Array mit den Bezeichnungen der Wochentage.
    * Hinweis: Da es sich um ein Array handelt, zaehlt der Index
@@ -69,7 +68,7 @@ public class TurnusHelper
       i18n.tr("Samstag"),
       i18n.tr("Sonntag")
     };
-    
+
     return wochentage;
   }
 
@@ -88,7 +87,6 @@ public class TurnusHelper
     return getWochentage()[index - 1];
   }
 
-
   /**
    * Berechnet das naechste Ausfuehrungsdatum fuer einen Turnus.
    * @param ersteZahlung Datum der ersten Zahlung.
@@ -104,10 +102,10 @@ public class TurnusHelper
     // Keine erste Zahlung angegeben und kein Turnus. Nichts ermittelbar
     if (ersteZahlung == null || turnus == null)
       return null;
-    
+
     if (valuta == null)
       valuta = new Date();
-    
+
     // Auftrag bereits abgelaufen, da sich das Valuta-Datum hinter
     // der letzten Ausfuehrung befindet
     if (letzteZahlung != null && letzteZahlung.before(valuta))
@@ -117,13 +115,13 @@ public class TurnusHelper
     Calendar cal = Calendar.getInstance();
     cal.setTime(ersteZahlung);
     cal.setFirstDayOfWeek(Calendar.MONDAY);
-    
+
     int ze  = turnus.getZeiteinheit();
     int tag = turnus.getTag();
     int iv  = turnus.getIntervall();
 
     Date test = null;
-    
+
     // eigentlich gehoert hier ein "while true" hin, ich will aber eine
     // Abbruchbedingung, damit das Teil keine 1000 Jahre in die Zukunft
     // rechnet ;)
@@ -137,11 +135,11 @@ public class TurnusHelper
         cal.set(Calendar.DAY_OF_WEEK,calTag);
 
         test = cal.getTime();
-        
+
         // Schon vorbei
         if (letzteZahlung != null && test.after(letzteZahlung))
           return null;
-        
+
         if (test.after(valuta) || test.equals(valuta))
           return test; // Datum gefunden
 
@@ -217,7 +215,7 @@ public class TurnusHelper
 
 		int ze = Turnus.ZEITEINHEIT_MONATLICH;
 		if ("W".equalsIgnoreCase(d.timeunit)) ze = Turnus.ZEITEINHEIT_WOECHENTLICH;
-		
+
 		// Keiner da, dann erstellen wir ihn.
 		turnus = (Turnus) Settings.getDBService().createObject(Turnus.class,null);
 		turnus.setIntervall(d.turnus);
@@ -263,7 +261,6 @@ public class TurnusHelper
 		if (iv == 12 && ze == Turnus.ZEITEINHEIT_MONATLICH)
 			s = i18n.tr("Jährlich");
 
-
 		// Zahltag anhaengen
 		if (ze == Turnus.ZEITEINHEIT_WOECHENTLICH)
 			s+= ", " + getWochentag(ta);
@@ -279,7 +276,6 @@ public class TurnusHelper
 		return s;
 	}
 }
-
 
 /**********************************************************************
  * $Log: TurnusHelper.java,v $

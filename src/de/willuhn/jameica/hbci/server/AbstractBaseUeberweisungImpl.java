@@ -44,7 +44,6 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     return "zweck";
   }
 
-  
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#insertCheck()
    */
@@ -53,7 +52,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     try
     {
       super.insertCheck();
-      
+
       if (this.getTermin() == null)
         this.setTermin(new Date());
     }
@@ -67,7 +66,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     {
       if (!this.markingExecuted())
         throw ae;
-      
+
       Logger.warn(ae.getMessage());
     }
   }
@@ -147,7 +146,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   // Kleines Hilfsboolean damit uns der Status-Wechsel
   // beim Speichern nicht um die Ohren fliegt.
   private boolean markingExecuted = false;
-  
+
   /**
    * Liefert true, wenn wir uns gerade dabei befinden, den Vorgang als ausgefuehrt zu markieren.
    * @return true, wenn wir uns gerade dabei befinden, den Vorgang als ausgefuehrt zu markieren.
@@ -175,7 +174,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
       markingExecuted = false;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#getTextSchluessel()
    */

@@ -47,7 +47,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static transient Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static transient boolean ignorewhitespace = settings.getBoolean("search.ignore.whitespace",true);
-  
+
   private final static transient Map<String,Pattern> patternCache = new HashMap<String,Pattern>();
 
   /**
@@ -78,13 +78,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       String name = getName();
       if (name == null || name.length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
-      
+
       String pattern = getPattern();
       if (pattern != null && pattern.length() > 0)
       {
         if (pattern.length() > MAXLENGTH_PATTERN)
           throw new ApplicationException(i18n.tr("Bitte geben Sie maximal {0} Zeichen als Suchbegriff ein.",Integer.toString(MAXLENGTH_PATTERN)));
-        
+
         if (isRegex())
         {
           try
@@ -153,7 +153,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
 
     if (von != null)
       list.addFilter("datum >= ?", new Object[] {new java.sql.Date(von.getTime())});
-    
+
     if (bis != null)
       list.addFilter("datum <= ?", new Object[] {new java.sql.Date(bis.getTime())});
 
@@ -252,12 +252,11 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       UmsatzTyp typ = umsatz.getUmsatzTyp();
       return typ.equals(this);
     }
-    
-    
+
     // BUGZILLA 614 - wenn die Kategorie gar nicht passt, koennen wir gleich abbrechen
     double betrag = umsatz.getBetrag();
     int typ       = this.getTyp();
-    
+
     if (betrag != 0.0d)
     {
       // Betrag kleiner als null aber als Einnahme kategorisiert ODER
@@ -278,7 +277,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         // Zuordnung zum Konto
         if (k != null && !k.equals(test))
           return false;
-        
+
         // Zuordnung zur Gruppe
         if (kat != null && !kat.equals(test.getKategorie()))
           return false;
@@ -302,7 +301,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String e2eid = StringUtils.trimToEmpty(umsatz.getEndToEndId());
     String mid   = StringUtils.trimToEmpty(umsatz.getMandateId());
     String id    = StringUtils.trimToEmpty(umsatz.getID());
-    
+
     if (!isRegex())
     {
       zweck = zweck.toLowerCase();
@@ -346,8 +345,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       }
       return false;
     }
-    
-    
+
     Pattern pattern = patternCache.get(s);
 
     try
@@ -357,7 +355,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
         patternCache.put(s,pattern);
       }
-      
+
       Matcher mZweck = pattern.matcher(zweck);
       Matcher mName = pattern.matcher(name);
       Matcher mName2 = pattern.matcher(name2);
@@ -412,7 +410,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   public void setKommentar(String kommentar) throws RemoteException
   {
     setAttribute("kommentar", kommentar);
-    
+
   }
 
   @Override
@@ -445,7 +443,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Umsatz u = (Umsatz) i.next();
       sum += u.getBetrag();
     }
-    
+
     GenericIterator children = this.getChildren();
     while (children.hasNext())
     {
@@ -454,7 +452,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     }
     return sum;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(int)
    */
@@ -506,13 +504,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         return null;
       }
     }
-    
+
     if ("umsatz".equals(arg0))
       return new Double(getUmsatz());
 
     return super.getAttribute(arg0);
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#overwrite(de.willuhn.datasource.rmi.DBObject)
    */
@@ -526,7 +524,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     // (wegen dem Cache) deklariert haben - bei "getAttribute("konto_id")"
     // aber trotzdem das Objekt (wegen KontoColumn) zurueckliefern.
     super.overwrite(object);
-    
+
     // Jetzt ersetzen wir wieder das Konto-Objekt gegen die ID
     this.setKonto(((AbstractHibiscusTransferImpl)object).getKonto());
   }
@@ -601,7 +599,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String color = (String) this.getAttribute("color");
     if (color == null || color.length() == 0)
       return null;
-    
+
     try
     {
       int[] rgb = new int[3];
@@ -705,7 +703,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     GenericIterator i = super.getChildren();
     if (this.isNewObject() || !(i instanceof DBIterator))
       return i;
-    
+
     DBIterator di = (DBIterator) i;
     di.setOrder("order by COALESCE(nummer,''),name");
     return di;
@@ -732,7 +730,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     t.setFlags(this.getFlags());
     return t;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getKonto()
    */
@@ -742,11 +740,11 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     Integer i = (Integer) super.getAttribute("konto_id");
     if (i == null)
       return null; // Kein Konto zugeordnet
-   
+
     Cache cache = Cache.get(Konto.class,true);
     return (Konto) cache.get(i);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -755,12 +753,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   {
     final Integer id = (konto == null || konto.getID() == null) ? null : new Integer(konto.getID());
     setAttribute("konto_id",id);
-    
+
     // Eine Zuordnung kann nur zu Konto ODER Kategorie moeglich sein - nicht beides gleichzeitig
     if (id != null)
       this.setKontoKategorie(null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getKontoKategorie()
    */
@@ -769,7 +767,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   {
     return (String) this.getAttribute("konto_kategorie");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setKontoKategorie(java.lang.String)
    */
@@ -777,12 +775,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   public void setKontoKategorie(String kategorie) throws RemoteException
   {
     this.setAttribute("konto_kategorie",kategorie);
-    
+
     // Eine Zuordnung kann nur zu Konto ODER Kategorie moeglich sein - nicht beides gleichzeitig
     if (kategorie != null && kategorie.length() > 0)
       this.setAttribute("konto_id",null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Flaggable#hasFlag(int)
    */
@@ -791,7 +789,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   {
     return (this.getFlags() & flag) == flag;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
    */
@@ -801,7 +799,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     Integer i = (Integer) this.getAttribute("flags");
     return i == null ? Konto.FLAG_NONE : i.intValue();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
    */
@@ -810,7 +808,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   {
     if (flags < 0)
       return; // ungueltig
-    
+
     this.setAttribute("flags",new Integer(flags));
   }
 }

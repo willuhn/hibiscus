@@ -32,7 +32,7 @@ public interface UmsatzRewriter
    * @return Liste der BLZS.
    */
   public List<String> getBlzList();
-  
+
   /**
    * Schreibt den Umsatz um.
    * @param u der zu umschreibende Umsatz.
@@ -40,8 +40,6 @@ public interface UmsatzRewriter
    */
   public void rewrite(Umsatz u) throws Exception;
 }
-
-
 
 /**********************************************************************
  * $Log: UmsatzRewriter.java,v $

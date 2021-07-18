@@ -51,7 +51,7 @@ import de.willuhn.util.ProgressMonitor;
 public abstract class AbstractHBCIJob
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private final static String NL = System.getProperty("line.separator","\n");
 
   // Das sind Warnungen, die im Wesentlichen nur dafuer stehen, dass beim Datenabruf keine neuen Daten bei der Bank vorhanden waren
@@ -68,7 +68,7 @@ public abstract class AbstractHBCIJob
 	 * @return Job-Identifier.
 	 */
   public abstract String getIdentifier();
-  
+
   /**
    * Liefert einen sprechenden Namen fuer diesen Job.
    * @return sprechender Name.
@@ -82,7 +82,7 @@ public abstract class AbstractHBCIJob
    * @throws ApplicationException
    */
   protected abstract void markExecuted() throws RemoteException, ApplicationException;
-  
+
   /**
    * Markiert den Auftrag als fehlerhaft.
    * @param error der Fehlertext aus der HBCI-Nachricht.
@@ -92,13 +92,13 @@ public abstract class AbstractHBCIJob
    * @throws ApplicationException
    */
   protected abstract String markFailed(String error) throws RemoteException, ApplicationException;
-  
+
   /**
    * Liefert den zugehoerigen Auftrag von Hibiscus - insofern verfuegbar.
    * @return der zugehoerige Auftrag von Hibiscus - insofern verfuegbar.
    */
   protected abstract HibiscusDBObject getContext();
-  
+
   /**
    * Liefert ein oder mehrere Nachfolge-Jobs, die ausgefuehrt werden sollen, nachdem dieser ausgefuehrt wurde.
    * @return ein oder mehrere Nachfolge-Jobs, die ausgefuehrt werden sollen, nachdem dieser ausgefuehrt wurde.
@@ -123,7 +123,7 @@ public abstract class AbstractHBCIJob
   protected void markCancelled() throws RemoteException, ApplicationException
   {
   }
-  
+
 	/**
 	 * Diese Funktion wird vom HBCISynchronizeBackend intern aufgerufen.
 	 * Sie uebergibt hier den erzeugten HBCI-Job der Abfrage.
@@ -134,21 +134,20 @@ public abstract class AbstractHBCIJob
   public void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException, ApplicationException
   {
   	this.job = job;
-  	
+
   	HibiscusDBObject t = this.getContext();
   	this.job.setExternalId(HBCIContext.serialize(t));
-  	
+
   	if (t != null)
   	{
-  	  
   	}
-  	
+
   	Iterator i = params.keySet().iterator();
   	while (i.hasNext())
   	{
   		Object key = i.next();
   		Object value = params.get(key);
-  		
+
   		String name = null;
   		Integer idx = null;
   		if (key instanceof SimpleEntry)
@@ -160,7 +159,7 @@ public abstract class AbstractHBCIJob
   		{
   		  name = (String) key;
   		}
-  		
+
   		if (idx != null)
   		{
         if (value instanceof Konto)
@@ -205,7 +204,7 @@ public abstract class AbstractHBCIJob
 	{
 		return job != null ? job.getJobResult() : null;
 	}
-  
+
   /**
    * Diese Funktion wird von der HBCIFactory nach Beendigung der Kommunikation mit der Bank ausgefuehrt.
    * Sie prueft globalen Status und Job-Status und ruft entsprechend markExecuted() oder markFailed(String) auf. 
@@ -222,7 +221,7 @@ public abstract class AbstractHBCIJob
       this.markFailed(msg);
       throw new ApplicationException(msg);
     }
-    
+
     HBCIStatus status = result.getJobStatus();
 
     // BUGZILLA 964 - nur dann als abgebrochen markieren, wenn wir fuer den Job noch keinen richtigen
@@ -234,7 +233,7 @@ public abstract class AbstractHBCIJob
     // Rein via Status-Codes sieht alles OK aus. Gemaess "FinTS_3.0_Rueckmeldungscodes_2010-10-27_final_version.pdf"
     // steht "0030" fuer "Auftrag empfangen - Sicherheitsfreigabe erforderlich". Wir machen hier also einen
     // Sonderfall fuer diesen einen Code.
-    
+
     // Das koennte man vermutlich auch direkt in HBCI4Java implementieren
     boolean tanNeeded = false;
     boolean executed  = false;
@@ -279,7 +278,7 @@ public abstract class AbstractHBCIJob
         }
       }
     }
-    
+
     boolean tanCancel = false;
     HibiscusDBObject ctx = this.getContext();
     if (ctx != null)
@@ -288,12 +287,12 @@ public abstract class AbstractHBCIJob
       if (tanCancel)
         MetaKey.TAN_CANCEL.set(ctx,null);
     }
-    
+
     Logger.info("execution state: tan needed: " + tanNeeded + ", tan-cancel: " + tanCancel + ", executed: " + executed + ", success status: " + successStatus + ", error status: " + errorStatus);
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
     ProgressMonitor monitor = session.getProgressMonitor();
-    
+
     this.logMessages(status.getWarnings(),session.getWarnings(), monitor);
     // this.logMessages(status.getErrors(),session.getErrors(), monitor); Geschieht bereits in HBCICallbackSWT, weil es Fehlermeldung gibt, die keinen GV-Bezug haben
 
@@ -309,7 +308,7 @@ public abstract class AbstractHBCIJob
     // BUGZILLA 1283 - Job wurde zweifelsfrei ausgefuehrt
     // Bei meinem Test war es so, dass beim Abbruch bei der zweiten TAN-Eingabe auch bei dem ersten
     // Auftrag der "0030" enthalten war. Sah dann so aus:
-    
+
     // HBCISynchronizeBackend$HBCIJobGroup.sync] executing check for job UebSEPA
     // ..
     // AbstractHBCIJob.getStatusText] retval[ 0]: Auftrag empfangen - Bitte die empfangene Tan eingeben.
@@ -319,7 +318,7 @@ public abstract class AbstractHBCIJob
     // ..
     // AbstractHBCIJob.getStatusText] retval[ 0]: Auftrag empfangen - Bitte die empfangene Tan eingeben.
     // AbstractHBCIJob.handleResult] hbci session cancelled by user, mark job as cancelled
-    
+
     // Bei dem abgebrochenen fehlte das "Der Auftrag wurde entgegengenommen.". Bei beiden war aber der "0030"
     // enthalten. Daher pruefen wir hier nach Vorhandensein von 0010/0020
     if (executed && isOK)
@@ -328,7 +327,7 @@ public abstract class AbstractHBCIJob
       markExecutedInternal(errorText);
       return;
     }
-    
+
     if ((tanNeeded || status.getStatusCode() == HBCIStatus.STATUS_UNKNOWN) && session.getStatus() == ProgressMonitor.STATUS_CANCEL) // BUGZILLA 690
     {
       Logger.warn("hbci session cancelled by user, mark job as cancelled [status code: " + status.getStatusCode() + ", session status: " + session.getStatus() + "]");
@@ -373,7 +372,7 @@ public abstract class AbstractHBCIJob
     }
     throw new ApplicationException(error != null && error.length() > 0 ? error : errorText);
   }
-  
+
   /**
    * Loggt die Meldungen.
    * @param messages die Meldungen.
@@ -384,12 +383,12 @@ public abstract class AbstractHBCIJob
   {
     if (messages == null || messages.length == 0)
       return;
-    
+
     monitor.log(" ");
     for (HBCIRetVal val:messages)
     {
       monitor.log("  " + val.code + ": " + val.text);
-      
+
       // Zur Liste der zum Schluss anzuzeigenden Meldungen fuegen wir nur Meldungen hinzu, die auch
       // wirklich relevant sind. Bei den Warnungen sind z.B. jene nicht relevant, die nur mitteilen,
       // das keine neuen Buchungen vorhanden sind. Die wuerden User nur unnoetig irritieren
@@ -398,7 +397,7 @@ public abstract class AbstractHBCIJob
     }
     monitor.log(" ");
   }
-  
+
   /**
    * Markiert den Auftrag als ausgefuehrt und uebernimmt das Fehlerhandling.
    * @param errorText der anzuzeigende Fehlertext.
@@ -426,7 +425,7 @@ public abstract class AbstractHBCIJob
       throw new ApplicationException(errorText);
     }
   }
-  
+
 	/**
 	 * Liefert den Fehler-Text, der die Rueckemldungen der Bank enthaelt.
    */
@@ -440,7 +439,7 @@ public abstract class AbstractHBCIJob
 
       String sJob = getJobResult().getJobStatus().getErrorString();
       Logger.info("job status: " + sJob);
-      
+
       HBCIRetVal[] retValues = getJobResult().getJobStatus().getRetVals();
       StringBuffer sb = new StringBuffer();
       for (int i=0;i<retValues.length;++i)
@@ -483,7 +482,7 @@ public abstract class AbstractHBCIJob
 	{
     this.setJobParam(name,null,value);
 	}
-  
+
   /**
    * Ueber diese Funktion koennen die konkreten Implementierungen
    * ihre zusaetzlichen Job-Parameter setzen.
@@ -576,7 +575,7 @@ public abstract class AbstractHBCIJob
       Logger.warn("[job parameter] no name given");
       return;
     }
-    
+
     BigDecimal bd = new BigDecimal(value).setScale(2,BigDecimal.ROUND_HALF_EVEN);
     params.put(new AbstractMap.SimpleEntry(name,index),new Value(bd,currency));
   }
@@ -593,7 +592,7 @@ public abstract class AbstractHBCIJob
 	{
 	  this.setJobParam(name,null,date);
 	}
-	
+
   /**
    * Speichern eines Datums.
    * Bitte diese Funktion verwenden, damit sichergestellt ist, dass
@@ -625,14 +624,14 @@ public abstract class AbstractHBCIJob
 	{
 	  if (t == null)
 	    return;
-	  
+
 	  String[] lines = VerwendungszweckUtil.toArray(t);
 	  for (int i=0;i<lines.length;++i)
 	  {
 	    setJobParam(HBCIUtilsInternal.withCounter("usage",i),lines[i]);
 	  }
 	}
-  
+
   /**
    * Legt fest, ob der HBCI-Job exclusive (also in einer einzelnen HBCI-Nachricht) gesendet werden soll.
    * Standardmaessig ist ein Job nicht exclusiv.
@@ -642,7 +641,7 @@ public abstract class AbstractHBCIJob
   {
     return this.exclusive;
   }
-  
+
   /**
    * Legt fest, ob der HBCI-Job exclusive (also in einer einzelnen HBCI-Nachricht) gesendet werden soll.
    * Standardmaessig ist ein Job nicht exclusiv.

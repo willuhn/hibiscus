@@ -81,12 +81,12 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 				konto.store();
 
 			this.konto = konto;
-			
+
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         konto.setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
-      
+
       this.saldoDatum = konto.getSaldoDatum();
       if (this.saldoDatum != null)
       {
@@ -125,7 +125,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
             }
           }
         }
-        
+
         this.saldoDatum = DateUtil.startOfDay(this.saldoDatum);
         Logger.info("startdate: " + HBCI.LONGDATEFORMAT.format(this.saldoDatum));
         setJobParam("startdate", this.saldoDatum);
@@ -169,7 +169,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   {
     return i18n.tr("Umsatzabruf {0}",konto.getLongName());
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
@@ -192,7 +192,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     // Schickt die Bank mehr, als wir in der DB haben, muessen wir die verbleibenden
     // noch anlegen.
     Map<Umsatz,Integer> duplicates = new HashMap<Umsatz,Integer>();
-    
+
     boolean fetchUnbooked  = settings.getBoolean("umsatz.fetchnotbooked",true);
 
     GVRKUms result         = (GVRKUms) getJobResult();
@@ -202,19 +202,19 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
     // zu mergende Umsaetze ermitteln
     DBIterator existing = konto.getUmsaetze(d,null);
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Gebuchte Umsaetze
     if (booked != null && booked.size() > 0)
     {
       this.dumpCamt(result.camtBooked,true);
-      
+
       int created = 0;
       int skipped = 0;
       Logger.info("applying booked entries");
-      
+
       UmsatzRewriter rewriter = RewriterRegistry.getRewriter(konto.getBLZ(),konto.getKontonummer());
-      
+
       for (int i=0;i<booked.size();++i)
       {
         final Umsatz umsatz = Converter.HBCIUmsatz2HibiscusUmsatz((GVRKUms.UmsLine)booked.get(i));
@@ -243,7 +243,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
             fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
           }
         }
-        
+
         if (fromDB != null)
         {
           // Wir duerfen den Umsatz nur dann ueberspringen, wenn er bereits 
@@ -307,7 +307,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         this.dumpCamt(result.camtNotBooked,false);
 
         List<Umsatz> fetched = new ArrayList<Umsatz>();
-        
+
         int created = 0;
         int skipped = 0;
         Logger.info("applying not-booked (vorgemerkte) entries");
@@ -332,7 +332,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
               fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
             }
           }
-          
+
           if (fromDB != null)
           {
             // Wir duerfen den Umsatz nur dann ueberspringen, wenn er bereits 
@@ -354,7 +354,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
               continue;
             }
           }
-          
+
           // Vormerkposten neu anlegen
           try
           {
@@ -368,7 +368,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
             Logger.error("error while adding umsatz, skipping this one",e2);
           }
         }
-        
+
         // Jetzt loeschen wir all die vorgemerkten Umsaetze des
         // Kontos, die noch in der Datenbank sind, aber im
         // aktuellen Durchlauf nicht mehr uebertragen wurden.
@@ -380,7 +380,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         while (existingUnbooked.hasNext())
         {
           Umsatz u = (Umsatz) existingUnbooked.next();
-          
+
           if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
             continue; // nur zur Sicherheit, dass wir nicht versehentlich welche loeschen, die keine Vormerkbuchungen sind
 
@@ -398,7 +398,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       else
       {
         Logger.info("got no new not-booked (vorgemerkte) entries");
-        
+
         // Keine neuen vorgemerkten Umsaetze
         // Dann loeschen wir pauschal alle, die in der Vergangenheit liegen
         // (mindestens gestern).
@@ -409,20 +409,20 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         while (existingUnbooked.hasNext())
         {
           Umsatz u = (Umsatz) existingUnbooked.next();
-          
+
           if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
             continue; // nur zur Sicherheit, dass wir nicht versehentlich welche loeschen, die keine Vormerkbuchungen sind
 
           Date test = u.getDatum();
           if (test == null)
             test = u.getValuta();
-          
+
           if (test == null)
           {
             Logger.warn("notbooked entry contains no date, skipping");
             continue; // Das darf eigentlich nicht passieren
           }
-          
+
           // Wenn die Vormerkbuchung nicht von heute ist, loeschen wir sie
           if (test.before(current))
           {
@@ -442,7 +442,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 
     Logger.info("umsatz list fetched successfully");
   }
-  
+
   /**
    * Schreibt die rohen CAMT-Daten in einen Ordner. 
    * @param camt die CAMT-Daten.
@@ -452,15 +452,15 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   {
     if (camt == null || camt.size() == 0)
       return;
-    
+
     try
     {
       String storeCamt = StringUtils.trimToNull(settings.getString("umsatz.camt.path",null));
       if (storeCamt == null)
         return;
-      
+
       Logger.info("dump CAMT data into " + storeCamt);
-      
+
       File dir = new File(storeCamt);
       if (!dir.exists() && !dir.mkdirs())
       {
@@ -473,13 +473,13 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         Logger.warn("unable to write into folder " + dir);
         return;
       }
-      
+
       final Date date = new Date();
       for (String data:camt)
       {
         File f = this.createFile(dir,date,booked);
         Logger.info("dump CAMT data into " + f);
-        
+
         OutputStream os = null;
         try
         {
@@ -491,14 +491,14 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           IOUtil.close(os);
         }
       }
-      
+
     }
     catch (Exception e)
     {
       Logger.error("unable to dump raw CAMt data",e);
     }
   }
-  
+
   /**
    * Erzeugt einen freien Dateinamen.
    * @param dir der Ordner.
@@ -511,7 +511,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   {
     // Wir nehmen den aktuellen Zeistempel als Dateiname
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd.HH-mm-ss.SSS");
-    
+
     File f = null;
     for (int i=0;i<1000;++i)
     {
@@ -519,10 +519,10 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       if (!f.exists())
         return f;
     }
-    
+
     throw new IOException("cannot create file " + f + ", already exists");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */
@@ -532,7 +532,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }
-  
+
   /**
    * Liefert das Beginn-Datum des Merge-Window.
    * @param booked Liste der abgerufenen Buchungen. Wenn da welche enthalten
@@ -546,16 +546,16 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
   private Date getMergeWindow(List<UmsLine> booked, List<UmsLine> unbooked)
   {
     Date d = null;
-    
+
     String basedOn = null;
-    
+
     if (booked != null && booked.size() > 0)
     {
       for (UmsLine line:booked)
       {
         if (line.bdate == null)
           continue;
-        
+
         if (d == null || line.bdate.before(d))
         {
           d = line.bdate;
@@ -563,14 +563,14 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         }
       }
     }
-    
+
     if (unbooked != null && unbooked.size() > 0)
     {
       for (UmsLine line:unbooked)
       {
         if (line.bdate == null)
           continue;
-        
+
         if (d == null || line.bdate.before(d))
         {
           d = line.bdate;
@@ -579,7 +579,6 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       }
     }
 
-    
     if (d == null && this.saldoDatum != null)
     {
       Calendar cal = Calendar.getInstance();
@@ -588,12 +587,12 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       d = cal.getTime();
       basedOn = "last sync";
     }
-    
+
     if (d == null)
       Logger.info("merge window: not set");
     else
       Logger.info("merge window: " + d + " - now (based on " + basedOn + ")");
-    
+
     return d;
   }
 }

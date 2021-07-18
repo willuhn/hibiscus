@@ -112,7 +112,7 @@ public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
    */
@@ -135,10 +135,10 @@ public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
       new CanTermDelRestriction(p).test(); // Test nur, wenn Datum angegeben
       this.setJobParam("date",this.date);
     }
-    
+
     super.setJob(job);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */

@@ -24,7 +24,6 @@ public interface Restriction
   public void test() throws ApplicationException;
 }
 
-
 /**********************************************************************
  * $Log: Restriction.java,v $
  * Revision 1.1  2004/10/29 00:32:32  willuhn

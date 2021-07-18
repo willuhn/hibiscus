@@ -70,7 +70,7 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     b.setSammelTransfer(this);
     return b;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
@@ -80,7 +80,7 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     try
     {
       u = (SepaSammelUeberweisung) getService().createObject(SepaSammelUeberweisung.class,null);
-      
+
       u.transactionBegin();
       u.setBezeichnung(this.getBezeichnung());
       u.setKonto(this.getKonto());
@@ -88,7 +88,7 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
       u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
       u.setPmtInfId(getPmtInfId());
       u.store();
-      
+
       List<SepaSammelUeberweisungBuchung> list = this.getBuchungen();
       for (SepaSammelUeberweisungBuchung t:list)
       {
@@ -108,11 +108,11 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
       String text = i18n.tr("Fehler beim Duplizieren des SEPA-Sammelauftrages");
       if (e instanceof ApplicationException)
         text = e.getMessage();
-      
+
       throw new RemoteException(text,e);
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl#ueberfaellig()
    */
@@ -122,10 +122,10 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     // Termin-Auftraege werden sofort faellig gestellt, weil sie ja durch die Bank terminiert werden
     if (isTerminUeberweisung())
       return !ausgefuehrt();
-    
+
     return super.ueberfaellig();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung#isTerminUeberweisung()
    */

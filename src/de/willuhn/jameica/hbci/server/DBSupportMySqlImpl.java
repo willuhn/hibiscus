@@ -27,7 +27,7 @@ import de.willuhn.util.I18N;
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 {
   private final static String DRIVER = "com.mysql.jdbc.Driver";
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
@@ -76,11 +76,11 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
     if (f.exists())
     {
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-      
+
       String text = i18n.tr("Bei der Verwendung von MySQL wird die Datenbank " +
           "nicht automatisch angelegt. Bitte führen Sie das folgende SQL-Script " +
           "manuell aus, falls Sie dies nicht bereits getan haben:\n{0}",f.getAbsolutePath());
-      
+
       BootMessage msg = new BootMessage(text);
       msg.setTitle(i18n.tr("Hinweis zur Verwendung von MySQL"));
       Application.getMessagingFactory().getMessagingQueue("jameica.boot").queueMessage(msg);

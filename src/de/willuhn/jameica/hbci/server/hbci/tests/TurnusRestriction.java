@@ -27,7 +27,7 @@ public class TurnusRestriction implements Restriction
 {
 	private Turnus turnus = null;
 	private Properties p  = null;
-	
+
 	private I18N i18n;
 
   /**
@@ -39,7 +39,7 @@ public class TurnusRestriction implements Restriction
   {
   	this.turnus = turnus;
   	this.p = jobRestrictions;
-  	
+
   	this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
@@ -130,7 +130,6 @@ public class TurnusRestriction implements Restriction
   }
 
 }
-
 
 /**********************************************************************
  * $Log: TurnusRestriction.java,v $

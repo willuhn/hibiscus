@@ -114,7 +114,7 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
   {
   	if (turnus == null)
   		return;
-  	
+
 		setAttribute("zeiteinheit",	new Integer(turnus.getZeiteinheit()));
 		setAttribute("intervall",		new Integer(turnus.getIntervall()));
 		setAttribute("tag",					new Integer(turnus.getTag()));
@@ -127,7 +127,7 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
   {
 		if (o == null || !(o instanceof BaseDauerauftrag))
 			return false;
-		
+
 		try
 		{
 		  BaseDauerauftrag other = (BaseDauerauftrag) o;
@@ -139,7 +139,7 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
       String id2 = other.getID();
       if (id1 != null && id2 != null)
         return id1.equals(id2);
-		  
+
 			return other.getChecksum() == getChecksum();
 		}
     catch (Exception e)

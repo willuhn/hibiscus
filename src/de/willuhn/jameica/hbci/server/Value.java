@@ -21,7 +21,7 @@ public class Value
 {
   private double value = 0.0d;
   private Date date    = null;
-  
+
   /**
    * ct.
    * Parameterloser Konstruktor fuer Bean-Spezifikation.
@@ -40,7 +40,7 @@ public class Value
     this.value = value;
     this.date  = date;
   }
-  
+
   /**
    * Liefert den Betrag zu dem Datum.
    * @return der Betrag zu dem Datum.
@@ -49,7 +49,7 @@ public class Value
   {
     return this.value;
   }
-  
+
   /**
    * Liefert das Datum.
    * @return das Datum.
@@ -58,7 +58,7 @@ public class Value
   {
     return this.date;
   }
-  
+
   /**
    * Speichert den Betrag.
    * @param d der Betrag.
@@ -67,7 +67,7 @@ public class Value
   {
     this.value = d;
   }
-  
+
   /**
    * Speichert das Datum.
    * @param d das Datum.
@@ -76,7 +76,7 @@ public class Value
   {
     this.date = d;
   }
-  
+
   /**
    * @see java.lang.Object#toString()
    */
@@ -86,11 +86,10 @@ public class Value
     sb.append(this.date != null ? HBCI.DATEFORMAT.format(this.date) : " - ");
     sb.append(": ");
     sb.append(HBCI.DECIMALFORMAT.format(this.value));
-    
+
     return sb.toString();
   }
 }
-
 
 /**********************************************************************
  * $Log: Value.java,v $

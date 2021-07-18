@@ -52,10 +52,10 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 		{
 			if (ueberweisung == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Auftrag an"));
-		
+
 			if (ueberweisung.isNewObject())
 				ueberweisung.store();
-      
+
       if (ueberweisung.ausgefuehrt())
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt"));
 
@@ -73,27 +73,27 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
 			setJobParam("src",own);
-			
+
       org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
       k.bic = ueberweisung.getGegenkontoBLZ();
       k.iban = ueberweisung.getGegenkontoNummer();
       k.name = ueberweisung.getGegenkontoName();
       setJobParam("dst",k);
-			
+
       // BUGZILLA 29 http://www.willuhn.de/bugzilla/show_bug.cgi?id=29
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
       setJobParam("btg",ueberweisung.getBetrag(),curr);
-      
+
       String zweck = ueberweisung.getZweck();
       if (zweck != null && zweck.length() > 0)
 			  setJobParam("usage",zweck);
-			
+
       String endToEndId = ueberweisung.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)
         setJobParam("endtoendid",endToEndId);
-      
+
       String pmtInfId = ueberweisung.getPmtInfId();
       if (pmtInfId != null && pmtInfId.trim().length() > 0)
         setJobParam("pmtinfid", pmtInfId);
@@ -117,7 +117,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
    */
@@ -136,7 +136,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       return "TermUebSEPA";
     if (isUmb)
       return "UmbSEPA";
-    
+
     return "UebSEPA";
   }
 
@@ -170,7 +170,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     ueberweisung.setAusgefuehrt(true);
-    
+
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung));
     konto.addToProtokoll(i18n.tr("SEPA-Überweisung ausgeführt an: {0}",ueberweisung.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);
     Logger.info("foreign transfer submitted successfully");

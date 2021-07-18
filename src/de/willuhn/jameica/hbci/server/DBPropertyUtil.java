@@ -44,7 +44,7 @@ public class DBPropertyUtil
   private static int timeout = 0;
 
   private static Cache<String,Map<String,DBProperty>> CACHE = null;
-  
+
   static
   {
     // Wir muessen die Haltezeit des Caches limitieren. Denn wenn eine MySQL-Datenbank zum Einsatz kommt,
@@ -63,12 +63,12 @@ public class DBPropertyUtil
    * Separator-Zeichen fuer die Properties.
    */
   public final static char SEP = '.';
-  
+
   /**
    * Der Key, in dem wir den Timestamp mit dem letzten Cache-Update speichern.
    */
   public final static String KEY_CACHE_UPDATE = "cacheupdate";
-  
+
   /**
    * Definition der Prefixe.
    */
@@ -78,22 +78,22 @@ public class DBPropertyUtil
      * Prefix fuer BPDs.
      */
     BPD("bpd",new HashSet(Arrays.asList("DauerSEPAEditPar","KontoauszugPar","KontoauszugPdfPar","KUmsZeitCamtPar"))),
-    
+
     /**
      * Prefix fuer UPDs.
      */
     UPD("upd",new HashSet(Arrays.asList("KInfo","UPA"))),
-    
+
     /**
      *  Prefix fuer Meta-Daten.
      */
     META("meta",null),
-    
+
     ;
-    
+
     private String value = null;
     private Set<String> filter = null;
-    
+
     /**
      * ct.
      * @param value der Wert des Prefix, mit dem er in der Datenbank erscheint.
@@ -104,7 +104,7 @@ public class DBPropertyUtil
       this.value = value;
       this.filter = filter;
     }
-    
+
     /**
      * Liefert den Wert des Prefix.
      * @return der Wert des Prefix.
@@ -113,7 +113,7 @@ public class DBPropertyUtil
     {
       return this.value;
     }
-    
+
     /**
      * Liefert die optionalen Filter.
      * @return die optionalen Filter.
@@ -123,7 +123,7 @@ public class DBPropertyUtil
       return this.filter;
     }
   }
-  
+
   /**
    * Kapselt die Update-Stats.
    */
@@ -133,18 +133,18 @@ public class DBPropertyUtil
      * Die Anzahl durchgefuehrter Inserts.
      */
     public int inserts = 0;
-    
+
     /**
      * Die Anzahl durchgefuehrter Updates.
      */
     public int updates = 0;
-    
+
     /**
      * Die Anzahl durchgefuehrter Loeschungen.
      */
     public int deletes = 0;
   }
-  
+
   /**
    * Legt ein Property neu an. Es wird vorher nicht gesucht, ob es bereits existiert.
    * @param prefix der Prefix.
@@ -159,7 +159,7 @@ public class DBPropertyUtil
   {
     if (value == null)
       return false;
-    
+
     if (prefix == null)
     {
       Logger.warn("prefix missing");
@@ -192,11 +192,11 @@ public class DBPropertyUtil
           break;
         }
       }
-      
+
       if (!found)
         return false;
     }
-    
+
     try
     {
       String localName = createIdentifier(prefix,scope,id,name);
@@ -214,7 +214,7 @@ public class DBPropertyUtil
         logCache("added " + localName + "=" + value);
         cache.put(localName,prop);
       }
-      
+
       return true;
     }
     catch (ApplicationException ae)
@@ -222,7 +222,7 @@ public class DBPropertyUtil
       throw new RemoteException(ae.getMessage(),ae);
     }
   }
-  
+
   /**
    * Liefert den passenden Identifier fuer den Datensatz.
    * @param prefix der Prefix.
@@ -235,7 +235,7 @@ public class DBPropertyUtil
   {
     StringBuilder sb = new StringBuilder();
     sb.append(createScopeIdentifier(prefix,scope));
-    
+
     if (id != null && id.length() > 0)
     {
       sb.append(replaceWildcards(id));
@@ -245,10 +245,10 @@ public class DBPropertyUtil
     {
       sb.append(name);
     }
-    
+
     return sb.toString();
   }
-  
+
   /**
    * Erzeugt den Identifier fuer den Scope.
    * @param prefix der Prefix.
@@ -268,7 +268,7 @@ public class DBPropertyUtil
       sb.append(replaceWildcards(scope));
       sb.append(SEP);
     }
-    
+
     return sb.toString();
   }
 
@@ -284,7 +284,7 @@ public class DBPropertyUtil
   public static void set(Prefix prefix, String scope, String id, String name, String value) throws RemoteException
   {
     String localname = createIdentifier(prefix,scope,id,name);
-    
+
     DBProperty prop = find(localname);
     if (prop == null)
     {
@@ -295,7 +295,7 @@ public class DBPropertyUtil
     try
     {
       final Map<String,DBProperty> cache = CACHE.getIfPresent(createScopeIdentifier(prefix,scope));
-      
+
       // Kein Wert angegeben
       if (value == null)
       {
@@ -309,7 +309,7 @@ public class DBPropertyUtil
             cache.remove(localname);
           }
         }
-        
+
         // auf jeden Fall nichts zu speichern
         return;
       }
@@ -332,7 +332,7 @@ public class DBPropertyUtil
       throw new RemoteException(ae.getMessage(),ae);
     }
   }
-  
+
   /**
    * Liefert den Wert des Parameters.
    * @param prefix der Prefix.
@@ -379,13 +379,13 @@ public class DBPropertyUtil
     // waere der Performance-Vorteil komplett dahin.
     if (prop == null && !cacheChecked)
       prop = find(localName);
-    
+
     if (prop == null)
       return defaultValue;
     String value = prop.getValue();
     return value != null ? value : defaultValue;
   }
-  
+
   /**
    * Loescht alle Parameter, deren Namen mit dem angegebenen Prefix beginnt.
    * @param prefix der prefix.
@@ -398,7 +398,7 @@ public class DBPropertyUtil
       throw new RemoteException("no prefix given");
 
     final int count = Settings.getDBService().executeUpdate("delete from property where name like ?",prefix.value() + ".%");
-    
+
     // Wir wissen nicht, welches Scopes im Cache sind. Daher loeschen wir in dem Fall alles.
     logCache("invalidate cache");
     CACHE.invalidateAll();
@@ -422,12 +422,12 @@ public class DBPropertyUtil
 
     final String localPrefix = createScopeIdentifier(prefix,scope);
     final int count = Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + "%");
-    
+
     logCache("invalidate scope " + localPrefix);
     CACHE.invalidate(localPrefix);
     return count;
   }
-  
+
   /**
    * Liefert alle passenden Parameter.
    * @param prefix der Prefix.
@@ -442,13 +442,13 @@ public class DBPropertyUtil
 
     if (scope == null || scope.length() == 0)
       throw new RemoteException("no scope given");
-    
+
     scope = replaceWildcards(scope);
 
     final String localPrefix = createScopeIdentifier(prefix,scope);
     DBIterator<DBProperty> list = Settings.getDBService().createList(DBProperty.class);
     list.addFilter("name like ?",localPrefix + "%");
-    
+
     Map<String,DBProperty> result = new HashMap<String,DBProperty>();
     while (list.hasNext())
     {
@@ -458,12 +458,12 @@ public class DBPropertyUtil
       // Den internen Key nicht mit liefern.
       if (ObjectUtils.equals(name,createIdentifier(prefix,scope,null,KEY_CACHE_UPDATE)))
         continue;
-      
+
       result.put(name,prop);
     }
     return result;
   }
-  
+
   /**
    * Aktualisiert die Parameter.
    * @param prefix der Prefix.
@@ -478,13 +478,13 @@ public class DBPropertyUtil
   public static Update updateScope(Prefix prefix, String scope, Properties update) throws RemoteException
   {
     Update result = new Update();
-    
+
     if (prefix == null)
     {
       Logger.warn("no prefix given");
       return result;
     }
-    
+
     if (update == null || update.size() == 0)
     {
       Logger.warn("no update given");
@@ -498,10 +498,10 @@ public class DBPropertyUtil
     }
 
     scope = replaceWildcards(scope);
-    
+
     Map<String,DBProperty> current = getScope(prefix,scope);
     Set<String> updateKeys = new HashSet<String>();
-    
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Neue und geaenderte Schluessel
     for (Enumeration keys = update.keys();keys.hasMoreElements();)
@@ -519,10 +519,10 @@ public class DBPropertyUtil
         // Unveraendert: nichts zu tun
         if (ObjectUtils.equals(oldValue.getValue(),updateValue))
           continue;
-        
+
         // Geaendert: Wert aktualisieren
         oldValue.setValue(updateValue);
-        
+
         try
         {
           oldValue.store();
@@ -552,7 +552,7 @@ public class DBPropertyUtil
     }
     //
     //////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // Wir loeschen den Cache des ganzen Scope
     final String localPrefix = createScopeIdentifier(prefix,scope);
     logCache("invalidate scope " + localPrefix);
@@ -579,7 +579,7 @@ public class DBPropertyUtil
 
     String localPrefix = createIdentifier(prefix,scope,id,null);
     int count = Settings.getDBService().executeUpdate("delete from property where name like ?",localPrefix + "%");
-    
+
     // Wir loeschen den Cache des ganzen Scope
     final String localPrefix2 = createScopeIdentifier(prefix,scope);
     logCache("invalidate scope " + localPrefix2);
@@ -599,7 +599,7 @@ public class DBPropertyUtil
   {
     if (name == null)
       return null;
-    
+
     // Mal schauen, ob wir das Property schon haben
     DBService service = Settings.getDBService();
     DBIterator i = service.createList(DBProperty.class);
@@ -612,7 +612,7 @@ public class DBPropertyUtil
     prop.setName(name);
     return prop;
   }
-  
+
   /**
    * Loggt Informationen zum Caching. An zentraler Stelle, damit das Loglevel dafuer hier geaendert werden kann.
    * @param msg die zu loggende Nachricht.
@@ -621,7 +621,7 @@ public class DBPropertyUtil
   {
     Logger.debug("*** [CACHE] " + msg);
   }
-  
+
   /**
    * Ersetzt Wildcards in dem String.
    * @param s der String.
@@ -631,12 +631,12 @@ public class DBPropertyUtil
   {
     if (s == null || s.length() == 0)
       return s;
-    
+
     s = s.replace("%","-");
     s = s.replace("_","-");
     return s;
   }
-  
+
   /**
    * Ueberschrieben, weil boolsche Werte in den BPD mit "J","N" statt "true","false"
    * gespeichert sind.

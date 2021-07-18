@@ -84,7 +84,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
           setJobParam("orderid",""); // Duerfen wir nicht mitschicken
         else
           setJobParam("orderid",orderID);
-        
+
       }
 
       org.kapott.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
@@ -105,7 +105,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
 			setJobParam("btg",dauerauftrag.getBetrag(),curr);
-			
+
       setJobParamUsage(dauerauftrag);
 			setJobParam("firstdate",dauerauftrag.getErsteZahlung());
 
@@ -136,7 +136,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
    */
@@ -146,7 +146,6 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
     return this.dauerauftrag;
   }
 
-  
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
    */
@@ -158,7 +157,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
     new TurnusRestriction(turnus,p).test();
     if (!active) // nur pruefen bei neuen Dauerauftraegen
       new PreTimeRestriction(dauerauftrag.getErsteZahlung(),p).test();
-    
+
     super.setJob(job);
   }
 
@@ -200,7 +199,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
       orderID = ((GVRDauerNew)result).getOrderId();
     else
       orderID = ((GVRDauerEdit)result).getOrderId();
-    
+
     if (StringUtils.trimToNull(orderID) == null)
     {
       Logger.warn("got no order id for this job, using placeholder id " + BaseDauerauftrag.ORDERID_PLACEHOLDER);

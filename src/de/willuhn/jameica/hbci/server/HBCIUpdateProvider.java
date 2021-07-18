@@ -44,7 +44,7 @@ public class HBCIUpdateProvider implements UpdateProvider
   {
     this.conn    = conn;
     this.version = version;
-    
+
     AbstractPlugin p = Application.getPluginLoader().getPlugin(HBCI.class);
     this.manifest    = p.getManifest();
     this.res         = p.getResources();
@@ -120,12 +120,12 @@ public class HBCIUpdateProvider implements UpdateProvider
 
       if (e instanceof ApplicationException)
         throw (ApplicationException) e;
-      
+
       Logger.error("unable to read current version number",e);
       throw new ApplicationException(res.getI18N().tr("Fehler beim Ermitteln der aktuellen Versionsnummer"));
     }
   }
-  
+
   /**
    * Liefert die Plugin-Ressourcen.
    * @return die Plugin-Ressourcen.
@@ -136,7 +136,6 @@ public class HBCIUpdateProvider implements UpdateProvider
   }
 
 }
-
 
 /*********************************************************************
  * $Log: HBCIUpdateProvider.java,v $

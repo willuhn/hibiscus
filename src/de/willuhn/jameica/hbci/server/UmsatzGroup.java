@@ -33,7 +33,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
 
   private UmsatzTyp typ = null;
   private ArrayList umsaetze = new ArrayList();
-  
+
   /**
    * ct.
    * @param typ
@@ -42,7 +42,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
   {
     this.typ = typ;
   }
-  
+
   /**
    * Liefert den zugehoerigen Umsatztyp.
    * @return der zugehoerige Umsatztyp.
@@ -51,7 +51,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
   {
     return this.typ;
   }
-  
+
   /**
    * Fuegt der Gruppe einen neuen Umsatz hinzu.
    * @param umsatz
@@ -124,7 +124,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
   {
     if (this.typ == null && "name".equalsIgnoreCase(arg0))
       return  i18n.tr("Nicht zugeordnet");
-   
+
     if ("betrag".equalsIgnoreCase(arg0))
     {
       // Rechnen wir manuell zusammen, damit der vom User eingegebene Datumsbereich
@@ -139,7 +139,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
       }
       return new Double(betrag);
     }
-    
+
     return this.typ == null ? null : this.typ.getAttribute(arg0);
   }
 
@@ -175,25 +175,25 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
   {
     if (o == null || !(o instanceof UmsatzGroup))
       return -1;
-    
+
     if (this.typ == null)
       return -1; // Wir sind "Nicht zugeordnet" - und die steht immer oben
-    
+
     UmsatzGroup other = (UmsatzGroup) o;
     if (other.typ == null)
       return 1; // Die sind "Nicht zugeordnet" - wir ordnen uns unter
-    
+
     try
     {
       // BUGZILLA 512
       // Gruppiert nach Einnahmen und Ausgaben
-      
+
       // Erst Ausgaben, dann Einnahmen, dann Rest
       int thisType  = this.typ.getTyp();
       int otherType = other.typ.getTyp();
       if (thisType != otherType)
         return thisType < otherType ? -1 : 1;
-      
+
       String n1  = this.typ.getNummer();  if (n1  == null) n1  = "";
       String n2  = other.typ.getNummer(); if (n2  == null) n2  = "";
       String na1 = this.typ.getName();    if (na1 == null) na1 = "";
@@ -203,7 +203,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
       int numberCompare = n1.compareTo(n2);
       if (numberCompare != 0)
         return numberCompare;
-      
+
       // Falls Nummer identisch/leer, dann nach Name
       return na1.compareTo(na2);
     }
@@ -212,10 +212,9 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
       Logger.error("unable to determine umsatztyp number",re);
     }
     return 0;
-    
+
   }
 }
-
 
 /*********************************************************************
  * $Log: UmsatzGroup.java,v $

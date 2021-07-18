@@ -73,7 +73,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     // (wegen dem Cache) deklariert haben - bei "getAttribute("konto_id")"
     // aber trotzdem das Objekt (wegen KontoColumn) zurueckliefern.
     super.overwrite(object);
-    
+
     // Jetzt ersetzen wir wieder das Konto-Objekt gegen die ID
     this.setKonto(((AbstractHibiscusTransferImpl)object).getKonto());
   }
@@ -90,7 +90,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
 
 			if (getGegenkontoNummer() == null || getGegenkontoNummer().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie die Kontonummer des Gegenkontos ein"));
-			
+
 			if (getGegenkontoBLZ() == null || getGegenkontoBLZ().length() == 0)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie die BLZ des Gegenkontos ein"));
 
@@ -109,7 +109,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       int blzLen = getGegenkontoBLZ().length();
       if (blzLen != HBCIProperties.HBCI_BLZ_LENGTH)
         throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", new String[]{getGegenkontoBLZ(),""+HBCIProperties.HBCI_BLZ_LENGTH}));
-      
+
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
       // BUGZILLA 163
@@ -117,7 +117,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
 
       if (!HBCIProperties.checkAccountCRC(getGegenkontoBLZ(),getGegenkontoNummer()))
 				throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
-				
+
 			if (getZweck() == null || "".equals(getZweck()))
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Verwendungszweck ein"));
 
@@ -126,7 +126,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
 
 			HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
       HBCIProperties.checkChars(getZweck2(), HBCIProperties.HBCI_DTAUS_VALIDCHARS);
-      
+
       VerwendungszweckUtil.checkMaxUsage(this);
   	}
   	catch (RemoteException e)
@@ -150,7 +150,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     Integer i = (Integer) super.getAttribute("konto_id");
     if (i == null)
       return null; // Kein Konto zugeordnet
-   
+
     Cache cache = Cache.get(Konto.class,true);
     return (Konto) cache.get(i);
   }
@@ -259,12 +259,12 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       this.transactionBegin();
 
       super.delete();
-      
+
       // und noch in's Protokoll schreiben.
       Konto k = this.getKonto();
       if (k != null)
         k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}, BLZ {2}] {3} {4} gelöscht",getGegenkontoName(),getGegenkontoNummer(),getGegenkontoBLZ(),k.getWaehrung(),HBCI.DECIMALFORMAT.format(getBetrag())),Protokoll.TYP_SUCCESS);
-      
+
       this.transactionCommit();
     }
     catch (RemoteException re)
@@ -286,7 +286,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   {
   	if (e == null)
   		return;
-  	
+
     // Bei den Auftraegen wird generell nur noch IBAN und BIC verwendet.
   	// Kontonummer und BLZ gibt es bei denen ja nicht mehr
     this.setGegenkontoNummer(e.getIban());
@@ -319,7 +319,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     {
       this.transactionBegin();
       super.store();
-      
+
       Konto k = this.getKonto();
       String blz = getGegenkontoBLZ();
       if (blz != null)
@@ -343,7 +343,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
         };
         k.addToProtokoll(i18n.tr("Auftrag [Gegenkonto: {0}, Kto. {1}] {2} {3} gespeichert",params),Protokoll.TYP_SUCCESS);
       }
-      
+
       this.transactionCommit();
     }
     catch (RemoteException re)
@@ -372,7 +372,6 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     }
   }
 }
-
 
 /**********************************************************************
  * $Log: AbstractHibiscusTransferImpl.java,v $

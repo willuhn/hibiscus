@@ -45,7 +45,7 @@ public class VersionUtil
     list.addFilter("name = ?",name);
     if (list.hasNext())
       return (Version) list.next();
-    
+
     // Neue Version erstellen
     Version v = (Version) service.createObject(Version.class,null);
     v.setName(name);
@@ -67,10 +67,9 @@ public class VersionUtil
 
     if (prefix.indexOf("%") != -1 || prefix.indexOf("_") != -1)
       throw new RemoteException("no wildcards allowed in prefix");
-    
+
     return service.executeUpdate("delete from version where name like ?",prefix + ".%");
   }
-
 
   /**
    * Loescht die Version.

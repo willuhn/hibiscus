@@ -31,7 +31,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
 {
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @throws java.rmi.RemoteException
    */
@@ -81,10 +81,9 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
-
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
-      
+
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
 
@@ -231,7 +230,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
   {
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
@@ -239,7 +238,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
   {
     return (String) getAttribute("endtoendid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */

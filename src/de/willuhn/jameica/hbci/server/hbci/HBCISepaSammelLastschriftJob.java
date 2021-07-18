@@ -43,32 +43,32 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
   public HBCISepaSammelLastschriftJob(SepaSammelLastschrift lastschrift) throws ApplicationException, RemoteException
 	{
     super(lastschrift);
-    
+
     this.type = lastschrift.getType();
 
     List<SepaSammelLastBuchung> buchungen = lastschrift.getBuchungen();
-    
+
     for (int i=0;i<buchungen.size();++i)
     {
       SepaSammelLastBuchung b = buchungen.get(i);
-      
+
       // Wir nehmen explizit ein Integer-Objekt, um sicherzugehen, dass
       // wir nicht durch Autoboxing die falsche Signatur erwischen
       Integer idx = Integer.valueOf(i);
-      
+
       setJobParam("mandateid",     idx, b.getMandateId());
       setJobParam("manddateofsig", idx, b.getSignatureDate());
       setJobParam("creditorid",    idx, b.getCreditorId());
-      
+
       String purp = b.getPurposeCode();
       if (purp != null && purp.length() > 0)
         setJobParam("purposecode",idx, purp);
     }
-    
+
     setJobParam("sequencetype",lastschrift.getSequenceType().name());
     if (this.type != null)
       setJobParam("type",this.type.name());
-    
+
     Date targetDate = lastschrift.getTargetDate();
     if (targetDate != null)
       setJobParam("targetdate",targetDate);
@@ -81,7 +81,7 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
   {
     if (this.type != null)
       return this.type.getMultiJobName();
-    
+
     // Default CORE
     return SepaLastType.DEFAULT.getMultiJobName();
   }
@@ -93,14 +93,14 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
   {
     return i18n.tr("SEPA-Sammellastschrift {0}",getSammelTransfer().getBezeichnung());
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCISepaSammelTransferJob#markExecuted()
    */
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     super.markExecuted();
-    
+
     // Wenn wir zugeordnete Adressen haben, koennen wir den Sequenz-Type umsetzen
     List<SepaSammelLastBuchung> buchungen = this.getSammelTransfer().getBuchungen();
     for (SepaSammelLastBuchung b:buchungen)
