@@ -55,10 +55,10 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
 		{
 			if (lastschrift == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen Auftrag an"));
-		
+
 			if (lastschrift.isNewObject())
 			  lastschrift.store();
-      
+
       if (lastschrift.ausgefuehrt())
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt"));
 
@@ -75,22 +75,22 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
 			setJobParam("src",own);
-			
+
       org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
       k.bic = lastschrift.getGegenkontoBLZ();
       k.iban = lastschrift.getGegenkontoNummer();
       k.name = lastschrift.getGegenkontoName();
       setJobParam("dst",k);
-			
+
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
       setJobParam("btg",lastschrift.getBetrag(),curr);
-      
+
       String zweck = lastschrift.getZweck();
       if (zweck != null && zweck.length() > 0)
 			  setJobParam("usage",zweck);
-			
+
       String endToEndId = lastschrift.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)
         setJobParam("endtoendid",endToEndId);
@@ -107,10 +107,10 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       setJobParam("manddateofsig",lastschrift.getSignatureDate());
       setJobParam("creditorid",lastschrift.getCreditorId());
       setJobParam("sequencetype",lastschrift.getSequenceType().name());
-      
+
       if (this.type != null)
         setJobParam("type",this.type.name());
-      
+
       Date targetDate = lastschrift.getTargetDate();
       if (targetDate != null)
         setJobParam("targetdate",targetDate);
@@ -129,7 +129,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
    */
@@ -146,11 +146,11 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
   {
     if (this.type != null)
       return this.type.getJobName();
-    
+
     // Default CORE
     return SepaLastType.DEFAULT.getJobName();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
    */
@@ -173,7 +173,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
 
     // Als ausgefuehrt markieren (die Funktion macht intern bereits ein store())
     lastschrift.setAusgefuehrt(true);
-    
+
     // Wenn wir eine zugeordnete Adresse haben, koennen wir den Sequenz-Type umsetzen
     String id = StringUtils.trimToNull(MetaKey.ADDRESS_ID.get(lastschrift));
     if (id != null)
@@ -205,7 +205,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
         Logger.error("unable to to auto-switch sequence-code for address-id" + id,re);
       }
     }
-    
+
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(lastschrift));
     konto.addToProtokoll(i18n.tr("SEPA-Lastschrift (Order-ID: {0}) eingereicht für: {1}",orderId, lastschrift.getGegenkontoNummer()),Protokoll.TYP_SUCCESS);
     Logger.info("sepa direct debit submitted successfully");

@@ -24,7 +24,7 @@ import de.willuhn.util.I18N;
 public class CanTermDelRestriction implements Restriction
 {
 	private Properties p  = null;
-	
+
 	private I18N i18n;
 
   /**
@@ -34,7 +34,7 @@ public class CanTermDelRestriction implements Restriction
   public CanTermDelRestriction(Properties jobRestrictions)
   {
   	this.p = jobRestrictions;
-  	
+
   	this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
@@ -49,7 +49,6 @@ public class CanTermDelRestriction implements Restriction
 			throw new ApplicationException(i18n.tr("Der Auftrag kann bei Ihrer Bank nicht zu einem definierten Zeitpunkt gelöscht werden."));
   }
 }
-
 
 /**********************************************************************
  * $Log: CanTermDelRestriction.java,v $

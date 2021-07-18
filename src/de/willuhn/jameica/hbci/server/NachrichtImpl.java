@@ -160,7 +160,6 @@ public class NachrichtImpl extends AbstractHibiscusDBObject implements Nachricht
 
 }
 
-
 /**********************************************************************
  * $Log: NachrichtImpl.java,v $
  * Revision 1.7  2011/10/18 09:28:14  willuhn

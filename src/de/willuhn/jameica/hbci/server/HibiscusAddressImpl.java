@@ -83,7 +83,7 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
         // Nur pruefen, wenn ungueltige Bankverbindungen im Adressbuch erlaubt sind
         if (!Settings.getKontoCheckExcludeAddressbook() && !HBCIProperties.checkAccountCRC(blz,kn))
           throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
-        
+
         haveAccount = true;
       }
       //
@@ -121,7 +121,7 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
 			throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des Empfängers"));
 		}
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
@@ -143,7 +143,7 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
   {
     return (String) getAttribute("blz");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Address#getName()
    */
@@ -252,7 +252,6 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
     this.setAttribute("kategorie",kategorie);
   }
 }
-
 
 /**********************************************************************
  * $Log: HibiscusAddressImpl.java,v $

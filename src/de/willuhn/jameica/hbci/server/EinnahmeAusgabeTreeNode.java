@@ -31,7 +31,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
     this.enddatum = to;
     this.children = children;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getStartdatum()
    */
@@ -40,7 +40,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   {
     return this.startdatum;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getEnddatum()
    */
@@ -58,7 +58,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   {
     return this == arg0;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getText()
    */
@@ -67,7 +67,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   {
     return DateUtil.DEFAULT_FORMAT.format(this.startdatum) + " - " + DateUtil.DEFAULT_FORMAT.format(this.enddatum);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getAusgaben()
    */
@@ -85,7 +85,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
     }
     return sum;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getEinnahmen()
    */
@@ -112,16 +112,16 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   {
     if("text".equals(arg0))
       return this.getText();
-    
+
     if ("startdatum".equals(arg0))
       return this.startdatum;
-    
+
     if ("enddatum".equals(arg0))
       return this.enddatum;
-    
+
     if ("children".equals(arg0))
       return this.children;
-    
+
     return null;
   }
 
@@ -196,7 +196,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   {
     if (!(arg0 instanceof EinnahmeAusgabe))
       return false;
-    
+
     return this.children.contains((EinnahmeAusgabe)arg0);
   }
 }

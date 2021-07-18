@@ -28,7 +28,7 @@ public class RewriterRegistry
 {
   private final static Settings settings = new Settings(RewriterRegistry.class);
   private static Map<String,Class<UmsatzRewriter>> umsatzRewriters = null;
-  
+
   /**
    * Liefert den Rewriter fuer die BLZ oder NULL wenn keiner existiert.
    * @param blz die BLZ.
@@ -39,21 +39,21 @@ public class RewriterRegistry
   {
     if (blz == null)
       return null;
-    
+
     // checken, ob die BLZ auf der Blacklist steht
     if (settings.getBoolean("blacklist.blz." + blz,false))
     {
       Logger.info("BLZ blacklisted for rewriters, skip rewriting");
       return null;
     }
-    
+
     // checken, ob das Konto auf der Blacklist steht 
     if (konto != null && settings.getBoolean("blacklist.konto." + konto,false))
     {
       Logger.info("Konto blacklisted for rewriters, skip rewriting");
       return null;
     }
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
 
     if (umsatzRewriters == null)
@@ -83,16 +83,14 @@ public class RewriterRegistry
         Logger.warn("no umsatz rewriters found");
       }
     }
-    
+
     Class<UmsatzRewriter> c = umsatzRewriters.get(blz);
     if (c == null)
       return null;
-    
+
     return service.get(c);
   }
 }
-
-
 
 /**********************************************************************
  * $Log: RewriterRegistry.java,v $

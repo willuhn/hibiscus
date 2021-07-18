@@ -69,32 +69,32 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     crc.update(s.getBytes());
     return crc.getValue();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#insertCheck()
    */
   protected void insertCheck() throws ApplicationException
   {
     try {
-      
+
       Konto k = getKonto();
 
       if (k == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
-      
+
       String kiban = k.getIban();
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
-      
+
       String bic = k.getBic();
       if (bic == null || bic.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
 
       Date ersteZahlung = getErsteZahlung();
       Date letzteZahlung = getLetzteZahlung();
-      
+
       // BUGZILLA 197
       double betrag = getBetrag();
       if (betrag == 0.0 || Double.isNaN(betrag))
@@ -137,10 +137,10 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
 
       HBCIProperties.checkLength(zweck, HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(zweck, HBCIProperties.HBCI_SEPA_VALIDCHARS);
-      
+
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
-    
+
       HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_PMTINF_VALIDCHARS);
 
@@ -154,7 +154,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
       throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des SEPA-Dauerauftrags"));
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setGegenkontoBLZ(java.lang.String)
    */
@@ -170,7 +170,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     return (String) getAttribute("empfaenger_bic");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
@@ -178,7 +178,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     return (String) getAttribute("endtoendid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */
@@ -186,7 +186,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     setAttribute("endtoendid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaDauerauftrag#canChange()
    */
@@ -195,7 +195,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     Integer i = (Integer) getAttribute("canchange");
     return i != null && i.intValue() == 1;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaDauerauftrag#canDelete()
    */
@@ -204,7 +204,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     Integer i = (Integer) getAttribute("candelete");
     return i != null && i.intValue() == 1;
   }
-  
+
   /**
    * Legt fest, ob der Auftrag der Bank zufolge aenderbar ist.
    * @param b true, wenn die Bank mitgeteilt hat, dass der Auftrag aenderbar ist.
@@ -214,7 +214,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     setAttribute("canchange", new Integer(b ? 1 : 0));
   }
-  
+
   /**
    * Legt fest, ob der Auftrag der Bank zufolge loeschbar ist.
    * @param b true, wenn die Bank mitgeteilt hat, dass der Auftrag loeschbar ist.
@@ -224,7 +224,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     setAttribute("candelete", new Integer(b ? 1 : 0));
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
    */
@@ -232,7 +232,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     return (String) getAttribute("pmtinfid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
    */
@@ -249,7 +249,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   {
     return (String) getAttribute("purposecode");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
    */

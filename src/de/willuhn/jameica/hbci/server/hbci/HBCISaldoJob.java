@@ -54,7 +54,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         konto.setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
-			
+
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
     }
 		catch (RemoteException e)
@@ -71,7 +71,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
    */
@@ -109,7 +109,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
     Info[] info = result.getEntries();
     if (info == null || info.length == 0)
       throw new ApplicationException(i18n.tr("Keine Saldo-Informationen erhalten"));
-    
+
     Saldo saldo = info[0].ready;
     Value avail = info[0].available;
     konto.setSaldo(saldo.value.getDoubleValue());

@@ -59,18 +59,18 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     String kto  = u.getGegenkontoNummer();
     if (kto != null && kto.length() > 0)
       return; // Steht schon was drin
-    
+
     String blz  = u.getGegenkontoBLZ();
     if (blz != null && blz.length() > 0)
       return; // Steht schon was drin
-    
+
     String[] s = VerwendungszweckUtil.toArray(u);
     List<String> lines = new ArrayList<String>();
     lines.addAll(Arrays.asList(s));
-    
+
     if (lines.size() == 0)
       return; // Kein Verwendungszweck da
-    
+
     // Alte Verwendungszwecke erstmal loeschen
     u.setZweck(null);
     u.setZweck2(null);
@@ -101,7 +101,7 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     // 3. weitere Verwendungszwecke
     u.setWeitereVerwendungszwecke(lines.toArray(new String[lines.size()]));
   }
-  
+
   /**
    * Versucht, aus der uebergebenen Verwendungszweck-Zeile Gegenkonto/BLZ zu parsen
    * und dem Umsatz zuzuordnen.
@@ -113,11 +113,11 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
   {
     if (s == null || s.length() == 0 || u == null)
       return false;
-    
+
     String gk = s.trim();
     if (!gk.matches("^KTO/BLZ [0-9]{3,10}/[0-9]{8}"))
       return false;
-    
+
     gk = gk.replaceAll("KTO/BLZ","").replaceAll("[^0-9/]","");
     String[] sl = gk.split("/");
     u.setGegenkontoNummer(sl[0]);
@@ -125,8 +125,6 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     return true;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: NetbankUmsatzRewriter.java,v $

@@ -56,7 +56,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
   {
     if (address == null)
       return null;
-    
+
     // 1) Im Adressbuch suchen
     {
       DBIterator list = Settings.getDBService().createList(HibiscusAddress.class);
@@ -72,10 +72,10 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       if (k != null)
         return new KontoAddress(k);
     }
-    
+
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Addressbook#findAddresses(java.lang.String)
    */
@@ -98,7 +98,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
                        " LOWER(kommentar) LIKE ?)",s,s,s,s,s,s);
       }
       list.setOrder("ORDER by LOWER(name)");
-      
+
       // Iterieren ueber die Adressen um BIC/IBAN zu vervollstaendigen
       while (list.hasNext())
       {
@@ -150,7 +150,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     String kto  = StringUtils.trimToNull(a.getKontonummer());
     String iban = StringUtils.trimToNull(a.getIban());
     String name = StringUtils.trimToNull(a.getName());
-    
+
     if (iban != null)
     {
       it.addFilter("LOWER(iban)=?",iban.toLowerCase());
@@ -163,10 +163,10 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
 
     if (name != null)
       it.addFilter("LOWER(name)=?",name.toLowerCase());
-    
+
     return it.hasNext() ? it.next() : null;
   }
-  
+
   /**
    * Vervollstaendigt IBAN und BIC bei der Adresse, falls noch nicht hinterlegt und speichert die Adresse ab.
    * @param address die Adresse.
@@ -175,19 +175,19 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
   {
     if (address == null)
       return;
-    
+
     try
     {
       String blz   = StringUtils.trimToNull(address.getBlz());
       String konto = StringUtils.trimToNull(address.getKontonummer());
-      
+
       if (blz == null || konto == null)
         return;
 
       boolean haveChanged = false;
-      
+
       String bic = null;
-      
+
       if (HBCI.COMPLETE_IBAN && StringUtils.trimToNull(address.getIban()) == null)
       {
         IBAN iban = HBCIProperties.getIBAN(blz,konto);
@@ -195,7 +195,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
         address.setIban(iban.getIBAN());
         haveChanged = true;
       }
-      
+
       if (StringUtils.trimToNull(address.getBic()) == null)
       {
         if (bic == null) // nur wenn sie nicht schon von obantoo ermittelt wurde
@@ -222,8 +222,6 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       Logger.error("unable to complete IBAN/BIC for address",e);
     }
   }
-  
-  
 
   /**
    * Hilfsklasse, um ein Konto in ein Address-Interface zu packen
@@ -273,7 +271,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     {
       return this.konto.getName();
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.rmi.Address#getBic()
      */
@@ -297,7 +295,6 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     {
       return i18n.tr("Eigenes Konto");
     }
-
 
   }
 

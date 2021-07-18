@@ -82,11 +82,11 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     {
       if (!this.markingExecuted())
         throw ae;
-      
+
       Logger.warn(ae.getMessage());
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#getBuchungen()
    */
@@ -118,7 +118,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     String val = (String) getAttribute("sequencetype");
     if (val == null || val.length() == 0)
       return null;
-    
+
     try
     {
       return SepaLastSequenceType.valueOf(val);
@@ -129,7 +129,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
       return null;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setSequenceType(de.willuhn.jameica.hbci.rmi.SepaLastSequenceType)
    */
@@ -145,7 +145,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
   {
     return (Date) getAttribute("targetdate");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setTargetDate(java.util.Date)
    */
@@ -162,7 +162,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     String val = (String) getAttribute("sepatype");
     if (val == null || val.length() == 0)
       return null;
-    
+
     try
     {
       return SepaLastType.valueOf(val);
@@ -173,7 +173,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
       return null;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setType(de.willuhn.jameica.hbci.rmi.SepaLastType)
    */
@@ -181,7 +181,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
   {
     setAttribute("sepatype",type != null ? type.name() : null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#getOrderId()
    */
@@ -189,7 +189,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
   {
     return (String) this.getAttribute("orderid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setOrderId(java.lang.String)
    */
@@ -197,7 +197,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
   {
     this.setAttribute("orderid",orderId);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
@@ -207,7 +207,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     try
     {
       l = (SepaSammelLastschrift) getService().createObject(SepaSammelLastschrift.class,null);
-      
+
       l.transactionBegin();
       l.setBezeichnung(this.getBezeichnung());
       l.setKonto(this.getKonto());
@@ -232,9 +232,9 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
       {
         l.setTargetDate(target);
       }
-      
+
       l.store();
-      
+
       List<SepaSammelLastBuchung> list = this.getBuchungen();
       for (SepaSammelLastBuchung t:list)
       {
@@ -250,11 +250,11 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
       if (l != null)
         l.transactionRollback();
       Logger.error("unable to duplicate sepa sammeltransfer",e);
-      
+
       String text = i18n.tr("Fehler beim Duplizieren des SEPA-Sammelauftrages");
       if (e instanceof ApplicationException)
         text = e.getMessage();
-      
+
       throw new RemoteException(text,e);
     }
   }

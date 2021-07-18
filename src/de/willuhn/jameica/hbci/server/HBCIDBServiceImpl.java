@@ -44,7 +44,7 @@ import de.willuhn.util.ProgressMonitor;
 public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 {
   private DBSupport driver = null;
-  
+
   /**
    * @throws RemoteException
    */
@@ -52,7 +52,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   {
     this(SETTINGS.getString("database.driver",DBSupportH2Impl.class.getName()));
   }
-  
+
   /**
    * Konstruktor mit expliziter Angabe des Treibers.
    * @param driverClass der zu verwendende Treiber.
@@ -147,13 +147,13 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       // Checken, ob es eine SQL-Exception war
       if (!(cause instanceof SQLException))
         throw re;
-      
+
       Logger.warn("unable to determine database version - database probably empty, recreating");
       Logger.write(Level.DEBUG,"stacktrace for debugging purpose",re);
       try
       {
         this.install();
-        
+
         // Jetzt sollte sich die Version laden lassen
         version = VersionUtil.getVersion(this,"db");
         Logger.info("current database version: " + version.getVersion());
@@ -165,7 +165,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
         throw re;
       }
     }
-    
+
     try
     {
       Logger.info("init update provider");
@@ -180,12 +180,12 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       // https://homebanking-hilfe.de/forum/topic.php?p=139423#real139423
       // Siehe auch https://www.h2database.com/javadoc/org/h2/api/ErrorCode.html#c90131
       Throwable t = e;
-      
+
       for (int i=0;i<10;++i)
       {
         if (t == null)
           break;
-        
+
         if (t instanceof SQLException)
         {
           SQLException se = (SQLException) t;
@@ -193,7 +193,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
           if (code == 90131)
           {
             Logger.error("found buggy h2 driver, update jameica first",e);
-            
+
             I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
             throw new ApplicationException(i18n.tr("Bitte aktualisiere erst Jameica auf Version 2.8.2 oder höher"));
           }
@@ -206,7 +206,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
   }
 
-  
   /**
    * @see de.willuhn.datasource.db.DBServiceImpl#getConnection()
    */
@@ -223,7 +222,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       throw re;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#executeUpdate(java.lang.String, java.lang.String[])
    */
@@ -232,7 +231,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   {
     if (!isStarted())
       throw new RemoteException("db service not started");
-    
+
     Connection conn = getConnection();
     PreparedStatement ps = null;
     try
@@ -249,7 +248,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
             ps.setObject((i+1),params[i]);
         }
       }
-      
+
       int count = ps.executeUpdate();
       conn.commit();
       return count;
@@ -275,7 +274,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       }
     }
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.DBServiceImpl#createList(java.lang.Class)
    */
@@ -292,7 +291,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       throw re;
     }
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.DBServiceImpl#createObject(java.lang.Class, java.lang.String)
    */
@@ -309,7 +308,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       throw re;
     }
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.DBServiceImpl#execute(java.lang.String, java.lang.Object[], de.willuhn.datasource.rmi.ResultSetExtractor)
    */
@@ -335,7 +334,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
     monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
-    
+
     Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
     File file = new File(mf.getPluginDir() + File.separator + "sql","create.sql");
     this.driver.execute(getConnection(),file);
@@ -372,7 +371,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
     super.checkConnection(conn);
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.DBServiceImpl#getTransactionIsolationLevel()
    */
@@ -381,7 +380,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     // BUGZILLA 447
     return this.driver.getTransactionIsolationLevel();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#getDriver()
    */

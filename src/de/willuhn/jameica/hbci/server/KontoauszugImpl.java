@@ -303,7 +303,7 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
     String base64 = (String) this.getAttribute("quittungscode");
     if (base64 == null || base64.length() == 0)
       return null;
-    
+
     try
     {
       return Base64.decode(base64);
@@ -322,13 +322,13 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
   public void setQuittungscode(byte[] code) throws RemoteException
   {
     String base64 = null;
-    
+
     if (code != null && code.length > 0)
       base64 = Base64.encode(code);
-    
+
     this.setAttribute("quittungscode",base64);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Kontoauszug#getQuittiertAm()
    */
@@ -337,7 +337,7 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
   {
     return (Date) this.getAttribute("quittiert_am");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Kontoauszug#setQuittiertAm(java.util.Date)
    */
@@ -346,7 +346,7 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
   {
     this.setAttribute("quittiert_am",d);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Kontoauszug#getGelesenAm()
    */
@@ -355,7 +355,7 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
   {
     return (Date) this.getAttribute("gelesen_am");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Kontoauszug#setGelesenAm(java.util.Date)
    */
@@ -382,7 +382,7 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
   {
     return "kontoauszug";
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insert()
    */
@@ -392,6 +392,7 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
     this.setAttribute("ausgefuehrt_am",new Date());
     super.insert();
   }
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
@@ -404,5 +405,3 @@ public class KontoauszugImpl extends AbstractHibiscusDBObject implements Kontoau
   }
 
 }
-
-

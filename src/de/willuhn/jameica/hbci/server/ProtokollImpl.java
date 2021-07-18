@@ -162,7 +162,6 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
 
 }
 
-
 /**********************************************************************
  * $Log: ProtokollImpl.java,v $
  * Revision 1.14  2011/10/18 09:28:14  willuhn

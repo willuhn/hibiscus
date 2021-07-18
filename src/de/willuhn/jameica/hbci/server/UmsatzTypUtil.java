@@ -42,7 +42,7 @@ import de.willuhn.util.I18N;
 public class UmsatzTypUtil
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Virtueller Umsatz-Typ "Nicht zugeordnet".
    */
@@ -58,7 +58,7 @@ public class UmsatzTypUtil
    */
   public static String getNameForType(int type)
   {
-    
+
     switch (type)
     {
       case UmsatzTyp.TYP_AUSGABE:
@@ -68,7 +68,7 @@ public class UmsatzTypUtil
     }
     return i18n.tr("egal");
   }
-  
+
   /**
    * Liefert eine Liste aller Umsatz-Kategorien, sortiert nach Nummer und Name.
    * @return Liste aller Umsatz-Kategorien.
@@ -94,7 +94,7 @@ public class UmsatzTypUtil
     list.addFilter("parent_id is null or parent_id not in (select id from umsatztyp)");
     return list;
   }
-  
+
   /**
    * Liefert einen Tree mit den gesuchten Umsatz-Kategorien.
    * @param skip einzelner Umsatz-Typ, der nicht enthalten sein soll.
@@ -160,17 +160,17 @@ public class UmsatzTypUtil
   public static List<UmsatzTypBean> getList(UmsatzTyp skip, int typ) throws RemoteException
   {
     GenericIterator<UmsatzTypBean> tree = getTree(skip,typ);
-    
+
     // Jetzt rekursiv in Liste uebertragen
     List<UmsatzTypBean> result = new LinkedList<UmsatzTypBean>();
     while (tree.hasNext())
     {
       collect(tree.next(),result);
     }
-    
+
     return result;
   }
-  
+
   /**
    * Traegt die Kategorie und alle Kinder rekursiv in die Liste ein.
    * @param bean die Kategorie.
@@ -203,17 +203,17 @@ public class UmsatzTypUtil
   {
     if (ut == null)
       return true;
-    
+
     if (skip != null && BeanUtil.equals(skip,ut))
       return true;
 
     int ti = ut.getTyp();
     if (typ == UmsatzTyp.TYP_EGAL || ti == UmsatzTyp.TYP_EGAL)
       return false;
-        
+
     return ti != typ;
   }
-  
+
   /**
    * Vergleicht zwei Kategorien.
    * @param t1 Kategorie 1.
@@ -226,7 +226,7 @@ public class UmsatzTypUtil
     // Nicht zugeordnete Kategorien ganz am Anfang
     if (t1 == null)
       return -1;
-    
+
     if (t2 == null)
       return 1;
 
@@ -235,7 +235,7 @@ public class UmsatzTypUtil
     int otherType = t2.getTyp();
     if (thisType != otherType && thisType != UmsatzTyp.TYP_EGAL && otherType != UmsatzTyp.TYP_EGAL)
       return thisType < otherType ? -1 : 1;
-    
+
     String n1  = t1.getNummer();  if (n1  == null) n1  = "";
     String n2  = t2.getNummer(); if (n2  == null) n2  = "";
     String na1 = t1.getName();    if (na1 == null) na1 = "";
@@ -245,11 +245,11 @@ public class UmsatzTypUtil
     int numberCompare = n1.compareTo(n2);
     if (numberCompare != 0)
       return numberCompare;
-    
+
     // Falls Nummer identisch/leer, dann nach Name
     return na1.compareTo(na2);
   }
-  
+
   /**
    * Virtuelle Umsatz-Typ-Bean fuer "nicht zugeordnet".
    */
@@ -263,10 +263,10 @@ public class UmsatzTypUtil
     {
       if("indented".equals(attribute) || "name".equals(attribute))
         return this.getName();
-      
+
       return null;
     }
-    
+
     /**
      * @see de.willuhn.datasource.rmi.DBObjectNode#getTopLevelList()
      */
@@ -560,7 +560,7 @@ public class UmsatzTypUtil
 
       if (von != null)
         list.addFilter("datum >= ?", new Object[] {new java.sql.Date(von.getTime())});
-      
+
       if (bis != null)
         list.addFilter("datum <= ?", new Object[] {new java.sql.Date(bis.getTime())});
 
@@ -614,7 +614,7 @@ public class UmsatzTypUtil
         Umsatz u = (Umsatz) i.next();
         sum += u.getBetrag();
       }
-      
+
       // Die Abfrage der Kinder koennen wir uns schenken, weil dieses Kategorie keine Kinder hat
       return sum;
     }

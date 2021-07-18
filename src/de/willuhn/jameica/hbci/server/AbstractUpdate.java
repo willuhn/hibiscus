@@ -40,11 +40,11 @@ public abstract class AbstractUpdate implements Update
     {
       String driver = HBCIDBService.SETTINGS.getString("database.driver",DBSupportH2Impl.class.getName());
       Class<? extends DBSupport> driverClass = Application.getClassLoader().load(driver);
-      
+
       List<String> sql = this.getStatements(driverClass);
       if (sql == null)
         throw new ApplicationException(i18n.tr("Datenbank {0} nicht wird unterstützt",driver));
-      
+
       if (sql.size() == 0)
       {
         myProvider.getProgressMonitor().log(i18n.tr("Update übersprungen, nicht notwendig"));
@@ -58,7 +58,7 @@ public abstract class AbstractUpdate implements Update
         sb.append(s);
         sb.append("\n");
       }
-      
+
       ScriptExecutor.execute(new StringReader(sb.toString()),myProvider.getConnection(),myProvider.getProgressMonitor());
       myProvider.getProgressMonitor().log(i18n.tr("Tabelle aktualisiert"));
     }
@@ -72,7 +72,7 @@ public abstract class AbstractUpdate implements Update
       throw new ApplicationException(i18n.tr("Fehler beim Ausführen des Updates"),e);
     }
   }
-  
+
   /**
    * Liefert die auszufuehrenden Datenbank-Updates fuer den jeweiligen Treiber.
    * @param driverClass die Klasse des Treibers.

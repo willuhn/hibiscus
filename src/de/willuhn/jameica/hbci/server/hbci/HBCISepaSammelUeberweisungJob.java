@@ -48,7 +48,7 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
       return "TermMultiUebSEPA";
     return "MultiUebSEPA";
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
    */

@@ -55,14 +55,14 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
 
     return super.getForeignObject(arg0);
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
-    
+
     try
     {
       String creditorId = getCreditorId();
@@ -78,7 +78,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
         throw new ApplicationException(i18n.tr("Bitte geben Sie die Mandatsreferenz ein."));
       HBCIProperties.checkLength(mandateId, HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
       HBCIProperties.checkChars(mandateId, HBCIProperties.HBCI_SEPA_VALIDCHARS);
-      
+
       if (this.getSignatureDate() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie das Unterschriftsdatum des Mandats ein"));
     }
@@ -88,7 +88,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
       throw new ApplicationException(i18n.tr("Fehler beim Prüfen des SEPA-Auftrages."));
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferBuchungImpl#duplicate()
    */
@@ -124,7 +124,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
   {
     return (String) getAttribute("mandateid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#setMandateId(java.lang.String)
    */
@@ -132,7 +132,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
   {
     setAttribute("mandateid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#getSignatureDate()
    */
@@ -140,7 +140,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
   {
     return (Date) getAttribute("sigdate");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#setSignatureDate(java.util.Date)
    */
@@ -148,7 +148,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
   {
     setAttribute("sigdate",date);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#getCreditorId()
    */
@@ -156,7 +156,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
   {
     return (String) getAttribute("creditorid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#setCreditorId(java.lang.String)
    */

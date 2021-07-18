@@ -80,7 +80,6 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
 
 }
 
-
 /*********************************************************************
  * $Log: DBPropertyImpl.java,v $
  * Revision 1.1  2008/05/30 14:23:48  willuhn

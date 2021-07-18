@@ -31,9 +31,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
-
-
 /**
  * Hilfsklasse zum Mergen und Splitten der erweiterten Verwendungszwecke.
  */
@@ -48,49 +45,49 @@ public class VerwendungszweckUtil
      * Ende-zu-Ende Referenz.
      */
     EREF,
-    
+
     /**
      * Kundenreferenz.
      */
     KREF,
-    
+
     /**
      * Mandatsreferenz.
      */
     MREF,
-    
+
     /**
      * Creditor-ID.
      */
     CRED,
-    
+
     /**
      * Debitor-ID.
      */
     DBET,
-    
+
     /**
      * Verwendungszweck.
      */
     SVWZ,
-    
+
     /**
      * Abweichender Auftraggeber.
      */
     ABWA,
-    
+
     /**
      * IBAN des Gegenkontos.
      */
     IBAN,
-    
+
     /**
      * BIC des Gegenkontos.
      */
     BIC,
-    
+
     ;
-    
+
     /**
      * Sucht das Tag mit dem angegebenen Namen.
      * @param s der Name des Tag.
@@ -108,7 +105,7 @@ public class VerwendungszweckUtil
       return null;
     }
   }
-  
+
   /**
    * Splittet die Verwendungszweck-Zeilen am Zeilenumbruch.
    * @param lines die Zeilen.
@@ -121,7 +118,7 @@ public class VerwendungszweckUtil
       return new String[0];
     return lines.split("\n");
   }
-  
+
   /**
    * Zerlegt einen langen Verwendungszweck in 27 Zeichen lange Haeppchen.
    * @param line die zu parsende Zeile.
@@ -139,7 +136,7 @@ public class VerwendungszweckUtil
     String s = line.replaceAll("(.{27})","$1--##--##");
     return s.split("--##--##");
   }
-  
+
   /**
    * Liefert den Wert des angegebenen Tag oder NULL, wenn er nicht gefunden wurde.
    * @param t der Auftrag.
@@ -161,10 +158,10 @@ public class VerwendungszweckUtil
     {
       if (tag == Tag.SVWZ)
         return toString(t);
-      
+
       return null;
     }
-      
+
     // Sonderrolle SVWZ.
     // Es kann sein, dass der Verwendungszweck so aussieht:
     // "EREF+1234 MREF+1234 SVWZ+"
@@ -173,7 +170,7 @@ public class VerwendungszweckUtil
     String value = result.get(tag);
     if (tag == Tag.SVWZ && StringUtils.trimToNull(value) == null)
       return toString(t);
-    
+
     return value;
   }
 
@@ -187,7 +184,7 @@ public class VerwendungszweckUtil
   {
     if (t == null)
       return  new HashMap<Tag,String>();
-    
+
     return parse(toArray(t));
   }
 
@@ -206,15 +203,15 @@ public class VerwendungszweckUtil
       // Vielleicht enthaelt es ja nur Tags mit Doppelpunkt?
       return parse(true,':',lines);
     }
-    
+
     // Jetzt schauen wir, ob wir den Verwendungszweck per ":" noch weiter zerlegen koennen
     String svwz = result.get(Tag.SVWZ);
     if (StringUtils.trimToNull(svwz) != null)
       result.putAll(parse(false,':',svwz));
-    
+
     return result;
   }
-  
+
   /**
    * Parst die SEPA-Tags aus den Verwendungszweck-Zeilen.
    * @param leadingSvwz true, wenn ein fuehrerender Verwendungszweck ohne dediziertes Tag beachtet werden soll.
@@ -247,13 +244,13 @@ public class VerwendungszweckUtil
         // Position des ersten Tag merken - brauchen wir weiter unten eventuell noch
         if (first == -1 || start < first)
           first = start;
-        
+
         int next = 0;
-        
+
         while (next < line.length()) // Wir suchen solange, bis wir am Ende angekommen sind.
         {
           int tagLen = tag.name().length() + 1; // Laenge des Tag + Trennzeichen
-          
+
           // OK, wir haben das Tag. Jetzt suchen wir bis zum naechsten Tag.
           next = line.indexOf(sep,start + tagLen + next);
           if (next == -1)
@@ -272,7 +269,7 @@ public class VerwendungszweckUtil
               // Sonderfall BIC - nur 3 Zeichen lang?
               found = Tag.byName(line.substring(next-3,next));
             }
-            
+
             // Ist ein bekanntes Tag. Also uebernehmen wir den Text genau bis dahin
             if (found != null)
             {
@@ -282,7 +279,7 @@ public class VerwendungszweckUtil
           }
         }
       }
-      
+
       // Noch eine Sonderrolle bei SVWZ. Es gibt Buchungen, die so aussehen:
       // "Das ist eine Zeile ohne Tag\nKREF+Und hier kommt noch ein Tag".
       // Sprich: Der Verwendungszweck enthaelt zwar Tags, der Verwendungszweck selbst hat aber keines
@@ -292,7 +289,7 @@ public class VerwendungszweckUtil
       {
         result.put(Tag.SVWZ,StringUtils.trimToEmpty(line.substring(0,first).replace("\n","")));
       }
-      
+
       // Sonderrolle IBAN. Wir entfernen alles bis zum ersten Leerzeichen. Siehe "testParse012". Da hinter der
       // IBAN kein vernuenftiges Tag mehr kommt, wuerde sonst der ganze Rest da mit reinfallen. Aber nur, wenn
       // es erst nach 22 Zeichen kommt. Sonst steht es mitten in der IBAN drin. In dem Fall entfernen wir die
@@ -306,12 +303,12 @@ public class VerwendungszweckUtil
         else if (space != -1)
           result.put(Tag.IBAN,StringUtils.deleteWhitespace(iban));
       }
-      
+
       // testParse013: Leerzeichen aus der BIC entfernen
       String bic = StringUtils.trimToNull(result.get(Tag.BIC));
       if (bic != null)
         result.put(Tag.BIC,StringUtils.deleteWhitespace(bic));
-        
+
     }
     catch (Exception e)
     {
@@ -320,7 +317,7 @@ public class VerwendungszweckUtil
     }
     return result;
   }
-  
+
   /**
    * Verteilt die angegebenen Verwendungszweck-Zeilen auf zweck, zweck2 und zweck3.
    * @param t der Auftrag, in dem die Verwendungszweck-Zeilen gespeichert werden sollen.
@@ -331,7 +328,7 @@ public class VerwendungszweckUtil
   {
     if (t == null || lines == null || lines.length == 0)
       return;
-    
+
     List<String> l = clean(true,lines);
     if (l.size() > 0) t.setZweck(l.remove(0));  // Zeile 1
     if (l.size() > 0) t.setZweck2(l.remove(0)); // Zeile 2
@@ -348,9 +345,9 @@ public class VerwendungszweckUtil
   {
     if (t == null || lines == null || lines.size() == 0)
       return;
-    
+
     List<String> l = clean(true,lines);
-    
+
     // Wir werfen alles in einen String und verteilen es dann ohne weitere Trennungen auf die Zeilen
     String all = StringUtils.join(l,"");
 
@@ -372,15 +369,15 @@ public class VerwendungszweckUtil
       t.setZweck2(all);
       return;
     }
-    
+
     // Ne, dann Zweck 2 abschneiden
     t.setZweck2(all.substring(0,limit));
     all = all.substring(limit);
-    
+
     // Den Rest verteilen
     t.setWeitereVerwendungszwecke(parse(all));
   }
-  
+
   /**
    * Bricht die Verwendungszweck-Zeilen auf $limit Zeichen lange Haeppchen neu um.
    * Jedoch nur, wenn wirklich Zeilen enthalten sind, die laenger sind.
@@ -393,7 +390,7 @@ public class VerwendungszweckUtil
   {
     if (lines == null || lines.length == 0)
       return lines;
-    
+
     boolean found = false;
     for (String s:lines)
     {
@@ -407,7 +404,7 @@ public class VerwendungszweckUtil
       return lines;
 
     List<String> l = clean(true,lines);
-    
+
     // Zu einem String mergen
     StringBuffer sb = new StringBuffer();
     for (String line:l)
@@ -420,7 +417,7 @@ public class VerwendungszweckUtil
     String s = result.replaceAll("(.{" + limit + "})","$1--##--##");
     return s.split("--##--##");
   }
-  
+
   /**
    * Merget die Verwendungszweck-Zeilen zu einem String zusammen.
    * Die Zeilen sind mit Zeilenumbruch versehen.
@@ -432,7 +429,7 @@ public class VerwendungszweckUtil
   {
     if (lines == null || lines.length == 0)
       return null;
-    
+
     List<String> cleaned = clean(false,lines);
     StringBuffer sb = new StringBuffer();
     for (String line:cleaned)
@@ -444,7 +441,7 @@ public class VerwendungszweckUtil
     String result = sb.toString();
     return result.length() == 0 ? null : result;
   }
-  
+
   /**
    * Liefert eine bereinigte Liste der Verwendungszweck-Zeilen des Auftrages.
    * @param t der Auftrag.
@@ -462,7 +459,7 @@ public class VerwendungszweckUtil
       for (String s:wvz)
         lines.add(s);
     }
-    
+
     String[] list = lines.toArray(new String[lines.size()]);
     List<String> result = clean(false,list);
     return result.toArray(new String[result.size()]);
@@ -479,7 +476,7 @@ public class VerwendungszweckUtil
   {
     return toString(t," ");
   }
-  
+
   /**
    * Merget die Verwendungszweck-Zeilen des Auftrages zu einer Zeile zusammen.
    * @param t der Auftrag.
@@ -493,28 +490,28 @@ public class VerwendungszweckUtil
     if (sep == null)
       sep = " ";
     StringBuffer sb = new StringBuffer();
-    
+
     String[] lines = toArray(t);
     for (int i=0;i<lines.length;++i)
     {
       sb.append(lines[i]);
-      
+
       // Trennzeichen bei der letzten Zeile weglassen
       if (i+1 < lines.length)
         sb.append(sep);
     }
 
     String result = sb.toString();
-    
+
     // Wenn als Trennzeichen "\n" angegeben ist, kann es
     // bei den weiteren Verwendungszwecken drin bleiben
     if (sep.equals("\n"))
       return result;
-    
+
     // Andernfalls ersetzen wir es gegen das angegebene Zeichen
     return result.replace("\n",sep);
   }
-  
+
   /**
    * Bereinigt die Verwendungszweck-Zeilen.
    * Hierbei werden leere Zeilen oder NULL-Elemente entfernt.
@@ -541,18 +538,18 @@ public class VerwendungszweckUtil
     List<String> result = new ArrayList<String>();
     if (lines == null || lines.size() == 0)
       return result;
-    
+
     for (String line:lines)
     {
       if (line == null)
         continue;
-      
+
       if (trim)
         line = line.trim();
       if (line.length() > 0)
         result.add(line);
     }
-    
+
     return result;
   }
 
@@ -577,7 +574,7 @@ public class VerwendungszweckUtil
   {
     if (transfer == null)
       return;
-    
+
     VerwendungszweckUtil.checkMaxUsage(transfer.getKonto(),transfer.getWeitereVerwendungszwecke());
   }
 
@@ -591,7 +588,7 @@ public class VerwendungszweckUtil
   {
     if (buchung == null)
       return;
-    
+
     SammelTransfer t = buchung.getSammelTransfer();
     VerwendungszweckUtil.checkMaxUsage(t == null ? null : t.getKonto(),buchung.getWeitereVerwendungszwecke());
   }
@@ -606,7 +603,7 @@ public class VerwendungszweckUtil
   {
     if (lines == null || lines.length == 0)
       return;
-    
+
     // "2" sind die ersten beiden Zeilen, die bei getWeitereVerwendungszwecke nicht mitgeliefert werden
     int allowed = VerwendungszweckUtil.getMaxUsageUeb(konto);
     if ((lines.length + 2) > allowed)

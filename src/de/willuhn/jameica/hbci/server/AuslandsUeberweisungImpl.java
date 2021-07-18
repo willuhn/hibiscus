@@ -62,7 +62,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
     u.setUmbuchung(isUmbuchung());
     u.setPurposeCode(getPurposeCode());
-    
+
     return u;
   }
 
@@ -70,7 +70,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   protected void insertCheck() throws ApplicationException {
-    
+
     try {
       Konto k = getKonto();
 
@@ -78,11 +78,11 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
-      
+
       String kiban = k.getIban();
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
-      
+
       String bic = k.getBic();
       if (bic == null || bic.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
@@ -112,19 +112,19 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
 
       HBCIProperties.checkLength(getZweck(), HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getZweck(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
-      
+
       HBCIProperties.checkLength(getEndtoEndId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getEndtoEndId(), HBCIProperties.HBCI_SEPA_VALIDCHARS);
-      
+
       HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_PMTINF_VALIDCHARS);
 
       HBCIProperties.checkLength(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_MAXLENGTH);
       HBCIProperties.checkChars(getPurposeCode(), HBCIProperties.HBCI_SEPA_PURPOSECODE_VALIDCHARS);
-      
+
       if (isUmbuchung() && isTerminUeberweisung())
         throw new ApplicationException(i18n.tr("Eine Umbuchung kann nicht als Termin-Auftrag gesendet werden"));
-      
+
       if (this.getTermin() == null)
         this.setTermin(new Date());
 
@@ -139,11 +139,11 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     {
       if (!this.markingExecuted())
         throw ae;
-      
+
       Logger.warn(ae.getMessage());
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isTerminUeberweisung()
    */
@@ -160,7 +160,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     setAttribute("banktermin",termin ? new Integer(1) : null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isUmbuchung()
    */
@@ -178,7 +178,6 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     setAttribute("umbuchung",b ? new Integer(1) : null);
   }
 
-
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#ueberfaellig()
    */
@@ -187,7 +186,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     // Termin-Auftraege werden sofort faellig gestellt, weil sie ja durch die Bank terminiert werden
     if (isTerminUeberweisung())
       return !ausgefuehrt();
-    
+
     return super.ueberfaellig();
   }
 
@@ -215,7 +214,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     return (String) getAttribute("empfaenger_bic");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setWeitereVerwendungszwecke(java.lang.String[])
    */
@@ -233,7 +232,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     if (zweck2 != null && zweck2.length() > 0)
       throw new RemoteException("second usage not allowed for foreign transfer");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
@@ -241,7 +240,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     return (String) getAttribute("endtoendid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */
@@ -249,7 +248,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     setAttribute("endtoendid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
    */
@@ -257,7 +256,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     return (String) getAttribute("pmtinfid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
    */
@@ -274,7 +273,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   {
     return (String) getAttribute("purposecode");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
    */

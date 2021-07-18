@@ -61,7 +61,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
 
     DBPropertyUtil.set(DBPropertyUtil.Prefix.META,this.getTableName(),id,name,value);
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#delete()
    */
@@ -69,7 +69,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
   {
     if (this.isNewObject())
       return; // Nichts zu loeschen
-    
+
     this.transactionBegin();
     try
     {
@@ -94,7 +94,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
       throw e2;
     }
   }
-  
+
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#store()
    */
@@ -102,7 +102,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    
+
     // Store-Message schicken
     // Das wird asynchron gemacht, damit es das speichern nicht bremst
     Application.getMessagingFactory().getMessagingQueue("hibiscus.dbobject.store").sendMessage(new QueryMessage(this));

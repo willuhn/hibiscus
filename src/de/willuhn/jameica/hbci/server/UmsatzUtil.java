@@ -62,7 +62,7 @@ public class UmsatzUtil
   {
     return getUmsaetze(true);
   }
-  
+
   /**
    * Liefert das Datum des aeltesten Umsatzes auf dem Konto oder der Kontogruppe.
    * @param kontoOrGroup Konto oder Name einer Kontogruppe.
@@ -81,7 +81,7 @@ public class UmsatzUtil
       query += " where konto_id in (select id from konto where kategorie = ?)";
       params = new String[]{(String) kontoOrGroup};
     }
-    
+
     return (Date) Settings.getDBService().execute(query,params,new ResultSetExtractor() {
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
@@ -91,7 +91,7 @@ public class UmsatzUtil
       }
     });
   }
-  
+
   /**
    * Liefert alle Umsaetze in ugekehrt chronologischer Reihenfolge (neue zuerst), die den Kriterien entsprechen.
    * @param konto das Konto. Optional.
@@ -105,17 +105,17 @@ public class UmsatzUtil
   public static DBIterator find(Konto konto, String kategorie, Date from, Date to, String query) throws RemoteException
   {
     DBIterator list = getUmsaetzeBackwards();
-    
+
     if (konto != null)
       list.addFilter("konto_id = " + konto.getID());
     else if (StringUtils.trimToNull(kategorie) != null)
       list.addFilter("konto_id in (select id from konto where kategorie = ?)", kategorie);
-    
+
     if (from != null)
       list.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
     if (to != null)
       list.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
-    
+
     if (StringUtils.trimToNull(query) != null)
     {
       final String text = "%" + query.toLowerCase() + "%";
@@ -159,7 +159,7 @@ public class UmsatzUtil
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
       throw new ApplicationException(i18n.tr("Bitte geben Sie einen Suchbegriff an"));
     }
-    
+
     return find(null,null,null,null,query);
   }
 

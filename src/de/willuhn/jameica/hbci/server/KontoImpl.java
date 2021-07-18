@@ -111,7 +111,6 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       if (!HBCIProperties.checkAccountCRC(getBLZ(), getKontonummer()))
         throw new ApplicationException(i18n.tr("Ungültige BLZ/Kontonummer. Bitte prüfen Sie Ihre Eingaben."));
 
-      
       //////////////////////////////////////////////////////////////////////////
       // Auslaendische Bankverbindung
       String iban = this.getIban();
@@ -128,7 +127,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       }
       //
       //////////////////////////////////////////////////////////////////////////
-      
+
     }
     catch (RemoteException e)
     {
@@ -176,7 +175,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     return (String) getAttribute("passport_class");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getBackendClass()
    */
@@ -185,7 +184,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     return (String) getAttribute("backend_class");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getAccountType()
    */
@@ -226,7 +225,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     setAttribute("passport_class", passport);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#setBackendClass(java.lang.String)
    */
@@ -252,7 +251,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     if (this.isNewObject())
       return;
-    
+
     Cache.clear(Konto.class); // Cache loeschen
 
     // Wir muessen auch alle Umsaetze, Ueberweisungen und Protokolle mitloeschen
@@ -270,7 +269,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         um = (Umsatz) list.next();
         um.delete();
       }
-      
+
       // Die fest zugeordneten Kategorien loesen
       list = getUmsatzTypen();
       UmsatzTyp ut = null;
@@ -280,7 +279,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         ut.setKonto(null);
         ut.store();
       }
-      
+
       // dann die Kontoauszuege
       list = getKontoauszuege();
       Kontoauszug az = null;
@@ -307,7 +306,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
         sda = (SepaDauerauftrag) list.next();
         sda.delete();
       }
-      
+
       // noch die Lastschriften
       list = getLastschriften();
       Lastschrift ls = null;
@@ -544,7 +543,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     list.setOrder("ORDER BY COALESCE(nummer,''),name");
     return list;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getAuslandsUeberweisungen()
    */
@@ -558,7 +557,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
     return list;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaLastschriften()
    */
@@ -572,7 +571,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC");
     return list;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaSammelLastschriften()
    */
@@ -612,7 +611,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     list.addFilter("konto_id = " + getID());
     return list;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getLastschriften()
    */
@@ -642,7 +641,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     list.addFilter("konto_id = " + getID());
     return list;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getKontoauszuege()
    */
@@ -700,7 +699,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     if (hasChanged())
       addToProtokoll(i18n.tr("Konto-Eigenschaften aktualisiert"),Protokoll.TYP_SUCCESS);
     super.store();
-    
+
     Cache.clear(Konto.class); // Cache loeschen
   }
 
@@ -747,11 +746,11 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       String kto  = getKontonummer();
       String iban = getIban();
       String bic  = getBic();
-      
+
       boolean haveBic = bic != null && bic.length() > 0;
       boolean haveIban = iban != null && iban.length() > 0;
       String name = null;
-      
+
       try
       {
         name = HBCIProperties.getNameForBank(haveBic ? bic : blz);
@@ -760,14 +759,14 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       {
         // ignore
       }
-      
+
       if (name == null)
         name = haveBic ? (i18n.tr("BIC") + ": " + bic) : (i18n.tr("BLZ") + ": " + blz);
-        
+
       // Wir muessen die IBAN etwas verkuerzt anzeigen. Das passt sonst nicht hin.
       if (haveIban)
         kto = extralong ? HBCIProperties.formatIban(iban) : StringUtils.abbreviateMiddle(iban,"..",14);
-      
+
       String k = i18n.tr(haveIban ? "IBAN" : "Kto.");
 
       if (bez != null && bez.length() > 0)
@@ -805,7 +804,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     setAttribute("saldo_available", Double.isNaN(saldo) ? null : new Double(saldo));
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getNumUmsaetze()
    */
@@ -870,7 +869,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     setAttribute("kommentar",kommentar);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
    */
@@ -895,7 +894,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     if (flags < 0)
       return; // ungueltig
-    
+
     this.setAttribute("flags",new Integer(flags));
   }
 
@@ -930,7 +929,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     setAttribute("iban",iban);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#getKategorie()
    */
@@ -938,7 +937,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   {
     return (String) this.getAttribute("kategorie");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.Konto#setKategorie(java.lang.String)
    */
