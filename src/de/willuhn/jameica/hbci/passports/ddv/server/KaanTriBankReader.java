@@ -9,7 +9,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
-
 /**
  * Implementierung fuer die Default-Einstellungen des
  * Kartenlesers Kaan TriB@nk.
@@ -24,7 +23,6 @@ public class KaanTriBankReader extends AbstractKaanReader
     return "CTAPI: Kaan TriB@nk";
   }
 }
-
 
 /**********************************************************************
  * $Log: KaanTriBankReader.java,v $

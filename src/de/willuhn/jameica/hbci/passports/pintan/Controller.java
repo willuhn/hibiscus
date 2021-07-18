@@ -72,7 +72,7 @@ public class Controller extends AbstractControl
   private HBCIPassport passport   = null;
 
   private TablePart configList    = null;
-  
+
   private Input url               = null;
   private Input blz               = null;
   private Input port              = null;
@@ -87,7 +87,7 @@ public class Controller extends AbstractControl
 
   // BUGZILLA 173
   private TablePart kontoList   = null;
-  
+
   /**
    * ct.
    * @param view
@@ -223,7 +223,7 @@ public class Controller extends AbstractControl
     showTan = new CheckboxInput(getConfig().getShowTan());
     return showTan;
   }
-  
+
   /**
    * Liefert eine Auswahl verfuegbarer Kartenleser-Bezeichnungen.
    * @return eine Auswahl verfuegbaren Kartenleser-Bezeichnungen.
@@ -233,9 +233,9 @@ public class Controller extends AbstractControl
   {
     if (this.cardReaders != null)
       return this.cardReaders;
-    
+
     List<String> available = new ArrayList<String>();
-    
+
     // Erste Zeile Leerer Eintrag.
     // Damit das Feld auch dann leer bleiben kann, wenn der User nur einen
     // Kartenleser hat. Der sollte dann nicht automatisch vorselektiert
@@ -264,14 +264,14 @@ public class Controller extends AbstractControl
       Logger.info("unable to determine card reader list: " + t.getMessage());
       Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
     }
-    
+
     this.cardReaders = new SelectInput(available,this.getConfig().getCardReader());
     this.cardReaders.setEditable(true);
     this.cardReaders.setComment(i18n.tr("nur nötig, wenn mehrere Leser vorhanden"));
     this.cardReaders.setName(i18n.tr("Identifier des PC/SC-Kartenlesers"));
     return this.cardReaders;
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
    * @return eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
@@ -281,20 +281,20 @@ public class Controller extends AbstractControl
   {
     if (this.useUsb != null)
       return this.useUsb;
-    
+
     final Boolean b = this.getConfig().isChipTANUSB();
     this.useUsb = new CheckboxInput(b == null || b.booleanValue());
     this.useUsb.setName(i18n.tr("Kartenleser per USB zur TAN-Erzeugung verwenden"));
-    
+
     final Listener l = new Listener() {
-      
+
       @Override
       public void handleEvent(Event event)
       {
         try
         {
           Boolean newValue = (Boolean) getChipTANUSB().getValue();
-          
+
           if (event != null && event.type == SWT.Selection)
           {
             // Wir kamen aus dem Gray-State. Der User hat entschieden
@@ -330,7 +330,7 @@ public class Controller extends AbstractControl
         }
       }
     };
-    
+
     // einmal initial ausloesen
     l.handleEvent(null);
 
@@ -431,7 +431,7 @@ public class Controller extends AbstractControl
     hbciVersion.setName(i18n.tr("HBCI-Version"));
     return hbciVersion;
   }
-  
+
   /**
    * Liefert den HBCI-Passport.
    * @return der HBCI-Passport.
@@ -461,7 +461,7 @@ public class Controller extends AbstractControl
       conf.setStoredSecMech(null);
       conf.setTanMedia(null);
       conf.setChipTANUSB(null);
-      
+
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorauswahl der TAN-Verfahren zurückgesetzt"),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
@@ -470,7 +470,7 @@ public class Controller extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen der TAN-Verfahren"),StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Zeigt die BPD/UPD des Passports an.
    */
@@ -533,7 +533,7 @@ public class Controller extends AbstractControl
   public synchronized void handleSync()
   {
     this.handleDeleteTanSettings();
-    
+
     try
     {
       if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
@@ -596,7 +596,7 @@ public class Controller extends AbstractControl
       Logger.info("creating new pin/tan config");
       conf = PinTanConfigFactory.create();
       GUI.startView(Detail.class,conf);
-      
+
       AbstractView view = GUI.getCurrentView();
       if (view != null && (view instanceof Detail))
         GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration erfolgreich erstellt. Bitte klicken Sie \"Speichern\" zum Übernehmen."));
@@ -628,13 +628,13 @@ public class Controller extends AbstractControl
 			Logger.info("storing pin/tan config");
 
     	PinTanConfig config  = getConfig();
-      
+
       Konto[] konten = null;
       List checked = getKontoAuswahl().getItems();
       if (checked != null && checked.size() > 0)
         konten = (Konto[]) checked.toArray(new Konto[checked.size()]);
       config.setKonten(konten);
-      
+
       String version = (String) getHBCIVersion().getValue();
       config.setFilterType((String) getFilterType().getValue());
       config.setBezeichnung((String) getBezeichnung().getValue());
@@ -663,11 +663,10 @@ public class Controller extends AbstractControl
         }
       }
 
-			
       AbstractHBCIPassport p = (AbstractHBCIPassport)config.getPassport();
       PassportChangeRequest change = new PassportChangeRequest(p,(String)getCustomerId().getValue(),(String)getUserId().getValue());
       new PassportChange().handleAction(change);
-      
+
 			if (getHBCIVersion().hasChanged())
 			{
         // Das triggert beim naechsten Verbindungsaufbau
@@ -684,7 +683,6 @@ public class Controller extends AbstractControl
           p.syncSysId();
 			  }
 			}
-
 
       PinTanConfigFactory.store(config);
       this.passport = null; // force reload

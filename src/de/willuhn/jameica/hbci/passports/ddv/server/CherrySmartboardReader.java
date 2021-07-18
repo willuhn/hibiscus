@@ -37,7 +37,7 @@ public class CherrySmartboardReader extends AbstractReader
     {
       case Platform.OS_WINDOWS:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "CTChyCTApiSp.dll";
-      
+
       default:
         return "";
     }
@@ -51,7 +51,6 @@ public class CherrySmartboardReader extends AbstractReader
     return Application.getPlatform().getOS() == Platform.OS_WINDOWS;
   }
 }
-
 
 /**********************************************************************
  * $Log: CherrySmartboardReader.java,v $

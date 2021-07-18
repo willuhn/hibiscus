@@ -41,7 +41,7 @@ public class View extends AbstractView
     c.addText(i18n.tr("Starten Sie zunächst die automatische Suche nach dem Kartenleser. " +
     		              "Falls sie nicht erfolgreich verläuft, dann konfigurieren Sie den " +
     		              "Kartenleser bitte manuell."),true);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Kartenleser suchen..."), new Action()
     {
@@ -58,14 +58,11 @@ public class View extends AbstractView
       }
     },null,false,"document-new.png");
     buttons.paint(getParent());
-    
+
     control.getConfigList().paint(getParent());
-    
-    
+
   }
 }
-
-
 
 /**********************************************************************
  * $Log: View.java,v $

@@ -50,9 +50,9 @@ public class PtSecMechDialog extends AbstractDialog
   private SelectInput type    = null;
   private CheckboxInput save  = null;
   private PinTanConfig config = null;
-  
+
   private PtSecMech choosen   = null;
-  
+
   /**
    * ct.
    * @param config die PINTAN-Config.
@@ -63,14 +63,14 @@ public class PtSecMechDialog extends AbstractDialog
     super(PtSecMechDialog.POSITION_CENTER);
     this.config = config;
     this.options = options;
-    
+
     String s = null;
     try
     {
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
       Konto konto = session != null ? session.getKonto() : null;
-      
+
       if (konto != null)
       {
         s = konto.getBezeichnung();
@@ -94,12 +94,12 @@ public class PtSecMechDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);
-    
+
     group.addText(i18n.tr("Bitte wählen Sie das gewünschte PIN/TAN-Verfahren"),true);
-    
+
     group.addLabelPair(i18n.tr("Bezeichnung"), getType());
     group.addCheckbox(getSave(),i18n.tr("Auswahl speichern"));
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -113,7 +113,7 @@ public class PtSecMechDialog extends AbstractDialog
 
           Boolean b = (Boolean) getSave().getValue();
           SETTINGS.setAttribute("save",b.booleanValue());
-          
+
           if (getSave().isEnabled() && b.booleanValue())
           {
             // BUGZILLA 218
@@ -141,7 +141,7 @@ public class PtSecMechDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     buttons.addButton(new Cancel());
-    
+
     group.addButtonArea(buttons);
   }
 
@@ -163,12 +163,12 @@ public class PtSecMechDialog extends AbstractDialog
   {
     if (this.save != null)
       return this.save;
-    
+
     this.save = new CheckboxInput(SETTINGS.getBoolean("save",false));
     this.save.setEnabled(this.config != null);
     return this.save;
   }
-  
+
   /**
    * Erzeugt eine Combo-Box mit der Auswahl der verfuegbaren Verfahren.
    * @return Auswahl-Feld.

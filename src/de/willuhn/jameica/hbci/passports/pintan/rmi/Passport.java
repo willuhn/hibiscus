@@ -17,7 +17,6 @@ public interface Passport extends de.willuhn.jameica.hbci.passport.Passport
 
 }
 
-
 /*********************************************************************
  * $Log: Passport.java,v $
  * Revision 1.1  2010/06/17 11:38:16  willuhn

@@ -9,7 +9,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
-
 /**
  * Implementierung fuer die Default-Einstellungen des
  * "Kaan Standard Plus USB" von Kobil.
@@ -24,7 +23,6 @@ public class KaanStandardPlusReader extends AbstractKaanReader
     return "CTAPI: Kaan Standard Plus USB (Kobil)";
   }
 }
-
 
 /**********************************************************************
  * $Log: KaanStandardPlusReader.java,v $

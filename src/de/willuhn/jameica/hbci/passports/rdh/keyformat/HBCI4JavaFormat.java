@@ -53,7 +53,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
   {
     return i18n.tr("HBCI4Java/Hibiscus-Format");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#hasFeature(int)
    */
@@ -78,10 +78,10 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
     // Checken, ob die Datei lesbar ist.
     if (file == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"));
-    
+
     if (!file.canRead() || !file.isFile())
       throw new ApplicationException(i18n.tr("Schlüsseldatei nicht lesbar"));
-    
+
     // Das ist ein Hibiscus-Schluessel. Wir lassen den Schluessel gleich dort, wo er ist
     try
     {
@@ -103,7 +103,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
   {
     HBCIHandler handler = null;
     RDHKeyImpl key      = null;
-    
+
     try
     {
       key = new RDHKeyImpl(file);
@@ -124,10 +124,10 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
       Object data = msg.getData();
       if (data == null || !(data instanceof String))
         throw new ApplicationException(i18n.tr("HBCI-Version nicht ermittelbar"));
-      
+
       String version = (String)msg.getData();
       Logger.info("using hbci version: " + version);
-      
+
       handler = new HBCIHandler(version,passport);
       handler.close();
       handler = null;
@@ -147,7 +147,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
       OperationCanceledException oce = (OperationCanceledException) HBCIProperties.getCause(e,OperationCanceledException.class);
       if (oce != null)
         throw oce;
-        
+
       ApplicationException ae = (ApplicationException) HBCIProperties.getCause(e,ApplicationException.class);
       if (ae != null)
         throw ae;
@@ -168,7 +168,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
         }
         return key;
       }
-      
+
       Logger.error("unable to create key " + file.getAbsolutePath(),e);
       throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Schlüssels: {0}",e.getMessage()));
     }
@@ -193,7 +193,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
   {
     return load(key,false);
   }
-  
+
   /**
    * Liefert den Passport-Typ gemaess HBCI4Java.
    * @return Passport-Typ.
@@ -217,7 +217,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
     try
     {
       String filename = key.getFilename();
-      
+
       if (create)
       {
         Logger.info("create " + getPassportType() + " key " + filename);
@@ -235,14 +235,14 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
             throw new OperationCanceledException(i18n.tr("Schlüsseldatei nicht eingelegt oder nicht lesbar"));
         }
       }
-      
+
       HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
       callback = plugin.getHBCICallback();
       if (callback != null && (callback instanceof HBCICallbackSWT))
         ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
       else
         Logger.warn("unable to register current handle, callback: " + callback);
-      
+
       String type = getPassportType();
       HBCIUtils.setParam("client.passport.default",type); // ist eigentlich nicht noetig
       HBCIUtils.setParam("client.passport." + type + ".filename",filename);
@@ -256,7 +256,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
         throw oce;
 
       DialogFactory.clearPINCache(null);
-      
+
       ApplicationException ae = (ApplicationException) HBCIProperties.getCause(e,ApplicationException.class);
       if (ae != null)
         throw ae;
@@ -268,7 +268,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
         throw new ApplicationException(text);
       }
-      
+
       InvalidPassphraseException ipe = (InvalidPassphraseException) HBCIProperties.getCause(e,InvalidPassphraseException.class);
       if (ipe != null)
       {
@@ -277,7 +277,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
         throw new ApplicationException(text);
       }
-      
+
       // Keine brauchbare Exception gefunden
       Logger.error("unable to load " + getPassportType() + " key",e);
       throw new ApplicationException(i18n.tr("Fehler beim Laden des Schlüssels: {0}",e.getMessage()),e);

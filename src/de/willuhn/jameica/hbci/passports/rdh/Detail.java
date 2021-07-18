@@ -52,7 +52,7 @@ public class Detail extends AbstractView
         group.addInput(control.getHBCIPort());
         group.addInput(control.getHBCIVersion());
       }
-      
+
       {
         Container group = new SimpleContainer(layout.getComposite());
         group.addHeadline(i18n.tr("Benutzerdaten"));
@@ -60,7 +60,7 @@ public class Detail extends AbstractView
         group.addInput(control.getKundenkennung());
         group.addInput(control.getBLZ());
       }
-      
+
       {
         Container group = new SimpleContainer(getParent());
         group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
@@ -87,14 +87,13 @@ public class Detail extends AbstractView
         buttons.paint(getParent());
       }
 
-      
       Container c = new SimpleContainer(getParent(),true);
       c.addHeadline(i18n.tr("Fest zugeordnete Konten"));
       c.addText(i18n.tr("Die folgende Liste enthält alle Konten, welche diesem Bankzugang fest zugeordnet werden können. " +
                         "Aktivieren Sie die Kontrollkästchen der gewünschten Konten in der Spalte \"Kontonummer\", um diese Konten fest zuzuordnen. Klicken Sie anschließend \"Speichern\". " +
                         "Weitere Informationen hierzu finden Sie links in der Hilfe.\n"),true);
       c.addPart(control.getKontoAuswahl());
-      
+
       ButtonArea buttons = new ButtonArea();
       buttons.addButton(i18n.tr("BPD/UPD"),new Action()
       {
@@ -126,7 +125,7 @@ public class Detail extends AbstractView
       },null,false,"document-save.png");
 
       buttons.paint(getParent());
-      
+
       // Ggf. angezeigten Fehlertext von vorher loeschen
       Application.getMessagingFactory().sendMessage(new StatusBarMessage("Schlüsseldatei geladen",StatusBarMessage.TYPE_SUCCESS));
     }
@@ -152,7 +151,7 @@ public class Detail extends AbstractView
       GUI.startPreviousView();
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#canBookmark()
    */

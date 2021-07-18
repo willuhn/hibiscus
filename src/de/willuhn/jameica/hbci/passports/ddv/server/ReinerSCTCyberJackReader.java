@@ -37,13 +37,13 @@ public class ReinerSCTCyberJackReader extends AbstractReader
     {
       case Platform.OS_LINUX:
         return "/usr/lib/libctapi-cyberjack.so";
-      
+
       case Platform.OS_LINUX_64:
         return "/usr/lib64/libctapi-cyberjack.so";
 
       case Platform.OS_WINDOWS:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "ctrsct32.dll";
-      
+
       case Platform.OS_WINDOWS_64:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "ctrsct64.dll";
 
@@ -64,7 +64,6 @@ public class ReinerSCTCyberJackReader extends AbstractReader
            os == Platform.OS_LINUX_64;
   }
 }
-
 
 /**********************************************************************
  * $Log: ReinerSCTCyberJackReader.java,v $

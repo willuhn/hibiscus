@@ -23,7 +23,7 @@ public abstract class AbstractKeyFormat implements KeyFormat
   {
     return Integer.compare(this.getOrder(),o.getOrder());
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#getOrder()
    */
@@ -35,5 +35,3 @@ public abstract class AbstractKeyFormat implements KeyFormat
   }
 
 }
-
-

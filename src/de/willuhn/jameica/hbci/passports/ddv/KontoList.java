@@ -56,7 +56,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     // Erst das Parent zeichnen, damit wir anschliessend die
     // Konten checkable machen koennen.
     super.paint(parent);
-    
+
     /////////////////////////////////////////////////////////////////
     // Wir ermitteln die Liste der bereits verlinkten Konten
     ArrayList linked = new ArrayList();
@@ -92,7 +92,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
       konten.add(k);
     }
     /////////////////////////////////////////////////////////////////
-    
+
     /////////////////////////////////////////////////////////////////
     // Tabelle erzeugen und nur die relevanten markieren
 

@@ -54,9 +54,9 @@ public class DDVConfigFactory
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings settings = new Settings(DDVConfigFactory.class);
-  
+
   private static List<Reader> presets = null;
-  
+
   /**
    * Liefert eine Liste der vorhandenen Kartenleser-Konfigurationen.
    * @return eine Liste der vorhandenen Kartenleser-Konfigurationen.
@@ -71,7 +71,7 @@ public class DDVConfigFactory
     }
     return configs;
   }
-  
+
   /**
    * Liefert eine Liste mit bekannten Reader-Presets.
    * @return Liste mit bekannten Reader-Presets.
@@ -125,7 +125,7 @@ public class DDVConfigFactory
   {
     if (config == null)
       return;
-    
+
     // Wir holen uns erstmal die Liste der Konfigurationen
     String[] ids = settings.getList("config",new String[0]);
     List<String> newIds = new ArrayList<String>();
@@ -139,14 +139,14 @@ public class DDVConfigFactory
       found |= id.equals(config.getId());
       newIds.add(id);
     }
-    
+
     if (!found)
       newIds.add(config.getId());
-    
+
     // Speichern der aktualisierten Liste
     settings.setAttribute("config",newIds.toArray(new String[newIds.size()]));
   }
-  
+
   /**
    * Loescht die angegebene Config.
    * @param config die zu loeschende Config.
@@ -171,11 +171,11 @@ public class DDVConfigFactory
       if (!id.equals(config.getId())) // wir ueberspringen die zu loeschende
         newIds.add(id);
     }
-    
+
     // Speichern der aktualisierten Liste
     settings.setAttribute("config",newIds.toArray(new String[newIds.size()]));
   }
-  
+
   /**
    * Startet eine automatische Suche nach einem Kartenleser.
    * @param monitor ein Monitor, mit dem der Scan-Fortschritt verfolgt werden kann.
@@ -189,17 +189,17 @@ public class DDVConfigFactory
     // mit Testparametern zumuellen wuerden. Auf diese Weise
     // ist es immer nur die eine.
     DDVConfig temp = new DDVConfig("__scan__");
-    
+
     try
     {
       List<Reader> list = DDVConfigFactory.getReaderPresets();
       int factor = 100 / (list.size() * DDVConfig.PORTS.length);
-            
+
       for (Reader reader:list)
       {
         if (task.isInterrupted())
           throw new OperationCanceledException();
-        
+
         monitor.setStatusText(i18n.tr("Teste {0}",reader.getName()));
 
         // Testen, ob der Kartenleser ueberhaupt unterstuetzt wird
@@ -250,7 +250,7 @@ public class DDVConfigFactory
                 CardTerminal terminal = l.get(0);
                 String name = terminal.getName();
                 temp.setPCSCName(name);
-                
+
                 if (testConfig(monitor,temp))
                 {
                   // Wir kopieren die temporaere Config noch in eine richtige
@@ -277,10 +277,10 @@ public class DDVConfigFactory
         {
           if (task.isInterrupted())
             throw new OperationCanceledException();
-          
+
           monitor.addPercentComplete(factor);
           monitor.log("  " + i18n.tr("Port {0}",port));
-                
+
           temp.setPort(port);
 
           if (testConfig(monitor,temp))
@@ -317,7 +317,7 @@ public class DDVConfigFactory
       }
     }
   }
-  
+
   /**
    * Testet eine Kartenleser-Konfiguration.
    * @param monitor der Progress-Monitor.
@@ -365,7 +365,7 @@ public class DDVConfigFactory
         }
       }
     }
-    
+
     // Wir warten noch kurz. Fuer den Fall, dass in den Layern darunter irgendwas
     // asynchron stattfindet, koennte es sonst eventuell passieren, dass wir
     // versuchen, die Verbindung neu zu oeffnen, bevor die andere sauber geschlossen
@@ -376,10 +376,10 @@ public class DDVConfigFactory
     {
       Thread.sleep(250L);
     } catch (Exception e) { /* ignore */}
-    
+
     return false;
   }
-  
+
   /**
    * Liefert die zum uebergebenen Konto gehoerende PIN/Tan-Config oder <code>null</code> wenn keine gefunden wurde.
    * @param konto Konto, fuer das die Config gesucht wird.
@@ -419,7 +419,7 @@ public class DDVConfigFactory
       Logger.info("using config : " + config.getName());
       return config;
     }
-    
+
     // Wir haben mehrere zur Auswahl. Lassen wir den User entscheiden.
     SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER);
     try
@@ -445,7 +445,7 @@ public class DDVConfigFactory
   {
     return new DDVConfig(UUID.randomUUID().toString());
   }
-  
+
   /**
    * Erstellt ein Passport-Objekt aus der Config.
    * @param config die Config.
@@ -459,7 +459,7 @@ public class DDVConfigFactory
       throw new ApplicationException(i18n.tr("Keine Konfiguration ausgewählt"));
 
     Type type = config.getReaderPreset().getType();
-    
+
     if (type.isPCSC())
     {
       String pcscName = config.getPCSCName();
@@ -500,12 +500,11 @@ public class DDVConfigFactory
     File f = new File(de.willuhn.jameica.hbci.Settings.getWorkPath() + "/passports/");
     if (!f.exists())
       f.mkdirs();
-    
+
     String headerName = type == Type.RDH_PCSC ? "RSA" : "DDV"; // siehe HBCIPassport[RSA/DDV], Konstruktor, "setParamHeader"
     HBCIUtils.setParam("client.passport." + headerName + ".path",de.willuhn.jameica.hbci.Settings.getWorkPath() + "/passports/");
     //
     //////////////////////////////////////////////////////////////////////////
-
 
     if (type.isCTAPI())
     {
@@ -516,7 +515,7 @@ public class DDVConfigFactory
       Logger.info("  ctnumber: " + config.getCTNumber());
       HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.CTNUMBER), Integer.toString(config.getCTNumber()));
     }
-    
+
     Logger.info("  soft pin: " + config.useSoftPin());
     HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.SOFTPIN), config.useSoftPin() ? "1" : "0");
 
@@ -528,14 +527,13 @@ public class DDVConfigFactory
     String id = type.getIdentifier();
     Logger.info("  passport type: " + id);
     HBCIPassportChipcard passport = (HBCIPassportChipcard) AbstractHBCIPassport.getInstance(id);
-    
+
     Logger.info("  host: " + passport.getHost());
     Logger.info("  blz: " + passport.getBLZ());
 
     return passport;
   }
 
-  
   /**
    * Liefert die zu verwendende JNI-Lib.
    * @return die zu verwendende JNI-Lib.
@@ -544,17 +542,17 @@ public class DDVConfigFactory
   private static File getJNILib() throws ApplicationException
   {
     String file = null;
-    
+
     switch (Application.getPlatform().getOS())
     {
       case Platform.OS_LINUX:
         file = "libhbci4java-card-linux-32.so";
         break;
-        
+
       case Platform.OS_LINUX_64:
         file = "libhbci4java-card-linux-64.so";
         break;
-        
+
       case Platform.OS_WINDOWS:
         file = "hbci4java-card-win32.dll";
         break;
@@ -562,7 +560,7 @@ public class DDVConfigFactory
       case Platform.OS_WINDOWS_64:
         file = "hbci4java-card-win32_x86-64.dll";
         break;
-        
+
       case Platform.OS_MAC:
         String arch = System.getProperty("os.arch");
         if (arch != null && arch.contains("64"))
@@ -575,7 +573,7 @@ public class DDVConfigFactory
         file = "libhbci4java-card-freebsd-64.so";
         break;
     }
-    
+
     if (file == null)
       throw new ApplicationException(i18n.tr("Hibiscus unterstützt leider keine Chipkartenleser für Ihr Betriebssystem"));
 
@@ -589,10 +587,7 @@ public class DDVConfigFactory
     return f;
   }
 
-  
 }
-
-
 
 /**********************************************************************
  * $Log: DDVConfigFactory.java,v $

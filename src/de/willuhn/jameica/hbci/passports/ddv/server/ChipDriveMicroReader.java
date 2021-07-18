@@ -37,13 +37,13 @@ public class ChipDriveMicroReader extends AbstractReader
     {
       case Platform.OS_LINUX:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "libtowitoko-2.0.7.so";
-      
+
       case Platform.OS_LINUX_64:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "libtowitoko-2.0.7-amd64.so";
 
       case Platform.OS_WINDOWS:
         return getCTAPIDriverPath().getAbsolutePath() + File.separator + "cttwkw32.dll";
-      
+
       default:
         return "";
     }
@@ -67,7 +67,7 @@ public class ChipDriveMicroReader extends AbstractReader
   {
     return true;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.server.AbstractReader#getPort()
    */
@@ -76,7 +76,6 @@ public class ChipDriveMicroReader extends AbstractReader
     return "COM/USB";
   }
 }
-
 
 /**********************************************************************
  * $Log: ChipDriveMicroReader.java,v $

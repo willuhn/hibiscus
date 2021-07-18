@@ -44,7 +44,7 @@ public class PinTanConfigFactory
 {
   private final static Settings settings = new Settings(PinTanConfigFactory.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Erstellt eine neue PIN/Tan-Config.
    * @return neue Config.
@@ -132,10 +132,10 @@ public class PinTanConfigFactory
         }
         newList.add(existing[i]);
       }
-      
+
       Logger.debug("new number of configs: " + newList.size());
       settings.setAttribute("config",(String[]) newList.toArray(new String[newList.size()]));
-      
+
       // Jetzt noch die Datei loeschen
       File f = new File(config.getFilename());
       if (f.exists() && f.isFile() && f.canWrite())
@@ -143,7 +143,7 @@ public class PinTanConfigFactory
         f.delete();
         Logger.info("deleted passport file " + f);
       }
-      
+
       // sowie die Caches
       Logger.info("deleting BPD/UPD caches");
       try
@@ -163,7 +163,7 @@ public class PinTanConfigFactory
             Logger.error("error while clearing BPD/UPD cache",e);
           }
         }
-        
+
         // Versionsnummer der Caches loeschen, um das Neubefuellen des Cache zu forcieren
         String user = passport.getUserId();
         if (user != null && user.length() > 0)
@@ -226,7 +226,7 @@ public class PinTanConfigFactory
           this.p = null;
         }
       }
-      
+
       @Override
       public HBCIPassport load()
       {
@@ -288,15 +288,14 @@ public class PinTanConfigFactory
       return config;
     }
 
-
     String text = i18n.tr("Mehrere zutreffende Konfigurationen gefunden. Bitte wählen Sie eine manuell aus.");
-    
+
     if (found.size() == 0)
     {
       Logger.warn("no config found for this konto. Asking user");
       text = i18n.tr("Keine zutreffende Konfigurationen gefunden. Bitte wählen Sie eine manuell aus.");
     }
-    
+
     // Wir haben mehrere zur Auswahl. Lassen wir den User entscheiden.
     GenericIterator list = PseudoIterator.fromArray((PinTanConfig[]) found.toArray(new PinTanConfig[found.size()]));
     SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER,list);
@@ -334,7 +333,7 @@ public class PinTanConfigFactory
         File f = toAbsolutePath(found[i]);
         if (!f.exists())
           continue;
-        
+
         try
         {
           PassportLoader l = load(f);
@@ -358,7 +357,7 @@ public class PinTanConfigFactory
   {
     String wp = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath();
     File f = new File(wp + File.separator + "passports",System.currentTimeMillis() + ".pt");
-    
+
     int retry = 0;
     while (f.exists())
     {
@@ -368,7 +367,7 @@ public class PinTanConfigFactory
     }
     return f;
   }
-  
+
   /**
    * Macht aus dem Dateinamen einer Passport-Datei eine absolute Pfadangabe.
    * Die Funktion erkennt selbst, ob es sich bereits um eine absolute Pfadangabe
@@ -382,11 +381,11 @@ public class PinTanConfigFactory
     File f = new File(filename);
     if (f.canRead() && f.isFile()) // Ist bereits eine absolute Pfadangabe
       return f;
-    
+
     String wp = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath();
     return new File(wp + File.separator + "passports",filename);
   }
-  
+
   /**
    * Macht aus der Pfadangabe eine relative Angabe - enthaelt dann also nur noch den Dateinamen.
    * Die Funktion erkennt selbst, ob es sich bereits um einen Dateinamen ohne
@@ -399,5 +398,5 @@ public class PinTanConfigFactory
   {
     return new File(file).getName();
   }
-  
+
 }

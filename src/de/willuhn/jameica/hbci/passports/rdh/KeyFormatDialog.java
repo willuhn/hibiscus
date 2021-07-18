@@ -43,7 +43,7 @@ public class KeyFormatDialog extends AbstractDialog
   private KeyFormat choosen = null;
   private LabelInput warn   = null;
   private int neededFeature = KeyFormat.FEATURE_CREATE;
-  
+
   /**
    * ct.
    * @param position
@@ -67,7 +67,7 @@ public class KeyFormatDialog extends AbstractDialog
     this.warn = new LabelInput("");
     this.warn.setName("");
     this.warn.setColor(Color.ERROR);
-    
+
     final Action action = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -81,7 +81,7 @@ public class KeyFormatDialog extends AbstractDialog
         choosen = (KeyFormat) o;
         close();
       }
-    
+
     };
 
     Container c = new SimpleContainer(parent,true);
@@ -96,7 +96,7 @@ public class KeyFormatDialog extends AbstractDialog
     this.table.removeFeature(FeatureSummary.class);
 
     c.addPart(this.table);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), action,null,false,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
@@ -107,7 +107,7 @@ public class KeyFormatDialog extends AbstractDialog
     },null,false,"process-stop.png");
 
     c.addButtonArea(buttons);
-    
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
   }
 
@@ -118,5 +118,5 @@ public class KeyFormatDialog extends AbstractDialog
   {
     return this.choosen;
   }
-  
+
 }
