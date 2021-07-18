@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
 public class HBCISynchronizeJobQuittung extends SynchronizeJobQuittung implements HBCISynchronizeJob
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJob#createHBCIJobs()
    */
@@ -38,7 +38,7 @@ public class HBCISynchronizeJobQuittung extends SynchronizeJobQuittung implement
     Kontoauszug ka = (Kontoauszug) this.getContext(CTX_ENTITY);
     return new AbstractHBCIJob[]{new HBCIQuittungJob(ka)};
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.AbstractSynchronizeJob#getName()
    */
@@ -51,10 +51,10 @@ public class HBCISynchronizeJobQuittung extends SynchronizeJobQuittung implement
       Konto k        = ka.getKonto();
       Integer jahr   = ka.getJahr();
       Integer nr     = ka.getNummer();
-      
+
       if (jahr != null && nr != null)
         return i18n.tr("{0}: Empfang von Kontoauszug {1}-{2} quittieren",k.getLongName(),Integer.toString(jahr),Integer.toString(nr));
-      
+
       return i18n.tr("{0}: Empfang von Kontoauszug quittieren",k.getLongName());
     }
     catch (Exception e)

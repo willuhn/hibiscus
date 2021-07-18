@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.synchronize.jobs;
 
-
-
 /**
  * Standard-Job-Implementierung zum Senden einer Empfangsquittung an die Bank.
  */
@@ -25,5 +23,3 @@ public class SynchronizeJobQuittung extends AbstractSynchronizeJob
     return false;
   }
 }
-
-

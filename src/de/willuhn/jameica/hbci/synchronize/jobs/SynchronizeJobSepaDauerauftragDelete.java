@@ -28,7 +28,7 @@ public class SynchronizeJobSepaDauerauftragDelete extends AbstractSynchronizeJob
    * Der Wert des Keys muss vom Typ {@link java.util.Date} sein.
    */
   public final static String CTX_DATE = "ctx.da.delete.date";
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getName()
    */
@@ -36,7 +36,7 @@ public class SynchronizeJobSepaDauerauftragDelete extends AbstractSynchronizeJob
   {
     SepaDauerauftrag dauer = (SepaDauerauftrag) this.getContext(CTX_ENTITY);
     Konto k = this.getKonto();
-    
+
     try
     {
       return i18n.tr("{0}: SEPA-Dauerauftrag {1} {2} an {3} löschen",k.getLongName(),HBCI.DECIMALFORMAT.format(dauer.getBetrag()),k.getWaehrung(),dauer.getGegenkontoName());
@@ -57,5 +57,3 @@ public class SynchronizeJobSepaDauerauftragDelete extends AbstractSynchronizeJob
   }
 
 }
-
-

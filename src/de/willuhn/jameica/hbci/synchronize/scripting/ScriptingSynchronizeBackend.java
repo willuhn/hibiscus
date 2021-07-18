@@ -44,7 +44,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
    * Der Context-Name fuer den Javascript-Funktionsnamen.
    */
   private final static String CTX_JS_FUNCTION = "ctx.js.function";
-  
+
   @Resource
   private SynchronizeEngine engine = null;
 
@@ -79,17 +79,17 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
   {
     List<Konto> list = super.getSynchronizeKonten(k);
     List<Konto> result = new ArrayList<Konto>();
-    
+
     // Wir wollen nur die Offline-Konten und jene, bei denen Scripting explizit konfiguriert ist
     for (Konto konto:list)
     {
       if (this.supports(konto))
         result.add(konto);
     }
-    
+
     return result;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#create(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -119,7 +119,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
 
     return super.supports(type,konto);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#execute(java.util.List)
    */
@@ -143,7 +143,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
 
     return super.execute(jobs);
   }
-  
+
   /**
    * Prueft, ob das Konto prinzipiell unterstuetzt wird.
    * @param konto das Konto.
@@ -153,7 +153,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
   {
     if (konto == null)
       return false;
-    
+
     try
     {
       SynchronizeBackend backend = engine.getBackend(konto);
@@ -165,7 +165,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
     }
     return false;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -176,7 +176,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
       // Nur Offline-Konten.
       if (konto == null || !this.supports(konto) || konto.hasFlag(Konto.FLAG_DISABLED))
         return null;
-      
+
       QueryMessage msg = new QueryMessage("hibiscus.sync.options",konto);
       Application.getMessagingFactory().getMessagingQueue("jameica.scripting").sendSyncMessage(msg);
       Object data = msg.getData();
@@ -185,7 +185,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
         Logger.debug("no property names found");
         return null;
       }
-      
+
       List<String> result = new ArrayList<String>();
       List list = (data instanceof List) ? (List) data : Arrays.asList(data);
       for (Object o:list)
@@ -195,13 +195,13 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
           // brauchen wir nicht loggen. Hat der JS-Invoker schon gemacht
           continue;
         }
-        
+
         if (o instanceof String)
         {
           result.add((String)o);
         }
       }
-      
+
       return result;
     }
     catch (RemoteException re)
@@ -226,7 +226,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
         return null;
 
       Logger.debug("searching javascript function for job type " + type.getSimpleName());
-      
+
       // 2. Checken, ob wir ein passendes Script haben
       // Das Javascript liefert den Namen der auszufuehrenden JS-Funktion zurueck
       QueryMessage msg = new QueryMessage("hibiscus.sync.function",new Object[]{konto,type});
@@ -242,7 +242,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
             // brauchen wir nicht loggen. Hat der JS-Invoker schon gemacht
             continue;
           }
-          
+
           if (o instanceof String)
           {
             Logger.debug("found " + o);
@@ -259,7 +259,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
       return null;
     }
   }
-  
+
   /**
    * Unsere Scripting-basierte Implementierung.
    */
@@ -283,10 +283,10 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
       // lokale Variablen
       ProgressMonitor monitor = worker.getMonitor();
       String kn               = this.getKonto().getLongName();
-      
+
       int step = 100 / worker.getSynchronization().size();
       ////////////////////////////////////////////////////////////////////
-      
+
       // boolean haveError = false;
 
       try
@@ -304,12 +304,12 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
           String function = (String) job.getContext(CTX_JS_FUNCTION);
           if (StringUtils.isEmpty(function))
             throw new ApplicationException(i18n.tr("Kein gültiger Scripting-Auftrag: {0}",job.getName()));
-          
+
           Logger.info("executing javascript function " + function);
           QueryMessage msg = new QueryMessage("function." + function,new Object[]{job,getCurrentSession()}); // Direkt-Aufruf - ohne Event-Mapping
           Application.getMessagingFactory().getMessagingQueue("jameica.scripting").sendSyncMessage(msg);
           monitor.addPercentComplete(step);
-          
+
           // Checken, ob der Rueckgabewert eine Exception ist
           Object data = msg.getData();
           List list = (data instanceof List) ? ((List)data) : Arrays.asList(data);
@@ -339,5 +339,3 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
     }
   }
 }
-
-

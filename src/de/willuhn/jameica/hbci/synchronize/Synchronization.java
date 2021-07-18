@@ -22,7 +22,7 @@ public class Synchronization
 {
   private SynchronizeBackend backend = null;
   private List<SynchronizeJob> jobs = new ArrayList<SynchronizeJob>();
-  
+
   /**
    * Speichert das Backend fuer die Synchronisierung.
    * @param backend das Backend.
@@ -31,7 +31,7 @@ public class Synchronization
   {
     this.backend = backend;
   }
-  
+
   /**
    * Liefert das Backend fuer die Synchronisierung.
    * @return das Backend fuer die Synchronisierung.
@@ -40,7 +40,7 @@ public class Synchronization
   {
     return this.backend;
   }
-  
+
   /**
    * Liefert die Jobs der Synchronisierung.
    * @return die Jobs der Synchronisierung.
@@ -49,7 +49,7 @@ public class Synchronization
   {
     return this.jobs;
   }
-  
+
   /**
    * Speichert die Jobs der Synchronisierung.
    * @param jobs die Jobs der Synchronisierung.
@@ -59,5 +59,3 @@ public class Synchronization
     this.jobs = jobs;
   }
 }
-
-

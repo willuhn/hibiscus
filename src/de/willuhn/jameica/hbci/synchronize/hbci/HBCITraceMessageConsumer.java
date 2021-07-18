@@ -30,7 +30,7 @@ public class HBCITraceMessageConsumer implements MessageConsumer
 {
   private Map<String,History> history = new HashMap<String,History>();
   private History current = null;
-  
+
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -45,7 +45,7 @@ public class HBCITraceMessageConsumer implements MessageConsumer
   public void handleMessage(Message message) throws Exception
   {
     HBCITraceMessage msg = (HBCITraceMessage) message;
-    
+
     // Das sind Nachrichten ohne Konto-Bezug
     // Das funktioniert nur, solange noch kein Kontobezug hergestellt
     if (msg.getType() != HBCITraceMessage.Type.ID && this.current == null)
@@ -66,7 +66,7 @@ public class HBCITraceMessageConsumer implements MessageConsumer
       this.current = null;
       return;
     }
-    
+
     if (msg.getType() == HBCITraceMessage.Type.ID)
     {
       current = history.get(msg.getData());
@@ -77,16 +77,16 @@ public class HBCITraceMessageConsumer implements MessageConsumer
       }
       return;
     }
-    
+
     if (current == null)
     {
       Logger.debug("no ID to assign HBCI trace to");
       return;
     }
-    
+
     current.push(msg);
   }
-  
+
   /**
    * Liefert den HBCI-Trace zur angegebenen ID.
    * @param id die ID. Typischerweise die des Konto. Kann NULL sein, wenn Nachrichten ohne speziellen Konto-Bezug geliefert werden sollen.
@@ -96,10 +96,10 @@ public class HBCITraceMessageConsumer implements MessageConsumer
   {
     History h = this.history.get(id);
     List<HBCITraceMessage> list = new ArrayList<HBCITraceMessage>();
-    
+
     if (h != null)
       list.addAll(h.elements());
-    
+
     return list;
   }
 
@@ -111,5 +111,3 @@ public class HBCITraceMessageConsumer implements MessageConsumer
     return false; // per Manifest
   }
 }
-
-

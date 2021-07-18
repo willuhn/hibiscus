@@ -32,7 +32,7 @@ public class HBCISynchronizeJobSepaDauerauftragStore extends SynchronizeJobSepaD
     // Den brauchen wir, damit das Aendern funktioniert.
     HBCISepaDauerauftragListJob listBefore = new HBCISepaDauerauftragListJob(this.getKonto());
     listBefore.setExclusive(true);
-    
+
     // Das eigentliche Speichern/Aendern
     HBCISepaDauerauftragStoreJob store = new HBCISepaDauerauftragStoreJob((SepaDauerauftrag)getContext(CTX_ENTITY));
 

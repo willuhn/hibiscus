@@ -49,7 +49,7 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCI
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
-    
+
     for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
@@ -58,7 +58,7 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCI
 
         if (!options.getSyncAuslandsUeberweisungen())
           continue;
-        
+
         // Einzelueberweisungen
         DBIterator list = kt.getAuslandsUeberweisungen();
         list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
@@ -67,12 +67,12 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCI
           AuslandsUeberweisung u = (AuslandsUeberweisung) list.next();
           if (!u.ueberfaellig() || u.ausgefuehrt()) // Doppelt haelt besser ;)
             continue; // Nur ueberfaellige Auftraege
-          
+
           SynchronizeJobSepaUeberweisung job = backend.create(SynchronizeJobSepaUeberweisung.class,kt);
           job.setContext(SynchronizeJob.CTX_ENTITY,u);
           jobs.add(job);
         }
-        
+
         // Sammelueberweisungen
         list = k.getSepaSammelUeberweisungen();
         list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
@@ -81,12 +81,12 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCI
           SepaSammelUeberweisung su = (SepaSammelUeberweisung) list.next();
           if (!su.ueberfaellig() || su.ausgefuehrt()) // Doppelt haelt besser ;)
             continue; // Nur ueberfaellige Auftraege
-          
+
           SynchronizeJobSepaSammelUeberweisung job = backend.create(SynchronizeJobSepaSammelUeberweisung.class,kt);
           job.setContext(SynchronizeJob.CTX_ENTITY,su);
           jobs.add(job);
         }
-        
+
       }
       catch (Exception e)
       {
@@ -96,7 +96,7 @@ public class HBCISynchronizeJobProviderAuslandsUeberweisung extends AbstractHBCI
 
     return jobs;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */

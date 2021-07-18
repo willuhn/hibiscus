@@ -33,11 +33,11 @@ public class HBCISynchronizeJobSepaDauerauftragDelete extends SynchronizeJobSepa
     // Den brauchen wir, damit das Loeschen funktioniert.
     HBCISepaDauerauftragListJob list = new HBCISepaDauerauftragListJob(this.getKonto());
     list.setExclusive(true);
-    
+
     // Das eigentliche Loeschen
     Date date = (Date) this.getContext(CTX_DATE);
     HBCISepaDauerauftragDeleteJob delete = new HBCISepaDauerauftragDeleteJob((SepaDauerauftrag)getContext(CTX_ENTITY),date);
-    
+
     return new AbstractHBCIJob[] {list,delete};
   }
 }

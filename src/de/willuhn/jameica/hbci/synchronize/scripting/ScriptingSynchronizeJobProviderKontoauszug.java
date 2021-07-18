@@ -32,7 +32,7 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
 {
   @Resource
   private ScriptingSynchronizeBackend backend = null;
-  
+
   private final static List<Class<? extends SynchronizeJob>> JOBS = new ArrayList<Class<? extends SynchronizeJob>>()
   {{
     add(SynchronizeJobKontoauszug.class);
@@ -44,7 +44,7 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
-    
+
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
     for (Konto kt:backend.getSynchronizeKonten(k))
     {
@@ -64,7 +64,7 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
         // Also nichts zu tun.
         if (!options.getSyncKontoauszuege() && !options.getSyncSaldo())
           continue;
-        
+
         SynchronizeJobKontoauszug job = backend.create(type,kt);
         job.setContext(SynchronizeJob.CTX_ENTITY,kt);
         jobs.add(job);
@@ -77,7 +77,7 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
 
     return jobs;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -86,7 +86,7 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
   {
     return true;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getJobTypes()
    */
@@ -94,7 +94,7 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
   {
     return JOBS;
   }
-  
+
   /**
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */

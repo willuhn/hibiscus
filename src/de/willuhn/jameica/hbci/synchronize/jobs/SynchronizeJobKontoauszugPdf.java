@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.synchronize.jobs;
 
-
-
 /**
  * Standard-Job-Implementierung zum Abrufen der elektronischen Kontoauszugs im PDF-Format.
  */
@@ -32,5 +30,3 @@ public class SynchronizeJobKontoauszugPdf extends AbstractSynchronizeJob
     return true;
   }
 }
-
-

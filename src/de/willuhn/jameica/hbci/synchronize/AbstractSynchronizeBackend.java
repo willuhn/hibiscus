@@ -45,11 +45,11 @@ import de.willuhn.util.ProgressMonitor;
 public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvider> implements SynchronizeBackend
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private List<T> providers = null;
   private SynchronizeSession session = null;
   protected Worker worker = null;
-  
+
   /**
    * Liefert eine Liste der Konten, fuer die die Synchronisierung ausgefuehrt
    * werden.
@@ -66,7 +66,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   {
     List<Konto> list = k == null ? SynchronizeOptions.getSynchronizeKonten() : Arrays.asList(k);
     List<Konto> result = new ArrayList<Konto>();
-    
+
     for (Konto konto:list)
     {
       try
@@ -82,13 +82,13 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     }
     return result;
   }
-  
+
   /**
    * Liefert das Marker-Interface der Job-Provider des Backends.
    * @return das Marker-Interface der Job-Provider des Backends.
    */
   protected abstract Class<T> getJobProviderInterface();
-  
+
   /**
    * Muss ueberschrieben werden, um dort eine Instanz der JobGroup zurueckzuliefern,
    * in der die sync()-Funktion implementiert ist.
@@ -105,7 +105,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   {
     if (this.providers != null)
       return this.providers;
-    
+
     this.providers = new ArrayList<T>();
 
     try
@@ -125,7 +125,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
           Logger.error("unable to load synchronize provider " + c.getName() + ", skipping",e);
         }
       }
-      
+
       // Sortieren der Jobs
       Logger.info("  found " + this.providers.size() + " provider(s)");
       Logger.debug("provider order before sorting:");
@@ -148,10 +148,10 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       Logger.error("error while searching vor synchronize providers",e);
     }
-    
+
     return this.providers;
   }
-  
+
   /**
    * Liefert die passende Implementierung fuer den angegebenen Job.
    * @param type der Typ des Jobs.
@@ -188,7 +188,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     Logger.debug("no implementation found");
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#create(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren oder weitere Context-Properties im Job zu setzen.
@@ -209,15 +209,15 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     Class<? extends SynchronizeJob> job = this.getImplementor(type, konto);
     if (job == null)
       throw new ApplicationException(i18n.tr("Der Geschäftsvorfall \"{0}\" wird für {1} nicht unterstützt",type.getSimpleName(),this.getName()));
-    
+
     // Instanz erzeugen
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     SynchronizeJob instance = service.get(job);
     instance.setKonto(konto);
-    
+
     return (R) instance;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren.
@@ -228,7 +228,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
         return false;
-      
+
       return this.getImplementor(type, konto) != null;
     }
     catch (RemoteException re)
@@ -237,7 +237,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       return false;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -268,7 +268,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
 
     return jobs;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -276,7 +276,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   {
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#execute(java.util.List)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren.
@@ -285,7 +285,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   {
     if (this.session != null)
       throw new ApplicationException(i18n.tr("Synchronisierung via {0} läuft bereits",this.getName()));
-    
+
     Logger.info("starting " + this.getName() + " synchronization");
     this.worker = new Worker(jobs);
     SynchronizeSession s = new SynchronizeSession(this.worker);
@@ -293,7 +293,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     Application.getController().start(worker);
     return s;
   }
-  
+
    /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getCurrentSession()
    */
@@ -301,7 +301,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   {
     return this.session;
   }
-  
+
   /**
    * Implementierung des eigentlichen Worker-Threads.
    */
@@ -311,7 +311,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     private JobGroup currentJobGroup = null;
     private Synchronization sync     = null;
     private boolean interrupted      = false;
-    
+
     /**
      * ct.
      * @param jobs die Liste der auszufuehrenden Jobs.
@@ -321,14 +321,14 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       if (jobs == null || jobs.size() == 0)
         throw new ApplicationException(i18n.tr("Keine auszuführenden Aufträge ausgewählt"));
-      
+
       try
       {
         // Auftraege nach Konten gruppieren - dabei aber deren Reihenfolge
         // innerhalb der Konten beibehalten. Wir gehen bei der Ausfuehrung Konto
         // fuer Konto durch und fuehren auf diesem die Auftraege aus.
         this.sync = new Synchronization();
-        
+
         for (SynchronizeJob job:jobs)
         {
           Konto konto = job.getKonto();
@@ -340,7 +340,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
           JobGroup group = sync.get(job.getKonto());
           group.add(job);
         }
-        
+
         Logger.info("accounts to synchronize: " + sync.groups.size() + ", jobs: " + sync.size());
       }
       catch (RemoteException re)
@@ -354,7 +354,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
           DialogFactory.clearPINCache(null);
       }
     }
-    
+
     /**
      * Liefert den ProgressMonitor.
      * @return der ProgressMonitor.
@@ -363,7 +363,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       return this.monitor;
     }
-    
+
     /**
      * Liefert die gerade in Arbeit befindliche Job-Gruppe.
      * @return die gerade in Arbeit befindliche Job-Gruppe.
@@ -372,7 +372,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       return this.currentJobGroup;
     }
-    
+
     /**
      * Liefert die gesamte Synchronisierung.
      * @return die gesamte Synchronisierung.
@@ -381,18 +381,18 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       return this.sync;
     }
-    
+
     /**
      * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
      */
     public final void run(ProgressMonitor monitor) throws ApplicationException
     {
       this.monitor = monitor;
-      
+
       try
       {
         this.updateStatus(ProgressMonitor.STATUS_RUNNING,i18n.tr("Synchronisierung via {0} läuft",getName()));
-        
+
         // Wir iterieren ueber jede Gruppe der Synchronisierung und verarbeiten deren Jobs.
         for (int i=0;i<this.sync.groups.size();++i)
         {
@@ -424,13 +424,13 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
             else
             {
               Logger.error("error while synchronizing",e);
-              
+
               // Wir holen uns noch die eigentliche Ursache aus den Causes um eine plausible Fehlermeldung zu kriegen
               Throwable t = HBCIProperties.getCause(e);
               if (t instanceof Exception)
                 e = (Exception) t;
             }
-            
+
             // Wir muessen den User nur fragen, wenn auch wirklich noch weitere Job-Gruppen vorhanden sind
             boolean resume = false;
             if (i+1 < this.sync.groups.size())
@@ -456,7 +456,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
             }
           }
         }
-        
+
         if (session.getStatus() == ProgressMonitor.STATUS_RUNNING) // Nur, wenn kein Fehler und nicht abgebrochen
           this.updateStatus(ProgressMonitor.STATUS_DONE,i18n.tr("Synchronisierung via {0} erfolgreich beendet",getName()));
       }
@@ -464,7 +464,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       {
         this.log(session.getWarnings(),i18n.tr("Zusammengefasste Warnungen"));
         this.log(session.getErrors(),i18n.tr("Zusammengefasste Fehlermeldungen"));
-        
+
         Logger.info("stopping synchronization");
         worker = null;
         session = null;
@@ -472,7 +472,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
         Logger.info("finished");
       }
     }
-    
+
     /**
      * Loggt die Nachrichten zum Schluss.
      * @param messages die Nachrichten.
@@ -482,7 +482,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       if (messages == null || messages.size() == 0)
         return;
-      
+
       this.monitor.log("");
       this.monitor.log("*****************************************************");
       this.monitor.log(title + ":");
@@ -492,7 +492,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       }
       this.monitor.log("*****************************************************");
     }
-    
+
     /**
      * Aktualisiert den Status des Progress-Monitors und versendet ihn via Messaging.
      * @param status der neue Status.
@@ -504,10 +504,10 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       session.setStatus(status);
       this.monitor.setStatus(status);
       this.monitor.setStatusText(text);
-      
+
       // Message-Consumer ueber neuen Status benachrichtigen.
       Application.getMessagingFactory().getMessagingQueue(QUEUE_STATUS).sendMessage(new QueryMessage(status));
-      
+
       // Statusbar-Message schicken
       int type = (status == ProgressMonitor.STATUS_ERROR || status == ProgressMonitor.STATUS_CANCEL) ? StatusBarMessage.TYPE_ERROR : StatusBarMessage.TYPE_SUCCESS;
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,type));
@@ -521,7 +521,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       this.monitor.setStatusText(i18n.tr("Breche Synchronisierung via {0} ab",getName()));
       Logger.warn("interrupting synchronization");
       this.interrupted = true;
-      
+
       // wir muessen den Status hier schonmal manuell setzen, da der HBCICallback
       // diesen Status u.a. in "log" prueft
       session.setStatus(ProgressMonitor.STATUS_CANCEL);
@@ -535,7 +535,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       return this.interrupted;
     }
   }
-  
+
   /**
    * Abstrakte Basis-Klasse, die die Jobs nach Konten gruppiert und ausfuehrt. 
    */
@@ -543,7 +543,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   {
     private Konto konto = null;
     protected List<SynchronizeJob> jobs = new ArrayList<SynchronizeJob>();
-    
+
     /**
      * ct.
      * @param k das Konto der Job-Gruppe.
@@ -552,7 +552,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       this.konto = k;
     }
-    
+
     /**
      * Liefert das Konto der Job-Gruppe.
      * @return das Konto der Job-Gruppe.
@@ -561,7 +561,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       return this.konto;
     }
-    
+
     /**
      * Fuegt einen neuen Job hinzu.
      * @param job der neue Job.
@@ -570,7 +570,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       this.jobs.add(job);
     }
-    
+
     /**
      * Fuehrt die Synchronisierung fuer die Job-Gruppe aus.
      * @throws Exception
@@ -587,14 +587,14 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
         throw new OperationCanceledException(i18n.tr("Synchronisierung durch Benutzer abgebrochen"));
     }
   }
-  
+
   /**
    * Container fuer alle auszufuehrenden Jobs gruppiert nach Konto.
    */
   protected class Synchronization
   {
     List<JobGroup> groups = new ArrayList<JobGroup>();
-    
+
     /**
      * Liefert die JobGroup fuer das angegebene Konto.
      * Die Funktion liefert nie NULL sondern erstellt in dem
@@ -610,13 +610,13 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
         if (BeanUtil.equals(group.konto,k))
           return group;
       }
-      
+
       // Neue Gruppe erstellen
       JobGroup group = createJobGroup(k);
       this.groups.add(group);
       return group;
     }
-    
+
     /**
      * Liefert die Gesamt-Anzahl der Jobs.
      * @return die Gesamt-Anzahl der Jobs.
@@ -632,5 +632,3 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     }
   }
 }
-
-

@@ -17,7 +17,6 @@ import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 
-
 /**
  * Interface fuer ein Backend, welches Bank-Geschaeftsvorfaelle ausfuehren kann.
  * Die Standard-Implementierung von Hibiscus verwendet HBCI. Es koennen aber
@@ -29,7 +28,7 @@ public interface SynchronizeBackend
    * Queue, an die der aktuelle Prozess-Status der Synchronisierung (RUNNING, ERROR, DONE, CANCEL) geschickt wird.
    */
   public final static String QUEUE_STATUS = "hibiscus.sync.status";
-  
+
   /**
    * Queue, die im Fehlerfall benachrichtigt wird. Die Message wird synchron als QueryMessage
    * geschickt. Enthaelt sie in getData() als Rueckgabe-Wert TRUE, wird die Synchronisierung
@@ -37,7 +36,7 @@ public interface SynchronizeBackend
    * wird sie abgebrochen.
    */
   public final static String QUEUE_ERROR  = "hibiscus.sync.error";
-  
+
   /**
    * Liefert true, wenn das Backend den angegebenen Job-Typ fuer das angegebene Konto unterstuetzt.
    * @param type der zu pruefende Job-Typ.
@@ -45,7 +44,7 @@ public interface SynchronizeBackend
    * @return true, wenn es ihn unterstuetzt, sonst false.
    */
   public boolean supports(Class<? extends SynchronizeJob> type, Konto konto);
-  
+
   /**
    * Liefert eine Instanz des angegebenen Job-Typs.
    * @param type der zu erstellende Job-Typ.
@@ -63,7 +62,7 @@ public interface SynchronizeBackend
    * Die Funktion darf auch NULL liefern.
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k);
-  
+
   /**
    * Liefert eine optionale Liste mit Property-Namen, die in Hibiscus
    * in den Sync-Einstellungen als Eingabefelder fuer zusaetzliche Konfigurationsoptionen
@@ -95,12 +94,10 @@ public interface SynchronizeBackend
    * @return die aktuelle Session oder NULL wenn gerade keine laeuft.
    */
   public SynchronizeSession getCurrentSession();
-  
+
   /**
    * Liefert einen sprechenden Namen fuer das Backend.
    * @return sprechender Name fuer das Backend.
    */
   public String getName();
 }
-
-

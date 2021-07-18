@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.synchronize.jobs;
 
-
 /**
  * Standard-Job zur Ausfuehrung von SEPA-Ueberweisungen.
  */
@@ -25,5 +24,3 @@ public class SynchronizeJobSepaUeberweisung extends AbstractSynchronizeJob
   }
 
 }
-
-

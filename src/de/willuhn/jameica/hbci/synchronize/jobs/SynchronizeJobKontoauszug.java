@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.synchronize.jobs;
 
-
-
 /**
  * Standard-Job-Implementierung zum Abrufen der Kontoauszuege.
  */
@@ -39,5 +37,3 @@ public class SynchronizeJobKontoauszug extends AbstractSynchronizeJob
     return true;
   }
 }
-
-

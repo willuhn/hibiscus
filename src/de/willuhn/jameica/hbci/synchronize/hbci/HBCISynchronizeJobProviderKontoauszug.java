@@ -41,28 +41,28 @@ public class HBCISynchronizeJobProviderKontoauszug extends AbstractHBCISynchroni
   {{
     add(HBCISynchronizeJobKontoauszug.class);
   }};
-  
+
   // Die vom Job-Provider explizit nicht unterstuetzten Konto-Arten. Die macht ein anderer Provider.
   private final static Set<KontoType> UNSUPPORTED = new HashSet<KontoType>()
   {{
     add(KontoType.FONDSDEPOT);
     add(KontoType.WERTPAPIERDEPOT);
   }};
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
-    
+
     for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
       {
         // Checken, ob das vielleicht ein nicht unterstuetztes Konto ist
         KontoType type = KontoType.find(kt.getAccountType());
-        
+
         // Typ passt nicht
         if (type != null && UNSUPPORTED.contains(type))
           continue;
@@ -73,7 +73,7 @@ public class HBCISynchronizeJobProviderKontoauszug extends AbstractHBCISynchroni
         // Also nichts zu tun.
         if (!options.getSyncKontoauszuege() && !options.getSyncSaldo())
           continue;
-        
+
         SynchronizeJobKontoauszug job = backend.create(SynchronizeJobKontoauszug.class,kt);
         job.setContext(SynchronizeJob.CTX_ENTITY,kt);
         jobs.add(job);
@@ -86,7 +86,7 @@ public class HBCISynchronizeJobProviderKontoauszug extends AbstractHBCISynchroni
 
     return jobs;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -96,7 +96,7 @@ public class HBCISynchronizeJobProviderKontoauszug extends AbstractHBCISynchroni
     // Kein Konto angegeben. Dann gehen wir mal davon aus, dass es geht
     if (k == null)
       return true;
-    
+
     KontoType kt = null;
     try
     {
