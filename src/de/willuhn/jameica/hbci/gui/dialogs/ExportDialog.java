@@ -191,7 +191,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
     final Exporter exporter = exp.exporter;
     final IOFormat format = exp.format;
 
-    BackgroundTask t = new BackgroundTask() {
+    BackgroundTask t = new BackgroundTask()
+    {
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         try
@@ -206,7 +207,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
           
           if (open)
           {
-            GUI.getDisplay().asyncExec(new Runnable() {
+            GUI.getDisplay().asyncExec(new Runnable()
+            {
               public void run()
               {
                 try
@@ -245,7 +247,10 @@ public class ExportDialog extends AbstractDialog implements Extendable
         }
       }
 
-      public void interrupt() {}
+      public void interrupt()
+      {
+      }
+
       public boolean isInterrupted()
       {
         return false;

@@ -243,7 +243,8 @@ public class MT940UmsatzExporter implements Exporter
    */
   protected void sort(List<Umsatz> list)
   {
-    Collections.sort(list,new Comparator<Umsatz>() {
+    Collections.sort(list, new Comparator<Umsatz>()
+    {
       /**
        * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
        */
@@ -279,7 +280,8 @@ public class MT940UmsatzExporter implements Exporter
     if (!Umsatz.class.equals(objectType))
       return null;
 
-    return new IOFormat[]{new IOFormat() {
+    return new IOFormat[] { new IOFormat()
+    {
       public String getName()
       {
         return MT940UmsatzExporter.this.getName();

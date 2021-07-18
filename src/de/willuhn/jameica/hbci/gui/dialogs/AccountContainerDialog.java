@@ -240,7 +240,8 @@ public class AccountContainerDialog extends AbstractDialog
     };
     
     // BUGZILLA 381
-    this.host.addListener(new Listener() {
+    this.host.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // Triggert den Code zum Entfernen des "https://" und der Leerzeichen

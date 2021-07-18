@@ -331,11 +331,14 @@ public abstract class AbstractTransferControl extends AbstractControl
 		}
 		catch (Exception e)
 		{
-		  if (t != null) {
-		    try {
+		  if (t != null)
+		  {
+		    try
+		    {
 		      t.transactionRollback();
 		    }
-	      catch (Exception xe) {
+	      catch (Exception xe)
+	      {
 	        Logger.error("rollback failed",xe);
 	      }
 		  }
@@ -361,9 +364,11 @@ public abstract class AbstractTransferControl extends AbstractControl
 		/**
 		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 		 */
-		public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
 
-			try {
+      try
+      {
         Object o = getKontoAuswahl().getValue();
         if (o == null || !(o instanceof Konto))
           return;
@@ -419,13 +424,15 @@ public abstract class AbstractTransferControl extends AbstractControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
     	if (event == null)
     		return;
 			gegenkonto = (Address) event.data;
 			if (gegenkonto == null)
 				return;
-			try {
+      try
+      {
         getEmpfaengerName().setText(gegenkonto.getName());
 				getEmpfaengerKonto().setValue(gegenkonto.getKontonummer());
 				getEmpfaengerBlz().setValue(gegenkonto.getBlz());

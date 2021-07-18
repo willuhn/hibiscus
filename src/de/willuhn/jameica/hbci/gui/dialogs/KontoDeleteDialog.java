@@ -97,7 +97,8 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     
     this.check = new CheckboxInput(false);
     this.check.setName(i18n.tr("Konto und alle zugeordneten Daten löschen"));
-    this.check.addListener(new Listener() {
+    this.check.addListener(new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)
@@ -117,7 +118,8 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     if (this.apply != null)
       return this.apply;
     
-    this.apply = new Button(i18n.tr("Jetzt löschen"),new Action() {
+    this.apply = new Button(i18n.tr("Jetzt löschen"), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -150,13 +152,16 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     // Wir laden die Daten im Hintergrund. Das kann sonst bei vielen Daten laenger dauern
     new Thread()
     {
-      public void run() {
-        GUI.getDisplay().asyncExec(new Runnable() {
+      public void run()
+      {
+        GUI.getDisplay().asyncExec(new Runnable()
+        {
           
           @Override
           public void run()
           {
-            BusyIndicator.showWhile(GUI.getDisplay(), new Runnable() {
+            BusyIndicator.showWhile(GUI.getDisplay(), new Runnable()
+            {
               
               @Override
               public void run()

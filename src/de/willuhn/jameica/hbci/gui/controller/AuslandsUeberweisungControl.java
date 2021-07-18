@@ -314,7 +314,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
     
     this.termin = new TerminInput((Terminable) getTransfer());
     this.termin.setName(this.termin.getName() + "  "); // ein kleines bisschen extra Platz lassen, damit auch "Ausführungstermin" hin passt
-    this.termin.addListener(new Listener() {
+    this.termin.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         try
@@ -413,7 +414,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
     this.typ.setName(i18n.tr("Auftragstyp"));
     this.typ.setAttribute("name");
     this.typ.setEnabled(!u.ausgefuehrt());
-    this.typ.addListener(new Listener() {
+    this.typ.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // Wir muessen die Entscheidung, ob es eine Termin-Ueberweisung ist,
@@ -500,11 +502,14 @@ public class AuslandsUeberweisungControl extends AbstractControl
     }
     catch (Exception e)
     {
-      if (t != null) {
-        try {
+      if (t != null)
+      {
+        try
+        {
           t.transactionRollback();
         }
-        catch (Exception xe) {
+        catch (Exception xe)
+        {
           Logger.error("rollback failed",xe);
         }
       }
@@ -552,9 +557,11 @@ public class AuslandsUeberweisungControl extends AbstractControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
 
-      try {
+      try
+      {
         Object o = getKontoAuswahl().getValue();
         if (o == null || !(o instanceof Konto))
         {
@@ -583,7 +590,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
       if (event == null)
         return;
       
@@ -593,7 +601,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
-      try {
+      try
+      {
         getEmpfaengerName().setText(a.getName());
         getEmpfaengerKonto().setValue(a.getIban());
         getEmpfaengerBic().setValue(a.getBic());
@@ -644,7 +653,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
     {
       // BUGZILLA 1778 - Das Label wurde unter Ubuntu nicht sofort aktualisiert.
       // Eventuell hilft die asynchrone Ausfuehrung.
-      GUI.getDisplay().asyncExec(new Runnable() {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
         @Override
         public void run()
         {

@@ -313,7 +313,8 @@ public class EmpfaengerControl extends AbstractControl
     this.iban.setEnabled(enabled);
     if (enabled)
     {
-      this.iban.addListener(new Listener() {
+      this.iban.addListener(new Listener()
+      {
         public void handleEvent(Event event)
         {
           // BUGZILLA 1605 Wenn wir eine IBAN haben aber noch keine
@@ -370,7 +371,8 @@ public class EmpfaengerControl extends AbstractControl
     this.bic.setEnabled(enabled);
     if (enabled)
     {
-      this.bic.addListener(new Listener() {
+      this.bic.addListener(new Listener()
+      {
         public void handleEvent(Event event)
         {
           // BUGZILLA 1605 Wenn wir eine BIC haben aber noch keine
@@ -489,7 +491,8 @@ public class EmpfaengerControl extends AbstractControl
    */
   public synchronized void handleStore()
   {
-    try {
+    try
+    {
 
       if (isHibiscusAdresse())
       {

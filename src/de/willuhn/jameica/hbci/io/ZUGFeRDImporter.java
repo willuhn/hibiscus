@@ -64,7 +64,8 @@ public class ZUGFeRDImporter implements Importer
     if (!AuslandsUeberweisung.class.equals(objectType)) 
       return null; // Wir bieten uns nur fuer SEPA-Ueberweisungen an 
 
-    IOFormat f = new IOFormat() { 
+    IOFormat f = new IOFormat()
+    {
       public String getName() 
       { 
         return ZUGFeRDImporter.this.getName(); 

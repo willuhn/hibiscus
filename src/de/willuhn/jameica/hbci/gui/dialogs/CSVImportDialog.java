@@ -117,7 +117,8 @@ public class CSVImportDialog extends AbstractDialog
         reload();
       }
     },null,false,"view-refresh.png");
-    b.addButton(i18n.tr("Profil speichern..."), new Action() {
+    b.addButton(i18n.tr("Profil speichern..."), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -142,7 +143,8 @@ public class CSVImportDialog extends AbstractDialog
         }
       }
     },null,false,"document-save.png");
-    b.addButton(i18n.tr("Profil löschen..."), new Action() {
+    b.addButton(i18n.tr("Profil löschen..."), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -247,7 +249,10 @@ public class CSVImportDialog extends AbstractDialog
       {
         c = (Column) c.clone();
       }
-      catch (CloneNotSupportedException e) {/*dann halt nicht */}
+      catch (CloneNotSupportedException e)
+      {
+        /* dann halt nicht */
+      }
       
       // Spaltennummer speichern
       c.setColumn(i);
@@ -342,7 +347,11 @@ public class CSVImportDialog extends AbstractDialog
           value = current.get(i);
           if (value.length() > 30)
             value = value.substring(0,30) + "...";
-        } catch (Exception e) {} // Spalte gibts in der Zeile nicht
+        }
+        catch (Exception e)
+        {
+          // Spalte gibts in der Zeile nicht
+        }
         
         final SelectInput s = new SelectInput(all,getColumn(columns,i));
         s.setName((i+1) + ". " + (value != null ? value : "<" + i18n.tr("leer") + ">"));
@@ -510,7 +519,8 @@ public class CSVImportDialog extends AbstractDialog
     this.profiles = new SelectInput(list,p);
     this.profiles.setAttribute("name");
     this.profiles.setName(i18n.tr("Profil"));
-    this.profiles.addListener(new Listener() {
+    this.profiles.addListener(new Listener()
+    {
       @Override
       public void handleEvent(Event event)
       {

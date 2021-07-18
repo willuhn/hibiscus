@@ -48,7 +48,8 @@ public class NachrichtMarkRead implements Action
     else
       list = new Nachricht[]{(Nachricht)context}; // Array mit einem Element
 
-		try {
+    try
+    {
 
       for (int i=0;i<list.length;++i)
       {

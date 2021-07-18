@@ -124,7 +124,8 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 		}
 		catch (ApplicationException e)
 		{
-			try {
+			try
+			{
 				getBuchung().transactionRollback();
 			}
 			catch (RemoteException re)
@@ -135,7 +136,8 @@ public class SammelLastBuchungControl extends AbstractSammelTransferBuchungContr
 		}
 		catch (Exception e2)
 		{
-			try {
+			try
+			{
 				getBuchung().transactionRollback();
 			}
 			catch (RemoteException re)

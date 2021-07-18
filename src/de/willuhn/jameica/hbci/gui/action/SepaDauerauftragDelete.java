@@ -66,10 +66,12 @@ public class SepaDauerauftragDelete implements Action
 	      protected void extend(Container container) throws Exception
 	      {
           // Nur bei aktiven Dauerauftraegen anzeigen
-	        if (da.isActive()) {
+          if (da.isActive())
+          {
 	          final LabelInput warn = new LabelInput("");
 	          warn.setColor(Color.COMMENT);
-            check.addListener(new Listener() {
+            check.addListener(new Listener()
+            {
               public void handleEvent(Event event)
               {
                 // Warnhinweis anzeigen, dass der Auftrag nur lokal geloescht wird

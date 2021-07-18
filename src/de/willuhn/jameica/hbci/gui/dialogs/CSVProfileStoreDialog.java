@@ -159,7 +159,8 @@ public class CSVProfileStoreDialog extends AbstractDialog
     if (this.apply != null)
       return this.apply;
     
-    this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
+    this.apply = new Button(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         // Name uebernehmen
@@ -205,7 +206,8 @@ public class CSVProfileStoreDialog extends AbstractDialog
     final Input name = this.getName();
     c.addInput(name);
     
-    name.getControl().addKeyListener(new KeyAdapter() {
+    name.getControl().addKeyListener(new KeyAdapter()
+    {
       /**
        * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
        */

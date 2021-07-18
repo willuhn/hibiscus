@@ -91,7 +91,8 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
   {
     if (this.listener == null)
     {
-      this.listener = new ImportListener(){
+      this.listener = new ImportListener()
+      {
         
         /**
          * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeSet(de.willuhn.jameica.hbci.io.csv.ImportEvent)

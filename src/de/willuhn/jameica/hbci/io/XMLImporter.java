@@ -62,7 +62,8 @@ public class XMLImporter implements Importer
     Reader reader = null;
     try
     {
-      reader = new XmlReader(is, new ObjectFactory() {
+      reader = new XmlReader(is, new ObjectFactory()
+      {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
@@ -184,7 +185,8 @@ public class XMLImporter implements Importer
     if (Kontoauszug.class.isAssignableFrom(objectType))
       return null;
 
-    IOFormat f = new IOFormat() {
+    IOFormat f = new IOFormat()
+    {
       public String getName()
       {
         return XMLImporter.this.getName();

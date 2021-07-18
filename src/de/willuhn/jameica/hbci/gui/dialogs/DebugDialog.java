@@ -73,7 +73,8 @@ public class DebugDialog extends AbstractDialog
     container.addPart(text);
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Schlieﬂen"),new Action() {
+    buttons.addButton(i18n.tr("Schlieﬂen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         close();

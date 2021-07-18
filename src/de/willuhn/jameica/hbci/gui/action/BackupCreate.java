@@ -92,7 +92,8 @@ public class BackupCreate implements Action
       return;
     
     final File file = new File(f);
-    Application.getController().start(new BackgroundTask() {
+    Application.getController().start(new BackgroundTask()
+    {
       private boolean cancel = false;
     
       /**
@@ -210,7 +211,10 @@ public class BackupCreate implements Action
               writer.close();
               Logger.info("backup created");
             }
-            catch (Exception e) {/*useless*/}
+            catch (Exception e)
+            {
+              /* useless */
+            }
           }
         }
       }

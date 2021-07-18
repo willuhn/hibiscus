@@ -40,7 +40,8 @@ public class SepaSammelUeberweisungBuchungNew implements Action
 		}
 		else
 		{
-			try {
+			try
+			{
         SepaSammelUeberweisung s = (SepaSammelUeberweisung) context;
         u = (SepaSammelUeberweisungBuchung) s.createBuchung();
 			}

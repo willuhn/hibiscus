@@ -80,7 +80,8 @@ public class ChartFeatureTooltip implements ChartFeature
       }
     });
 
-    control.addMouseMoveListener(new MouseMoveListener() {
+    control.addMouseMoveListener(new MouseMoveListener()
+    {
 
       @Override
       public void mouseMove(MouseEvent e)
@@ -101,7 +102,8 @@ public class ChartFeatureTooltip implements ChartFeature
       }
     });
 
-    control.addPaintListener(new PaintListener() {
+    control.addPaintListener(new PaintListener()
+    {
 
       @Override
       public void paintControl(PaintEvent event)
@@ -174,7 +176,8 @@ public class ChartFeatureTooltip implements ChartFeature
   protected void paintChartPoint(GC gc, int highlightX, int highlightY, ISeries series)
   {
     Color color = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-    if (series instanceof ILineSeries) {
+    if (series instanceof ILineSeries)
+    {
       color = ((ILineSeries) series).getLineColor();
     }
     gc.setBackground(color);

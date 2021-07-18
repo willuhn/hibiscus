@@ -231,11 +231,14 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
     }
     catch (Exception e)
     {
-      if (t != null) {
-        try {
+      if (t != null)
+      {
+        try
+        {
           t.transactionRollback();
         }
-        catch (Exception xe) {
+        catch (Exception xe)
+        {
           Logger.error("rollback failed",xe);
         }
       }
@@ -262,7 +265,8 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
       if (event == null)
         return;
       
@@ -271,7 +275,8 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
       
       Address a = (Address) event.data;
 
-      try {
+      try
+      {
 
         // Checken, ob wir in der Adresse Mandats-Daten haben
         if (a instanceof HibiscusAddress)

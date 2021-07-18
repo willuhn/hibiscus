@@ -84,7 +84,8 @@ public class FlaggableChange implements Action
     }
 		catch (Exception e)
 		{
-	    try {
+	    try
+	    {
 	      objects[0].transactionRollback();
 	    }
 	    catch (Exception e1) {

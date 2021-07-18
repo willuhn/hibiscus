@@ -344,7 +344,8 @@ public class KontoauszugPdfControl extends AbstractControl
           super.customize(fd);
         }
       };
-      this.datei.addListener(new Listener() {
+      this.datei.addListener(new Listener()
+      {
         
         @Override
         public void handleEvent(Event event)

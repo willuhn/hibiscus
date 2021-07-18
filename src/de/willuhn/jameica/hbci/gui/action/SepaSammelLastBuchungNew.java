@@ -40,7 +40,8 @@ public class SepaSammelLastBuchungNew implements Action
 		}
 		else
 		{
-			try {
+			try
+			{
         SepaSammelLastschrift s = (SepaSammelLastschrift) context;
         u = (SepaSammelLastBuchung) s.createBuchung();
 			}

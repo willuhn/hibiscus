@@ -81,7 +81,8 @@ public class NachrichtBox extends AbstractBox implements Box
     this.list.paint(parent);
     
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       
       @Override
       public void widgetDisposed(DisposeEvent e)
@@ -155,7 +156,8 @@ public class NachrichtBox extends AbstractBox implements Box
       
       final Nachricht n = (Nachricht) o;
       
-      GUI.getDisplay().asyncExec(new Runnable() {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
         
         @Override
         public void run()

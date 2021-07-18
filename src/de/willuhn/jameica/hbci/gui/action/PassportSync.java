@@ -50,17 +50,20 @@ public class PassportSync implements Action
 
     Logger.info("performing passport re-sync");
 
-		BackgroundTask task = new BackgroundTask() {
+    BackgroundTask task = new BackgroundTask()
+    {
       public void run(final ProgressMonitor monitor) throws ApplicationException
       {
         HBCIHandler handler = null;
         Target target       = null;
-        try {
+        try
+        {
           monitor.setStatusText(i18n.tr("Synchronisiere Bank-Zugang..."));
 
           // Log-Ausgaben temporaer auch mit im Progressbar-Fenster
           // ausgeben
-          target = new Target() {
+          target = new Target()
+          {
             public void write(Message msg) throws Exception
             {
               monitor.addPercentComplete(2);
@@ -170,7 +173,10 @@ public class PassportSync implements Action
         }
       }
 
-      public void interrupt() {}
+      public void interrupt()
+      {
+      }
+
       public boolean isInterrupted()
       {
         return false;
@@ -187,7 +193,8 @@ public class PassportSync implements Action
   {
     if (t == null)
       return;
-    Thread thread = new Thread() {
+    Thread thread = new Thread()
+    {
       public void run()
       {
         Logger.removeTarget(t);

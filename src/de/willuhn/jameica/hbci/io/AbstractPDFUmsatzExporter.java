@@ -174,7 +174,8 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
           reporter.setNextRecord();
         }
         
-        if (addSumRow) {
+        if (addSumRow)
+        {
           reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
           reporter.addColumn(reporter.getDetailCell(i18n.tr("Summe"), Element.ALIGN_LEFT,null,null,Font.BOLD));
           reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
@@ -186,7 +187,8 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
         sumOverall += sumRow;
       }
       
-      if (addSumRow) {
+      if (addSumRow)
+      {
         reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
         reporter.addColumn(reporter.getDetailCell(i18n.tr("Gesamtsumme"), Element.ALIGN_LEFT,null,null,Font.BOLD));
         reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
@@ -262,7 +264,8 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
     if (!Umsatz.class.equals(objectType))
       return null;
     
-    IOFormat format = new IOFormat() {
+    IOFormat format = new IOFormat()
+    {
       public String getName()
       {
         return AbstractPDFUmsatzExporter.this.getName();

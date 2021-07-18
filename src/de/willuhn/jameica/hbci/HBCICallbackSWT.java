@@ -145,7 +145,8 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     this.updateProgress();
     SynchronizeSession session = this.backend.getCurrentSession();
 
-    try {
+    try
+    {
       
       if (currentHandle != null && currentHandle.callback(passport,reason,msg,datatype,retData))
       {
@@ -155,7 +156,8 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 
 			AccountContainer container = accountCache.get(passport);
 			
-			switch (reason) {
+			switch (reason)
+			{
         
 			  // Hier kommen nur noch die PIN/TAN und DDV-Passports an. Die von RDH werden
 			  // im PassportHandle verarbeitet

@@ -55,7 +55,8 @@ public class PassportTest implements Action
       {
         HBCIHandler handler = null;
         Target target       = null;
-        try {
+        try
+        {
           monitor.setStatusText(i18n.tr("Teste Bank-Zugang..."));
           
           final Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
@@ -64,7 +65,8 @@ public class PassportTest implements Action
 
           // Log-Ausgaben temporaer auch mit im Progressbar-Fenster
           // ausgeben
-          target = new Target() {
+          target = new Target()
+          {
             public void write(Message msg) throws Exception
             {
               monitor.addPercentComplete(2);
@@ -169,7 +171,10 @@ public class PassportTest implements Action
         }
       }
 
-      public void interrupt() {}
+      public void interrupt()
+      {
+      }
+
       public boolean isInterrupted()
       {
         return false;
@@ -186,7 +191,8 @@ public class PassportTest implements Action
   {
     if (t == null)
       return;
-    Thread thread = new Thread() {
+    Thread thread = new Thread()
+    {
       public void run()
       {
         Logger.removeTarget(t);

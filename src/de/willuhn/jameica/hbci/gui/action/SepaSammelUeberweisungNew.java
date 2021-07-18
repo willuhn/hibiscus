@@ -44,7 +44,8 @@ public class SepaSammelUeberweisungNew implements Action
 		}
 		else if (context instanceof Konto)
 		{
-			try {
+			try
+			{
 				Konto k = (Konto) context;
 				u = (SepaSammelUeberweisung) Settings.getDBService().createObject(SepaSammelUeberweisung.class,null);
 				if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.trimToNull(k.getIban()) != null)

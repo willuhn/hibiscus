@@ -296,9 +296,11 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
 
-      try {
+      try
+      {
         Object o = getKontoAuswahl().getValue();
         if (o == null || !(o instanceof Konto))
           return;
@@ -364,7 +366,8 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
      */
     public CreateMenuItem(final Action action)
     {
-      super(i18n.tr("Neue Buchung..."),new Action() {
+      super(i18n.tr("Neue Buchung..."), new Action()
+      {
         public void handleAction(Object context) throws ApplicationException
         {
           try

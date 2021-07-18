@@ -126,7 +126,10 @@ public class ProfileUtil
         {
           decoder.close();
         }
-        catch (Exception e) { /* useless */}
+        catch (Exception e)
+        {
+          /* useless */
+        }
       }
     }
     return result;
@@ -197,11 +200,16 @@ public class ProfileUtil
     }
     finally
     {
-      if (encoder != null) {
-        try {
+      if (encoder != null)
+      {
+        try
+        {
           encoder.close();
         }
-        catch (Exception e) { /* useless */}
+        catch (Exception e)
+        {
+          /* useless */
+        }
       }
     }
   }

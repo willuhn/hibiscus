@@ -56,7 +56,8 @@ public class XMLKontoauszugImporter extends XMLImporter
     Reader reader = null;
     try
     {
-      reader = new XmlReader(is, new ObjectFactory() {
+      reader = new XmlReader(is, new ObjectFactory()
+      {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
@@ -178,7 +179,8 @@ public class XMLKontoauszugImporter extends XMLImporter
     if (!Kontoauszug.class.isAssignableFrom(objectType))
       return null; // Nur fuer Umsaetze anbieten - fuer alle anderen tut es die Basis-Implementierung
     
-    IOFormat f = new IOFormat() {
+    IOFormat f = new IOFormat()
+    {
       public String getName()
       {
         return i18n.tr("Hibiscus-Format");

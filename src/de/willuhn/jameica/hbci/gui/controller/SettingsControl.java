@@ -142,7 +142,8 @@ public class SettingsControl extends AbstractControl
     if (kontoCheck == null)
     {
       kontoCheck = new CheckboxInput(Settings.getKontoCheck());
-      Listener l = new Listener() {
+      Listener l = new Listener()
+      {
         public void handleEvent(Event event)
         {
           getKontoCheckExcludeAddressbook().setEnabled(((Boolean)kontoCheck.getValue()).booleanValue());
@@ -176,7 +177,8 @@ public class SettingsControl extends AbstractControl
     if (this.cachePin != null)
       return this.cachePin;
 
-    Listener l = new Listener() {
+    Listener l = new Listener()
+    {
       public void handleEvent(Event event)
       {
         boolean b1 = (Boolean) getCachePin().getValue();
@@ -206,7 +208,8 @@ public class SettingsControl extends AbstractControl
     
     storePin = new CheckboxInput(Settings.getStorePin());
     storePin.setComment("");
-    storePin.addListener(new Listener() {
+    storePin.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // Wir loesen nur bei dem Selection-Event aus, nicht bei FocusOut/FocusIn
@@ -257,7 +260,8 @@ public class SettingsControl extends AbstractControl
 
     this.exFeatures = new CheckboxInput(fs.enabled());
     this.exFeatures.setName(i18n.tr("Experimentelle Funktionen aktivieren"));
-    final Listener l = new Listener() {
+    final Listener l = new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)

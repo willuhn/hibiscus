@@ -78,7 +78,8 @@ public class KontoauszugDelete implements Action
 	        
           final LabelInput warn = new LabelInput("");
           warn.setColor(Color.ERROR);
-          check.addListener(new Listener() {
+          check.addListener(new Listener()
+          {
             public void handleEvent(Event event)
             {
               // Warnhinweis anzeigen, dass der Auftrag nur lokal geloescht wird

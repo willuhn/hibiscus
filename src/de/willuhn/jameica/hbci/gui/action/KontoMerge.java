@@ -114,7 +114,8 @@ public class KontoMerge implements Action
         {
           // Konto neu anlegen
           Logger.info("saving new konto");
-          try {
+          try
+          {
             konto.store();
             created++;
             Logger.info("konto saved successfully");

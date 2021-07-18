@@ -95,7 +95,8 @@ public class HBCIAccountProvider implements AccountProvider
         }
       }
       
-      Collections.sort(this.variants,new Comparator<HBCIVariant>() {
+      Collections.sort(this.variants, new Comparator<HBCIVariant>()
+      {
         public int compare(HBCIVariant o1, HBCIVariant o2)
         {
           if (PRIMARY.isInstance(o1))

@@ -43,7 +43,8 @@ public class UmsatzTypExport implements Action
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsatz-Kategorien aus"));
 
     Object[] u = null;
-		try {
+    try
+    {
 
 			if (context instanceof UmsatzTyp)
 			{

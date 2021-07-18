@@ -21,7 +21,8 @@ import de.willuhn.util.ClassFinder;
 /**
  * Sucht alle verfuegbaren Passports und prueft diese auf Verwendbarkeit.
  */
-public class PassportRegistry {
+public class PassportRegistry
+{
 
 	private static Hashtable passportsByName  = null;
 	private static Hashtable passportsByClass = null;
@@ -37,14 +38,16 @@ public class PassportRegistry {
     passportsByClass = new Hashtable();
     passportsByName  = new Hashtable();
 
-    try {
+    try
+    {
 			Logger.info("searching for available passports");
 	    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
 			ClassFinder finder = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder();
 			Class[] found = finder.findImplementors(Passport.class);
 			for (Class c:found)
 			{
-				try {
+				try
+				{
 					Passport p = (Passport) service.get(c);
 					Application.getCallback().getStartupMonitor().setStatusText("init passport " + p.getName());
  				  passportsByName.put(p.getName(),c);

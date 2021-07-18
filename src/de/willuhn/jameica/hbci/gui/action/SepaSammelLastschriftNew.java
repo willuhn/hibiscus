@@ -44,7 +44,8 @@ public class SepaSammelLastschriftNew implements Action
 		}
 		else if (context instanceof Konto)
 		{
-			try {
+			try
+			{
 				Konto k = (Konto) context;
 				u = (SepaSammelLastschrift) Settings.getDBService().createObject(SepaSammelLastschrift.class,null);
 				if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.trimToNull(k.getIban()) != null)

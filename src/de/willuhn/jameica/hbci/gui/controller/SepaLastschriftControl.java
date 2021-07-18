@@ -561,11 +561,14 @@ public class SepaLastschriftControl extends AbstractControl
     }
     catch (Exception e)
     {
-      if (t != null) {
-        try {
+      if (t != null)
+      {
+        try
+        {
           t.transactionRollback();
         }
-        catch (Exception xe) {
+        catch (Exception xe)
+        {
           Logger.error("rollback failed",xe);
         }
       }
@@ -613,9 +616,11 @@ public class SepaLastschriftControl extends AbstractControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
 
-      try {
+      try
+      {
         Object o = getKontoAuswahl().getValue();
         if (o == null || !(o instanceof Konto))
         {
@@ -649,7 +654,8 @@ public class SepaLastschriftControl extends AbstractControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
       if (event == null)
         return;
       
@@ -659,7 +665,8 @@ public class SepaLastschriftControl extends AbstractControl
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
-      try {
+      try
+      {
         getEmpfaengerName().setText(a.getName());
         getEmpfaengerKonto().setValue(a.getIban());
         getEmpfaengerBic().setValue(a.getBic());

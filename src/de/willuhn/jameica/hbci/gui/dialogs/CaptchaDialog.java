@@ -128,7 +128,8 @@ public class CaptchaDialog extends AbstractDialog
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(this.getApplyButton());
-    buttons.addButton(i18n.tr("Abbrechen"),new Action() {
+    buttons.addButton(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException("Dialog abgebrochen");
@@ -226,7 +227,8 @@ public class CaptchaDialog extends AbstractDialog
     if (this.applyButton != null)
       return this.applyButton;
     
-    this.applyButton = new Button(i18n.tr("Übernehmen"),new Action() {
+    this.applyButton = new Button(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         data = (String) getSolution().getValue();

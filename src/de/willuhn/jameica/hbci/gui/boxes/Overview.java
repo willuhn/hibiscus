@@ -95,7 +95,8 @@ public class Overview extends AbstractBox implements Box
     refresh();
     
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -132,7 +133,8 @@ public class Overview extends AbstractBox implements Box
     this.kontoAuswahl = new KontoInput(konto != null && (konto instanceof Konto) && ((Konto) konto).getID() != null ? ((Konto) konto) : null,KontoFilter.ACTIVE);
     this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("Alle Konten"));
-    this.kontoAuswahl.addListener(new Listener() {
+    this.kontoAuswahl.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         refresh();
@@ -172,7 +174,8 @@ public class Overview extends AbstractBox implements Box
     }
     
     this.start = new DateInput(DateUtil.startOfDay(startDate),HBCI.DATEFORMAT);
-    this.start.addListener(new Listener() {
+    this.start.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         refresh();
@@ -199,7 +202,8 @@ public class Overview extends AbstractBox implements Box
     }
 
     this.end = new DateInput(DateUtil.endOfDay(endDate),HBCI.DATEFORMAT);
-    this.end.addListener(new Listener() {
+    this.end.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         refresh();
@@ -354,7 +358,8 @@ public class Overview extends AbstractBox implements Box
      */
     public void handleMessage(Message message) throws Exception
     {
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           refresh();

@@ -87,7 +87,8 @@ public class CamtSetupDialog extends AbstractDialog
     
     ButtonArea buttons = new ButtonArea();
 
-    final Button yes = new Button(i18n.tr("Ja, auf CAMT umstellen"),new Action() {
+    final Button yes = new Button(i18n.tr("Ja, auf CAMT umstellen"), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -97,7 +98,8 @@ public class CamtSetupDialog extends AbstractDialog
     },null,true,"ok.png");
     buttons.addButton(yes);
 
-    final Button no = new Button(i18n.tr("Nein, nicht umstellen"),new Action() {
+    final Button no = new Button(i18n.tr("Nein, nicht umstellen"), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -107,7 +109,8 @@ public class CamtSetupDialog extends AbstractDialog
     },null,true,"window-close.png");
     buttons.addButton(no);
 
-    final Button later = new Button(i18n.tr("Beim nächsten Mal erinnern"),new Action() {
+    final Button later = new Button(i18n.tr("Beim nächsten Mal erinnern"), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException

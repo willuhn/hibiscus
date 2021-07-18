@@ -59,7 +59,8 @@ public class HBCIVariantPinTanTest implements Action
     
     final HBCIAccountPinTan account = (HBCIAccountPinTan) context;
 
-    BackgroundTask task = new BackgroundTask() {
+    BackgroundTask task = new BackgroundTask()
+    {
       
       private boolean stop = false;
       
@@ -92,7 +93,8 @@ public class HBCIVariantPinTanTest implements Action
           AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
           callback = ((HBCI)plugin).getHBCICallback();
           if (callback != null && (callback instanceof HBCICallbackSWT))
-            ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl((PinTanConfig)null) {
+            ((HBCICallbackSWT) callback).setCurrentHandle(new PassportHandleImpl((PinTanConfig) null)
+            {
               @Override
               public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
               {
@@ -209,7 +211,8 @@ public class HBCIVariantPinTanTest implements Action
         }
       }
 
-      public void interrupt() {
+      public void interrupt()
+      {
         this.stop = true;
       }
       public boolean isInterrupted()
@@ -228,7 +231,8 @@ public class HBCIVariantPinTanTest implements Action
   {
     if (t == null)
       return;
-    Thread thread = new Thread() {
+    Thread thread = new Thread()
+    {
       public void run()
       {
         Logger.removeTarget(t);

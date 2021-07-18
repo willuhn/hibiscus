@@ -204,7 +204,8 @@ public class DauerauftragControl extends AbstractTransferControl {
     letzteZahlung.setComment("");
     letzteZahlung.setTitle(i18n.tr("Datum der letzten Zahlung"));
     letzteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der letzten Zahlung ein"));
-    letzteZahlung.addListener(new Listener() {
+    letzteZahlung.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // Nur, um den Parser zu triggern

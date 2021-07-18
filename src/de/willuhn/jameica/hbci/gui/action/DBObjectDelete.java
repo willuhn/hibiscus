@@ -69,7 +69,8 @@ public class DBObjectDelete implements Action
       d.setTitle(i18n.tr("Daten löschen"));
       d.setText(i18n.tr("Wollen Sie diesen Datensatz wirklich löschen?"));
     }
-    try {
+    try
+    {
       Boolean choice = (Boolean) d.open();
       if (!choice.booleanValue())
         return;

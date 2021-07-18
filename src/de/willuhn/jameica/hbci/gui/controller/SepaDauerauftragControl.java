@@ -165,8 +165,10 @@ public class SepaDauerauftragControl extends AbstractControl
 			return turnus;
 
 		TurnusDialog td = new TurnusDialog(TurnusDialog.POSITION_MOUSE);
-		td.addCloseListener(new Listener() {
-			public void handleEvent(Event event) {
+		td.addCloseListener(new Listener()
+		{
+			public void handleEvent(Event event)
+			{
 				if (event == null || event.data == null)
 					return;
 				Turnus choosen = (Turnus) event.data;
@@ -273,7 +275,8 @@ public class SepaDauerauftragControl extends AbstractControl
     letzteZahlung.setComment("");
     letzteZahlung.setTitle(i18n.tr("Datum der letzten Zahlung"));
     letzteZahlung.setText(i18n.tr("Bitte geben Sie das Datum der letzten Zahlung ein"));
-    letzteZahlung.addListener(new Listener() {
+    letzteZahlung.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // Nur, um den Parser zu triggern
@@ -556,11 +559,14 @@ public class SepaDauerauftragControl extends AbstractControl
     }
     catch (Exception e)
     {
-      if (t != null) {
-        try {
+      if (t != null)
+      {
+        try
+        {
           t.transactionRollback();
         }
-        catch (Exception xe) {
+        catch (Exception xe)
+        {
           Logger.error("rollback failed",xe);
         }
       }
@@ -642,9 +648,11 @@ public class SepaDauerauftragControl extends AbstractControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
 
-      try {
+      try
+      {
         Object o = getKontoAuswahl().getValue();
         if (o == null || !(o instanceof Konto))
         {
@@ -673,7 +681,8 @@ public class SepaDauerauftragControl extends AbstractControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
       if (event == null)
         return;
       
@@ -683,7 +692,8 @@ public class SepaDauerauftragControl extends AbstractControl
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
-      try {
+      try
+      {
         getEmpfaengerName().setText(a.getName());
         getEmpfaengerKonto().setValue(a.getIban());
         getEmpfaengerBic().setValue(a.getBic());

@@ -75,7 +75,8 @@ public class HBCIVariantPinTanController extends AbstractControl
     this.bank = new BankInfoInput(this.account.getBlz());
     if (this.bank.getValue() == null) // Falls es keine bekannte BLZ war
       this.bank.setValue(this.account.getBlz());
-    this.bank.addListener(new Listener() {
+    this.bank.addListener(new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)
@@ -193,7 +194,8 @@ public class HBCIVariantPinTanController extends AbstractControl
     if (this.step1 != null)
       return this.step1;
     
-    this.step1 = new Button(i18n.tr("Weiter ..."),new Action() {
+    this.step1 = new Button(i18n.tr("Weiter ..."), new Action()
+    {
       @Override
       public void handleAction(Object context) throws ApplicationException
       {

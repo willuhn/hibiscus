@@ -143,7 +143,8 @@ public class KontoAuswahlDialog extends AbstractDialog
 
     this.auswahl = new KontoInput(this.preselected,this.filter);
     this.auswahl.setComment(null);
-    auswahl.addListener(new Listener() {
+    auswahl.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         preselected = (Konto) auswahl.getValue();

@@ -330,7 +330,8 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
       if (event == null)
         return;
       
@@ -340,7 +341,8 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
-      try {
+      try
+      {
         getEmpfaengerName().setText(a.getName());
         getEmpfaengerKonto().setValue(a.getIban());
         getEmpfaengerBic().setValue(a.getBic());

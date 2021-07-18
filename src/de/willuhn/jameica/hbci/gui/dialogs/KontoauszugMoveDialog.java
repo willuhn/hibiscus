@@ -98,7 +98,8 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     this.target = new DirectoryInput(dir.getAbsolutePath());
     this.target.setName(i18n.tr("Zielverzeichnis"));
 
-    final Listener l = new Listener() {
+    final Listener l = new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)
@@ -204,7 +205,8 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     if (this.apply != null)
       return this.apply;
     
-    this.apply = new Button(i18n.tr("Dateien jetzt verschieben"),new Action() {
+    this.apply = new Button(i18n.tr("Dateien jetzt verschieben"), new Action()
+    {
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -275,7 +277,8 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
 
     final double factor = 100d / (double) list.length;
 
-    Application.getController().start(new BackgroundTask() {
+    Application.getController().start(new BackgroundTask()
+    {
       
       private boolean stop = false;
 

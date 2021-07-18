@@ -186,7 +186,8 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
     if (!SepaSammelTransfer.class.isAssignableFrom(objectType))
       return null; // Nur fuer Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
     
-    IOFormat f = new IOFormat() {
+    IOFormat f = new IOFormat()
+    {
       public String getName()
       {
         return i18n.tr("Hibiscus-Format");

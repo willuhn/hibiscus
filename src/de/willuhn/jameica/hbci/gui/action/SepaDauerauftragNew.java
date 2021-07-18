@@ -47,7 +47,8 @@ public class SepaDauerauftragNew implements Action
 		}
 		else if (context instanceof Konto)
 		{
-			try {
+			try
+			{
 				Konto k = (Konto) context;
 				d = (SepaDauerauftrag) Settings.getDBService().createObject(SepaDauerauftrag.class,null);
 				if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE))
@@ -60,7 +61,8 @@ public class SepaDauerauftragNew implements Action
 		}
 		else if (context instanceof Address)
 		{
-			try {
+			try
+			{
 				Address e = (Address) context;
 				d = (SepaDauerauftrag) Settings.getDBService().createObject(SepaDauerauftrag.class,null);
 				d.setGegenkonto(e);

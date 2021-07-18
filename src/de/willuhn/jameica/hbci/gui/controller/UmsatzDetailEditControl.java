@@ -54,7 +54,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
    * ct.
    * @param view
    */
-  public UmsatzDetailEditControl(AbstractView view) {
+  public UmsatzDetailEditControl(AbstractView view)
+  {
     super(view);
   }
 
@@ -122,8 +123,10 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     
     this.betrag.setComment(konto == null ? "" : konto.getWaehrung());
     
-    final Listener l = new Listener() {
-      public void handleEvent(Event event) {
+    final Listener l = new Listener()
+    {
+      public void handleEvent(Event event)
+      {
         try
         {
           Double value = (Double) betrag.getValue();
@@ -331,7 +334,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   public boolean handleStore()
   {
     Umsatz u = getUmsatz();
-    try {
+    try
+    {
 
       u.transactionBegin();
 
@@ -506,12 +510,14 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
       if (event == null || event.data == null || !(event.data instanceof Address))
         return;
       Address empfaenger = (Address) event.data;
 
-      try {
+      try
+      {
         getEmpfaengerKonto().setValue(empfaenger.getIban());
 
         String bic = empfaenger.getBic();

@@ -51,7 +51,8 @@ public class Settings
   {
     if (db != null)
       return db;
-		try {
+		try
+		{
 			db = (HBCIDBService) Application.getServiceFactory().lookup(HBCI.class,"database");
 			return db;
 		}

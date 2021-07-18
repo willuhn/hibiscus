@@ -254,8 +254,7 @@ public class CsvImporter implements Importer
           monitor.log("  " + i18n.tr("Fehler in Zeile {0}: {1}",new String[]{Integer.toString(csv.getLineNumber()),e.getMessage()}));
           error++;
         }
-      }
-      while ((line = csv.read()) != null);
+      } while ((line = csv.read()) != null);
 
       // Fertig.
       monitor.setStatusText(i18n.tr("{0} importiert, {1} fehlerhaft, {2} übersprungen", new String[]{Integer.toString(created),Integer.toString(error),Integer.toString(skipped)}));

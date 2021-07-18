@@ -60,7 +60,8 @@ public class XMLUmsatzTypImporter implements Importer
     Reader reader = null;
     try
     {
-      reader = new XmlReader(is, new ObjectFactory() {
+      reader = new XmlReader(is, new ObjectFactory()
+      {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObjectNode object = (AbstractDBObjectNode) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
@@ -178,7 +179,8 @@ public class XMLUmsatzTypImporter implements Importer
     if (!UmsatzTyp.class.isAssignableFrom(objectType))
       return null;
     
-    IOFormat f = new IOFormat() {
+    IOFormat f = new IOFormat()
+    {
       public String getName()
       {
         return i18n.tr("Hibiscus-Format");

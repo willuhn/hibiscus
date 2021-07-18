@@ -257,7 +257,8 @@ public class CamtUmsatzImporter implements Importer
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
     
-    IOFormat fXml = new MyIOFormat() {
+    IOFormat fXml = new MyIOFormat()
+    {
       public String getName()
       {
         return CamtUmsatzImporter.this.getName() + " (XML)";
@@ -280,7 +281,8 @@ public class CamtUmsatzImporter implements Importer
         return new String[] {"*.xml"};
       }
     };
-    IOFormat fZip = new MyIOFormat() {
+    IOFormat fZip = new MyIOFormat()
+    {
       public String getName()
       {
         return CamtUmsatzImporter.this.getName() + " (ZIP)";

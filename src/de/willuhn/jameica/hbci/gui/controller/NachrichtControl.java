@@ -21,14 +21,16 @@ import de.willuhn.jameica.hbci.rmi.Nachricht;
 /**
  * Controller fuer die System-Nachrichten.
  */
-public class NachrichtControl extends AbstractControl {
+public class NachrichtControl extends AbstractControl
+{
 
   private Part list = null;
 
   /**
    * @param view
    */
-  public NachrichtControl(AbstractView view) {
+  public NachrichtControl(AbstractView view)
+  {
     super(view);
   }
   

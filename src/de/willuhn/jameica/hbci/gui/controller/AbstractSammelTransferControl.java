@@ -199,11 +199,14 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
     }
     catch (Exception e)
     {
-      if (t != null) {
-        try {
+      if (t != null)
+      {
+        try
+        {
           t.transactionRollback();
         }
-        catch (Exception xe) {
+        catch (Exception xe)
+        {
           Logger.error("rollback failed",xe);
         }
       }
@@ -230,9 +233,11 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
 
-      try {
+      try
+      {
         Object o = getKontoAuswahl().getValue();
         if (o == null || !(o instanceof Konto))
           return;
@@ -260,7 +265,8 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
      */
     public DeleteMenuItem()
     {
-      super(i18n.tr("Buchung(en) löschen..."),new Action() {
+      super(i18n.tr("Buchung(en) löschen..."), new Action()
+      {
         public void handleAction(Object context) throws ApplicationException
         {
           new DBObjectDelete().handleAction(context);
@@ -306,7 +312,8 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
      */
     public CreateMenuItem(final Action action)
     {
-      super(i18n.tr("Neue Buchung..."),new Action() {
+      super(i18n.tr("Neue Buchung..."), new Action()
+      {
         public void handleAction(Object context) throws ApplicationException
         {
           if (handleStore())

@@ -73,7 +73,8 @@ public class AddressFormat implements Format<HibiscusAddress>
   {
     if (this.listener == null)
     {
-      this.listener = new ImportListener(){
+      this.listener = new ImportListener()
+      {
         
         private AddressbookService addressbook = null;
 

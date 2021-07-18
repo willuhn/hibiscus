@@ -126,14 +126,16 @@ public class About extends AbstractDialog
 //        }
 //      }
 //    },null,false,"stock_keyring.png");
-    buttons.addButton(i18n.tr("Spenden"),new Action() {
+    buttons.addButton(i18n.tr("Spenden"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         close();
         new DonateView().handleAction(null);
       }
     },null,false,"emblem-special.png");
-    buttons.addButton(i18n.tr("Schlieﬂen"),new Action() {
+    buttons.addButton(i18n.tr("Schlieﬂen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         close();

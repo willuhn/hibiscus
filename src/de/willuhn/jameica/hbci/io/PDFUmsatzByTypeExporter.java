@@ -51,7 +51,8 @@ public class PDFUmsatzByTypeExporter extends AbstractPDFUmsatzExporter<UmsatzTyp
   {
     try
     {
-      Collections.sort(groups,new Comparator<UmsatzTyp>() {
+      Collections.sort(groups, new Comparator<UmsatzTyp>()
+      {
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */

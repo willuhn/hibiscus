@@ -28,7 +28,8 @@ import de.willuhn.util.I18N;
 /**
  * Controller fuer den Dialog Lizenzinformationen.
  */
-public class LicenseControl extends AbstractControl {
+public class LicenseControl extends AbstractControl
+{
 
   private Part libList = null;
   private I18N i18n = null;
@@ -37,7 +38,8 @@ public class LicenseControl extends AbstractControl {
    * ct.
    * @param view
    */
-  public LicenseControl(AbstractView view) {
+  public LicenseControl(AbstractView view)
+  {
     super(view);
     i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
@@ -57,7 +59,8 @@ public class LicenseControl extends AbstractControl {
     buffer.append("<form>");
 
     Manifest manifest = null;
-    try {
+    try
+    {
       manifest = Application.getPluginLoader().getManifest(HBCI.class);
     }
     catch (Exception e)
@@ -88,7 +91,8 @@ public class LicenseControl extends AbstractControl {
         continue;
       }
 
-      try {
+      try
+      {
         InfoReader ir = new InfoReader(new FileInputStream(infos[i]));
         buffer.append("<p>");
         buffer.append("<b>" + ir.getName() + "</b>");

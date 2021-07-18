@@ -79,10 +79,12 @@ public class KontoDisable implements Action
     }
     catch (Exception e)
     {
-      try {
+      try
+      {
         k.transactionRollback();
       }
-      catch (Exception e1) {
+      catch (Exception e1)
+      {
         Logger.error("unable to rollback transaction",e1);
       }
 

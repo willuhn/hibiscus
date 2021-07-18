@@ -40,7 +40,8 @@ public class Duplicate implements Action
 		if (context == null || !(context instanceof Duplicatable))
 			throw new ApplicationException(i18n.tr("Keine zu duplizierenden Daten angegeben"));
 
-		try {
+		try
+		{
 			Duplicatable o = (Duplicatable) context;
 			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Dupliziert"),StatusBarMessage.TYPE_SUCCESS));
 			new Open().handleAction(o.duplicate());

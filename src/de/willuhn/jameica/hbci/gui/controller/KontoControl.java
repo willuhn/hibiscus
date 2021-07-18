@@ -237,7 +237,8 @@ public class KontoControl extends AbstractControl
     this.offline = new CheckboxInput(this.getKonto().hasFlag(Konto.FLAG_OFFLINE));
     this.offline.setName(i18n.tr("Offline-Konto"));
     
-    this.offline.addListener(new Listener() {
+    this.offline.addListener(new Listener()
+    {
       @Override
       public void handleEvent(Event event)
       {
@@ -277,7 +278,8 @@ public class KontoControl extends AbstractControl
     if (this.synchronizeOptions != null)
       return this.synchronizeOptions;
 
-    this.synchronizeOptions = new Button(i18n.tr("Synchronisierungsoptionen"),new Action() {
+    this.synchronizeOptions = new Button(i18n.tr("Synchronisierungsoptionen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -419,7 +421,8 @@ public class KontoControl extends AbstractControl
       return backendAuswahl;
     
     backendAuswahl = new BackendInput(getKonto());
-    backendAuswahl.addListener(new Listener() {
+    backendAuswahl.addListener(new Listener()
+    {
       @Override
       public void handleEvent(Event event)
       {
@@ -551,7 +554,8 @@ public class KontoControl extends AbstractControl
       return this.iban;
     
     this.iban = new IBANInput(getKonto().getIban(),this.getBic());
-    this.iban.addListener(new Listener() {
+    this.iban.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // BUGZILLA 1605 Wenn wir eine IBAN haben aber noch keine
@@ -602,7 +606,8 @@ public class KontoControl extends AbstractControl
       return this.bic;
     
     this.bic = new BICInput(getKonto().getBic());
-    this.bic.addListener(new Listener() {
+    this.bic.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // BUGZILLA 1605 Wenn wir eine BIC haben aber noch keine
@@ -836,7 +841,8 @@ public class KontoControl extends AbstractControl
    */
   public void handleReload()
   {
-    GUI.startSync(new Runnable() {
+    GUI.startSync(new Runnable()
+    {
       public void run()
       {
         try
@@ -893,7 +899,8 @@ public class KontoControl extends AbstractControl
      */
     public void handleMessage(final Message message) throws Exception
     {
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         
         public void run()
         {

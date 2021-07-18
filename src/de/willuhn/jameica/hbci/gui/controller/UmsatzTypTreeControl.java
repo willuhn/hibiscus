@@ -82,7 +82,8 @@ public class UmsatzTypTreeControl extends AbstractControl
     // bei Ausloesungen ueber SWT-Events verzoegern wir
     // das Reload, um schnell aufeinanderfolgende Updates
     // zu buendeln.
-    this.listener = new DelayedListener(new Listener() {
+    this.listener = new DelayedListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         handleReload();
@@ -98,7 +99,8 @@ public class UmsatzTypTreeControl extends AbstractControl
    */
   public Listener changedListener(final Input input)
   {
-    return new Listener() {
+    return new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)

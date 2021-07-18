@@ -163,7 +163,8 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
       return zweck2;
     final String buttonText = "weitere Zeilen ({0})...";
     this.zweckDialog = new VerwendungszweckDialog(getBuchung(),VerwendungszweckDialog.POSITION_MOUSE);
-    this.zweckDialog.addCloseListener(new Listener() {
+    this.zweckDialog.addCloseListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         try
@@ -264,13 +265,15 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 		/**
 		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 		 */
-		public void handleEvent(Event event) {
+		public void handleEvent(Event event)
+		{
 			if (event == null)
 				return;
 			gegenKonto = (Address) event.data;
 			if (gegenKonto == null)
 				return;
-			try {
+			try
+			{
 				getGegenKonto().setValue(gegenKonto.getKontonummer());
 				getGegenkontoBLZ().setValue(gegenKonto.getBlz());
 				getGegenkontoName().setText(gegenKonto.getName());

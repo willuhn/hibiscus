@@ -82,7 +82,8 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl<Sam
     if (this.buchungen != null)
       return this.buchungen;
     
-    Action a = new Action() {
+    Action a = new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new SammelUeberweisungBuchungNew().handleAction(context);

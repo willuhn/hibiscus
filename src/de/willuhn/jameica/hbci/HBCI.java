@@ -134,7 +134,8 @@ public class HBCI extends AbstractPlugin
    */
   public void install() throws ApplicationException
   {
-    call(new ServiceCall() {
+    call(new ServiceCall()
+    {
     
       public void call(HBCIDBService service) throws ApplicationException, RemoteException
       {
@@ -284,9 +285,12 @@ public class HBCI extends AbstractPlugin
         {
           if (is != null)
           {
-            try {
+            try
+            {
               is.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
               Logger.error("error while closing " + addonprops,e);
             }
           }

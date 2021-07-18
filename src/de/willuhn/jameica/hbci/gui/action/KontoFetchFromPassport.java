@@ -86,8 +86,10 @@ public class KontoFetchFromPassport implements Action
 
 		GUI.startSync(new Runnable()
 		{
-			public void run() {
-				try {
+			public void run()
+			{
+				try
+				{
 
 					GUI.getStatusBar().startProgress();
 					GUI.getStatusBar().setSuccessText(i18n.tr("Bank-Zugang wird ausgelesen..."));

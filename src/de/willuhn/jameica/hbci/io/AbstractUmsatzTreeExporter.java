@@ -35,7 +35,8 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
     if (!UmsatzTree.class.equals(objectType))
       return null;
 
-    IOFormat myFormat = new IOFormat() {
+    IOFormat myFormat = new IOFormat()
+    {
     
       /**
        * @see de.willuhn.jameica.hbci.io.IOFormat#getName()

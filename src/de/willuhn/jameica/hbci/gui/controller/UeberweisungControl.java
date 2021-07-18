@@ -96,7 +96,8 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     this.typ.setName(i18n.tr("Auftragstyp"));
     this.typ.setAttribute("name");
     this.typ.setEnabled(!u.ausgefuehrt());
-    this.typ.addListener(new Listener() {
+    this.typ.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // Wir muessen die Entscheidung, ob es eine Termin-Ueberweisung ist,
@@ -129,7 +130,8 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       return this.termin;
     
     this.termin = super.getTermin();
-    this.termin.addListener(new Listener() {
+    this.termin.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         try
@@ -205,7 +207,8 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     // Listener fuer die nachtraegliche Aenderung
     if (textschluessel.isEnabled())
     {
-      textschluessel.addListener(new Listener() {
+      textschluessel.addListener(new Listener()
+      {
         public void handleEvent(Event event)
         {
           TextSchluessel s = (TextSchluessel) textschluessel.getValue();

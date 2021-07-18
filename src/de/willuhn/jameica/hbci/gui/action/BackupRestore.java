@@ -92,7 +92,8 @@ public class BackupRestore implements Action
     if (!file.exists())
       return;
 
-    Application.getController().start(new BackgroundTask() {
+    Application.getController().start(new BackgroundTask()
+    {
       private boolean cancel = false;
     
       /**
@@ -108,7 +109,8 @@ public class BackupRestore implements Action
         try
         {
           InputStream is = new BufferedInputStream(new FileInputStream(file));
-          reader = new XmlReader(is,new ObjectFactory() {
+          reader = new XmlReader(is, new ObjectFactory()
+          {
           
             public GenericObject create(String type, String id, Map values) throws Exception
             {
@@ -170,7 +172,10 @@ public class BackupRestore implements Action
               reader.close();
               Logger.info("backup imported");
             }
-            catch (Exception e) {/*useless*/}
+            catch (Exception e)
+            {
+              /* useless */
+            }
           }
         }
       }

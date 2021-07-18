@@ -77,7 +77,8 @@ public class AdresseAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    Action a = new Action() {
+    Action a = new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof Address))
@@ -107,7 +108,8 @@ public class AdresseAuswahlDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     apply.setEnabled(false);
-    empf.addSelectionListener(new Listener() {
+    empf.addSelectionListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         apply.setEnabled(empf.getSelection() != null);
@@ -132,7 +134,8 @@ public class AdresseAuswahlDialog extends AbstractDialog
     // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
     getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
     
-    getShell().addDisposeListener(new DisposeListener() {
+    getShell().addDisposeListener(new DisposeListener()
+    {
       
       @Override
       public void widgetDisposed(DisposeEvent e)

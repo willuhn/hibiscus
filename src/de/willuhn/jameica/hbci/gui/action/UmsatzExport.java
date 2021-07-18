@@ -43,7 +43,8 @@ public class UmsatzExport implements Action
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens einen Umsatz aus"));
 
     Umsatz[] u = null;
-		try {
+    try
+    {
 			if (context instanceof Umsatz)
 			{
 				u = new Umsatz[1];

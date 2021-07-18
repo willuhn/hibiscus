@@ -106,7 +106,8 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     this.typ.setName(i18n.tr("Auftragstyp"));
     this.typ.setAttribute("name");
     this.typ.setEnabled(!u.ausgefuehrt());
-    this.typ.addListener(new Listener() {
+    this.typ.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         // Wir muessen die Entscheidung, ob es eine Termin-Ueberweisung ist,
@@ -140,7 +141,8 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     
     this.termin = super.getTermin();
     this.termin.setName(this.termin.getName() + "  "); // ein kleines bisschen extra Platz lassen, damit auch "Ausführungstermin" hin passt
-    this.termin.addListener(new Listener() {
+    this.termin.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         try
@@ -225,7 +227,8 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     if (this.buchungen != null)
       return this.buchungen;
     
-    Action a = new Action() {
+    Action a = new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new SepaSammelUeberweisungBuchungNew().handleAction(context);
@@ -273,7 +276,8 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     @Override
     public void handleEvent(Event event)
     {
-      GUI.getDisplay().asyncExec(new Runnable() {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
         @Override
         public void run()
         {

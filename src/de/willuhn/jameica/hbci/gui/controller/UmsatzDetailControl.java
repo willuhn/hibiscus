@@ -90,7 +90,8 @@ public class UmsatzDetailControl extends AbstractControl
    * ct.
    * @param view
    */
-  public UmsatzDetailControl(AbstractView view) {
+  public UmsatzDetailControl(AbstractView view)
+  {
     super(view);
   }
 
@@ -486,7 +487,8 @@ public class UmsatzDetailControl extends AbstractControl
 	  this.zweckSwitch = new CheckboxInput(b);
 	  this.zweckSwitch.setName(i18n.tr("Alle Daten des Verwendungszwecks anzeigen"));
 	  
-	  Listener l = new Listener() {
+    Listener l = new Listener()
+    {
       @Override
       public void handleEvent(Event event)
       {

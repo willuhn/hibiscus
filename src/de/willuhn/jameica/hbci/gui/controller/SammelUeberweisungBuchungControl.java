@@ -68,7 +68,8 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 	 */
 	public synchronized void handleStore(boolean next)
 	{
-		try {
+		try
+		{
   		
 			getBuchung().transactionBegin();
 
@@ -125,7 +126,8 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 		}
 		catch (ApplicationException e)
 		{
-			try {
+			try
+			{
 				getBuchung().transactionRollback();
 			}
 			catch (RemoteException re)
@@ -136,7 +138,8 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 		}
 		catch (Exception e2)
 		{
-			try {
+			try
+			{
 				getBuchung().transactionRollback();
 			}
 			catch (RemoteException re)

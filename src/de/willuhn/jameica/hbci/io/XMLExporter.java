@@ -84,7 +84,10 @@ public class XMLExporter implements Exporter
         if (writer != null)
           writer.close();
       }
-      catch (Exception e) {/*useless*/}
+      catch (Exception e)
+      {
+        /* useless */
+      }
     }
   }
 
@@ -108,7 +111,8 @@ public class XMLExporter implements Exporter
     if (SepaSammelTransfer.class.isAssignableFrom(objectType))
       return null; // Keine SEPA-Sammel-Auftraege - die muessen gesondert behandelt werden.
     
-    return new IOFormat[]{new IOFormat() {
+    return new IOFormat[] { new IOFormat()
+    {
       public String getName()
       {
         return XMLExporter.this.getName();

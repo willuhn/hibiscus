@@ -97,7 +97,8 @@ public class UmsatzFormat implements Format<Umsatz>
   {
     if (this.listener == null)
     {
-      this.listener = new ImportListener(){
+      this.listener = new ImportListener()
+      {
         
         /**
          * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeStore(de.willuhn.jameica.hbci.io.csv.ImportEvent)

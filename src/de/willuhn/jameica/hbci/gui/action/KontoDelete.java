@@ -39,7 +39,8 @@ public class KontoDelete implements Action
 		if (context == null || !(context instanceof Konto))
 			throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
 
-		try {
+    try
+    {
 
 			Konto k = (Konto) context;
 			if (k.isNewObject())
@@ -47,7 +48,8 @@ public class KontoDelete implements Action
 
 			KontoDeleteDialog d = new KontoDeleteDialog(k);
 			
-			try {
+			try
+			{
 				Boolean choice = (Boolean) d.open();
 				if (choice == null || !choice.booleanValue())
 					return;

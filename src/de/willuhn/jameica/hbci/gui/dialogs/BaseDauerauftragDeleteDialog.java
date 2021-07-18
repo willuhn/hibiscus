@@ -49,7 +49,8 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
   /**
    * @param position
    */
-  public BaseDauerauftragDeleteDialog(int position) {
+  public BaseDauerauftragDeleteDialog(int position)
+  {
     super(position);
     this.setTitle(i18n.tr("Zieldatum"));
   }
@@ -83,8 +84,10 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
 
     CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
     cd.setTitle(i18n.tr("Zieldatum"));
-    cd.addCloseListener(new Listener() {
-      public void handleEvent(Event event) {
+    cd.addCloseListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
         if (event == null || event.data == null || !(event.data instanceof Date))
           return;
 
@@ -169,7 +172,8 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
-  protected Object getData() throws Exception {
+  protected Object getData() throws Exception
+  {
     return date;
   }
 

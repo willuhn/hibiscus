@@ -121,11 +121,14 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
 		}
     catch (Exception e)
     {
-      if (bu != null) {
-        try {
+      if (bu != null)
+      {
+        try
+        {
           bu.transactionRollback();
         }
-        catch (Exception xe) {
+        catch (Exception xe)
+        {
           Logger.error("rollback failed",xe);
         }
       }

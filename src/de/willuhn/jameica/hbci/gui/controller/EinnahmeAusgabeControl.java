@@ -184,7 +184,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     
     this.onlyActive = new CheckboxInput(settings.getBoolean("auswertungen.einnahmeausgabe.filter.active",false));
     this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
-    this.onlyActive.addListener(new org.eclipse.swt.widgets.Listener() {
+    this.onlyActive.addListener(new org.eclipse.swt.widgets.Listener()
+    {
 
       @Override
       public void handleEvent(Event event)
@@ -235,7 +236,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
     this.interval = new SelectInput(Interval.values(), Interval.valueOf(settings.getString("auswertungen.einnahmeausgabe.filter.interval", "MONTH")));
     this.interval.setName(i18n.tr("Gruppierung nach"));
-    this.interval.addListener(new Listener() {
+    this.interval.addListener(new Listener()
+    {
 
       @Override
       public void handleEvent(Event event)
@@ -365,7 +367,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       // Es gibt nur einen Zweig - da reichen uns die darunterliegenden Elemente
       this.werte.addAll(getChildren(result.get(0)));
-    } else
+    }
+    else
     {
       this.werte.addAll(result);
     }
@@ -518,10 +521,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
           summeEinnahmen += ea.getEinnahmen();
           summeAusgaben += ea.getAusgaben();
           summeEndsaldo += ea.getEndsaldo();
-        } else if (sumElement != null)
+        }
+        else if (sumElement != null)
         {
           throw new IllegalStateException("implementation error - there must be only one sum element");
-        } else
+        }
+        else
         {
           sumElement = ea;
         }
@@ -554,7 +559,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     if (o instanceof Konto)
     {
       result.add((Konto) o);
-    } else if (o == null || (o instanceof String))
+    }
+    else if (o == null || (o instanceof String))
     {
       boolean onlyActive = ((Boolean) this.getActiveOnly().getValue()).booleanValue();
       String group = o != null && (o instanceof String) ? (String) o : null;
@@ -582,10 +588,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
       List<EinnahmeAusgabe> kontoNodes = getEmptyNodes(start, end, konten);
       EinnahmeAusgabeTreeNode node = new EinnahmeAusgabeTreeNode(start, end, kontoNodes);
       result.add(node);
-    } else if (start == null || end == null)
+    }
+    else if (start == null || end == null)
     {
       throw new IllegalStateException("programming error - if there is grouping, there must be transactions and hence both dates are set");
-    } else
+    }
+    else
     {
       Calendar calendar = Calendar.getInstance();
       calendar.setTime(DateUtil.startOfDay(start));
@@ -669,7 +677,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @param d2
    * @return
    */
-  private long getDifferenceDays(Date d1, Date d2) {
+  private long getDifferenceDays(Date d1, Date d2)
+  {
     java.time.LocalDate date1 = DateUtil.startOfDay(toUtilDate(d1)).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
     java.time.LocalDate date2 = DateUtil.endOfDay(toUtilDate(d2)).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
     return java.time.temporal.ChronoUnit.DAYS.between(date1, date2);

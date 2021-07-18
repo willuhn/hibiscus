@@ -185,7 +185,8 @@ public class MT940UmsatzImporter implements Importer
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
     
-    IOFormat f = new IOFormat() {
+    IOFormat f = new IOFormat()
+    {
       public String getName()
       {
         return MT940UmsatzImporter.this.getName();

@@ -42,7 +42,8 @@ public class KontoSyncViaScripting implements Action
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
     final Konto k = (Konto) context;
-		try {
+    try
+    {
 	    if (!k.hasFlag(Konto.FLAG_OFFLINE))
 	      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Offline-Konto aus"));
 
@@ -57,7 +58,8 @@ public class KontoSyncViaScripting implements Action
 			
     final AbstractView currentView = GUI.getCurrentView();
       
-    Application.getController().start(new BackgroundTask() {
+    Application.getController().start(new BackgroundTask()
+    {
       
       public void run(ProgressMonitor monitor) throws ApplicationException
       {

@@ -60,7 +60,8 @@ public class EmpfaengerAdd implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie ein oder mehrere Aufträge aus"));
 
     List<HibiscusAddress> items = new ArrayList<HibiscusAddress>();
-		try {
+    try
+    {
 
       ///////////////////////////////////////////////////////////////
       // Transfers

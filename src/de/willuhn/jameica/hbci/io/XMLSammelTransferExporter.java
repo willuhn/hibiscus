@@ -53,7 +53,8 @@ public class XMLSammelTransferExporter extends XMLExporter
     if (!SammelTransfer.class.isAssignableFrom(objectType))
       return null; // Nur fuer Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
 
-    return new IOFormat[]{new IOFormat() {
+    return new IOFormat[] { new IOFormat()
+    {
       public String getName()
       {
         return i18n.tr("Hibiscus-Format");

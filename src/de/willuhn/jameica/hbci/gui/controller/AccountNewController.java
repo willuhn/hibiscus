@@ -62,7 +62,8 @@ public class AccountNewController extends AbstractControl
     for (final AccountProvider p:list)
     {
       final InfoPanel panel = p.getInfo();
-      final Button button = new Button(i18n.tr("Bank-Zugang anlegen..."),new Action() {
+      final Button button = new Button(i18n.tr("Bank-Zugang anlegen..."), new Action()
+      {
         @Override
         public void handleAction(Object context) throws ApplicationException
         {

@@ -140,7 +140,8 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   {
     MenuItem item = new MenuItem(m, SWT.PUSH);
     item.setText(text);
-    item.addSelectionListener(new SelectionAdapter() {
+    item.addSelectionListener(new SelectionAdapter()
+    {
       /**
        * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
        */
@@ -273,7 +274,8 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
    */
   public void paint(Composite parent) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       /**
        * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
        */
