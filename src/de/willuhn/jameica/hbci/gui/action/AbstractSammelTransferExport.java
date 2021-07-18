@@ -44,7 +44,7 @@ public abstract class AbstractSammelTransferExport implements Action
 		    list = new SammelTransfer[]{(SammelTransfer) context};
 		  else
 		    list = (SammelTransfer[]) context;
-		  
+
 		  ExportDialog d = new ExportDialog(list, getExportClass());
       d.open();
 		}
@@ -72,7 +72,6 @@ public abstract class AbstractSammelTransferExport implements Action
    */
   abstract Class getExportClass();
 }
-
 
 /**********************************************************************
  * $Log: AbstractSammelTransferExport.java,v $

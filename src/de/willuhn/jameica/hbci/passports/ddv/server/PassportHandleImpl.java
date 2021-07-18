@@ -52,7 +52,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 	private Konto konto      = null;
   private DDVConfig config = null;
-  
+
   /**
    * ct.
    * @param konto
@@ -99,7 +99,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
         if (list == null || list.size() == 0)
           throw new ApplicationException(i18n.tr("Bitte legen Sie zuerst eine Kartenleser-Konfiguration an"));
-        
+
         // Wir haben nur eine Config, dann brauchen wir den User nicht fragen
         if (list.size() == 1)
         {
@@ -122,13 +122,13 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
             throw new ApplicationException(i18n.tr("Fehler bei der Auswahl der PIN/TAN-Konfiguration"));
           }
         }
-        
+
       }
 
       // Immer noch keine Config. Dann eben nicht.
       if (config == null)
         throw new ApplicationException(i18n.tr("Keine Kartenleser-Konfiguration vorhanden"));
-      
+
       Logger.debug("using config " + config.getName());
 
       // Handle im Callback vermerken
@@ -150,7 +150,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       Logger.info("  hbci version: " + config.getHBCIVersion());
 			handler = new HBCIHandler(config.getHBCIVersion(),hbciPassport);
       Logger.info("ddv handler opened");
-      
+
 			return handler;
 		}
     catch (RemoteException re)
@@ -200,7 +200,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     HBCICallback callback = ((HBCI)plugin).getHBCICallback();
     if (callback != null && (callback instanceof HBCICallbackSWT))
       ((HBCICallbackSWT)callback).setCurrentHandle(null);
-    
+
     Logger.info("ddv passport closed");
   }
 
@@ -243,9 +243,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
    */
   public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
   {
-    
+
     switch (reason) {
-    
       case HBCICallback.NEED_SOFTPIN:
       {
         retData.replace(0,retData.length(),DialogFactory.getPIN(passport));
@@ -267,10 +266,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       case HBCICallback.NEED_REMOVE_CHIPCARD:
         return handleCallback(i18n.tr("Bitte entfernen Sie die Chipkarte aus dem Lesegerät."),false,settings.getBoolean("waitfor.card.eject",false), StatusBarMessage.TYPE_INFO);
     }
-    
+
     return false;
   }
-  
+
   /**
    * Uebernimmt den Callback.
    * @param text ANzuzeigender Text.
@@ -289,11 +288,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     if (displayKonto)
     {
       Konto konto = session != null ? session.getKonto() : null;
-      
+
       if (konto != null)
         text += ". " + konto.getLongName();
     }
-    
+
     if (wait)
     {
       Application.getCallback().notifyUser(text);
@@ -307,7 +306,6 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     return true;
   }
 }
-
 
 /**********************************************************************
  * $Log: PassportHandleImpl.java,v $

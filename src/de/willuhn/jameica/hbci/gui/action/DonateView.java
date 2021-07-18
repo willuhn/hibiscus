@@ -30,8 +30,6 @@ public class DonateView implements Action
 
 }
 
-
-
 /**********************************************************************
  * $Log: DonateView.java,v $
  * Revision 1.1  2010/08/20 12:42:02  willuhn

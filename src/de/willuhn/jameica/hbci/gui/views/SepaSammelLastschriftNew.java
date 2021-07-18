@@ -44,7 +44,7 @@ import de.willuhn.util.I18N;
 public class SepaSammelLastschriftNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc = new MyMessageConsumer();
   private SepaSammelLastschrift transfer = null;
 
@@ -60,7 +60,7 @@ public class SepaSammelLastschriftNew extends AbstractView
 		GUI.getView().setTitle(i18n.tr("SEPA-Sammellastschrift bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonNew(SepaSammelLastschrift.class));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaSammelLastschrift(transfer)));
-		
+
     Container group = new SimpleContainer(getParent());
     group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Gutschriftskonto"),control.getKontoAuswahl());
@@ -79,7 +79,7 @@ public class SepaSammelLastschriftNew extends AbstractView
       container.addInput(control.getBatchBook());
       container.addInput(control.getPmtInfId());
     }
-		
+
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -121,7 +121,7 @@ public class SepaSammelLastschriftNew extends AbstractView
       }
     },null,false,"text-x-generic.png");
     add.setEnabled(!transfer.ausgefuehrt());
-    
+
 		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
 			public void handleAction(Object context) throws ApplicationException {
         if (control.handleStore())
@@ -129,23 +129,23 @@ public class SepaSammelLastschriftNew extends AbstractView
 			}
 		},null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
-    
+
     Button store = new Button(i18n.tr("&Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException {
         control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
-    
+
     buttons.addButton(add);
     buttons.addButton(execute);
     buttons.addButton(store);
-    
+
     buttons.paint(getParent());
 
     new Headline(getParent(),i18n.tr("Enthaltene Buchungen"));
     control.getBuchungen().paint(getParent());
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
 
@@ -165,7 +165,7 @@ public class SepaSammelLastschriftNew extends AbstractView
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -173,7 +173,7 @@ public class SepaSammelLastschriftNew extends AbstractView
     {
       return new Class[]{ObjectChangedMessage.class};
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -181,16 +181,16 @@ public class SepaSammelLastschriftNew extends AbstractView
     {
       if (transfer == null)
         return;
-  
+
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
-      
+
       // View neu laden
       if (transfer.equals(o))
         GUI.startView(SepaSammelLastschriftNew.this,transfer);
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */

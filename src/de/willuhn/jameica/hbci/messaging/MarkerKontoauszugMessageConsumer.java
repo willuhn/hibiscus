@@ -30,7 +30,7 @@ import de.willuhn.logging.Logger;
 public class MarkerKontoauszugMessageConsumer implements MessageConsumer
 {
   private DelayedListener listener = new DelayedListener(1000,new Worker());
-  
+
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -64,7 +64,7 @@ public class MarkerKontoauszugMessageConsumer implements MessageConsumer
   {
     return true;
   }
-  
+
   /**
    * Der eigentliche Worker.
    */
@@ -86,6 +86,6 @@ public class MarkerKontoauszugMessageConsumer implements MessageConsumer
         Logger.write(Level.DEBUG,"unable to update navigation",t);
       }
     }
-    
+
   }
 }

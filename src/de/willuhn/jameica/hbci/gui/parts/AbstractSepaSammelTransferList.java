@@ -75,14 +75,14 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
   {
     super(action);
     setMulti(true);
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
     final boolean bold = Settings.getBoldValues();
-    
+
     final CurrencyFormatter f = new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT);
-    
+
     setFormatter(new TableFormatter() {
       public void format(TableItem item) {
         SepaSammelTransfer l = (SepaSammelTransfer) item.getData();
@@ -93,13 +93,13 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
         {
           if (bold)
             item.setFont(3,Font.BOLD.getSWTFont());
-          
+
           // Summe und Anzahl Buchungen machen wir per Tableformatter.
           // Wuerden wir es direkt in der Spalte ausgeben, wuerden die Buchungen pro Auftrag zweimal geladen werden.
           // Einmal, um die Anzahl zu ermitteln und einmal fuer die Summe
           int count = 0;
           BigDecimal sum = new BigDecimal(0);
-          
+
           List<SepaSammelTransferBuchung> list = l.getBuchungen();
           for (SepaSammelTransferBuchung t:list)
           {
@@ -108,7 +108,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
           }
           item.setText(2,Integer.toString(count));
           item.setText(3,f.format(sum));
-          
+
           Date termin = l.getTermin();
           boolean faellig = l.ueberfaellig() && !l.ausgefuehrt();
           item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
@@ -149,13 +149,13 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     addColumn(i18n.tr("Summe"),"dummy",f,false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Termin"),"termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(new AusgefuehrtColumn());
-    
+
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende
     // Lastschriften informiert werden.
     this.mc = new TransferMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#calculateSum(java.lang.Object[])
    */
@@ -164,9 +164,9 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     // Keine Ahnung, wie das zu berechnen ist
     if (!(selected instanceof SepaSammelTransfer[]))
       return null;
-    
+
     BigDecimal sum = new BigDecimal(0);
-    
+
     SepaSammelTransfer[] list = (SepaSammelTransfer[]) selected;
     for (SepaSammelTransfer u:list)
     {
@@ -183,7 +183,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
   {
     if (this.pending != null)
       return this.pending;
-    
+
     this.pending = new CheckboxInput(settings.getBoolean("transferlist.filter.pending",false));
     this.pending.setName(i18n.tr("Nur offene Aufträge anzeigen"));
     this.pending.addListener(this.listener);
@@ -210,7 +210,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    
+
     DBIterator list = service.createList(getObjectType());
     if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
     if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
@@ -218,7 +218,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     {
       list.addFilter("LOWER(bezeichnung) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
     }
-    
+
     if (konto != null && (konto instanceof Konto))
       list.addFilter("konto_id = " + ((Konto) konto).getID());
     else if (konto != null && (konto instanceof String))
@@ -231,7 +231,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
     return list;
   }
-  
+
   /**
    * Liefert die Art der zu ladenden Objekte zurueck.
    * @return Art der zu ladenden Objekte.
@@ -250,10 +250,10 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
       }
     });
     super.paint(parent);
-    
+
     this.getLeft().addInput(this.getPending());
   }
-  
+
   /**
    * Hilfsklasse damit wir ueber importierte Transfers informiert werden.
    */
@@ -261,7 +261,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
   {
     private DelayedListener insertDelay = null;
     private DelayedListener updateDelay = null;
-    
+
     /**
      * ct.
      */
@@ -269,9 +269,9 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     {
       if (listener != null)
         this.insertDelay = new DelayedListener(listener);
-      
+
       this.updateDelay = new DelayedListener(new Listener() {
-        
+
         @Override
         public void handleEvent(Event event)
         {
@@ -290,7 +290,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
         }
       });
     }
-    
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -309,12 +309,12 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     {
       if (message == null)
         return;
-      
+
       final GenericObject o = ((ObjectMessage)message).getObject();
-      
+
       if (o == null)
         return;
-      
+
       // Checken, ob uns der Transfer-Typ interessiert
       if (!(o instanceof SepaSammelTransfer) && !(o instanceof SepaSammelTransferBuchung))
         return;
@@ -326,7 +326,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
         this.updateDelay.handleEvent(e);
         return;
       }
-      
+
       // Wir forcieren das Reload. Da in den Eingabefeldern
       // nichts geaendert wurde, wuerde das Reload sonst nicht
       // stattfinden.

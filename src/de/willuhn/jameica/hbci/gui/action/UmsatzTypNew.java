@@ -52,7 +52,6 @@ public class UmsatzTypNew implements Action
 
 }
 
-
 /*********************************************************************
  * $Log: UmsatzTypNew.java,v $
  * Revision 1.3  2010/03/05 15:24:53  willuhn

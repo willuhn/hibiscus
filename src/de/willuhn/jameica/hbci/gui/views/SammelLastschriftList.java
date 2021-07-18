@@ -34,7 +34,7 @@ public class SammelLastschriftList extends AbstractView
   public void bind() throws Exception
   {
     SammelLastschriftControl control = new SammelLastschriftControl(this);
-    
+
     final de.willuhn.jameica.hbci.gui.parts.SammelLastschriftList table = control.getListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportSammelLastschrift(table));
     table.addSelectionListener(new Listener() {

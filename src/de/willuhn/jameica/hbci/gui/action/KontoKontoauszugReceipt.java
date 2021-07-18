@@ -33,7 +33,6 @@ public class KontoKontoauszugReceipt implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
 	 * Fehlt das Konto, dann wird es in einem Dialog abgefragt.

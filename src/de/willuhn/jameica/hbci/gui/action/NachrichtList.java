@@ -29,7 +29,6 @@ public class NachrichtList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: NachrichtList.java,v $
  * Revision 1.1  2005/05/09 17:26:56  web0

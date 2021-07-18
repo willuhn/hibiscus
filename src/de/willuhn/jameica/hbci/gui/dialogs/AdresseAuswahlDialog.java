@@ -57,7 +57,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
   {
     this(position,null);
   }
-  
+
 	/**
    * ct.
    * @param position
@@ -87,13 +87,12 @@ public class AdresseAuswahlDialog extends AbstractDialog
       }
     };    
 
-
     Container c1 = new SimpleContainer(parent,true,1);
     final EmpfaengerList empf = new EmpfaengerList(a,this.filter,false);
     empf.setContextMenu(null);
     empf.setMulti(false);
     empf.removeFeature(FeatureSummary.class);
-    
+
     final Button apply = new Button(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -113,7 +112,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
         apply.setEnabled(empf.getSelection() != null);
       }
     });
-    
+
     empf.paint(c1.getComposite());
 
 		ButtonArea b = new ButtonArea();
@@ -125,22 +124,22 @@ public class AdresseAuswahlDialog extends AbstractDialog
 				throw new OperationCanceledException();
       }
     },null,false,"process-stop.png");
-		
+
     Container c2 = new SimpleContainer(parent);
 		c2.addButtonArea(b);
-		
+
     // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
     getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
-    
+
     getShell().addDisposeListener(new DisposeListener() {
-      
+
       @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Shell shell = getShell();
         if (shell == null || shell.isDisposed())
           return;
-        
+
         Point size = shell.getSize();
         Logger.debug("saving window size: " + size.x + "x" + size.y);
         settings.setAttribute("window.width",size.x);

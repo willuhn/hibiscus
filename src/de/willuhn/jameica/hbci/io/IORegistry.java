@@ -38,7 +38,7 @@ public class IORegistry
     Logger.info("looking for installed import filters");
     importers = load(Importer.class);
   }
-  
+
   /**
    * Sucht im Classpath nach allen Importern/Exportern.
    * @param type zu ladender Typ.

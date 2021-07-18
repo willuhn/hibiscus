@@ -41,7 +41,7 @@ public class AccountInput extends TextInput
       }
     });
   }
-  
+
   /**
    * Ueberschrieben, um zusaetzlich noch die Leerzeichen zuzulassen.
    * @see de.willuhn.jameica.gui.input.AbstractInput#setValidChars(java.lang.String)
@@ -52,5 +52,3 @@ public class AccountInput extends TextInput
     super.setValidChars(chars + " ");
   }
 }
-
-

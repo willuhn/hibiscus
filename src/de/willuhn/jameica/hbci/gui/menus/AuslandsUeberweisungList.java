@@ -80,6 +80,7 @@ public class AuslandsUeberweisungList extends ContextMenu
     {
       super(text,action,icon);
     }
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -196,7 +197,6 @@ public class AuslandsUeberweisungList extends ContextMenu
   }
 
 }
-
 
 /**********************************************************************
  * $Log: AuslandsUeberweisungList.java,v $

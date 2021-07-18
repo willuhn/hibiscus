@@ -14,7 +14,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
-
 /**
  * Die verschiedenen Sequence-Typen bei SEPA-Lastschriften.
  */
@@ -25,26 +24,26 @@ public enum SepaLastSequenceType
    * Sequenz-Typ FRST fuer Erst-Einzug.
    */
   FRST("Erst-Einzug"),
-  
+
   /**
    * Sequenz-Typ RCUR fuer Folge-Einzug.
    */
   RCUR("Folge-Einzug"),
-  
+
   /**
    * Sequenz-Typ OOFF fuer Einmal-Einzug.
    */
   OOFF("Einmal-Einzug"),
-  
+
   /**
    * Sequenz-Typ FNAL fuer letztmaligen Einzug.
    */
   FNAL("Letztmaliger Einzug"),
-  
+
   ;
-  
+
   private String description = null;
-  
+
   /**
    * ct.
    * @param description sprechender Name des Sequenz-Typs.
@@ -53,7 +52,7 @@ public enum SepaLastSequenceType
   {
     this.description = description;
   }
-  
+
   /**
    * Liefert einen sprechenden Namen fuer den Sequenztyp.
    * @return sprechender Name fuer den Sequenztyp.
@@ -62,7 +61,7 @@ public enum SepaLastSequenceType
   {
     return this.description;
   }
-  
+
   /**
    * @see java.lang.Enum#toString()
    */
@@ -73,5 +72,3 @@ public enum SepaLastSequenceType
     return this.name() + ": " + i18n.tr(this.getDescription());
   }
 }
-
-

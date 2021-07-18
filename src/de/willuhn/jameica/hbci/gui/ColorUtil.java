@@ -30,7 +30,7 @@ public class ColorUtil
                                     Settings.getBuchungHabenForeground(),
                                     de.willuhn.jameica.gui.util.Color.FOREGROUND.getSWTColor());
   }
-  
+
   /**
    * Liefert die Farbe, in der der angegebene Wert gezeichnet werden soll.
    * @param value der Wert.
@@ -43,15 +43,13 @@ public class ColorUtil
   {
     if (value <= -0.01)
       return negative;
-    
+
     if (value >= 0.01)
       return positive;
-    
+
     return zero;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: ColorUtil.java,v $

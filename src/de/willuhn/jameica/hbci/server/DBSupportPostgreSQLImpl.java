@@ -74,7 +74,7 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
     if (f.exists())
     {
       I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-      
+
       String text = i18n.tr("Bei der Verwendung von PostgreSQL werden Datenbank-Updates " +
           "nicht automatisch ausgefuehrt. Bitte fuehren Sie das folgende SQL-Script " +
           "manuell aus:\n{0}",f.getAbsolutePath());
@@ -121,7 +121,6 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
   }
 
 }
-
 
 /*********************************************************************
  * $Log: DBSupportPostgreSQLImpl.java,v $

@@ -41,7 +41,6 @@ public class SammelUeberweisungList extends AbstractSammelTransferList implement
   }
 }
 
-
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
  * Revision 1.3  2008/06/30 13:04:10  willuhn

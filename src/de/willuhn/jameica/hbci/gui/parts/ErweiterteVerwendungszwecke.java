@@ -43,11 +43,11 @@ import de.willuhn.util.I18N;
 public class ErweiterteVerwendungszwecke implements Part
 {
   private final static I18N i18n    = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private String[] orig             = null;
   private List<TextInput> fields    = new ArrayList<TextInput>();
   private Button add                = null;
-  
+
   private boolean readonly          = false;
   private Konto konto               = null;
 
@@ -108,7 +108,7 @@ public class ErweiterteVerwendungszwecke implements Part
       }
     });
     this.add.setEnabled(!readonly && size+3 <= maxusage);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(this.add);
     buttons.paint(parent);
@@ -118,7 +118,7 @@ public class ErweiterteVerwendungszwecke implements Part
     // einmal initial die Groesse neu berechnen
     container.update();
   }
-  
+
   /**
    * Erzeugt eine neue Zeile Verwendungszweck.
    * @param container der Container, zu dem das Feld hinzugefuegt werden soll.
@@ -141,9 +141,9 @@ public class ErweiterteVerwendungszwecke implements Part
     container.addInput(zweck);
     this.fields.add(zweck);
   }
-  
+
   private boolean haveFocus = false;
-  
+
   /**
    * Liefert eine Liste der eingegebenen Verwendungszwecke.
    * @return Liste der Verwendungszwecke. Nie null sondern hoechstens ein leeres Array.
@@ -155,14 +155,14 @@ public class ErweiterteVerwendungszwecke implements Part
     for (TextInput text:this.fields)
     {
       String value = (String) text.getValue();
-      
+
       // Leere Verwendungszwecke ignorieren
       if (value == null)
         continue;
       value = value.trim();
       if (value.length() == 0)
         continue;
-      
+
       list.add(value);
     }
 
@@ -173,7 +173,6 @@ public class ErweiterteVerwendungszwecke implements Part
     return this.orig;
   }
 }
-
 
 /**********************************************************************
  * $Log: ErweiterteVerwendungszwecke.java,v $

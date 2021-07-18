@@ -37,7 +37,7 @@ import de.willuhn.util.I18N;
 public class LastschriftNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private MessageConsumer mc = new MyMessageConsumer();
   private Lastschrift transfer = null;
 
@@ -49,10 +49,9 @@ public class LastschriftNew extends AbstractView
 		final LastschriftControl control = new LastschriftControl(this);
     this.transfer = (Lastschrift) control.getTransfer();
 
-
 		GUI.getView().setTitle(i18n.tr("Lastschrift bearbeiten"));
     GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportLastschrift(transfer)));
-		
+
     Container c1 = new SimpleContainer(getParent());
     c1.addHeadline(i18n.tr("Konto"));
     c1.addInput(control.getKontoAuswahl());
@@ -68,7 +67,7 @@ public class LastschriftNew extends AbstractView
       container.addInput(control.getEmpfaengerBlz());
       container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
     }
-    
+
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -77,7 +76,7 @@ public class LastschriftNew extends AbstractView
       container.addInput(control.getTermin());
       container.addInput(control.getReminderInterval());
     }
-    
+
     Container container = new SimpleContainer(getParent());
     container.addHeadline(i18n.tr("Details"));
     container.addInput(control.getZweck());
@@ -93,12 +92,12 @@ public class LastschriftNew extends AbstractView
     },null,!transfer.ausgefuehrt(),"document-save.png");
     store.setEnabled(!transfer.ausgefuehrt());
     buttonArea.addButton(store);
-    
+
     buttonArea.paint(getParent());
-    
+
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
@@ -115,7 +114,7 @@ public class LastschriftNew extends AbstractView
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
      */
@@ -123,7 +122,7 @@ public class LastschriftNew extends AbstractView
     {
       return new Class[]{ObjectChangedMessage.class};
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
      */
@@ -131,16 +130,16 @@ public class LastschriftNew extends AbstractView
     {
       if (transfer == null)
         return;
-  
+
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
-      
+
       // View neu laden
       if (transfer.equals(o))
         GUI.startView(LastschriftNew.this,transfer);
     }
-  
+
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
      */

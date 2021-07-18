@@ -74,12 +74,11 @@ public class CSVImportDialog extends AbstractDialog
   private SelectInput encoding      = null;
   private SpinnerInput skipLines    = null;
   private LabelInput error          = null;
-  
+
   private List<SelectInput> selects = new ArrayList<SelectInput>();
-  
+
   private Composite parent          = null;
-  
-  
+
   /**
    * ct.
    * @param data Die CSV-Datei.
@@ -99,7 +98,7 @@ public class CSVImportDialog extends AbstractDialog
     this.setSize(680,700);
 
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -108,7 +107,7 @@ public class CSVImportDialog extends AbstractDialog
     // BUGZILLA 281
     Container options = new SimpleContainer(parent);
     options.addInput(this.getProfiles());
-    
+
     ButtonArea b = new ButtonArea();
     b.addButton(i18n.tr("CSV-Datei neu laden"), new Action()
     {
@@ -118,7 +117,7 @@ public class CSVImportDialog extends AbstractDialog
       }
     },null,false,"view-refresh.png");
     b.addButton(i18n.tr("Profil speichern..."), new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -132,7 +131,7 @@ public class CSVImportDialog extends AbstractDialog
         p.setQuotingChar((String)getQuoteChar().getValue());
         p.setSeparatorChar((String)getSeparatorChar().getValue());
         p.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
-        
+
         Profile pNew = ProfileUtil.add(format,p);
         if (pNew != null)
         {
@@ -143,7 +142,7 @@ public class CSVImportDialog extends AbstractDialog
       }
     },null,false,"document-save.png");
     b.addButton(i18n.tr("Profil löschen..."), new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -170,14 +169,14 @@ public class CSVImportDialog extends AbstractDialog
         {
           // Liste aktualisieren
           getProfiles().setList(ProfileUtil.read(format));
-          
+
           // Nach dem Loeschen die Auswahl zurueck auf das Default-Profil setzen
           getProfiles().setValue(getProfiles().getList().get(0));
         }
 
         // Einstellungen des ausgewaehlten Profils uebernehmen
         update();
-        
+
         // Datei damit neu laden
         reload();
       }
@@ -190,7 +189,7 @@ public class CSVImportDialog extends AbstractDialog
     options.addInput(this.getSeparatorChar());
     options.addInput(this.getQuoteChar());
     options.addInput(this.getSkipLines());
-    
+
     options.addText("",false);
     // BUGZILLA 412
     options.addHeadline(i18n.tr("Zuordnung der Spalten"));
@@ -201,10 +200,10 @@ public class CSVImportDialog extends AbstractDialog
     this.parent.setLayoutData(new GridData(GridData.FILL_BOTH));
     this.parent.setLayout(new GridLayout());
     reload();
-    
+
     SimpleContainer c = new SimpleContainer(parent);
     c.addInput(this.getError());
-    
+
     ButtonArea b2 = new ButtonArea();
     b2.addButton(i18n.tr("Import starten"), new Action()
     {
@@ -216,7 +215,7 @@ public class CSVImportDialog extends AbstractDialog
         result.setSeparatorChar((String)getSeparatorChar().getValue());
         result.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
         result.setColumns(getColumns());
-        
+
         settings.setAttribute(format.getType().getSimpleName() + ".defaultprofile",result.getName());
         close();
       }
@@ -224,7 +223,7 @@ public class CSVImportDialog extends AbstractDialog
     b2.addButton(new Cancel());
     c.addButtonArea(b2);
   }
-  
+
   /**
    * Liefert die aktuelle Spalten-Zuordnung.
    * @return die aktuelle Spalten-Zuordnung.
@@ -239,7 +238,7 @@ public class CSVImportDialog extends AbstractDialog
       Column c = (Column) input.getValue();
       if (c == null)
         continue; // Spalte nicht zugeordnet
-      
+
       // Spalten konnen mehrfach zugeordnet werden.
       // Daher verwenden wir einen Clone. Andernfalls wuerden
       // wir nur die letzte Zuordnung speichern
@@ -248,21 +247,21 @@ public class CSVImportDialog extends AbstractDialog
         c = (Column) c.clone();
       }
       catch (CloneNotSupportedException e) {/*dann halt nicht */}
-      
+
       // Spaltennummer speichern
       c.setColumn(i);
       columns.add(c);
     }
     return columns;
   }
-  
+
   /**
    * Laedt die CSV-Datei mit den aktuellen Parametern neu ein.
    */
   private void reload()
   {
     ICsvListReader csv = null;
-    
+
     try
     {
       SWTUtil.disposeChildren(this.parent);
@@ -277,10 +276,10 @@ public class CSVImportDialog extends AbstractDialog
       ////////////////////////////////////////////////////////////////////////////
       // CSV-Datei einlesen
       CsvPreference prefs = p.createCsvPreference();
-      
+
       final String enc = (String) this.getFileEncoding().getValue();
       Charset charset = null;
-      
+
       try
       {
         charset = Charset.forName(enc);
@@ -304,7 +303,7 @@ public class CSVImportDialog extends AbstractDialog
         // Wir verwenden als Basis die Zeile mit den meisten Spalten
         cols = Math.max(l.size(),cols);
       }
-      
+
       if (cols == 0)
       {
         this.getError().setValue(i18n.tr("CSV-Datei enthält keine Spalten"));
@@ -317,14 +316,13 @@ public class CSVImportDialog extends AbstractDialog
         return;
       }
 
-      
       int skip = ((Integer)this.getSkipLines().getValue()).intValue();
       if (lines.size() <= skip)
       {
         this.getError().setValue(i18n.tr("CSV-Datei enthält nur {0} Zeilen",Integer.toString(lines.size())));
         return;
       }
-      
+
       //
       ////////////////////////////////////////////////////////////////////////////
 
@@ -343,7 +341,7 @@ public class CSVImportDialog extends AbstractDialog
           if (value.length() > 30)
             value = value.substring(0,30) + "...";
         } catch (Exception e) {} // Spalte gibts in der Zeile nicht
-        
+
         final SelectInput s = new SelectInput(all,getColumn(columns,i));
         s.setName((i+1) + ". " + (value != null ? value : "<" + i18n.tr("leer") + ">"));
         s.setPleaseChoose("<" + i18n.tr("Nicht zugeordnet") + ">");
@@ -352,7 +350,7 @@ public class CSVImportDialog extends AbstractDialog
         container.addInput(s);
       }
       container.update();
-      
+
       this.parent.layout(true);
       this.getError().setValue("");
     }
@@ -366,7 +364,7 @@ public class CSVImportDialog extends AbstractDialog
       IOUtil.close(csv);
     }
   }
-  
+
   /**
    * Liefert die Spalte fuer die angegebene Nummer.
    * @param list Liste der Spalten.
@@ -382,7 +380,7 @@ public class CSVImportDialog extends AbstractDialog
     }
     return null;
   }
-  
+
   /**
    * Liefert das angepasste Mapping zurueck.
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
@@ -391,8 +389,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     return this.result;
   }
-  
-  
+
   /**
    * Liefert ein Eingabe-Feld fuer das Trennzeichen.
    * @return Eingabe-Feld.
@@ -401,14 +398,14 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.sepChar != null)
       return this.sepChar;
-    
+
     this.sepChar = new TextInput(getProfile().getSeparatorChar(),1);
     this.sepChar.setName(i18n.tr("Trennzeichen"));
     this.sepChar.setComment(i18n.tr("Zeichen, mit dem die Spalten getrennt sind"));
     this.sepChar.setMandatory(true);
     return this.sepChar;
   }
-  
+
   /**
    * Liefert ein Label mit einer Fehlermeldung.
    * @return Label.
@@ -417,7 +414,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.error != null)
       return this.error;
-    
+
     this.error = new LabelInput("");
     this.error.setName("");
     this.error.setColor(Color.ERROR);
@@ -432,14 +429,14 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.quoteChar != null)
       return this.quoteChar;
-    
+
     this.quoteChar = new TextInput(this.getProfile().getQuotingChar(),1);
     this.quoteChar.setName(i18n.tr("Anführungszeichen"));
     this.quoteChar.setComment(i18n.tr("Zeichen, mit dem die Spalten umschlossen sind"));
     this.quoteChar.setMandatory(false);
     return this.quoteChar;
   }
-  
+
   /**
    * Liefert ein Eingabe-Feld fuer den Zeichensatz.
    * @return Eingabe
@@ -448,7 +445,6 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.encoding != null)
       return this.encoding;
-    
     this.encoding = new SelectInput(CHARSETS,this.getProfile().getFileEncoding());
     this.encoding.setName(i18n.tr("Zeichensatz"));
     this.encoding.setComment(i18n.tr("Zeichensatz der CSV-Datei"));
@@ -456,7 +452,7 @@ public class CSVImportDialog extends AbstractDialog
     this.encoding.setEditable(true);
     return this.encoding;
   }
-  
+
   /**
    * Liefert ein Eingabe-Feld, mit dem ausgewaehlt werden kann, wieviele
    * Zeilen am Anfang uebersprungen werden sollen.
@@ -466,14 +462,14 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.skipLines != null)
       return this.skipLines;
-    
+
     this.skipLines = new SpinnerInput(0,10,this.getProfile().getSkipLines());
     this.skipLines.setName(i18n.tr("Zeilen überspringen"));
     this.skipLines.setComment(i18n.tr("Zu überspringende Zeilen am Datei-Anfang"));
     this.skipLines.setMandatory(false);
     return this.skipLines;
   }
-  
+
   /**
    * Liefert das aktuelle Profil.
    * @return das aktuelle Profil.
@@ -482,7 +478,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     return (Profile) this.getProfiles().getValue();
   }
-  
+
   /**
    * Liefert eine Auswahlbox mit den verfuegbaren Profilen.
    * @return eine Auswahlbox mit den verfuegbaren Profilen.
@@ -492,7 +488,7 @@ public class CSVImportDialog extends AbstractDialog
   {
     if (this.profiles != null)
       return this.profiles;
-    
+
     final List<Profile> list = ProfileUtil.read(this.format);
     final String name = settings.getString(format.getType().getSimpleName() + ".defaultprofile",null);
     Profile p = null;
@@ -523,7 +519,7 @@ public class CSVImportDialog extends AbstractDialog
     });
     return this.profiles;
   }
-  
+
   /**
    * Aktualisiert die Auswahl- und Eingabefelder nach Wechsel des Profils.
    */
@@ -531,13 +527,13 @@ public class CSVImportDialog extends AbstractDialog
   {
     Profile p = getProfile();
     Logger.info("changing profile to: " + p);
-    
+
     // Einstellungen in die Eingabefelder uebernehmen
     this.getFileEncoding().setValue(p.getFileEncoding());
     this.getQuoteChar().setValue(p.getQuotingChar());
     this.getSeparatorChar().setValue(p.getSeparatorChar());
     this.getSkipLines().setValue(Integer.valueOf(p.getSkipLines()));
-    
+
     // Datei mit den neuen Einstellungen laden
     reload();
   }

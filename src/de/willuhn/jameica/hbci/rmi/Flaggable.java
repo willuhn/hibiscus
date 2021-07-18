@@ -28,14 +28,14 @@ public interface Flaggable extends HibiscusDBObject
    * @throws RemoteException
    */
   public int getFlags() throws RemoteException;
-  
+
   /**
    * Speichert die Flags einen Objektes.
    * @param flags die Flags in Form eines Bit-Feldes.
    * @throws RemoteException
    */
   public void setFlags(int flags) throws RemoteException;
-  
+
   /**
    * Prueft, ob das angegebene Flag vorhanden ist.
    * @param flag das zu pruefende Flag.
@@ -44,7 +44,6 @@ public interface Flaggable extends HibiscusDBObject
    */
   public boolean hasFlag(int flag) throws RemoteException;
 }
-
 
 /**********************************************************************
  * $Log: Flaggable.java,v $

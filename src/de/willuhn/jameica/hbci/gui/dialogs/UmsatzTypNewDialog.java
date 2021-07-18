@@ -37,7 +37,7 @@ public class UmsatzTypNewDialog extends AbstractDialog
   private I18N i18n        = null;
   private LabelInput check = null;
   private UmsatzTypControl control = null;
-  
+
   /**
    * @param position
    */
@@ -58,7 +58,7 @@ public class UmsatzTypNewDialog extends AbstractDialog
     group.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
     group.addLabelPair(i18n.tr("Art des Umsatzes"), control.getArt());
     group.addLabelPair("", getCheck());
-    
+
     ButtonArea buttons = new ButtonArea(parent,2);
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -115,7 +115,6 @@ public class UmsatzTypNewDialog extends AbstractDialog
     return this.check;
   }
 }
-
 
 /*********************************************************************
  * $Log: UmsatzTypNewDialog.java,v $

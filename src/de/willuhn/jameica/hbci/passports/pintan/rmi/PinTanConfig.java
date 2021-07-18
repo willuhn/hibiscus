@@ -115,7 +115,7 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setHBCIVersion(String version) throws RemoteException;
-  
+
   /**
    * Liefert die Kundenkennung.
    * @return Kundenkennung.
@@ -136,42 +136,42 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public String getUserId() throws RemoteException;
-  
+
   /**
    * Speichert die Benutzerkennung.
    * @param user
    * @throws RemoteException
    */
   public void setUserId(String user) throws RemoteException;
-  
+
   /**
    * Dateiname der HBCI4Java-Config.
    * @return HBCI4Java-Config.
    * @throws RemoteException
    */
   public String getFilename() throws RemoteException;
-  
+
   /**
    * Liefert den Passport.
    * @return Passport.
    * @throws RemoteException
    */
   public HBCIPassport getPassport() throws RemoteException;
-  
+
   /**
    * Optionale Angabe einer Bezeichnung fuer die Konfig.
    * @return Bezeichnung.
    * @throws RemoteException
    */
   public String getBezeichnung() throws RemoteException;
-  
+
   /**
    * Speichert eine optionale Bezeichnung fuer die Konfig.
    * @param bezeichnung Bezeichnung.
    * @throws RemoteException
    */
   public void setBezeichnung(String bezeichnung) throws RemoteException;
-  
+
   /**
    * Liefert das gespeicherte TAN-Verfahren.
    * @return das gespeicherte TAN-Verfahren oder NULL, wenn keines gespeichert wurde.
@@ -185,7 +185,7 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setStoredSecMech(PtSecMech mech) throws RemoteException;
-  
+
   /**
    * Liefert das aktuell ausgewaehlte TAN-Verfahren.
    * @return das aktuell ausgewaehlte TAN-Verfahren.
@@ -199,7 +199,7 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setCurrentSecMech(PtSecMech mech) throws RemoteException;
-  
+
   /**
    * Liefert die Liste der verfuegbaren TAN-Verfahren.
    * @return die Liste der verfuegbaren TAN-Verfahren.
@@ -207,14 +207,14 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public List<PtSecMech> getAvailableSecMechs() throws RemoteException;
-  
+
   /**
    * Speichert die Liste der verfuegbaren TAN-Verfahren.
    * @param list die Liste der verfuegbaren TAN-Verfahren als Pipe-separierte Liste.
    * @throws RemoteException
    */
   public void setAvailableSecMechs(String list) throws RemoteException;
-  
+
   /**
    * Liefert true, wenn chipTAN USB verwendet werden soll.
    * @return true, wenn chipTAN USB verwendet werden soll.
@@ -223,7 +223,7 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public Boolean isChipTANUSB() throws RemoteException;
-  
+
   /**
    * Legt fest, ob chipTAN USB genutzt werden soll.
    * @param b true, wenn chipTAN USB genutzt werden soll.
@@ -232,14 +232,14 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setChipTANUSB(Boolean b) throws RemoteException;
-  
+
   /**
    * Liefert eine optionale Bezeichnung fuer den zu nutzenden Karteleser.
    * @return eine optionale Bezeichnung fuer den zu nutzenden Karteleser.
    * @throws RemoteException
    */
   public String getCardReader() throws RemoteException;
-  
+
   /**
    * Speichert den Namen des zu verwendenden Kartenlesers.
    * @param name der Name des zu verwendenden Kartenlesers.
@@ -260,14 +260,14 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setShowTan(boolean show) throws RemoteException;
-  
+
   /**
    * Liefert die Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
    * @return Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
    * @throws RemoteException
    */
   public String[] getTanMedias() throws RemoteException;
-  
+
   /**
    * Speichert die Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
    * @param names die Liste der zuletzt eingegebenen TAN-Medien-Bezeichnungen.
@@ -282,7 +282,7 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public List<String> getAvailableTanMedias() throws RemoteException;
-  
+
   /**
    * Speichert die Liste der von der Bank gelieferten TAN-Medien-Bezeichnungen.
    * @param list die Liste der von der Bank gelieferten TAN-Medien-Bezeichnungen als Pipe-separierte Liste.
@@ -303,14 +303,14 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public String getTanMedia() throws RemoteException;
-  
+
   /**
    * Speichert das zuletzt verwendete TAN-Medium.
    * @param name das zuletzt verwendete TAN-Medium.
    * @throws RemoteException
    */
   public void setTanMedia(String name) throws RemoteException;
-  
+
   /**
    * Liefert ein Custom-Property.
    * @param name Name des Property.
@@ -318,7 +318,7 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public String getCustomProperty(String name) throws RemoteException;
-  
+
   /**
    * Speichert ein Custom-Property.
    * @param name Name des Property.
@@ -326,11 +326,11 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setCustomProperty(String name, String value) throws RemoteException;
-  
+
   /**
    * Forciert ein Neuladen das in der Config gespeicherten Passport.
    * @throws RemoteException
    */
   public void reload() throws RemoteException;
-  
+
 }

@@ -24,7 +24,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 public class BatchBookInput extends SelectInput
 {
   private final static MetaKey KEY = MetaKey.SEPA_BATCHBOOK;
-  
+
   /**
    * @param konto das Konto des Aufrages. Kann null sein.
    * @param object der Auftrag, fuer den der Modus angezeigt werden soll.
@@ -48,16 +48,16 @@ public class BatchBookInput extends SelectInput
   {
     // Checken, ob wir an dem Auftrag bereits einen Batchbook-Mode haben
     BatchBookType type = BatchBookType.byValue(KEY.get(object));
-    
+
     // Ne, dann den vom Konto laden - falls es bekannt ist
     if (type == null && konto != null)
       type = BatchBookType.byValue(KEY.get(konto,object.getClass().getSimpleName()));
-    
+
     // Ne, dann den Default-Wert nehmen
     if (type == null)
       type = BatchBookType.DEFAULT;
-    
+
     this.setValue(type);
   }
-  
+
 }

@@ -37,7 +37,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
 
 	private T transfer = null;
 	private Konto konto = null;
-	
+
   /**
 	 * ct.
    * Achtung. Der Job-Parameter "data" fehlt noch und muss in den
@@ -52,7 +52,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
 		{
 			if (transfer == null)
 				throw new ApplicationException(i18n.tr("Bitte geben Sie einen SEPA-Sammelauftrag an"));
-		
+
 			if (transfer.isNewObject())
 				transfer.store();
 
@@ -65,24 +65,24 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
 			List<SepaSammelTransferBuchung> buchungen = this.transfer.getBuchungen();
 			if (buchungen.size() == 0)
         throw new ApplicationException(i18n.tr("SEPA-Sammelauftrag enthält keine Buchungen"));
-			
+
       for (SepaSammelTransferBuchung b:buchungen)
       {
         if (b.getBetrag() > Settings.getUeberweisungLimit())
           throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
             HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
       }
-      
+
       org.kapott.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
       // Deutsche Umlaute im eigenen Namen noch ersetzen
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
       setJobParam("src",own);
-      
+
       BatchBookType batch = BatchBookType.byValue(MetaKey.SEPA_BATCHBOOK.get(this.transfer));
       if (batch != null && batch != BatchBookType.NONE)
         setJobParam("batchbook",batch.getValue());
-      
+
       String pmtInfId = this.transfer.getPmtInfId();
       if (pmtInfId != null && pmtInfId.trim().length() > 0)
         setJobParam("pmtinfid", pmtInfId);
@@ -90,35 +90,35 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
       String curr = konto.getWaehrung();
       if (curr == null || curr.length() == 0)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
-      
+
       for (int i=0;i<buchungen.size();++i)
       {
         SepaSammelTransferBuchung b = buchungen.get(i);
-        
+
         // Wir nehmen explizit ein Integer-Objekt, um sicherzugehen, dass
         // wir nicht durch Autoboxing die falsche Signatur erwischen
         Integer idx = Integer.valueOf(i);
-        
+
         org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
         k.bic  = b.getGegenkontoBLZ();
         k.iban = b.getGegenkontoNummer();
         k.name = b.getGegenkontoName();
-        
+
         setJobParam("dst", idx, k);
         setJobParam("btg", idx, b.getBetrag(),curr);
-        
+
         String zweck = b.getZweck();
         if (zweck != null && zweck.length() > 0)
           setJobParam("usage", idx ,zweck);
-        
+
         String endToEndId = b.getEndtoEndId();
         if (endToEndId != null && endToEndId.trim().length() > 0)
           setJobParam("endtoendid", idx, endToEndId);
-        
+
         String purp = b.getPurposeCode();
         if (purp != null && purp.length() > 0)
           setJobParam("purposecode",idx, purp);
-        
+
       }
 		}
 		catch (RemoteException e)
@@ -135,7 +135,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
 			throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Auftrags. Fehlermeldung: {0}",t.getMessage()),t);
 		}
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
    */

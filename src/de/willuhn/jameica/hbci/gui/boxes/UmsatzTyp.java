@@ -68,7 +68,7 @@ public class UmsatzTyp extends AbstractBox
     UmsatzTypChart chart = new UmsatzTypChart();
     chart.paint(parent);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.boxes.Box#isActive()
    */
@@ -77,9 +77,7 @@ public class UmsatzTyp extends AbstractBox
     return super.isActive() && !Settings.isFirstStart();
   }
 
-
 }
-
 
 /*********************************************************************
  * $Log: UmsatzTyp.java,v $

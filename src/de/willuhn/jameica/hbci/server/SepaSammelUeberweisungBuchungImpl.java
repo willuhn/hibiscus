@@ -45,7 +45,7 @@ public class SepaSammelUeberweisungBuchungImpl extends AbstractSepaSammelTransfe
 
     return super.getForeignObject(arg0);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#getSammelTransfer()
    */

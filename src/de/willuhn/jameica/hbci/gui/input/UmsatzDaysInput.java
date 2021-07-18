@@ -35,7 +35,7 @@ public class UmsatzDaysInput extends ScaleInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings settings = new Settings(UmsatzDaysInput.class);
-  
+
   private final static String TOKEN_DEFAULT = "days";
   private Listener listener = new RangeListener();
   private String token = null;
@@ -54,7 +54,7 @@ public class UmsatzDaysInput extends ScaleInput
     this.setScaling(1,1000,1,10);
     this.addListener(this.listener);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.ScaleInput#getControl()
    */
@@ -62,7 +62,7 @@ public class UmsatzDaysInput extends ScaleInput
   {
     if (c != null)
       return c;
-    
+
     this.c = super.getControl();
     this.c.addDisposeListener(new DisposeListener() {
       public void widgetDisposed(DisposeEvent e)
@@ -70,11 +70,11 @@ public class UmsatzDaysInput extends ScaleInput
         settings.setAttribute(getToken(),(Integer) getValue());
       }
     });
-    
+
     this.listener.handleEvent(null); // einmal initial ausloesen
     return this.c;
   }
-  
+
   /**
    * Das Auswahlfeld kann sich den letzten Zeitraum merken.
    * Damit dann aber nicht auf allen Dialogen der gleiche zeitraum vorausgewaehlt ist,
@@ -92,7 +92,7 @@ public class UmsatzDaysInput extends ScaleInput
     int value = settings.getInt(this.token,HBCIProperties.UMSATZ_DEFAULT_DAYS);
     this.setValue(value == -1 ? 1000 : value);
   }
-  
+
   /**
    * Liefert den Store-Token.
    * @return der Store-Token.
@@ -159,7 +159,6 @@ public class UmsatzDaysInput extends ScaleInput
     }
   }
 }
-
 
 /*********************************************************************
  * $Log: UmsatzDaysInput.java,v $

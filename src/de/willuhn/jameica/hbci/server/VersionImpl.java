@@ -125,11 +125,8 @@ public class VersionImpl extends AbstractDBObject implements Version
     setVersion(getVersion()); // speichert automatisch die Startnummer
     super.insert();
   }
-  
-  
 
 }
-
 
 /*********************************************************************
  * $Log: VersionImpl.java,v $

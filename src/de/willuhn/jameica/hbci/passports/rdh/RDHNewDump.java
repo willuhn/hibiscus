@@ -61,7 +61,7 @@ public class RDHNewDump
                          "\n  <Schluesseldatei> <Passwort>\n");
       System.exit(1);
     }
-    
+
     final byte[] CIPHER_SALT={(byte)0x26,(byte)0x19,(byte)0x38,(byte)0xa7,(byte)0x99,(byte)0xbc,(byte)0xf1,(byte)0x55};
     final int CIPHER_ITERATIONS=987;
 
@@ -102,12 +102,12 @@ public class RDHNewDump
 
     TransformerFactory tfac=TransformerFactory.newInstance();
     Transformer tform=tfac.newTransformer();
-    
+
     tform.setOutputProperty(OutputKeys.METHOD,"xml");
     tform.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,"no");
     tform.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
     tform.setOutputProperty(OutputKeys.INDENT,"yes");
-    
+
     tform.transform(new DOMSource(root),new StreamResult(System.out));
   }
 

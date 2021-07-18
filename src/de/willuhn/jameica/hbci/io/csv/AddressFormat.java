@@ -32,7 +32,7 @@ public class AddressFormat implements Format<HibiscusAddress>
 
   private ImportListener listener        = null;
   private Profile profile                = null;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.csv.Format#getDefaultProfile()
    */
@@ -44,7 +44,7 @@ public class AddressFormat implements Format<HibiscusAddress>
       this.profile.setName(i18n.tr("Default-Profil"));
       this.profile.setSkipLines(1);
       this.profile.setSystem(true);
-      
+
       Serializer s = new DefaultSerializer();
       List<Column> list = this.profile.getColumns();
       int i = 0;
@@ -74,7 +74,7 @@ public class AddressFormat implements Format<HibiscusAddress>
     if (this.listener == null)
     {
       this.listener = new ImportListener(){
-        
+
         private AddressbookService addressbook = null;
 
         /**
@@ -87,7 +87,7 @@ public class AddressFormat implements Format<HibiscusAddress>
             Object data = event.data;
             if (data == null || !(data instanceof HibiscusAddress))
               return;
-            
+
             if (this.addressbook == null)
               this.addressbook = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
 
@@ -104,14 +104,12 @@ public class AddressFormat implements Format<HibiscusAddress>
             Logger.write(Level.WARN,"error while checking address",e);
           }
         }
-        
+
       };
     }
     return this.listener;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: AddressFormat.java,v $

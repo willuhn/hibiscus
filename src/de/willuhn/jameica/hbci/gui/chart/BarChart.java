@@ -43,7 +43,7 @@ import de.willuhn.util.ColorGenerator;
 public class BarChart extends AbstractChart
 {
   private Composite comp = null;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.Chart#redraw()
    */
@@ -68,7 +68,7 @@ public class BarChart extends AbstractChart
     getChart().setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Titel des Charts
     {
@@ -79,11 +79,11 @@ public class BarChart extends AbstractChart
     }
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Layout der Achsen
     Color gray = getColor(new RGB(230,230,230));
-    
+
     // X-Achse
     {
       IAxis axis = getChart().getAxisSet().getXAxis(0);
@@ -95,7 +95,7 @@ public class BarChart extends AbstractChart
 
       axis.getTick().setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
     }
-    
+
     // Y-Achse
     {
       IAxis axis = getChart().getAxisSet().getYAxis(0);
@@ -104,7 +104,7 @@ public class BarChart extends AbstractChart
       IGrid grid = axis.getGrid();
       grid.setStyle(LineStyle.DOT);
       grid.setForeground(gray);
-      
+
       IAxisTick tick = axis.getTick();
       tick.setFormat(HBCI.DECIMALFORMAT);
       tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
@@ -112,7 +112,6 @@ public class BarChart extends AbstractChart
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    
     ////////////////////////////////////////////////////////////////////////////
     // Neu zeichnen
     List<ChartData> data = getData();
@@ -120,7 +119,7 @@ public class BarChart extends AbstractChart
     {
       final List<String> labelLine = new LinkedList<String>();
       final List<Number> dataLine  = new LinkedList<Number>();
-      
+
       ChartData cd          = (ChartData) data.get(i);
       List list             = cd.getData();
       String dataAttribute  = cd.getDataAttribute();
@@ -138,7 +137,7 @@ public class BarChart extends AbstractChart
         {
           Object value = BeanUtil.get(o,dataAttribute);
           Object label = BeanUtil.get(o,labelAttribute);
-          
+
           if (label == null || value == null || !(value instanceof Number))
             continue;
 
@@ -158,13 +157,13 @@ public class BarChart extends AbstractChart
 
       IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,Integer.toString(i));
       barSeries.setYSeries(toArray(dataLine));
-      
+
       //////////////////////////////////////////////////////////////////////////
       // Layout
       int[] cValues = ColorGenerator.create(ColorGenerator.PALETTE_ECLIPSE + i);
       Color color = getColor(new RGB(cValues[0],cValues[1],cValues[2]));
       barSeries.setBarColor(color);
-      
+
       ISeriesLabel label = barSeries.getLabel();
       label.setFont(Font.SMALL.getSWTFont());
       label.setFormat(HBCI.DECIMALFORMAT.toPattern()); // BUGZILLA 1123
@@ -189,14 +188,14 @@ public class BarChart extends AbstractChart
   {
     if (this.comp != null)
       return;
-    
+
     this.comp = new Composite(parent,SWT.NONE);
     this.comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-    
+
     redraw();
     super.paint(parent);
   }
-  
+
   /**
    * Wandelt die Liste in ein Array von doubles um.
    * @param list die Liste.
@@ -212,7 +211,6 @@ public class BarChart extends AbstractChart
     return values;
   }
 }
-
 
 /*********************************************************************
  * $Log: BarChart.java,v $

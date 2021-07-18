@@ -54,14 +54,13 @@ import de.willuhn.util.I18N;
 public class CaptchaDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private InputStream image = null;
   private String data       = null;
-  
+
   private TextInput solution = null;
   private Button applyButton = null;
-  
-  
+
   /**
    * ct.
    * @param url URL des Bildes.
@@ -72,7 +71,7 @@ public class CaptchaDialog extends AbstractDialog
   {
     this(new ByteArrayInputStream(fetch(url)),position);
   }
-  
+
   /**
    * ct.
    * @param is Stream mit dem Bild.
@@ -86,7 +85,7 @@ public class CaptchaDialog extends AbstractDialog
     this.setPanelText(i18n.tr("Bitte geben Sie den in der Grafik angezeigten Text ein."));
     this.image = is;
   }
-  
+
   /**
    * Ruft das Bild von der URL ab.
    * @param url die URL.
@@ -99,7 +98,7 @@ public class CaptchaDialog extends AbstractDialog
     {
       TransportService ts = Application.getBootLoader().getBootable(TransportService.class);
       Transport t = ts.getTransport(new URL(url));
-      
+
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       t.get(bos,new ConsoleMonitor());
       return bos.toByteArray();
@@ -121,11 +120,11 @@ public class CaptchaDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     Container container = new SimpleContainer(parent);
-    
+
     createCaptcha(container);
-    
+
     container.addInput(this.getSolution());
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(this.getApplyButton());
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
@@ -201,7 +200,7 @@ public class CaptchaDialog extends AbstractDialog
       }
     });
   }
-  
+
   /**
    * Liefert ein Eingabefeld, in dem die Loesung eingetragen wird.
    * @return Eingabefeld.
@@ -210,13 +209,13 @@ public class CaptchaDialog extends AbstractDialog
   {
     if (this.solution != null)
       return this.solution;
-    
+
     this.solution = new TextInput(null);
     this.solution.setName(i18n.tr("Lösung"));
     this.solution.setMandatory(true);
     return this.solution;
   }
-  
+
   /**
    * Liefert den Apply-Button.
    * @return der Apply-Button.
@@ -225,7 +224,7 @@ public class CaptchaDialog extends AbstractDialog
   {
     if (this.applyButton != null)
       return this.applyButton;
-    
+
     this.applyButton = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {

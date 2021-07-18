@@ -48,12 +48,12 @@ public class DonateView extends AbstractView
   public void bind() throws Exception
   {
     GUI.getView().setTitle(i18n.tr("Spenden für Hibiscus"));
-    
+
     {
       Composite comp = new Composite(this.getParent(),SWT.NONE);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       comp.setLayout(SWTUtil.createGrid(2,false));
-      
+
       Container container = new SimpleContainer(comp);
       container.addHeadline(i18n.tr("Warum eigentlich?") + "  ");
       container.addText(i18n.tr("Viele Opensource-Anwendungen werden nicht von finanzstarken Unternehmen programmiert " +
@@ -63,11 +63,11 @@ public class DonateView extends AbstractView
                                 "benötige ich natürlich auch Geld für die Miete des Webservers, für zu testende Chipkarten-Leser " +
                                 "und auch für die Computer und Betriebssysteme, auf denen Hibiscus laufen soll. Leider " +
                                 "konnte ich bisher kein Unternehmen finden, welches mich sponsert."),true);
-      
+
       Canvas c = SWTUtil.getCanvas(comp,SWTUtil.getImage("hibiscus-donate.png"),SWT.TOP | SWT.LEFT);
       ((GridData)c.getLayoutData()).minimumWidth = 157;
     }
-    
+
     {
       Container container = new SimpleContainer(getParent());
       container.addHeadline(i18n.tr("Unterstützen"));
@@ -80,11 +80,11 @@ public class DonateView extends AbstractView
     }
 
     {
-      
+
       final char[] iban = new char[]{'D','E','1','7','8','6','0','5','0','2','0','0','1','2','1','0','3','2','2','5','2','4'};
       final char[] bic  = new char[]{'S','O','L','A','D','E','S','1','G','R','M'};
       final String name = "Olaf Willuhn";
-      
+
       ButtonArea buttons = new ButtonArea();
       buttons.addButton(i18n.tr("Dauerauftrag erstellen"),new Action() {
         public void handleAction(Object context) throws ApplicationException
@@ -136,8 +136,7 @@ public class DonateView extends AbstractView
       },null,false,"ueberweisung.png");
       buttons.paint(getParent());
     }
-    
-    
+
   }
 
 }

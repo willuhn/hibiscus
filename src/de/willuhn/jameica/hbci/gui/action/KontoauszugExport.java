@@ -29,7 +29,7 @@ public class KontoauszugExport extends Export
   {
     super(Kontoauszug.class);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.action.Export#handleAction(java.lang.Object)
    */
@@ -64,5 +64,3 @@ public class KontoauszugExport extends Export
   }
 
 }
-
-

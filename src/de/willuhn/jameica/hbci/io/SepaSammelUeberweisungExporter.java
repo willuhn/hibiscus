@@ -47,15 +47,15 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       String batchbook = MetaKey.SEPA_BATCHBOOK.get(u);
       if (batchbook != null)
         props.setProperty("batchbook", batchbook);
-      
+
       props.setProperty("pmtinfid", StringUtils.trimToEmpty(u.getPmtInfId()));
 
     }
-    
+
     Integer count = (Integer) ctx.meta.get("count");
     if (count == null)
       count = 0;
-    
+
     List<SepaSammelUeberweisungBuchung> buchungen = u.getBuchungen();
     for (int i=0;i<buchungen.size();++i)
     {
@@ -70,7 +70,7 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       props.setProperty(SepaUtil.insertIndex("purposecode",count),  StringUtils.trimToEmpty(b.getPurposeCode()));
       count++;
     }
-    
+
     if (u.isTerminUeberweisung())
     {
       SimpleDateFormat df = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
@@ -78,10 +78,9 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       if (date != null)
         props.setProperty("date",date);
     }
-    
+
     // Weil wir eine Liste von Auftraegen mit Buchungen haben, muessen wir den Zaehler selbst zaehlen
     ctx.meta.put("count",count);
-
   }
 
   /**
@@ -92,7 +91,7 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
   {
     return Type.PAIN_001;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getJobName()
    */
@@ -101,7 +100,7 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
   {
     return "UebSEPA";
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractExporter#getSupportedObjectTypes()
    */
@@ -111,5 +110,3 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
     return new Class[]{SepaSammelUeberweisung.class};
   }
 }
-
-

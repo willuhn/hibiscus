@@ -39,7 +39,7 @@ public class NachrichtCopy implements Action
     try
     {
       String text = ((Nachricht)context).getNachricht();
-      
+
       final Clipboard cb = new Clipboard(GUI.getDisplay());
       cb.setContents(new Object[]{text}, new Transfer[]{TextTransfer.getInstance()});
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(Application.getI18n().tr("Text in Zwischenablage kopiert."),StatusBarMessage.TYPE_SUCCESS));
@@ -52,7 +52,6 @@ public class NachrichtCopy implements Action
   }
 
 }
-
 
 /**********************************************************************
  * $Log: NachrichtCopy.java,v $

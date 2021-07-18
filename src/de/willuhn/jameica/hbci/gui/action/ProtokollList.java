@@ -38,7 +38,6 @@ public class ProtokollList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: ProtokollList.java,v $
  * Revision 1.1  2005/05/02 23:56:45  web0

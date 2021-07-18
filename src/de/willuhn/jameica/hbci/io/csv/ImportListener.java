@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.io.csv;
 
 import de.willuhn.jameica.system.OperationCanceledException;
 
-
 /**
  * Listener, den ein Format mitbringen kann, um Einfluss auf den Import-Vorgang
  * nehmen zu koennen.
@@ -28,7 +27,7 @@ public class ImportListener
   public void beforeStore(ImportEvent event) throws OperationCanceledException
   {
   }
-  
+
   /**
    * Wird aufgerufen, nachdem alle Werte der Zeile deserialisiert, aber noch nicht
    * zur Bean hinzugefuegt wurden. Die Format-Implementierung kann hier - nachdem
@@ -43,11 +42,9 @@ public class ImportListener
    */
   public void beforeSet(ImportEvent event) throws OperationCanceledException
   {
-    
+
   }
 }
-
-
 
 /**********************************************************************
  * $Log: ImportListener.java,v $

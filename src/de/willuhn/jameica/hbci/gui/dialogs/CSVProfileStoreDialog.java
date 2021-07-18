@@ -44,15 +44,15 @@ public class CSVProfileStoreDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static int WINDOW_WIDTH = 500;
-  
+
   private Format format          = null;
   private Profile profile        = null;
   private Button apply           = null;
   private TextInput name         = null;
   private LabelInput hint        = null;
-  
+
   private List<Profile> profiles = null;
-  
+
 	/**
 	 * Erzeugt einen neuen Text-Dialog.
 	 * @param format das Format.
@@ -66,16 +66,16 @@ public class CSVProfileStoreDialog extends AbstractDialog
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
     this.setTitle(i18n.tr("Name des Profils"));
     this.setSideImage(SWTUtil.getImage("dialog-question-large.png"));
-    
+
     this.profile = profile;
-    
+
     // Wir machen neue Profile generell zu Nicht-System-Profilen
     this.profile.setSystem(false);
-    
+
     this.format = format;
     this.profiles = ProfileUtil.read(format);
   }
-  
+
   /**
    * Liefert das Eingabefeld fuer den Namen.
    * @return das Eingabefeld fuer den Namen.
@@ -84,13 +84,13 @@ public class CSVProfileStoreDialog extends AbstractDialog
   {
     if (this.name != null)
       return this.name;
-    
+
     this.name = new TextInput(this.suggestName());
     this.name.setName("");
     this.name.setMandatory(true);
     return this.name;
   }
-  
+
   /**
    * Liefert einen Namensvorschlag fuer das Profil.
    * @return Namensvorschlag fuer das Profil.
@@ -125,16 +125,16 @@ public class CSVProfileStoreDialog extends AbstractDialog
           break;
         }
       }
-      
+
       // wir haben einen passenden Namen gefunden
       if (!found)
         return name;
     }
-    
+
     // Ne, dann muss der User selbst einen neuen Namen vergeben
     return template;
   }
-  
+
   /**
    * Zeigt einen Hinweis-Text an.
    * @return Hinweis-Text.
@@ -143,13 +143,13 @@ public class CSVProfileStoreDialog extends AbstractDialog
   {
     if (this.hint != null)
       return this.hint;
-    
+
     this.hint = new LabelInput("");
     this.hint.setName("");
     this.hint.setColor(Color.ERROR);
     return this.hint;
   }
-  
+
   /**
    * Liefert den Apply-Button.
    * @return der Apply-Button.
@@ -158,13 +158,13 @@ public class CSVProfileStoreDialog extends AbstractDialog
   {
     if (this.apply != null)
       return this.apply;
-    
+
     this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         // Name uebernehmen
         profile.setName((String) getName().getValue());
-        
+
         // Wir koennen das Profil zur Liste hinzufuegen.
         // Checken, ob eines ueberschrieben werden soll.
         boolean found = false;
@@ -172,7 +172,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
         {
           if (p.isSystem())
             continue;
-          
+
           if (p.getName().equals(profile.getName()))
           {
             profiles.set(profiles.indexOf(p),profile);
@@ -180,15 +180,15 @@ public class CSVProfileStoreDialog extends AbstractDialog
             break;
           }
         }
-        
+
         if (!found)
           profiles.add(profile);
-        
+
         ProfileUtil.store(format,profiles);
         close();
       }
     },null,true,"ok.png");
-    
+
     return this.apply;
   }
 
@@ -201,10 +201,10 @@ public class CSVProfileStoreDialog extends AbstractDialog
     c.addText(i18n.tr("Bitte geben Sie einen Namen für das Profil an.\n\n" +
                       "Verwenden Sie einen noch nicht benutzten Namen, um ein neues Profil hinzuzufügen. " +
                       "Vergeben Sie alternativ einen bereits verwendeten Namen, um dieses Profil zu überschreiben."),true);
-    
+
     final Input name = this.getName();
     c.addInput(name);
-    
+
     name.getControl().addKeyListener(new KeyAdapter() {
       /**
        * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
@@ -221,14 +221,14 @@ public class CSVProfileStoreDialog extends AbstractDialog
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(this.getApply());
     buttons.addButton(new Cancel());
-    
+
     c.addButtonArea(buttons);
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
-    
+
     // UI initialisieren
     updateUI();
 	}
-  
+
   /**
    * Aktualisiert die UI nach Zeicheneingabe
    */
@@ -237,7 +237,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
     // Apply-Button deaktivieren, wenn nichts drin steht.
     final String text = StringUtils.trimToNull((String) name.getValue());
     getApply().setEnabled(text != null);
-    
+
     // Hier brauchen wir nichts weiter checken
     if (text == null)
       return;
@@ -246,7 +246,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
 
     boolean found  = false;
     boolean system = false;
-    
+
     // Jetzt noch checken, ob wir ein existierendes Profil ueberschreiben und einen Warnhinweis anzeigen
     // Ausserdem einen Hinweis, wenn der User versucht, das System-Profil zu ueberschreiben
     for (Profile p:this.profiles)
@@ -257,7 +257,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
         system = p.isSystem();
       }
     }
-    
+
     if (!found)
     {
       getHint().setColor(Color.SUCCESS);
@@ -269,7 +269,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
       getHint().setColor(Color.LINK);
       getHint().setValue(i18n.tr("Existierendes Profil wird überschrieben."));
     }
-    
+
     if (system)
     {
       getHint().setColor(Color.ERROR);

@@ -54,21 +54,21 @@ public class PassportChange implements Action
       Logger.error("no passport given");
       return;
     }
-    
+
     String custOld = pcr.passport.getCustomerId();
     String userOld = pcr.passport.getUserId();
-    
+
     boolean changeCustId = StringUtils.trimToNull(pcr.custId) != null && !StringUtils.trimToEmpty(custOld).equals(StringUtils.trimToEmpty(pcr.custId));
     boolean changeUserId = StringUtils.trimToNull(pcr.userId) != null && !StringUtils.trimToEmpty(userOld).equals(StringUtils.trimToEmpty(pcr.userId));
-    
+
     if (!changeCustId && !changeUserId)
       return;
-    
+
     boolean changed = false;
 
     try
     {
-      
+
       // 1) User/Customer im Passport selbst
       {
         Logger.info("applying new customerId/userId to passport");
@@ -85,7 +85,7 @@ public class PassportChange implements Action
           changed = true;
         }
       }
-      
+
       // 2) User/Customer in den UPD
       {
         Properties upd = pcr.passport.getUPD();
@@ -99,7 +99,7 @@ public class PassportChange implements Action
             String value = upd.getProperty(key);
             if (value == null || value.length() == 0)
               continue;
-            
+
             if (changeCustId && value.equals(custOld))
             {
               Logger.info("updating UPD entry " + key + " with new customerId");
@@ -107,7 +107,7 @@ public class PassportChange implements Action
               count++;
               continue;
             }
-            
+
             if (changeUserId && value.equals(userOld))
             {
               Logger.info("updating UPD entry " + key + " with new userId");
@@ -119,7 +119,7 @@ public class PassportChange implements Action
           changed |= count > 0;
         }
       }
-      
+
       if (changed)
       {
         Logger.info("saving changed passport");
@@ -142,7 +142,7 @@ public class PassportChange implements Action
                 Logger.info("updating customerid in account ID " + k.getID());
                 k.setKundennummer(pcr.custId);
                 k.store();
-                
+
                 k.addToProtokoll(i18n.tr("Geänderte Kundenkennung - neu: {0}, alt: {1}",pcr.custId,custOld),Protokoll.TYP_SUCCESS);
                 count++;
               }
@@ -167,5 +167,3 @@ public class PassportChange implements Action
   }
 
 }
-
-

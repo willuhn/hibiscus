@@ -70,6 +70,7 @@ public class LastschriftList extends ContextMenu
     {
       super(text,action,icon);
     }
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -81,4 +82,3 @@ public class LastschriftList extends ContextMenu
     }
   }
 }
-

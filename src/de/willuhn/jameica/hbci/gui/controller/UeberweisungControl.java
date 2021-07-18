@@ -70,7 +70,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     transfer = (Ueberweisung) getCurrentObject();
     if (transfer != null)
       return transfer;
-      
+
     transfer = (Ueberweisung) Settings.getDBService().createObject(Ueberweisung.class,null);
 		return transfer;
 	}
@@ -86,7 +86,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     if (this.typ != null)
       return this.typ;
     final Ueberweisung u = (Ueberweisung) getTransfer();
-    
+
     List<Typ> list = new ArrayList<Typ>();
     list.add(new Typ(false,false));
     list.add(new Typ(true,false));
@@ -118,8 +118,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     });
     return this.typ;
   }
-  
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTermin()
    */
@@ -127,7 +126,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
   {
     if (this.termin != null)
       return this.termin;
-    
+
     this.termin = super.getTermin();
     this.termin.addListener(new Listener() {
       public void handleEvent(Event event)
@@ -136,11 +135,11 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
         {
           if (!termin.hasChanged())
             return;
-          
+
           Date date = (Date) termin.getValue();
           if (date == null)
             return;
-          
+
           // Wenn das Datum eine Woche in der Zukunft liegt, fragen wir den User, ob es vielleicht
           // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
           // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
@@ -162,10 +161,10 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
         {
           Logger.error("unable to check for termueb",e);
         }
-        
+
       }
     });
-    
+
     return this.termin;
   }
 
@@ -182,7 +181,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     table = new de.willuhn.jameica.hbci.gui.parts.UeberweisungList(new UeberweisungNew());
 		return table;
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTextSchluessel()
    */
@@ -201,7 +200,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
     // initiales Setzen der Einstellungen
     updateZweck(current);
-    
+
     // Listener fuer die nachtraegliche Aenderung
     if (textschluessel.isEnabled())
     {
@@ -215,10 +214,10 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     }
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     return textschluessel;
   }
-  
+
   /**
    * Aktualisiert die Eingabefelder fuer den Verwendungszweck abhaengig vom Textschluessel.
    * @param code der Code.
@@ -228,7 +227,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     try
     {
       TextInput zweck = getZweck();
-      
+
       if (code != null && code.equals(TextSchluessel.TS_BZU))
       {
         zweck.setName(i18n.tr("BZÜ-Prüfziffer"));
@@ -251,7 +250,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       Logger.error("unable to apply changes",e);
     }
   }
-  
+
   /**
    * Ueberschrieben, um das Flag fuer die Termin-Ueberweisung zu speichern.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
@@ -263,7 +262,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       Ueberweisung u = (Ueberweisung) getTransfer();
       if (u.ausgefuehrt()) // BUGZILLA 1197
         return true;
-      
+
       Typ t = (Typ) getTyp().getValue();
       u.setTerminUeberweisung(t.termin);
       u.setUmbuchung(t.umb);
@@ -276,7 +275,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       return false;
     }
   }
-  
+
   /**
    * Hilfsklasse fuer den Auftragstyp.
    */
@@ -284,7 +283,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
   {
     private boolean termin = false;
     private boolean umb    = false;
-    
+
     /**
      * ct.
      * @param termin true bei Termin-Ueberweisung.
@@ -295,7 +294,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       this.termin = termin;
       this.umb    = umb;
     }
-    
+
     /**
      * Liefert den sprechenden Namen des Typs.
      * @return sprechender Name des Typs.
@@ -306,7 +305,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       if (this.umb)    return i18n.tr("Interne Umbuchung (Übertrag)");
       return           i18n.tr("Überweisung");
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -320,7 +319,6 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     }
   }
 }
-
 
 /**********************************************************************
  * $Log: UeberweisungControl.java,v $

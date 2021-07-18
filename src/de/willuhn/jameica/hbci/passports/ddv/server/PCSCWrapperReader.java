@@ -23,7 +23,7 @@ import de.willuhn.jameica.system.Platform;
 public class PCSCWrapperReader extends AbstractReader
 {
   private final static Map<Integer,String[]> LOCATIONS = new HashMap<Integer,String[]>();
-  
+
   static
   {
     LOCATIONS.put(Platform.OS_LINUX,new String[]
@@ -48,7 +48,7 @@ public class PCSCWrapperReader extends AbstractReader
                    }
                  );
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
    */
@@ -75,7 +75,7 @@ public class PCSCWrapperReader extends AbstractReader
           return s;
       }
     }
-    
+
     return "";
   }
 

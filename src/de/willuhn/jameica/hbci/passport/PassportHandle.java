@@ -29,12 +29,12 @@ public interface PassportHandle extends Remote
    * der Passport erstellt wurde.
    */
   public final static String CONTEXT_CONFIG = "hibiscus.context.config";
-  
+
   /**
    * Identifier fuer den Persistent-Parameter mit ggf geaenderter Kunden- und Benutzerkennung.
    */
   public final static String CONTEXT_USERID_CHANGED = "hibiscus.context.userid.changed";
-  
+
   /**
    * Identifier fuer den Persistent-Parameter der Liste der TAN-Verfahren
    */
@@ -108,7 +108,6 @@ public interface PassportHandle extends Remote
   public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception;
 
 }
-
 
 /**********************************************************************
  * $Log: PassportHandle.java,v $

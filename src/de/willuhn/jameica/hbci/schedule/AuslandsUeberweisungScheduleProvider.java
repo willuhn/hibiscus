@@ -29,8 +29,6 @@ public class AuslandsUeberweisungScheduleProvider extends AbstractTransferSchedu
   }
 }
 
-
-
 /**********************************************************************
  * $Log: AuslandsUeberweisungScheduleProvider.java,v $
  * Revision 1.1  2012/02/20 17:03:50  willuhn

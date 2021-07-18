@@ -51,7 +51,7 @@ public class View extends AbstractView
     buttons.paint(getParent());
 
     control.getConfigList().paint(getParent());
-    
+
     // Wenn wir mit einem Passport als Context statt der konkreten Config 
     // aufgerufen wurden, dann hatte der User explizit auf "Neuer Bank-Zugang..."
     // geklickt. In dem Fall starten wir sofort den Dialog zur Erstellung eines

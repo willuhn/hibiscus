@@ -38,9 +38,9 @@ public class HBCISynchronizeJobKontoauszug extends SynchronizeJobKontoauszug imp
     Konto k              = (Konto) this.getContext(CTX_ENTITY);
     Boolean forceSaldo   = (Boolean) this.getContext(CTX_FORCE_SALDO);
     Boolean forceUmsatz  = (Boolean) this.getContext(CTX_FORCE_UMSATZ);
-    
+
     SynchronizeOptions o = new SynchronizeOptions(k);
-    
+
     List<AbstractHBCIJob> jobs = new ArrayList<AbstractHBCIJob>();
     if (o.getSyncSaldo() || (forceSaldo != null && forceSaldo.booleanValue())) jobs.add(new HBCISaldoJob(k));
     if (o.getSyncKontoauszuege() || (forceUmsatz != null && forceUmsatz.booleanValue())) jobs.add(new HBCIUmsatzJob(k));

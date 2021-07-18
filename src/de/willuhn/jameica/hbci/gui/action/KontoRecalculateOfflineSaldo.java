@@ -61,7 +61,7 @@ public class KontoRecalculateOfflineSaldo implements Action
       List<Umsatz> umsaetze = new ArrayList<Umsatz>();
       DBIterator<Umsatz> it = k.getUmsaetze();
       double currentSaldo = 0d;
-      
+
       while (it.hasNext())
       {
         Umsatz um = it.next();
@@ -112,7 +112,7 @@ public class KontoRecalculateOfflineSaldo implements Action
 
     Date dc = (Date) current.getAttribute("datum_pseudo");
     Date dn = (Date) newer.getAttribute("datum_pseudo");
-    
+
     if (dn.before(dc))
       throw new ApplicationException(i18n.tr("Reihenfolge der Buchungsdaten falsch. Buchung Nr. {0} befindet sich vor Buchung Nr. {1}",newer.getID(),current.getID()));
   }

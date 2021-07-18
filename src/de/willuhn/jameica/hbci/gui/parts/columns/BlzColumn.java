@@ -44,7 +44,6 @@ public class BlzColumn extends Column
   }
 }
 
-
 /**********************************************************************
  * $Log: BlzColumn.java,v $
  * Revision 1.2  2011/04/29 15:33:28  willuhn

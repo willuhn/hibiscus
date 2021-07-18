@@ -76,16 +76,16 @@ public class EmpfaengerControl extends AbstractControl
   private TextInput bank          = null;
 
   private SelectInput kategorie   = null;
-  
+
 	private Input kommentar         = null;
 
   private Part list               = null;
   private Part sammelList         = null;
   private Part sammelList2        = null;
   private Part umsatzList         = null;
-  
+
   private IbanListener ibanListener = new IbanListener();
-  
+
   /**
    * @param view
    */
@@ -104,7 +104,7 @@ public class EmpfaengerControl extends AbstractControl
 	{
 		if (address != null)
 			return address;
-		
+
     address = (Address) getCurrentObject();
 		if (address != null)
 			return address;
@@ -112,7 +112,7 @@ public class EmpfaengerControl extends AbstractControl
     address = (HibiscusAddress) Settings.getDBService().createObject(HibiscusAddress.class,null);
 		return address;
 	}
-  
+
   /**
    * Prueft, ob es sich bei der Adresse um eine Hibiscus-Adresse handelt und diese aenderbar ist.
    * @return true, wenn es eine Hibiscus-Adresse ist.
@@ -155,7 +155,7 @@ public class EmpfaengerControl extends AbstractControl
     // BUGZILLA 1395 wenn der Adressbuch-Eintrag nur IBAN hat und keine Kontonummer/BLZ, dann nur nach IBAN suchen
     String iban = a.getIban();
     String konto = a.getKontonummer();
-    
+
     if (StringUtils.isNotEmpty(iban)) // haben wir eine IBAN?
     {
       if (StringUtils.isNotEmpty(konto)) // haben wir ausserdem Konto/BLZ?
@@ -224,12 +224,12 @@ public class EmpfaengerControl extends AbstractControl
 		kontonummer = new TextInput(getAddress().getKontonummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
     // BUGZILLA 280
     kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
-    
+
     boolean b = this.isHibiscusAdresse();
     kontonummer.setEnabled(b);
     if (b)
       kontonummer.addListener(this.ibanListener);
-    
+
     return kontonummer;
 	}
 
@@ -246,7 +246,7 @@ public class EmpfaengerControl extends AbstractControl
     this.kommentar.setEnabled(isHibiscusAdresse());
     return this.kommentar;
   }
-  
+
   /**
    * Liefert ein editierbares Auswahlfeld mit der Kategorie.
    * @return Auswahlfeld.
@@ -256,7 +256,7 @@ public class EmpfaengerControl extends AbstractControl
   {
     if (this.kategorie != null)
       return this.kategorie;
-    
+
     List<String> list = (List<String>) Settings.getDBService().execute("select kategorie from empfaenger where kategorie is not null and kategorie != '' group by kategorie order by LOWER(kategorie)",null,new ResultSetExtractor()
     {
       /**
@@ -278,7 +278,7 @@ public class EmpfaengerControl extends AbstractControl
     this.kategorie.setEnabled(isHibiscusAdresse());
     return this.kategorie;
   }
-  
+
 	/**
 	 * Liefert das Eingabe-Feld fuer die BLZ.
 	 * @return Eingabe-Feld.
@@ -289,15 +289,15 @@ public class EmpfaengerControl extends AbstractControl
 		if (blz != null)
 			return blz;
 		blz = new BLZInput(getAddress().getBlz());
-    
+
     boolean b = this.isHibiscusAdresse();
     blz.setEnabled(b);
     if (b)
       blz.addListener(this.ibanListener);
-    
+
 		return blz;
 	}
-	
+
   /**
    * Liefert das Eingabe-Feld fuer die IBAN.
    * @return Eingabe-Feld.
@@ -307,7 +307,7 @@ public class EmpfaengerControl extends AbstractControl
   {
     if (this.iban != null)
       return this.iban;
-    
+
     boolean enabled = this.isHibiscusAdresse();
     this.iban = new IBANInput(getAddress().getIban(),this.getBic());
     this.iban.setEnabled(enabled);
@@ -324,7 +324,7 @@ public class EmpfaengerControl extends AbstractControl
             boolean haveIban = StringUtils.trimToNull(iban) != null;
             boolean haveKto  = StringUtils.trimToNull((String) getKontonummer().getValue()) != null;
             boolean haveBlz  = StringUtils.trimToNull((String) getBlz().getValue()) != null;
-            
+
             if (haveIban && (!haveKto || !haveBlz))
             {
               IBAN i = new IBAN(iban);
@@ -334,11 +334,11 @@ public class EmpfaengerControl extends AbstractControl
                 Logger.info("length of bank identifier unknown for this country");
                 return;
               }
-              
+
               // Kontonummer vervollstaendigen
               if (!haveKto)
                 getKontonummer().setValue(i.getKonto());
-              
+
               // BLZ vervollstaendigen
               if (!haveBlz)
                 getBlz().setValue(i.getBLZ());
@@ -351,7 +351,7 @@ public class EmpfaengerControl extends AbstractControl
         }
       });      
     }
-    
+
     return this.iban;
   }
 
@@ -364,7 +364,7 @@ public class EmpfaengerControl extends AbstractControl
   {
     if (this.bic != null)
       return this.bic;
-    
+
     boolean enabled = this.isHibiscusAdresse();
     this.bic = new BICInput(getAddress().getBic());
     this.bic.setEnabled(enabled);
@@ -379,7 +379,7 @@ public class EmpfaengerControl extends AbstractControl
           {
             String bic = (String) getBic().getValue();
             String blz = (String) getBlz().getValue();
-            
+
             if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
             {
               Bank bank = Banken.getBankByBIC(bic);
@@ -398,7 +398,7 @@ public class EmpfaengerControl extends AbstractControl
         }
       });
     }
-    
+
     return this.bic;
   }
 
@@ -435,7 +435,7 @@ public class EmpfaengerControl extends AbstractControl
     name.setMandatory(true);
 		return name;
 	}
-	
+
 	/**
 	 * Vervollstaendigt IBAN/BIC.
 	 */
@@ -450,21 +450,21 @@ public class EmpfaengerControl extends AbstractControl
 	    {
         String blz  = StringUtils.trimToNull((String) getBlz().getValue());
         String bic  = StringUtils.trimToNull((String) getBic().getValue());
-        
+
         String kto  = StringUtils.trimToNull((String) getKontonummer().getValue());
         String iban = StringUtils.trimToNull((String) getIban().getValue());
 
 	      if (blz != null && blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
 	      {
 	        String newBic = null;
-	        
+
 	        if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
 	        {
 	          IBAN newIban = HBCIProperties.getIBAN(blz,kto);
 	          newBic = newIban.getBIC();
             getIban().setValue(newIban.getIBAN());
 	        }
-	        
+
           if (bic == null)
           {
             if (newBic == null) // nur wenn sie nicht schon von obantoo ermittelt wurde
@@ -503,7 +503,7 @@ public class EmpfaengerControl extends AbstractControl
         a.setBank((String)getBank().getValue());
         a.setIban((String)getIban().getValue());
         a.setBic((String)getBic().getValue());
-        
+
         a.store();
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Adresse gespeichert"),StatusBarMessage.TYPE_SUCCESS));
       }

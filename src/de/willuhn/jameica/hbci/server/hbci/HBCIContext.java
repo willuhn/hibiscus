@@ -46,14 +46,14 @@ public class HBCIContext
     externalId = StringUtils.trimToNull(externalId);
     if (externalId == null)
       return null;
-    
+
     try
     {
       // Ist das Typ und ID?
       int i = externalId.indexOf(":");
       if (i <= 0)
         return null;
-      
+
       String className = externalId.substring(0,i);
       String id = externalId.substring(i+1);
       // OK, den ersten Teil nehmen wir als Klasse an, den zweiten als ID.
@@ -67,10 +67,10 @@ public class HBCIContext
     {
       Logger.error("unable to unserialize transfer for external id: " + externalId,e);
     }
-    
+
     return null;
   }
-  
+
   /**
    * Serialisiert den Auftrag in eine External-ID.
    * @param context der Auftrag.
@@ -82,17 +82,17 @@ public class HBCIContext
     {
       if (context == null || context.isNewObject())
         return null;
-      
+
       return context.getClass().getName() + ":" + context.getID();
     }
     catch (Exception e)
     {
       Logger.error("unable to serialize transfer",e);
     }
-    
+
     return null;
   }
-  
+
   /**
    * Liefert einen lesbaren Text fuer das Objekt.
    * @param object das Objekt.
@@ -106,21 +106,21 @@ public class HBCIContext
       {
         AuslandsUeberweisung ueb = (AuslandsUeberweisung) object;
         Konto k = ueb.getKonto();
-        
+
         if (ueb.isTerminUeberweisung())
           return i18n.tr("{0}: ({1}) {2} {3} per {4} an {5} ({6}) überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),HBCI.DATEFORMAT.format(ueb.getTermin()),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
-        
+
         return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
       }
-      
+
       if (object instanceof SepaSammelUeberweisung)
       {
         SepaSammelUeberweisung r = (SepaSammelUeberweisung) object;
         Konto k = r.getKonto();
-        
+
         if (r.isTerminUeberweisung())
           return i18n.tr("{0}: ({1}) {2} {3} per {4} als SEPA-Sammelterminüberweisung absenden",k.getLongName(),r.getBezeichnung(),HBCI.DECIMALFORMAT.format(r.getSumme()),k.getWaehrung(),HBCI.DATEFORMAT.format(r.getTermin()));
-        
+
         return i18n.tr("{0}: ({1}) {2} {3} als SEPA-Sammelüberweisung absenden",k.getLongName(),r.getBezeichnung(),HBCI.DECIMALFORMAT.format(r.getSumme()),k.getWaehrung());
       }
 
@@ -128,31 +128,31 @@ public class HBCIContext
       {
         SepaDauerauftrag dauer = (SepaDauerauftrag) object;
         Konto k = dauer.getKonto();
-        
+
         return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}), Turnus: {6}",k.getLongName(),dauer.getZweck(),HBCI.DECIMALFORMAT.format(dauer.getBetrag()),k.getWaehrung(),dauer.getGegenkontoName(),HBCIProperties.formatIban(dauer.getGegenkontoNummer()),dauer.getTurnus().getBezeichnung());
       }
-      
+
       if (object instanceof SepaLastschrift)
       {
         SepaLastschrift last = (SepaLastschrift) object;
         Konto k = last.getKonto();
         return i18n.tr("{0}: ({1}) {2} {3} von {4} ({5}) einziehen",k.getLongName(),last.getZweck(),HBCI.DECIMALFORMAT.format(last.getBetrag()),k.getWaehrung(),last.getGegenkontoName(),HBCIProperties.formatIban(last.getGegenkontoNummer()));
       }
-      
+
       if (object instanceof SepaSammelLastschrift)
       {
         SepaSammelLastschrift last = (SepaSammelLastschrift) object;
         Konto k = last.getKonto();
         return i18n.tr("{0}: ({1}) {2} {3} als SEPA-Sammellastschrift einziehen",k.getLongName(),last.getBezeichnung(),HBCI.DECIMALFORMAT.format(last.getSumme()),k.getWaehrung());
       }
-      
+
       if (object instanceof Konto)
       {
         Konto k = (Konto) object;
         SynchronizeOptions o = new SynchronizeOptions(k);
-        
+
         String s = "{0}: ";
-        
+
         if (o.getSyncKontoauszuege())
           s += "Umsätze";
         if (o.getSyncSaldo())
@@ -169,9 +169,7 @@ public class HBCIContext
     {
       Logger.error("unable to stringify object",e);
     }
-    
+
     return i18n.tr("Unbekannter Auftrag");
   }
 }
-
-

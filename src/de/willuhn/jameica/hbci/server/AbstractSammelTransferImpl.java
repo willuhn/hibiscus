@@ -363,7 +363,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
       return false;
     return i.intValue() == 1;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setWarning(boolean)
    */

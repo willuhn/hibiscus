@@ -28,7 +28,6 @@ public class SammelUeberweisungExport extends AbstractSammelTransferExport
 
 }
 
-
 /*********************************************************************
  * $Log: SammelUeberweisungExport.java,v $
  * Revision 1.2  2006/08/17 10:06:32  willuhn

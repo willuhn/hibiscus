@@ -46,7 +46,7 @@ public class KontoDelete implements Action
 				return;
 
 			KontoDeleteDialog d = new KontoDeleteDialog(k);
-			
+
 			try {
 				Boolean choice = (Boolean) d.open();
 				if (choice == null || !choice.booleanValue())

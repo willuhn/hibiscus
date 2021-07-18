@@ -26,7 +26,6 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
-
 /**
  * Implementierung einen Search-Provider fuer die Suche nach Konten.
  */
@@ -65,14 +64,14 @@ public class KontoSearchProvider implements SearchProvider
     }
     return results;
   }
-  
+
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
   private class MyResult implements Result
   {
     private Konto konto = null;
-    
+
     /**
      * ct.
      * @param k
@@ -99,7 +98,7 @@ public class KontoSearchProvider implements SearchProvider
       {
         String bank = HBCIProperties.getNameForBank(this.konto.getBLZ());
         String bez = this.konto.getBezeichnung();
-        
+
         if (bank != null && bank.length() > 0)
           return bez + ", " + bank;
         return bez;
@@ -110,11 +109,10 @@ public class KontoSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
   }
 
 }
-
 
 /**********************************************************************
  * $Log: KontoSearchProvider.java,v $

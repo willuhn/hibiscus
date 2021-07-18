@@ -32,7 +32,7 @@ import de.willuhn.util.ProgressMonitor;
 public class DBObjectDelete implements Action
 {
   private I18N i18n = null;
-  
+
   /**
    * ct.
    */
@@ -91,7 +91,7 @@ public class DBObjectDelete implements Action
       list = (DBObject[]) context;
     else
       list = new DBObject[]{(DBObject)context}; // Array mit einem Element
-    
+
     Worker worker = new Worker(list);
 
 // Das machen wir nicht mehr. Durch die dauernden Wechsel im Event Dispatcher wird das schweinelangsam
@@ -100,7 +100,7 @@ public class DBObjectDelete implements Action
 //    else
     worker.run(null);
   }
-  
+
   /**
    * Damit koennen wir lange Loeschvorgaenge ggf. im Hintergrund laufen lassen
    */
@@ -117,7 +117,7 @@ public class DBObjectDelete implements Action
     {
       this.list = list;
     }
-    
+
     /**
      * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
      */
@@ -145,7 +145,7 @@ public class DBObjectDelete implements Action
           monitor.setStatusText(i18n.tr("Lösche {0} Datensätze",""+list.length));
 
         double factor = 100d / list.length;
-        
+
         for (int i=0;i<list.length;++i)
         {
           if (monitor != null && i % 4 == 0)
@@ -158,14 +158,14 @@ public class DBObjectDelete implements Action
           list[i].delete();
           Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(list[i]));
         }
-        
+
         if (monitor != null)
           monitor.setPercentComplete(100);
-        
+
         String text = i18n.tr("Datensatz gelöscht.");
         if (list.length > 1)
           text = i18n.tr("{0} Datensätze gelöscht.",""+list.length);
-        
+
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
         if (monitor != null)
         {
@@ -196,11 +196,10 @@ public class DBObjectDelete implements Action
         throw ae;
       }
     }
-    
+
   }
 
 }
-
 
 /**********************************************************************
  * $Log: DBObjectDelete.java,v $

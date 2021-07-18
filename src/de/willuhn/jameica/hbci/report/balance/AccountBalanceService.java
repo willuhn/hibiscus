@@ -31,7 +31,7 @@ import de.willuhn.logging.Logger;
 public class AccountBalanceService
 {
   private List<AccountBalanceProvider> providers = null;
-  
+
   /**
    * Der Standard-Provider. Der steht immer als letzter in der Liste.
    */
@@ -45,9 +45,9 @@ public class AccountBalanceService
   {
     if (this.providers != null)
       return this.providers;
-    
+
     this.providers = new LinkedList<AccountBalanceProvider>();
-    
+
     try
     {
       Logger.info("loading account balance providers");
@@ -66,17 +66,17 @@ public class AccountBalanceService
         }
       }
       Logger.info("  found " + this.providers.size() + " provider(s)");
-      
+
       // Wir sortieren die Provider so, dass der Standard-Provider immer als letzter an die Reihe kommt.
       Collections.sort(this.providers,new Comparator<AccountBalanceProvider>() {
         public int compare(AccountBalanceProvider o1, AccountBalanceProvider o2)
         {
-          
+
           if (DEFAULT.isInstance(o1))
             return 1;
           if (DEFAULT.isInstance(o2))
             return -1;
-          
+
           // Ansonsten alphabetisch nach Name
           return o1.getName().compareTo(o2.getName());
         }
@@ -92,7 +92,7 @@ public class AccountBalanceService
     }
     return this.providers;
   }
-  
+
   /**
    * Liefert den Provider, der Salden für ein Konto ermitteln kann. 
    * @param konto Das Konto, fuer welches Salden gesucht sind.
@@ -104,8 +104,7 @@ public class AccountBalanceService
         return provider;
       }
     }
-    
+
     return null; // dieser Fall kann nicht vorkommen, weil der Standard-Provider in der Liste der Provider vorkommen muss.
   }
 }
-

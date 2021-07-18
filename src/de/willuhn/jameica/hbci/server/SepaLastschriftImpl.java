@@ -101,11 +101,11 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
-      
+
       String kiban = k.getIban();
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
-      
+
       String bic = k.getBic();
       if (bic == null || bic.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
@@ -158,13 +158,13 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
         throw new ApplicationException(i18n.tr("Bitte geben Sie die Mandatsreferenz ein."));
       HBCIProperties.checkLength(mandateId, HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
       HBCIProperties.checkChars(mandateId, HBCIProperties.HBCI_SEPA_VALIDCHARS);
-      
+
       if (this.getSignatureDate() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie das Unterschriftsdatum des Mandats ein"));
-      
+
       if (getSequenceType() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den Sequenz-Typ aus"));
-      
+
       if (this.getTargetDate() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Zieltermin ein"));
 
@@ -173,7 +173,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
 
       if (this.getType() == null)
         this.setType(SepaLastType.DEFAULT);
-      
+
       if (this.getTermin() == null)
         this.setTermin(new Date());
     }
@@ -187,7 +187,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     {
       if (!this.markingExecuted())
         throw ae;
-      
+
       Logger.warn(ae.getMessage());
     }
   }
@@ -234,7 +234,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     if (zweck2 != null && zweck2.length() > 0)
       throw new RemoteException("second usage not allowed for sepa debit");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
    */
@@ -242,7 +242,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (String) getAttribute("endtoendid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
    */
@@ -250,7 +250,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("endtoendid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getMandateId()
    */
@@ -258,7 +258,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (String) getAttribute("mandateid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setMandateId(java.lang.String)
    */
@@ -266,7 +266,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("mandateid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getSignatureDate()
    */
@@ -274,7 +274,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (Date) getAttribute("sigdate");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getCreditorId()
    */
@@ -282,7 +282,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (String) getAttribute("creditorid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setCreditorId(java.lang.String)
    */
@@ -290,7 +290,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("creditorid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setSignatureDate(java.util.Date)
    */
@@ -298,7 +298,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("sigdate",date);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getSequenceType()
    */
@@ -307,7 +307,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     String val = (String) getAttribute("sequencetype");
     if (val == null || val.length() == 0)
       return null;
-    
+
     try
     {
       return SepaLastSequenceType.valueOf(val);
@@ -318,7 +318,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
       return null;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setSequenceType(de.willuhn.jameica.hbci.rmi.SepaLastSequenceType)
    */
@@ -326,7 +326,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("sequencetype",type != null ? type.name() : null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getTargetDate()
    */
@@ -334,7 +334,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (Date) getAttribute("targetdate");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setTargetDate(java.util.Date)
    */
@@ -342,7 +342,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("targetdate",date);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getType()
    */
@@ -351,7 +351,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     String val = (String) getAttribute("sepatype");
     if (val == null || val.length() == 0)
       return null;
-    
+
     try
     {
       return SepaLastType.valueOf(val);
@@ -362,7 +362,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
       return null;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setType(de.willuhn.jameica.hbci.rmi.SepaLastType)
    */
@@ -370,7 +370,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("sepatype",type != null ? type.name() : null);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getOrderId()
    */
@@ -378,7 +378,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (String) this.getAttribute("orderid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setOrderId(java.lang.String)
    */
@@ -386,7 +386,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     this.setAttribute("orderid",orderId);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
    */
@@ -394,7 +394,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (String) getAttribute("pmtinfid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
    */
@@ -402,7 +402,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     setAttribute("pmtinfid",id);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
    */
@@ -411,7 +411,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   {
     return (String) getAttribute("purposecode");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
    */

@@ -71,7 +71,6 @@ public class UmsatzImport implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: UmsatzImport.java,v $
  * Revision 1.5  2011/05/11 10:20:28  willuhn

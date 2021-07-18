@@ -26,7 +26,7 @@ import de.willuhn.util.I18N;
 public class IbanCalc implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -53,5 +53,3 @@ public class IbanCalc implements Action
   }
 
 }
-
-

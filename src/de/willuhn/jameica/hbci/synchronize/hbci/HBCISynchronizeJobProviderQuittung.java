@@ -34,7 +34,7 @@ public class HBCISynchronizeJobProviderQuittung extends AbstractHBCISynchronizeJ
   {{
     add(HBCISynchronizeJobQuittung.class);
   }};
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -43,7 +43,7 @@ public class HBCISynchronizeJobProviderQuittung extends AbstractHBCISynchronizeJ
     // Nie per Synchronisation
     return Collections.emptyList();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */

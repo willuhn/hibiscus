@@ -54,8 +54,6 @@ public class DeleteReminderMessageConsumer implements MessageConsumer
 
 }
 
-
-
 /**********************************************************************
  * $Log: DeleteReminderMessageConsumer.java,v $
  * Revision 1.1  2011/12/31 13:55:38  willuhn

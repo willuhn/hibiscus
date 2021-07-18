@@ -51,7 +51,7 @@ public class About extends AbstractDialog
 
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
     final I18N i18n = plugin.getResources().getI18N();
-    
+
     this.setTitle(i18n.tr("Über ..."));
     this.setPanelText(i18n.tr("Hibiscus {0}",plugin.getManifest().getVersion().toString()));
   }
@@ -67,12 +67,12 @@ public class About extends AbstractDialog
     DBIterator list = Settings.getDBService().createList(Version.class);
     list.addFilter("name = ?","db");
     Version version = (Version) list.next();
-    
+
     Label l = GUI.getStyleFactory().createLabel(parent,SWT.BORDER);
     l.setImage(SWTUtil.getImage("hibiscus-splash.png"));
 
     Container container = new LabelGroup(parent,i18n.tr("Versionsinformationen"),true);
-    
+
     FormTextPart text = new FormTextPart();
     text.setText("<form>" +
       "<p><b>Hibiscus - HBCI-Onlinebanking für Jameica</b></p>" +
@@ -139,9 +139,9 @@ public class About extends AbstractDialog
         close();
       }
     },null,true,"window-close.png");
-    
+
     container.addButtonArea(buttons);
-    
+
     this.setSize(SWT.DEFAULT,530);
   }
 

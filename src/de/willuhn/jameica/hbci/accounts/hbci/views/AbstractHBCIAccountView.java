@@ -30,7 +30,7 @@ import de.willuhn.util.I18N;
 public abstract class AbstractHBCIAccountView extends AbstractView
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Liefert den passenden Controller.
    * @param type der gewuenschte Typ des Controllers.
@@ -42,12 +42,12 @@ public abstract class AbstractHBCIAccountView extends AbstractView
     Object o = this.getCurrentObject();
     if (o != null && o.getClass().isAssignableFrom(type))
       return (T) o;
-    
+
     // Ansonsten neu erstellen
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     return (T) bs.get(type);
   }
-  
+
   /**
    * Liefert das Composite des Info-Panel kompatibel zu aelteren Jameica-Versionen.
    * @param panel das Panel.
@@ -60,11 +60,11 @@ public abstract class AbstractHBCIAccountView extends AbstractView
     Composite wrap = new Composite(comp,SWT.NONE);
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     wrap.setLayoutData(gd);
-    
+
     GridLayout gl = new GridLayout(); 
     gl.marginHeight=0;
     gl.marginWidth=0;
-    
+
     wrap.setLayout(gl);
     return wrap;
   }

@@ -43,9 +43,9 @@ import de.willuhn.util.I18N;
 public abstract class AbstractTransferScheduleProvider<T extends Terminable & HibiscusDBObject> implements ScheduleProvider<T>
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private DBIterator list = null;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getSchedules(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
    */
@@ -59,7 +59,7 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
       Logger.warn("schedule provider has no concrete type - unable to fetch data");
       return result;
     }
-    
+
     try
     {
       BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
@@ -68,7 +68,7 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
       Date start = DateUtil.startOfDay(from);
       Date end   = DateUtil.endOfDay(to);
       Date now   = new Date();
-      
+
       // wir cachen das Resultset von der Datenbank - dann muessen wir die
       // Daten nicht dauernd neu laden, wenn der User durch die Monate blaettert
       // Da wir einen Request-Scope haben, bleibt der Resultset auch nur solange
@@ -82,22 +82,22 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
         this.list.setOrder("ORDER BY " + service.getSQLTimestamp("termin"));
       }
       list.begin(); // rest pointer
-      
+
       while (this.list.hasNext())
       {
         T u = (T) this.list.next();
         String uuid = MetaKey.REMINDER_UUID.get(u);
         Date termin = u.getTermin();
-        
+
         // a) Auftrag existiert. Wenn er ins Zeitfenster passt, wird er verwendet
         if (!termin.before(start) && !termin.after(end))
           result.add(new Schedule(termin,u,false));
 
         // b) jetzt noch checken, ob er einen Reminder hat.
-        
+
         if (termin.after(end))
           continue; // hier brauchen wir gar nicht erst suchen - wir sind ausserhalb des Zeitfensters
-        
+
         if (uuid != null)
         {
           Reminder reminder = provider.get(uuid);
@@ -106,13 +106,13 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
           {
             Date last = reminder.getEnd();
             List<Date> dates = ri.getDates(termin,new Date(termin.getTime()+1),end); // nicht ab start sondern ab (exclusive) erster Ausfuehrung
-            
+
             // Wenn wir Termine haben, fuegen wir sie hinzu
             for (Date date:dates)
             {
               if (last != null && date.after(last)) // bereits abgelaufen
                 continue;
-              
+
               // wir zeigen nur die kuenftigen an. Die vergangenen im
               // im aktuellen Zeitraum wurden ja schon automatisch erstellt
               // und wurden daher schon von a) erfasst
@@ -130,8 +130,6 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
     return result;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: AbstractTransferScheduleProvider.java,v $

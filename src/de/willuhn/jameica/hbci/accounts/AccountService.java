@@ -33,7 +33,7 @@ import de.willuhn.logging.Logger;
 public class AccountService
 {
   private List<AccountProvider> providers = null;
-  
+
   /**
    * Der Primaer-Provider. Der steht immer oben.
    */
@@ -47,9 +47,9 @@ public class AccountService
   {
     if (this.providers != null)
       return this.providers;
-    
+
     this.providers = new LinkedList<AccountProvider>();
-    
+
     try
     {
       Logger.info("loading account providers");
@@ -67,17 +67,17 @@ public class AccountService
           Logger.error("unable to load account provider " + c.getName() + ", skipping",e);
         }
       }
-      
+
       // Wir sortieren die Provider so, dass der Primaer-Provider immer Vorrang hat
       Collections.sort(this.providers,new Comparator<AccountProvider>() {
         public int compare(AccountProvider o1, AccountProvider o2)
         {
-          
+
           if (PRIMARY.isInstance(o1))
             return -1;
           if (PRIMARY.isInstance(o2))
             return 1;
-          
+
           // Ansonsten alphabetisch nach Name
           return o1.getName().compareTo(o2.getName());
         }
@@ -94,4 +94,3 @@ public class AccountService
     return this.providers;
   }
 }
-

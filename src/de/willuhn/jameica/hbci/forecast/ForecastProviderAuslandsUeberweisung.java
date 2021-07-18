@@ -31,8 +31,6 @@ public class ForecastProviderAuslandsUeberweisung extends AbstractForecastProvid
   }
 }
 
-
-
 /**********************************************************************
  * $Log: ForecastProviderAuslandsUeberweisung.java,v $
  * Revision 1.2  2012/02/20 17:03:50  willuhn

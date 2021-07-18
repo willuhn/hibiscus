@@ -93,14 +93,14 @@ public class UmsatzList extends ContextMenu implements Extendable
       {
         super.handleAction(konto != null ? konto : context);
       }
-      
+
     }
     ,"document-open.png"));
-    
+
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new UmsatzItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    
+
     // BUGZILLA 512 / 1115
     addItem(new UmsatzBookedItem(i18n.tr("Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png","ALT+K"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew(),"document-open.png")
@@ -119,11 +119,11 @@ public class UmsatzList extends ContextMenu implements Extendable
             Logger.error("unable to check umsatztyp",re);
           }
         }
-        
+
         // Ansonsten wie gehabt
         return super.isEnabledFor(o);
       }
-      
+
     });
     addItem(new ContextMenuItem(i18n.tr("Neue Kategorie anlegen..."),new Action()
     {
@@ -164,7 +164,7 @@ public class UmsatzList extends ContextMenu implements Extendable
 
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new ContextMenuItem(i18n.tr("Alle als gelesen markieren"), new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -196,7 +196,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     {
       final List<Konto> konten = KontoUtil.getKonten(KontoFilter.OFFLINE);
       final int size = konten.size();
-      
+
       // Wir haben gar keine Offline-Konten. Dann brauchen wir auch den Menu-Eintrag nicht.
       if (size == 0)
         return;
@@ -208,7 +208,7 @@ public class UmsatzList extends ContextMenu implements Extendable
         addItem(new UmsatzItem(i18n.tr("Gegenbuchung erzeugen auf: {0}",KontoUtil.toString(k)),new UmsatzDetailEdit().asReverse(k), "edit-copy.png"));
         return;
       }
-      
+
       // Mehrere Konten. Dann mit Untermenu
       final ContextMenu ctx = new ContextMenu();
       ctx.setText(i18n.tr("Gegenbuchung erzeugen auf..."));
@@ -251,7 +251,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       return false;
     }
   }
-  
+
   /**
    * Akzeptiert Umsaetze oder eine einzelne Umsatzgruppe.
    * Die Gruppe allerdings nur, wenn sie direkt Umsaetze enthaelt.
@@ -277,7 +277,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     {
       if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
         return super.isEnabledFor(o);
-      
+
       if (o instanceof UmsatzTreeNode)
       {
         UmsatzTreeNode node = (UmsatzTreeNode) o;
@@ -305,6 +305,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     {
       super(i18n.tr("Öffnen"),new UmsatzDetail(),"document-open.png");
     }
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -341,7 +342,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       super(text,action,icon);
       this.setShortcut(shortcut);
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -350,7 +351,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
       {
         Umsatz[] umsaetze = null;
-        
+
         if (o instanceof Umsatz)
           umsaetze = new Umsatz[]{(Umsatz) o};
         else
@@ -373,6 +374,5 @@ public class UmsatzList extends ContextMenu implements Extendable
       return false;
     }
   }
-  
 
 }

@@ -86,7 +86,6 @@ public class EmpfaengerExport implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: EmpfaengerExport.java,v $
  * Revision 1.5  2011/09/27 16:39:10  willuhn

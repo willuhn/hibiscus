@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.io.csv;
 
-
-
 /**
  * CSV-Format fuer einen Datentyp in Hibiscus.
  * @param <T> Der Typ des korrespondierenden Objektes in Hibiscus.
@@ -23,7 +21,7 @@ public interface Format<T>
    * @return Typ des Fachobjektes.
    */
   public Class<T> getType();
-  
+
   /**
    * Liefert das Default-Profil fuer den Import.
    * @return das Default-Profil.
@@ -36,8 +34,6 @@ public interface Format<T>
    */
   public ImportListener getImportListener();
 }
-
-
 
 /**********************************************************************
  * $Log: Format.java,v $

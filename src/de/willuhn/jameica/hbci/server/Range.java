@@ -29,9 +29,9 @@ import de.willuhn.util.I18N;
 public abstract class Range
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private final static Settings settings = new Settings(Range.class);
-  
+
   private final static Range ALL    = new All();
   private final static Range D_7    = new LastSevenDays();
   private final static Range D_30   = new LastThirtyDays();
@@ -39,7 +39,7 @@ public abstract class Range
   private final static Range LY_3   = new Last3Years();
   private final static Range LY_5   = new Last5Years();
   private final static Range LY_10   = new Last10Years();
-  
+
   private final static Range W_THIS = new ThisWeek();
   private final static Range W_LAST = new LastWeek();
   private final static Range W_2LAS = new SecondLastWeek();
@@ -48,11 +48,11 @@ public abstract class Range
   private final static Range M_LAST = new LastMonth();
   private final static Range M_2LAS = new SecondLastMonth();
   private final static Range M_12   = new Last12Months();
-  
+
   private final static Range Q_THIS = new ThisQuarter();
   private final static Range Q_LAST = new LastQuarter();
   private final static Range Q_2LAS = new SecondLastQuarter();
-  
+
   private final static Range Y_THIS = new ThisYear();
   private final static Range Y_LAST = new LastYear();
   private final static Range Y_2LAS = new SecondLastYear();
@@ -128,7 +128,7 @@ public abstract class Range
     }
     return result;
   }
-  
+
   /**
    * Speichert die fuer die Kategorie zu verwendenden Zeitraeume.
    * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
@@ -141,7 +141,7 @@ public abstract class Range
       settings.setAttribute(category + "." + range.getId(), ranges.contains(range));
     }
   }
-  
+
   /**
    * Setzte die aktiven Zeitraeume auf die System-Vorgabe zurueck.
    * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
@@ -154,7 +154,6 @@ public abstract class Range
     }
   }
 
-
   /**
    * Versucht den Range anhand des Identifiers zu ermitteln.
    * @param name der Name des Range.
@@ -164,28 +163,28 @@ public abstract class Range
   {
     if (name == null)
       return null;
-    
+
     for (Range r:KNOWN)
     {
       if (r.getId().equals(name))
         return r;
     }
-    
+
     return null;
   }
-  
+
   /**
    * Berechnet das Start-Datum.
    * @return das Start-Datum.
    */
   public abstract Date getStart();
-  
+
   /**
    * Berechnet das End-Datum.
    * @return das End-Datum.
    */
   public abstract Date getEnd();
-  
+
   /**
    * Liefert einen Identifier fuer den Range.
    * @return Identifier fuer den Range.
@@ -194,7 +193,7 @@ public abstract class Range
   {
     return this.getClass().getSimpleName();
   }
-  
+
   /**
    * Erzeugt einen neuen Kalender, der als Basis fuer die Berechnung dient.
    * @return einen neuen Kalender, der als Basis fuer die Berechnung dient.
@@ -203,7 +202,7 @@ public abstract class Range
   {
     return Calendar.getInstance(Locale.GERMANY);
   }
-  
+
   /**
    * Berechnet diese Woche.
    */
@@ -218,7 +217,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -228,7 +227,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY);
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -251,7 +250,7 @@ public abstract class Range
     {
       return null;
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -260,7 +259,7 @@ public abstract class Range
     {
       return null;
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -287,7 +286,7 @@ public abstract class Range
       Date d = cal.getTime();
       return DateUtil.startOfDay(d);
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -298,7 +297,7 @@ public abstract class Range
       Date d = cal.getTime();
       return DateUtil.endOfDay(d);
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -325,7 +324,7 @@ public abstract class Range
       Date d = cal.getTime();
       return DateUtil.startOfDay(d);
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -336,7 +335,7 @@ public abstract class Range
       Date d = cal.getTime();
       return DateUtil.endOfDay(d);
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -373,7 +372,7 @@ public abstract class Range
       Date d = cal.getTime();
       return DateUtil.startOfDay(d);
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -384,7 +383,7 @@ public abstract class Range
       Date d = cal.getTime();
       return DateUtil.endOfDay(d);
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -450,7 +449,7 @@ public abstract class Range
       cal.add(Calendar.WEEK_OF_YEAR,-1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -461,7 +460,7 @@ public abstract class Range
       cal.add(Calendar.DATE,6);
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -486,7 +485,7 @@ public abstract class Range
       cal.add(Calendar.WEEK_OF_YEAR,-2);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -497,7 +496,7 @@ public abstract class Range
       cal.add(Calendar.DATE,6);
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -521,7 +520,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -531,7 +530,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -540,7 +539,7 @@ public abstract class Range
       return i18n.tr("Monat: Dieser");
     }
   }
-  
+
   /**
    * Berechnet den letzten Monat.
    */
@@ -556,7 +555,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -567,7 +566,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -576,7 +575,7 @@ public abstract class Range
       return i18n.tr("Monat: Letzter");
     }
   }
-  
+
   /**
    * Berechnet den vorletzten Monat.
    */
@@ -592,7 +591,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -603,7 +602,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -628,7 +627,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -638,7 +637,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -654,7 +653,7 @@ public abstract class Range
   public static class ThisQuarter extends Range
   {
     private final static int[] quarters = {0, 0, 0, 3, 3, 3, 6, 6, 6, 9, 9, 9};
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getStart()
      */
@@ -665,7 +664,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -677,7 +676,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -702,7 +701,7 @@ public abstract class Range
       cal.add(Calendar.MONTH,-3);
       return cal.getTime();
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -714,7 +713,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -739,7 +738,7 @@ public abstract class Range
       cal.add(Calendar.MONTH,-3);
       return cal.getTime();
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -751,7 +750,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -776,7 +775,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -787,7 +786,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -813,7 +812,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -825,7 +824,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -851,7 +850,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,1);
       return DateUtil.startOfDay(cal.getTime());
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.server.Range#getEnd()
      */
@@ -863,7 +862,7 @@ public abstract class Range
       cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
       return DateUtil.endOfDay(cal.getTime());
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -873,5 +872,3 @@ public abstract class Range
     }
   }
 }
-
-

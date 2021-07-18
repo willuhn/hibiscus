@@ -82,7 +82,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     }
     return this.sequenceType;
   }
-  
+
   /**
    * Ueberschrieben, um einen Namensvorschlag anzuzeigen.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getName()
@@ -91,7 +91,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
   {
     if (this.name != null)
       return this.name;
-    
+
     this.name = super.getName();
     if (StringUtils.trimToNull((String)this.name.getValue()) == null)
       this.name.setValue(i18n.tr("SEPA-Sammellastschrift vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
@@ -113,7 +113,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     }
     return this.type;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer das Ausfuehrungsdatum.
    * @return Eingabe-Feld.
@@ -130,7 +130,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     }
     return this.targetDate;
   }
-  
+
   /**
    * Ueberschrieben, um die Lastschrift-spezifischen Attribute zu setzen.
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#handleStore()
@@ -142,13 +142,13 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
       SepaSammelLastschrift t = this.getTransfer();
       if (t.ausgefuehrt())
         return true;
-      
+
       t.setSequenceType((SepaLastSequenceType)getSequenceType().getValue());
       t.setType((SepaLastType)getType().getValue());
       t.setTargetDate((Date) getTargetDate().getValue());
-      
+
       this.store();
-      
+
       return true;
     }
     catch (Exception e)
@@ -182,7 +182,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     transfer = (SepaSammelLastschrift) Settings.getDBService().createObject(SepaSammelLastschrift.class,null);
     return transfer;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getSynchronizeJobType()
    */
@@ -211,14 +211,14 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
   {
     if (this.buchungen != null)
       return this.buchungen;
-    
+
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new SepaSammelLastBuchungNew().handleAction(context);
       }
     };
-    
+
     this.buchungen = new SepaSammelTransferBuchungList(getTransfer(),a);
     this.buchungen.setMulti(true);
 

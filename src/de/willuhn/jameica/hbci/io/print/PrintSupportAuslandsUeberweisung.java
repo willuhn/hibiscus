@@ -46,7 +46,7 @@ public class PrintSupportAuslandsUeberweisung extends AbstractPrintSupportSepaTr
     {
       Logger.error("check failed",re);
     }
-    
+
     return i18n.tr("SEPA-Überweisung");
   }
 }

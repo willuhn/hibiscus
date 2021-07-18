@@ -52,7 +52,7 @@ public interface BaseDauerauftrag extends HibiscusTransfer, Checksum
    * @throws RemoteException
    */
   public Date getNaechsteZahlung() throws RemoteException;
-  
+
 	/**
 	 * Liefert den Zahlungsturnus fuer diesen Dauerauftrag.
    * @return Zahlungsturnus des Dauerauftrags.

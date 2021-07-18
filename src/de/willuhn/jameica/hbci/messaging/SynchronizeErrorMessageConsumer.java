@@ -24,7 +24,7 @@ import de.willuhn.util.I18N;
 public class SynchronizeErrorMessageConsumer implements MessageConsumer
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
    */
@@ -39,13 +39,13 @@ public class SynchronizeErrorMessageConsumer implements MessageConsumer
   public void handleMessage(Message message) throws Exception
   {
     QueryMessage msg = (QueryMessage) message;
-    
+
     // Im Server-Mode fragen wir den User nicht, weil es dann ziemlich sicher
     // der Payment-Server ist und da wohl keine Interaktion via Shell moeglich ist.
     // Ob der Payment-Server diese Message ebenfalls abonniert hat, ist seine Sache.
     if (Application.inServerMode())
       return;
-    
+
     // User fragen
     Boolean cont = Application.getCallback().askUser(i18n.tr("Synchronisierung fehlgeschlagen.\nMöchten Sie den Vorgang dennoch fortsetzen?"));
     msg.setData(cont);
@@ -59,5 +59,3 @@ public class SynchronizeErrorMessageConsumer implements MessageConsumer
     return false; // passiert via plugin.xml
   }
 }
-
-

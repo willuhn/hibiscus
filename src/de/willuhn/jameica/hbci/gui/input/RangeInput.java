@@ -34,12 +34,12 @@ public class RangeInput extends SelectInput
 {
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private String param = null;
   private Input from = null;
   private Input to = null;
   private boolean inUpdate = false;
-  
+
   /**
    * ct.
    * @param from Input-Feld, in das das Start-Datum nach der Auswahl uebernommen werden soll.
@@ -75,17 +75,16 @@ public class RangeInput extends SelectInput
     this.from = from;
     this.to = to;
     this.param = parameter != null ? parameter : "transferlist.filter.range";
-    
+
     this.setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setName(i18n.tr("Zeitraum"));
-    
+
     Range preset = Range.byId(settings.getString(this.param,null));
     if (preset != null)
     {
       this.setValue(preset);
       applyRange(preset);
     }
-    
 
     // Wenn Von/Bis vorhanden sind, dann muessen wir den gespeicherten Range
     // loeschen, sobald der User etwas in Von/Bis geaendert hat. Denn wir wollen
@@ -98,13 +97,13 @@ public class RangeInput extends SelectInput
         {
           if (inUpdate) // Das wurde von uns selbst ausgeloest
             return;
-          
+
           setValue(null);
           settings.setAttribute(param,(String)null);
           checkRange();
         }
       };
-      
+
       if (from != null)
         from.addListener(l);
       if (to != null)
@@ -133,7 +132,7 @@ public class RangeInput extends SelectInput
   {
     if (this.from == null || this.to ==null)
       return;
-    
+
     Object oFrom = this.from.getValue();
     Object oTo   = this.to.getValue();
 
@@ -148,15 +147,14 @@ public class RangeInput extends SelectInput
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte prüfen Sie den Zeitraum. Das Bis-Datum sollte nicht vor dem Von-Datum liegen."), StatusBarMessage.TYPE_INFO));
       return;
     }
-    
+
     // Hier weitere Checks bei Bedarf
-    
-    
+
     // Ansonsten Fehlermeldung loeschen
     NotificationPanel panel = GUI.getView().getNotificationPanel();
     if (panel != null)
       panel.reset();
-    
+
   }
 
   /**
@@ -167,16 +165,16 @@ public class RangeInput extends SelectInput
   {
     if (range == null)
       return;
-    
+
     try
     {
       // Sicherstellen, dass der Range nicht resettet wird, wenn wir selbst
       // die Werte in Von/Bis eintragen
       this.inUpdate = true;
-      
+
       if (this.from != null)
         this.from.setValue(range.getStart());
-      
+
       if (this.to != null)
         this.to.setValue(range.getEnd());
     }
@@ -187,5 +185,3 @@ public class RangeInput extends SelectInput
   }
 
 }
-
-

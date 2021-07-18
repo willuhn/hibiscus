@@ -50,11 +50,11 @@ public class AusgefuehrtColumn extends Column
         // Nicht ausgefuehrt
         if (!t.ausgefuehrt())
           return i18n.tr("offen");
-        
+
         // Das sind die neuen mit Ausfuehrungs-Datum
         if (value != null && (value instanceof Date))
           return HBCI.LONGDATEFORMAT.format((Date)value);
-        
+
         // Das sind die alten ohne Ausfuehrungs-Datum
         return i18n.tr("ausgeführt");
       }
@@ -65,7 +65,7 @@ public class AusgefuehrtColumn extends Column
     }
     return super.getFormattedValue(value,context);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.parts.Column#compare(de.willuhn.jameica.gui.parts.AbstractTablePart.AbstractTableItem, de.willuhn.jameica.gui.parts.AbstractTablePart.AbstractTableItem)
    */
@@ -77,10 +77,10 @@ public class AusgefuehrtColumn extends Column
     // Datum ganz unten hinter den aeltesten Auftraegen.
     if (i1.sortValue == null)
       return 1;
-    
+
     if (i2.sortValue == null)
       return -1;
-    
+
     return super.compare(i1, i2);
   }
 }

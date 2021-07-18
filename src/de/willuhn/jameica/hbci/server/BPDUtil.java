@@ -46,7 +46,7 @@ public class BPDUtil
 {
   private final static long CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000L;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Enum fuer vordefinierte Queries von BPD.
    */
@@ -56,7 +56,7 @@ public class BPDUtil
      * Query fuer die Suche nach den BPD-Parametern fuer die Bearbeitung von Dauerauftraegen.
      */
     DauerEdit("DauerSEPAEdit","HKCDN"),
-    
+
     /**
      * Query fuer die Suche nach den BPD-Parametern fuer den Abruf der Kontoauszuege.
      */
@@ -66,17 +66,17 @@ public class BPDUtil
      * Query fuer die Suche nach den BPD-Parametern fuer den Abruf der Kontoauszuege im PDF-Format.
      */
     KontoauszugPdf("KontoauszugPdf","HKEKP"),
-    
+
     /**
      * Query fuer Abruf der Umsaetze im CAMT-Format.
      */
     UmsatzCamt("KUmsZeitCamt","HKCAZ")
-    
+
     ;
-    
+
     private String query  = null;
     private String gvcode = null;
-    
+
     /**
      * ct.
      * @param query das Query.
@@ -89,7 +89,7 @@ public class BPDUtil
       this.gvcode = gvcode;
     }
   }
-  
+
   /**
    * Enthaelt die Support-Informationen fuer einen Geschaeftsvorfall.
    */
@@ -101,14 +101,14 @@ public class BPDUtil
     private boolean bpdSupport = false;
     private boolean updSupport = false;
     private TypedProperties bpd = null;
-    
+
     /**
      * ct.
      */
     private Support()
     {
     }
-    
+
     /**
      * Liefert das Konto, fuer das die Abfrage durchgefuehrt wurde.
      * @return das Konto, fuer das die Abfrage durchgefuehrt wurde.
@@ -117,7 +117,7 @@ public class BPDUtil
     {
       return konto;
     }
-    
+
     /**
      * Liefert das Query zu den Support-Informationen.
      * @return das Query zu den Support-Informationen.
@@ -126,7 +126,7 @@ public class BPDUtil
     {
       return query;
     }
-    
+
     /**
      * Liefert die hoechste unterstuetzte Versionsnummer laut BPD. 
      * @return die hoechste unterstuetzte Versionsnummer laut BPD.
@@ -135,7 +135,7 @@ public class BPDUtil
     {
       return maxVersion;
     }
-    
+
     /**
      * Liefert true, wenn der Geschaeftsvorfall laut BPD unterstuetzt wird.
      * @return true, wenn der Geschaeftsvorfall laut BPD unterstuetzt wird.
@@ -144,7 +144,7 @@ public class BPDUtil
     {
       return bpdSupport;
     }
-    
+
     /**
      * Liefert true, wenn der Geschaeftsvorfall laut UPD unterstuetzt wird.
      * @return true, wenn der Geschaeftsvorfall laut UPD unterstuetzt wird.
@@ -153,7 +153,7 @@ public class BPDUtil
     {
       return updSupport;
     }
-    
+
     /**
      * Liefert true, wenn der Geschaeftsvorfall laut BPD und UPD unterstuetzt wird.
      * @return true, wenn der Geschaeftsvorfall laut BPD und UPD unterstuetzt wird.
@@ -162,7 +162,7 @@ public class BPDUtil
     {
       return this.updSupport && this.bpdSupport;
     }
-    
+
     /**
      * Liefert die BPD-Parameter fuer den Geschaeftsvorfall.
      * @return die BPD-Parameter fuer den Geschaeftsvorfall.
@@ -172,7 +172,7 @@ public class BPDUtil
       return bpd;
     }
   }
-  
+
   /**
    * Liefert die Support-Informationen zu einem Geschaeftsvorfall fuer ein Konto.
    * @param konto das Konto.
@@ -185,20 +185,20 @@ public class BPDUtil
     // Konto und Query angegeben?
     if (konto == null || query == null)
       return null;
-    
+
     try
     {
       // Kundennummer korrekt?
       String kd = konto.getKundennummer();
       if (kd == null || kd.length() == 0 || !kd.trim().matches("[0-9a-zA-Z]{1,30}"))
         return null;
-      
+
       Support support = new Support();
       support.konto = konto;
       support.query = query;
 
       support.maxVersion = getMaxVersion(kd,query);
-      
+
       // Wenn keine maxVersion ermittelbar ist, dann wird der Job per BPD gar nicht
       // unterstuetzt. Die restlichen Abfragen koennen wir uns dann schenken.
       if (support.maxVersion == null)
@@ -209,10 +209,10 @@ public class BPDUtil
 
       // Die BPD selbst ermitteln
       support.bpd = getBPD(kd,query,support.maxVersion);
-      
+
       // Support laut UPD pruefen
       support.updSupport = getUPDSupport(konto,query);
-      
+
       return support;
     }
     catch (RemoteException re)
@@ -221,7 +221,7 @@ public class BPDUtil
     }
     return null;
   }
-  
+
   /**
    * Liefert die hoechste verfuegbare Version des Geschaeftsvorfalls.
    * @param kd die Kundennummer.
@@ -232,10 +232,10 @@ public class BPDUtil
   private static Integer getMaxVersion(final String kd, final Query query) throws RemoteException
   {
     final HBCIDBService service = Settings.getDBService();
-    
+
     // Wir haengen noch unseren Prefix mit BPD und Kundennummer vorn dran. Das wurde vom Callback so erfasst
     final String prefix = Prefix.BPD.value() + DBPropertyUtil.SEP + kd.trim() + DBPropertyUtil.SEP;
-    
+
     // Wir ermitteln die hoechste Segment-Version des Geschaeftsvorfalls
     String q = prefix + "Params%." + query.query + "Par%.SegHead.version";
     final String version = (String) service.execute("select max(content) from property where name like ?",new String[] {q},new ResultSetExtractor()
@@ -244,17 +244,17 @@ public class BPDUtil
       {
         if (rs.next())
           return rs.getString(1);
-        
+
         return null;
       }
     });
-    
+
     if (version == null || !version.matches("^[0-9]{1,2}$"))
       return null;
-    
+
     return Integer.parseInt(version);
   }
-  
+
   /**
    * Liefert true, wenn der Geschaeftsvorfall gemaess UPD unterstuetzt wird.
    * @param k das Konto.
@@ -267,7 +267,7 @@ public class BPDUtil
     // Bei den UPD haben wir die Liste der unterstuetzten Geschaeftsvorfaelle konkret fuer die einzelnen Konten
     // Daher koennen wir hier auch nach der Kontonummer/Kundennummer und IBAN suchen.
     // Wir ermitteln erstmal das passende KInfo-Segment.
-    
+
     final HBCIDBService service = Settings.getDBService();
 
     // Checken, ob wir fuer die UPD ueberhaupt eine Aussage treffen koennen
@@ -310,14 +310,14 @@ public class BPDUtil
           if (name.endsWith(".KTV.number") && value.equals(k.getKontonummer()))
             return name;
         }
-        
+
         return null;
       }
     });
-    
+
     if (segment == null || segment.length() == 0)
       return false;
-    
+
     // Den Namen des KInfo-Elements ermitteln
     // Das Format des Segments ist ungefaehr so: "upd.<customernumber>.KInfo_<Nr>....
     // Wir wollen alles bis incl. "KInfo_<Nr>" haben
@@ -333,14 +333,14 @@ public class BPDUtil
         while (rs.next())
         {
           String code = rs.getString(1);
-          
+
           // Die restlichen Parameter des Geschaeftsvorfalls interessieren uns
           // erstmal nicht. Es reicht, wenn der Geschaeftsvorfall in der Liste
           // der unterstuetzen auftaucht.
           if (code != null && code.equals(query.gvcode))
             return true;
         }
-        
+
         return false;
       }
     });
@@ -376,7 +376,7 @@ public class BPDUtil
           String value = rs.getString(2);
 
           if (name == null || value == null) continue;
-          
+
           // Wir trimmen noch den Prefix aus dem Namen raus
           name = name.substring(name.lastIndexOf('.')+1);
           props.put(name,value);
@@ -387,7 +387,7 @@ public class BPDUtil
 
     return props;
   }
-  
+
   /**
    * Aktualisiert den Cache fuer den Passport.
    * @param passport der Passport.
@@ -404,7 +404,7 @@ public class BPDUtil
       final Properties data = prefix == Prefix.BPD ? passport.getBPD() : passport.getUPD();
       final String version  = prefix == Prefix.BPD ? passport.getBPDVersion() : passport.getUPDVersion();
       final String user     = passport.getUserId();
-      
+
       if (version == null || version.length() == 0 || user == null || user.length() == 0 || data == null || data.size() == 0)
       {
         Logger.debug("[" + prefix + "] no version, no userid or no data found, skipping update");
@@ -420,7 +420,7 @@ public class BPDUtil
       //////////////////////////////////////////////////////////////////////////
       // Expiry-Status
       boolean expired = true;
-      
+
       try
       {
         long timestamp = Long.parseLong(DBPropertyUtil.get(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,"0"));
@@ -436,16 +436,16 @@ public class BPDUtil
       //////////////////////////////////////////////////////////////////////////
       // Version-Status
       boolean newVersion = false;
-      
+
       try
       {
         v = VersionUtil.getVersion(Settings.getDBService(),prefix.value() + "." + user);
-        
+
         int nv = Integer.parseInt(version);
         int cv = v.getVersion();
-        
+
         newVersion = (nv > cv);
-        
+
         if (cv < 0 || nv < 0)
           Logger.warn("SUSPECT - " + prefix + " version smaller than zero. new: " + nv + ", current: " + cv);
 
@@ -462,17 +462,17 @@ public class BPDUtil
       Logger.info(prefix + " cache update state [expired: " + expired + ", new version: " + newVersion + "]");
       if (!expired && !newVersion)
         return false;
-      
+
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
       SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
       ProgressMonitor monitor = session != null ? session.getProgressMonitor() : null;
 
       if (monitor != null)
         monitor.log(i18n.tr("Aktualisiere " + prefix.name()));
-      
+
       Logger.info("updating " + prefix + " cache");
       Set<String> customerIDs = HBCIProperties.getCustomerIDs(passport);
-      
+
       int count = 1;
       for (String customerId:customerIDs)
       {
@@ -480,13 +480,13 @@ public class BPDUtil
         Logger.info("customer " + count + ": updated " + prefix + "- inserts: " + update.inserts + ", updates: " + update.updates + ", deletions: " + update.deletes);
         if (monitor != null)
           monitor.log(i18n.tr("  Kennung {0} - {1}-Parameter neu: {2}, geändert: {3}, gelöscht: {4}",Integer.toString(count),prefix.name(),Integer.toString(update.inserts),Integer.toString(update.updates),Integer.toString(update.deletes)));
-        
+
         count++;
       }
-      
+
       // Speichern der neuen Versionsnummer
       v.store();
-      
+
       // Datum des letzten Abrufs speichern
       DBPropertyUtil.set(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,Long.toString(now));
       return true;
@@ -497,7 +497,7 @@ public class BPDUtil
       return false;
     }
   }
-  
+
   /**
    * Markiert den Cache als expired.
    * @param passport der Passport.
@@ -511,7 +511,7 @@ public class BPDUtil
       Logger.debug("[" + prefix + "] no userid found, skipping cache expiry");
       return;
     }
-    
+
     try
     {
       Logger.info("expire " + prefix.name() + " cache");

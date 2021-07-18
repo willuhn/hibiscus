@@ -46,7 +46,7 @@ import de.willuhn.util.I18N;
 public class PassportTree extends TreePart
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * ct.
    * @throws RemoteException
@@ -67,7 +67,7 @@ public class PassportTree extends TreePart
       }
     });
     this.addColumn(i18n.tr("Bezeichnung"),"name");
-    
+
     this.setFormatter(new TreeFormatter() {
       public void format(TreeItem item)
       {
@@ -83,13 +83,13 @@ public class PassportTree extends TreePart
             icon = "dialog-password.png";
           else if (p instanceof de.willuhn.jameica.hbci.passports.ddv.rmi.Passport)
             icon = "gcr-smart-card.png";
-          
+
           item.setImage(SWTUtil.getImage(icon));
         }
       }
     });
     this.setMulti(false);
-    
+
     ContextMenu menu = new ContextMenu();
     menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -114,14 +114,14 @@ public class PassportTree extends TreePart
         new PassportDetail().handleAction(p);
       }
     },"list-add.png"));
-    
+
     menu.addItem(ContextMenuItem.SEPARATOR);
     menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof ConfigObject))
           return;
-        
+
         Configuration config = ((ConfigObject) context).config;
         if (config == null)
           return;
@@ -145,9 +145,9 @@ public class PassportTree extends TreePart
           Logger.error("unable to delete config",e);
           throw new ApplicationException(i18n.tr("Löschen fehlgeschlagen: {0}",e.getMessage()));
         }
-        
+
         config.delete();
-        
+
         // View neu laden
         GUI.startView(GUI.getCurrentView(),null);
       }
@@ -158,7 +158,7 @@ public class PassportTree extends TreePart
         return (o instanceof ConfigObject) && super.isEnabledFor(o);
       }
     });
-    
+
     this.setContextMenu(menu);
   }
 
@@ -174,10 +174,10 @@ public class PassportTree extends TreePart
       return ((PassportObject) o).passport;
     if (o instanceof ConfigObject)
       return ((ConfigObject) o).passport;
-    
+
     return null;
   }
-  
+
   /**
    * Initialisiert die Daten des Tree.
    * @return der Tree.
@@ -204,7 +204,7 @@ public class PassportTree extends TreePart
       throw new RemoteException("unable to create passport tree",e);
     }
   }
-  
+
   /**
    * Hilfsklasse, um die Passports als Baum anzuzeigen.
    */
@@ -212,7 +212,7 @@ public class PassportTree extends TreePart
   {
     private Passport passport        = null;
     private GenericIterator children = null;
-    
+
     /**
      * ct.
      * @param passport der Passport.
@@ -221,7 +221,7 @@ public class PassportTree extends TreePart
     {
       this.passport = passport;
     }
-    
+
     /**
      * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
      */
@@ -272,7 +272,7 @@ public class PassportTree extends TreePart
     {
       if (this.children != null)
         return this.children;
-      
+
       List<? extends Configuration> configs = this.passport.getConfigurations();
       List<ConfigObject> list = new ArrayList<ConfigObject>();
       for (Configuration c:configs)
@@ -315,7 +315,7 @@ public class PassportTree extends TreePart
       return this.getChildren().contains(children) != null;
     }
   }
-  
+
   /**
    * Hilfsklasse, um die Passport-Konfigurationen im Baum anzuzeigen.
    */
@@ -323,7 +323,7 @@ public class PassportTree extends TreePart
   {
     private Passport passport    = null;
     private Configuration config = null;
-    
+
     /**
      * ct.
      * @param passport
@@ -353,7 +353,7 @@ public class PassportTree extends TreePart
     {
       if ("name".equals(name))
         return this.config.getDescription();
-      
+
       return BeanUtil.get(this.config,name);
     }
 
@@ -372,7 +372,7 @@ public class PassportTree extends TreePart
     {
       if (this.config instanceof GenericObject)
         return ((GenericObject) this.config).getID();
-      
+
       return this.config.getClass().getName() + ":" + this.config.getDescription();
     }
 
@@ -383,12 +383,10 @@ public class PassportTree extends TreePart
     {
       return "description";
     }
-    
+
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: PassportTree.java,v $

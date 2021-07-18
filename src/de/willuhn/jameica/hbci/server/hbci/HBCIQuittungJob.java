@@ -46,7 +46,7 @@ public class HBCIQuittungJob extends AbstractHBCIJob
 		{
 			if (ka == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontoauszug aus"));
-			
+
 			this.ka = ka;
 
       byte[] receipt = this.ka.getQuittungscode();
@@ -65,10 +65,10 @@ public class HBCIQuittungJob extends AbstractHBCIJob
 			{
 			  Logger.error("unable to encode receipt using encoding " + Comm.ENCODING + " - fallback to default encoding",e);
 			}
-			
+
 			if (s == null)
 			  s = new String(receipt);
-			
+
       setJobParam("receipt",s);
     }
 		catch (RemoteException e)
@@ -110,7 +110,7 @@ public class HBCIQuittungJob extends AbstractHBCIJob
   {
     int jahr   = this.getJahr();
     Integer nr = ka.getNummer();
-    
+
     StringBuilder sb = new StringBuilder();
     sb.append(jahr);
     if (nr != null)
@@ -120,7 +120,7 @@ public class HBCIQuittungJob extends AbstractHBCIJob
     }
     return i18n.tr("Empfangsquittung für Kontoauszug {0}",sb.toString());
   }
-  
+
   /**
    * Versucht das Jahr des Kontoauszuges zu ermitteln.
    * @return das jahr des Kontoauszuges.
@@ -144,7 +144,7 @@ public class HBCIQuittungJob extends AbstractHBCIJob
           return cal.get(Calendar.YEAR);
         }
       }
-      
+
       // Ueberhaupt kein Jahr ermittelbar? Dann halt das aktuelle
       Logger.warn("unable to determine year for account statements");
       return cal.get(Calendar.YEAR);
@@ -155,9 +155,9 @@ public class HBCIQuittungJob extends AbstractHBCIJob
       Calendar cal = Calendar.getInstance();
       return cal.get(Calendar.YEAR);
     }
-      
+
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
    */
@@ -168,7 +168,7 @@ public class HBCIQuittungJob extends AbstractHBCIJob
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ka));
     Logger.info("marked account statement for range " + ka.getVon() + " - " + ka.getBis() + " as received, receipt: " + ka.getQuittungscode());
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
    */

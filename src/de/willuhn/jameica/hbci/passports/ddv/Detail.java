@@ -34,11 +34,11 @@ public class Detail extends AbstractView
   public void bind() throws Exception
   {
     GUI.getView().setTitle(i18n.tr("Details der Kartenleser-Konfiguration"));
-    
+
     final Controller control = new Controller(this);
 
     ColumnLayout columns = new ColumnLayout(getParent(),2);
-    
+
     {
       // Linke Seite
       Container container = new SimpleContainer(columns.getComposite());
@@ -49,7 +49,7 @@ public class Detail extends AbstractView
       container.addInput(control.getPort());
       container.addInput(control.getCTNumber());
     }
-    
+
     {
       // Rechte Seite
       Container container = new SimpleContainer(columns.getComposite());
@@ -71,7 +71,6 @@ public class Detail extends AbstractView
                       "Aktivieren Sie die Kontrollkästchen der gewünschten Konten in der Spalte \"Kontonummer\", um diese Konten fest zuzuordnen. Klicken Sie anschließend \"Speichern\". " +
                       "Weitere Informationen hierzu finden Sie links in der Hilfe.\n"),true);
     c.addPart(control.getKontoAuswahl());
-
 
     ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(i18n.tr("BPD/UPD"),new Action()
@@ -109,10 +108,10 @@ public class Detail extends AbstractView
       	control.handleStore();
       }
     },null,false,"document-save.png");
-    
+
     buttonArea.paint(getParent());
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#canBookmark()
    */

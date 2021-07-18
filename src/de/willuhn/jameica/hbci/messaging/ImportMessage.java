@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.messaging;
 
 import de.willuhn.datasource.GenericObject;
 
-
 /**
  * Diese Art von Nachricht wird verschickt, wenn ein Datensatz importiert wurde.
  * Um diese Nachrichten zu erhalten, kann man sich als MessageConsumer
@@ -31,7 +30,6 @@ public class ImportMessage extends ObjectMessage
     super(object);
   }
 }
-
 
 /*********************************************************************
  * $Log: ImportMessage.java,v $

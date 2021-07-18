@@ -59,25 +59,25 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   protected void insertCheck() throws ApplicationException
   {
     try {
-      
+
       Konto k = getKonto();
 
       if (k == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
-      
+
       String kiban = k.getIban();
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
-      
+
       String bic = k.getBic();
       if (bic == null || bic.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
 
       if (getBezeichnung() == null || getBezeichnung().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
-      
+
       HBCIProperties.checkLength(getPmtInfId(), HBCIProperties.HBCI_SEPA_ENDTOENDID_MAXLENGTH);
       HBCIProperties.checkChars(getPmtInfId(), HBCIProperties.HBCI_SEPA_PMTINF_VALIDCHARS);
 
@@ -94,7 +94,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     {
       if (!this.markingExecuted())
         throw ae;
-      
+
       Logger.warn(ae.getMessage());
     }
   }
@@ -134,7 +134,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     Integer i = (Integer) super.getAttribute("konto_id");
     if (i == null)
       return null; // Kein Konto zugeordnet
-   
+
     Cache cache = Cache.get(Konto.class,true);
     return (Konto) cache.get(i);
   }
@@ -301,22 +301,22 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   {
     if ("summe".equals(arg0))
       return this.getSumme();
-    
+
     if ("anzahl".equals(arg0))
       return this.getBuchungen().size();
-    
+
     if ("buchungen".equals(arg0))
     {
       StringBuffer sb = new StringBuffer();
       List<T> list    = getBuchungen();
-      
+
       for (T t:list)
       {
         sb.append(i18n.tr("{0} {1} \t {2}\n",HBCI.DECIMALFORMAT.format(t.getBetrag()),HBCIProperties.CURRENCY_DEFAULT_DE,t.getGegenkontoName()));
       }
       return sb.toString();
     }
-    
+
     if ("konto_id".equals(arg0))
       return getKonto();
 
@@ -329,7 +329,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   public BigDecimal getSumme() throws RemoteException
   {
     BigDecimal sum = new BigDecimal(0);
-    
+
     if (this.isNewObject())
       return sum;
 
@@ -340,7 +340,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
     return sum;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#getPmtInfId()
    */
@@ -348,7 +348,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   {
     return (String) getAttribute("pmtinfid");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#setPmtInfId(java.lang.String)
    */

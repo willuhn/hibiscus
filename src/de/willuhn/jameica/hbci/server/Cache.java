@@ -29,20 +29,20 @@ class Cache
 {
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Cache.class);
   private static int timeout = 0;
-  
+
   // Enthaelt alle Caches.
   private final static Map<Class,Cache> caches = new HashMap<Class,Cache>();
-  
+
   // Der konkrete Cache
   private Map<String,DBObject> data = new HashMap<String,DBObject>(); // Als Map fuer schnellen Zugriff auf einzelne Werte
   private List<DBObject> values = new LinkedList<DBObject>();         // Als Liste fuer die Sicherstellung der Reihenfolge
   private Class<? extends DBObject> type = null;
   private long validTo = 0;
-  
+
   static
   {
     settings.setStoreWhenRead(false);
-    
+
     // Das Timeout betraegt nur 10 Sekunden. Mehr brauchen wir nicht.
     // Es geht ja nur darum, dass z.Bsp. beim Laden der Umsaetze die
     // immer wieder gleichen zugeordneten Konten oder Umsatz-Kategorien
@@ -60,7 +60,7 @@ class Cache
   {
     touch();
   }
-  
+
   /**
    * Aktualisiert das Verfallsdatum des Caches.
    */
@@ -77,7 +77,7 @@ class Cache
   {
     caches.remove(type);
   }
-  
+
   /**
    * Liefert den Cache fuer den genannten Typ.
    * @param type der Typ.
@@ -94,7 +94,7 @@ class Cache
       }
     },init);
   }
-  
+
   /**
    * Liefert den Cache fuer den genannten Typ.
    * @param type der Typ.
@@ -106,7 +106,7 @@ class Cache
   static Cache get(Class<? extends DBObject> type, ObjectFactory factory, boolean init) throws RemoteException
   {
     Cache cache = caches.get(type);
-    
+
     if (cache != null)
     {
       if (cache.validTo < System.currentTimeMillis())
@@ -119,13 +119,13 @@ class Cache
         cache.touch(); // Verfallsdatum aktualisieren
       }
     }
-    
+
     // Cache erzeugen und mit Daten fuellen
     if (cache == null)
     {
       cache = new Cache();
       cache.type = type;
-      
+
       if (init)
       {
         // Daten in den Cache laden
@@ -152,11 +152,11 @@ class Cache
   {
     if (id == null)
       return null;
-    
+
     String s = id.toString();
-    
+
     DBObject value = data.get(s);
-    
+
     if (value == null)
     {
       // Noch nicht im Cache. Vielleicht koennen wir es noch laden
@@ -175,7 +175,7 @@ class Cache
     }
     return value;
   }
-  
+
   /**
    * Liefert alle Werte aus dem Cache.
    * @return Liste der Werte aus dem Cache.
@@ -184,7 +184,7 @@ class Cache
   {
     return values;
   }
-  
+
   /**
    * Interface fuer eine Faktory, die die Objekte laedt.
    */
@@ -198,8 +198,6 @@ class Cache
     public DBIterator load() throws RemoteException;
   }
 }
-
-
 
 /**********************************************************************
  * $Log: Cache.java,v $

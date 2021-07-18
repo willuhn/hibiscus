@@ -32,7 +32,6 @@ public interface BaseUeberweisung extends HibiscusTransfer, Terminable
   public void setTextSchluessel(String schluessel) throws RemoteException;
 }
 
-
 /*********************************************************************
  * $Log: BaseUeberweisung.java,v $
  * Revision 1.3  2008/08/01 11:05:14  willuhn

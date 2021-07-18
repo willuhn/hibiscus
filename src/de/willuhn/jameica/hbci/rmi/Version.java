@@ -19,28 +19,28 @@ import de.willuhn.datasource.rmi.DBObject;
  */
 public interface Version extends DBObject
 {
-  
+
   /**
    * Liefert den Namen der Version.
    * @return Name der Version.
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
-  
+
   /**
    * Speichert den Namen der Version.
    * @param name Name der Version.
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
-  
+
   /**
    * Liefert den aktuellen Stand der Version.
    * @return Stand der Version.
    * @throws RemoteException
    */
   public int getVersion() throws RemoteException;
-  
+
   /**
    * Legt die neue Versionsnummer fest.
    * @param newVersion die neue Versionsnummer.
@@ -49,7 +49,6 @@ public interface Version extends DBObject
   public void setVersion(int newVersion) throws RemoteException;
 
 }
-
 
 /*********************************************************************
  * $Log: Version.java,v $

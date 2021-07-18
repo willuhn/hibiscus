@@ -42,7 +42,7 @@ public class SepaSammelLastBuchungNew extends AbstractView
   {
 		final SepaSammelLastBuchungControl control = new SepaSammelLastBuchungControl(this);
     final SepaSammelTransfer l = control.getBuchung().getSammelTransfer();
-    
+
     GUI.getView().setTitle(i18n.tr("SEPA-Sammellastschrift {0}: Buchung bearbeiten",l.getBezeichnung()));
 
     // Zusaetzlicher Back-Button, um zurueck zum Auftrag zu kommen
@@ -52,10 +52,10 @@ public class SepaSammelLastBuchungNew extends AbstractView
         super.handleAction(l);
       }
     },i18n.tr("Zurück zum Sammelauftrag")));
-		
+
 
     ColumnLayout cols = new ColumnLayout(getParent(),2);
-    
+
     // Linke Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -65,7 +65,7 @@ public class SepaSammelLastBuchungNew extends AbstractView
       container.addLabelPair(i18n.tr("BIC"),  control.getEmpfaengerBic());
       container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
     }
-    
+
     // Rechte Seite
     {
       Container container = new SimpleContainer(cols.getComposite());
@@ -81,7 +81,7 @@ public class SepaSammelLastBuchungNew extends AbstractView
     container.addHeadline(i18n.tr("Details"));
     container.addLabelPair(i18n.tr("Verwendungszweck"), control.getZweck());
     container.addLabelPair(i18n.tr("Betrag"),           control.getBetrag());
-    
+
 		ButtonArea buttonArea = new ButtonArea();
     Button delete = new Button(i18n.tr("Löschen"), new DBObjectDelete(),control.getBuchung(),false,"user-trash-full.png");
     delete.setEnabled(!l.ausgefuehrt());
@@ -94,7 +94,7 @@ public class SepaSammelLastBuchungNew extends AbstractView
     },null,false,"document-save.png");
     store.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store);
-    
+
     // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
     Button store2 = new Button(i18n.tr("Speichern und nächste Buchung"), new Action() {
       public void handleAction(Object context) throws ApplicationException {
@@ -108,7 +108,7 @@ public class SepaSammelLastBuchungNew extends AbstractView
     },null,!l.ausgefuehrt(),"go-next.png");
     store2.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(store2);
-    
+
     buttonArea.paint(getParent());
   }
 }

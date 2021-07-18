@@ -70,7 +70,7 @@ public class SepaLastschriftNew implements Action
         u.setGegenkontoNummer(umsatz.getGegenkontoNummer());
         u.setKonto(umsatz.getKonto());
         u.setTermin(new Date());
-        
+
         // die weiteren Verwendungszweck-Zeilen gibts bei SEPA-Ueberweisungen nicht.
         // Daher landen die alle in einer Zeile
         u.setZweck(VerwendungszweckUtil.toString(umsatz));
@@ -91,12 +91,12 @@ public class SepaLastschriftNew implements Action
           u.setEndtoEndId(b.getEndtoEndId());
           u.setMandateId(b.getMandateId());
           u.setSignatureDate(b.getSignatureDate());
-          
+
           if (st != null)
           {
             u.setKonto(st.getKonto());
             u.setTermin(st.getTermin());
-            
+
             u.setSequenceType(st.getSequenceType());
             u.setTargetDate(st.getTargetDate());
             u.setType(st.getType());
@@ -108,8 +108,7 @@ public class SepaLastschriftNew implements Action
           // Dann halt nicht
         }
       }
-      
-      
+
     }
     catch (RemoteException e)
     {

@@ -34,7 +34,7 @@ public class DDVConfig implements Configuration
    * Moegliche Ports fuer den Leser.
    */
   public final static String[] PORTS = new String[] {"COM/USB","COM2/USB2","USB3","USB4","USB5","USB6"};
-  
+
   private final static Settings settings = new Settings(DDVConfig.class);
   private String id = null;
 
@@ -46,7 +46,7 @@ public class DDVConfig implements Configuration
   {
     this.id = id;
   }
-  
+
   /**
    * Liefert die ID der Config.
    * @return die ID der Config.
@@ -55,7 +55,7 @@ public class DDVConfig implements Configuration
   {
     return this.id;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
    */
@@ -80,7 +80,7 @@ public class DDVConfig implements Configuration
   {
     return "config." + this.getId() + ".";
   }
-  
+
   /**
    * Liefert einen sprechenden Namen fuer die Config.
    * @return sprechender Name fuer die Config.
@@ -89,7 +89,7 @@ public class DDVConfig implements Configuration
   {
     return settings.getString(this.getPrefix() + "name","default");
   }
-  
+
   /**
    * Legt den Namen der Config fest.
    * @param name Name der Config.
@@ -98,7 +98,7 @@ public class DDVConfig implements Configuration
   {
     settings.setAttribute(this.getPrefix() + "name",name);
   }
-  
+
   /**
    * Liefert die Port-Nummer des Kartenlesers.
    * @return die Port-Nummer des Kartenlesers.
@@ -255,7 +255,7 @@ public class DDVConfig implements Configuration
   {
     settings.setAttribute(this.getPrefix() + "hbciversion",version);
   }
-  
+
   /**
    * Liefert eine Liste von fest verdrahteten Konten fuer die Kartenleser-Config.
    * @return Liste von fest verdrahteten Konten.
@@ -267,7 +267,7 @@ public class DDVConfig implements Configuration
     String[] ids = settings.getList(getPrefix() + "konto",null);
     if (ids == null || ids.length == 0)
       return null;
-    
+
     List<String> fixedIds = new ArrayList<String>();
     List<Konto> konten = new ArrayList<Konto>();
     for (int i=0;i<ids.length;++i)
@@ -306,7 +306,7 @@ public class DDVConfig implements Configuration
       settings.setAttribute(getPrefix() + "konto",(String[]) null);
       return;
     }
-    
+
     String[] ids = new String[list.size()];
     for (int i=0;i<list.size();++i)
     {
@@ -314,7 +314,6 @@ public class DDVConfig implements Configuration
     }
     settings.setAttribute(getPrefix() + "konto",ids);
   }
-  
 
   /**
    * Liefert die Portnummer fuer den angegebenen Port-Namen.
@@ -353,7 +352,7 @@ public class DDVConfig implements Configuration
     copy.setPCSCName(this.getPCSCName());
     return copy;
   }
-  
+
   /**
    * Loescht die Einstellungen der Config.
    */
@@ -379,8 +378,6 @@ public class DDVConfig implements Configuration
     DDVConfigFactory.delete(this);
   }
 }
-
-
 
 /**********************************************************************
  * $Log: DDVConfig.java,v $

@@ -63,7 +63,7 @@ public class KontoauszugPdfList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),            new KontoauszugExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),                   new KontoauszugImport(),"document-open.png"));
 	}
-	
+
 	/**
 	 * Nimmt den Shortcut noch mit im Construktor auf.
 	 */
@@ -81,9 +81,8 @@ public class KontoauszugPdfList extends ContextMenu
       super(text, a, icon);
       this.setShortcut(shortcut);
     }
-	  
 	}
-	
+
 	private class UnsentCheckedContextMenuItem extends CheckedSingleContextMenuItem
 	{
 	  /**
@@ -105,7 +104,7 @@ public class KontoauszugPdfList extends ContextMenu
 	  {
 	    if (!(o instanceof Kontoauszug))
 	      return false;
-	    
+
 	    try
 	    {
 	      Kontoauszug k = (Kontoauszug) o;

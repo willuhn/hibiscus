@@ -76,7 +76,6 @@ public interface Nachricht extends HibiscusDBObject
 
 }
 
-
 /**********************************************************************
  * $Log: Nachricht.java,v $
  * Revision 1.2  2011/10/18 09:28:14  willuhn

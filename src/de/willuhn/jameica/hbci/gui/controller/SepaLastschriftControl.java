@@ -97,10 +97,9 @@ public class SepaLastschriftControl extends AbstractControl
 
   private CheckboxInput storeEmpfaenger      = null;
   private HibiscusAddressUpdate aUpdate      = new HibiscusAddressUpdate();
-  
+
   private HibiscusAddress address            = null;
-  
-  
+
   /**
    * ct.
    * @param view
@@ -109,7 +108,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     super(view);
   }
-  
+
   /**
    * @return der Auftrag
    * @throws RemoteException
@@ -118,18 +117,18 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (this.transfer != null)
       return this.transfer;
-    
+
     Object o = getCurrentObject();
     if (o instanceof SepaLastschrift)
     {
       this.transfer = (SepaLastschrift) o;
       return this.transfer;
     }
-    
+
     this.transfer = (SepaLastschrift) Settings.getDBService().createObject(SepaLastschrift.class,null);
     return this.transfer;
   }
-  
+
   /**
    * Liefert die Liste der SEPA-Lastschriften.
    * @return Liste der SEPA-Lastschriften.
@@ -151,7 +150,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
+
     KontoListener kl = new KontoListener();
     MyKontoFilter filter = new MyKontoFilter();
     this.kontoAuswahl = new KontoInput(getTransfer().getKonto(),filter);
@@ -169,7 +168,7 @@ public class SepaLastschriftControl extends AbstractControl
 
     return this.kontoAuswahl;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer den Empfaenger-Namen.
    * @return Eingabe-Feld.
@@ -179,7 +178,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (empfName != null)
       return empfName;
-    
+
     // Wir schauen mal, ob wir in dem Auftrag schon eine Adress-ID haben
     // Wenn das der Fall ist, bearbeitet der User scheinbar gerade eine
     // existierende Lastschrift. Wir laden dann die Adresse, damit die
@@ -209,7 +208,6 @@ public class SepaLastschriftControl extends AbstractControl
     return empfName;
   }
 
-  
   /**
    * Liefert das Eingabe-Feld fuer den Empfaenger.
    * @return Eingabe-Feld.
@@ -260,7 +258,7 @@ public class SepaLastschriftControl extends AbstractControl
     }
     return this.endToEndId;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer die PmtInf-ID.
    * @return Eingabe-Feld.
@@ -365,7 +363,7 @@ public class SepaLastschriftControl extends AbstractControl
     }
     return this.type;
   }
-  
+
   /**
    * Liefert das Eingabe-Feld fuer das Ausfuehrungsdatum.
    * @return Eingabe-Feld.
@@ -382,8 +380,6 @@ public class SepaLastschriftControl extends AbstractControl
     }
     return this.targetDate;
   }
-
-
 
   /**
    * Liefert das Eingabe-Feld fuer den Verwendungszweck.
@@ -417,7 +413,7 @@ public class SepaLastschriftControl extends AbstractControl
     betrag.setComment(k == null ? "" : k.getWaehrung());
     betrag.setMandatory(true);
     betrag.setEnabled(!getTransfer().ausgefuehrt());
-    
+
     new KontoListener().handleEvent(null);
 
     return betrag;
@@ -432,7 +428,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (this.termin != null)
       return this.termin;
-    
+
     this.termin = new TerminInput((Terminable) getTransfer());
     return termin;
   }
@@ -446,7 +442,7 @@ public class SepaLastschriftControl extends AbstractControl
   {
     if (this.interval != null)
       return this.interval;
-    
+
     this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
     return this.interval;
   }
@@ -467,7 +463,7 @@ public class SepaLastschriftControl extends AbstractControl
     // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
     // noch kein Gegenkonto definiert ist.
     boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
-    
+
     // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
     de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
     enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
@@ -483,18 +479,18 @@ public class SepaLastschriftControl extends AbstractControl
   public synchronized boolean handleStore()
   {
     SepaLastschrift t = null;
-    
+
     try
     {
       t = this.getTransfer();
       if (t.ausgefuehrt())
         return true;
-      
+
       t.transactionBegin();
 
       Double d = (Double) getBetrag().getValue();
       t.setBetrag(d == null ? Double.NaN : d.doubleValue());
-      
+
       Konto k = (Konto)getKontoAuswahl().getValue();
       t.setKonto(k);
       t.setZweck((String)getZweck().getValue());
@@ -515,7 +511,7 @@ public class SepaLastschriftControl extends AbstractControl
       t.setGegenkontoNummer(kto);
       t.setGegenkontoName(name);
       t.setGegenkontoBLZ(bic);
-      
+
       t.store();
 
       // Reminder-Intervall speichern
@@ -531,32 +527,32 @@ public class SepaLastschriftControl extends AbstractControl
         e.setName(name);
         e.setBic(bic);
         this.aUpdate.handleAction(e);
-        
+
         // wenn sie in der Action gespeichert wurde, sollte sie jetzt eine ID haben und wir koennen die Meta-Daten dran haengen
         if (e.getID() != null)
           this.address = e;
       }
-      
+
       // Glaeubiger-ID im Konto speichern, damit wir sie beim naechsten Mal parat haben
       MetaKey.SEPA_CREDITOR_ID.set(k,t.getCreditorId());
-      
+
       // Daten des Mandats als Meta-Daten an der Adresse speichern
       if (this.address != null)
       {
         MetaKey.SEPA_MANDATE_ID.set(this.address,t.getMandateId());
         MetaKey.SEPA_SEQUENCE_CODE.set(this.address,t.getSequenceType().name());
         MetaKey.SEPA_MANDATE_SIGDATE.set(this.address,DateUtil.DEFAULT_FORMAT.format(t.getSignatureDate()));
-        
+
         // Adress-ID am Auftrag speichern, damit wir nach erfolgreicher Ausfuehrung des Auftrages den
         // Sequence-Typ von FRST auf RCUR setzen koennen
         MetaKey.ADDRESS_ID.set(t,this.address.getID());
       }
-      
+
       t.transactionCommit();
 
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
       MessageBus.send("hibiscus.transfer.check",t);
-      
+
       return true;
     }
     catch (Exception e)
@@ -569,7 +565,7 @@ public class SepaLastschriftControl extends AbstractControl
           Logger.error("rollback failed",xe);
         }
       }
-      
+
       if (e instanceof ApplicationException)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
@@ -582,7 +578,7 @@ public class SepaLastschriftControl extends AbstractControl
     }
     return false;
   }
-  
+
   /**
    * Eigener ueberschriebener Kontofilter.
    */
@@ -626,7 +622,7 @@ public class SepaLastschriftControl extends AbstractControl
         Konto konto = (Konto) o;
         getBetrag().setComment(konto.getWaehrung());
         getTransfer().setKonto(konto);
-        
+
         // Checken, ob wir im Konto eine Glaeubiger-ID haben
         String creditorId = StringUtils.trimToNull(MetaKey.SEPA_CREDITOR_ID.get(konto));
         if (creditorId != null)
@@ -652,10 +648,10 @@ public class SepaLastschriftControl extends AbstractControl
     public void handleEvent(Event event) {
       if (event == null)
         return;
-      
+
       if (!(event.data instanceof Address))
         return;
-      
+
       Address a = (Address) event.data;
       aUpdate.setAddress(a);
 
@@ -666,7 +662,7 @@ public class SepaLastschriftControl extends AbstractControl
 
         // Wenn der Empfaenger aus dem Adressbuch kommt, deaktivieren wir die Checkbox
         getStoreEmpfaenger().setValue(Boolean.FALSE);
-        
+
         try
         {
           String zweck = StringUtils.trimToNull((String) getZweck().getValue());
@@ -692,22 +688,22 @@ public class SepaLastschriftControl extends AbstractControl
         if (a instanceof HibiscusAddress)
         {
           HibiscusAddress addressCur = address;
-          
+
           // Wir merken uns die ausgewaehlte Adresse fuer die spaetere Speicherung dieser Daten an der Adresse.
           address = (HibiscusAddress) a;
-          
+
           String miNew = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_ID.get(address));
           String sdNew = StringUtils.trimToNull(MetaKey.SEPA_MANDATE_SIGDATE.get(address));
           String scNew = StringUtils.trimToNull(MetaKey.SEPA_SEQUENCE_CODE.get(address));
           String miCur               = StringUtils.trimToNull((String)getMandateId().getValue());
           Date sdCur                 = (Date) getSignatureDate().getValue();
-          
+
           if (miNew != null)
             getMandateId().setValue(miNew);
-          
+
           if (sdNew != null)
             getSignatureDate().setValue(sdNew);
-          
+
           if (scNew != null)
           {
             try
@@ -720,13 +716,13 @@ public class SepaLastschriftControl extends AbstractControl
               Logger.error("unable to determine enum value of SepaLastSequenceType for " + scNew,e);
             }
           }
-          
+
           // Hatten wir vorher Eingaben drin?
           boolean haveCur = miCur != null || sdCur != null;
-          
+
           // Haben wir jetzt komplett neue Eingaben drin?
           boolean haveNew = miNew != null && sdNew != null && scNew != null;
-          
+
           // Wenn eine *andere* Adresse ausgewaehlt wurde und vorher schon Mandatsdaten drin
           // standen und wir die nicht komplett ueberschrieben haben, zeigen wir einen Warnhinweis an
           if (addressCur != null && !BeanUtil.equals(address,addressCur) && haveCur && !haveNew)
@@ -734,7 +730,7 @@ public class SepaLastschriftControl extends AbstractControl
             String msg = i18n.tr("Sie haben eine neue Adresse ausgewählt zu der noch keine vollständigen Mandatsdaten\n" +
             		                 "hinterlegt sind. Die Daten des Mandats stammen u.U. noch von der vorher ausgewählten\n" +
             		                 "Adresse.\n\nMandats-Referenz und Unterschriftsdatum entfernen und neu eingeben?");
-            
+
             boolean clear = Application.getCallback().askUser(msg);
             if (clear)
             {
@@ -744,9 +740,9 @@ public class SepaLastschriftControl extends AbstractControl
               getMandateId().focus();
             }
           }
-          
+
         }
-        
+
       }
       catch (ApplicationException ae)
       {

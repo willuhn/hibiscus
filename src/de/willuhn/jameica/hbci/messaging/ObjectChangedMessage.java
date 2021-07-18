@@ -29,7 +29,6 @@ public class ObjectChangedMessage extends ObjectMessage
 
 }
 
-
 /*********************************************************************
  * $Log: ObjectChangedMessage.java,v $
  * Revision 1.1  2007/03/16 14:40:02  willuhn

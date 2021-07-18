@@ -49,7 +49,7 @@ public class XMLSepaSammelTransferExporter extends XMLExporter
   {
     if (objectType == null)
       return null;
-    
+
     if (!SepaSammelTransfer.class.isAssignableFrom(objectType))
       return null; // Nur fuer SEPA-Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
 
@@ -58,7 +58,7 @@ public class XMLSepaSammelTransferExporter extends XMLExporter
       {
         return i18n.tr("Hibiscus-Format");
       }
-    
+
       /**
        * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
        */

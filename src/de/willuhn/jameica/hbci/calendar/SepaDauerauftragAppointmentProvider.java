@@ -37,7 +37,7 @@ public class SepaDauerauftragAppointmentProvider extends AbstractAppointmentProv
   {
     return new MyAppointment(schedule);
   }
-  
+
   /**
    * Hilfsklasse zum Anzeigen und Oeffnen des Appointments.
    */
@@ -97,7 +97,7 @@ public class SepaDauerauftragAppointmentProvider extends AbstractAppointmentProv
       // Wir markieren ihn grau, wenn er in der Vergangenheit liegt,
       // ansonsten farbig
       Date termin = this.schedule.getDate();
-      
+
       if (termin != null && termin.before(new Date()))
         return Color.COMMENT.getSWTColor().getRGB();
       return Settings.getBuchungSollForeground().getRGB();

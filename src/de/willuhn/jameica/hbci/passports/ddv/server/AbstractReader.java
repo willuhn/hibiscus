@@ -34,7 +34,7 @@ public abstract class AbstractReader implements Reader
 	{
 
 		File f = new File(Settings.getLibPath());
-    
+
     switch(Application.getPlatform().getOS())
     {
 
@@ -48,7 +48,6 @@ public abstract class AbstractReader implements Reader
           Logger.error("error while converting ctapi path into canonical path",e);
         }
         return f;
-      
 
       case Platform.OS_WINDOWS:
         try {
@@ -88,17 +87,16 @@ public abstract class AbstractReader implements Reader
           // muessen wir nicht loggen
         }
         return f;
-        
+
         case Platform.OS_MAC:
           return f;
 
         default:
           return f;
     }
-		
-		
+
 	}
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getPort()
    */
@@ -114,7 +112,7 @@ public abstract class AbstractReader implements Reader
   {
     return 0;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useSoftPin()
    */
@@ -130,7 +128,7 @@ public abstract class AbstractReader implements Reader
   {
     return Type.DDV_CTAPI;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
    */
@@ -154,7 +152,7 @@ public abstract class AbstractReader implements Reader
   {
     if (!(obj instanceof Reader))
       return false;
-    
+
     Reader other = (Reader) obj;
     String s1 = this.getClass().getName()  + this.getName()  + this.getCTAPIDriver();
     String s2 = other.getClass().getName() + other.getName() + other.getCTAPIDriver();

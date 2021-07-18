@@ -69,7 +69,7 @@ public class NewKeysDialog extends AbstractDialog
 
 	private HBCIPassport passport;
 	private INILetter iniletter;
-	
+
 	private Input printerList = null;
 	private LabelInput error = null;
 
@@ -110,7 +110,7 @@ public class NewKeysDialog extends AbstractDialog
 
     group.addHeadline(i18n.tr("Hashwert"));
     group.addText(HBCIUtils.data2hex(iniletter.getKeyHashDisplay()).toUpperCase(),true,Color.ERROR);
-    
+
     group.addHeadline(i18n.tr("Exponent"));
     group.addText(HBCIUtils.data2hex(iniletter.getKeyExponentDisplay()).toUpperCase(),true);
 
@@ -121,7 +121,7 @@ public class NewKeysDialog extends AbstractDialog
     group.addText("\n",true);
     group.addInput(printers);
     group.addInput(getError());
-    
+
     ButtonArea buttons = new ButtonArea();
     Button print = new Button(i18n.tr("Drucken"),new Action()
     {
@@ -132,7 +132,7 @@ public class NewKeysDialog extends AbstractDialog
     },null,true,"document-print.png");
     print.setEnabled((printers instanceof SelectInput)); // Drucken nur moeglich, wenn Drucker vorhanden.
 		buttons.addButton(print);
-		
+
     buttons.addButton(i18n.tr("Speichern unter..."),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -155,7 +155,7 @@ public class NewKeysDialog extends AbstractDialog
 			}
 		},null,false,"process-stop.png");
 		group.addButtonArea(buttons);
-		
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
@@ -196,13 +196,13 @@ public class NewKeysDialog extends AbstractDialog
     fd.setText(i18n.tr("Bitte geben Sie den Dateinamen an, in dem der INI-Brief gespeichert werden soll."));
     fd.setFileName(i18n.tr("hibiscus-inibrief-{0}.txt",HBCI.FASTDATEFORMAT.format(new Date())));
     fd.setOverwrite(true);
-    
+
     String path = settings.getString("lastdir",System.getProperty("user.home"));
     if (path != null && path.length() > 0)
       fd.setFilterPath(path);
 
     String s = fd.open();
-    
+
     if (s == null || s.length() == 0)
     {
       getError().setValue(i18n.tr("Bitte wählen Sie eine Datei für den INI-Brief aus."));
@@ -257,11 +257,11 @@ public class NewKeysDialog extends AbstractDialog
       printerList = new LabelInput(i18n.tr("Kein Drucker gefunden"));
       getError().setValue(i18n.tr("Bitte speichern Sie den INI-Brief stattdessen."));
 		}
-    
+
     printerList.setName(i18n.tr("Drucker"));
 		return this.printerList;
 	}
-  
+
   /**
    * Liefert ein Label fuer Fehlermeldungen.
    * @return Label fuer Fehlermeldungen.
@@ -270,7 +270,7 @@ public class NewKeysDialog extends AbstractDialog
   {
     if (this.error != null)
       return this.error;
-    
+
     this.error = new LabelInput("");
     this.error.setColor(Color.ERROR);
     this.error.setName("");
@@ -285,7 +285,6 @@ public class NewKeysDialog extends AbstractDialog
     return null;
   }
 }
-
 
 /**********************************************************************
  * $Log: NewKeysDialog.java,v $

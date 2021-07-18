@@ -93,13 +93,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
 		Logger.info("open pin/tan passport");
 		try {
-	
+
       if (config == null && this.passport == null)
         throw new ApplicationException(i18n.tr("Keine Konfiguration oder Konto ausgewählt"));
 
       if (config == null && this.passport != null && this.passport.getKonto() != null)
         config = PinTanConfigFactory.findByKonto(this.passport.getKonto());
-
 
       // Mh, nichts da zum Laden, dann fragen wir mal den User
       if (config == null)
@@ -108,7 +107,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
         if (list == null || list.size() == 0)
           throw new ApplicationException(i18n.tr("Bitte legen Sie zuerst eine PIN/TAN-Konfiguration an"));
-        
+
         // Wir haben nur eine Config, dann brauchen wir den User nicht fragen
         if (list.size() == 1)
         {
@@ -135,7 +134,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
       if (config == null)
         throw new ApplicationException(i18n.tr("Keine PIN/TAN-Konfiguration für dieses Konto definiert"));
-      
+
 			Logger.debug("using passport file " + config.getFilename());
 
       AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
@@ -147,12 +146,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 
       {
         AbstractHBCIPassport ap = (AbstractHBCIPassport) hbciPassport;
-        
+
         // Wir speichern die verwendete PIN/TAN-Config im Passport. Dann wissen wir
         // spaeter in den HBCI-Callbacks noch, aus welcher Config der Passport
         // erstellt wurde. Wird z.Bsp. vom Payment-Server benoetigt.
         ap.setPersistentData(CONTEXT_CONFIG,config);
-        
+
         String cannationalacc = config.getCustomProperty("cannationalacc");
         if (cannationalacc != null)
           ap.setPersistentData("cannationalacc",cannationalacc);
@@ -176,7 +175,6 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       Logger.info("[PIN/TAN] using stored tan sec mech: " + (mech != null ? mech.toString() : "<ask-user>"));
       ((AbstractPinTanPassport)hbciPassport).setCurrentTANMethod(secmech);
       //////////////////////
-
 
 			handler=new HBCIHandler(hbciVersion,hbciPassport);
 			return handler;
@@ -237,12 +235,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 	    HBCICallback callback = ((HBCI)plugin).getHBCICallback();
 	    if (callback != null && (callback instanceof HBCICallbackSWT))
 	      ((HBCICallbackSWT)callback).setCurrentHandle(null);
-	    
+
 	    Logger.info("pin/tan passport closed");
 		}
-		
   }
-  
+
   /**
    * Speichert gesammelte Context-Daten in der Konfiguration.
    */
@@ -254,7 +251,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     final AbstractHBCIPassport ap = (AbstractHBCIPassport) this.hbciPassport;
     if (this.config == null)
       this.config = (PinTanConfig) ap.getPersistentData(PassportHandle.CONTEXT_CONFIG);
-    
+
     if (this.config == null)
       return;
 
@@ -263,7 +260,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       String s1 = (String) ap.getPersistentData(PassportHandle.CONTEXT_SECMECHLIST);
       if (s1 != null && s1.length() > 0) // sicherstellen, dass es nicht ueberschrieben wird, wenn nichts uebergeben wird
         this.config.setAvailableSecMechs(s1);
-      
+
       String s2 = (String) ap.getPersistentData(PassportHandle.CONTEXT_TANMEDIALIST);
       if (s2 != null && s2.length() > 0) // sicherstellen, dass es nicht ueberschrieben wird, wenn nichts uebergeben wird
         this.config.setAvailableTanMedias(s2);
@@ -273,7 +270,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       Logger.error("unable to apply context data",e);
     }
   }
-  
+
   /**
    * Behandelt die GAD-spezifische Rueckmeldung zur Aenderung der Kundenkennung
    */
@@ -281,7 +278,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   {
     if (hbciPassport == null)
       return;
-    
+
     try
     {
       new PassportProcessCode3072().handleAction(hbciPassport);
@@ -365,7 +362,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       case HBCICallback.NEED_PT_TAN:
       {
         TANDialog dialog = null;
-        
+
         String flicker = retData.toString();
         if (flicker != null && flicker.length() > 0)
         {
@@ -375,7 +372,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
           Logger.info("using chiptan OPTIC/USB");
           dialog = new ChipTANDialog(config,flicker);
         }
-        
+
         // regulaerer TAN-Dialog
         if (dialog == null)
         {
@@ -383,7 +380,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
           Logger.debug("using regular tan dialog");
           dialog = new TANDialog(config);
         }
-        
+
         dialog.setContext(this.getContext(passport));
         dialog.setText(msg);
         retData.replace(0,retData.length(),(String)dialog.open());
@@ -412,18 +409,18 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
             }
           }
         }
-        
+
         PtSecMechDialog ptd = new PtSecMechDialog(config,retData.toString());
         retData.replace(0,retData.length(),(String) ptd.open());
         return true;
       }
-        
+
       // BUGZILLA 827
       case HBCICallback.NEED_PT_TANMEDIA:
       {
         Logger.debug("PIN/TAN media name requested: " + msg + " ["+retData.toString()+"]");
         ((AbstractHBCIPassport)passport).setPersistentData(PassportHandle.CONTEXT_TANMEDIALIST,retData.toString());
-        
+
         // Wenn wir eine Medienbezeichnung von HBCI4Java gekriegt haben und das genau
         // eine einzige ist. Dann uebernehmen wir diese ohne Rueckfrage. Der User
         // hat hier sonst eh keine andere Wahl.
@@ -454,10 +451,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         return true;
       }
     }
-    
+
     return false;
   }
-  
+
   /**
    * Versucht den zugehoerigen Auftrag zu ermitteln.
    * @param passport der Passport.
@@ -466,12 +463,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   private HibiscusDBObject getContext(HBCIPassport passport)
   {
     String externalId = null;
-    
+
     try
     {
       if (!(passport instanceof AbstractHBCIPassport))
         return null;
-      
+
       externalId = (String) ((AbstractHBCIPassport)passport).getPersistentData("externalid");
       return HBCIContext.unserialize(externalId);
     }
@@ -479,7 +476,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     {
       Logger.error("unable to load transfer for external id: " + externalId,e);
     }
-    
+
     return null;
   }
 

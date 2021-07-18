@@ -30,7 +30,6 @@ public class SparQuote implements Action
 
 }
 
-
 /*********************************************************************
  * $Log: SparQuote.java,v $
  * Revision 1.1  2006/07/13 00:21:15  willuhn

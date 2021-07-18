@@ -33,7 +33,7 @@ import de.willuhn.util.I18N;
 public class HBCIAccountNewController extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private List<InfoPanel> variants;
 
   /**
@@ -44,7 +44,7 @@ public class HBCIAccountNewController extends AbstractControl
   {
     super(view);
   }
-  
+
   /**
    * Liefert die Liste der verfuegbaren HBCI-Varianten.
    * @return die Liste der verfuegbaren HBCI-Varianten.
@@ -53,12 +53,12 @@ public class HBCIAccountNewController extends AbstractControl
   {
     if (this.variants != null)
       return this.variants;
-    
+
     this.variants = new ArrayList<InfoPanel>();
-    
+
     BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     final HBCIAccountProvider hbci = bs.get(HBCIAccountProvider.class);
-    
+
     for (final HBCIVariant v:hbci.getVariants())
     {
       InfoPanel p = v.getInfo();
@@ -73,10 +73,8 @@ public class HBCIAccountNewController extends AbstractControl
       p.addButton(button);
       this.variants.add(p);
     }
-    
+
     return this.variants;
   }
-  
+
 }
-
-

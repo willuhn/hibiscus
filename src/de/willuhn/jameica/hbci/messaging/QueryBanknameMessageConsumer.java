@@ -15,7 +15,6 @@ import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
 
-
 /**
  * Message-Consumer, der zu einer BLZ/BIC den Namen der Bank liefern kann.
  */
@@ -46,7 +45,7 @@ public class QueryBanknameMessageConsumer implements MessageConsumer
   {
     if (message == null || !(message instanceof QueryMessage))
       return;
-    
+
     QueryMessage qm = (QueryMessage) message;
     Object data = qm.getData();
     String bank = data != null ? data.toString() : null;

@@ -79,7 +79,7 @@ public class KontoInput extends SelectInput
       if (konten != null && konten.size() == 1)
         this.setPreselected(konten.get(0));
     }
-    
+
     setPleaseChoose(i18n.tr("Bitte wählen..."));
     this.setComment("");
 
@@ -137,7 +137,7 @@ public class KontoInput extends SelectInput
             return;
           }
         }
-        
+
         // OK, wir haben die ID nicht gefunden. Eventuell ist es eine Gruppe
         if (this.supportGroups)
         {

@@ -37,6 +37,7 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
+
 import net.n3.nanoxml.IXMLElement;
 import net.n3.nanoxml.IXMLParser;
 import net.n3.nanoxml.StdXMLReader;
@@ -63,18 +64,18 @@ public class MoneyplexUmsatzImporter implements Importer
 
     if (is == null)
       throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-    
+
     if (format == null)
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
-    
+
     try
     {
-      
+
       Konto konto = null;
-      
+
       if (context != null && context instanceof Konto)
         konto = (Konto) context;
-      
+
       if (konto == null)
       {
         KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
@@ -91,10 +92,10 @@ public class MoneyplexUmsatzImporter implements Importer
       parser.setReader(new StdXMLReader(new InputStreamReader(is,encoding)));
       IXMLElement root = (IXMLElement) parser.parse();
       Vector<IXMLElement> lines = root.getChildrenNamed("BUCHUNG");
-      
+
       if (lines == null || lines.size() == 0)
         throw new ApplicationException(i18n.tr("Datei enthält keine Buchungen"));
-      
+
       double factor = 100d / (double) lines.size();
 
       int created = 0;
@@ -104,7 +105,7 @@ public class MoneyplexUmsatzImporter implements Importer
       {
         if (monitor != null)
           monitor.setPercentComplete((int)((i+1) * factor));
-        
+
         if (t != null && t.isInterrupted())
           throw new OperationCanceledException();
 
@@ -160,7 +161,7 @@ public class MoneyplexUmsatzImporter implements Importer
       }
     }
   }
-  
+
   /**
    * Erstellt die Buchungen zum angegebenen XML-Element.
    * @param line das XML-Element.
@@ -171,7 +172,7 @@ public class MoneyplexUmsatzImporter implements Importer
   private int process(IXMLElement line, Konto konto) throws Exception
   {
     Umsatz umsatz = (Umsatz) Settings.getDBService().createObject(Umsatz.class,null);
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Die gemeinsamen Daten
     Date valuta = parseDatum(line.getFirstChildNamed("VALUTA"));
@@ -182,13 +183,13 @@ public class MoneyplexUmsatzImporter implements Importer
     umsatz.setKonto(konto);
     umsatz.setDatum(datum);
     umsatz.setValuta(valuta);
-    
+
     IXMLElement empfaenger = line.getFirstChildNamed("EMPFAENGER");
     if (empfaenger != null)
       umsatz.setGegenkontoName(getContent(empfaenger.getFirstChildNamed("NAME")));
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     // Checken, ob es eine Split-Buchung ist.
     IXMLElement split = line.getFirstChildNamed("SPLITT");
     if (split != null)
@@ -206,7 +207,7 @@ public class MoneyplexUmsatzImporter implements Importer
         copy.setUmsatzTyp(createTyp(p.getFirstChildNamed("KATEGORIE")));
         copy.setBetrag(parseBetrag(p.getFirstChildNamed("BETRAG")));
         copy.store();
-        
+
         try
         {
           Application.getMessagingFactory().sendMessage(new ImportMessage(copy));
@@ -219,7 +220,6 @@ public class MoneyplexUmsatzImporter implements Importer
       return parts.size();
     }
 
-    
     // Ne, ist eine Einzel-Buchung
     String usage = getContent(line.getFirstChildNamed("ZWECK"));
     if (usage != null) VerwendungszweckUtil.apply(umsatz,usage.split("@"));
@@ -236,7 +236,7 @@ public class MoneyplexUmsatzImporter implements Importer
     }
     return 1;
   }
-  
+
   /**
    * Liefert den PCDATA-Body des XML-Elements oder NULL.
    * @param e das XML-Element.
@@ -251,7 +251,7 @@ public class MoneyplexUmsatzImporter implements Importer
       return null;
     return s;
   }
-  
+
   /**
    * Parst den Betrag.
    * @param e das XML-Element, aus dessen PCDATA der Wert gelesen werden soll.
@@ -262,7 +262,7 @@ public class MoneyplexUmsatzImporter implements Importer
     String s = getContent(e);
     if (s == null)
       return Double.NaN;
-    
+
     try
     {
       return HBCI.DECIMALFORMAT.parse(s).doubleValue();
@@ -273,7 +273,7 @@ public class MoneyplexUmsatzImporter implements Importer
     }
     return Double.NaN;
   }
-  
+
   /**
    * Parst das Datum.
    * @param e das XML-Element, aus dessen PCDATA der Wert gelesen werden soll.
@@ -284,7 +284,7 @@ public class MoneyplexUmsatzImporter implements Importer
     String s = getContent(e);
     if (s == null)
       return null;
-    
+
     try
     {
       return DATEFORMAT.parse(s);
@@ -295,7 +295,7 @@ public class MoneyplexUmsatzImporter implements Importer
     }
     return null;
   }
-  
+
   /**
    * Sucht die Umsatz-Kategorie anhand des Namens und legt sie gleich an, wenn
    * sie noch nicht existiert.
@@ -307,16 +307,16 @@ public class MoneyplexUmsatzImporter implements Importer
     String s = getContent(e);
     if (s == null)
       return null; // Keine Kategorie angegeben
-    
+
     // Haben wir die Kategorie schon im Cache?
     UmsatzTyp typ = this.cache.get(s);
     if (typ != null) // jepp, haben wir schon
       return typ;
-    
+
     try
     {
       String[] names = s.split(":");
-      
+
       if (names.length > 1)
       {
         //////////////////////////////////////////////////////////////////////////
@@ -357,7 +357,7 @@ public class MoneyplexUmsatzImporter implements Importer
         }
         cache.put(s,typ);
         return typ;
-  
+
         //
         //////////////////////////////////////////////////////////////////////////
       }
@@ -385,7 +385,7 @@ public class MoneyplexUmsatzImporter implements Importer
     }
     return null;
   }
-  
+
   /**
    * Sucht eine Kategorie anhand des Namens.
    * @param name Name der Kategorie.
@@ -401,10 +401,10 @@ public class MoneyplexUmsatzImporter implements Importer
 
     if (i.hasNext())
       return (UmsatzTyp) i.next();
-    
+
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
@@ -420,7 +420,7 @@ public class MoneyplexUmsatzImporter implements Importer
   {
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
-    
+
     IOFormat f = new IOFormat() {
       public String getName()
       {

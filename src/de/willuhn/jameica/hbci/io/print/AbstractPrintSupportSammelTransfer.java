@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.LineBorder;
@@ -38,7 +39,7 @@ import net.sf.paperclips.TextPrint;
 public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSupport
 {
   private Object ctx = null;
-  
+
   /**
    * ct.
    * @param ctx die zu druckenden Daten.
@@ -47,20 +48,20 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
   {
     this.ctx = ctx;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
    */
   Print printContent() throws ApplicationException
   {
     Object data = this.ctx;
-    
+
     if (data == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
+
     if (data instanceof TablePart)
       data = ((TablePart)data).getSelection();
-    
+
     if (!(data instanceof SammelTransfer))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
 
@@ -68,7 +69,7 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
     {
       SammelTransfer a = (SammelTransfer) data;
       Konto k          = a.getKonto();
-      
+
       // Das Haupt-Layout
       GridPrint grid = new GridPrint("l:d:g");
 
@@ -120,11 +121,11 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
       {
         DefaultGridLook look = new DefaultGridLook();
         look.setHeaderBackground(new RGB(220,220,220));
-        
+
         LineBorder border = new LineBorder(new RGB(100,100,100));
         border.setGapSize(3);
         look.setCellBorder(border);
-        
+
         GridPrint table = new GridPrint("r:d:n, l:d:n, l:p:g, l:p:n, r:p:n",look);
         table.addHeader(new TextPrint(i18n.tr("Nr."),fontTinyBold));
         table.addHeader(new TextPrint(i18n.tr("Gegenkonto"),fontTinyBold));

@@ -140,7 +140,7 @@ public class EmpfaengerAdd implements Action
           Logger.debug("address [iban. " + e.getIban() + ", bic " + e.getBic() + " already exists, skipping");
           continue;
         }
-        
+
         // OK, speichern
         e.store();
         count++;
@@ -177,7 +177,7 @@ public class EmpfaengerAdd implements Action
       e.setIban(kontonummer);
     else
       e.setKontonummer(kontonummer);
-    
+
     if (blz != null && blz.matches("[a-zA-Z]{6}.*"))
       e.setBic(blz);
     else
@@ -198,7 +198,6 @@ public class EmpfaengerAdd implements Action
     return s.substring(0,HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
   }
 }
-
 
 /**********************************************************************
  * $Log: EmpfaengerAdd.java,v $

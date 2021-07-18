@@ -73,13 +73,12 @@ public class NewInstKeysDialog extends AbstractDialog
 
     group.addHeadline(i18n.tr("Hashwert"));
     group.addText(HBCIUtils.data2hex(iniletter.getKeyHashDisplay()).toUpperCase(),true,Color.ERROR);
-    
+
     group.addHeadline(i18n.tr("Exponent"));
     group.addText(HBCIUtils.data2hex(iniletter.getKeyExponentDisplay()).toUpperCase(),true);
 
     group.addHeadline(i18n.tr("Modulus"));
     group.addText(HBCIUtils.data2hex(iniletter.getKeyModulusDisplay()).toUpperCase(),true);
-
 
 		ButtonArea buttons = new ButtonArea();
 		buttons.addButton(i18n.tr("OK"),new Action()
@@ -98,7 +97,7 @@ public class NewInstKeysDialog extends AbstractDialog
         close();
 			}
 		},null,false,"process-stop.png");
-		
+
 		group.addButtonArea(buttons);
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
@@ -112,7 +111,6 @@ public class NewInstKeysDialog extends AbstractDialog
   }
 
 }
-
 
 /**********************************************************************
  * $Log: NewInstKeysDialog.java,v $

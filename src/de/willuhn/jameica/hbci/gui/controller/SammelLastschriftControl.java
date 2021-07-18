@@ -81,14 +81,14 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl<Samm
   {
     if (this.buchungen != null)
       return this.buchungen;
-    
+
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new SammelLastBuchungNew().handleAction(context);
       }
     };
-    
+
     this.buchungen = new SammelTransferBuchungList(getTransfer(),a);
 
     ContextMenu ctx = new ContextMenu();

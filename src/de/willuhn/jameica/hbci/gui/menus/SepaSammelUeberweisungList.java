@@ -66,7 +66,7 @@ public class SepaSammelUeberweisungList extends ContextMenu
     },"document-print.png"));
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new SepaSammelUeberweisungExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new SepaSammelUeberweisungImport(),"document-open.png"));
-		
+
 	}
 
 	/**
@@ -98,6 +98,7 @@ public class SepaSammelUeberweisungList extends ContextMenu
     {
       super(text,action,icon);
     }
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -109,14 +110,13 @@ public class SepaSammelUeberweisungList extends ContextMenu
     }
   }
 
-  
 	/**
 	 * Ueberschreiben wir, damit das Item nur dann aktiv ist, wenn die
 	 * Ueberweisung noch nicht ausgefuehrt wurde.
    */
   private class NotActiveMenuItem extends ContextMenuItem
 	{
-		
+
     /**
      * ct.
      * @param text anzuzeigender Text.
@@ -147,14 +147,14 @@ public class SepaSammelUeberweisungList extends ContextMenu
     	return false;
     }
 	}
-  
+
   /**
    * Liefert nur dann true, wenn alle uebergebenen Auftraege noch nicht
    * ausgefuehrt wurden.
    */
   private class NotActiveMultiMenuItem extends CheckedContextMenuItem
   {
-    
+
     /**
      * ct.
      * @param text anzuzeigender Text.
@@ -194,5 +194,5 @@ public class SepaSammelUeberweisungList extends ContextMenu
       return false;
     }
   }
-  
+
 }

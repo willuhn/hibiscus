@@ -58,7 +58,7 @@ public class UmsatzDetailEdit implements Action
         Konto k = (Konto) context;
         if (!k.hasFlag(Konto.FLAG_OFFLINE))
           return; // ist kein Offline-Konto
-        
+
         Umsatz u = (Umsatz) Settings.getDBService().createObject(Umsatz.class,null);
         u.setKonto(k);
         Date d = new Date();

@@ -26,7 +26,6 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 // BUGZILLA #80 http://www.willuhn.de/bugzilla/show_bug.cgi?id=80
 /**
  * Ein Dialog zur Auswahl der zu verwendenden PIN/TAN-Config.
@@ -60,10 +59,10 @@ public class SelectConfigDialog extends AbstractDialog
   {
     Container group = new SimpleContainer(parent,true);
     group.addText(text == null ? i18n.tr("Bitte wählen Sie die zu verwendende PIN/TAN-Konfiguration aus") : text,true);
-    
+
     if (list != null)
       list.begin();
-    
+
     final TablePart table = new TablePart(list != null && list.size() > 0 ? list : PinTanConfigFactory.getConfigs(), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -92,7 +91,7 @@ public class SelectConfigDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     buttons.addButton(new Cancel());
-    
+
     group.addButtonArea(buttons);
   }
 
@@ -104,7 +103,7 @@ public class SelectConfigDialog extends AbstractDialog
   {
     this.text = text;
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */

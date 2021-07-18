@@ -25,21 +25,21 @@ public interface DBReminder extends HibiscusDBObject
    * @throws RemoteException
    */
   public String getUUID() throws RemoteException;
-  
+
   /**
    * Speichert die UUID des Reminders.
    * @param uuid die UUID des Reminders.
    * @throws RemoteException
    */
   public void setUUID(String uuid) throws RemoteException;
-  
+
   /**
    * Liefert das zugehoerige Reminder-Objekt.
    * @return das zugehoerige Reminder-Objekt.
    * @throws RemoteException
    */
   public Reminder getReminder() throws RemoteException;
-  
+
   /**
    * Speichert das zugehoerige Reminder-Objekt.
    * @param reminder das zugehoerige Reminder-Objekt.
@@ -47,8 +47,6 @@ public interface DBReminder extends HibiscusDBObject
    */
   public void setReminder(Reminder reminder) throws RemoteException;
 }
-
-
 
 /**********************************************************************
  * $Log: DBReminder.java,v $

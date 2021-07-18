@@ -91,7 +91,7 @@ public class UmsatzExport implements Action
 			GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Exportieren der Umsätze"));
 		}
   }
-  
+
   /**
    * Sammelt rekursiv alle Umsaetze aus der Kategorie ein.
    * Unterkategorien werden mit beruecksichtigt.
@@ -105,7 +105,7 @@ public class UmsatzExport implements Action
     List<UmsatzTreeNode> children = node.getSubGroups();
     if (children == null || children.size() == 0)
       return;
-    
+
     for (UmsatzTreeNode c:children)
     {
       collect(c,target);

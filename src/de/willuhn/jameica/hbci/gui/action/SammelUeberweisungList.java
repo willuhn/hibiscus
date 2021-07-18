@@ -29,7 +29,6 @@ public class SammelUeberweisungList implements Action
 
 }
 
-
 /**********************************************************************
  * $Log: SammelUeberweisungList.java,v $
  * Revision 1.1  2005/09/30 00:08:50  willuhn

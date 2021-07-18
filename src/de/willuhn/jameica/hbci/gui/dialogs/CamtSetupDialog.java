@@ -44,11 +44,11 @@ public class CamtSetupDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private final static int WINDOW_WIDTH = 780;
-  
+
   private Konto konto = null;
   private CheckboxInput switchAll = null;
   private Boolean value = null;
-  
+
   /**
    * ct.
    * @param k das Konto.
@@ -61,9 +61,9 @@ public class CamtSetupDialog extends AbstractDialog
     this.setTitle(i18n.tr("Umsätze im SEPA CAMT-Format abrufen"));
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
     this.setSideImage(SWTUtil.getImage("camtsetup.png"));
-    
+
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
    */
@@ -76,7 +76,7 @@ public class CamtSetupDialog extends AbstractDialog
                   "Das Konto \"{0}\" kann jetzt auf CAMT umgestellt werden. Sie können diese Umstellung später in den Synchronisierungsoptionen " +
                   "des Kontos jederzeit wieder rückgängig machen.";
     c.addText(i18n.tr(text,this.konto.getLongName()),true);
-    
+
     c.addHeadline(i18n.tr("Hinweis"));
     text = "Da sich die Datenformate von CAMT und MT940 grundlegend unterscheiden, kann es nach der Umstellung dazu kommen, dass " +
            "Umsatzbuchungen ggf. doppelt angezeigt werden. Sie können diese Duplikate einfach löschen. In der Regel sollte das jedoch " +
@@ -84,11 +84,11 @@ public class CamtSetupDialog extends AbstractDialog
     c.addText(text,true);
 
     c.addInput(this.getSwitchAll());
-    
+
     ButtonArea buttons = new ButtonArea();
 
     final Button yes = new Button(i18n.tr("Ja, auf CAMT umstellen"),new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -98,7 +98,7 @@ public class CamtSetupDialog extends AbstractDialog
     buttons.addButton(yes);
 
     final Button no = new Button(i18n.tr("Nein, nicht umstellen"),new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -108,7 +108,7 @@ public class CamtSetupDialog extends AbstractDialog
     buttons.addButton(no);
 
     final Button later = new Button(i18n.tr("Beim nächsten Mal erinnern"),new Action() {
-      
+
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -116,12 +116,12 @@ public class CamtSetupDialog extends AbstractDialog
       }
     },null,true,"preferences-system-time.png");
     buttons.addButton(later);
-    
+
     c.addButtonArea(buttons);
 
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Liefert eine Checkbox, mit der eingestellt werden kann, ob die Umstellung fuer alle Konten erfolgen soll.
    * @return Checkbox.
@@ -135,7 +135,7 @@ public class CamtSetupDialog extends AbstractDialog
     this.switchAll.setName(i18n.tr("Auch auf alle anderen Konten anwenden"));
     return this.switchAll;
   }
-  
+
   /**
    * Uebernimmt die Einstellungen und schliesst den Dialog.
    * @param enabled true, wenn CAMT aktiviert werden soll.
@@ -147,7 +147,7 @@ public class CamtSetupDialog extends AbstractDialog
       this.value        = enabled;
       final String s    = Boolean.toString(enabled);
       final Boolean all = (Boolean) this.getSwitchAll().getValue();
-      
+
       List<Konto> konten = all.booleanValue() ? KontoUtil.getKonten(KontoFilter.ONLINE) : Arrays.asList(this.konto);
       for (Konto k:konten)
       {
@@ -164,7 +164,7 @@ public class CamtSetupDialog extends AbstractDialog
       close();
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
@@ -174,4 +174,3 @@ public class CamtSetupDialog extends AbstractDialog
     return this.value;
   }
 }
-

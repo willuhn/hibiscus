@@ -70,12 +70,12 @@ public class Controller extends AbstractControl {
   private Input benutzerkennung       = null;
   private Input kundenkennung         = null;
   private Input blz                   = null;
-  
+
   // Verbindungsdaten
   private Input hbciUrl               = null;
   private Input hbciPort              = null;
   private Input hbciVersion           = null;
-  
+
   // Erweiterte Einstellungen
   private Input alias                 = null;
   private Input path                  = null;
@@ -109,7 +109,7 @@ public class Controller extends AbstractControl {
       this.key = (RDHKey) o;
     return this.key;
   }
-  
+
   /**
    * Liefert den HBCI-Passport.
    * @return Passport.
@@ -142,7 +142,7 @@ public class Controller extends AbstractControl {
     this.benutzerkennung.setName(i18n.tr("Benutzerkennung"));
     return this.benutzerkennung;
   }
-  
+
   /**
    * Liefert ein Anzeigefeld fuer die Kundenkennung.
    * @return Anzeigefeld.
@@ -157,7 +157,7 @@ public class Controller extends AbstractControl {
     this.kundenkennung.setName(i18n.tr("Kundenkennung"));
     return this.kundenkennung;
   }
-  
+
   /**
    * Liefert ein Anzeigefeld fuer die BLZ.
    * @return Anzeigefeld.
@@ -173,8 +173,7 @@ public class Controller extends AbstractControl {
     this.blz.setName(i18n.tr("Bankleitzahl"));
     return this.blz;
   }
-  
-  
+
   /**
    * Liefert einen zusaetzlichen Alias-Namen, an dem der User mehrere Schluessel
    * unterscheiden kan.
@@ -203,8 +202,7 @@ public class Controller extends AbstractControl {
       this.kontoList = new KontoList(this.getKey());
     return kontoList;
   }
-  
-  
+
   /**
    * Liefert ein Eingabe-Feld zur Eingabe des Pfads zum Schluessel.
    * @return Eingabe-Feld.
@@ -223,7 +221,7 @@ public class Controller extends AbstractControl {
     }
     return this.path;
   }
-  
+
   /**
    * Liefert eine Auswahl-Box fuer die HBCI-Version.
    * @return Auswahl-Box.
@@ -238,7 +236,7 @@ public class Controller extends AbstractControl {
     this.hbciVersion.setName(i18n.tr("HBCI-Version"));
     return this.hbciVersion;
   }
-  
+
   /**
    * Liefert ein Eingabe-Feld fuer die URL.
    * @return Eingabe-Feld.
@@ -254,7 +252,7 @@ public class Controller extends AbstractControl {
     this.hbciUrl.setName(i18n.tr("Hostname des Bankservers"));
     return this.hbciUrl;
   }
-  
+
   /**
    * Liefert ein Eingabe-Feld fuer den TCP-Port.
    * @return Eingabe-Feld.
@@ -291,13 +289,10 @@ public class Controller extends AbstractControl {
       }
     });
 
-
     // Spalte Datei
     keyList.addColumn(i18n.tr("Schlüsseldatei"),"file");
     keyList.addColumn(i18n.tr("Alias-Name"),"alias");
     keyList.addColumn(i18n.tr("Format"),"format");
-
-
 
     ContextMenu ctx = new ContextMenu();
 
@@ -343,7 +338,7 @@ public class Controller extends AbstractControl {
           String q = i18n.tr("Wollen Sie diesen Schlüssel wirklich löschen?\n" +
                              "Hierbei wird nur die Verknüpfung aus Hibiscus " +
                              "entfernt. Die Schlüsseldatei selbst bleibt erhalten.");
-        
+
           if (!Application.getCallback().askUser(q))
             return;
 
@@ -369,8 +364,6 @@ public class Controller extends AbstractControl {
     },"user-trash-full.png"));
 
     keyList.setContextMenu(ctx);
-    
-
 
     // Format fuer aktiv/inaktiv
     keyList.setFormatter(new TableFormatter()
@@ -408,7 +401,7 @@ public class Controller extends AbstractControl {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"),StatusBarMessage.TYPE_ERROR));
       return;
     }
-    
+
     HBCIPassport passport = null;
     try
     {
@@ -452,11 +445,11 @@ public class Controller extends AbstractControl {
   {
     HBCIPassport passport = null;
     HBCICallback callback = null;
-    
+
     try
     {
       passport = getHBCIPassport();
-      
+
       // muessen wir zwingend machen, weil sonst der Callback nicht bei uns landet
       // Das wuerde bewirken, dass Hibiscus ein zufaelliges neues Passwort erzeugt,
       // welches der User aber nicht mehr kennt.
@@ -464,9 +457,9 @@ public class Controller extends AbstractControl {
       callback = ((HBCI)plugin).getHBCICallback();
       if (callback != null && (callback instanceof HBCICallbackSWT))
         ((HBCICallbackSWT)callback).setCurrentHandle(new PassportHandleImpl());
-      
+
       passport.changePassphrase();
-      
+
       // Passwort-Cache leeren
       DialogFactory.clearPINCache(passport);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Passwort geändert"),StatusBarMessage.TYPE_SUCCESS));
@@ -486,7 +479,7 @@ public class Controller extends AbstractControl {
         ((HBCICallbackSWT)callback).setCurrentHandle(null);
     }
   }
-  
+
   /**
    * Synchronisiert den Bankzugang.
    */
@@ -498,7 +491,7 @@ public class Controller extends AbstractControl {
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie eine Schlüsseldatei aus"),StatusBarMessage.TYPE_ERROR));
       return;
     }
-    
+
     HBCIPassport passport = null;
     try
     {
@@ -507,7 +500,7 @@ public class Controller extends AbstractControl {
 
       passport = key.load();
       passport.syncSigId();
-      
+
       new PassportSync().handleAction(new PassportHandleImpl(key));
     }
     catch (ApplicationException ae)
@@ -586,11 +579,10 @@ public class Controller extends AbstractControl {
       if (checked != null && checked.size() > 0)
         konten = (Konto[]) checked.toArray(new Konto[checked.size()]);
       key.setKonten(konten);
-      
+
       key.setHBCIVersion((String)getHBCIVersion().getValue());
       key.setAlias((String)getAlias().getValue());
 
-      
       HBCIPassport p = getHBCIPassport();
       if (p != null)
       {
@@ -602,10 +594,10 @@ public class Controller extends AbstractControl {
           p.setPort(i);
         p.saveChanges();
       }
-      
+
       PassportChangeRequest change = new PassportChangeRequest((AbstractHBCIPassport) p,(String)getKundenkennung().getValue(),(String)getBenutzerkennung().getValue());
       new PassportChange().handleAction(change);
-      
+
       GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
       return true;
     }
@@ -625,7 +617,7 @@ public class Controller extends AbstractControl {
     }
     return false;
   }
-  
+
   /**
    * Zeigt die BPD/UPD des Passports an.
    */
@@ -666,9 +658,9 @@ public class Controller extends AbstractControl {
       String newFile = dialog.open();
       if (newFile == null || newFile.length() == 0)
         throw new OperationCanceledException("no key file choosen");
-      
+
       File newKey = new File(newFile);
-      
+
       if (RDHKeyFactory.createKey(newKey))
         GUI.startView(View.class,null);
     }
@@ -683,7 +675,6 @@ public class Controller extends AbstractControl {
     }
 
   }
-  
 
   /**
    * Hilfsklasse zum Aktivieren des Schluessels.

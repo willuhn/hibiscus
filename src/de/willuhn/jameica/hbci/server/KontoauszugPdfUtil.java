@@ -59,9 +59,9 @@ import de.willuhn.util.TypedProperties;
 public class KontoauszugPdfUtil
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private final static String CHANNEL = "hibiscus.kontoauszuege";
-  
+
   /**
    * Liefert das File-Objekt fuer diesen Kontoauszug.
    * Wenn er direkt im Filesystem gespeichert ist, wird dieses geliefert.
@@ -82,27 +82,27 @@ public class KontoauszugPdfUtil
       // dort auch liegen
       final String path = StringUtils.trimToNull(ka.getPfad());
       final String name = StringUtils.trimToNull(ka.getDateiname());
-      
+
       if (path != null && name != null)
       {
         File file = new File(path,name);
-        
+
         Logger.info("trying to open pdf file from: " + file);
         if (!file.exists())
         {
           Logger.error("file does not exist (anymore): " + file);
           throw new ApplicationException(i18n.tr("Datei \"{0}\" existiert nicht mehr. Wurde sie gelöscht?",file.getAbsolutePath()));
         }
-        
+
         if (!file.canRead())
         {
           Logger.error("cannot read file: " + file);
           throw new ApplicationException(i18n.tr("Datei \"{0}\" nicht lesbar",file.getAbsolutePath()));
         }
-        
+
         return file;
       }
-      
+
       final String uuid = StringUtils.trimToNull(ka.getUUID());
 
       Logger.info("trying to open pdf file using messaging, uuid: " + uuid);
@@ -110,7 +110,7 @@ public class KontoauszugPdfUtil
       // Das kann eigentlich nicht sein. Dann wuerde ja alles fehlen
       if (uuid == null)
         throw new ApplicationException(i18n.tr("Ablageort des Kontoauszuges unbekannt"));
-      
+
       QueryMessage qm = new QueryMessage(uuid,null);
       Application.getMessagingFactory().getMessagingQueue("jameica.messaging.get").sendSyncMessage(qm);
       byte[] data = (byte[]) qm.getData();
@@ -120,12 +120,12 @@ public class KontoauszugPdfUtil
         throw new ApplicationException(i18n.tr("Datei existiert nicht mehr im Archiv. Wurde sie gelöscht?"));
       }
       Logger.info("got " + data.length + " bytes from messaging for uuid: " + uuid);
-      
+
       File file = File.createTempFile("kontoauszug-" + RandomStringUtils.randomAlphanumeric(5),".pdf");
       file.deleteOnExit();
-      
+
       OutputStream os = null;
-      
+
       try
       {
         os = new BufferedOutputStream(new FileOutputStream(file));
@@ -135,7 +135,7 @@ public class KontoauszugPdfUtil
       {
         IOUtil.close(os);
       }
-      
+
       Logger.info("copied messaging data into temp file: " + file);
       return file;
     }
@@ -170,29 +170,29 @@ public class KontoauszugPdfUtil
       // dort auch liegen
       final String path = StringUtils.trimToNull(ka.getPfad());
       final String name = StringUtils.trimToNull(ka.getDateiname());
-      
+
       if (path != null && name != null)
       {
         File file = new File(path,name);
-        
+
         Logger.info("trying to open pdf file from: " + file);
         if (!file.exists())
         {
           Logger.error("file does not exist (anymore): " + file);
           throw new ApplicationException(i18n.tr("Datei \"{0}\" existiert nicht mehr. Wurde sie gelöscht?",file.getAbsolutePath()));
         }
-        
+
         if (!file.canRead())
         {
           Logger.error("cannot read file: " + file);
           throw new ApplicationException(i18n.tr("Datei \"{0}\" nicht lesbar",file.getAbsolutePath()));
         }
-        
+
         FileCopy.copy(file,target,true);
         Logger.info("copied " + file + " to " + target);
         return;
       }
-      
+
       final String uuid = StringUtils.trimToNull(ka.getUUID());
 
       Logger.info("trying to open pdf file using messaging, uuid: " + uuid);
@@ -200,7 +200,7 @@ public class KontoauszugPdfUtil
       // Das kann eigentlich nicht sein. Dann wuerde ja alles fehlen
       if (uuid == null)
         throw new ApplicationException(i18n.tr("Ablageort des Kontoauszuges unbekannt"));
-      
+
       QueryMessage qm = new QueryMessage(uuid,null);
       Application.getMessagingFactory().getMessagingQueue("jameica.messaging.get").sendSyncMessage(qm);
       byte[] data = (byte[]) qm.getData();
@@ -210,9 +210,9 @@ public class KontoauszugPdfUtil
         throw new ApplicationException(i18n.tr("Datei existiert nicht mehr im Archiv. Wurde sie gelöscht?"));
       }
       Logger.info("got " + data.length + " bytes from messaging for uuid: " + uuid);
-      
+
       OutputStream os = null;
-      
+
       try
       {
         os = new BufferedOutputStream(new FileOutputStream(target));
@@ -222,7 +222,7 @@ public class KontoauszugPdfUtil
       {
         IOUtil.close(os);
       }
-      
+
       Logger.info("copied messaging data into file: " + target);
     }
     catch (ApplicationException ae)
@@ -247,10 +247,10 @@ public class KontoauszugPdfUtil
   {
     if (k == null)
       throw new ApplicationException(i18n.tr("Kein Kontoauszug angegeben"));
-    
+
     if (data == null || data.length == 0)
       throw new ApplicationException(i18n.tr("Kein Daten angegeben"));
-    
+
     final Konto konto = k.getKonto();
     if (konto == null)
       throw new ApplicationException(i18n.tr("Kein Konto angegeben"));
@@ -265,14 +265,14 @@ public class KontoauszugPdfUtil
       Logger.info("stored account statement data in messaging archive [id: " + k.getID() + ", uuid: " + k.getUUID() + "]");
       return;
     }
-    
+
     // Im Dateisystem speichern
     String path = createPath(konto,k);
     try
     {
       File file = new File(path).getCanonicalFile();
       Logger.info("storing account statement data in file [id: " + k.getID() + ", file: " + file + "]");
-      
+
       File dir = file.getParentFile();
       if (!dir.exists())
       {
@@ -280,16 +280,16 @@ public class KontoauszugPdfUtil
         if (!dir.mkdirs())
           throw new ApplicationException(i18n.tr("Erstellen des Ordners fehlgeschlagen. Ordner-Berechtigungen korrekt?"));
       }
-      
+
       if (!dir.canWrite())
         throw new ApplicationException(i18n.tr("Kein Schreibzugriff in {0}",dir.toString()));
-      
+
       OutputStream os = null;
-      
+
       try
       {
         File target = file;
-        
+
         int i=0;
         while (i< 10000)
         {
@@ -297,7 +297,7 @@ public class KontoauszugPdfUtil
           // Um sicherzugehen, dass wir die Datei nicht ueberschreiben.
           if (!target.exists())
             break;
-          
+
           // OK, die Datei gibts schon. Wir haengen den Counter hinten an
           i++;
           target = indexedFile(file,i);
@@ -319,7 +319,7 @@ public class KontoauszugPdfUtil
       throw new ApplicationException(i18n.tr("Speichern des Kontoauszuges fehlgeschlagen: {0}",e.getMessage()));
     }
   }
-  
+
   /**
    * Haengt die Nummer an den Dateinamen an.
    * @param f die Datei.
@@ -330,7 +330,7 @@ public class KontoauszugPdfUtil
   {
     String name = f.getName();
     int dot     = name.lastIndexOf('.');
-    
+
     name = name.substring(0,dot) + "-" + String.format("%05d",i) + name.substring(dot);
     return new File(f.getParentFile(),name);
   }
@@ -347,7 +347,7 @@ public class KontoauszugPdfUtil
   {
     if (k == null)
       throw new ApplicationException(i18n.tr("Kein Konto angegeben"));
-    
+
     final String path   = MetaKey.KONTOAUSZUG_STORE_PATH.get(k);
     final String folder = MetaKey.KONTOAUSZUG_TEMPLATE_PATH.get(k);
     final String name   = MetaKey.KONTOAUSZUG_TEMPLATE_NAME.get(k);
@@ -405,15 +405,15 @@ public class KontoauszugPdfUtil
       throw new ApplicationException(i18n.tr("Kein Konto angegeben"));
 
     Map<String,Object> ctx = new HashMap<String,Object>();
-    
+
     {
       String iban = StringUtils.trimToNull(k.getIban());
       if (iban == null)
         iban = StringUtils.trimToEmpty(k.getKontonummer());
-      
+
       ctx.put("iban",iban.replaceAll(" ",""));
     }
-    
+
     {
       String bic = StringUtils.trimToNull(k.getBic());
       if (bic == null)
@@ -431,7 +431,7 @@ public class KontoauszugPdfUtil
         else if (ka.getAusfuehrungsdatum() != null)
           cal.setTime(ka.getAusfuehrungsdatum());
       }
-      
+
       Integer i = ka != null && ka.getJahr() != null ? ka.getJahr() : null;
       ctx.put("jahr",i != null ? i.toString() : Integer.toString(cal.get(Calendar.YEAR)));
       ctx.put("monat",String.format("%02d",cal.get(Calendar.MONTH) + 1));
@@ -439,7 +439,7 @@ public class KontoauszugPdfUtil
       ctx.put("stunde",String.format("%02d",cal.get(Calendar.HOUR_OF_DAY)));
       ctx.put("minute",String.format("%02d",cal.get(Calendar.MINUTE)));
     }
-    
+
     {
       Integer i = ka != null && ka.getNummer() != null ? ka.getNummer() : null;
       ctx.put("nummer",String.format("%03d",i != null ? i.intValue() : 1));
@@ -455,7 +455,7 @@ public class KontoauszugPdfUtil
       if (path == null || path.length() == 0)
         path = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath();
       sb.append(path);
-      
+
       if (!path.endsWith(File.separator))
         sb.append(File.separator);
     }
@@ -486,16 +486,16 @@ public class KontoauszugPdfUtil
     }
     //
     /////////////////////////////
-    
+
     /////////////////////////////
     // Dateiname
     {
       if (name == null || name.length() == 0 && ka != null)
         name = ka.getDateiname();
-      
+
       if (name == null || name.length() == 0)
         name = MetaKey.KONTOAUSZUG_TEMPLATE_NAME.getDefault();
-      
+
       try
       {
         name = velocity.merge(name,ctx);
@@ -505,19 +505,19 @@ public class KontoauszugPdfUtil
         Logger.error("name template invalid: \"" + name + "\"",e);
       }
       sb.append(name);
-      
+
       // Dateiendung noch anhaengen.
       Format f = Format.find(ka != null ? ka.getFormat() : null);
       if (f == null)
         f = Format.PDF;
-      
+
       sb.append(".");
       sb.append(f.getExtention());
     }
 
     return sb.toString();
   }
-  
+
   /**
    * Liefert die Liste der noch ungelesenen Kontoauszuege.
    * @return die Liste der noch ungelesenen Kontoauszuege, chronologisch nach Erstellungsdatum sortiert.
@@ -532,7 +532,7 @@ public class KontoauszugPdfUtil
     it.setOrder("order by " + service.getSQLTimestamp("erstellungsdatum") + " desc");
     return it;
   }
-  
+
   /**
    * Liefert eine gefilterte Liste von Kontoauszuegen.
    * @param konto das optionale Konto. Kann auch der Name einer Kontogruppe sein.
@@ -550,13 +550,13 @@ public class KontoauszugPdfUtil
 
     final boolean haveFrom = from != null;
     final boolean haveTo = to != null;
-    
+
     java.sql.Date f = haveFrom ? new java.sql.Date(DateUtil.startOfDay(from).getTime()) : null;
     java.sql.Date t = haveTo ? new java.sql.Date(DateUtil.endOfDay(to).getTime()) : null;
-    
+
     // Bei HKEKP in Segment-Version 1 wird gar kein Zeitraum mitgeliefert.
     // Daher nehmen wir dort das Abrufdatum
-    
+
     if (inclusive && (haveFrom || haveTo)) // Wenigstens eines der beiden Daten muss vorhanden sein
     {
       if (haveFrom && haveTo)
@@ -595,7 +595,7 @@ public class KontoauszugPdfUtil
         it.addFilter("(bis <= ? OR erstellungsdatum <= ? OR (bis IS NULL AND erstellungsdatum IS NULL AND ausgefuehrt_am <= ?))", t, t, t);
       }
     }
-    
+
     if (konto != null && (konto instanceof Konto))
       it.addFilter("konto_id = " + ((Konto) konto).getID());
     else if (konto != null && (konto instanceof String))
@@ -603,14 +603,14 @@ public class KontoauszugPdfUtil
 
     if (unread)
       it.addFilter("gelesen_am is null");
-    
+
     it.setOrder("order by jahr desc, nummer desc, " + 
                 service.getSQLTimestamp("erstellungsdatum") + " desc, " + 
                 service.getSQLTimestamp("von") + " desc, " + 
                 service.getSQLTimestamp("ausgefuehrt_am") + " desc");
     return it;
   }
-  
+
   /**
    * Liefert den aktuellsten Kontoauszug mit Nummer.
    * @param k das Konto.
@@ -623,15 +623,15 @@ public class KontoauszugPdfUtil
     DBIterator<Kontoauszug> it = service.createList(Kontoauszug.class);
     it.addFilter("konto_id = " + k.getID());
     it.addFilter("nummer is not null");
-    
+
     it.setOrder("order by jahr desc, nummer desc, " + 
                 service.getSQLTimestamp("erstellungsdatum") + " desc, " + 
                 service.getSQLTimestamp("von") + " desc, " + 
                 service.getSQLTimestamp("ausgefuehrt_am") + " desc");
-    
+
     return it.hasNext() ? it.next() : null;
   }
-  
+
   /**
    * Loescht die angegebenen Kontoauszuege und bei Bedarf auch die Dateien.
    * @param deleteFiles true, wenn auch die Dateien geloescht werden sollen.
@@ -641,11 +641,11 @@ public class KontoauszugPdfUtil
   {
     if (list == null || list.length == 0)
       return;
-    
+
     Kontoauszug tx = null;
-    
+
     int count = 0;
-    
+
     try
     {
       for (Kontoauszug k:list)
@@ -687,17 +687,17 @@ public class KontoauszugPdfUtil
             }
           }
         }
-        
+
         Konto konto = k.getKonto();
         konto.addToProtokoll(i18n.tr("Elektronischen Kontoauszug gelöscht"),Protokoll.TYP_SUCCESS);
         k.delete();
         Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(k));
         count++;
       }
-      
+
       if (tx != null)
         tx.transactionCommit();
-      
+
       if (count == 1)
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontoauszug gelöscht."),StatusBarMessage.TYPE_SUCCESS));
       else
@@ -706,7 +706,7 @@ public class KontoauszugPdfUtil
     catch (Exception e)
     {
       Logger.error("deleting account statements failed",e);
-      
+
       if (tx != null)
       {
         try
@@ -720,7 +720,7 @@ public class KontoauszugPdfUtil
       }
     }
   }
-  
+
   /**
    * Markiert die Liste der angegebenen Kontoauszuege als gelesen.
    * Jedoch nur, wenn sie nicht bereits als gelesen markiert sind.
@@ -731,24 +731,24 @@ public class KontoauszugPdfUtil
   {
     if (list == null || list.length == 0)
       return;
-    
+
     Kontoauszug tx = null;
-    
+
     try
     {
       for (Kontoauszug k:list)
       {
         if (k.isNewObject())
           continue;
-        
+
         if (tx == null)
         {
           tx = k;
           tx.transactionBegin();
         }
-        
+
         Date d = k.getGelesenAm();
-        
+
         if (d == null && !read)
         {
           Logger.info("account statement already marked as unread, skipping [id: " + k.getID()+ "]");
@@ -759,21 +759,21 @@ public class KontoauszugPdfUtil
           Logger.info("account statement already marked as read, skipping [id: " + k.getID()+ ", date: " + d + "]");
           continue;
         }
-        
+
         d = read ? new Date() : null;
         Logger.info("mark account statements as " + (read ? "read" : "unread" )+  " [id: " + k.getID()+ ", date: " + d + "]");
         k.setGelesenAm(d);
         k.store();
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(k));
       }
-      
+
       if (tx != null)
         tx.transactionCommit();
     }
     catch (Exception e)
     {
       Logger.error("marking account statements as read failed",e);
-      
+
       if (tx != null)
       {
         try
@@ -787,7 +787,7 @@ public class KontoauszugPdfUtil
       }
     }
   }
-  
+
   /**
    * Prueft, ob elektronische Kontoauszuege im PDF-Format fuer dieses Konto unterstuetzt werden.
    * @param k das zu pruefende Konto.
@@ -809,7 +809,7 @@ public class KontoauszugPdfUtil
     {
       Logger.error("unable to determine iban");
     }
-    
+
     // Wenn HKEKP unterstuetzt wird, haben wir auf jeden Fall PDF
     Support support = BPDUtil.getSupport(k,BPDUtil.Query.KontoauszugPdf);
     if (support != null && support.isSupported())
@@ -836,25 +836,25 @@ public class KontoauszugPdfUtil
 
     if (!support.getUpdSupport())
       return conditionalSupport("HKEKA not supported according to UPD",ignoreSupport);
-    
+
     // Wenn nur HKEKA unterstuetzt wird, muessen wir uns die angeboteten Dateiformate anschauen
     TypedProperties props = support.getBpd();
     if (props == null || props.size() == 0)
        return conditionalSupport("no BPD cache data found for HKEKA",ignoreSupport);
-     
+
     List<Format> formats = getFormats(props);
     if (formats.size() == 0)
       return conditionalSupport("BPD cache contains no information regarding supported formats of HKEKA",ignoreSupport);
-    
+
     if (formats.contains(Format.PDF))
     {
       Logger.debug("HKEKA with PDF supported");
       return true;
     }
-     
+
     return conditionalSupport("HKEKA does not support PDF according to BPD",ignoreSupport);
   }
-  
+
   /**
    * Ermittelt die Liste der unterstuetzten Formate aus den BPD.
    * @param bpd die BPD.
@@ -865,9 +865,9 @@ public class KontoauszugPdfUtil
     List<Format> result = new ArrayList<Format>();
     if (bpd == null || bpd.size() == 0)
       return result;
-    
+
     String[] formats = bpd.getList("format",null);
-    
+
     // Checken, ob eventuell nur ein Format drin steht
     if (formats == null || formats.length == 0)
     {
@@ -875,10 +875,10 @@ public class KontoauszugPdfUtil
       if (format != null)
         formats = new String[]{format};
     }
-      
+
     if (formats == null || formats.length == 0)
       return result;
-    
+
     // Checken, ob PDF dabei ist
     for (String f:formats)
     {
@@ -886,10 +886,10 @@ public class KontoauszugPdfUtil
       if (gf != null)
         result.add(gf);
     }
-    
+
     return result;
   }
-  
+
   /**
    * Forciert den Support per optionalem Setting, auch wenn das Konto es laut BPD nicht kann.
    * @param reason ein Begruendungstext, warum der Support eigentlich nicht vorhanden ist.
@@ -901,7 +901,7 @@ public class KontoauszugPdfUtil
     Logger.debug(reason + " - support forced: " + ignoreSupport);
     return ignoreSupport;
   }
-  
+
   /**
    * Liefert eine String-Repraesentation des Kontoauszuges.
    * @param k der Kontoauszug.
@@ -912,15 +912,15 @@ public class KontoauszugPdfUtil
   {
     if (k == null)
       return "";
-    
+
     Date von = k.getVon();
     Date bis = k.getBis();
     if (von != null && bis != null)
       return i18n.tr("Kontoauszug {0} - {1}",HBCI.DATEFORMAT.format(von),HBCI.DATEFORMAT.format(bis));
-    
+
     Integer jahr = k.getJahr();
     Integer nr   = k.getNummer();
-    
+
     if (jahr != null && nr != null)
       return i18n.tr("Kontoauszug {0}/{1}",jahr.toString(),nr.toString());
 
@@ -928,5 +928,3 @@ public class KontoauszugPdfUtil
     return i18n.tr("Kontoauszug vom {0}",HBCI.DATEFORMAT.format(erstellt != null ? erstellt : k.getAusfuehrungsdatum()));
   }
 }
-
-

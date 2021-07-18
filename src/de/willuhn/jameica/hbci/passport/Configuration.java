@@ -14,9 +14,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.util.ApplicationException;
 
-
-
-
 /**
  * Interface fuer eine einzelne Passport-Konfiguration.
  */
@@ -40,7 +37,7 @@ public interface Configuration
    * @throws RemoteException
    */
   public Class getConfigDialog() throws RemoteException;
-  
+
   /**
    * Loescht die Konfiguration.
    * @throws ApplicationException
@@ -48,8 +45,6 @@ public interface Configuration
   public void delete() throws ApplicationException;
 
 }
-
-
 
 /**********************************************************************
  * $Log: Configuration.java,v $

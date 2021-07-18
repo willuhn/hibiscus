@@ -24,14 +24,14 @@ public interface ChartData
    * @throws RemoteException
    */
   public List getData() throws RemoteException;
-  
+
   /**
    * Liefert das Label der Datenreihe.
    * @return Label der Datenreihe.
    * @throws RemoteException
    */
   public String getLabel() throws RemoteException;
-  
+
   /**
    * Liefert den Namen des Attributs, welches fuer die Werte
    * verwendet werden soll. Der Wert des Attributes muss vom Typ java.lang.Number sein.
@@ -39,7 +39,7 @@ public interface ChartData
    * @throws RemoteException
    */
   public String getDataAttribute() throws RemoteException;
-  
+
   /**
    * Liefert den Namen des Attributs fuer die Beschriftung.
    * @return Name des Attributs fuer die Beschriftung.
@@ -48,7 +48,6 @@ public interface ChartData
    */
   public String getLabelAttribute() throws RemoteException;
 }
-
 
 /*********************************************************************
  * $Log: ChartData.java,v $

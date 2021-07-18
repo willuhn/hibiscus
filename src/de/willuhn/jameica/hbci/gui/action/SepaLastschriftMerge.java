@@ -28,7 +28,7 @@ import de.willuhn.util.I18N;
 public class SepaLastschriftMerge implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -38,15 +38,15 @@ public class SepaLastschriftMerge implements Action
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
     SepaLastschrift[] source = null;
-    
+
     if (context instanceof SepaLastschrift)
       source = new SepaLastschrift[]{(SepaLastschrift) context};
     else
       source = (SepaLastschrift[]) context;
-    
+
     if (source.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
-    
+
     List<SepaLastschrift> lastschriften = Arrays.asList(source);
     SepaLastschriftMerger merger = new SepaLastschriftMerger();
     List<SepaSammelLastschrift> result = merger.merge(lastschriften);

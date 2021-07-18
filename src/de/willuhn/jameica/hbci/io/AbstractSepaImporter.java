@@ -53,7 +53,7 @@ public abstract class AbstractSepaImporter extends AbstractImporter
   {
     return i18n.tr("SEPA-XML");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractExporter#getFileExtensions()
    */
@@ -62,7 +62,7 @@ public abstract class AbstractSepaImporter extends AbstractImporter
   {
     return new String[]{"*.xml"};
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractImporter#setup(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -71,13 +71,13 @@ public abstract class AbstractSepaImporter extends AbstractImporter
   {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     IOUtil.copy(is,bos);
-    
+
     SepaVersion version = SepaVersion.autodetect(new ByteArrayInputStream(bos.toByteArray()));
     if (version == null)
       throw new ApplicationException(i18n.tr("SEPA-Version der XML-Datei nicht ermittelbar"));
-    
+
     monitor.log(i18n.tr("SEPA-Version: {0}",version.getURN()));
-    
+
     // PAIN-Typ nicht kompatibel. User fragen, ob er trotzdem importieren  moechte
     SepaVersion.Type type = this.getSupportedPainType();
     if (type != null && type != version.getType())
@@ -86,7 +86,7 @@ public abstract class AbstractSepaImporter extends AbstractImporter
       String l = i18n.tr("Lastschrift");
       String u = i18n.tr("Überweisung");
       String q = i18n.tr("Sie versuchen, eine {0} als {1} zu importieren.\nVorgang wirklich fortsetzen?",b ? l : u, b ? u : l);
-      
+
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
       d.setTitle(i18n.tr("Warnung"));
       d.setSideImage(SWTUtil.getImage("dialog-warning-large.png"));
@@ -95,14 +95,14 @@ public abstract class AbstractSepaImporter extends AbstractImporter
       if (!b)
         throw new OperationCanceledException();
     }
-    
+
     List<Properties> props = new ArrayList<Properties>();
     ISEPAParser parser = SEPAParserFactory.get(version);
     parser.parse(new ByteArrayInputStream(bos.toByteArray()),props);
-    
+
     return props.toArray(new Properties[props.size()]);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractImporter#commit(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -113,7 +113,7 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     kontenCache.clear();
     super.commit(objects,format,is,monitor);
   }
-  
+
   /**
    * Sucht nach dem Konto mit der angegebenen IBAN.
    * @param iban
@@ -165,7 +165,7 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     }
     throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
   }
-  
+
   /**
    * Versucht den Text als Double zu parsen.
    * @param s der Text.
@@ -175,7 +175,7 @@ public abstract class AbstractSepaImporter extends AbstractImporter
   {
     if (s == null || s.trim().length() == 0)
       return Double.NaN;
-    
+
     try
     {
       return Double.parseDouble(s);
@@ -186,7 +186,7 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     }
     return Double.NaN;
   }
-  
+
   /**
    * Der zulässige SEPA PAIN-Typ.
    * Wird benötigt, damit eine Lastschrift nicht versehentlich als Überweisung importiert wird.

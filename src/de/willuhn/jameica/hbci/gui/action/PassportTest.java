@@ -57,7 +57,7 @@ public class PassportTest implements Action
         Target target       = null;
         try {
           monitor.setStatusText(i18n.tr("Teste Bank-Zugang..."));
-          
+
           final Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
           monitor.log("  " + i18n.tr("Hibiscus-Version {0}, Build {1}, Datum {2}",mf.getVersion().toString(),mf.getBuildnumber(),mf.getBuildDate()));
           monitor.log("  " + i18n.tr("HBCI4Java-Version {0}",HBCIUtils.version()));
@@ -70,6 +70,7 @@ public class PassportTest implements Action
               monitor.addPercentComplete(2);
               format(monitor,msg.getText());
             }
+
             public void close() throws Exception
             {
             }
@@ -91,7 +92,7 @@ public class PassportTest implements Action
           monitor.setStatusText(i18n.tr("Bank-Zugang erfolgreich getestet."));
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bank-Zugang erfolgreich getestet."), StatusBarMessage.TYPE_SUCCESS));
           removeTarget(target);
-          
+
           if (!Application.getCallback().askUser(i18n.tr("Test erfolgreich. Konten automatisch anlegen?")))
             return;
 
@@ -115,7 +116,7 @@ public class PassportTest implements Action
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
           DialogFactory.dirtyPINCache(handler != null ? handler.getPassport() : null);
-          
+
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(), StatusBarMessage.TYPE_ERROR));
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
           monitor.setPercentComplete(100);
@@ -127,11 +128,11 @@ public class PassportTest implements Action
           Throwable cause = HBCIProperties.getCause(e);
           if (cause == null) cause = e; // NPE proof - man weiss ja nie ;)
           Logger.info("test of passport failed: " + cause.getClass() + ": " + cause.getMessage());
-          
+
           // Den kompletten Stacktrace loggen wir nur auf DEBUG, weil der beim Testen bzw. Suchen nach
           // einem Kartenleser durchaus auftreten kann.
           Logger.write(Level.DEBUG,"error while testing passport",e);
-          
+
           // Wenn ein Fehler auftrat, MUSS der PIN-Cache geloescht werden. Denn falls
           // es genau deshalb fehlschlug, WEIL der User eine falsche PIN eingegeben
           // hat, kriegt er sonst keine Chance, seine Eingabe zu korrigieren
@@ -175,10 +176,10 @@ public class PassportTest implements Action
         return false;
       }
     };
-    
+
     Application.getController().start(task);
   }
-  
+
   /**
    * @param t
    */
@@ -195,7 +196,7 @@ public class PassportTest implements Action
     };
     thread.start();
   }
-  
+
   /**
    * Schneidet Stacktrace-Elemente aus dem Text raus.
    * @param monitor Monitor, an den geloggt werden soll.
@@ -238,7 +239,6 @@ public class PassportTest implements Action
   }
 
 }
-
 
 /**********************************************************************
  * $Log: PassportTest.java,v $

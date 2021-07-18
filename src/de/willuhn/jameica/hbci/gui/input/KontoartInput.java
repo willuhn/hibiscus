@@ -23,7 +23,7 @@ public class KontoartInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private Integer current = null;
-  
+
   /**
    * ct.
    * @param value die vorausgewaehlte ID.
@@ -33,10 +33,10 @@ public class KontoartInput extends SelectInput
     super(KontoType.values(),KontoType.find(value));
     this.setName(i18n.tr("Kontoart"));
     this.setPleaseChoose(i18n.tr("<Nicht angegeben>"));
-    
+
     this.current = value;
   }
-  
+
   /**
    * Liefert nicht die enum zurueck sonderen den Integer-Wert.
    * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
@@ -47,18 +47,16 @@ public class KontoartInput extends SelectInput
     KontoType type = (KontoType) super.getValue();
     if (type == null)
       return null; // Explizit nichts ausgewaehlt
-    
+
     // Wenn immer noch die selbe Art ausgewaehlt ist, wie die von "current", dann liefern
     // wir den originalen Int-Wert, nicht den der Enum
     KontoType currentType = current != null ? KontoType.find(current) : null;
-    
+
     if (currentType != null && currentType.equals(type))
       return current;
-    
+
     // Ansonsten den neuen
     return type.getValue();
   }
 
 }
-
-

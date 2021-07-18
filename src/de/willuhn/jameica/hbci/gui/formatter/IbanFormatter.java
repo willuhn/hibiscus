@@ -32,10 +32,8 @@ public class IbanFormatter implements Formatter
     String s = o.toString();
     if (StringUtils.trimToEmpty(s).length() > 10) // IBAN
       return HBCIProperties.formatIban(s);
-    
+
     return s;
   }
 
 }
-
-

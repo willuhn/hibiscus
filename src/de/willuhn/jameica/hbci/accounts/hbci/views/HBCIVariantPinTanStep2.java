@@ -30,7 +30,7 @@ import de.willuhn.jameica.hbci.accounts.hbci.controller.HBCIVariantPinTanControl
 public class HBCIVariantPinTanStep2 extends AbstractHBCIAccountView
 {
   @Resource private HBCIVariantPinTan variant;
-  
+
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
@@ -42,35 +42,32 @@ public class HBCIVariantPinTanStep2 extends AbstractHBCIAccountView
     final HBCIVariantPinTanController control = this.getController(HBCIVariantPinTanController.class);
 
     Container c = new SimpleContainer(this.getParent());
-    
+
     String bank = control.getBankText();
     if (bank != null && bank.trim().length() > 0)
       c.addHeadline(i18n.tr("Zugangsdaten für {0}",bank));
     else
       c.addHeadline(i18n.tr("Zugangsdaten"));
     c.addText(i18n.tr("Bitte geben Sie Ihre Zugangsdaten ein."),true);
-    
+
     InfoPanel panel = this.variant.getInfo();
     c.addPart(panel);
-    
-    
+
     Composite comp = this.getComposite(panel);
     Container cs = new SimpleContainer(comp);
     cs.addText("\n" + i18n.tr("Bitte geben Sie Ihre Benutzer- und Kundenkennung sowie Ihre PIN ein."),true);
-    
+
     Input username = control.getUsername();
     Input customer = control.getCustomer();
-    
+
     cs.addPart(username);
     cs.addPart(customer);
-    
+
     username.getControl().addListener(SWT.KeyUp,control.getStep2Listener());
     customer.getControl().addListener(SWT.KeyUp,control.getStep2Listener());
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(control.getStep2Button());
     buttons.paint(comp);
   }
 }
-
-

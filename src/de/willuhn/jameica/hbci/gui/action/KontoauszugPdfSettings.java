@@ -48,5 +48,3 @@ public class KontoauszugPdfSettings implements Action
   }
 
 }
-
-

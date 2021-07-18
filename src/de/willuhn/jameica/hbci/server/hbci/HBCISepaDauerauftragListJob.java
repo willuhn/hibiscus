@@ -83,7 +83,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
   {
     return "DauerSEPAList";
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
    */
@@ -109,13 +109,13 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
 		GVRDauerList result = (GVRDauerList) getJobResult();
 
 		// Abgleich mit den lokalen SEPA-Dauerauftraegen
-		
+
     DBIterator existing        = konto.getSepaDauerauftraege();
     GVRDauerList.Dauer[] lines = result.getEntries();
 
     SepaDauerauftrag remote = null;
     SepaDauerauftrag local  = null;
-    
+
     // Hier drin merken wir uns alle SepaDauerauftraege, die beim Abgleich
     // gefunden wurden. Denn die muessen garantiert nicht lokal geloescht werden.
     Map<SepaDauerauftrag,Boolean> matches = new HashMap<SepaDauerauftrag,Boolean>();
@@ -129,7 +129,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
       {
         remote = this.create(lines[i]);
         local  = find(existing,remote);
-        
+
         if (local != null)
         {
           Logger.info("found a local copy. order id: " + remote.getOrderID() + ". Checking for modifications");
@@ -159,7 +159,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
 
     Logger.info("checking for deletable entries");
     existing.begin();
-    
+
     // Wir koennen jetzt hier alle loeschen, die NICHT in matches gefunden (also nicht von der Bank geliefert wurden)
     // aber eine Order-ID haben und somit aktiv sein muessten
     while (existing.hasNext())
@@ -170,13 +170,13 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
         Logger.info("skipping [id: " + local.getID() + "] - not yet submitted");
         continue; // der wurde noch nicht zur Bank geschickt und muss daher auch nicht geloescht werden
       }
-      
+
       if (matches.containsKey(local))
       {
         Logger.info("skipping [id: " + local.getID() + ", order id: " + local.getOrderID() + "] - just matched");
         continue;
       }
-      
+
       Logger.info("sepa-dauerauftrag order id: " + local.getOrderID() + " does no longer exist online, can be deleted");
       local.delete();
     }
@@ -185,7 +185,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
     konto.addToProtokoll(i18n.tr("SEPA-Daueraufträge abgerufen"),Protokoll.TYP_SUCCESS);
     Logger.info("sepa-dauerauftrag list fetched successfully");
   }
-  
+
   /**
    * Durchucht die Liste der lokalen SEPA-Dauerauftraege nach dem angegebenen.
    * Insofern die Bank korrekte Order-IDs liefert, findet die Funktion auch
@@ -205,32 +205,32 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
       SepaDauerauftrag local = (SepaDauerauftrag) existing.next();
       if (!local.isActive())
         continue; // der ist noch gar nicht bei der Bank und muss daher auch nicht abgeglichen werden
-      
+
       String idLocal  = StringUtils.trimToEmpty(local.getOrderID());
       String idRemote = StringUtils.trimToEmpty(remote.getOrderID());
 
       // Platzhalter-ID verwenden, wenn die Bank keine uebertragen hat
       if (idRemote.length() == 0)
         idRemote = BaseDauerauftrag.ORDERID_PLACEHOLDER;
-      
+
       if (idLocal.equals(idRemote))
       {
         // OK, die IDs sind schonmal identisch. Jetzt noch checken, ob
         // es wirklich eine echte ID ist oder der Platzhalter
         if (!idLocal.equals(BaseDauerauftrag.ORDERID_PLACEHOLDER))
           return local; // Echte ID - also haben wir ihn gefunden
-        
+
         // Es ist also die Platzhalter-ID. Dann vergleichen wir
         // anhand der Eigenschaften
         if (local.getChecksum() == remote.getChecksum())
           return local; // sind identisch - gefunden
       }
     }
-    
+
     // Nicht gefunden
     return null;
   }
-  
+
   /**
    * Erstellt ein lokales SepaDauerauftrags-Objekt aus dem Remote-Auftrag von HBCI4Java.
    * @param remote der Remote-Auftrag von HBCI4Java.
@@ -244,7 +244,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
     auftrag.setKonto(this.konto); // Konto hart zuweisen - sie kamen ja auch von dem
     return auftrag;
   }
-  
+
   /**
    * Speichert den Dauerauftrag, faengt aber ggf. auftretende Exceptions und loggt sie.
    * @param auftrag der zu speichernde Auftrag.

@@ -90,8 +90,6 @@ public class AuslandsUeberweisungAppointmentProvider extends AbstractAppointment
   }
 }
 
-
-
 /**********************************************************************
  * $Log: AuslandsUeberweisungAppointmentProvider.java,v $
  * Revision 1.8  2012/02/20 17:03:50  willuhn

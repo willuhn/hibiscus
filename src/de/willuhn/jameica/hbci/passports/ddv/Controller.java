@@ -190,7 +190,7 @@ public class Controller extends AbstractControl
   {
     if (this.readerPresets != null)
       return this.readerPresets;
-    
+
     Reader reader = getConfig().getReaderPreset();
     this.readerPresets = new SelectInput(DDVConfigFactory.getReaderPresets(),reader);
     this.readerPresets.setAttribute("name");
@@ -199,7 +199,7 @@ public class Controller extends AbstractControl
     this.readerPresets.addListener(new PresetListener());
     return this.readerPresets;
   }
-  
+
   /**
    * Liefert true, wenn das aktuelle Preset ein PCSC-Kartenleser ist.
    * @return true, wenn das aktuelle Preset ein PCSC-Kartenleser ist.
@@ -209,7 +209,7 @@ public class Controller extends AbstractControl
     Reader r = (Reader) getReaderPresets().getValue();
     return r.getType().isPCSC();
   }
-  
+
   /**
    * Liefert eine Datei-Auswahl fuer den CTAPI-Treiber.
    * @return Auswahl-Feld.
@@ -279,9 +279,9 @@ public class Controller extends AbstractControl
   {
     if (this.pcscName != null)
       return this.pcscName;
-    
+
     List<String> available = new ArrayList<String>();
-    
+
     // Erste Zeile Leerer Eintrag.
     // Damit das Feld auch dann leer bleiben kann, wenn der User nur einen
     // Kartenleser hat. Der sollte dann nicht automatisch vorselektiert
@@ -310,7 +310,7 @@ public class Controller extends AbstractControl
       Logger.info("unable to determine card reader list: " + t.getMessage());
       Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
     }
-    
+
     this.pcscName = new SelectInput(available,this.getConfig().getPCSCName());
     this.pcscName.setEnabled(isPCSC());
     this.pcscName.setEditable(true);
@@ -347,7 +347,7 @@ public class Controller extends AbstractControl
     this.useSoftPin.setName(i18n.tr("Tastatur des PCs zur PIN-Eingabe verwenden"));
     return this.useSoftPin;
   }
-  
+
   /**
    * Versucht, den Kartenleser automatisch zu ermitteln.
    */
@@ -365,19 +365,18 @@ public class Controller extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Suchen des Kartenlesers: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
       return;
     }
-    
 
     BackgroundTask task = new BackgroundTask()
     {
       private boolean stop = false;
-      
+
       /**
        * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
        */
       public void run(final ProgressMonitor monitor) throws ApplicationException
       {
         final DDVConfig config = DDVConfigFactory.scan(monitor,this);
-        
+
         if (getConfig() == null)
         {
           // Wir sind nicht in der Detail-Ansicht sondern in der Liste.
@@ -396,7 +395,7 @@ public class Controller extends AbstractControl
             {
               Reader reader = config.getReaderPreset();
               getReaderPresets().setValue(reader);
-  
+
               getBezeichnung().setValue(config.getName());
               getPCSCName().setValue(config.getPCSCName());
               getCTAPI().setValue(config.getCTAPIDriver());
@@ -404,7 +403,7 @@ public class Controller extends AbstractControl
               getCTNumber().setValue(config.getCTNumber());
               getEntryIndex().setValue(config.getEntryIndex());
               getSoftPin().setValue(config.useSoftPin());
-              
+
               try
               {
                 getHBCIVersion().setValue(config.getHBCIVersion());
@@ -490,7 +489,6 @@ public class Controller extends AbstractControl
     }
   }
 
-
   /**
    * Erstellt eine neue Kartenleser-Config.
    */
@@ -498,7 +496,7 @@ public class Controller extends AbstractControl
   {
     GUI.startView(Detail.class,DDVConfigFactory.create());
   }
-  
+
   /**
    * Loescht die angegebene Kartenleser-Config.
    * @param config die zu loeschende Config.
@@ -531,7 +529,7 @@ public class Controller extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen der Konfiguration: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Synchronisiert den Bankzugang neu.
    */
@@ -623,7 +621,7 @@ public class Controller extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Testen der Konfiguration: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
-  
+
   /**
    * Aendert BLZ, Hostname usw. auf der Karte.
    */
@@ -653,17 +651,16 @@ public class Controller extends AbstractControl
 
           AccountContainerDialog d = new AccountContainerDialog(passport);
           AccountContainer container = (AccountContainer) d.open();
-          
+
           passport.setBLZ(container.blz);
           passport.setUserId(container.userid);
           passport.setCustomerId(container.customerid);
           passport.setHost(container.host);
           passport.setFilterType(container.filter);
           passport.setCountry(container.country);
-          
+
           passport.saveChanges();
-          
-          
+
           passport.saveBankData();
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bankdaten gespeichert"),StatusBarMessage.TYPE_SUCCESS));
         }
@@ -705,7 +702,7 @@ public class Controller extends AbstractControl
           }
         }
       }
-      
+
       public boolean isInterrupted(){return false;}
       public void interrupt(){}
     });
@@ -731,7 +728,7 @@ public class Controller extends AbstractControl
           GUI.getView().setErrorText(i18n.tr("Der ausgewählte Kartenleser wird von Hibiscus nicht unterstützt"));
           return;
         }
-        
+
         boolean pcsc = isPCSC();
         getCTAPI().setEnabled(!pcsc);
         getCTNumber().setEnabled(!pcsc);
@@ -747,11 +744,11 @@ public class Controller extends AbstractControl
             if (!f.exists())
               GUI.getView().setErrorText(i18n.tr("CTAPI-Treiber nicht gefunden. Bitte Treiber installieren."));
           }
-          
+
           String port = r.getPort();
           if (port != null)
             getPort().setPreselected(port);
-          
+
           int ctNumber = r.getCTNumber();
           if (ctNumber >= 0)
             getCTNumber().setValue(new Integer(ctNumber));
@@ -762,7 +759,7 @@ public class Controller extends AbstractControl
         {
           getCTAPI().setValue("");
         }
-        
+
         getSoftPin().setValue(new Boolean(r.useSoftPin()));
     	}
     	catch (Exception e)

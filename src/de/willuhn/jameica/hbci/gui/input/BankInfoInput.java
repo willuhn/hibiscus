@@ -25,7 +25,7 @@ import de.willuhn.util.I18N;
 public class BankInfoInput extends SearchInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * ct.
    * @param query der initiale Suchbegriff.
@@ -36,7 +36,7 @@ public class BankInfoInput extends SearchInput
     this.setSearchString(i18n.tr("BLZ, BIC, Name oder Ort der Bank..."));
     this.setStartAt(3);
     this.setDelay(700);
-    
+
     if (query != null && query.length() > 0)
     {
       List result = startSearch(query);
@@ -46,7 +46,7 @@ public class BankInfoInput extends SearchInput
       }
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.input.SearchInput#startSearch(java.lang.String)
    */
@@ -57,5 +57,3 @@ public class BankInfoInput extends SearchInput
   }
 
 }
-
-

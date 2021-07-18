@@ -22,7 +22,7 @@ import de.willuhn.jameica.hbci.server.Value;
 public class ChartDataSaldoSumme extends AbstractChartDataSaldo
 {
   private List<Value> data = null;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
    */
@@ -30,7 +30,7 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
   {
     return this.data;
   }
-  
+
   /**
    * Fuegt weitere Daten hinzu.
    * @param data weitere Daten.
@@ -69,7 +69,7 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
   {
     return i18n.tr("Summe");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isFilled()
    */
@@ -78,4 +78,3 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
     return false;
   }
 }
-

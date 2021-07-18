@@ -95,7 +95,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
-    
+
     Konto k = getTransfer().getKonto();
     KontoListener kl = new KontoListener();
     this.kontoAuswahl = new KontoInput(k,getTransfer().isNewObject() ? KontoFilter.ONLINE : KontoFilter.ALL); // Falls nachtraeglich das Konto deaktiviert wurde
@@ -103,11 +103,10 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
     this.kontoAuswahl.setMandatory(true);
     this.kontoAuswahl.addListener(kl);
     this.kontoAuswahl.setEnabled(!getTransfer().ausgefuehrt());
-    
+
     // einmal ausloesen
     kl.handleEvent(null);
 
-    
     return this.kontoAuswahl;
   }
 
@@ -132,7 +131,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
   {
     if (this.interval != null)
       return this.interval;
-    
+
     this.interval = new ReminderIntervalInput((Terminable) getTransfer(),(Date)getTermin().getValue());
     return this.interval;
   }
@@ -151,7 +150,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
     this.summe.setComment(k != null ? k.getWaehrung() : "");
     return this.summe;
   }
-  
+
   /**
    * Liefert ein Eingabe-Feld fuer den Namen des Sammel-Auftrages.
    * @return Name des Sammel-Auftrages.
@@ -174,14 +173,14 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
   public synchronized boolean handleStore()
   {
     SammelTransfer t = null;
-    
+
     try
     {
       t = this.getTransfer();
       if (t.ausgefuehrt()) // BUGZILLA 1197
         return true;
       t.transactionBegin();
-      
+
       t.setKonto((Konto)getKontoAuswahl().getValue());
       t.setBezeichnung((String)getName().getValue());
       t.setTermin((Date)getTermin().getValue());
@@ -193,7 +192,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
         ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
 
       t.transactionCommit();
-      
+
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sammel-Auftrag gespeichert"),StatusBarMessage.TYPE_SUCCESS));
       return true;
     }
@@ -207,7 +206,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
           Logger.error("rollback failed",xe);
         }
       }
-      
+
       if (e instanceof ApplicationException)
       {
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(e.getMessage(),StatusBarMessage.TYPE_ERROR));
@@ -220,7 +219,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
     }
     return false;
   }
-  
+
   /**
    * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
    * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
@@ -275,7 +274,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
         }
       }, "user-trash-full.png");
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
      */
@@ -294,7 +293,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
       return false;
     }
   }
-  
+
   /**
    * Contextmenu-Item zum Erstellen einer Buchung.
    */
@@ -324,7 +323,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
         }
       },"text-x-generic.png");
     }
-    
+
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
      */

@@ -42,7 +42,7 @@ import de.willuhn.util.ApplicationException;
 public class Open implements Action
 {
   private final static Map<Class,Class<? extends Action>> actionMap = new HashMap<Class,Class<? extends Action>>();
-  
+
   static
   {
     actionMap.put(Ueberweisung.class,           UeberweisungNew.class);
@@ -60,7 +60,7 @@ public class Open implements Action
     actionMap.put(UmsatzTyp.class,              UmsatzTypNew.class);
     actionMap.put(Kontoauszug.class,            KontoauszugOpen.class);
   }
-  
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
@@ -71,10 +71,10 @@ public class Open implements Action
 
     // Wenn kein konkretes Objekt angegeben ist sondern nur der Typ (z.Bsp, um eine neue Ueberweisung zu erzeugen),
     final boolean typeGiven = (context instanceof Class);
-    
+
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     Class type          =  typeGiven ? (Class) context : context.getClass();
-    
+
     Iterator<Class> keys = actionMap.keySet().iterator();
     while (keys.hasNext())
     {
@@ -86,7 +86,7 @@ public class Open implements Action
         return;
       }
     }
-    
+
     Logger.warn("dont know, how to handle " + context.getClass());
   }
 

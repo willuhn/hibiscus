@@ -37,7 +37,7 @@ public abstract class KontoFilter implements Filter<Konto>
    * @see de.willuhn.jameica.hbci.gui.filter.Filter#accept(java.lang.Object)
    */
   public abstract boolean accept(Konto konto) throws RemoteException;
-  
+
   /**
    * Filter, der alle Konten zulaesst.
    */
@@ -51,7 +51,7 @@ public abstract class KontoFilter implements Filter<Konto>
       return true;
     }
   };
-  
+
   /**
    * Filter, der nur HBCI-Konten zulaesst.
    */
@@ -71,7 +71,6 @@ public abstract class KontoFilter implements Filter<Konto>
     }
   };
 
-  
   /**
    * Filter, der nur Offline-Konten zulaesst.
    */
@@ -103,7 +102,7 @@ public abstract class KontoFilter implements Filter<Konto>
     {
       if (konto == null)
         return false;
-      
+
       return !konto.hasFlag(Konto.FLAG_DISABLED);
     }
   };
@@ -127,7 +126,7 @@ public abstract class KontoFilter implements Filter<Konto>
       return (iban != null && iban.length() > 0 && iban.length() <= HBCIProperties.HBCI_IBAN_MAXLENGTH);
     }
   };
-  
+
   /**
    * Filter, der nur Konten zulaesst, fuer die Synchronisierungsoptionen aktiviert sind oder die prinzipiell
    * synchronisierbar sind.
@@ -145,7 +144,7 @@ public abstract class KontoFilter implements Filter<Konto>
       // Wenn es ein Online-Konto ist, kann es prinzipiell gesynct werden
       if (!konto.hasFlag(Konto.FLAG_OFFLINE))
         return true;
-      
+
       // Ist zwar ein Offline-Konto. Aber wir schauen mal, ob es
       // synchronisiert werden kann.
       BeanService service = Application.getBootLoader().getBootable(BeanService.class);
@@ -153,7 +152,7 @@ public abstract class KontoFilter implements Filter<Konto>
       return engine.supports(SynchronizeJobKontoauszug.class,konto);
     }
   };
-  
+
   /**
    * Liefert einen Kontofilter zur Suche nach Konten mit bestimmten Kriterien.
    * @param text Suchbegriff.
@@ -169,11 +168,11 @@ public abstract class KontoFilter implements Filter<Konto>
       {
         if (konto == null)
           return false;
-        
+
         if (ignoreFlags != null)
         {
           int f = ignoreFlags.intValue();
-          
+
           for (int flag:new int[]{Konto.FLAG_DISABLED,Konto.FLAG_OFFLINE})
           {
             // Ist das Flag in der Suche enthalten?
@@ -193,7 +192,7 @@ public abstract class KontoFilter implements Filter<Konto>
         if (s == null)
           return true;
         s = s.toLowerCase();
-        
+
         String s1 = StringUtils.trimToEmpty(konto.getBezeichnung()).toLowerCase();
         String s2 = StringUtils.trimToEmpty(konto.getBic()).toLowerCase();
         String s3 = StringUtils.trimToEmpty(konto.getBLZ()).toLowerCase();
@@ -203,7 +202,7 @@ public abstract class KontoFilter implements Filter<Konto>
         String s7 = StringUtils.trimToEmpty(konto.getKontonummer()).toLowerCase();
         String s8 = StringUtils.trimToEmpty(konto.getKundennummer()).toLowerCase();
         String s9 = StringUtils.trimToEmpty(konto.getName()).toLowerCase();
-        
+
         return s1.contains(s) ||
                s2.contains(s) ||
                s3.contains(s) ||
@@ -216,7 +215,7 @@ public abstract class KontoFilter implements Filter<Konto>
       }
     };
   }
-  
+
   /**
    * Erzeugt einen Konto-Filter basierend auf {@link KontoFilter#FOREIGN}, welcher jedoch nur jene Konten
    * zulaesst, die den angegebenen Synchronize-Job unterstuetzen (insofern das Backend ermittelbar ist).
@@ -226,7 +225,7 @@ public abstract class KontoFilter implements Filter<Konto>
   public static KontoFilter createForeign(final Class<? extends SynchronizeJob> type)
   {
     return new KontoFilter() {
-      
+
       /**
        * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
        */
@@ -240,7 +239,7 @@ public abstract class KontoFilter implements Filter<Konto>
         // brauchen wir gar nicht weiter checken
         if (type == null)
           return true;
-        
+
         try
         {
           // OK, jetzt checken wir noch den Sync-Job.
@@ -257,11 +256,11 @@ public abstract class KontoFilter implements Filter<Konto>
         {
           Logger.error("unable to determine if account is supported, will rather accept it",e);
         }
-        
+
         return true;
       }
     };
-    
+
   }
 
 }

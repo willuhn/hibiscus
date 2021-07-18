@@ -27,7 +27,7 @@ public interface Terminable
    * @throws RemoteException
    */
   public Date getTermin() throws RemoteException;
-	
+
 	/**
 	 * Speichert den Termin, an dem die Ueberweisung ausgefuehrt werden soll.
    * @param termin Termin der Ueberweisung.
@@ -41,21 +41,21 @@ public interface Terminable
    * @throws RemoteException
    */
   public boolean ueberfaellig() throws RemoteException;
-	
+
   /**
    * Prueft, ob das Objekt ausgefuehrt wurde.
    * @return true, wenn das Objekt bereits ausgefuehrt wurde.
    * @throws RemoteException
    */
   public boolean ausgefuehrt() throws RemoteException;
-  
+
   /**
    * Liefert das Datum, zu dem der Auftrag ausgefuehrt wurde.
    * @return das Datum zu dem der Auftrag ausgefuehrt wurde.
    * @throws RemoteException
    */
   public Date getAusfuehrungsdatum() throws RemoteException;
-  
+
   /**
    * Markiert das Objekt als ausgefuehrt/nicht ausgefuehrt und speichert die Aenderung
    * unmittelbar.

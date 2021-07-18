@@ -44,7 +44,7 @@ public class SynchronizeEngine
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private List<SynchronizeBackend> backends = null;
-  
+
   /**
    * Das Primaer-Backend.
    */
@@ -58,9 +58,9 @@ public class SynchronizeEngine
   {
     if (this.backends != null)
       return this.backends;
-    
+
     this.backends = new LinkedList<SynchronizeBackend>();
-    
+
     try
     {
       Logger.info("loading synchronize backends");
@@ -78,12 +78,12 @@ public class SynchronizeEngine
           Logger.error("unable to load synchronize backend " + c.getName() + ", skipping",e);
         }
       }
-      
+
       // Wir sortieren die Backends so, dass das Primaer-Backend immer Vorrang hat
       Collections.sort(this.backends,new Comparator<SynchronizeBackend>() {
         public int compare(SynchronizeBackend o1, SynchronizeBackend o2)
         {
-          
+
           if (PRIMARY.isInstance(o1))
             return -1;
           if (PRIMARY.isInstance(o2))
@@ -102,7 +102,7 @@ public class SynchronizeEngine
     }
     return this.backends;
   }
-  
+
   /**
    * Liefert das im Konto hinterlegte Backend.
    * @param konto das Konto.
@@ -124,10 +124,10 @@ public class SynchronizeEngine
     {
       Logger.error("unable to determine backend for konto",re);
     }
-    
+
     return null;
   }
-  
+
   /**
    * Liefert das Primaer-Backend.
    * @return das Primaer-Backend.
@@ -137,7 +137,7 @@ public class SynchronizeEngine
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     return service.get(PRIMARY);
   }
-  
+
   /**
    * Liefert ein passendes Backend fuer den angegebenen Job.
    * Das erste gefundene wird verwendet.
@@ -152,7 +152,7 @@ public class SynchronizeEngine
     SynchronizeBackend bk = this.getBackend(konto);
     if (bk != null)
     {
-      
+
       // Checken, ob das Backend den Geschaeftsvorfall ueberhaupt unterstuetzt
       // TODO: Ich bin mir nicht sicher, ob auch bei einem explizit gewaehlten Backend geprueft
       // werden sollte, ob das Backend den Geschaeftsvorfall unterstuetzt.
@@ -167,10 +167,10 @@ public class SynchronizeEngine
       if (backend.supports(type,konto))
         return backend;
     }
-    
+
     throw new ApplicationException(i18n.tr("Dieser Geschäftsvorfall wird für das angegebene Konto nicht unterstützt"));
   }
-  
+
   /**
    * Liefert true, wenn ein Backend den angegebenen Job-Typ fuer das angegebene Konto unterstuetzt.
    * @param type der zu pruefende Job-Typ.

@@ -43,7 +43,7 @@ public class PassportProcessCode3072 implements Action
     }
 
     AbstractHBCIPassport hbciPassport = (AbstractHBCIPassport) context;
-    
+
     Object o = hbciPassport.getPersistentData(PassportHandle.CONTEXT_USERID_CHANGED);
     if (o == null)
     {
@@ -60,7 +60,7 @@ public class PassportProcessCode3072 implements Action
         Logger.warn("changes did not contain userId|custId");
         return;
       }
-      
+
       String userId = changes.substring(0,pos);
       String custId = changes.substring(pos+1);
       if (userId.length() == 0)
@@ -73,7 +73,7 @@ public class PassportProcessCode3072 implements Action
         Logger.warn("no custId found");
         return;
       }
-      
+
       String custOld = hbciPassport.getCustomerId();
       String userOld = hbciPassport.getUserId();
 
@@ -84,7 +84,7 @@ public class PassportProcessCode3072 implements Action
                             "  Alte Benutzerkennung: {2}\n" +
                             "  Neue Benutzerkennung: {3}\n\n" +
                             "Möchten Sie die geänderten Zugangsdaten jetzt übernehmen?");
-      
+
       boolean b = Application.getCallback().askUser(text,new String[]{custOld,custId,userOld,userId});
       if (!b)
       {
@@ -108,5 +108,3 @@ public class PassportProcessCode3072 implements Action
   }
 
 }
-
-

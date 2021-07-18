@@ -29,17 +29,17 @@ import de.willuhn.util.I18N;
 public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   private Konto konto;
   private String text;
   private double anfangssaldo;
   private double einnahmen;
   private double ausgaben;
   private double endsaldo;
-  
+
   private Date startdatum;
   private Date enddatum;
-  
+
   private boolean isSumme = false;
   private boolean anfangsSaldoDurchUmsatzGesetzt;
 
@@ -110,7 +110,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   {
     return this.konto;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getText()
    */
@@ -251,7 +251,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   {
     return this.einnahmen - this.ausgaben;
   }
-  
+
   /**
    * Liefert true, wenn es eine Summen-Zeile ist.
    * @return true, wenn es eine Summen-Zeile ist.
@@ -260,7 +260,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   {
     return this.isSumme;
   }
-  
+
   /**
    * Legt fest, ob es sich um eine Summen-Zeile handelt.
    * @param b true, wenn es eine Summen-Zeile ist.
@@ -338,7 +338,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   {
     return "text";
   }
-  
+
   /**
    * @see java.lang.Object#toString()
    */

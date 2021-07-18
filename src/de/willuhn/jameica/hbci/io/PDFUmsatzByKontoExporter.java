@@ -31,7 +31,7 @@ public class PDFUmsatzByKontoExporter extends AbstractPDFUmsatzExporter<Konto>
   {
     return u.getKonto();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#toString(de.willuhn.datasource.GenericObject)
    */
@@ -41,7 +41,7 @@ public class PDFUmsatzByKontoExporter extends AbstractPDFUmsatzExporter<Konto>
     // NULL brauchen wir hier nicht beruecksichtigen. Es kann keinen Umsatz ohne Konto geben
     return KontoUtil.toString(t);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */

@@ -56,11 +56,11 @@ public class VergleichBarChart extends AbstractChart
     // redraw ohne paint() Weia ;)
     if (this.comp == null || this.comp.isDisposed())
       return;
-    
+
     // Cleanup
     SWTUtil.disposeChildren(this.comp);
     this.comp.setLayout(SWTUtil.createGrid(1,false));
-    
+
     setChart(new InteractiveChart(this.comp,SWT.BORDER));
     getChart().setLayoutData(new GridData(GridData.FILL_BOTH));
     getChart().getLegend().setVisible(false);
@@ -72,7 +72,7 @@ public class VergleichBarChart extends AbstractChart
     getChart().setBackgroundInPlotArea(GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE));
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Titel des Charts
     {
@@ -83,7 +83,7 @@ public class VergleichBarChart extends AbstractChart
     }
     //
     ////////////////////////////////////////////////////////////////////////////
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Legende
     {
@@ -99,7 +99,7 @@ public class VergleichBarChart extends AbstractChart
     ////////////////////////////////////////////////////////////////////////////
     // Layout der Achsen
     Color gray = getColor(new RGB(234,234,234));
-    
+
     // X-Achse
     {
       IAxis axis = getChart().getAxisSet().getXAxis(0);
@@ -113,11 +113,11 @@ public class VergleichBarChart extends AbstractChart
       IAxisTick tick = axis.getTick();
       tick.setFormat(HBCI.DATEFORMAT);
       tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
-      
+
       axis.setCategorySeries(this.getCategoryNames());
       axis.enableCategory(true);
     }
-    
+
     // Y-Achse
     {
       IAxis axis = getChart().getAxisSet().getYAxis(0);
@@ -126,7 +126,7 @@ public class VergleichBarChart extends AbstractChart
       IGrid grid = axis.getGrid();
       grid.setStyle(LineStyle.DOT);
       grid.setForeground(gray);
-      
+
       IAxisTick tick = axis.getTick();
       tick.setFormat(HBCI.DECIMALFORMAT);
       tick.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -145,7 +145,7 @@ public class VergleichBarChart extends AbstractChart
       label.setForeground(GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK));
       label.setVisible(true);
     }
-    
+
     {
       IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,"ausgaben");
       barSeries.setYSeries(getExpensesSeries());
@@ -169,10 +169,10 @@ public class VergleichBarChart extends AbstractChart
   {
     if (this.comp != null)
       return;
-    
+
     this.comp = new Composite(parent,SWT.NONE);
     this.comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-    
+
     redraw();
     super.paint(parent);
   }
@@ -195,7 +195,7 @@ public class VergleichBarChart extends AbstractChart
   {
     if (data == null)
       return new String[] {i18n.tr("Keine Daten")};
-    
+
     final List<String> result = new ArrayList<String>();
     for (EinnahmeAusgabeZeitraum n : this.data)
     {
@@ -203,7 +203,7 @@ public class VergleichBarChart extends AbstractChart
     }
     return result.toArray(new String[result.size()]);
   }
-  
+
   /**
    * Liefert das Label fuer das Element.
    * @param node das Element.
@@ -213,12 +213,12 @@ public class VergleichBarChart extends AbstractChart
   {
     if (node instanceof EinnahmeAusgabe)
       return node.getText(); // Gesamtzeitraum
-    
+
     final Calendar cal = Calendar.getInstance();
     cal.setTime(node.getStartdatum());
     final int sm = cal.get(Calendar.MONTH);
     final int sy = cal.get(Calendar.YEAR);
-    
+
     cal.setTime(node.getEnddatum());
     final int em = cal.get(Calendar.MONTH);
     final int ey = cal.get(Calendar.YEAR);
@@ -226,7 +226,7 @@ public class VergleichBarChart extends AbstractChart
     // Gruppiert nach Monat
     if (sm == em && sy == ey)
       return String.format("%02d",sm+1) + "/" + sy; // Monat beginnt im Calendar bei 0
-    
+
     // Gruppiert nach Jahr
     if (sy == ey)
       return Integer.toString(sy);
@@ -234,7 +234,7 @@ public class VergleichBarChart extends AbstractChart
     // Gruppierung unbekannt
     return node.getText();
   }
-  
+
   /**
    * Liefert die Datenreihe mit den Einnahmen.
    * @return Datenreihe mit den Einnahmen.
@@ -244,7 +244,7 @@ public class VergleichBarChart extends AbstractChart
   {
     if (data == null)
       return new double[] {0.0};
-    
+
     double[] serie = new double[this.data.size()];
     for (int i = 0; i < this.data.size(); i++)
     {
@@ -263,7 +263,7 @@ public class VergleichBarChart extends AbstractChart
   {
     if (data == null)
       return new double[] {0.0};
-    
+
     double[] serie = new double[this.data.size()];
     for (int i = 0; i < this.data.size(); i++)
     {

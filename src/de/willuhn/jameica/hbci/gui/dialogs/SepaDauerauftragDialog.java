@@ -50,7 +50,7 @@ public class SepaDauerauftragDialog extends AbstractExecuteDialog
   {
 		Container group = new SimpleContainer(parent);
 		group.addHeadline(i18n.tr("Details des SEPA-Dauerauftrages"));
-			
+
     Input kto = new LabelInput(auftrag.getKonto().getKontonummer());
     kto.setComment(auftrag.getKonto().getBezeichnung());
     group.addLabelPair(i18n.tr("Eigenes Konto"),kto);
@@ -89,12 +89,12 @@ public class SepaDauerauftragDialog extends AbstractExecuteDialog
     group.addText(VerwendungszweckUtil.toString(auftrag,"\n"),false);
 
     group.addSeparator();
-    
+
     if (auftrag.isActive())
       group.addText(i18n.tr("Sind Sie sicher, daß Sie diese Änderungen jetzt zur Bank senden wollen?") + "\n",true);
     else
       group.addText(i18n.tr("Sind Sie sicher, daß Sie diesen Dauerauftrag jetzt ausführen wollen?") + "\n",true);
-    
+
     super.paint(parent);
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }

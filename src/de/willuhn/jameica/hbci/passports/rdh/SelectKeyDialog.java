@@ -38,7 +38,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-
 // BUGZILLA #80 http://www.willuhn.de/bugzilla/show_bug.cgi?id=80
 /**
  * Ein Dialog zur Auswahl des zu verwendenden Schluessels.
@@ -74,7 +73,7 @@ public class SelectKeyDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     apply.setEnabled(false); // initial deaktivieren
-    
+
     GenericIterator list = RDHKeyFactory.getKeys();
     List<KeyObject> l = new ArrayList<KeyObject>();
     while (list.hasNext())
@@ -82,7 +81,7 @@ public class SelectKeyDialog extends AbstractDialog
       RDHKey key = (RDHKey) list.next();
       l.add(new KeyObject(key));
     }
-    
+
     this.table = new TablePart(l, new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -106,7 +105,7 @@ public class SelectKeyDialog extends AbstractDialog
         }
       }
     });
-    
+
     table.addSelectionListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -119,7 +118,7 @@ public class SelectKeyDialog extends AbstractDialog
     table.setMulti(false);
     table.setSummary(false);
     table.paint(parent);
-    
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(apply);
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
@@ -130,7 +129,7 @@ public class SelectKeyDialog extends AbstractDialog
     },null,false,"process-stop.png");
     buttons.paint(parent);
   }
-  
+
   /**
    * Die Action zum Uebernehmen der Auswahl.
    */
@@ -177,7 +176,7 @@ public class SelectKeyDialog extends AbstractDialog
   {
 
     private RDHKey key = null;
-    
+
     private KeyObject(RDHKey key)
     {
       this.key = key;
@@ -228,6 +227,6 @@ public class SelectKeyDialog extends AbstractDialog
         return false;
       return this.getID().equals(arg0.getID());
     }
-    
+
   }
 }

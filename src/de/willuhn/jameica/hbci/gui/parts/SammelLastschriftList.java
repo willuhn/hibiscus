@@ -41,7 +41,6 @@ public class SammelLastschriftList extends AbstractSammelTransferList implements
   }
 }
 
-
 /**********************************************************************
  * $Log: SammelLastschriftList.java,v $
  * Revision 1.8  2008/06/30 13:04:10  willuhn

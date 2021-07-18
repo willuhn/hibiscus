@@ -33,7 +33,7 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
 
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	private Konto konto = null;
-	
+
   /**
    * @throws RemoteException
    */
