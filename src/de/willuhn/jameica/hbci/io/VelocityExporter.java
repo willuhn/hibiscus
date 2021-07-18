@@ -45,7 +45,7 @@ public class VelocityExporter implements Exporter
   private final static Settings settings = new Settings(VelocityExporter.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private Map<Class,IOFormat[]> formats  = new HashMap<Class,IOFormat[]>();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -129,7 +129,7 @@ public class VelocityExporter implements Exporter
       }
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
@@ -145,13 +145,13 @@ public class VelocityExporter implements Exporter
   {
     if (type == null)
       return new IOFormat[0];
-    
+
     IOFormat[] loaded = (IOFormat[]) this.formats.get(type);
     if (loaded != null)
       return loaded;
 
     Logger.info("looking velocity templates for object type " + type);
-    
+
     File dir = new File(Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getPluginDir() + File.separator + "lib","velocity");
     FileFinder finder = new FileFinder(dir);
     String cn = type.getName().replace(".","\\."); // "." gegen "\." ersetzen (Escaping fuer folgenden Regex)
@@ -159,7 +159,7 @@ public class VelocityExporter implements Exporter
     finder.matches(cn + ".*?\\.vm$");
 
     File[] found = finder.findRecursive();
-    
+
     ArrayList l = new ArrayList();
     for (int i=0;i<found.length;++i)
     {
@@ -168,7 +168,7 @@ public class VelocityExporter implements Exporter
 
       String name = ef.getName();
       name = name.replaceAll(cn,""); // Klassenname entfernen
-      
+
       // Checken, ob wir eine Variation haben
       String variant = null;
       if (name.startsWith("-"))
@@ -180,20 +180,20 @@ public class VelocityExporter implements Exporter
       int dot = name.indexOf(".");
       if (dot == -1)
         continue;
-      
+
       String ext = name.substring(0,dot);
       if (ext == null || ext.length() == 0)
         continue;
-      
+
       l.add(new VelocityFormat(ext,variant,ef));
     }
-    
+
     loaded = (IOFormat[]) l.toArray(new IOFormat[l.size()]);
     this.formats.put(type,loaded);
     return loaded;
-    
+
   }
-  
+
   /**
    * Hilfsklase, die das IOFormat implementiert.
    */
@@ -201,9 +201,9 @@ public class VelocityExporter implements Exporter
   {
     private String extension = null;
     private String variant   = null;
-    
+
     private File template = null;
-    
+
     /**
      * ct.
      * @param extension die Datei-Endung.
@@ -235,7 +235,7 @@ public class VelocityExporter implements Exporter
     {
       return new String[]{extension};
     }
-    
+
     /**
      * Liefert das Template-File.
      * @return Template-File.
@@ -245,7 +245,7 @@ public class VelocityExporter implements Exporter
       return this.template;
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */
@@ -254,7 +254,7 @@ public class VelocityExporter implements Exporter
   {
     return false;
   }
-  
+
   /**
    * Hilfsklasse fuer weitere Datumsfunktionen.
    */
@@ -273,7 +273,7 @@ public class VelocityExporter implements Exporter
         Logger.warn("no date format given, fallback to default format");
         return HBCI.DATEFORMAT;
       }
-      
+
       try
       {
         return new SimpleDateFormat(format);
@@ -285,7 +285,7 @@ public class VelocityExporter implements Exporter
       return HBCI.DATEFORMAT;
     }
   }
-  
+
   /**
    * Hilfsklasse zum Escapen von Strings in der CSV-Datei.
    */
@@ -305,10 +305,10 @@ public class VelocityExporter implements Exporter
       // Siehe https://tools.ietf.org/html/rfc4180#section-2, Absatz 7
       // BUGZILLA 1336
       s = s.replace("\"","\"\"");
-      
+
       // Zeilenumbrueche gegen Leerzeichen ersetzen
       s = s.replaceAll("[\n\r]"," ");
-      
+
       return s;
     }
   }

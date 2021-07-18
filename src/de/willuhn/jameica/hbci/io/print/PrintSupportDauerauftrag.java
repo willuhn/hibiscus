@@ -36,7 +36,7 @@ import de.willuhn.util.ApplicationException;
 public class PrintSupportDauerauftrag extends AbstractPrintSupport
 {
   private Object ctx = null;
-  
+
   /**
    * ct.
    * @param ctx die zu druckenden Daten.
@@ -45,28 +45,28 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
   {
     this.ctx = ctx;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
    */
   Print printContent() throws ApplicationException
   {
     Object data = this.ctx;
-    
+
     if (data == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
+
     if (data instanceof TablePart)
       data = ((TablePart)data).getSelection();
-    
+
     if (!(data instanceof Dauerauftrag))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
+
     try
     {
       Dauerauftrag a = (Dauerauftrag) data;
       Konto k        = a.getKonto();
-      
+
       // Die eigentlich Tabelle mit den Werten
       DefaultGridLook look = new DefaultGridLook(5,5);
       GridPrint table = new GridPrint("l:p:n, l:d:g",look);
@@ -74,15 +74,15 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
       // Konto
       table.add(new TextPrint(i18n.tr("Konto"),fontNormal));
       table.add(new TextPrint(notNull(k != null ? k.getLongName() : null),fontNormal));
-      
+
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Empfaenger
       {
         String blz = a.getGegenkontoBLZ();
-        
+
         table.add(new TextPrint(i18n.tr("Gegenkonto"),fontNormal));
         table.add(new TextPrint(notNull(a.getGegenkontoName()),fontBold));
         table.add(new EmptyPrint());
@@ -95,7 +95,7 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Verwendungszweck
       {
         String usage = VerwendungszweckUtil.toString(a,"\n");
@@ -106,12 +106,12 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Betrag
       {
         double betrag = a.getBetrag();
         String curr = k != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE;
-        
+
         table.add(new TextPrint(i18n.tr("Betrag"),fontNormal));
         table.add(new TextPrint(betrag == 0.0d || Double.isNaN(betrag) ? "-" : (HBCI.DECIMALFORMAT.format(betrag) + " " + curr),fontBold));
       }
@@ -119,12 +119,12 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Der Rest
       {
         table.add(new TextPrint(i18n.tr("Textschlüssel"),fontNormal));
         table.add(new TextPrint(notNull(TextSchluessel.get(a.getTextSchluessel())),fontNormal));
-        
+
         Date first = a.getErsteZahlung();
         table.add(new TextPrint(i18n.tr("Erste Zahlung"),fontNormal));
         table.add(new TextPrint(first == null ? "-" : HBCI.DATEFORMAT.format(first),fontNormal));
@@ -148,7 +148,7 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
         table.add(new TextPrint(i18n.tr("Aktiv"),fontNormal));
         table.add(new TextPrint(a.isActive() ? "Ja" : "Nein",fontBold));
       } 
-      
+
       return table;
     }
     catch (RemoteException re)
@@ -157,7 +157,7 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
    */
@@ -166,8 +166,6 @@ public class PrintSupportDauerauftrag extends AbstractPrintSupport
     return i18n.tr("Dauerauftrag");
   }
 }
-
-
 
 /**********************************************************************
  * $Log: PrintSupportDauerauftrag.java,v $

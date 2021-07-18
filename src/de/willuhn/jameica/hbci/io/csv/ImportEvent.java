@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.io.csv;
 
-
 /**
  * Event-Objekt.
  */
@@ -20,14 +19,12 @@ public class ImportEvent
    * Das zugehoerige Fachobjekt.
    */
   public Object data = null;
-  
+
   /**
    * Optionales Context-Objekt des Imports.
    */
   public Object context = null;
 }
-
-
 
 /**********************************************************************
  * $Log: ImportEvent.java,v $

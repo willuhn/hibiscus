@@ -36,7 +36,7 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
       return null;
 
     IOFormat myFormat = new IOFormat() {
-    
+
       /**
        * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
        */
@@ -44,12 +44,12 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
       {
         return AbstractUmsatzTreeExporter.this.getName();
       }
-    
+
       public String[] getFileExtensions()
       {
         return new String[]{"pdf"};
       }
-    
+
     };
     return new IOFormat[]{myFormat};
   }
@@ -66,7 +66,7 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
     Date start    = tree.getStart();
     Date end      = tree.getEnd();
     DateFormat df = HBCI.DATEFORMAT;
-    
+
     String tt = titel != null ? titel : i18n.tr("alle Konten");
     String st = start != null ? df.format(start) : null;
     String et = end != null ? df.format(end) : null;
@@ -76,7 +76,7 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
     if (end == null)               return i18n.tr("Zeitraum: ab {0}, {1}",st,tt);
     return i18n.tr("Zeitraum: {0} - {1}, {2}",st,et,tt);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */
@@ -86,5 +86,3 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
     return false;
   }
 }
-
-

@@ -48,18 +48,18 @@ import de.willuhn.util.ProgressMonitor;
 public class MT940UmsatzExporter implements Exporter
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   protected final static String NL            = "\r\n";
   protected final static DateFormat DF_YYMMDD = new SimpleDateFormat("yyMMdd");
   protected final static DateFormat DF_MMDD   = new SimpleDateFormat("MMdd");
-  
+
   protected final static DecimalFormat DECF = new DecimalFormat("###,###,##0.00",new DecimalFormatSymbols(Locale.GERMANY));
-  
+
   static
   {
     DECF.setGroupingUsed(false);
   }
-  
+
   /**
    * MT940-Zeichensatz.
    * Ist eigentlich nicht noetig, weil Swift nur ein Subset von ISO-8859
@@ -75,7 +75,7 @@ public class MT940UmsatzExporter implements Exporter
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     OutputStreamWriter out = null;
-    
+
     try
     {
       out = new MyOutputStreamWriter(os);
@@ -86,7 +86,7 @@ public class MT940UmsatzExporter implements Exporter
         factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
-      
+
       //////////////////////////////////////////////////////////////////////////
       // Wir sortieren die Buchungen vorher noch chronologisch. Und checken bei
       // der Gelegenheit auch gleich, dass die Buchungen alle vom selben Konto
@@ -96,43 +96,42 @@ public class MT940UmsatzExporter implements Exporter
       {
         if (objects[i] == null || !(objects[i] instanceof Umsatz))
           continue;
-        
+
         list.add((Umsatz) objects[i]);
       }
       sort(list);
       //////////////////////////////////////////////////////////////////////////
 
-
       Boolean b         = (Boolean) Exporter.SESSION.get(ExportSaldoExtension.KEY_SALDO_SHOW);
       boolean showSaldo = (b == null || b.booleanValue());
-      
+
       for (int i=0;i<list.size();++i)
       {
         if (monitor != null)  
         	monitor.setPercentComplete((int)((i) * factor));
-        
+
         Umsatz u = list.get(i);
         Object name = BeanUtil.toString(u);
-        
+
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
-        
+
     		Konto k     = u.getKonto();
     		String curr = k.getWaehrung();
 
     		if (i > 0)
     		  out.write(NL);
-    		
+
         out.write(":20:Hibiscus" + NL);
     		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + NL);
         out.write(":28C:1" + NL); // Auszugsnummer. Belegen wir hart mit "1", damit das Feld vorhanden ist. SAP braucht das fuer den Import
-    		
+
     		if (showSaldo)
     		{
           //(Schlusssaldo - Umsatzbetrag) > 0 -> Soll-Haben-Kennung für den Anfangssaldo = C
           //(Credit), sonst D (Debit)
           double anfangsSaldo = u.getSaldo() - u.getBetrag();
-          
+
           //Anfangssaldo aus dem Schlusssaldo ermitteln sowie Soll-Haben-Kennung
           //Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
           out.write(":60F:");
@@ -146,19 +145,19 @@ public class MT940UmsatzExporter implements Exporter
     		double betrag = u.getBetrag();
         out.write(betrag >= 0.0d ? "CR" : "DR");
         out.write(DECF.format(betrag).replace("-",""));
-    		
+
         String ref = StringUtils.trimToNull(u.getCustomerRef());
     		out.write("NTRF" + (ref != null ? ref : "NONREF") + NL);
 
     		String gvcode = u.getGvCode();
-    		
+
       	// Fallback, wenn wir keinen GV-Code haben. Das trifft u.a. bei Alt-Umsaetzen
     		// auf, als Hibiscus das Feld noch nicht unterstuetzte.
     		if (StringUtils.trimToNull(gvcode) == null)
       		gvcode = betrag >= 0.0d? "051" : "020";
-    		
+
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
-    		
+
     		//Verwendungszweck
     		String[] lines = VerwendungszweckUtil.rewrap(65,VerwendungszweckUtil.toArray(u));
     		int m = 0;
@@ -171,7 +170,7 @@ public class MT940UmsatzExporter implements Exporter
     		    break;
           out.write("?2" + Integer.toString(m) + lines[m]);
     		}
-    		
+
         m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
         m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());
         m = addRef(out,m,VerwendungszweckUtil.Tag.MREF,u.getMandateId());
@@ -186,7 +185,6 @@ public class MT940UmsatzExporter implements Exporter
         if (add != null) out.write("?34" + add);
 
         out.write(NL);
-    		
 
         if (showSaldo)
         {
@@ -196,7 +194,7 @@ public class MT940UmsatzExporter implements Exporter
           out.write(schlussSaldo >= 0.0d ? "C" : "D");
           out.write(DF_YYMMDD.format(u.getDatum()) + curr + DECF.format(schlussSaldo).replace("-","") + NL);
         }
-    		
+
         out.write("-");
       }
       out.write(NL);
@@ -211,7 +209,7 @@ public class MT940UmsatzExporter implements Exporter
       IOUtil.close(out);
     }
   }
-  
+
   /**
    * Fuegt das Tag hinzu, insofern noch Platz ist.
    * @param out der OutputStreamWriter.
@@ -226,17 +224,17 @@ public class MT940UmsatzExporter implements Exporter
     // Kein Platz mehr
     if (m > 9)
       return m;
-    
+
     // Feld hat keinen Wert.
     text = StringUtils.trimToNull(text);
     if (text == null)
       return m;
-    
+
     out.write("?2" + Integer.toString(m) + tag.name() + "+" + text);
     m++;
     return m;
   }
-  
+
   /**
    * Sortiert die Buchungen chronologisch - aeltestest zuerst.
    * @param list die zu sortierenden Buchungen.
@@ -284,7 +282,7 @@ public class MT940UmsatzExporter implements Exporter
       {
         return MT940UmsatzExporter.this.getName();
       }
-    
+
       /**
        * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
        */
@@ -302,7 +300,7 @@ public class MT940UmsatzExporter implements Exporter
   {
     return i18n.tr("Swift MT940-Format (pro Buchung eine logische Datei)");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */
@@ -311,7 +309,7 @@ public class MT940UmsatzExporter implements Exporter
   {
     return ext != null && ExportSaldoExtension.KEY_SALDO_SHOW.equals(ext);
   }
-  
+
   /**
    * Ableitung von OutputStreamWriter, um die Umlaute umzuschreiben.
    */
@@ -320,7 +318,7 @@ public class MT940UmsatzExporter implements Exporter
     private String[] search  = new String[]{"Ü", "Ö", "Ä", "ü", "ö", "ä", "ß"};
     private String[] replace = new String[]{"UE","OE","AE","ue","oe","ae","ss"};
     private boolean doReplace = true;
-    
+
     /**
      * ct.
      * @param out
@@ -329,7 +327,7 @@ public class MT940UmsatzExporter implements Exporter
     public MyOutputStreamWriter(OutputStream out) throws UnsupportedEncodingException
     {
       super(out,CHARSET);
-      
+
       // Umlaute ersetzen. Sind gemaess "FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf"
       // in SWIFT nicht zulaessig. Wir machen das mal konfigurierbar. Dann kann es
       // der User bei Bedarf deaktivieren

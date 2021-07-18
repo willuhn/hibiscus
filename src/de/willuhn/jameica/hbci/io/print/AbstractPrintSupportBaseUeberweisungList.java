@@ -38,7 +38,7 @@ import de.willuhn.util.ApplicationException;
 public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractPrintSupport
 {
   private Object ctx = null;
-  
+
   /**
    * ct.
    * @param ctx Darf vom Typ <code>BaseUeberweisung[]</code> oder <code>TablePart</code> sein.
@@ -47,7 +47,7 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
   {
     this.ctx = ctx;
   }
-  
+
   /**
    * Liefert den Context.
    * @return der Context.
@@ -56,17 +56,17 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
   {
     return this.ctx;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung#printContent()
    */
   Print printContent() throws ApplicationException
   {
     Object data = this.getContext();
-    
+
     if (data instanceof TablePart)
       data = ((TablePart)data).getSelection();
-    
+
     if (!(data instanceof BaseUeberweisung[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens einen Auftrag aus"));
 
@@ -74,11 +74,11 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
     {
       DefaultGridLook look = new DefaultGridLook();
       look.setHeaderBackground(new RGB(220,220,220));
-      
+
       LineBorder border = new LineBorder(new RGB(100,100,100));
       border.setGapSize(3);
       look.setCellBorder(border);
-      
+
       GridPrint table = new GridPrint("l:p:n, l:d:n, l:d:n, l:p:g, r:p:n, l:p:n",look);
       table.addHeader(new TextPrint(i18n.tr("Datum"),fontTinyBold));
       table.addHeader(new TextPrint(i18n.tr("Konto"),fontTinyBold));
@@ -95,11 +95,11 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
       for (BaseUeberweisung u:list)
       {
         TextStyle style = u.ausgefuehrt() ? typeDone : typeOpen;
-        
+
         Konto k = u.getKonto();
         String usage = VerwendungszweckUtil.toString(u,"\n");
         Date ausgefuehrt = u.getAusfuehrungsdatum();
-        
+
         table.add(new TextPrint(HBCI.DATEFORMAT.format(u.getTermin()),style));
         table.add(new TextPrint(k.getLongName(),style));
         table.add(new TextPrint(i18n.tr("{0}, Kto. {1}, BLZ {2}",u.getGegenkontoName(),u.getGegenkontoNummer(),u.getGegenkontoBLZ()),style));
@@ -118,7 +118,7 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#customize(net.sf.paperclips.PagePrint)
    */

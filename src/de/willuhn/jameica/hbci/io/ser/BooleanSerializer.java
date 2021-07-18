@@ -27,8 +27,6 @@ public class BooleanSerializer extends DefaultSerializer<Boolean>
 
 }
 
-
-
 /**********************************************************************
  * $Log: BooleanSerializer.java,v $
  * Revision 1.1  2010/03/16 00:44:18  willuhn

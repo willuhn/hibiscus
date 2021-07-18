@@ -56,9 +56,9 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
     {
       if (format == null || !(format instanceof MyIOFormat))
         throw new ApplicationException(i18n.tr("Unbekanntes Import-Format"));
-      
+
       int toleranz = settings.getInt("dtaus.fehlertoleranz",DtausDateiParser.UMLAUTUMSETZUNG);
-      
+
       /* Aus http://de.wikipedia.org/wiki/Datenträgeraustauschverfahren:
        * "Bei der Kodierung der Zeichen schreibt die "Spezifikation der Datenformate",
        * Version 2.2 vom 29. Oktober 2007 (Final Version) des Zentralen Kreditausschusses
@@ -80,21 +80,21 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
        * den Parameter "dtaus.encoding" manuell setzen.
        */
       String encoding = settings.getString("dtaus.encoding","ISO-8859-1");
-      
+
       Logger.info("dtaus tolerance: " + toleranz);
       Logger.info("dtaus encoding : " + encoding);
       DtausDateiParser parser = new DtausDateiParser(is,toleranz,encoding);
-      
+
       int files = parser.getAnzahlLogischerDateien();
-      
+
       for (int i=0;i<files;++i)
       {
         monitor.setPercentComplete(0);
-        
+
         monitor.setStatusText(i18n.tr("Importiere logische Datei Nr. {0}",""+(i+1)));
-        
+
         parser.setLogischeDatei(i+1);
-        
+
         // Im E-Satz steht die Anzahl der Datensaetze. Die brauchen wir, um
         // den Fortschrittsbalken mit sinnvollen Daten fuettern zu koennen.
         ASatz a = parser.getASatz();
@@ -104,7 +104,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
         int count = 0;
         int success = 0;
         int error = 0;
-        
+
         DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
 
         CSatz c = null;
@@ -116,13 +116,13 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
             // bis zum Ende der DTAUS-Datei genau auf 100% bewegen
             monitor.setPercentComplete((int)((++count) * factor));
             monitor.log(i18n.tr("Importiere Datensatz {0}",c.getNameEmpfaenger()));
-            
+
             if (t != null && t.isInterrupted())
               throw new OperationCanceledException();
-           
+
             // Gewuenschtes Objekt erstellen
             final DBObject skel = service.createObject(((MyIOFormat)format).type,null);
-            
+
             // Mit Daten befuellen lassen
             create(skel,context,c,a);
 
@@ -141,7 +141,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
           catch (ApplicationException ace)
           {
             error++;
-            
+
             StringBuffer sb = new StringBuffer();
             sb.append(i18n.tr("BLZ: {0}",Long.toString(c.getBlzEndbeguenstigt())));
             sb.append("\n");
@@ -212,7 +212,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
       }
     }
   }
-  
+
   /**
    * Sucht nach dem Konto mit der angegebenen Kontonummer und BLZ.
    * @param kontonummer
@@ -281,7 +281,6 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
     throws RemoteException, ApplicationException;
 
 }
-
 
 /*********************************************************************
  * $Log: AbstractDTAUSImporter.java,v $

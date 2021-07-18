@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
 import net.sf.paperclips.LineBorder;
@@ -45,7 +46,7 @@ import net.sf.paperclips.TextStyle;
 public class PrintSupportUmsatzList extends AbstractPrintSupport
 {
   private Object ctx = null;
-  
+
   /**
    * ct.
    * @param ctx Darf vom Typ <code>Umsatz[]</code> oder <code>UmsatzList</code> sein.
@@ -54,7 +55,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
   {
     this.ctx = ctx;
   }
-  
+
   /**
    * Liefert den Context.
    * @return der Context.
@@ -63,17 +64,17 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
   {
     return this.ctx;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung#printContent()
    */
   Print printContent() throws ApplicationException
   {
     Object data = this.getContext();
-    
+
     if (data instanceof UmsatzList)
       data = ((UmsatzList)data).getSelection();
-    
+
     if (data instanceof Umsatz)
     {
       // Ist nur ein einzelner, dann machen wir ein Array draus
@@ -91,7 +92,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
       // Gruppieren der Umsaetze nach Konto
       Umsatz[] all = (Umsatz[]) data;
       Map<String,List<Umsatz>> groups = new HashMap<String,List<Umsatz>>();
-      
+
       for (Umsatz u:all)
       {
         // Wir ermitteln bei der Gelegenheit das Maximal- und Minimal-Datum
@@ -111,8 +112,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
         }
         list.add(u);
       }
-      
-      
+
       //////////////////////////////////////////////////////////////////////////
       // Header mit dem Zeitraum
       GridPrint grid = new GridPrint("l:d:g");
@@ -123,11 +123,11 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
 
       DefaultGridLook look = new DefaultGridLook();
       look.setHeaderBackground(new RGB(220,220,220));
-      
+
       LineBorder border = new LineBorder(new RGB(100,100,100));
       border.setGapSize(3);
       look.setCellBorder(border);
-      
+
       GridPrint table = new GridPrint("l:46pt:n, r:24pt:n, l:p:g, r:50pt:n, r:50pt:n",look);
       table.addHeader(new TextPrint(i18n.tr("Valuta\nDatum"),fontTinyBold));
       table.addHeader(new TextPrint("Nr.",fontTinyBold));
@@ -137,17 +137,16 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
 
       // Iteration pro Konto
       Iterator<String> konten = groups.keySet().iterator();
-      
+
       while (konten.hasNext())
       {
         String id = konten.next();
         List<Umsatz> umsaetze = groups.get(id);
-        
+
         // Header mit dem Konto
         Konto k = (Konto) Settings.getDBService().createObject(Konto.class,id);
         table.add(new TextPrint(k.getLongName(),fontTinyBold),GridPrint.REMAINDER);
-        
-        
+
         // Liste der Umsaetze im Konto
         for (Umsatz u:umsaetze)
         {
@@ -156,7 +155,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
             String name = u.getGegenkontoName();
             if (name != null && name.length() > 0)
               sb.append(name + "\n");
-            
+
             String kto = HBCIProperties.formatIban(u.getGegenkontoNummer());
             String blz = u.getGegenkontoBLZ();
             if (kto != null && kto.length() > 0 && blz != null && blz.length() > 0)
@@ -164,7 +163,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
               String gi = HBCIProperties.getNameForBank(blz);
               sb.append(i18n.tr("{0} - {1}",kto,gi != null && gi.length() > 0 ? gi : blz));
             }
-            
+
             String usage = StringUtils.trimToNull(VerwendungszweckUtil.toString(u));
             if (usage != null)
             {
@@ -172,7 +171,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
                 sb.append("\n");
               sb.append(usage);
             }
-            
+
           }
 
           TextStyle typeHaben = new TextStyle().font(fontTiny).foreground(new RGB(0,0,0));
@@ -186,7 +185,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
         }
       }
       grid.add(table);
-      
+
       return grid;
     }
     catch (RemoteException re)

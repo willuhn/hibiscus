@@ -35,7 +35,7 @@ public class UmsatzFormat implements Format<Umsatz>
 
   private ImportListener listener        = null;
   private Profile profile                = null;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.csv.Format#getDefaultProfile()
    */
@@ -47,11 +47,11 @@ public class UmsatzFormat implements Format<Umsatz>
       this.profile.setName(i18n.tr("Default-Profil"));
       this.profile.setSkipLines(1);
       this.profile.setSystem(true);
-      
+
       Serializer ts = new DefaultSerializer();
       Serializer vs = new ValueSerializer();
       Serializer ds = new DateSerializer();
-      
+
       List<Column> list = this.profile.getColumns();
       int i = 4; // wir fangen bei Spalte 4 an, weil die ersten 3 Spalten von Hibiscus
                  // zwar exportiert werden (#, Kontonummer, BLZ, Name des eigenen Kontos),
@@ -60,7 +60,7 @@ public class UmsatzFormat implements Format<Umsatz>
                  // 0 anfangen, wir wollen ja aber, dass wenigstens die von Hibiscus
                  // erzeugten CSV-Dateien 1:1 wieder importiert werden koennen, ohne
                  // dass der User das Profil anpassen muss.
-      
+
       list.add(new Column("gegenkontoNummer",i18n.tr("Gegenkonto"),i++,ts));
       list.add(new Column("gegenkontoBLZ",   i18n.tr("Gegenkonto BLZ"),i++,ts));
       list.add(new Column("gegenkontoName",  i18n.tr("Gegenkonto Inhaber"),i++,ts));
@@ -77,7 +77,6 @@ public class UmsatzFormat implements Format<Umsatz>
       list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,new ExtendedUsageSerializer()));
       list.add(new Column("art",i18n.tr("Art der Buchung"),i++,ts));
       list.add(new Column("endToEndId",i18n.tr("End-to-End ID"),i++,ts));
-    
     }
     return this.profile;
   }
@@ -98,7 +97,7 @@ public class UmsatzFormat implements Format<Umsatz>
     if (this.listener == null)
     {
       this.listener = new ImportListener(){
-        
+
         /**
          * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeStore(de.willuhn.jameica.hbci.io.csv.ImportEvent)
          */

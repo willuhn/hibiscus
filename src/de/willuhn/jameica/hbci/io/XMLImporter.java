@@ -54,7 +54,7 @@ public class XMLImporter implements Importer
 
     if (is == null)
       throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-    
+
     if (format == null)
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
@@ -75,9 +75,9 @@ public class XMLImporter implements Importer
           }
           return object;
         }
-      
+
       });
-      
+
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
@@ -93,7 +93,7 @@ public class XMLImporter implements Importer
           if (created > 0 && created % 10 == 0) // nur geschaetzt
             monitor.addPercentComplete(1);
         }
-        
+
         if (t != null && t.isInterrupted())
           throw new OperationCanceledException();
 
@@ -166,7 +166,7 @@ public class XMLImporter implements Importer
   {
     if (!GenericObject.class.isAssignableFrom(objectType))
       return null; // Import fuer alles moeglich, was von GenericObject abgeleitet ist
-    
+
     // BUGZILLA 700
     if (SammelTransfer.class.isAssignableFrom(objectType))
       return null; // Keine Sammel-Auftraege - die muessen gesondert behandelt werden.

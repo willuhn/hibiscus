@@ -48,7 +48,7 @@ public class XMLKontoauszugImporter extends XMLImporter
 
     if (is == null)
       throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-    
+
     if (format == null)
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
@@ -68,12 +68,11 @@ public class XMLKontoauszugImporter extends XMLImporter
           }
           return object;
         }
-      
+
       });
-      
+
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
-
 
       Konto konto = null;
       if (context instanceof Konto)
@@ -93,7 +92,7 @@ public class XMLKontoauszugImporter extends XMLImporter
           return;
         }
       }
-      
+
       int created = 0;
       int error   = 0;
 
@@ -114,7 +113,7 @@ public class XMLKontoauszugImporter extends XMLImporter
         {
           if (konto != null)
             ka.setKonto(konto);
-          
+
           ka.store();
           created++;
           try
@@ -174,10 +173,10 @@ public class XMLKontoauszugImporter extends XMLImporter
   {
     if (objectType == null)
       return null;
-    
+
     if (!Kontoauszug.class.isAssignableFrom(objectType))
       return null; // Nur fuer Umsaetze anbieten - fuer alle anderen tut es die Basis-Implementierung
-    
+
     IOFormat f = new IOFormat() {
       public String getName()
       {

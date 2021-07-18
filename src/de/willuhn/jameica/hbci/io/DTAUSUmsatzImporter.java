@@ -44,28 +44,27 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
     Date date = asatz.getAusfuehrungsdatum();
     if (date == null)
       date = new Date();
-    
+
     u.setDatum(date);
     u.setValuta(date);
-      
+
     u.setArt(Long.toString(csatz.getTextschluessel()));
     u.setCustomerRef(Long.toString(csatz.getInterneKundennummer()));
     u.setBetrag(csatz.getBetragInEuro());
     u.setGegenkontoBLZ(Long.toString(csatz.getBlzEndbeguenstigt()));
     u.setGegenkontoName(csatz.getNameEmpfaenger());
     u.setGegenkontoNummer(Long.toString(csatz.getKontonummer()));
-    
+
     List<String> lines = new ArrayList<String>();
     for (int i=1;i<=csatz.getAnzahlVerwendungszwecke();++i)
     {
       lines.add(csatz.getVerwendungszweck(i));
     }
     VerwendungszweckUtil.apply(u,lines.toArray(new String[lines.size()]));
-    
-    u.store();
-  
-  }
 
+    u.store();
+
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractDTAUSIO#getSupportedObjectTypes()
@@ -78,7 +77,6 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
       };
   }
 }
-
 
 /*********************************************************************
  * $Log: DTAUSUmsatzImporter.java,v $

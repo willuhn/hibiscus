@@ -23,7 +23,7 @@ import de.willuhn.util.ApplicationException;
 public class PrintSupportUeberweisung extends AbstractPrintSupportBaseUeberweisung
 {
   private Ueberweisung u = null;
-  
+
   /**
    * ct.
    * @param u die zu druckende Ueberweisung.
@@ -51,7 +51,7 @@ public class PrintSupportUeberweisung extends AbstractPrintSupportBaseUeberweisu
 
     if (this.u == null)
       return;
-    
+
     String typ = i18n.tr("Überweisung");
     if (u.isTerminUeberweisung())
       typ = "Termin-Überweisung";
@@ -61,8 +61,6 @@ public class PrintSupportUeberweisung extends AbstractPrintSupportBaseUeberweisu
     grid.add(new TextPrint(typ,fontNormal));
   }
 }
-
-
 
 /**********************************************************************
  * $Log: PrintSupportUeberweisung.java,v $

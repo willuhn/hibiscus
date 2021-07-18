@@ -42,7 +42,7 @@ public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
 
     UmsatzTree tree = t[0];
     List list = tree.getUmsatzTree();
-    
+
     Reporter reporter = null;
     try
     {
@@ -60,7 +60,7 @@ public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
         PdfPCell cell = reporter.getDetailCell((String) ug.getAttribute("name"), Element.ALIGN_LEFT);
         reporter.addColumn(cell);
         reporter.addColumn(reporter.getDetailCell((Double) ug.getAttribute("betrag")));
-        
+
         reporter.setNextRecord();
       }
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);

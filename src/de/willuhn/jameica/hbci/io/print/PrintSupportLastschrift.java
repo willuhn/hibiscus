@@ -36,8 +36,6 @@ public class PrintSupportLastschrift extends AbstractPrintSupportBaseUeberweisun
   }
 }
 
-
-
 /**********************************************************************
  * $Log: PrintSupportLastschrift.java,v $
  * Revision 1.2  2011/04/13 17:35:46  willuhn

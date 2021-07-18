@@ -48,11 +48,11 @@ public class ExtendedUsageSerializer extends DefaultSerializer<String[]>
       return null;
 
     List<String> lines = new ArrayList<String>();
-    
+
     // Checken, ob wir schon vorherige Zeilen haben
     if (context != null && (context instanceof String[]))
       lines.addAll(Arrays.asList((String[])context));
-    
+
     // Es kann sein, dass die erweiterten Verwendungszwecke in einer
     // langen Zeile vorliegen (so exportiert es Hibiscus auch).
     // In dem Fall zerlegen wir sie in 27 Teichen lange Segmente und fuegen
@@ -69,14 +69,11 @@ public class ExtendedUsageSerializer extends DefaultSerializer<String[]>
       // andernfalls einfach hinten dran pappen
       lines.add(value);
     }
-    
-    return lines.toArray(new String[lines.size()]);
 
+    return lines.toArray(new String[lines.size()]);
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: ExtendedUsageSerializer.java,v $

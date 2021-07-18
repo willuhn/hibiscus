@@ -51,12 +51,12 @@ public class XMLUmsatzTypImporter implements Importer
 
     if (is == null)
       throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-    
+
     if (format == null)
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
     final ClassLoader loader = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader();
-    
+
     Reader reader = null;
     try
     {
@@ -73,9 +73,9 @@ public class XMLUmsatzTypImporter implements Importer
           }
           return object;
         }
-      
+
       });
-      
+
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
@@ -83,11 +83,11 @@ public class XMLUmsatzTypImporter implements Importer
       int error   = 0;
 
       Map<String,String> idMap = new HashMap<String,String>();
-      
+
       AbstractDBObjectNode object = null;
       while ((object = (AbstractDBObjectNode) reader.read()) != null)
       {
-        
+
         if (t != null && t.isInterrupted())
           throw new OperationCanceledException();
 
@@ -102,12 +102,12 @@ public class XMLUmsatzTypImporter implements Importer
         {
           String id = object.getID();
           object.setID(null);
-          
+
           // Remap parent
           Object parent = object.getAttribute("parent_id");
           if (parent != null)
             object.setAttribute("parent_id",idMap.get(parent.toString()));
-          
+
           object.store();
           idMap.put(id,object.getID());
           created++;
@@ -177,7 +177,7 @@ public class XMLUmsatzTypImporter implements Importer
   {
     if (!UmsatzTyp.class.isAssignableFrom(objectType))
       return null;
-    
+
     IOFormat f = new IOFormat() {
       public String getName()
       {

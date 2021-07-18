@@ -60,7 +60,7 @@ public class Reporter
   private int currRecord = 0;
 
   private ProgressMonitor monitor = null;
-  
+
   /**
    * Farbvorgabe fuer normalen Text.
    */
@@ -85,7 +85,6 @@ public class Reporter
    * Farbvorgabe fuer Weiss.
    */
   public final static BaseColor COLOR_WHITE = BaseColor.WHITE;
-
 
   /**
    * Farbvorgabe fuer Grau.
@@ -330,8 +329,7 @@ public class Reporter
   {
     return text == null ? "" : text;
   }
-  
-  
+
   /**
    * Ersatz fuer die HeaderFooter-Klasse, die es bis iText 1.x gab. Wird zur Zeit
    * nur fuer den Footer gebraucht.

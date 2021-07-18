@@ -48,7 +48,7 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
     Properties prop = (Properties) o;
 
     SepaSammelUeberweisung ueb = (SepaSammelUeberweisung) ctx.get("ueb");
-    
+
     // erster Datensatz. Wir erstellen den Sammelauftrag
     if (ueb == null)
     {
@@ -56,12 +56,12 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
       ueb.setBezeichnung(i18n.tr("SEPA-Sammelüberweisung vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
       ueb.setKonto(this.findKonto(prop.getProperty(ISEPAParser.Names.SRC_IBAN.getValue())));
       ueb.setPmtInfId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PMTINFID.getValue())));
-      
+
       String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
-      
+
       if (date != null && !SepaUtil.DATE_UNDEFINED.equals(date))
         ueb.setTermin(ISO_DATE.parse(date));
-      
+
       ueb.store();
       ctx.put("ueb",ueb); // und im Context speichern
       Application.getMessagingFactory().sendMessage(new ImportMessage(ueb));

@@ -50,11 +50,11 @@ public class SepaLastschriftImporter extends AbstractSepaImporter
     u.setGegenkontoNummer(prop.getProperty(ISEPAParser.Names.DST_IBAN.getValue()));
     u.setGegenkontoBLZ(prop.getProperty(ISEPAParser.Names.DST_BIC.getValue()));
     u.setZweck(prop.getProperty(ISEPAParser.Names.USAGE.getValue()));
-    
+
     u.setBetrag(this.parseValue(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
 
     String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.TARGETDATE.getValue()));
-    
+
     if (date != null && !SepaUtil.DATE_UNDEFINED.equals(date))
       u.setTargetDate(ISO_DATE.parse(date));
 
@@ -64,7 +64,7 @@ public class SepaLastschriftImporter extends AbstractSepaImporter
 
     u.setCreditorId(prop.getProperty(ISEPAParser.Names.CREDITORID.getValue()));
     u.setMandateId(prop.getProperty(ISEPAParser.Names.MANDATEID.getValue()));
-    
+
     String mandDate = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.MANDDATEOFSIG.getValue()));
     if (mandDate != null && !SepaUtil.DATE_UNDEFINED.equals(mandDate))
       u.setSignatureDate(ISO_DATE.parse(mandDate));
@@ -84,7 +84,7 @@ public class SepaLastschriftImporter extends AbstractSepaImporter
   {
     return new Class[]{SepaLastschrift.class};
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractSepaImporter#getSupportedPainType()
    */

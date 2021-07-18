@@ -71,7 +71,7 @@ public class EinnahmeAusgabeExporter implements Exporter
         else
           report((EinnahmeAusgabe)e, reporter, 0);
       }
-      
+
       if (monitor != null)
         monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
@@ -79,7 +79,7 @@ public class EinnahmeAusgabeExporter implements Exporter
     {
       if (monitor != null)
         monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-      
+
       Logger.error("error while creating report", e);
       throw new ApplicationException(i18n.tr("Fehler beim Erzeugen der Auswertung"), e);
     }
@@ -114,7 +114,7 @@ public class EinnahmeAusgabeExporter implements Exporter
       Date s = n.getStartdatum();
       if (start == null || (s != null && s.before(start)))
         start = s;
-      
+
       Date e = n.getEnddatum();
       if (end == null || (e != null && e.after(end)))
         end = e;
@@ -122,7 +122,7 @@ public class EinnahmeAusgabeExporter implements Exporter
 
     if (start != null && end != null)
       return i18n.tr("Zeitraum {0} - {1}", new String[]{HBCI.DATEFORMAT.format(start),HBCI.DATEFORMAT.format(end)});
-    
+
     return "";
   }
 
@@ -161,15 +161,15 @@ public class EinnahmeAusgabeExporter implements Exporter
     reporter.addColumn(reporter.getDetailCell(ea.getEinnahmen(),Reporter.COLOR_FG));
     reporter.addColumn(reporter.getDetailCell(ea.getAusgaben(),Reporter.COLOR_FG));
     reporter.addColumn(reporter.getDetailCell(ea.getEndsaldo(),Reporter.COLOR_FG));
-    
+
     double sum = ea.getPlusminus();
     reporter.addColumn(reporter.getDetailCell(sum,sum >= 0.01d ? Reporter.COLOR_GREEN : (sum <= -0.01d ? Reporter.COLOR_RED : Reporter.COLOR_FG)));
-    
+
     double diff = ea.getDifferenz();
     reporter.addColumn(reporter.getDetailCell(diff,Math.abs(diff) >= 0.01d ? Reporter.COLOR_RED : Reporter.COLOR_FG));
     reporter.setNextRecord();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */

@@ -54,12 +54,10 @@ public class PrintSupportLastschriftList extends AbstractPrintSupportBaseUeberwe
       PrintSupportLastschrift single = new PrintSupportLastschrift((Lastschrift)ctx);
       return single.printContent();
     }
-    
+
     return super.printContent();
   }
 }
-
-
 
 /**********************************************************************
  * $Log: PrintSupportLastschriftList.java,v $

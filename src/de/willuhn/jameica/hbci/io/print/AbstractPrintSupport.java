@@ -25,6 +25,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+
 import net.sf.paperclips.AlignPrint;
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.GridPrint;
@@ -45,16 +46,16 @@ import net.sf.paperclips.TextPrint;
 public abstract class AbstractPrintSupport implements PrintSupport
 {
   private final static Settings settings = new Settings(PrintSupport.class);
-  
+
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   FontData fontTitle  = Font.BOLD.getSWTFont().getFontData()[0];
   FontData fontNormal = Font.DEFAULT.getSWTFont().getFontData()[0];
   FontData fontBold   = new FontData(fontNormal.getName(),fontNormal.getHeight(),SWT.BOLD);
 
   FontData fontTiny     = Font.SMALL.getSWTFont().getFontData()[0];
   FontData fontTinyBold = new FontData(fontTiny.getName(),fontTiny.getHeight(),SWT.BOLD);
-  
+
   /**
    * @see de.willuhn.jameica.print.PrintSupport#print()
    */
@@ -84,25 +85,25 @@ public abstract class AbstractPrintSupport implements PrintSupport
     ////////////////////////////////////////////////////////////////////////////
 
     page.setHeader(new SimplePageDecoration(table));
-    
+
     PageNumberPageDecoration footer = new PageNumberPageDecoration(SWT.RIGHT);
     footer.setFontData(fontTiny);
     page.setFooter(footer);
-    
+
     this.customize(page);
-  
+
     PrintJob job = new PrintJob(i18n.tr("Hibiscus {0}",HBCI.LONGDATEFORMAT.format(new Date())),page);
-    
+
     // Wenn man den Default-Rand laesst, ist er rechts groesser als links - das ist nicht abheft-freundlich ;)
     // Ich denke, die meisten User brauchen das nicht aendern. Falls doch, kann es der
     // User ja ueber die Properties-Datei anpassen
     Margins margins = job.getMargins();
     margins.left  = settings.getInt("margin.left",100);
     margins.right = settings.getInt("margin.right",50);
-    
+
     return job;
   }
-  
+
   /**
    * Druckt den eigentlichen Inhalt.
    * @return der eigentliche Inhalt.
@@ -115,7 +116,7 @@ public abstract class AbstractPrintSupport implements PrintSupport
    * @return die Ueberschrift.
    */
   abstract String getTitle() throws ApplicationException;
-  
+
   /**
    * Kann ueberschrieben werden, um noch Anpassungen vorzunehmen, direkt bevor der Druck-Job erstellt wird.
    * @param page die zu druckende Seite.
@@ -134,10 +135,10 @@ public abstract class AbstractPrintSupport implements PrintSupport
   String notNull(Object value) throws RemoteException
   {
     String empty = "-";
-    
+
     if (value == null)
       return empty;
-   
+
     String s = value.toString();
     return (s != null && s.trim().length() > 0) ? s : empty;
   }

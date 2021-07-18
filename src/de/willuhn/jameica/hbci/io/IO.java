@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.io;
 
-
 /**
  * Basis-Interface aller Importer und Exporter.
  */
@@ -33,9 +32,7 @@ public interface IO
    */
   public IOFormat[] getIOFormats(Class objectType);
 
-
 }
-
 
 /*********************************************************************
  * $Log: IO.java,v $

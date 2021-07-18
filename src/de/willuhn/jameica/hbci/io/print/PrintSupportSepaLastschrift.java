@@ -41,14 +41,14 @@ public class PrintSupportSepaLastschrift extends AbstractPrintSupportSepaTransfe
   {
     return i18n.tr("SEPA-Lastschrift");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportSepaTransfer#customize(net.sf.paperclips.GridPrint)
    */
   void customize(GridPrint table) throws RemoteException, ApplicationException
   {
     SepaLastschrift a = this.getTransfer();
-    
+
     // Leerzeile
     table.add(new LineBreakPrint(fontTiny));
     table.add(new LineBreakPrint(fontTiny));

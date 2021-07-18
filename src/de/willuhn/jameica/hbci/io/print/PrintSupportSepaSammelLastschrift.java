@@ -41,14 +41,14 @@ public class PrintSupportSepaSammelLastschrift extends AbstractPrintSupportSepaS
   {
     return i18n.tr("SEPA-Sammellastschrift");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportSepaSammelTransfer#createTransferTable(de.willuhn.jameica.hbci.rmi.SepaSammelTransfer)
    */
   GridPrint createTransferTable(SepaSammelLastschrift a) throws RemoteException, ApplicationException
   {
     GridPrint table = super.createTransferTable(a);
-    
+
     // Wir fuegen noch ein paar SEPA-spezifische Sachen hinzu.
     table.add(new TextPrint(i18n.tr("Sequenz-Typ"),fontNormal));
     table.add(new TextPrint(a.getSequenceType().getDescription(),fontNormal));

@@ -29,7 +29,7 @@ public class Profile implements Serializable, Comparable
   private String quotingChar   = "\"";
   private int skipLines        = 0;
   private String fileEncoding  = System.getProperty("file.encoding");
-  
+
   /**
    * Liefert die Liste der Spalten fuer das Profil.
    * @return columns Liste der Spalten fuer das Profil.
@@ -47,7 +47,7 @@ public class Profile implements Serializable, Comparable
   {
     this.columns = columns;
   }
-  
+
   /**
    * Liefert das Spalten-Trennzeichen.
    * @return Spalten-Trennzeichen.
@@ -56,7 +56,7 @@ public class Profile implements Serializable, Comparable
   {
     return this.separatorChar;
   }
-  
+
   /**
    * Speichert das Spalten-Trennzeichen.
    * @param s Spalten-Trennzeichen.
@@ -65,7 +65,7 @@ public class Profile implements Serializable, Comparable
   {
     this.separatorChar = (s != null && s.length() == 1) ? s : ";";
   }
-  
+
   /**
    * Liefert das Quoting-Zeichen fuer die Spalten.
    * @return Quoting-Zeichen.
@@ -74,7 +74,7 @@ public class Profile implements Serializable, Comparable
   {
     return this.quotingChar;
   }
-  
+
   /**
    * Speichert das Quoting-Zeichen fuer die Spalten.
    * @param s Quoting-Zeichen.
@@ -83,7 +83,7 @@ public class Profile implements Serializable, Comparable
   {
     this.quotingChar = (s != null && s.length() == 1) ? s : "";
   }
-  
+
   /**
    * Liefert die Anzahl der zu ueberspringenden Zeilen.
    * Damit koennen ggf. vorhandene Ueberschriften uebersprungen werden.
@@ -93,7 +93,7 @@ public class Profile implements Serializable, Comparable
   {
     return this.skipLines;
   }
-  
+
   /**
    * Legt fest, wieviele Zeilen am Anfang uebersprungen werden sollen.
    * @param i Anzahl der zu ueberspringen Zeilen.
@@ -103,7 +103,7 @@ public class Profile implements Serializable, Comparable
     if (i >= 0)
       this.skipLines = i;
   }
-  
+
   /**
    * Liefert den Zeichensatz, der zum Einlesen der Datei verwendet werden soll.
    * Per Default wird das Plattform-Encoding zurueckgeliefert.
@@ -113,7 +113,7 @@ public class Profile implements Serializable, Comparable
   {
     return this.fileEncoding;
   }
-  
+
   /**
    * Speichert den Zeichensatz, der zum Einlesen der Datei verwendet werden soll.
    * Per Default wird das Plattform-Encoding zurueckgeliefert.
@@ -133,7 +133,7 @@ public class Profile implements Serializable, Comparable
   {
     return name;
   }
-  
+
   /**
    * Speichert den Namen des Profils.
    * @param name der Name des Profils.
@@ -142,7 +142,7 @@ public class Profile implements Serializable, Comparable
   {
     this.name = name;
   }
-  
+
   /**
    * Liefert true, wenn es sich um ein System-Profil handelt.
    * @return system true, wenn es sich um ein System-Profil handelt.
@@ -151,7 +151,7 @@ public class Profile implements Serializable, Comparable
   {
     return system;
   }
-  
+
   /**
    * Legt fest, ob es sich um ein System-Profil handelt.
    * @param system true, wenn es sich um ein System-Profil handelt.
@@ -160,7 +160,7 @@ public class Profile implements Serializable, Comparable
   {
     this.system = system;
   }
-  
+
   /**
    * Erzeugt die passenden CSV-Preferences.
    * @return die passenden CSV-Preferences.
@@ -168,20 +168,20 @@ public class Profile implements Serializable, Comparable
   public CsvPreference createCsvPreference()
   {
     CsvPreference prefs = CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
-    
+
     int sc  = prefs.getDelimiterChar();
     char qc = prefs.getQuoteChar();
-    
+
     String sep = this.getSeparatorChar();
     String quo = this.getQuotingChar();
-    
+
     if (sep != null && sep.length() == 1) sc = sep.charAt(0);
     if (quo != null && quo.length() == 1) qc = quo.charAt(0);
-    
+
     Builder builder = new CsvPreference.Builder(qc,sc,prefs.getEndOfLineSymbols());
     return builder.build();
   }
-  
+
   /**
    * @see java.lang.Object#equals(java.lang.Object)
    */
@@ -190,11 +190,11 @@ public class Profile implements Serializable, Comparable
   {
     if (!(obj instanceof Profile))
       return false;
-    
+
     Profile other = (Profile) obj;
     return this.getName() != null && this.getName().equals(other.getName());
   }
-  
+
   /**
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
@@ -204,18 +204,18 @@ public class Profile implements Serializable, Comparable
     // System-Profil immer vorn
     if (this.isSystem())
       return -1;
-    
+
     Profile other = (Profile) o;
     if (other.isSystem())
       return 1;
-    
+
     if (this.getName() == null)
       return -1;
-    
+
     // Rest alphabetisch
     return this.getName().compareTo(other.getName());
   }
-  
+
   /**
    * @see java.lang.Object#toString()
    */

@@ -16,7 +16,6 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
-
 /**
  * Druck-Support fuer SEPA-Sammel-Ueberweisungen.
  */

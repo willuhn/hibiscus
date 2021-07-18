@@ -27,6 +27,7 @@ import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
+
 import io.konik.PdfHandler;
 import io.konik.zugferd.Invoice;
 import io.konik.zugferd.entity.CreditorFinancialAccount;
@@ -91,31 +92,31 @@ public class ZUGFeRDImporter implements Importer
     monitor.setPercentComplete(20);
 
     final AuslandsUeberweisung u = Settings.getDBService().createObject(AuslandsUeberweisung.class,null); 
-     
+
     final PdfHandler handler = new PdfHandler();
     final Invoice invoice = handler.extractInvoice(is);
-    
+
     if (invoice == null)
       throw new ApplicationException(i18n.tr("Datei enthält keine ZUGFeRD-konforme Rechnung"));
-    
+
     final Header header = invoice.getHeader();
-    
+
     final Trade trade = invoice.getTrade();
     if (trade == null)
       throw new ApplicationException(i18n.tr("Angaben zum Inhalt fehlen in der Rechnung"));
-    
+
     final Settlement s = trade.getSettlement();
     if (s == null)
       throw new ApplicationException(i18n.tr("Angaben zur Zahlung fehlen in der Rechnung"));
-    
+
     final MonetarySummation sum = s.getMonetarySummation();
     if (sum == null)
       throw new ApplicationException(i18n.tr("Angaben zum Betrag fehlen in der Rechnung"));
-    
+
     final Amount am = sum.getGrandTotal();
     if (am == null)
       throw new ApplicationException(i18n.tr("Angaben zur Summe fehlen in der Rechnung"));
-    
+
     List<PaymentMeans> pay = s.getPaymentMeans();
     PaymentMeans p = pay != null && pay.size() > 0 ? pay.get(0) : null;
     CreditorFinancialAccount acc = p != null ? p.getPayeeAccount() : null;
@@ -123,11 +124,11 @@ public class ZUGFeRDImporter implements Importer
     monitor.setPercentComplete(40);
 
     u.setBetrag(am.getValue().doubleValue());
-    
+
     String nr = s.getPaymentReference();
     if (nr == null)
       nr = header != null ? header.getInvoiceNumber() : null;
-    
+
     u.setEndtoEndId(nr);
     u.setPmtInfId(nr);
     u.setZweck(nr);
@@ -141,14 +142,14 @@ public class ZUGFeRDImporter implements Importer
     }
 
     u.setGegenkontoName(name); 
-    
+
     if (acc != null)
       u.setGegenkontoNummer(StringUtils.trimToEmpty(acc.getIban()).replace(" ", ""));
-    
+
     FinancialInstitution inst = p != null ? p.getPayeeInstitution() : null;
     if (inst != null)
       u.setGegenkontoBLZ(StringUtils.trimToEmpty(inst.getBic()).replace(" ", ""));
-    
+
     Date termin = header != null ? header.getContractualDueDate() : null;
     if (termin == null)
     {
@@ -164,7 +165,7 @@ public class ZUGFeRDImporter implements Importer
       }
     }
     u.setTermin(termin != null ? termin : new Date());
-    
+
     monitor.setStatus(ProgressMonitor.STATUS_DONE);
     monitor.setPercentComplete(100);
     monitor.setStatusText(i18n.tr("SEPA-Überweisung erstellt"));
@@ -175,5 +176,3 @@ public class ZUGFeRDImporter implements Importer
     new Open().handleAction(u);
   } 
 }
-
-

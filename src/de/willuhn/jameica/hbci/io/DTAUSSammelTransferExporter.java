@@ -49,7 +49,7 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
 
     if (!(objects instanceof SammelTransfer[]))
       throw new ApplicationException(i18n.tr("Die zu exportierenden Daten enthalten keine Sammel-Aufträge"));
-      
+
     DtausDateiWriter writer = null;
 
     try
@@ -67,7 +67,6 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
         double factor = 100d / buchungen.size();
         int count = 0;
         int success = 0;
-        
 
         long kundenNummer = 0;
         String s = konto.getKundennummer();
@@ -91,18 +90,17 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
           monitor.log(i18n.tr("Ignoriere BLZ {0}: ungültig",s));
         }
 
-        
         writer.open();
         writer.setAAusfuehrungsdatum(transfer.getTermin());
         writer.setABLZBank(blz);
 
         String type = (transfer instanceof SammelUeberweisung) ? "GK" : "LK";
         writer.setAGutschriftLastschrift(type);
-        
+
         writer.setAKonto(Long.parseLong(konto.getKontonummer()));
         writer.setAKundenname(konto.getName());
         writer.writeASatz();
-        
+
         while (buchungen.hasNext())
         {
           // Mit diesem Factor sollte sich der Fortschrittsbalken
@@ -110,9 +108,9 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
           monitor.setPercentComplete((int)((++count) * factor));
 
           SammelTransferBuchung buchung = (SammelTransferBuchung) buchungen.next();
-          
+
           monitor.log(i18n.tr("Exportiere Datensatz {0}",buchung.getGegenkontoName()));
-          
+
           writer.setCBetragInEuro(buchung.getBetrag());
           writer.setCBLZEndbeguenstigt(Long.parseLong(buchung.getGegenkontoBLZ()));
           writer.setCBLZErstbeteiligtesInstitut(blz);
@@ -120,11 +118,11 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
           writer.setCName(buchung.getGegenkontoName());
           writer.setCInterneKundennummer(kundenNummer);
           writer.setCTextschluessel(mapTextschluesselToDtaus(buchung));
-          
+
           String[] lines = VerwendungszweckUtil.toArray(buchung);
           for (String line:lines)
             writer.addCVerwendungszweck(line);
-          
+
           writer.writeCSatz();
           success++;
         }
@@ -190,7 +188,7 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
         SammelLastschrift.class
     };
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */

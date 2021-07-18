@@ -27,7 +27,7 @@ public interface Serializer<T>
    * @throws IOException
    */
   public String serialize(Object context, T value) throws IOException;
-  
+
   /**
    * Deserialisiert den uebergebenen Text.
    * @param context das Context-Objekt.
@@ -38,8 +38,6 @@ public interface Serializer<T>
    */
   public T unserialize(Object context, String value) throws IOException;
 }
-
-
 
 /**********************************************************************
  * $Log: Serializer.java,v $

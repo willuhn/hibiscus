@@ -47,7 +47,7 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
     List list = tree.getUmsatzTree();
 
     Reporter reporter = null;
-    
+
     try
     {
       reporter = new Reporter(os, monitor, i18n.tr("Umsatzkategorien"), this.getSubTitle(tree), list.size());
@@ -87,7 +87,7 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
       }
     }
   }
-  
+
   /**
    * Rendert eine einzelne Kategorie sammt der Umsaetze.
    * @param reporter der Reporter.
@@ -97,7 +97,7 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
   private void renderNode(Reporter reporter, UmsatzTreeNode node) throws Exception
   {
     List<Umsatz> umsaetze = node.getUmsaetze();
-    
+
     // Wir rendern die Gruppe nur, wenn was drin steht. Andernfalls suchen
     // wir nur in den Kind-Gruppen weiter.
     if (umsaetze.size() > 0)
@@ -130,7 +130,6 @@ public class UmsatzTreeCompleteExporter extends AbstractUmsatzTreeExporter
       reporter.addColumn(reporter.getDetailCell((Double) node.getAttribute("betrag")));
     }
 
-    
     // Ggf. vorhandene Unter-Kategorien rendern.
     List<UmsatzTreeNode> children = node.getSubGroups();
     for (int i=0;i<children.size();++i)

@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.io;
 
-
 /**
  * Dieses Interface kapselt die Datei-Formate.
  * Jeder Importer oder Exporter unterstuetzt ein oder mehrere
@@ -35,7 +34,6 @@ public interface IOFormat
    */
   public String[] getFileExtensions();
 }
-
 
 /*********************************************************************
  * $Log: IOFormat.java,v $

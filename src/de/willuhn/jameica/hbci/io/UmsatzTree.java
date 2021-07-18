@@ -32,7 +32,7 @@ public class UmsatzTree implements Serializable
   {
     return this.end;
   }
-  
+
   /**
    * Speichert das End-Datum.
    * @param end das End-Datum.
@@ -41,7 +41,7 @@ public class UmsatzTree implements Serializable
   {
     this.end = end;
   }
-  
+
   /**
    * Liefert den Titel.
    * @return den Titel.
@@ -50,7 +50,7 @@ public class UmsatzTree implements Serializable
   {
     return this.title;
   }
-  
+
   /**
    * Speichert den Titel.
    * @param title den Titel.
@@ -68,7 +68,7 @@ public class UmsatzTree implements Serializable
   {
     return this.tree;
   }
-  
+
   /**
    * Speichert den Tree der Umsaetze.
    * @param tree der Umsatz-Tree.
@@ -77,7 +77,7 @@ public class UmsatzTree implements Serializable
   {
     this.tree = tree;
   }
-  
+
   /**
    * Liefert das Start-Datum.
    * @return das Start-Datum.
@@ -86,7 +86,7 @@ public class UmsatzTree implements Serializable
   {
     return this.start;
   }
-  
+
   /**
    * Speichert das Start-Datum.
    * @param start das Start-Datum.
@@ -96,7 +96,6 @@ public class UmsatzTree implements Serializable
     this.start = start;
   }
 }
-
 
 /*********************************************************************
  * $Log: UmsatzTree.java,v $

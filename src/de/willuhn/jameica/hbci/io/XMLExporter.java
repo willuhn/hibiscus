@@ -35,7 +35,7 @@ import de.willuhn.util.ProgressMonitor;
 public class XMLExporter implements Exporter
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -56,7 +56,7 @@ public class XMLExporter implements Exporter
       for (int i=0;i<objects.length;++i)
       {
         if (monitor != null)  monitor.setPercentComplete((int)((i) * factor));
-        
+
         Object o = objects[i];
         if (!(o instanceof GenericObject))
           continue;
@@ -107,13 +107,13 @@ public class XMLExporter implements Exporter
 
     if (SepaSammelTransfer.class.isAssignableFrom(objectType))
       return null; // Keine SEPA-Sammel-Auftraege - die muessen gesondert behandelt werden.
-    
+
     return new IOFormat[]{new IOFormat() {
       public String getName()
       {
         return XMLExporter.this.getName();
       }
-    
+
       /**
        * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
        */
@@ -131,7 +131,7 @@ public class XMLExporter implements Exporter
   {
     return i18n.tr("Hibiscus-Format");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */

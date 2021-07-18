@@ -35,7 +35,7 @@ import de.willuhn.util.ApplicationException;
 public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
 {
   private Object ctx = null;
-  
+
   /**
    * ct.
    * @param ctx die zu druckenden Daten.
@@ -44,28 +44,28 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
   {
     this.ctx = ctx;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
    */
   Print printContent() throws ApplicationException
   {
     Object data = this.ctx;
-    
+
     if (data == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
+
     if (data instanceof TablePart)
       data = ((TablePart)data).getSelection();
-    
+
     if (!(data instanceof SepaDauerauftrag))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
+
     try
     {
       SepaDauerauftrag a = (SepaDauerauftrag) data;
       Konto k            = a.getKonto();
-      
+
       // Die eigentlich Tabelle mit den Werten
       DefaultGridLook look = new DefaultGridLook(5,5);
       GridPrint table = new GridPrint("l:p:n, l:d:g",look);
@@ -73,15 +73,15 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
       // Konto
       table.add(new TextPrint(i18n.tr("Konto"),fontNormal));
       table.add(new TextPrint(notNull(k != null ? k.getLongName() : null),fontNormal));
-      
+
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Empfaenger
       {
         String blz = a.getGegenkontoBLZ();
-        
+
         table.add(new TextPrint(i18n.tr("Gegenkonto"),fontNormal));
         table.add(new TextPrint(notNull(a.getGegenkontoName()),fontBold));
         table.add(new EmptyPrint());
@@ -94,7 +94,7 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Verwendungszweck
       {
         String usage = VerwendungszweckUtil.toString(a,"\n");
@@ -105,12 +105,12 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Betrag
       {
         double betrag = a.getBetrag();
         String curr = k != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE;
-        
+
         table.add(new TextPrint(i18n.tr("Betrag"),fontNormal));
         table.add(new TextPrint(betrag == 0.0d || Double.isNaN(betrag) ? "-" : (HBCI.DECIMALFORMAT.format(betrag) + " " + curr),fontBold));
       }
@@ -118,7 +118,7 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Der Rest
       {
         Date first = a.getErsteZahlung();
@@ -144,7 +144,7 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
         table.add(new TextPrint(i18n.tr("Aktiv"),fontNormal));
         table.add(new TextPrint(a.isActive() ? "Ja" : "Nein",fontBold));
       } 
-      
+
       return table;
     }
     catch (RemoteException re)
@@ -153,7 +153,7 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
    */

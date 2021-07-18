@@ -40,9 +40,9 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
 
   private ImportListener listener        = null;
   private Profile profile                = null;
-  
+
   private Konto konto = null;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.csv.Format#getDefaultProfile()
    */
@@ -54,9 +54,9 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
       this.profile.setName(i18n.tr("Default-Profil"));
       this.profile.setSkipLines(1);
       this.profile.setSystem(true);
-      
+
       Serializer ts = new DefaultSerializer();
-      
+
       List<Column> list = this.profile.getColumns();
       int i = 0;
 
@@ -92,20 +92,20 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
     if (this.listener == null)
     {
       this.listener = new ImportListener(){
-        
+
         /**
          * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeSet(de.willuhn.jameica.hbci.io.csv.ImportEvent)
          */
         public void beforeSet(ImportEvent event) throws OperationCanceledException
         {
           Map<String,Object> values = (Map<String,Object>) event.data;
-          
+
           // Wir suchen uns hier unsere Kontonummer und BLZ zusammen und
           // suchen das zugehoerige Konto. Die Dummy-Properties entfernen
           // wir bei der Gelegenheit wieder.
           String konto = (String) values.remove("_konto");
           String blz   = (String) values.remove("_blz");
-          
+
           // Wenn es hier zu einem Fehler kommt, ist das nicht weiter tragisch.
           // Dann wird der User in beforeStore() nach dem zu verwendenden Konto
           // gefragt.
@@ -155,7 +155,7 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
             Logger.write(Level.WARN,"error while assigning account",e);
           }
         }
-        
+
       };
     }
     return this.listener;

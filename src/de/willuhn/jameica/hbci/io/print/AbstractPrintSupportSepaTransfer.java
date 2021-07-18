@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.EmptyPrint;
 import net.sf.paperclips.GridPrint;
@@ -35,7 +36,7 @@ import net.sf.paperclips.TextPrint;
 public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisung> extends AbstractPrintSupport
 {
   private T auftrag = null;
-  
+
   /**
    * ct.
    * @param a der zu druckende Auftrag.
@@ -44,7 +45,7 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
   {
     this.auftrag = a;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
    */
@@ -52,12 +53,12 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
   {
     if (this.auftrag == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
+
     try
     {
       T a     = this.auftrag;
       Konto k = a.getKonto();
-      
+
       // Die eigentlich Tabelle mit den Werten
       DefaultGridLook look = new DefaultGridLook(5,5);
       GridPrint table = new GridPrint("l:p:n, l:d:g",look);
@@ -67,11 +68,11 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       table.add(new TextPrint(notNull(k != null ? k.getLongName() : null),fontNormal));
       table.add(new EmptyPrint());
       table.add(new TextPrint(i18n.tr("IBAN: {0}",HBCIProperties.formatIban(k.getIban())),fontNormal));
-      
+
       // Leerzeile
       table.add(new LineBreakPrint(fontNormal));
       table.add(new LineBreakPrint(fontNormal));
-      
+
       // Gegenkonto
       {
         table.add(new TextPrint(i18n.tr("Gegenkonto"),fontNormal));
@@ -81,7 +82,7 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       // Leerzeile
       table.add(new LineBreakPrint(fontTiny));
       table.add(new LineBreakPrint(fontTiny));
-      
+
       // Verwendungszweck
       {
         table.add(new TextPrint(i18n.tr("Verwendungszweck"),fontNormal));
@@ -92,7 +93,7 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       {
         double betrag = a.getBetrag();
         String curr = k != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE;
-        
+
         table.add(new TextPrint(i18n.tr("Betrag"),fontNormal));
         table.add(new TextPrint(betrag == 0.0d || Double.isNaN(betrag) ? "-" : (HBCI.DECIMALFORMAT.format(betrag) + " " + curr),fontBold));
       }
@@ -100,20 +101,20 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       // Leerzeile
       table.add(new LineBreakPrint(fontTiny));
       table.add(new LineBreakPrint(fontTiny));
-      
+
       // Der Rest
       {
         Date termin = a.getTermin();
         table.add(new TextPrint(i18n.tr("Erinnerungstermin"),fontNormal));
         table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
-        
+
         Date ausgefuehrt = a.getAusfuehrungsdatum();
         table.add(new TextPrint(i18n.tr("Ausgeführt"),fontNormal));
         if (ausgefuehrt != null)
           table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
         else
           table.add(new TextPrint(a.ausgefuehrt() ? "Ja" : "Nein",fontBold));
-        
+
         customize(table);
       } 
       return table;
@@ -124,7 +125,7 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
-  
+
   /**
    * Liefert den Auftrag.
    * @return der Auftrag.
@@ -133,7 +134,7 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
   {
     return this.auftrag;
   }
-  
+
   /**
    * Kann ueberschrieben werden, um noch Anpassungen vorzunehmen.
    * @param grid das Grid.
@@ -142,9 +143,9 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
    */
   void customize(GridPrint grid) throws RemoteException, ApplicationException
   {
-    
+
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#customize(net.sf.paperclips.PagePrint)
    */

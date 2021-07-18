@@ -40,7 +40,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     OutputStreamWriter out = null;
-    
+
     try
     {
       out = new MyOutputStreamWriter(os);
@@ -62,10 +62,10 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
       {
         if (objects[i] == null || !(objects[i] instanceof Umsatz))
           continue;
-        
+
         Umsatz u = (Umsatz) objects[i];
         Konto konto = u.getKonto();
-        
+
         if (k == null)
           k = konto;
         else if (!k.getID().equals(konto.getID()))
@@ -87,20 +87,20 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
       {
         if (monitor != null)  
         	monitor.setPercentComplete((int)((i) * factor));
-        
+
         Umsatz u = list.get(i);
         Object name = BeanUtil.toString(u);
-        
+
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
-        
+
         // Anfangssaldo
     		if (showSaldo && i == 0)
     		{
           //(Schlusssaldo - Umsatzbetrag) > 0 -> Soll-Haben-Kennung für den Anfangssaldo = C
           //(Credit), sonst D (Debit)
           double saldo = u.getSaldo() - u.getBetrag();
-          
+
           //Anfangssaldo aus dem Schlusssaldo ermitteln sowie Soll-Haben-Kennung
           //Valuta Datum des Kontosaldos leider nicht verfügbar, deswegen wird Datum der Umsatzwertstellung genommen
           out.write(":60F:");
@@ -114,19 +114,19 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
     		double betrag = u.getBetrag();
         out.write(betrag >= 0.0d ? "CR" : "DR");
         out.write(DECF.format(betrag).replace("-",""));
-    		
+
         String ref = StringUtils.trimToNull(u.getCustomerRef());
     		out.write("NTRF" + (ref != null ? ref : "NONREF") + NL);
 
     		String gvcode = u.getGvCode();
-    		
+
       	// Fallback, wenn wir keinen GV-Code haben. Das trifft u.a. bei Alt-Umsaetzen
     		// auf, als Hibiscus das Feld noch nicht unterstuetzte.
     		if (StringUtils.trimToNull(gvcode) == null)
       		gvcode = betrag >= 0.0d? "051" : "020";
     		
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
-    		
+
     		//Verwendungszweck
     		String[] lines = VerwendungszweckUtil.rewrap(65,VerwendungszweckUtil.toArray(u));
     		int m=0;
@@ -143,7 +143,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
         m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
         m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());
         m = addRef(out,m,VerwendungszweckUtil.Tag.MREF,u.getMandateId());
-        
+
         String blz = StringUtils.trimToNull(u.getGegenkontoBLZ());
         String kto = StringUtils.trimToNull(u.getGegenkontoNummer());
         String nam = StringUtils.trimToNull(u.getGegenkontoName());
@@ -154,7 +154,6 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
         if (add != null) out.write("?34" + add);
 
         out.write(NL);
-    		
 
         // Schluss-Saldo
         if (showSaldo && i >= list.size() - 1)
@@ -165,9 +164,9 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
           out.write(schlussSaldo >= 0.0d ? "C" : "D");
           out.write(DF_YYMMDD.format(u.getDatum()) + curr + DECF.format(schlussSaldo).replace("-","") + NL);
         }
-    		
+
       }
-      
+
       out.write("-");
       out.write(NL);
     }

@@ -43,7 +43,7 @@ public class DateSerializer extends DefaultSerializer<Date>
   {
     if (value == null || value.length() == 0)
       return null;
-    
+
     try
     {
       if (value == null || value.length() == 0)
@@ -60,8 +60,6 @@ public class DateSerializer extends DefaultSerializer<Date>
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: DateSerializer.java,v $

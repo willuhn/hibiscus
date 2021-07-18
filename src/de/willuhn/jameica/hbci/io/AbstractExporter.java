@@ -39,16 +39,15 @@ public abstract class AbstractExporter implements Exporter
     try
     {
       this.setup(objects,format,os,monitor);
-      
-      
+
       double factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
       monitor.setStatusText(i18n.tr("Exportiere Daten"));
-      
+
       for (int i=0;i<objects.length;++i)
       {
         monitor.setPercentComplete((int)((i) * factor));
         monitor.log(i18n.tr("Speichere Datensatz {0}",Integer.toString(i+1)));
-        
+
         this.exportObject(objects[i],i,os);
       }
       this.commit(objects,format,os,monitor);
@@ -72,7 +71,7 @@ public abstract class AbstractExporter implements Exporter
       IOUtil.close(os);
     }
   }
-  
+
   /**
    * Initialisiert den Export fuer die Objekte.
    * @param objects die zu exportierenden Objekte.
@@ -86,7 +85,7 @@ public abstract class AbstractExporter implements Exporter
     if (objects == null || objects.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
   }
-  
+
   /**
    * Beendet den Export.
    * @param objects die zu exportierenden Objekte.
@@ -99,7 +98,6 @@ public abstract class AbstractExporter implements Exporter
   {
   }
 
-  
   /**
    * Fuehrt den Export fuer ein einzelnes Objekt aus.
    * @param o das zu exportierende Objekt.
@@ -108,20 +106,20 @@ public abstract class AbstractExporter implements Exporter
    * @throws Exception
    */
   abstract void exportObject(Object o, int idx, OutputStream os) throws Exception;
-  
+
   /**
    * Liefert eine Liste von Objekt-Typen, die von diesem IO unterstuetzt werden.
    * @return Liste der unterstuetzten Formate.
    */
   abstract Class[] getSupportedObjectTypes();
-  
+
   /**
    * Liefert die Datei-Endungen des Formats.
    * Zum Beispiel "*.csv" oder "*.txt".
    * @return Datei-Endung.
    */
   abstract String[] getFileExtensions();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
@@ -135,7 +133,7 @@ public abstract class AbstractExporter implements Exporter
     Class[] supported = getSupportedObjectTypes();
     if (supported == null || supported.length == 0)
       return null;
-    
+
     for (int i=0;i<supported.length;++i)
     {
       if (objectType.equals(supported[i]))
@@ -143,7 +141,7 @@ public abstract class AbstractExporter implements Exporter
     }
     return null;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
    */
@@ -160,7 +158,7 @@ public abstract class AbstractExporter implements Exporter
   class MyIOFormat implements IOFormat
   {
     Class type = null;
-    
+
     /**
      * ct.
      * @param type
@@ -188,5 +186,3 @@ public abstract class AbstractExporter implements Exporter
   }
 
 }
-
-

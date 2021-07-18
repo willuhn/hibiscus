@@ -28,7 +28,7 @@ public class PrintSupportSepaLastschriftList extends AbstractPrintSupportSepaTra
   {
     super(ctx);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
    */
@@ -54,7 +54,7 @@ public class PrintSupportSepaLastschriftList extends AbstractPrintSupportSepaTra
       PrintSupportSepaLastschrift single = new PrintSupportSepaLastschrift((SepaLastschrift)ctx);
       return single.printContent();
     }
-    
+
     return super.printContent();
   }
 }

@@ -54,7 +54,7 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
       if (conflict.size() > 1)
         break;
     }
-    
+
     if (conflict.size() > 1)
     {
       String txt = i18n.tr("Die Lastschriften enthalten unterschiedliche Lastschrift-Arten, Sequenz-Typen oder Zieltermine.\n" +
@@ -62,10 +62,10 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
       Application.getCallback().notifyUser(txt);
       throw new OperationCanceledException("conflicting sequencetype, targetdate or type");
     }
-    
+
     super.setup(objects, format, os, monitor);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, de.willuhn.jameica.hbci.io.AbstractSepaExporter.JobContext)
    */
@@ -73,10 +73,10 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
   protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
     Properties props = ctx.props;
-    
+
     SepaLastschrift u = (SepaLastschrift) o;
     Konto k = u.getKonto();
-   
+
     // Wir nehmen die globalen Properties von der ersten Lastschrift
     if (idx == 0)
     {
@@ -111,7 +111,7 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
   {
     return Type.PAIN_008;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getJobName()
    */
@@ -122,7 +122,7 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
     // Im Property "type" ist aber der korrekte Typ hinterlegt.
     return SepaLastType.CORE.getJobName();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractExporter#getSupportedObjectTypes()
    */
@@ -131,7 +131,7 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
   {
     return new Class[]{SepaLastschrift.class};
   }
-  
+
   /**
    * Generiert einen Lookup-Key fuer den Auftrag um zu checken, ob er in die SEPA XML-Datei passt.
    * @param l der Auftrag.
@@ -142,19 +142,17 @@ public class SepaLastschriftExporter extends AbstractSepaExporter
   {
     StringBuffer sb = new StringBuffer();
     sb.append(l.getSequenceType().name() + "-");
-    
+
     SepaLastType type = l.getType();
     if (type == null)
       type = SepaLastType.DEFAULT;
     sb.append(type.name() + "-");
-    
+
     Date target = l.getTargetDate();
     if (target != null)
       sb.append(HBCI.DATEFORMAT.format(target) + "-");
-    
+
     return sb.toString();
   }
 
 }
-
-

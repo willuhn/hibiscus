@@ -48,11 +48,11 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
     u.setGegenkontoNummer(prop.getProperty(ISEPAParser.Names.DST_IBAN.getValue()));
     u.setGegenkontoBLZ(prop.getProperty(ISEPAParser.Names.DST_BIC.getValue()));
     u.setZweck(prop.getProperty(ISEPAParser.Names.USAGE.getValue()));
-    
+
     u.setBetrag(this.parseValue(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
 
     String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.DATE.getValue()));
-    
+
     if (date != null && !SepaUtil.DATE_UNDEFINED.equals(date))
     {
       u.setTermin(ISO_DATE.parse(date));

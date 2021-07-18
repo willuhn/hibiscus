@@ -53,18 +53,18 @@ public class MT940UmsatzImporter implements Importer
 
     if (is == null)
       throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-    
+
     if (format == null)
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
-    
+
     try
     {
-      
+
       de.willuhn.jameica.hbci.rmi.Konto konto = null;
-      
+
       if (context != null && context instanceof de.willuhn.jameica.hbci.rmi.Konto)
         konto = (de.willuhn.jameica.hbci.rmi.Konto) context;
-      
+
       if (konto == null)
       {
         KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
@@ -92,15 +92,15 @@ public class MT940UmsatzImporter implements Importer
 
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Speichere Umsätze"));
-      
+
       List lines = umsaetze.getFlatData();
-      
+
       if (lines.size() == 0)
       {
         konto.addToProtokoll(i18n.tr("Keine Umsätze importiert"),Protokoll.TYP_ERROR);
         return;
       }
-      
+
       double factor = 100d / (double) lines.size();
 
       int created = 0;
@@ -184,7 +184,7 @@ public class MT940UmsatzImporter implements Importer
   {
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
-    
+
     IOFormat f = new IOFormat() {
       public String getName()
       {
@@ -201,8 +201,7 @@ public class MT940UmsatzImporter implements Importer
     };
     return new IOFormat[] { f };
   }
-  
-  
+
   /**
    * Hilfsklasse um getPassport umzubiegen.
    * BUGZILLA 255
@@ -218,7 +217,6 @@ public class MT940UmsatzImporter implements Importer
     {
       return new HBCIPassport()
       {
-      
         public void syncSysId() {}
         public void syncSigId() {}
         public void setUserId(String userid) {}
@@ -279,6 +277,6 @@ public class MT940UmsatzImporter implements Importer
         public void changePassphrase(){}
       };
     }
-    
+
   }
 }

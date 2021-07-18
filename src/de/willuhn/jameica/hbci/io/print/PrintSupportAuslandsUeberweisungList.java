@@ -28,7 +28,7 @@ public class PrintSupportAuslandsUeberweisungList extends AbstractPrintSupportSe
   {
     super(ctx);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
    */
@@ -54,7 +54,7 @@ public class PrintSupportAuslandsUeberweisungList extends AbstractPrintSupportSe
       PrintSupportAuslandsUeberweisung single = new PrintSupportAuslandsUeberweisung((AuslandsUeberweisung)ctx);
       return single.printContent();
     }
-    
+
     return super.printContent();
   }
 }

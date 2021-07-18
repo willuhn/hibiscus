@@ -24,7 +24,7 @@ import de.willuhn.util.I18N;
 public class ValueSerializer extends DefaultSerializer<Double>
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#serialize(java.lang.Object, java.lang.Object)
    */
@@ -32,7 +32,7 @@ public class ValueSerializer extends DefaultSerializer<Double>
   {
     if (value == null)
       return super.serialize(context, value);
-    
+
     return HBCI.DECIMALFORMAT.format(value) + " " + HBCIProperties.CURRENCY_DEFAULT_DE;
   }
 
@@ -43,7 +43,7 @@ public class ValueSerializer extends DefaultSerializer<Double>
   {
     if (value == null || value.length() == 0)
       return null;
-    
+
     try
     {
       // Wir ersetzen alles, was nicht Zahl, Komma oder Punkt ist.
@@ -53,20 +53,20 @@ public class ValueSerializer extends DefaultSerializer<Double>
       // Nix mehr zum Parsen uebrig?
       if (value.length() == 0)
         throw new Exception();
-      
+
       // Wenn der Text jetzt Punkt UND Komma enthaelt, entfernen wir die Punkte
       if (value.indexOf(".") != -1 && value.indexOf(",") != -1)
         value = value.replaceAll("\\.","");
-      
+
       // Wenn jetzt immer ein Punkt drin sind, muss es ein Komma sein
       if (value.indexOf(".") != -1)
         value = value.replaceFirst("\\.",",");
-      
+
       // Wenn jetzt immer noch ein Punkt drin ist, sah der Text
       // vorher so aus: 123.456.000
       // Dann entfernen wir alle Punkte
       value = value.replaceAll("\\.","");
-      
+
       return HBCI.DECIMALFORMAT.parse(value).doubleValue();
     }
     catch (Exception e)
@@ -77,8 +77,6 @@ public class ValueSerializer extends DefaultSerializer<Double>
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: ValueSerializer.java,v $
