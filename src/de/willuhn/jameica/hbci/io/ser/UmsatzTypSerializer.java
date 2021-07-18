@@ -44,7 +44,7 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
   {
     if (value == null || value.length() == 0)
       return null;
-    
+
     try
     {
       if (cache == null)
@@ -57,11 +57,11 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
           cache.put(t.getName().toLowerCase(),t);
         }
       }
-      
+
       UmsatzTyp t = (UmsatzTyp) cache.get(value.toLowerCase());
       if (t != null)
         return t;
-      
+
       // Nicht gefunden. Also neu anlegen
       Logger.info("auto-creating category " + value);
       t = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,null);
@@ -79,8 +79,6 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
   }
 
 }
-
-
 
 /**********************************************************************
  * $Log: UmsatzTypSerializer.java,v $

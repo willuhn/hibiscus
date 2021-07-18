@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.io.print;
 
 import de.willuhn.util.ApplicationException;
 
-
 /**
  * Druck-Support fuer Sammel-Ueberweisungen.
  */
@@ -35,8 +34,6 @@ public class PrintSupportSammelUeberweisung extends AbstractPrintSupportSammelTr
     return i18n.tr("Sammel-Überweisung");
   }
 }
-
-
 
 /**********************************************************************
  * $Log: PrintSupportSammelUeberweisung.java,v $

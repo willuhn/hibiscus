@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+
 import net.sf.paperclips.DefaultGridLook;
 import net.sf.paperclips.EmptyPrint;
 import net.sf.paperclips.GridPrint;
@@ -41,7 +42,7 @@ import net.sf.paperclips.TextPrint;
 public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSammelTransfer> extends AbstractPrintSupport
 {
   private Object ctx = null;
-  
+
   /**
    * ct.
    * @param ctx die zu druckenden Daten.
@@ -50,18 +51,18 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
   {
     this.ctx = ctx;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
    */
   Print printContent() throws ApplicationException
   {
     T a = this.getAuftrag();
-    
+
     try
     {
       Konto k = a.getKonto();
-      
+
       // Das Haupt-Layout
       GridPrint grid = new GridPrint("l:d:g");
 
@@ -84,11 +85,11 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
       {
         DefaultGridLook look = new DefaultGridLook();
         look.setHeaderBackground(new RGB(220,220,220));
-        
+
         LineBorder border = new LineBorder(new RGB(100,100,100));
         border.setGapSize(3);
         look.setCellBorder(border);
-        
+
         GridPrint children = new GridPrint("r:d:n, l:d:n, l:d:n, r:p:n",look);
         children.addHeader(new TextPrint(i18n.tr("Nr."),fontTinyBold));
         children.addHeader(new TextPrint(i18n.tr("Gegenkonto"),fontTinyBold));
@@ -99,7 +100,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
         for (SepaSammelTransferBuchung b:buchungen)
         {
           children.add(new TextPrint(Integer.toString(++count),fontTiny));
-          
+
           final String bic   = b.getGegenkontoBLZ();
           final String bank  = HBCIProperties.getNameForBank(bic);
           String text = b.getGegenkontoName() + ", IBAN " + HBCIProperties.formatIban(b.getGegenkontoNummer());
@@ -107,7 +108,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
             text += ", BIC " + bic;
           if (StringUtils.trimToNull(bank) != null)
             text += " (" + bank + ")";
-          
+
           children.add(new TextPrint(text,fontTiny));
           children.add(new TextPrint(VerwendungszweckUtil.toString(b,"\n"),fontTiny));
           children.add(new TextPrint(HBCI.DECIMALFORMAT.format(b.getBetrag()) + " " + k.getWaehrung(),fontTiny));
@@ -127,7 +128,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
       throw new ApplicationException(i18n.tr("Druck fehlgeschlagen: {0}",re.getMessage()));
     }
   }
-  
+
   /**
    * Liefert den Auftrag.
    * @return der Auftrag.
@@ -135,19 +136,19 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
   protected T getAuftrag() throws ApplicationException
   {
     Object data = this.ctx;
-    
+
     if (data == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
-    
+
     if (data instanceof TablePart)
       data = ((TablePart)data).getSelection();
-    
+
     if (!(data instanceof SepaSammelTransfer))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Auftrag aus"));
 
     return (T) data;
   }
-  
+
   /**
    * Kann zum Customizen in abgeleiteten Klassen ueberschrieben werden.
    * @param a der Auftrag.
@@ -186,8 +187,8 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
       table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
     else
       table.add(new TextPrint(a.ausgefuehrt() ? "Ja" : "Nein",fontBold));
-    
+
     return table;
   }
-  
+
 }

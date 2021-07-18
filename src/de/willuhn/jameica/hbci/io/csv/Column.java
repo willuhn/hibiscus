@@ -23,7 +23,7 @@ public class Column implements Serializable, Cloneable
   private String name           = null;
   private int column            = -1;
   private Serializer serializer = null;
-  
+
   /**
    * ct.
    * Bean-Konstruktor.
@@ -46,7 +46,7 @@ public class Column implements Serializable, Cloneable
     this.column     = column;
     this.serializer = s;
   }
-  
+
   /**
    * Liefert den Namen des Bean-Attributes.
    * @return property Name des Bean-Attributes.
@@ -55,7 +55,7 @@ public class Column implements Serializable, Cloneable
   {
     return property;
   }
-  
+
   /**
    * Speichert den Namen des Bean-Attributes.
    * @param property Name des Bean-Attributes.
@@ -64,7 +64,7 @@ public class Column implements Serializable, Cloneable
   {
     this.property = property;
   }
-  
+
   /**
    * Liefert einen sprechenden Namen fuer die Spalte.
    * @return name sprechender Name fuer die Spalte.
@@ -73,7 +73,7 @@ public class Column implements Serializable, Cloneable
   {
     return name;
   }
-  
+
   /**
    * Speichert einen sprechenden Namen fuer die Spalte.
    * @param name sprechender Name fuer die Spalte.
@@ -82,7 +82,7 @@ public class Column implements Serializable, Cloneable
   {
     this.name = name;
   }
-  
+
   /**
    * Liefert die Spalten-Nummer.
    * @return column die Spalten-Nummer.
@@ -91,7 +91,7 @@ public class Column implements Serializable, Cloneable
   {
     return column;
   }
-  
+
   /**
    * Speichert die Spalten-Nummer.
    * @param column die Spalten-Nummer.
@@ -100,7 +100,7 @@ public class Column implements Serializable, Cloneable
   {
     this.column = column;
   }
-  
+
   /**
    * Liefert den Serializer fuer den Wert.
    * @return serializer der Serializer.
@@ -109,7 +109,7 @@ public class Column implements Serializable, Cloneable
   {
     return serializer;
   }
-  
+
   /**
    * Speichert den Serializer fuer den Wert.
    * @param serializer der Serializer.
@@ -139,7 +139,7 @@ public class Column implements Serializable, Cloneable
     clone.serializer = this.serializer;
     return clone;
   }
-  
+
   /**
    * @see java.lang.Object#equals(java.lang.Object)
    */
@@ -148,7 +148,7 @@ public class Column implements Serializable, Cloneable
   {
     if (!(obj instanceof Column))
       return false;
-    
+
     Column other = (Column) obj;
     return this.property.equals(other.property);
   }

@@ -62,25 +62,23 @@ public class CsvImporter implements Importer
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     ICsvListReader csv = null;
-    
+
     try
     {
       if (is == null)
         throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-      
+
       if (format == null)
         throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
       if (!(format instanceof MyIOFormat))
         throw new ApplicationException(i18n.tr("Das Datei-Format ist unbekannt"));
-      
-      Format f = ((MyIOFormat)format).format;
 
+      Format f = ((MyIOFormat)format).format;
 
       monitor.setStatusText(i18n.tr("Öffne Datei"));
       monitor.addPercentComplete(1);
-      
-      
+
       // Wir lesen die Datei einmal komplett in einen Buffer.
       // Grund: Sie soll als Preview im Spalten-Zuordnungsdialog
       // angezeigt werden. Falls der User das Encoding der
@@ -94,9 +92,9 @@ public class CsvImporter implements Importer
       Profile p = (Profile) d.open();
 
       CsvPreference prefs = p.createCsvPreference();
-      
+
       Charset charset = null;
-      
+
       try
       {
         charset = Charset.forName(p.getFileEncoding());
@@ -109,7 +107,7 @@ public class CsvImporter implements Importer
       csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(data),charset != null ? charset : Charset.defaultCharset()),prefs);
 
       List<String> line = csv.read();
-      
+
       // Ggf. erste Zeilen ueberspringen
       for (int i=0;i<p.getSkipLines();++i)
       {
@@ -140,7 +138,7 @@ public class CsvImporter implements Importer
             throw new OperationCanceledException();
 
           object = service.createObject(f.getType(),null);
-          
+
           // Spalten zuordnen
           Map<String, Object> values = new HashMap<String,Object>();
           for (int i=0;i<line.size();++i)
@@ -154,10 +152,10 @@ public class CsvImporter implements Importer
                 break;
               }
             }
-            
+
             if (column == null)
               continue; // Spalte nicht zugeordnet
-            
+
             // Checken, ob in der Spalte was steht
             value = line.get(i);
             if (value == null) 
@@ -165,7 +163,7 @@ public class CsvImporter implements Importer
             value = value.trim();
             if (value.length() == 0)
               continue;
-            
+
             try
             {
               // Werte zwischenspeichern
@@ -178,7 +176,7 @@ public class CsvImporter implements Importer
               monitor.log("  " + i18n.tr("Ungültiger Wert \"{0}\" in Spalte \"{1}\": {2}",value,column.getName(),e.getMessage()));
             }
           }
-          
+
           // beforeSet-Listener ausloesen
           if (l != null)
           {
@@ -198,7 +196,6 @@ public class CsvImporter implements Importer
               continue;
             }
           }
-          
 
           // Werte in die Bean uebernehmen
           Iterator<String> it = values.keySet().iterator();
@@ -219,10 +216,7 @@ public class CsvImporter implements Importer
               monitor.log("  " + i18n.tr("Ungültiger Wert \"{0}\" in Spalte \"{1}\": {2}",s));
             }
           }
-          
-          
-          
-          
+
           if (l != null)
           {
             ImportEvent e = new ImportEvent();
@@ -241,7 +235,7 @@ public class CsvImporter implements Importer
               continue;
             }
           }
-          
+
           object.store();
           Application.getMessagingFactory().sendMessage(new ImportMessage(object));
           created++;
@@ -313,7 +307,7 @@ public class CsvImporter implements Importer
             Logger.warn("csv format " + c.getName() + " supports no type, skipping");
             continue;
           }
-          
+
           if (type.equals(objectType))
             formats.add(new MyIOFormat(f));
         }
@@ -330,7 +324,7 @@ public class CsvImporter implements Importer
 
     return formats.toArray(new IOFormat[formats.size()]);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
@@ -339,7 +333,6 @@ public class CsvImporter implements Importer
     return i18n.tr("CSV-Format");
   }
 
-  
   /**
    * Kopiert einen Stream in einen anderen.
    * @param is Datenquelle.
@@ -354,7 +347,7 @@ public class CsvImporter implements Importer
     {
       bis = new BufferedInputStream(is);
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      
+
       byte[] buf = new byte[4096];
       int read   = 0;
       while ((read = is.read(buf)) != -1)
@@ -369,15 +362,14 @@ public class CsvImporter implements Importer
       bis.close();
     }
   }
-  
-  
+
   /**
    * Unser IO-Format.
    */
   private class MyIOFormat implements IOFormat
   {
     private Format format = null;
-    
+
     /**
      * ct.
      * @param f der zugehoerige Treiber.
@@ -386,7 +378,7 @@ public class CsvImporter implements Importer
     {
       this.format = f;
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
      */
@@ -394,7 +386,7 @@ public class CsvImporter implements Importer
     {
       return CsvImporter.this.getName();
     }
-    
+
     /**
      * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
      */

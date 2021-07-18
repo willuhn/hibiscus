@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.io.print;
 
 import de.willuhn.util.ApplicationException;
 
-
 /**
  * Druck-Support fuer Sammel-Lastschriften.
  */
@@ -35,8 +34,6 @@ public class PrintSupportSammelLastschrift extends AbstractPrintSupportSammelTra
     return i18n.tr("Sammel-Lastschrift");
   }
 }
-
-
 
 /**********************************************************************
  * $Log: PrintSupportSammelLastschrift.java,v $

@@ -50,7 +50,7 @@ public class SepaSammelLastschriftImporter extends AbstractSepaImporter
     Properties prop = (Properties) o;
 
     SepaSammelLastschrift ueb = (SepaSammelLastschrift) ctx.get("ueb");
-    
+
     // erster Datensatz. Wir erstellen den Sammelauftrag
     if (ueb == null)
     {
@@ -60,12 +60,12 @@ public class SepaSammelLastschriftImporter extends AbstractSepaImporter
       ueb.setBezeichnung(i18n.tr("{0} {1} vom {2}",ueb.getSequenceType().getDescription(),ueb.getType().getDescription(), HBCI.LONGDATEFORMAT.format(new Date())));
       ueb.setKonto(this.findKonto(prop.getProperty(ISEPAParser.Names.SRC_IBAN.getValue())));
       ueb.setPmtInfId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PMTINFID.getValue())));
-      
+
       String date = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.TARGETDATE.getValue()));
-      
+
       if (date != null && !SepaUtil.DATE_UNDEFINED.equals(date))
         ueb.setTargetDate(ISO_DATE.parse(date));
-      
+
       ueb.store();
       ctx.put("ueb",ueb); // und im Context speichern
       Application.getMessagingFactory().sendMessage(new ImportMessage(ueb));
@@ -82,7 +82,7 @@ public class SepaSammelLastschriftImporter extends AbstractSepaImporter
 
     u.setCreditorId(prop.getProperty(ISEPAParser.Names.CREDITORID.getValue()));
     u.setMandateId(prop.getProperty(ISEPAParser.Names.MANDATEID.getValue()));
-    
+
     String mandDate = StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.MANDDATEOFSIG.getValue()));
     if (mandDate != null && !SepaUtil.DATE_UNDEFINED.equals(mandDate))
       u.setSignatureDate(ISO_DATE.parse(mandDate));

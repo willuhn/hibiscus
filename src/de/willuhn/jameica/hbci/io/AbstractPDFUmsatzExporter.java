@@ -50,7 +50,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
    */
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
-    
+
     if (objects == null || objects.length == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Umsätze aus"));
 
@@ -59,13 +59,13 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
     Date startDate     = first.getDatum();
     Date endDate       = first.getDatum();
     Map<String,List> umsaetze = new HashMap<String,List>();
-    
+
     if (monitor != null) 
     {
       monitor.setStatusText(i18n.tr("Ermittle zu exportierende Umsätze und Konten"));
       monitor.addPercentComplete(1);
     }
-    
+
     Map<String,T> groupMap = new HashMap<String,T>();
 
     for (int i=0;i<objects.length;++i)
@@ -104,14 +104,14 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
     boolean showSaldo = (b == null || b.booleanValue());
     b                 = (Boolean) Exporter.SESSION.get(ExportAddSumRowExtension.KEY_SUMROW_ADD);
     boolean addSumRow = (b != null && b.booleanValue());
-    
+
     // Ob wir den gesamten Verwendungszweck exportieren, entnehmen wir dem Setting "usage.display.all"
     // Heisst: Die Verwendungszwecke werden genau in der Form exportiert, in der sie derzeit auch
     // angezeigt werden. Das erspart diese missverstaendliche Option "Im Verwendungszweck "SVWZ+" extrahieren"
     boolean fullUsage = settings.getBoolean("usage.display.all",true);
-    
+
     Reporter reporter = null;
-    
+
     try
     {
       // Der Export
@@ -126,16 +126,15 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
         reporter.addHeaderColumn(i18n.tr("Saldo"),                  Element.ALIGN_CENTER, 30, Reporter.COLOR_BG);
       reporter.createHeader();
 
-
       Double sumOverall = 0.0d;
-      
+
       // Iteration ueber Umsaetze
       List<T> groupList = new ArrayList(groupMap.values());
       this.sort(groupList);
       for (T group:groupList)
       {
         Double sumRow = 0.0d;
-        
+
         PdfPCell cell = reporter.getDetailCell(this.toString(group), Element.ALIGN_CENTER,Reporter.COLOR_BG);
         cell.setColspan(showSaldo ? 5 : 4);
         reporter.addColumn(cell);
@@ -149,12 +148,12 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
           reporter.addColumn(empty);
           continue;
         }
-        
+
         for (Umsatz u:list)
         {
           String valuta = (u.getValuta() != null ? HBCI.DATEFORMAT.format(u.getValuta()) : "" );
           String datum  = (u.getDatum() != null ? HBCI.DATEFORMAT.format(u.getDatum()) : "");
-          
+
           BaseColor color = null;
           int style = Font.NORMAL;
           if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
@@ -162,7 +161,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
             color = Reporter.COLOR_GRAY;
             style = Font.ITALIC;
           }
-          
+
           reporter.addColumn(reporter.getDetailCell(valuta + "\n" + datum, Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT,null,color,style));
           String verwendungszweck = (fullUsage) ? VerwendungszweckUtil.toString(u,"\n") : VerwendungszweckUtil.getTag(u, Tag.SVWZ);
@@ -173,7 +172,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
             reporter.addColumn(reporter.getDetailCell(u.getSaldo()));
           reporter.setNextRecord();
         }
-        
+
         if (addSumRow) {
           reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
           reporter.addColumn(reporter.getDetailCell(i18n.tr("Summe"), Element.ALIGN_LEFT,null,null,Font.BOLD));
@@ -182,10 +181,10 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
           if (showSaldo)
             reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
         }
-        
+
         sumOverall += sumRow;
       }
-      
+
       if (addSumRow) {
         reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
         reporter.addColumn(reporter.getDetailCell(i18n.tr("Gesamtsumme"), Element.ALIGN_LEFT,null,null,Font.BOLD));
@@ -194,7 +193,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
         if (showSaldo)
           reporter.addColumn(reporter.getDetailCell(null, Element.ALIGN_LEFT));
       }
-      
+
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
     catch (Exception e)
@@ -218,7 +217,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
       }
     }
   }
-  
+
   /**
    * Liefert das Objekt, nach dem gruppiert werden soll.
    * @param u der Umsatz.
@@ -226,7 +225,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
    * @throws RemoteException
    */
   protected abstract T getGroup(Umsatz u) throws RemoteException;
-  
+
   /**
    * Ermoeglicht die optionale Sortierung der Gruppen vor der Ausgabe.
    * Leere Dummy-Implementierung.
@@ -236,7 +235,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
   protected void sort(List<T> groups) throws RemoteException
   {
   }
-  
+
   /**
    * Liefert eine sprechende Bezeichnung fuer die Gruppe.
    * @param t die Gruppe. Kann NULL sein.
@@ -261,7 +260,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
   {
     if (!Umsatz.class.equals(objectType))
       return null;
-    
+
     IOFormat format = new IOFormat() {
       public String getName()
       {
@@ -276,7 +275,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
         return new String[]{"pdf"};
       }
     };
-    
+
     return new IOFormat[]{format};
   }
 

@@ -34,7 +34,7 @@ public abstract class AbstractDTAUSIO implements IO
   {
     return i18n.tr("DTAUS-Format");
   }
-  
+
   /**
    * Mappt den Textschluessel von Hibiscus zu DTAUS.
    * @param buchung Buchung.
@@ -48,7 +48,7 @@ public abstract class AbstractDTAUSIO implements IO
 
     // Default-Werte
     int ts = (buchung instanceof SammelUeberweisungBuchung) ? CSatz.TS_UEBERWEISUNGSGUTSCHRIFT : CSatz.TS_LASTSCHRIFT_EINZUGSERMAECHTIGUNGSVERFAHREN;
-    
+
     String textschluessel = buchung.getTextSchluessel();
     if (textschluessel != null)
     {
@@ -59,7 +59,7 @@ public abstract class AbstractDTAUSIO implements IO
     }
     return ts;
   }
-  
+
   /**
    * Mappt den DTAUS-Textschluessel von DTAUS zu Hibiscus.
    * @param buchung die Buchung.
@@ -72,18 +72,18 @@ public abstract class AbstractDTAUSIO implements IO
       return TextSchluessel.TS_ABBUCHUNG;
     if (ts == CSatz.TS_UEBERWEISUNG_LOHN_GEHALT_RENTE)
       return TextSchluessel.TS_LOHN;
-    
+
     // Default-Werte
     return (buchung instanceof SammelUeberweisungBuchung) ? TextSchluessel.TS_UEB : TextSchluessel.TS_EINZUG;
   }
- 
+
   /**
    * Liefert eine Liste von Objekt-Typen, die von diesem Importer
    * unterstuetzt werden.
    * @return Liste der unterstuetzten Formate.
    */
   abstract Class[] getSupportedObjectTypes();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
@@ -96,7 +96,7 @@ public abstract class AbstractDTAUSIO implements IO
     Class[] supported = getSupportedObjectTypes();
     if (supported == null || supported.length == 0)
       return null;
-    
+
     for (int i=0;i<supported.length;++i)
     {
       if (objectType.equals(supported[i]))
@@ -112,7 +112,7 @@ public abstract class AbstractDTAUSIO implements IO
   class MyIOFormat implements IOFormat
   {
     Class type = null;
-    
+
     /**
      * ct.
      * @param type
@@ -139,7 +139,6 @@ public abstract class AbstractDTAUSIO implements IO
     }
   }
 }
-
 
 /*********************************************************************
  * $Log: AbstractDTAUSIO.java,v $

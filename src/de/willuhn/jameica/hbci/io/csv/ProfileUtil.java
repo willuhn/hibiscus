@@ -38,7 +38,7 @@ import de.willuhn.util.I18N;
 public class ProfileUtil
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Laedt die vorhandenen Profile fuer das Format.
    * @param format das Format.
@@ -57,16 +57,16 @@ public class ProfileUtil
 
     final Profile dp = format.getDefaultProfile();
     result.add(dp); // System-Profil wird immer vorn einsortiert
-    
+
     // 1. Mal schauen, ob wir gespeicherte Profil fuer das Format haben
     File dir = new File(Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath(),"csv");
     if (!dir.exists())
       return result;
-    
+
     File file = new File(dir,format.getClass().getName() + ".xml");
     if (!file.exists() || !file.canRead())
       return result;
-    
+
     Logger.info("reading csv profile " + file);
     XMLDecoder decoder = null;
     try
@@ -79,8 +79,7 @@ public class ProfileUtil
           throw new RuntimeException(e);
         }
       });
-      
-      
+
       // Es ist tatsaechlich so, dass "readObject()" nicht etwa NULL liefert, wenn keine Objekte mehr in der
       // Datei sind sondern eine ArrayIndexOutOfBoundsException wirft.
       try
@@ -105,10 +104,10 @@ public class ProfileUtil
       {
         // EOF
       }
-      
+
       Logger.info("read " + (result.size() - 1) + " profiles from " + file);
       Collections.sort(result);
-      
+
       // Der User hat beim letzten Mal eventuell nicht alle Spalten zugeordnet.
       // Die wuerden jetzt hier in dem Objekt fehlen. Daher nehmen wir
       // noch die Spalten aus dem Default-Profil und haengen die fehlenden noch an.
@@ -131,7 +130,7 @@ public class ProfileUtil
     }
     return result;
   }
-  
+
   /**
    * Speichert die Profile.
    * @param format das Format.
@@ -162,9 +161,9 @@ public class ProfileUtil
         return;
       }
     }
-    
+
     File file = new File(dir,format.getClass().getName() + ".xml");
-    
+
     Logger.info("writing csv profile " + file);
     XMLEncoder encoder = null;
     try
@@ -177,17 +176,17 @@ public class ProfileUtil
           throw new RuntimeException(e);
         }
       });
-      
+
       for (Profile p:profiles)
       {
         // Das System-Profil wird nicht mit gespeichert
         if (p.isSystem())
           continue;
-        
+
         // Ebenso Profile ohne Namen.
         if (StringUtils.trimToNull(p.getName()) == null)
           continue;
-        
+
         encoder.writeObject(p);
       }
     }
@@ -205,7 +204,7 @@ public class ProfileUtil
       }
     }
   }
-  
+
   /**
    * Fuegt ein neues Profil hinzu.
    * @param format das Format.
@@ -221,7 +220,7 @@ public class ProfileUtil
         Application.getCallback().notifyUser(i18n.tr("Kein Profil angegeben"));
         return null;
       }
-      
+
       // Der Dialog uebernimmt auch gleich das Speichern.
       CSVProfileStoreDialog d = new CSVProfileStoreDialog(format,profile);
       return (Profile) d.open();
@@ -247,7 +246,7 @@ public class ProfileUtil
   {
     if (profile == null || format == null)
       return false;
-    
+
     try
     {
       if (profile.isSystem())
@@ -255,14 +254,14 @@ public class ProfileUtil
         Application.getCallback().notifyUser(i18n.tr("Das Default-Profil darf nicht gelöscht werden"));
         return false;
       }
-      
+
       List<Profile> profiles = ProfileUtil.read(format);
       boolean found = false;
       for (Profile p:profiles)
       {
         if (p.isSystem())
           continue;
-        
+
         if (p.getName().equals(profile.getName()))
         {
           profiles.remove(p);
@@ -270,11 +269,11 @@ public class ProfileUtil
           break;
         }
       }
-      
+
       // Nichts zum Loeschen gefunden
       if (!found)
         return false;
-      
+
       // Speichern
       ProfileUtil.store(format,profiles);
       return true;
@@ -290,5 +289,3 @@ public class ProfileUtil
     return false;
   }
 }
-
-

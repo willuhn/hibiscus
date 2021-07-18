@@ -49,7 +49,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
   {
     if (is == null)
       throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-    
+
     if (format == null)
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
 
@@ -69,12 +69,11 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
           }
           return object;
         }
-      
+
       });
-      
+
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
-
 
       Konto konto = null;
       try
@@ -88,15 +87,15 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
         Logger.info("import cancelled");
         return;
       }
-      
+
       if (konto == null)
         throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
-      
+
       int created = 0;
       int error   = 0;
 
       SepaSammelTransfer currentTransfer = null;
-      
+
       DBObject object = null;
       while ((object = (DBObject) reader.read()) != null)
       {
@@ -122,7 +121,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
           {
             ((SepaSammelTransferBuchung)object).setSammelTransfer(currentTransfer);
           }
-          
+
           object.store();
           created++;
           try
@@ -182,10 +181,10 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
   {
     if (objectType == null)
       return null;
-    
+
     if (!SepaSammelTransfer.class.isAssignableFrom(objectType))
       return null; // Nur fuer Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
-    
+
     IOFormat f = new IOFormat() {
       public String getName()
       {

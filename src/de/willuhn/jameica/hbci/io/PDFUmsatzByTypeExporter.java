@@ -33,7 +33,7 @@ public class PDFUmsatzByTypeExporter extends AbstractPDFUmsatzExporter<UmsatzTyp
   {
     return u.getUmsatzTyp();
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#toString(de.willuhn.datasource.GenericObject)
    */
@@ -42,7 +42,7 @@ public class PDFUmsatzByTypeExporter extends AbstractPDFUmsatzExporter<UmsatzTyp
   {
     return t != null ? t.getName() : i18n.tr("<Keine Kategorie>");
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#sort(java.util.List)
    */
@@ -76,7 +76,7 @@ public class PDFUmsatzByTypeExporter extends AbstractPDFUmsatzExporter<UmsatzTyp
       Logger.error("unable to sort categories",e);
     }
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */

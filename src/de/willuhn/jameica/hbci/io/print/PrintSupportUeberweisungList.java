@@ -28,7 +28,7 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
   {
     super(ctx);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
    */
@@ -54,12 +54,10 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
       PrintSupportUeberweisung single = new PrintSupportUeberweisung((Ueberweisung)ctx);
       return single.printContent();
     }
-    
+
     return super.printContent();
   }
 }
-
-
 
 /**********************************************************************
  * $Log: PrintSupportUeberweisungList.java,v $

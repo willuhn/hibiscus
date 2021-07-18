@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
 public class SepaLastschriftMerger
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * Merged die Liste der Einzellastschriften zu ein oder mehreren sorten-reinen Sammellastschriften zusammen.
    * @param lastschriften die Liste der Einzellastschriften.
@@ -53,10 +53,10 @@ public class SepaLastschriftMerger
   {
     if (lastschriften == null || lastschriften.size() == 0)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
-    
+
     List<SepaSammelLastschrift> result = new ArrayList<SepaSammelLastschrift>();
     SepaSammelLastschrift tx = null;
-    
+
     try
     {
       HBCIDBService service = Settings.getDBService();
@@ -80,7 +80,7 @@ public class SepaLastschriftMerger
           map.put(key,s);
         }
       }
-      
+
       // Abfrage anzeigen, ob die Einzelauftraege geloescht werden sollen
       // a) wenn mindestens einer in der DB existierte
       // b) oder mehr als ein Sammelauftrag entsteht.
@@ -93,38 +93,37 @@ public class SepaLastschriftMerger
         if (o != null)
           delete = ((Boolean)o).booleanValue();
       }
-      
+
       // OK, wir duerfen weiter machen. Erstmal die Sammelauftraege anlegen
       Iterator<SepaSammelLastschrift> list = map.values().iterator();
       while (list.hasNext())
       {
         SepaSammelLastschrift s = list.next();
-        
+
         if (tx == null)
         {
           tx = s;
           tx.transactionBegin();
         }
-        
+
         s.store();
         Application.getMessagingFactory().sendMessage(new ImportMessage(s));
         result.add(s);
       }
-      
+
       // jetzt iterieren wir nochmal ueber die Einzelauftraege und ordnen sie den
       // Sammelauftraegen zu
       for (SepaLastschrift l:lastschriften)
       {
         String key = this.createKey(l);
         SepaSammelLastschrift s = map.get(key);
-        
-        
+
         if (s == null) // WTF?
         {
           Logger.error("unable to find sepa transfer for key " + key);
           continue;
         }
-        
+
         SepaSammelLastBuchung b = s.createBuchung();
         b.setBetrag(l.getBetrag());
         b.setCreditorId(l.getCreditorId());
@@ -138,16 +137,16 @@ public class SepaLastschriftMerger
         b.store();
         Application.getMessagingFactory().sendMessage(new ImportMessage(b));
         Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(s));
-        
+
         if (delete && !l.isNewObject())
         {
           l.delete();
           Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l));
         }
       }
-      
+
       tx.transactionCommit();
-      
+
       return result;
 		}
 		catch (Exception e)
@@ -163,18 +162,18 @@ public class SepaLastschriftMerger
           Logger.error("unable to rollback transaction",e);
         }
 		  }
-		  
+
 		  if (e instanceof OperationCanceledException)
 		    throw (OperationCanceledException) e;
-		  
+
 		  if (e instanceof ApplicationException)
 		    throw (ApplicationException) e;
-		  
+
       Logger.error("error while merging jobs",e);
       throw new ApplicationException(i18n.tr("Zusammenfassen der Lastschriften fehlgeschlagen: {0}",e.getMessage()));
 		}
   }
-  
+
   /**
    * Generiert einen Lookup-Key fuer den Auftrag, um ihn dem Sammelauftrag zuzuordnen.
    * @param l der Auftrag.
@@ -186,16 +185,16 @@ public class SepaLastschriftMerger
     StringBuffer sb = new StringBuffer();
     sb.append(l.getKonto().getID() + "-");
     sb.append(l.getSequenceType().name() + "-");
-    
+
     SepaLastType type = l.getType();
     if (type == null)
       type = SepaLastType.DEFAULT;
     sb.append(type.name() + "-");
-    
+
     Date target = l.getTargetDate();
     if (target != null)
       sb.append(HBCI.DATEFORMAT.format(target) + "-");
-    
+
     return sb.toString();
   }
 }

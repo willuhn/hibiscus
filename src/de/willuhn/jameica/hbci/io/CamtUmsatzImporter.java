@@ -57,20 +57,20 @@ public class CamtUmsatzImporter implements Importer
 
     if (is == null)
       throw new ApplicationException(i18n.tr("Keine zu importierende Datei ausgewählt"));
-    
+
     if (format == null || !(format instanceof MyIOFormat))
       throw new ApplicationException(i18n.tr("Kein Datei-Format ausgewählt"));
-    
+
     final MyIOFormat myFormat = (MyIOFormat) format;
-    
+
     try
     {
-      
+
       de.willuhn.jameica.hbci.rmi.Konto konto = null;
-      
+
       if (context != null && context instanceof de.willuhn.jameica.hbci.rmi.Konto)
         konto = (de.willuhn.jameica.hbci.rmi.Konto) context;
-      
+
       if (konto == null)
       {
         KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
@@ -82,7 +82,7 @@ public class CamtUmsatzImporter implements Importer
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
       Stats stats = new Stats();
-      
+
       if (myFormat.isZip())
       {
         Logger.info("reading zip file");
@@ -96,16 +96,16 @@ public class CamtUmsatzImporter implements Importer
         {
           if (ze.isDirectory())
             continue;
-          
+
           String name = ze.getName();
           if (name == null)
             continue;
-          
+
           if (!name.toLowerCase().endsWith(".xml"))
             continue;
-          
+
           Logger.info("  reading " + name);
-          
+
           int chunk = (int) (100 / fc);
           Stats s = doImport(chunk,no,zis,konto,monitor,t);
           stats.created += s.created;
@@ -118,7 +118,7 @@ public class CamtUmsatzImporter implements Importer
         Logger.info("reading xml file");
         stats = doImport(100,1,is,konto,monitor,t);
       }
-      
+
       monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{Integer.toString(stats.created),Integer.toString(stats.error)}));
     }
     catch (OperationCanceledException oce)
@@ -140,7 +140,7 @@ public class CamtUmsatzImporter implements Importer
       IOUtil.close(is);
     }
   }
-  
+
   /**
    * Fuehrt den eigentlichen Import einer Datei durch.
    * @param chunk die prozentuale Groesse des Chunks, den die Datei im Gesamt-Fortschritt einnehmen darf.
@@ -155,10 +155,10 @@ public class CamtUmsatzImporter implements Importer
   private Stats doImport(int chunk, int no, InputStream is, Konto konto, ProgressMonitor monitor, BackgroundTask t) throws Exception
   {
     Stats stats = new Stats();
-    
+
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     IOUtil.copy(is,bos);
-    
+
     SepaVersion version = SepaVersion.autodetect(new ByteArrayInputStream(bos.toByteArray()));
     if (version == null)
       throw new ApplicationException(i18n.tr("SEPA-Version der XML-Datei nicht ermittelbar"));
@@ -173,7 +173,7 @@ public class CamtUmsatzImporter implements Importer
     List<BTag> tage = new ArrayList<BTag>();
     ISEPAParser<List<BTag>> parser = SEPAParserFactory.get(version);
     parser.parse(new ByteArrayInputStream(bos.toByteArray()),tage);
-    
+
     List<UmsLine> lines = new ArrayList<UmsLine>();
     for (BTag tag:tage)
     {
@@ -188,7 +188,7 @@ public class CamtUmsatzImporter implements Importer
       {
         int add = (int)((i+1) * factor);
         monitor.log(i18n.tr("Umsatz {0}", Integer.toString(i+1)));
-        
+
         int offset = 0;
         if (chunk < 100)
           offset = chunk * no;
@@ -222,16 +222,16 @@ public class CamtUmsatzImporter implements Importer
       catch (Exception e)
       {
         Logger.error("unable to import line",e);
-        
+
         if (monitor != null)
           monitor.log("  " + i18n.tr("Fehler beim Import des Datensatzes: {0}",e.getMessage()));
         stats.error++;
       }
     }
-    
+
     return stats;
   }
-  
+
   /**
    * Kapselt die Counter mit den erstellten und fehlerhaften Buchungen.
    */
@@ -240,7 +240,7 @@ public class CamtUmsatzImporter implements Importer
     private int created = 0;
     private int error = 0;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getName()
    */
@@ -256,13 +256,13 @@ public class CamtUmsatzImporter implements Importer
   {
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
-    
+
     IOFormat fXml = new MyIOFormat() {
       public String getName()
       {
         return CamtUmsatzImporter.this.getName() + " (XML)";
       }
-      
+
       /**
        * @see de.willuhn.jameica.hbci.io.CamtUmsatzImporter.MyIOFormat#isZip()
        */
@@ -285,7 +285,7 @@ public class CamtUmsatzImporter implements Importer
       {
         return CamtUmsatzImporter.this.getName() + " (ZIP)";
       }
-      
+
       /**
        * @see de.willuhn.jameica.hbci.io.CamtUmsatzImporter.MyIOFormat#isZip()
        */
@@ -305,7 +305,7 @@ public class CamtUmsatzImporter implements Importer
     };
     return new IOFormat[] { fXml,fZip };
   }
-  
+
   /**
    * Fuegt einen Marker hinzu, um zu erkennen, ob es eine ZIP-Datei ist.
    */
@@ -317,5 +317,5 @@ public class CamtUmsatzImporter implements Importer
      */
     public boolean isZip();
   }
-  
+
 }

@@ -33,7 +33,7 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
   private double einnahmen = 0.0d;
   private double ausgaben  = 0.0d;
   private double betrag    = 0.0d;
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
    */
@@ -70,11 +70,11 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
         this.renderNode(reporter,(UmsatzTreeNode) list.get(i),0);
         reporter.setNextRecord();
       }
-      
+
       Boolean b = (Boolean) Exporter.SESSION.get(ExportAddSumRowExtension.KEY_SUMROW_ADD);
       if (b != null && b.booleanValue())
         this.renderSum(reporter);
-      
+
       if (monitor != null) monitor.setStatus(ProgressMonitor.STATUS_DONE);
     }
     catch (Exception e)
@@ -112,7 +112,7 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
     {
       name = "    " + name;
     }
-    
+
     PdfPCell cell = reporter.getDetailCell(name, Element.ALIGN_LEFT);
     reporter.addColumn(cell);
 
@@ -122,7 +122,7 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
     reporter.addColumn(reporter.getDetailCell(de));
     reporter.addColumn(reporter.getDetailCell(da));
     reporter.addColumn(reporter.getDetailCell(db));
-    
+
     // Summen - nur die Summen der obersten Ebene zaehlen
     if (level == 0)
     {
@@ -137,7 +137,7 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
       renderNode(reporter, children.get(i), level+1);
     }
   }
-  
+
   /**
    * Rendert die Summen.
    * @param reporter der Reporter.

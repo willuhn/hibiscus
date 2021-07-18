@@ -52,7 +52,7 @@ public class ClipboardSepaUeberweisungImporter
         return null;
 
       text = text.trim();
-      
+
       // Fuer den Fall, dass wir Key+Value nicht nur durch Doppelpunkt sondern zusaetzlich
       // auch noch durch einen Zeilenumbruch getrennt sind, entfernen wir Zeilen-Umbrueche,
       // wenn sie auf einen Doppelpunkt folgen

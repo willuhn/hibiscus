@@ -42,10 +42,9 @@ public abstract class AbstractImporter implements Importer
     try
     {
       Object[] objects = this.setup(context,format,is,monitor);
-      
 
       Map ctx = new HashMap();
-      
+
       double factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
       monitor.setStatusText(i18n.tr("Importiere Daten"));
 
@@ -92,7 +91,7 @@ public abstract class AbstractImporter implements Importer
       IOUtil.close(is);
     }
   }
-  
+
   /**
    * Initialisiert den Import fuer die Objekte.
    * @param context Context, der dem Importer hilft, den Zusammenhang zu erkennen,
@@ -103,7 +102,7 @@ public abstract class AbstractImporter implements Importer
    * @throws Exception
    */
   abstract Object[] setup(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws Exception;
-  
+
   /**
    * Beendet den Import.
    * @param objects die zu importierenden Objekte.
@@ -116,7 +115,6 @@ public abstract class AbstractImporter implements Importer
   {
   }
 
-  
   /**
    * Fuehrt den Import fuer ein einzelnes Objekt aus.
    * @param o das zu importierende Objekt.
@@ -126,20 +124,20 @@ public abstract class AbstractImporter implements Importer
    * @throws Exception
    */
   abstract void importObject(Object o, int idx, Map ctx) throws Exception;
-  
+
   /**
    * Liefert eine Liste von Objekt-Typen, die von diesem IO unterstuetzt werden.
    * @return Liste der unterstuetzten Formate.
    */
   abstract Class[] getSupportedObjectTypes();
-  
+
   /**
    * Liefert die Datei-Endungen des Formats.
    * Zum Beispiel "*.csv" oder "*.txt".
    * @return Datei-Endung.
    */
   abstract String[] getFileExtensions();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
    */
@@ -153,7 +151,7 @@ public abstract class AbstractImporter implements Importer
     Class[] supported = getSupportedObjectTypes();
     if (supported == null || supported.length == 0)
       return null;
-    
+
     for (int i=0;i<supported.length;++i)
     {
       if (objectType.equals(supported[i]))
@@ -169,7 +167,7 @@ public abstract class AbstractImporter implements Importer
   class MyIOFormat implements IOFormat
   {
     Class type = null;
-    
+
     /**
      * ct.
      * @param type
@@ -197,5 +195,3 @@ public abstract class AbstractImporter implements Importer
   }
 
 }
-
-

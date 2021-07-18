@@ -49,7 +49,7 @@ public class XMLSammelTransferExporter extends XMLExporter
   {
     if (objectType == null)
       return null;
-    
+
     if (!SammelTransfer.class.isAssignableFrom(objectType))
       return null; // Nur fuer Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
 
@@ -58,7 +58,7 @@ public class XMLSammelTransferExporter extends XMLExporter
       {
         return i18n.tr("Hibiscus-Format");
       }
-    
+
       /**
        * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
        */
