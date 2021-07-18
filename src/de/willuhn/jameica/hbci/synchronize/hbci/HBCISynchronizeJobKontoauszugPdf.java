@@ -36,7 +36,7 @@ import de.willuhn.util.I18N;
 public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugPdf implements HBCISynchronizeJob
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJob#createHBCIJobs()
    */
@@ -54,7 +54,7 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
 
     return jobs.toArray(new AbstractHBCIJob[jobs.size()]);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.AbstractSynchronizeJob#getName()
    */
@@ -66,7 +66,7 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
       Konto k = (Konto) this.getContext(CTX_ENTITY);
 
       String format = null;
-      
+
       // Checken, ob wir PDF-Format unterstuetzen. Falls nicht, schreiben wir das
       // auch so in die Beschreibung des Jobs.
       Support support = BPDUtil.getSupport(k,BPDUtil.Query.KontoauszugPdf);
@@ -88,7 +88,7 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
             format = formats.get(0).name();
         }
       }
-      
+
       if (format == null)
         return i18n.tr("{0}: Elektronische Kontoauszüge abrufen",k.getLongName());
 
@@ -98,7 +98,7 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
     {
       Logger.error("unable to stringify job",e);
     }
-    
+
     return i18n.tr("Unbekannter Auftrag");
   }
 

@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.synchronize.jobs;
 
-
-
 /**
  * Standard-Job zum Anlegen/Aendern eines SEPA-Dauerauftrages.
  */
@@ -25,5 +23,3 @@ public class SynchronizeJobSepaDauerauftragStore extends AbstractSynchronizeJob
     return false;
   }
 }
-
-

@@ -159,7 +159,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
 
     return super.execute(jobs);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -170,9 +170,9 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     {
       if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
         return null;
-      
+
       List<String> result = new ArrayList<String>();
-      
+
       // Wir fragen mal die Job-Provider
       List<HBCISynchronizeJobProvider> providers = this.getJobProviders();
       for (HBCISynchronizeJobProvider p:providers)
@@ -187,7 +187,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           }
         }
       }
-      
+
       return result;
     }
     catch (RemoteException re)
@@ -196,7 +196,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       return null;
     }
   }
-  
+
   /**
    * Prueft, ob das Konto prinzipiell unterstuetzt wird.
    * @param konto das Konto.
@@ -208,7 +208,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     {
       if (konto == null || konto.hasFlag(Konto.FLAG_OFFLINE) || konto.hasFlag(Konto.FLAG_DISABLED))
         return false;
-      
+
       SynchronizeBackend backend = engine.getBackend(konto);
       return (backend == null || backend.equals(this));
     }
@@ -218,8 +218,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     }
     return false;
   }
-
-
 
   /**
    * Hilfsklasse, um die Jobs nach Konten zu gruppieren.
@@ -246,7 +244,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       ////////////////////////////////////////////////////////////////////
       // lokale Variablen
       ProgressMonitor monitor = HBCISynchronizeBackend.this.worker.getMonitor();
-      
+
       Application.getMessagingFactory().getMessagingQueue(HBCI_TRACE).sendMessage(new HBCITraceMessage(HBCITraceMessage.Type.ID,this.getKonto().getID()));
       Application.getMessagingFactory().getMessagingQueue(HBCI_TRACE).sendMessage(new HBCITraceMessage(HBCITraceMessage.Type.INFO,"\n\n" + i18n.tr("{0} Synchronisiere Konto: {1}",HBCI.LONGDATEFORMAT.format(new Date()),this.getKonto().getLongName())));
 
@@ -275,7 +273,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         this.handler          = new TaskHandleOpen(handle).execute();
 
         Logger.info("processing jobs");
-        
+
         List<AbstractHBCIJob> hbciJobs = new ArrayList<AbstractHBCIJob>();
         for (SynchronizeJob job:this.jobs)
         {
@@ -288,7 +286,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
             hbciJobs.add(hbciJob);
           }
         }
-        
+
         ok = this.executeJobs(monitor,hbciJobs,ok);
       }
       catch (Exception e)
@@ -333,7 +331,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         }
       }
     }
-    
+
     /**
      * Fuehrt die HBCI-Jobs aus.
      * @param monitor der Monitor.
@@ -398,7 +396,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           {
             ok = false;
             final boolean interrupted = HBCISynchronizeBackend.this.worker.isInterrupted();
-            
+
             // Nur loggen, wenn wir nicht abgebrochen wurden. Waeren sonst nur Folgefehler
             // Im Debug-Log erscheint es aber trotzdem
             Logger.write(Level.DEBUG,"error while processing job result, have error: " + (!ok) + ", interrupted: " + interrupted,t);
@@ -426,7 +424,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
           this.executeJobs(monitor, followers, ok);
         }
       }
-      
+
       return ok;
     }
 
@@ -586,7 +584,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       }
     }
 
-
     /**
      * Wrappt einen Task als Runnable, damit es je nach Laufzeit-Umgebung direkt oder im GUI-Thread ausgefuehrt werden kann.
      */
@@ -641,5 +638,3 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     }
   }
 }
-
-

@@ -49,7 +49,7 @@ public class HBCISynchronizeJobProviderSepaLastschrift extends AbstractHBCISynch
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
-    
+
     for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
@@ -58,7 +58,7 @@ public class HBCISynchronizeJobProviderSepaLastschrift extends AbstractHBCISynch
 
         if (!options.getSyncSepaLastschriften())
           continue;
-        
+
         // Einzellastschriften
         DBIterator list = kt.getSepaLastschriften();
         list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
@@ -67,12 +67,12 @@ public class HBCISynchronizeJobProviderSepaLastschrift extends AbstractHBCISynch
           SepaLastschrift u = (SepaLastschrift) list.next();
           if (!u.ueberfaellig() || u.ausgefuehrt()) // Doppelt haelt besser ;)
             continue; // Nur ueberfaellige Auftraege
-          
+
           SynchronizeJobSepaLastschrift job = backend.create(SynchronizeJobSepaLastschrift.class,kt);
           job.setContext(SynchronizeJob.CTX_ENTITY,u);
           jobs.add(job);
         }
-        
+
         // Sammellastschriften
         list = k.getSepaSammelLastschriften();
         list.addFilter("(ausgefuehrt is null or ausgefuehrt = 0)"); // Schnelleres Laden durch vorheriges Aussortieren
@@ -81,7 +81,7 @@ public class HBCISynchronizeJobProviderSepaLastschrift extends AbstractHBCISynch
           SepaSammelLastschrift sl = (SepaSammelLastschrift) list.next();
           if (!sl.ueberfaellig() || sl.ausgefuehrt()) // Doppelt haelt besser ;)
             continue; // Nur ueberfaellige Auftraege
-          
+
           SynchronizeJobSepaSammelLastschrift job = backend.create(SynchronizeJobSepaSammelLastschrift.class,kt);
           job.setContext(SynchronizeJob.CTX_ENTITY,sl);
           jobs.add(job);

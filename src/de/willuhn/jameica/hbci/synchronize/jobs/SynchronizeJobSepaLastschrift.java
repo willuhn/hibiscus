@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.synchronize.jobs;
 
-
-
 /**
  * Standard-Job zur Ausfuehrung von SEPA-Lastschriften.
  */
@@ -26,5 +24,3 @@ public class SynchronizeJobSepaLastschrift extends AbstractSynchronizeJob
     return false;
   }
 }
-
-

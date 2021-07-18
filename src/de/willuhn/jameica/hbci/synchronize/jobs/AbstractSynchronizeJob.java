@@ -37,7 +37,7 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
   {
     return this.ctx.get(key);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#setContext(java.lang.String, java.lang.Object)
    */
@@ -45,7 +45,7 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
   {
     this.ctx.put(key,value);
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getKonto()
    */
@@ -53,7 +53,7 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
   {
     return this.konto;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -61,7 +61,7 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
   {
     this.konto = konto;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#configure()
    */
@@ -69,7 +69,7 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
   {
     new Open().handleAction(this.getContext(SynchronizeJob.CTX_ENTITY));
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getName()
    */

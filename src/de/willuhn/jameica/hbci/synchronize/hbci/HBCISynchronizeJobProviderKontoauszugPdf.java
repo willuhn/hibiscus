@@ -40,14 +40,14 @@ public class HBCISynchronizeJobProviderKontoauszugPdf extends AbstractHBCISynchr
   {{
     add(HBCISynchronizeJobKontoauszugPdf.class);
   }};
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
-    
+
     for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
@@ -56,7 +56,7 @@ public class HBCISynchronizeJobProviderKontoauszugPdf extends AbstractHBCISynchr
 
         if (!options.getSyncKontoauszuegePdf())
           continue;
-        
+
         // Checken, ob das Konto diesen Job unterstuetzt
         if (!KontoauszugPdfUtil.supported(kt))
           continue;
@@ -66,7 +66,7 @@ public class HBCISynchronizeJobProviderKontoauszugPdf extends AbstractHBCISynchr
         Date next = KontoauszugInterval.getNextInterval(k);
         if (next == null || next.after(new Date()))
           continue; // Kein Abruf faellig fuer dieses Konto.
-        
+
         SynchronizeJobKontoauszugPdf job = backend.create(SynchronizeJobKontoauszugPdf.class,kt);
         job.setContext(SynchronizeJob.CTX_ENTITY,kt);
         jobs.add(job);
@@ -79,7 +79,7 @@ public class HBCISynchronizeJobProviderKontoauszugPdf extends AbstractHBCISynchr
 
     return jobs;
   }
-  
+
   /**
    * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    */
@@ -89,7 +89,7 @@ public class HBCISynchronizeJobProviderKontoauszugPdf extends AbstractHBCISynchr
     // Kein Konto angegeben. Dann gehen wir mal davon aus, dass es geht
     if (k == null)
       return true;
-    
+
     return KontoauszugPdfUtil.supported(k);
   }
 

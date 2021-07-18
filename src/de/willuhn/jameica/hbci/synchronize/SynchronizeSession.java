@@ -28,7 +28,7 @@ public class SynchronizeSession
   private double progressWindow = 100d;
   private List<String> warnings = new ArrayList<String>();
   private List<String> errors = new ArrayList<String>();
-  
+
   /**
    * ct.
    * @param worker
@@ -37,7 +37,7 @@ public class SynchronizeSession
   {
     this.worker = worker;
   }
-  
+
   /**
    * Liefert das aktuelle Konto.
    * @return konto das aktuelle Konto.
@@ -47,7 +47,7 @@ public class SynchronizeSession
     JobGroup group = this.worker.getCurrentJobGroup();
     return group != null ? group.getKonto() : null;
   }
-  
+
   /**
    * Liefert den Progress-Monitor.
    * @return monitor der Progress-Monitor.
@@ -56,7 +56,7 @@ public class SynchronizeSession
   {
     return this.worker.getMonitor();
   }
-  
+
   /**
    * Liefert die Anzahl der Prozentpunkte, innerhalb derer die aktuelle Job-Gruppe den Fortschritt erhoehen darf.
    * @return die Anzahl der Prozentpunkte.
@@ -65,7 +65,7 @@ public class SynchronizeSession
   {
     return progressWindow;
   }
-  
+
   /**
    * Speichert die Anzahl der Prozentpunkte, innerhalb derer die aktuelle Job-Gruppe den Fortschritt erhoehen darf.
    * @param progressWindow die Anzahl der Prozentpunkte.
@@ -74,7 +74,7 @@ public class SynchronizeSession
   {
     this.progressWindow = progressWindow;
   }
-  
+
   /**
    * Liefert den aktuellen Status der Synchronisierung.
    * @return der aktuelle Status der Synchronisierung.
@@ -88,7 +88,7 @@ public class SynchronizeSession
   {
     return this.status;
   }
-  
+
   /**
    * Setzt den aktuellen Status der Synchronisierung.
    * @param status der aktuelle Status der Synchronisierung.
@@ -97,7 +97,7 @@ public class SynchronizeSession
   {
     this.status = status;
   }
-  
+
   /**
    * Bricht die Synchronisierung ab.
    */
@@ -105,7 +105,7 @@ public class SynchronizeSession
   {
     this.worker.interrupt();
   }
-  
+
   /**
    * Liefert die Liste der Warnungen.
    * @return warnings die Liste der Warnungen.
@@ -114,7 +114,7 @@ public class SynchronizeSession
   {
     return warnings;
   }
-  
+
   /**
    * Liefert die Liste der Fehlermeldungen.
    * @return errors die Liste der Fehlermeldungen.

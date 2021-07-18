@@ -49,7 +49,7 @@ public class HBCISynchronizeJobProviderSepaDauerauftrag extends AbstractHBCISync
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     List<SynchronizeJob> jobs = new LinkedList<SynchronizeJob>();
-    
+
     for (Konto kt:backend.getSynchronizeKonten(k))
     {
       try
@@ -58,7 +58,7 @@ public class HBCISynchronizeJobProviderSepaDauerauftrag extends AbstractHBCISync
 
         if (!options.getSyncSepaDauerauftraege())
           continue;
-        
+
         // Senden der neuen Dauerauftraege
         DBIterator list = kt.getSepaDauerauftraege();
         while (list.hasNext())
@@ -66,12 +66,12 @@ public class HBCISynchronizeJobProviderSepaDauerauftrag extends AbstractHBCISync
           SepaDauerauftrag d = (SepaDauerauftrag) list.next();
           if (d.isActive())
             continue; // Der wurde schon gesendet
-          
+
           SynchronizeJobSepaDauerauftragStore job = backend.create(SynchronizeJobSepaDauerauftragStore.class,kt);
           job.setContext(SynchronizeJob.CTX_ENTITY,d);
           jobs.add(job);
         }
-        
+
         // Abrufen der existierenden Dauerauftraege.
         SynchronizeJobSepaDauerauftragList job = backend.create(SynchronizeJobSepaDauerauftragList.class,kt);
         job.setContext(SynchronizeJob.CTX_ENTITY,kt);

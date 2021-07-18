@@ -26,31 +26,31 @@ public class HBCITraceMessage implements Message
      * rohe HBCI-Message gesendet.
      */
     SEND,
-    
+
     /**
      * rohe HBCI-Message empfangen.
      */
     RECV,
-    
+
     /**
      * Freitext-Informationen zum Kontext.
      */
     INFO,
-    
+
     /**
      * Identifier.
      */
     ID,
-    
+
     /**
      * Session fuer die ID geschlossen.
      */
     CLOSE,
   }
-  
+
   private Type type = null;
   private String data = null;
-  
+
   /**
    * ct.
    * @param type
@@ -61,7 +61,7 @@ public class HBCITraceMessage implements Message
     this.type = type;
     this.data = data;
   }
-  
+
   /**
    * Liefert den Payload der Message.
    * @return der Payload der Message.
@@ -70,7 +70,7 @@ public class HBCITraceMessage implements Message
   {
     return data;
   }
-  
+
   /**
    * Liefert den Typ der Message.
    * @return der Typ der Message.
@@ -81,5 +81,3 @@ public class HBCITraceMessage implements Message
   }
 
 }
-
-
