@@ -32,7 +32,8 @@ public class KontoColumn extends Column
    */
   public KontoColumn()
   {
-    super("konto_id", i18n.tr("Konto"),new Formatter() {
+    super("konto_id", i18n.tr("Konto"), new Formatter()
+    {
       /**
        * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
        */

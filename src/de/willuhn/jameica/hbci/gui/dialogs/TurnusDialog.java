@@ -81,7 +81,8 @@ public class TurnusDialog extends AbstractDialog
     {
       public void format(TableItem item)
       {
-        try {
+        try
+        {
           Turnus t = (Turnus) item.getData();
           if (t.isInitial())
           {

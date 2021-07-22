@@ -87,7 +87,8 @@ public class KontoNew extends AbstractView
 
     final KontoInput quickSelect = new KontoInput(k,KontoFilter.ALL);
     quickSelect.setName(i18n.tr("Konto wechseln"));
-    quickSelect.addListener(new Listener() {
+    quickSelect.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         try

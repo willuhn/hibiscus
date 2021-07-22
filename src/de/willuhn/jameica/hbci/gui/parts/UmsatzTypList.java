@@ -65,7 +65,8 @@ public class UmsatzTypList extends TablePart implements Part
     addColumn(i18n.tr("Bezeichnung"),"name");
     addColumn(i18n.tr("Nummer"),"nummer-int"); // BUGZILLA 554
     addColumn(i18n.tr("Suchbegriff"),"pattern"); // BUGZILLA 756
-    addColumn(i18n.tr("Umsatzart"),"umsatztyp",new Formatter() {
+    addColumn(i18n.tr("Umsatzart"), "umsatztyp", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null)
@@ -137,7 +138,8 @@ public class UmsatzTypList extends TablePart implements Part
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -183,7 +185,8 @@ public class UmsatzTypList extends TablePart implements Part
       if (data == null || !(data instanceof UmsatzTyp))
         return;
 
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           try

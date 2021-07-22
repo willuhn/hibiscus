@@ -44,7 +44,8 @@ public class UeberweisungNew extends AbstractView
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
+  public void bind() throws Exception
+  {
 
 		final UeberweisungControl control = new UeberweisungControl(this);
     this.transfer = (Ueberweisung) control.getTransfer();
@@ -86,8 +87,10 @@ public class UeberweisungNew extends AbstractView
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
-    Button store = new Button(i18n.tr("Speichern"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store = new Button(i18n.tr("Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
       	control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");

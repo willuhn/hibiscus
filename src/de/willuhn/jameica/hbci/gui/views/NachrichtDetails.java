@@ -26,14 +26,16 @@ import de.willuhn.util.I18N;
 /**
  * Zeigt eine System-Nachricht an.
  */
-public class NachrichtDetails extends AbstractView {
+public class NachrichtDetails extends AbstractView
+{
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
+  public void bind() throws Exception
+  {
 
     NachrichtControl control = new NachrichtControl(this);
     

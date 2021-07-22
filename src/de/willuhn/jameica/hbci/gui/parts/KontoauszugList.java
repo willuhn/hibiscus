@@ -135,7 +135,8 @@ public class KontoauszugList extends UmsatzList
     // bei Ausloesungen ueber SWT-Events verzoegern wir
     // das Reload, um schnell aufeinanderfolgende Updates
     // zu buendeln.
-    this.listener = new DelayedListener(700,new Listener() {
+    this.listener = new DelayedListener(700, new Listener()
+    {
       public void handleEvent(Event event)
       {
         handleReload(false);
@@ -203,7 +204,8 @@ public class KontoauszugList extends UmsatzList
     // Wir merken uns das aktive Tab.
     Integer tab = (Integer) cache.get("tab");
     if (tab != null) folder.setSelection(tab);
-    folder.addDisposeListener(new DisposeListener() {
+    folder.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         cache.put("tab",folder.getSelectionIndex());
@@ -252,7 +254,8 @@ public class KontoauszugList extends UmsatzList
     
     buttons.paint(parent);
     
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         disposed = true;
@@ -611,15 +614,35 @@ public class KontoauszugList extends UmsatzList
     if (end != null)   umsaetze.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     /////////////////////////////////////////////////////////////////
     // Gegenkonto
-    if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("LOWER(empfaenger_blz) like ?","%" + gkBLZ.toLowerCase() + "%");this.filterCount++;}
-    if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("LOWER(empfaenger_konto) like ?","%" + gkNummer.toLowerCase() + "%");this.filterCount++;}
-    if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?","%" + gkName.toLowerCase() + "%");this.filterCount++;}
+    if (gkBLZ != null && gkBLZ.length() > 0)
+    {
+      umsaetze.addFilter("LOWER(empfaenger_blz) like ?", "%" + gkBLZ.toLowerCase() + "%");
+      this.filterCount++;
+    }
+    if (gkNummer != null && gkNummer.length() > 0)
+    {
+      umsaetze.addFilter("LOWER(empfaenger_konto) like ?", "%" + gkNummer.toLowerCase() + "%");
+      this.filterCount++;
+    }
+    if (gkName != null && gkName.length() > 0)
+    {
+      umsaetze.addFilter("LOWER(empfaenger_name) like ?", "%" + gkName.toLowerCase() + "%");
+      this.filterCount++;
+    }
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
     // Konto oder Kontogruppe
-    if (o != null && (o instanceof Konto))         {umsaetze.addFilter("konto_id = " + ((Konto) o).getID());this.filterCount++;}
-    else if (o != null && (o instanceof String))   {umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);this.filterCount++;}
+    if (o != null && (o instanceof Konto))
+    {
+      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
+      this.filterCount++;
+    }
+    else if (o != null && (o instanceof String))
+    {
+      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
+      this.filterCount++;
+    }
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
@@ -829,7 +852,8 @@ public class KontoauszugList extends UmsatzList
     if (!force && !hasChanged())
       return;
     
-    GUI.getDisplay().asyncExec(new Runnable() {
+    GUI.getDisplay().asyncExec(new Runnable()
+    {
       
       @Override
       public void run()
@@ -1065,7 +1089,8 @@ public class KontoauszugList extends UmsatzList
       String s = (String) cache.get("kontoauszug.list.search");
       this.setValue(s);
       this.hasChanged(); // Einmal initial triggern, damit bereits die erste Text-Eingabe als Aenderung erkannt wird
-      this.text.addKeyListener(new KeyAdapter() {
+      this.text.addKeyListener(new KeyAdapter()
+      {
         /**
          * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
          */

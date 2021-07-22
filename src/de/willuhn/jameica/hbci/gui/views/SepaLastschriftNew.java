@@ -100,7 +100,8 @@ public class SepaLastschriftNew extends AbstractView
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");
-    buttonArea.addButton(i18n.tr("Duplizieren..."), new Action() {
+    buttonArea.addButton(i18n.tr("Duplizieren..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (control.handleStore()) // BUGZILLA 1181
@@ -108,16 +109,20 @@ public class SepaLastschriftNew extends AbstractView
       }
     },null,false,"edit-copy.png");
 
-    Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
 				if (control.handleStore())
   				new SepaLastschriftExecute().handleAction(transfer);
       }
     },null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
     
-    Button store = new Button(i18n.tr("&Speichern"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store = new Button(i18n.tr("&Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
       	control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");

@@ -86,7 +86,8 @@ public class DonateView extends AbstractView
       final String name = "Olaf Willuhn";
       
       ButtonArea buttons = new ButtonArea();
-      buttons.addButton(i18n.tr("Dauerauftrag erstellen"),new Action() {
+      buttons.addButton(i18n.tr("Dauerauftrag erstellen"), new Action()
+      {
         public void handleAction(Object context) throws ApplicationException
         {
           try
@@ -115,7 +116,8 @@ public class DonateView extends AbstractView
           }
         }
       },null,false,"emblem-special.png");
-      buttons.addButton(i18n.tr("...oder Überweisung"),new Action() {
+      buttons.addButton(i18n.tr("...oder Überweisung"), new Action()
+      {
         public void handleAction(Object context) throws ApplicationException
         {
           try

@@ -87,7 +87,8 @@ public class NachrichtList extends TablePart implements Part
         return i18n.tr("{0} [BLZ: {1}]", new String[] {HBCIProperties.getNameForBank(blz),blz});
       }
     });
-    addColumn(i18n.tr("Nachricht"),"nachricht", new Formatter() {
+    addColumn(i18n.tr("Nachricht"), "nachricht", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null)

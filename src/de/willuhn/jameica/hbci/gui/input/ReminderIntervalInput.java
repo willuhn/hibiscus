@@ -78,7 +78,8 @@ public class ReminderIntervalInput implements Input
     {
       this.input = new LinkInput(i18n.tr("von dieser <a>Vorlage</a>"));
       this.input.setName(i18n.tr("Wiederholung"));
-      this.input.addListener(new Listener() {
+      this.input.addListener(new Listener()
+      {
         public void handleEvent(Event event)
         {
           try
@@ -131,7 +132,8 @@ public class ReminderIntervalInput implements Input
     ((DialogInput)this.input).disableClientControl(); // Freitext-Eingabe gibts nicht.
 
     this.dialog = new ReminderIntervalDialog(ri,termin,end,ReminderIntervalDialog.POSITION_CENTER);
-    this.dialog.addCloseListener(new Listener() {
+    this.dialog.addCloseListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         if (event.detail == SWT.CANCEL)
@@ -147,7 +149,8 @@ public class ReminderIntervalInput implements Input
     // sofort - ohne Klick auf Speichern
     if (this.order.ausgefuehrt())
     {
-      this.input.addListener(new Listener() {
+      this.input.addListener(new Listener()
+      {
         public void handleEvent(Event event)
         {
           try
@@ -272,7 +275,8 @@ public class ReminderIntervalInput implements Input
     final MessageConsumer mc = new DateChangedConsumer();
     final MessagingQueue queue = Application.getMessagingFactory().getMessagingQueue(TerminInput.QUEUE_TERMIN_CHANGED);
     queue.registerMessageConsumer(mc);
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         queue.unRegisterMessageConsumer(mc);

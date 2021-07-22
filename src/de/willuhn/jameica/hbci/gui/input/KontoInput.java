@@ -189,7 +189,8 @@ public class KontoInput extends SelectInput
     this.control = super.getControl();
 
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
-    this.control.addDisposeListener(new DisposeListener() {
+    this.control.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -356,9 +357,11 @@ public class KontoInput extends SelectInput
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+    {
 
-      try {
+      try
+      {
         Object o = getValue();
         if (o == null || !(o instanceof Konto))
         {
@@ -408,7 +411,8 @@ public class KontoInput extends SelectInput
 
       final Konto konto = (Konto) o;
 
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           // Checken, ob wir das Konto in der Liste haben. Wenn ja, aktualisieren

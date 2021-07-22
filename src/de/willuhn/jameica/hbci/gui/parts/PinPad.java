@@ -86,7 +86,8 @@ public class PinPad implements Part
     b.setLayoutData(gd);
     b.addSelectionListener(new SelectionAdapter()
     {
-      public void widgetSelected(SelectionEvent e) {
+      public void widgetSelected(SelectionEvent e)
+      {
         input.setValue("");
       }
     });
@@ -108,7 +109,8 @@ public class PinPad implements Part
     b.setLayoutData(gd);
     b.addSelectionListener(new SelectionAdapter()
     {
-      public void widgetSelected(SelectionEvent e) {
+      public void widgetSelected(SelectionEvent e)
+      {
         String curr = (String) input.getValue();
         if (curr == null)
           curr = "";

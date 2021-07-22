@@ -56,7 +56,8 @@ public class AuslandsUeberweisungList extends ContextMenu
     addItem(new NotActiveSingleMenuItem(i18n.tr("Jetzt ausführen..."), new AuslandsUeberweisungExecute(),"emblem-important.png"));
     addItem(new NotActiveMultiMenuItem(i18n.tr("Als \"ausgeführt\" markieren..."), new TerminableMarkExecuted(),"emblem-default.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedContextMenuItem(i18n.tr("Drucken..."),new Action() {
+    addItem(new CheckedContextMenuItem(i18n.tr("Drucken..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new Print().handleAction(new PrintSupportAuslandsUeberweisungList(context));

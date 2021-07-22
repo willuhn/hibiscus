@@ -58,7 +58,8 @@ public abstract class AbstractDateInput extends DateInput
     this.param = parameter != null ? parameter : "date";
     
     // Listener zur Ueberwachung der Aenderungen
-    this.addListener(new Listener() {
+    this.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         store();

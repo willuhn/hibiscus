@@ -37,7 +37,8 @@ public class UeberweisungList extends AbstractView
     
     final de.willuhn.jameica.hbci.gui.parts.UeberweisungList table = control.getUeberweisungListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportUeberweisungList(table));
-    table.addSelectionListener(new Listener() {
+    table.addSelectionListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         print.setEnabled(table.getSelection() != null);

@@ -80,7 +80,8 @@ public class PassportAuswahlDialog extends AbstractDialog
     c.addInput(this.getComment());
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Übernehmen"), new Action() {
+    buttons.addButton(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -100,7 +101,8 @@ public class PassportAuswahlDialog extends AbstractDialog
         }
       }
     },null,true,"ok.png");
-    buttons.addButton(i18n.tr("Abbrechen"),new Action() {
+    buttons.addButton(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException(i18n.tr("Vorgang abgebrochen"));

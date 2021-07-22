@@ -96,8 +96,10 @@ public class KontoauszugPdfList extends TablePart
 
     this.addFeature(new FeatureShortcut());
 
-    this.listener = new Listener() {
-      public void handleEvent(Event event) {
+    this.listener = new Listener()
+    {
+      public void handleEvent(Event event)
+      {
         // Wenn das event "null" ist, kann es nicht von SWT ausgeloest worden sein
         // sondern manuell von uns. In dem Fall machen wir ein forciertes Update
         // - ohne zu beruecksichtigen, ob in den Eingabe-Feldern wirklich was
@@ -106,7 +108,8 @@ public class KontoauszugPdfList extends TablePart
       }
     };
 
-    this.setFormatter(new TableFormatter() {
+    this.setFormatter(new TableFormatter()
+    {
       
       @Override
       public void format(TableItem item)
@@ -151,7 +154,8 @@ public class KontoauszugPdfList extends TablePart
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoauszugPdfList());
     
-    this.addChangeListener(new TableChangeListener() {
+    this.addChangeListener(new TableChangeListener()
+    {
       public void itemChanged(Object object, String attribute, String newValue) throws ApplicationException
       {
         try
@@ -218,7 +222,8 @@ public class KontoauszugPdfList extends TablePart
    
     this.handleReload(true);
     
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -448,7 +453,8 @@ public class KontoauszugPdfList extends TablePart
       if (!(o instanceof Kontoauszug))
         return;
 
-      GUI.getDisplay().asyncExec(new Runnable() {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
         public void run()
         {
           try

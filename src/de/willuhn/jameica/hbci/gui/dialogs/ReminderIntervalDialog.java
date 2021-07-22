@@ -97,7 +97,8 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
                        "Erinnerungstermin) automatisch durch Hibiscus " +
                        "dupliziert"),true);
 
-    final Listener listener = new Listener() {
+    final Listener listener = new Listener()
+    {
       public void handleEvent(Event event)
       {
         updatePreview();
@@ -107,7 +108,8 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
 
     ////////////////////////////////////////////////////////////////////////////
     // Die Buttons
-    final Button apply = new Button(i18n.tr("Übernehmen"), new Action() {
+    final Button apply = new Button(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         boolean enabled = ((Boolean)checkbox.getValue()).booleanValue();
@@ -115,7 +117,8 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
         close();
       }
     },null,true,"ok.png");
-    final Button cancel = new Button(i18n.tr("Abbrechen"), new Action() {
+    final Button cancel = new Button(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -152,7 +155,8 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     this.endInput = new DateInput(this.end,HBCI.DATEFORMAT);
     this.endInput.setName(i18n.tr("Letzte Ausführung"));
     
-    final Listener endCheck = new Listener() {
+    final Listener endCheck = new Listener()
+    {
       public void handleEvent(Event event)
       {
         Date myEnd = (Date) endInput.getValue();
@@ -183,7 +187,8 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     this.preview = new TablePart(null);
     this.preview.addColumn(i18n.tr("Vorschau auf die nächsten Folge-Termine"),null);
     this.preview.setSummary(false);
-    this.preview.setFormatter(new TableFormatter() {
+    this.preview.setFormatter(new TableFormatter()
+    {
       public void format(TableItem item)
       {
         Date d = (Date) item.getData();

@@ -58,7 +58,8 @@ public class KontoauszugSettingsDialog extends AbstractDialog
     final Container c = new SimpleContainer(parent);
     c.addInput(this.getDisplayAll());
     
-    final Button apply = new Button(i18n.tr("Übernehmen"),new Action() {
+    final Button apply = new Button(i18n.tr("Übernehmen"), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException

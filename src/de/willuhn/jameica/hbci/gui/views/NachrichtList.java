@@ -26,7 +26,8 @@ public class NachrichtList extends AbstractView
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
+  public void bind() throws Exception
+  {
 
 		GUI.getView().setTitle(i18n.tr("System-Nachrichten"));
 		

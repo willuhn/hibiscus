@@ -50,7 +50,8 @@ public class RangeList extends TablePart
     this.category = category;
 
     final ContextMenu ctx = new ContextMenu();
-    ctx.addItem(new ContextMenuItem(i18n.tr("Zurücksetzen"), new Action() {
+    ctx.addItem(new ContextMenuItem(i18n.tr("Zurücksetzen"), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException

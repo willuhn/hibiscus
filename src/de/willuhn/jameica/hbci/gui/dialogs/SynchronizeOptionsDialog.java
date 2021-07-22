@@ -169,7 +169,8 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     group.addText(i18n.tr("Bitte wählen Sie aus, welche Geschäftsvorfälle bei der " +
     		                  "Synchronisierung des Kontos ausgeführt werden sollen."),true);
     
-    this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
+    this.apply = new Button(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         
@@ -345,7 +346,8 @@ public class SynchronizeOptionsDialog extends AbstractDialog
       
       final CheckboxInput syncUms = this.getSyncUmsatz();
       
-      final Listener l = new Listener() {
+      final Listener l = new Listener()
+      {
         
         @Override
         public void handleEvent(Event event)
@@ -448,7 +450,8 @@ public class SynchronizeOptionsDialog extends AbstractDialog
     
     // Wir haengen hier noch einen Listener dran, der bewirkt, dass die Option nur dann auswaehlbar ist,
     // wenn wenigstens ein HBCI-Geschaeftsvorfall durchgefuehrt wird
-    final Listener l = new Listener() {
+    final Listener l = new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)

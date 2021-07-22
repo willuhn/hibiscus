@@ -98,7 +98,8 @@ public class ErweiterteVerwendungszwecke implements Part
 
     ////////////////////////////////////////////////////////////////////////////
     // Button zum Hinzufuegen von weiteren Zeilen
-    this.add = new Button("  +  ",new Action() {
+    this.add = new Button("  +  ", new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         int size = fields.size();

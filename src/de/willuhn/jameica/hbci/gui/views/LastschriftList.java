@@ -37,7 +37,8 @@ public class LastschriftList extends AbstractView
 
     final de.willuhn.jameica.hbci.gui.parts.LastschriftList table = control.getLastschriftListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportLastschriftList(table));
-    table.addSelectionListener(new Listener() {
+    table.addSelectionListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         print.setEnabled(table.getSelection() != null);

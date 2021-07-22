@@ -70,7 +70,8 @@ public class TransferMergeDialog extends AbstractDialog
    * @param t der zugehoerige Sammel-Auftrag.
    * @param position
    */
-  public TransferMergeDialog(SammelTransfer t, int position) {
+  public TransferMergeDialog(SammelTransfer t, int position)
+  {
     super(position);
 
     this.transfer = t;
@@ -81,7 +82,8 @@ public class TransferMergeDialog extends AbstractDialog
   /**
    * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
-  protected Object getData() throws Exception {
+  protected Object getData() throws Exception
+  {
     return this.transfer;
   }
 

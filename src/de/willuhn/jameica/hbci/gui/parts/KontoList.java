@@ -104,7 +104,8 @@ public class KontoList extends TablePart implements Part, Extendable
     this.addFeature(new FeatureSummary());
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer",null,false,Column.ALIGN_RIGHT);
-    addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
+    addColumn(i18n.tr("Bankleitzahl"), "blz", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null)
@@ -127,7 +128,8 @@ public class KontoList extends TablePart implements Part, Extendable
     addColumn(i18n.tr("Bezeichnung"),"bezeichnung");
     addColumn(i18n.tr("Gruppe"),"kategorie");
     addColumn(i18n.tr("Notiz"),"kommentar");
-    addColumn(i18n.tr("Verfahren"),"passport_class", new Formatter() {
+    addColumn(i18n.tr("Verfahren"), "passport_class", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null || !(o instanceof String))
@@ -158,7 +160,8 @@ public class KontoList extends TablePart implements Part, Extendable
       {
         Konto k = (Konto) item.getData();
         final int saldocolumn = 6;
-        try {
+        try
+        {
           double saldo = k.getSaldo();
           if ((saldo == 0 && k.getSaldoDatum() == null) || Double.isNaN(saldo))
             item.setText(saldocolumn,"");
@@ -337,7 +340,8 @@ public class KontoList extends TablePart implements Part, Extendable
    */
   private void reload()
   {
-    GUI.startSync(new Runnable() {
+    GUI.startSync(new Runnable()
+    {
       
       @Override
       public void run()
@@ -477,7 +481,8 @@ public class KontoList extends TablePart implements Part, Extendable
       if (o == null || !(o instanceof Konto))
         return;
 
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           try

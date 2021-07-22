@@ -114,7 +114,8 @@ public class EmpfaengerList extends TablePart implements Part
 
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
-    addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
+    addColumn(i18n.tr("Bankleitzahl"), "blz", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null)
@@ -219,7 +220,8 @@ public class EmpfaengerList extends TablePart implements Part
         // Es existieren mehrere. Wir zeigen eine Auswahl an
         final SelectInput select = new SelectInput(service.getAddressbooks(),null);
         select.setAttribute("name");
-        select.addListener(new Listener() {
+        select.addListener(new Listener()
+        {
           public void handleEvent(Event event)
           {
             Object value = select.getValue();
@@ -255,7 +257,8 @@ public class EmpfaengerList extends TablePart implements Part
     }
     
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mcImport);

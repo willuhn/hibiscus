@@ -27,7 +27,8 @@ public class PanelButtonNew extends PanelButton
    */
   public PanelButtonNew(final Class type)
   {
-    super("list-add.png", new Action() {
+    super("list-add.png", new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new Open().handleAction(type);

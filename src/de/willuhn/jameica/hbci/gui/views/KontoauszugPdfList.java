@@ -41,7 +41,8 @@ public class KontoauszugPdfList extends AbstractView
     
     list.paint(getParent());
     
-    PanelButton button = new PanelButton("document-properties.png",new Action() {
+    PanelButton button = new PanelButton("document-properties.png", new Action()
+    {
       @Override
       public void handleAction(Object context) throws ApplicationException
       {

@@ -69,7 +69,8 @@ public class UmsatzTypDetail extends AbstractView
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Löschen"),   new DBObjectDelete(),control.getCurrentObject(),false,"user-trash-full.png");
-    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
+    buttons.addButton(i18n.tr("Duplizieren..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (control.handleStore())

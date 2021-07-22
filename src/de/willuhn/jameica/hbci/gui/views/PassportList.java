@@ -47,7 +47,8 @@ public class PassportList extends AbstractView
     final PassportTree tree = control.getPassports();
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(new Button(i18n.tr("Neuer Bank-Zugang..."),new Action() {
+    buttons.addButton(new Button(i18n.tr("Neuer Bank-Zugang..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         // new de.willuhn.jameica.hbci.gui.action.AccountNew().handleAction(null);

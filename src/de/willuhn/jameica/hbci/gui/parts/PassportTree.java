@@ -53,7 +53,8 @@ public class PassportTree extends TreePart
    */
   public PassportTree() throws RemoteException
   {
-    super(init(),new Action() {
+    super(init(), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || (context instanceof Object[]))
@@ -68,7 +69,8 @@ public class PassportTree extends TreePart
     });
     this.addColumn(i18n.tr("Bezeichnung"),"name");
     
-    this.setFormatter(new TreeFormatter() {
+    this.setFormatter(new TreeFormatter()
+    {
       public void format(TreeItem item)
       {
         Object data = item.getData();
@@ -91,7 +93,8 @@ public class PassportTree extends TreePart
     this.setMulti(false);
     
     ContextMenu menu = new ContextMenu();
-    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"),new Action() {
+    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Öffnen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof ConfigObject))
@@ -106,7 +109,8 @@ public class PassportTree extends TreePart
         return (o instanceof ConfigObject) && super.isEnabledFor(o);
       }
     });
-    menu.addItem(new ContextMenuItem(i18n.tr("Neuer Bank-Zugang..."),new Action() {
+    menu.addItem(new ContextMenuItem(i18n.tr("Neuer Bank-Zugang..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         Object o = getSelection();
@@ -116,7 +120,8 @@ public class PassportTree extends TreePart
     },"list-add.png"));
     
     menu.addItem(ContextMenuItem.SEPARATOR);
-    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen"),new Action() {
+    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Löschen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof ConfigObject))

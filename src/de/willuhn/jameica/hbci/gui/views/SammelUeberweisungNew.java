@@ -66,7 +66,8 @@ public class SammelUeberweisungNew extends AbstractView
     group.addLabelPair(i18n.tr("Summe der Buchungen"),control.getSumme());
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Sammelauftrag löschen"),new Action() {
+    buttons.addButton(i18n.tr("Sammelauftrag löschen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new DBObjectDelete().handleAction(context);
@@ -82,8 +83,10 @@ public class SammelUeberweisungNew extends AbstractView
         }
       }
     },control.getTransfer(),false,"user-trash-full.png");
-    Button store = new Button(i18n.tr("Speichern"),new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store = new Button(i18n.tr("Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");

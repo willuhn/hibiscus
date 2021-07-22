@@ -72,7 +72,8 @@ public class UmsatzTypTree extends TreePart
     addColumn(i18n.tr("Bezeichnung"),"name");
     addColumn(i18n.tr("Reihenfolge"),"nummer"); // BUGZILLA 554/988
     addColumn(i18n.tr("Suchbegriff"),"pattern"); // BUGZILLA 756
-    addColumn(i18n.tr("Umsatzart"),"umsatztyp",new Formatter() {
+    addColumn(i18n.tr("Umsatzart"), "umsatztyp", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null)

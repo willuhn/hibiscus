@@ -127,7 +127,8 @@ public class SepaDauerauftragList extends TablePart implements Part
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -169,7 +170,8 @@ public class SepaDauerauftragList extends TablePart implements Part
       if (!(o instanceof SepaDauerauftrag))
         return;
 
-      GUI.startSync(new Runnable() {
+      GUI.startSync(new Runnable()
+      {
         public void run()
         {
           try

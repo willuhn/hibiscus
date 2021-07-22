@@ -99,7 +99,8 @@ public class UmsatzTypInput extends SelectInput
     this.setPleaseChoose(i18n.tr("<Keine Kategorie>"));
     
     // Checken, ob wir ueberhaupt irgendwelche Kategorien mit Kommentaren haben
-    this.haveComments = Settings.getDBService().execute("select count(id) from umsatztyp where kommentar is not null and kommentar != ''", null, new ResultSetExtractor() {
+    this.haveComments = Settings.getDBService().execute("select count(id) from umsatztyp where kommentar is not null and kommentar != ''", null, new ResultSetExtractor()
+    {
       
       @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
@@ -111,7 +112,8 @@ public class UmsatzTypInput extends SelectInput
     refreshComment();
     
     // Kommentar aktualisieren
-    this.addListener(new Listener() {
+    this.addListener(new Listener()
+    {
     
       public void handleEvent(Event event)
       {

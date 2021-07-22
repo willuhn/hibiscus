@@ -83,8 +83,10 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
     
     final CurrencyFormatter f = new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT);
     
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
+    setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
         SepaSammelTransfer l = (SepaSammelTransfer) item.getData();
         if (l == null)
           return;
@@ -243,7 +245,8 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -270,7 +273,8 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
       if (listener != null)
         this.insertDelay = new DelayedListener(listener);
       
-      this.updateDelay = new DelayedListener(new Listener() {
+      this.updateDelay = new DelayedListener(new Listener()
+      {
         
         @Override
         public void handleEvent(Event event)

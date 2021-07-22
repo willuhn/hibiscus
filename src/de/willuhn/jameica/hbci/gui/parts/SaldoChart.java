@@ -212,7 +212,8 @@ public class SaldoChart implements Part
     this.onlyActive = new CheckboxInput(settings.getBoolean("auswertungen.saldochart.filter.active",false));
     this.onlyActive.setName(i18n.tr("Nur aktive Konten"));
     this.onlyActive.addListener(this.reloadListener);
-    this.onlyActive.addListener(new org.eclipse.swt.widgets.Listener() {
+    this.onlyActive.addListener(new org.eclipse.swt.widgets.Listener()
+    {
 
       @Override
       public void handleEvent(Event event)
@@ -309,7 +310,8 @@ public class SaldoChart implements Part
         long d = start * 24l * 60l * 60l * 1000l;
         date = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
       }
-    } else if (getStart().getValue() != null)
+    }
+    else if (getStart().getValue() != null)
     {
       date = (Date) getStart().getValue();
     }
@@ -330,7 +332,8 @@ public class SaldoChart implements Part
     if (tiny)
     {
       return null;
-    } else
+    }
+    else
     {
       return (Date) getEnd().getValue();
     }

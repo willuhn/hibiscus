@@ -68,7 +68,8 @@ public class PassportPropertyDialog extends AbstractDialog
     table.paint(parent);
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("BPD löschen"),new Action() {
+    buttons.addButton(i18n.tr("BPD löschen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         String s = i18n.tr("Die BPD (Bank-Parameter-Daten) werden beim nächsten Verbindungsaufbau \n" +
@@ -101,7 +102,8 @@ public class PassportPropertyDialog extends AbstractDialog
         }
       }
     },null,false,"user-trash-full.png");
-    buttons.addButton(i18n.tr("Schließen"),new Action() {
+    buttons.addButton(i18n.tr("Schließen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         close();

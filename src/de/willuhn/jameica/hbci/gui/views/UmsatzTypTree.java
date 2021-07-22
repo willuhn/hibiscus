@@ -72,7 +72,8 @@ public class UmsatzTypTree extends AbstractView
       
       // Duerfen wir erst nach dem Zeichnen
       final Listener l = control.changedListener(t);
-      t.getControl().addKeyListener(new KeyAdapter(){
+      t.getControl().addKeyListener(new KeyAdapter()
+      {
         /**
          * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
          */
@@ -91,14 +92,16 @@ public class UmsatzTypTree extends AbstractView
 
     ButtonArea buttons = new ButtonArea();
 
-    buttons.addButton(i18n.tr("Alle aufklappen/zuklappen"), new Action() {
+    buttons.addButton(i18n.tr("Alle aufklappen/zuklappen"), new Action()
+    {
     
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleExpand();
       }
     },null,false,"folder.png");
-    buttons.addButton(i18n.tr("Exportieren..."), new Action(){
+    buttons.addButton(i18n.tr("Exportieren..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         // Muss ich in die Action verpacken, weil der Button sonst mit dem
@@ -128,7 +131,8 @@ public class UmsatzTypTree extends AbstractView
     buttons.paint(getParent());
 
     final TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-    folder.addSelectionListener(new SelectionAdapter() {
+    folder.addSelectionListener(new SelectionAdapter()
+    {
       public void widgetSelected(SelectionEvent e)
       {
         if (folder.getSelectionIndex() == 1)

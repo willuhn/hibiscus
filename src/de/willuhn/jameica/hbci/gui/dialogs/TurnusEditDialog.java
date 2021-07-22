@@ -39,7 +39,8 @@ import de.willuhn.util.I18N;
 /**
  * Turnus neu anlegen/aendern.
  */
-public class TurnusEditDialog extends AbstractDialog {
+public class TurnusEditDialog extends AbstractDialog
+{
 
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 

@@ -179,7 +179,8 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
     getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
     
-    getShell().addDisposeListener(new DisposeListener() {
+    getShell().addDisposeListener(new DisposeListener()
+    {
       
       @Override
       public void widgetDisposed(DisposeEvent e)
@@ -360,7 +361,8 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     this.messaging = new CheckboxInput(false);
     this.messaging.setName(MetaKey.KONTOAUSZUG_STORE_MESSAGING.getDescription());
     
-    Listener l = new Listener() {
+    Listener l = new Listener()
+    {
       @Override
       public void handleEvent(Event event)
       {

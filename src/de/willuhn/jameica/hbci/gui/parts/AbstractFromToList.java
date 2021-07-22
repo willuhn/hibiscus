@@ -83,8 +83,10 @@ public abstract class AbstractFromToList extends TablePart implements Part
     
     this.buttons = new ButtonArea();
     
-    this.listener = new Listener() {
-      public void handleEvent(Event event) {
+    this.listener = new Listener()
+    {
+      public void handleEvent(Event event)
+      {
         // Wenn das event "null" ist, kann es nicht
         // von SWT ausgeloest worden sein sondern
         // manuell von uns. In dem Fall machen wir ein

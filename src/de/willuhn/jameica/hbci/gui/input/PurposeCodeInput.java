@@ -39,7 +39,8 @@ public class PurposeCodeInput extends SelectInput
     this.setEditable(true); // Man kann auch selbst Werte eingeben
     this.setComment("");
     
-    final Listener l = new Listener() {
+    final Listener l = new Listener()
+    {
       @Override
       public void handleEvent(Event event)
       {

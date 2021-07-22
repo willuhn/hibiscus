@@ -45,7 +45,9 @@ public class SepaSammelUeberweisungBuchungNew extends AbstractView
     GUI.getView().setTitle(i18n.tr("SEPA-Sammelüberweisung {0}: Buchung bearbeiten",l.getBezeichnung()));
 
     // Zusaetzlicher Back-Button, um zurueck zum Auftrag zu kommen
-    GUI.getView().addPanelButton(new PanelButton("sueberweisung.png",new de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew(){
+    GUI.getView().addPanelButton(
+        new PanelButton("sueberweisung.png", new de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         super.handleAction(l);
@@ -83,8 +85,10 @@ public class SepaSammelUeberweisungBuchungNew extends AbstractView
     delete.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(delete);
 
-    Button store = new Button(i18n.tr("&Speichern"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store = new Button(i18n.tr("&Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         control.handleStore();
       }
     },null,false,"document-save.png");
@@ -92,8 +96,10 @@ public class SepaSammelUeberweisungBuchungNew extends AbstractView
     buttonArea.addButton(store);
     
     // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
-    Button store2 = new Button(i18n.tr("Speichern und nächste Buchung"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store2 = new Button(i18n.tr("Speichern und nächste Buchung"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         if (control.handleStore())
         {
           new de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungBuchungNew().handleAction(l);

@@ -158,7 +158,8 @@ public class SparQuote implements Part
     this.tagAuswahl.setComment(i18n.tr(". Tag des Monats"));
     this.tagAuswahl.setName(i18n.tr("Stichtag"));
     this.tagAuswahl.setValue(settings.getInt("stichtag",1));
-    this.tagAuswahl.addListener(new Listener() {
+    this.tagAuswahl.addListener(new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)
@@ -185,7 +186,8 @@ public class SparQuote implements Part
     this.monatAuswahl.setComment(i18n.tr("Anzahl der Monate pro Periode"));
     this.monatAuswahl.setName(i18n.tr("Monate"));
     this.monatAuswahl.setValue(settings.getInt("monate",1));
-    this.monatAuswahl.addListener(new Listener() {
+    this.monatAuswahl.addListener(new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)
@@ -318,7 +320,8 @@ public class SparQuote implements Part
         }
       }
     },null,false,"document-save.png");
-    topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
+    topButtons.addButton(i18n.tr("Aktualisieren"), new Action()
+    {
 
       public void handleAction(Object context) throws ApplicationException
       {
@@ -337,7 +340,8 @@ public class SparQuote implements Part
     this.table.setRememberColWidths(true);
     
     final boolean bold = de.willuhn.jameica.hbci.Settings.getBoldValues();
-    this.table.setFormatter(new TableFormatter() {
+    this.table.setFormatter(new TableFormatter()
+    {
       public void format(TableItem item)
       {
         if (item == null || item.getData() == null)
@@ -486,7 +490,8 @@ public class SparQuote implements Part
       {
         Logger.debug("no date found for umsatz, skipping record");
         continue;
-      } else if (end != null && date.after(end))
+      }
+      else if (end != null && date.after(end))
       {
         //keine Umsätze nach dem gwünschten Zeitraum verarbeiten
         break;

@@ -83,7 +83,8 @@ public class UmsatzTree extends TreePart
     
     final boolean bold = Settings.getBoldValues();
     
-    this.setFormatter(new TreeFormatter() {
+    this.setFormatter(new TreeFormatter()
+    {
     
       public void format(TreeItem item)
       {
@@ -157,7 +158,8 @@ public class UmsatzTree extends TreePart
 
     this.setContextMenu(new UmsatzList());
     
-    this.addSelectionListener(new Listener() {
+    this.addSelectionListener(new Listener()
+    {
       @Override
       public void handleEvent(org.eclipse.swt.widgets.Event event)
       {

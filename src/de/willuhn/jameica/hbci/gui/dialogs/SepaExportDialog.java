@@ -69,7 +69,8 @@ public class SepaExportDialog extends AbstractDialog
     this.type = type;
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
     
-    this.addCloseListener(new Listener() {
+    this.addCloseListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         if (file != null)
@@ -160,7 +161,8 @@ public class SepaExportDialog extends AbstractDialog
     final SelectInput select = new SelectInput(list,SepaVersion.findGreatest(list));
     select.setAttribute("file");
     select.setName(i18n.tr("Schema-Version der SEPA-Datei"));
-    select.addListener(new Listener() {
+    select.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         if (ok != null)
@@ -205,7 +207,8 @@ public class SepaExportDialog extends AbstractDialog
     };
     input.setName(i18n.tr("SEPA XML-Datei"));
     input.setMandatory(true);
-    input.addListener(new Listener() {
+    input.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         if (ok != null)

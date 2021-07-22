@@ -60,7 +60,8 @@ public class ExportSaldoExtension implements Extension
     
     final CheckboxInput check = new CheckboxInput(initial);
     check.setName(i18n.tr("Spalte \"Saldo\" in der Datei anzeigen"));
-    check.addListener(new Listener() {
+    check.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         Boolean value = (Boolean) check.getValue();
@@ -78,7 +79,8 @@ public class ExportSaldoExtension implements Extension
     try
     {
       final Input format = e.getExporterList();
-      Listener l = new Listener() {
+      Listener l = new Listener()
+      {
         
         @Override
         public void handleEvent(Event event)

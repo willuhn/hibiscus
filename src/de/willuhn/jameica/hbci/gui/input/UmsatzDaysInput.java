@@ -64,7 +64,8 @@ public class UmsatzDaysInput extends ScaleInput
       return c;
     
     this.c = super.getControl();
-    this.c.addDisposeListener(new DisposeListener() {
+    this.c.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         settings.setAttribute(getToken(),(Integer) getValue());

@@ -36,7 +36,8 @@ public class SammelUeberweisungList extends AbstractView
     SammelUeberweisungControl control = new SammelUeberweisungControl(this);
     final de.willuhn.jameica.hbci.gui.parts.SammelUeberweisungList table = control.getListe();
     final PanelButtonPrint print = new PanelButtonPrint(new PrintSupportSammelUeberweisung(table));
-    table.addSelectionListener(new Listener() {
+    table.addSelectionListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         print.setEnabled(table.getSelection() != null);

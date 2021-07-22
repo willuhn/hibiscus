@@ -82,7 +82,8 @@ public class SynchronizeList extends TablePart
     this.setMulti(true);
 
     // BUGZILLA 583
-    this.setFormatter(new TableFormatter() {
+    this.setFormatter(new TableFormatter()
+    {
       public void format(TableItem item)
       {
         try
@@ -102,7 +103,8 @@ public class SynchronizeList extends TablePart
     });
     
     final ContextMenu menu = new ContextMenu();
-    menu.addItem(new CheckedContextMenuItem(i18n.tr("Aktivieren"),new Action() {
+    menu.addItem(new CheckedContextMenuItem(i18n.tr("Aktivieren"), new Action()
+    {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -192,7 +194,8 @@ public class SynchronizeList extends TablePart
     
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mcSync);
     Application.getMessagingFactory().getMessagingQueue("jameica.gui.view.unbind").registerMessageConsumer(this.mcCache);
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(mcSync);

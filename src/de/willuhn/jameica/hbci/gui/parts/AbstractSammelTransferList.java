@@ -78,8 +78,10 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     BeanService service = Application.getBootLoader().getBootable(BeanService.class);
     final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
 
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
+    setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
         SammelTransfer l = (SammelTransfer) item.getData();
         if (l == null)
           return;
@@ -203,7 +205,8 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -260,7 +263,8 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
 
       if (message instanceof ObjectChangedMessage)
       {
-        GUI.startSync(new Runnable() {
+        GUI.startSync(new Runnable()
+        {
           public void run()
           {
             try

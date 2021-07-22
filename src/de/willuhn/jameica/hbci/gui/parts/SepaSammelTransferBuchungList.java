@@ -74,7 +74,8 @@ public class SepaSammelTransferBuchungList extends TablePart
   {
     super(list,action);
     
-    addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
+    addColumn(i18n.tr("Auftrag"), "this", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null || !(o instanceof SepaSammelTransferBuchung))
@@ -102,9 +103,12 @@ public class SepaSammelTransferBuchungList extends TablePart
 
     final boolean bold = Settings.getBoldValues();
     
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-        try {
+    setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
+        try
+        {
           SepaSammelTransferBuchung b = (SepaSammelTransferBuchung) item.getData();
           if (b.getSammelTransfer().ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
@@ -112,7 +116,8 @@ public class SepaSammelTransferBuchungList extends TablePart
           if (bold)
             item.setFont(5,Font.BOLD.getSWTFont());
         }
-        catch (RemoteException e) {
+        catch (RemoteException e)
+        {
           Logger.error("unable to read sepa sammeltransfer",e);
         }
       }
@@ -135,7 +140,8 @@ public class SepaSammelTransferBuchungList extends TablePart
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -218,7 +224,8 @@ public class SepaSammelTransferBuchungList extends TablePart
       if (o == null || !(o instanceof SepaSammelTransferBuchung))
         return;
       
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           try

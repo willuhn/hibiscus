@@ -132,7 +132,8 @@ public class UmsatzList extends TablePart implements Extendable
         Umsatz u = (Umsatz) item.getData();
         if (u == null) return;
 
-        try {
+        try
+        {
           item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
 
           final Date datum = u.getDatum();
@@ -213,7 +214,8 @@ public class UmsatzList extends TablePart implements Extendable
       }
     });
     
-    this.addChangeListener(new TableChangeListener() {
+    this.addChangeListener(new TableChangeListener()
+    {
       public void itemChanged(Object object, String attribute, String newValue) throws ApplicationException
       {
         try
@@ -310,7 +312,8 @@ public class UmsatzList extends TablePart implements Extendable
   {
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList(this.konto));
 
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         disposed = true;
@@ -337,7 +340,8 @@ public class UmsatzList extends TablePart implements Extendable
     {
       Container c = new SimpleContainer(parent);
       this.days = new UmsatzDaysInput();
-      this.days.addListener(new DelayedListener(300, new Listener() {
+      this.days.addListener(new DelayedListener(300, new Listener()
+      {
         public void handleEvent(Event event)
         {
           kl.process();
@@ -393,8 +397,7 @@ public class UmsatzList extends TablePart implements Extendable
             {
               sleep = false;
               sleep(700l);
-            }
-            while (sleep); // Wir warten ggf. nochmal
+            } while (sleep); // Wir warten ggf. nochmal
 
             // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
             process();
@@ -607,7 +610,8 @@ public class UmsatzList extends TablePart implements Extendable
       };
     }
 
-    DelayedListener updateKontoListListener = new DelayedListener(new Listener() {
+    DelayedListener updateKontoListListener = new DelayedListener(new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)
@@ -630,7 +634,8 @@ public class UmsatzList extends TablePart implements Extendable
       if (o == null || !(o instanceof Umsatz))
         return;
 
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           try

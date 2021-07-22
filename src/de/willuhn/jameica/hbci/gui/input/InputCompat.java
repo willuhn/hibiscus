@@ -17,7 +17,8 @@ public final class InputCompat
    * @return true wenn der Wert mindestens eines Inputs sich seit dem letzten Aufruf von hasChanged()
    *              der Inputs geaendert hat.
    */
-  public static boolean valueHasChanged(boolean hasChanged, Input... inputs) {
+  public static boolean valueHasChanged(boolean hasChanged, Input... inputs)
+  {
     // Hier auch: Siehe unten: Keine Optimierung erlaubt. Erst muss "valueHasChanged" fuer alle Inputs durchlaufen werden
     return valueHasChanged(inputs) || hasChanged;
   }

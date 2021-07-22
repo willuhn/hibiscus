@@ -145,7 +145,8 @@ public class UmsatzTypListDialog extends AbstractDialog
     // Unabhaengig von dem, was der User als Groesse eingestellt hat, bleibt das die Minimalgroesse.
     getShell().setMinimumSize(WINDOW_WIDTH,WINDOW_HEIGHT);
     
-    getShell().addDisposeListener(new DisposeListener() {
+    getShell().addDisposeListener(new DisposeListener()
+    {
       
       @Override
       public void widgetDisposed(DisposeEvent e)
@@ -270,7 +271,8 @@ public class UmsatzTypListDialog extends AbstractDialog
       }
     });
     
-    this.table.addSelectionListener(new Listener() {
+    this.table.addSelectionListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         getApplyButton().setEnabled(event.data != null);

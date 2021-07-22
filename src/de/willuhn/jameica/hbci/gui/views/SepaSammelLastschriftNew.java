@@ -90,7 +90,8 @@ public class SepaSammelLastschriftNew extends AbstractView
     }
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Sammelauftrag löschen"),new Action() {
+    buttons.addButton(i18n.tr("Sammelauftrag löschen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new DBObjectDelete().handleAction(context);
@@ -106,7 +107,8 @@ public class SepaSammelLastschriftNew extends AbstractView
         }
       }
     },transfer,false,"user-trash-full.png");
-    buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
+    buttons.addButton(i18n.tr("Duplizieren..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (control.handleStore()) // BUGZILLA 1181
@@ -114,24 +116,30 @@ public class SepaSammelLastschriftNew extends AbstractView
       }
     },null,false,"edit-copy.png");
 
-    Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button add = new Button(i18n.tr("Neue Buchungen hinzufügen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         if (control.handleStore())
           new de.willuhn.jameica.hbci.gui.action.SepaSammelLastBuchungNew().handleAction(transfer);
       }
     },null,false,"text-x-generic.png");
     add.setEnabled(!transfer.ausgefuehrt());
     
-		Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action() {
-			public void handleAction(Object context) throws ApplicationException {
+    Button execute = new Button(i18n.tr("Jetzt ausführen..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         if (control.handleStore())
   				new SepaSammelLastschriftExecute().handleAction(transfer);
 			}
 		},null,false,"emblem-important.png");
     execute.setEnabled(!transfer.ausgefuehrt());
     
-    Button store = new Button(i18n.tr("&Speichern"),new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store = new Button(i18n.tr("&Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         control.handleStore();
       }
     },null,!transfer.ausgefuehrt(),"document-save.png");

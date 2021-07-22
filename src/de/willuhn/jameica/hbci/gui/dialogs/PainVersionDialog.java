@@ -111,7 +111,8 @@ public class PainVersionDialog extends AbstractDialog
     final SelectInput select = new SelectInput(list,SepaVersion.findGreatest(list));
     select.setAttribute("file");
     select.setName(i18n.tr("Schema-Version der SEPA XML-Datei"));
-    select.addListener(new Listener() {
+    select.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         if (ok != null)

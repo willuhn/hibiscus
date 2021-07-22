@@ -42,7 +42,8 @@ public abstract class AbstractUmsatzDetail extends AbstractView
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind() throws Exception {
+  public void bind() throws Exception
+  {
 
     final UmsatzDetailControl control = getControl();
     
@@ -105,15 +106,18 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 
   private void forceSaldoUpdateforReverseBooking()
   {
-    if(getCurrentObject() instanceof Umsatz){
+    if (getCurrentObject() instanceof Umsatz)
+    {
       Umsatz umsatz=(Umsatz)getCurrentObject();
       try
       {
-        if(umsatz.isNewObject() && umsatz.getKonto().hasFlag(Konto.FLAG_OFFLINE)){
+        if (umsatz.isNewObject() && umsatz.getKonto().hasFlag(Konto.FLAG_OFFLINE))
+        {
           getControl().getBetrag().getControl().forceFocus();//->Saldenberechnungslistener feuert
           getControl().getUmsatzTyp().focus();
         }
-      } catch (RemoteException e)
+      }
+      catch (RemoteException e)
       {
         //einfach ignoriere, wir wollen ja nur ein Feld vorsorglich aktualisieren
       }

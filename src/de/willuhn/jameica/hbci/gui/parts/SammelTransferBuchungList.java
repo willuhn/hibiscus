@@ -58,7 +58,8 @@ public class SammelTransferBuchungList extends TablePart
   public SammelTransferBuchungList(final GenericIterator list, Action action)
   {
     super(list,action);
-    addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
+    addColumn(i18n.tr("Auftrag"), "this", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null || !(o instanceof SammelTransferBuchung))
@@ -82,7 +83,8 @@ public class SammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Kontoinhaber"),"gegenkonto_name");
     addColumn(i18n.tr("Kontonummer"),"gegenkonto_nr");
     addColumn(new BlzColumn("gegenkonto_blz",i18n.tr("Bankleitzahl")));
-    addColumn(i18n.tr("Betrag"),"this",new Formatter() {
+    addColumn(i18n.tr("Betrag"), "this", new Formatter()
+    {
       public String format(Object o)
       {
         if (o == null || !(o instanceof SammelTransferBuchung))
@@ -105,16 +107,20 @@ public class SammelTransferBuchungList extends TablePart
     });
     addColumn(i18n.tr("Warnungen"),"warnung");
 
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-        try {
+    setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
+        try
+        {
           SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
           if (StringUtils.trimToNull(b.getWarnung()) != null)
             item.setForeground(Color.ERROR.getSWTColor());
           else if (b.getSammelTransfer().ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
         }
-        catch (RemoteException e) {
+        catch (RemoteException e)
+        {
           Logger.error("unable to read sammeltransfer",e);
         }
       }
@@ -135,7 +141,8 @@ public class SammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Kontoinhaber"),"gegenkonto_name");
     addColumn(i18n.tr("Kontonummer"),"gegenkonto_nr");
-    addColumn(i18n.tr("Bankleitzahl"),"gegenkonto_blz", new Formatter() {
+    addColumn(i18n.tr("Bankleitzahl"), "gegenkonto_blz", new Formatter()
+    {
       /**
        * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
        */
@@ -156,16 +163,22 @@ public class SammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Betrag"),"betrag",new CurrencyFormatter(curr,HBCI.DECIMALFORMAT));
     addColumn(i18n.tr("Warnungen"),"warnung");
 
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
-        try {
+    setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
+        try
+        {
           SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
           if (StringUtils.trimToNull(b.getWarnung()) != null)
             item.setForeground(Color.ERROR.getSWTColor());
           else if (a.ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
         }
-        catch (RemoteException e) { /*ignore */}
+        catch (RemoteException e)
+        {
+          /* ignore */
+        }
       }
     });
     
@@ -184,7 +197,8 @@ public class SammelTransferBuchungList extends TablePart
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    parent.addDisposeListener(new DisposeListener() {
+    parent.addDisposeListener(new DisposeListener()
+    {
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -226,7 +240,8 @@ public class SammelTransferBuchungList extends TablePart
       if (o == null || !(o instanceof SammelTransferBuchung))
         return;
       
-      GUI.getDisplay().syncExec(new Runnable() {
+      GUI.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           try

@@ -79,8 +79,10 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
     final boolean bold = Settings.getBoldValues();
     
-    setFormatter(new TableFormatter() {
-      public void format(TableItem item) {
+    setFormatter(new TableFormatter()
+    {
+      public void format(TableItem item)
+      {
         Terminable l = (Terminable) item.getData();
         if (l == null)
           return;
@@ -165,7 +167,8 @@ public abstract class AbstractTransferList extends AbstractFromToList
     this.pending = new CheckboxInput(settings.getBoolean("transferlist.filter.pending",false));
     this.pending.setName(i18n.tr("Nur offene Aufträge anzeigen"));
     this.pending.addListener(this.listener);
-    this.pending.addListener(new Listener() {
+    this.pending.addListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         settings.setAttribute("transferlist.filter.pending",((Boolean)pending.getValue()).booleanValue());
@@ -276,7 +279,8 @@ public abstract class AbstractTransferList extends AbstractFromToList
       
       if (message instanceof ObjectChangedMessage)
       {
-        GUI.startSync(new Runnable() {
+        GUI.startSync(new Runnable()
+        {
           public void run()
           {
             try

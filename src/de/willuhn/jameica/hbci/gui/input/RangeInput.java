@@ -92,7 +92,8 @@ public class RangeInput extends SelectInput
     // ja nicht die Eingaben des Users wieder ueberschreiben
     if (from != null || to != null)
     {
-      final Listener l = new Listener() {
+      final Listener l = new Listener()
+      {
         @Override
         public void handleEvent(Event event)
         {

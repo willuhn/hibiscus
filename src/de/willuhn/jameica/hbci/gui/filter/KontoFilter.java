@@ -163,7 +163,8 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public final static KontoFilter SEARCH(final String text, final Integer ignoreFlags, final Integer accountType)
   {
-    return new KontoFilter() {
+    return new KontoFilter()
+    {
       @Override
       public boolean accept(Konto konto) throws RemoteException
       {
@@ -225,7 +226,8 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public static KontoFilter createForeign(final Class<? extends SynchronizeJob> type)
   {
-    return new KontoFilter() {
+    return new KontoFilter()
+    {
       
       /**
        * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)

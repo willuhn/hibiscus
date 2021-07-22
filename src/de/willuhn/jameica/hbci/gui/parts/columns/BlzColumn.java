@@ -26,7 +26,8 @@ public class BlzColumn extends Column
    */
   public BlzColumn(String id, String name)
   {
-    super(id,name,new Formatter() {
+    super(id, name, new Formatter()
+    {
       /**
        * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
        */

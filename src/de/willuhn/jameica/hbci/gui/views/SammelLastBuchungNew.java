@@ -60,8 +60,10 @@ public class SammelLastBuchungNew extends AbstractView
     delete.setEnabled(!l.ausgefuehrt());
     buttonArea.addButton(delete);
 
-    Button store = new Button(i18n.tr("Speichern"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store = new Button(i18n.tr("Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         control.handleStore(false);
       }
     },null,false,"document-save.png");
@@ -69,8 +71,10 @@ public class SammelLastBuchungNew extends AbstractView
     buttonArea.addButton(store);
     
     // BUGZILLA 116 http://www.willuhn.de/bugzilla/show_bug.cgi?id=116
-    Button store2 = new Button(i18n.tr("Speichern und nächste Buchung"), new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    Button store2 = new Button(i18n.tr("Speichern und nächste Buchung"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         control.handleStore(true);
       }
     },null,!l.ausgefuehrt(),"go-next.png");

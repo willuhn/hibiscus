@@ -100,7 +100,8 @@ public class VerwendungszweckDialog extends AbstractDialog
     this.ewz.paint(container.getComposite());
 
     ButtonArea buttons = new ButtonArea();
-    Button apply = new Button(i18n.tr("Übernehmen"),new Action() {
+    Button apply = new Button(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -118,7 +119,8 @@ public class VerwendungszweckDialog extends AbstractDialog
     apply.setEnabled(!this.readOnly);
     
     buttons.addButton(apply);
-    buttons.addButton(i18n.tr("Abbrechen"),new Action() {
+    buttons.addButton(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
