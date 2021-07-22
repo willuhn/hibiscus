@@ -56,7 +56,8 @@ public class SyncEngineStatusMessageConsumer implements MessageConsumer
         status == ProgressMonitor.STATUS_DONE || 
         status == ProgressMonitor.STATUS_ERROR)
     {
-      GUI.getDisplay().asyncExec(new Runnable() {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
         @Override
         public void run()
         {

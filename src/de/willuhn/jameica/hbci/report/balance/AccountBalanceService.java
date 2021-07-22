@@ -68,7 +68,8 @@ public class AccountBalanceService
       Logger.info("  found " + this.providers.size() + " provider(s)");
       
       // Wir sortieren die Provider so, dass der Standard-Provider immer als letzter an die Reihe kommt.
-      Collections.sort(this.providers,new Comparator<AccountBalanceProvider>() {
+      Collections.sort(this.providers, new Comparator<AccountBalanceProvider>()
+      {
         public int compare(AccountBalanceProvider o1, AccountBalanceProvider o2)
         {
           
@@ -98,9 +99,12 @@ public class AccountBalanceService
    * @param konto Das Konto, fuer welches Salden gesucht sind.
    * @return Einen speziellen Provider fuer beispielsweise Depots oder den DEFAULT-Provider.
    */
-  public AccountBalanceProvider getBalanceProviderForAccount(Konto konto) {
-    for(AccountBalanceProvider provider : getProviders()) {
-      if(provider.supports(konto)) {
+  public AccountBalanceProvider getBalanceProviderForAccount(Konto konto)
+  {
+    for (AccountBalanceProvider provider : getProviders())
+    {
+      if (provider.supports(konto))
+      {
         return provider;
       }
     }

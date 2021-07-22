@@ -41,7 +41,8 @@ public class MessagingAvailableConsumer implements MessageConsumer
   @Override
   public void handleMessage(Message message) throws Exception
   {
-    new Thread(new Runnable() {
+    new Thread(new Runnable()
+    {
       
       @Override
       public void run()

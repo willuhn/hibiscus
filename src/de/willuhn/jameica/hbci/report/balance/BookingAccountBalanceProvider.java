@@ -38,7 +38,8 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
    * @see de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider#supports(de.willuhn.jameica.hbci.rmi.Konto)
    */
   @Override
-  public boolean supports(Konto konto) {
+  public boolean supports(Konto konto)
+  {
     // Dies ist der Standard-Provider fuer Konten in Hibiscus und er unterstuetzt jedes Konto per Definition.
     return true;
   }
@@ -47,7 +48,8 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
    * @see de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider#getBalanceChartData(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
    */
   @Override
-  public AbstractChartDataSaldo getBalanceChartData(Konto konto, Date start, Date end) {
+  public AbstractChartDataSaldo getBalanceChartData(Konto konto, Date start, Date end)
+  {
     List<Value> data = getBalanceData(konto, start, end);
     return new ChartDataSaldoVerlauf(konto, data);
   }
@@ -106,7 +108,8 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
         cal.add(Calendar.DAY_OF_MONTH,1);
         localStart = cal.getTime();
       }
-    } catch (RemoteException e)
+    }
+    catch (RemoteException e)
     {
       Logger.error("Fehler beim der Ermittlung der Salden", e);
     }

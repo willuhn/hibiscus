@@ -83,7 +83,8 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     
     final long currentValue = this.getCounter(type.getValue()).incrementAndGet();
     
-    worker.schedule(new Runnable() {
+    worker.schedule(new Runnable()
+    {
       
       @Override
       public void run()
@@ -190,7 +191,8 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
       }
 
       final int result = sum;
-      GUI.getDisplay().asyncExec(new Runnable() {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
         @Override
         public void run()
         {
