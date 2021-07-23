@@ -31,9 +31,7 @@ public class PrintSupportSepaSammelUeberweisung extends AbstractPrintSupportSepa
     super(ctx);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     try

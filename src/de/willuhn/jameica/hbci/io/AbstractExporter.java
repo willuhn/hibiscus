@@ -30,9 +30,6 @@ public abstract class AbstractExporter implements Exporter
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
   @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
@@ -118,9 +115,6 @@ public abstract class AbstractExporter implements Exporter
    */
   abstract String[] getFileExtensions();
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
   @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
@@ -140,9 +134,6 @@ public abstract class AbstractExporter implements Exporter
     return null;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {
@@ -165,17 +156,13 @@ public abstract class AbstractExporter implements Exporter
       this.type = type;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-     */
+    @Override
     public String getName()
     {
       return AbstractExporter.this.getName();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-     */
+    @Override
     public String[] getFileExtensions()
     {
       return AbstractExporter.this.getFileExtensions();

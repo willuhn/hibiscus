@@ -25,36 +25,24 @@ import de.willuhn.logging.Logger;
  */
 public class PDFUmsatzByTypeExporter extends AbstractPDFUmsatzExporter<UmsatzTyp>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#getGroup(de.willuhn.jameica.hbci.rmi.Umsatz)
-   */
   @Override
   protected UmsatzTyp getGroup(Umsatz u) throws RemoteException
   {
     return u.getUmsatzTyp();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#toString(de.willuhn.datasource.GenericObject)
-   */
   @Override
   protected String toString(UmsatzTyp t) throws RemoteException
   {
     return t != null ? t.getName() : i18n.tr("<Keine Kategorie>");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#sort(java.util.List)
-   */
   @Override
   protected void sort(List<UmsatzTyp> groups) throws RemoteException
   {
     try
     {
       Collections.sort(groups,new Comparator<UmsatzTyp>() {
-        /**
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
         @Override
         public int compare(UmsatzTyp o1, UmsatzTyp o2)
         {
@@ -77,9 +65,7 @@ public class PDFUmsatzByTypeExporter extends AbstractPDFUmsatzExporter<UmsatzTyp
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("PDF-Format (gruppiert nach Kategorie)");

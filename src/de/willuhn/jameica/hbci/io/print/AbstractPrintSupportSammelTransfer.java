@@ -48,9 +48,7 @@ public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSu
     this.ctx = ctx;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object data = this.ctx;

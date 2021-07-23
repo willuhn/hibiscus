@@ -29,17 +29,13 @@ public class PrintSupportSepaLastschriftList extends AbstractPrintSupportSepaTra
     super(ctx);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("SEPA-Lastschriften");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportSepaTransferList#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object ctx = this.getContext();

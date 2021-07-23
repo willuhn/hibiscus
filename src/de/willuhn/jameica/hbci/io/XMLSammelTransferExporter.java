@@ -25,9 +25,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class XMLSammelTransferExporter extends XMLExporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.XMLExporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     SammelTransfer[] transfers = (SammelTransfer[]) objects;
@@ -42,9 +40,7 @@ public class XMLSammelTransferExporter extends XMLExporter
     super.doExport(all.toArray(),format,os,monitor);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (objectType == null)
@@ -54,14 +50,13 @@ public class XMLSammelTransferExporter extends XMLExporter
       return null; // Nur fuer Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
 
     return new IOFormat[]{new IOFormat() {
+      @Override
       public String getName()
       {
         return i18n.tr("Hibiscus-Format");
       }
     
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[]{"xml"};

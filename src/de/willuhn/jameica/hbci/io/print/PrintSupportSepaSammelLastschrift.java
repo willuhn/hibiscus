@@ -34,17 +34,13 @@ public class PrintSupportSepaSammelLastschrift extends AbstractPrintSupportSepaS
     super(ctx);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("SEPA-Sammellastschrift");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportSepaSammelTransfer#createTransferTable(de.willuhn.jameica.hbci.rmi.SepaSammelTransfer)
-   */
+  @Override
   GridPrint createTransferTable(SepaSammelLastschrift a) throws RemoteException, ApplicationException
   {
     GridPrint table = super.createTransferTable(a);

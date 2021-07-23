@@ -36,9 +36,7 @@ public class XMLExporter implements Exporter
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     Writer writer = null;
@@ -88,9 +86,7 @@ public class XMLExporter implements Exporter
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (objectType == null)
@@ -109,14 +105,13 @@ public class XMLExporter implements Exporter
       return null; // Keine SEPA-Sammel-Auftraege - die muessen gesondert behandelt werden.
     
     return new IOFormat[]{new IOFormat() {
+      @Override
       public String getName()
       {
         return XMLExporter.this.getName();
       }
     
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[]{"xml"};
@@ -124,17 +119,12 @@ public class XMLExporter implements Exporter
     }};
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("Hibiscus-Format");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {

@@ -28,17 +28,13 @@ public class DateSerializer extends DefaultSerializer<Date>
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private DateFormat SHORTDATEFORMAT = new SimpleDateFormat("dd.MM.yy");
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#serialize(java.lang.Object, java.lang.Object)
-   */
+  @Override
   public String serialize(Object context, Date value) throws IOException
   {
     return value == null ? super.serialize(context,value) : HBCI.DATEFORMAT.format(value);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#unserialize(java.lang.Object, java.lang.String)
-   */
+  @Override
   public Date unserialize(Object context, String value) throws IOException
   {
     if (value == null || value.length() == 0)

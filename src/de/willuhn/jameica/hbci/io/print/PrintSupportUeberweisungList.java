@@ -29,17 +29,13 @@ public class PrintSupportUeberweisungList extends AbstractPrintSupportBaseUeberw
     super(ctx);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("Überweisungen");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportBaseUeberweisungList#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object ctx = this.getContext();
