@@ -76,9 +76,7 @@ public class ErweiterteVerwendungszwecke implements Part
     this.orig         = buchung.getWeitereVerwendungszwecke();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     this.fields.clear();

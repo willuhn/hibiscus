@@ -20,9 +20,6 @@ import de.willuhn.jameica.hbci.HBCIProperties;
  */
 public class IbanFormatter implements Formatter
 {
-  /**
-   * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-   */
   @Override
   public String format(Object o)
   {

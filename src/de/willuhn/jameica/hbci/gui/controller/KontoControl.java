@@ -682,9 +682,7 @@ public class KontoControl extends AbstractControl
    */
   private class IbanListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event)
     {
       try
@@ -872,25 +870,19 @@ public class KontoControl extends AbstractControl
    */
   private class SaldoMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{SaldoMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(final Message message) throws Exception
     {
       GUI.getDisplay().syncExec(new Runnable() {

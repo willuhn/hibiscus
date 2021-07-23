@@ -33,8 +33,8 @@ public class SepaDauerauftragNew implements Action
    * Abhaengig davon wird das eine oder andere Feld in dem SEPA-Dauerauftrag 
    * vorausgefuellt oder der uebergebene SEPA-Dauerauftrag geladen.
    * Wenn nichts angegeben ist, wird ein leerer SEPA-Dauerauftrag erstellt und angezeigt.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();

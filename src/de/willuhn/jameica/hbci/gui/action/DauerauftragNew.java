@@ -20,9 +20,7 @@ import de.willuhn.util.ApplicationException;
 public class DauerauftragNew implements Action
 {
 
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		Dauerauftrag d = null;

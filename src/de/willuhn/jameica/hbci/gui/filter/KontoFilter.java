@@ -33,9 +33,7 @@ import de.willuhn.util.ApplicationException;
  */
 public abstract class KontoFilter implements Filter<Konto>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.gui.filter.Filter#accept(java.lang.Object)
-   */
+  @Override
   public abstract boolean accept(Konto konto) throws RemoteException;
   
   /**
@@ -43,9 +41,7 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public final static KontoFilter ALL = new KontoFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       return true;
@@ -57,9 +53,7 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public final static KontoFilter ONLINE = new KontoFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       // Es muss auf jeden Fall erstmal ein aktives Konto sein
@@ -77,9 +71,7 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public final static KontoFilter OFFLINE = new KontoFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       // Es muss auf jeden Fall erstmal ein aktives Konto sein
@@ -96,9 +88,7 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public final static KontoFilter ACTIVE = new KontoFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       if (konto == null)
@@ -113,9 +103,7 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public final static KontoFilter FOREIGN = new KontoFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       // Muss auf jeden Fall erstmal ein Online-Konto sein.
@@ -134,9 +122,7 @@ public abstract class KontoFilter implements Filter<Konto>
    */
   public final static KontoFilter SYNCED = new KontoFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       if (konto == null || konto.hasFlag(Konto.FLAG_DISABLED))
@@ -227,9 +213,6 @@ public abstract class KontoFilter implements Filter<Konto>
   {
     return new KontoFilter() {
       
-      /**
-       * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
-       */
       @Override
       public boolean accept(Konto konto) throws RemoteException
       {

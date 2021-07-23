@@ -32,41 +32,31 @@ public class Konten extends AbstractBox implements Box
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getName()
-   */
+  @Override
   public String getName()
   {
     return "Hibiscus: " + i18n.tr("Konten-Übersicht");
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
-   */
+  @Override
   public int getDefaultIndex()
   {
     return 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
-   */
+  @Override
   public boolean getDefaultEnabled()
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
-   */
+  @Override
   public int getHeight()
   {
     return 150;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     KontoList l = new KontoList(KontoUtil.getKonten(KontoFilter.ACTIVE),new KontoNew());
@@ -74,9 +64,7 @@ public class Konten extends AbstractBox implements Box
     l.paint(parent);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
-   */
+  @Override
   public boolean isActive()
   {
     return super.isActive() && !Settings.isFirstStart();

@@ -74,8 +74,8 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
 
   /**
    * Ueberschrieben, um einen Namensvorschlag anzuzeigen.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getName()
    */
+  @Override
   public Input getName() throws RemoteException
   {
     if (this.name != null)
@@ -129,9 +129,6 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     return this.typ;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getTermin()
-   */
   @Override
   public TerminInput getTermin() throws RemoteException
   {
@@ -180,9 +177,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     return this.termin;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getTransfer()
-   */
+  @Override
   public SepaSammelUeberweisung getTransfer() throws RemoteException
   {
     if (transfer != null)
@@ -196,9 +191,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     return transfer;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getListe()
-   */
+  @Override
   public SepaSammelUeberweisungList getListe() throws RemoteException
   {
     if (table != null)
@@ -208,18 +201,13 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     return table;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getSynchronizeJobType()
-   */
   @Override
   public Class<? extends SynchronizeJob> getSynchronizeJobType()
   {
     return SynchronizeJobSepaSammelUeberweisung.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getBuchungen()
-   */
+  @Override
   public TablePart getBuchungen() throws RemoteException
   {
     if (this.buchungen != null)
@@ -246,9 +234,6 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
     return this.buchungen;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#store()
-   */
   @Override
   public synchronized void store() throws Exception
   {
@@ -267,9 +252,6 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
    */
   private class TerminListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {
@@ -337,9 +319,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
       return           i18n.tr("SEPA-Sammelüberweisung");
     }
     
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    @Override
     public boolean equals(Object o)
     {
       if (o == null || !(o instanceof Typ))

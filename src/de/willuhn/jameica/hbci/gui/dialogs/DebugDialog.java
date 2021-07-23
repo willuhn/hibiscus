@@ -45,17 +45,13 @@ public class DebugDialog extends AbstractDialog
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     HBCIDBService service = (HBCIDBService) Application.getServiceFactory().lookup(HBCI.class,"database");

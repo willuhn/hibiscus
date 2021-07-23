@@ -102,6 +102,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     
     this.addSelectionListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         refreshSummary();
@@ -111,7 +112,6 @@ public abstract class AbstractFromToList extends TablePart implements Part
   
   /**
    * Ueberschrieben, um die Summe zu berechnen.
-   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
    */
   @Override
   protected String getSummary()
@@ -240,6 +240,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     this.range = new RangeInput(this.getFrom(),this.getTo());
     this.range.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         if (range.getValue() != null && range.hasChanged())
@@ -253,8 +254,8 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
-   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     final TabFolder folder = new TabFolder(parent, SWT.NONE);
@@ -285,6 +286,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
 
     this.buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         handleReload(true);
@@ -424,9 +426,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
   {
     private Listener forward = new DelayedListener(400,new Listener()
     {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
+      @Override
       public void handleEvent(Event event)
       {
         // hier kommt dann das verzoegerte Event an.
@@ -435,9 +435,7 @@ public abstract class AbstractFromToList extends TablePart implements Part
     
     });
 
-    /**
-     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-     */
+    @Override
     public void keyReleased(KeyEvent e)
     {
       forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht

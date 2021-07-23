@@ -34,8 +34,8 @@ public class KontoSyncViaScripting implements Action
 
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		if (context == null || !(context instanceof Konto))
@@ -87,17 +87,13 @@ public class KontoSyncViaScripting implements Action
         }
       }
       
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-       */
+      @Override
       public boolean isInterrupted()
       {
         return false;
       }
       
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
-       */
+      @Override
       public void interrupt()
       {
       }

@@ -85,9 +85,7 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
    */
   public abstract Input getTextSchluessel() throws RemoteException;
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
-   */
+  @Override
   public synchronized boolean handleStore()
   {
     BaseUeberweisung bu = null;
@@ -144,9 +142,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public Input getBetrag() throws RemoteException
   {
     Input i = super.getBetrag();
@@ -156,9 +154,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerBlz()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public TextInput getEmpfaengerBlz() throws RemoteException
   {
     TextInput i = super.getEmpfaengerBlz();
@@ -168,9 +166,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerKonto()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public TextInput getEmpfaengerKonto() throws RemoteException
   {
     TextInput i = super.getEmpfaengerKonto();
@@ -180,9 +178,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerName()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public AddressInput getEmpfaengerName() throws RemoteException
   {
     AddressInput i = super.getEmpfaengerName();
@@ -192,9 +190,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public KontoInput getKontoAuswahl() throws RemoteException
   {
     KontoInput i = super.getKontoAuswahl();
@@ -203,9 +201,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getStoreEmpfaenger()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public CheckboxInput getStoreEmpfaenger() throws RemoteException
   {
 		CheckboxInput i = super.getStoreEmpfaenger();
@@ -215,9 +213,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public TextInput getZweck() throws RemoteException
   {
     TextInput i = super.getZweck();
@@ -226,9 +224,9 @@ public abstract class AbstractBaseUeberweisungControl extends AbstractTransferCo
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck2()
    * Ueberschrieben, um das Control zu deaktivieren, wenn die Ueberweisung bereits ausgefuehrt wurde.
    */
+  @Override
   public DialogInput getZweck2() throws RemoteException
   {
 		DialogInput i = super.getZweck2();

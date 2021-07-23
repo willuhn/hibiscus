@@ -105,6 +105,7 @@ public class KontoList extends TablePart implements Part, Extendable
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer",null,false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null)
@@ -128,6 +129,7 @@ public class KontoList extends TablePart implements Part, Extendable
     addColumn(i18n.tr("Gruppe"),"kategorie");
     addColumn(i18n.tr("Notiz"),"kommentar");
     addColumn(i18n.tr("Verfahren"),"passport_class", new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null || !(o instanceof String))
@@ -154,6 +156,7 @@ public class KontoList extends TablePart implements Part, Extendable
 
     setFormatter(new TableFormatter()
     {
+      @Override
       public void format(TableItem item)
       {
         Konto k = (Konto) item.getData();
@@ -212,6 +215,7 @@ public class KontoList extends TablePart implements Part, Extendable
 
     this.addSelectionListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         featureEvent(Feature.Event.REFRESH,null);
@@ -221,9 +225,7 @@ public class KontoList extends TablePart implements Part, Extendable
     ExtensionRegistry.extend(this);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();
@@ -238,9 +240,7 @@ public class KontoList extends TablePart implements Part, Extendable
     this.showFilter = b;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     if (this.showFilter)
@@ -388,9 +388,6 @@ public class KontoList extends TablePart implements Part, Extendable
     return list;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event, java.lang.Object)
-   */
   @Override
   protected Context createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event e, Object data)
   {
@@ -453,9 +450,7 @@ public class KontoList extends TablePart implements Part, Extendable
       super();
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
@@ -464,9 +459,7 @@ public class KontoList extends TablePart implements Part, Extendable
       };
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (message == null)
@@ -505,9 +498,7 @@ public class KontoList extends TablePart implements Part, Extendable
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
@@ -519,9 +510,6 @@ public class KontoList extends TablePart implements Part, Extendable
    */
   private class MyListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {
@@ -536,9 +524,7 @@ public class KontoList extends TablePart implements Part, Extendable
   {
     private Listener forward = new DelayedListener(700,listener);
 
-    /**
-     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-     */
+    @Override
     public void keyReleased(KeyEvent e)
     {
       forward.handleEvent(null);

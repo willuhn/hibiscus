@@ -25,8 +25,8 @@ public class SammelUeberweisungNew implements Action
    * Abhaengig davon wird das eine oder andere Feld in der neuen Ueberweisung
    * vorausgefuellt oder die uebergebene Ueberweisung geladen.
    * Wenn nichts angegeben ist, wird eine leere Sammel-Ueberweisung erstellt und angezeigt.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		SammelUeberweisung u = null;

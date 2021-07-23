@@ -23,9 +23,7 @@ import de.willuhn.jameica.hbci.rmi.Address;
  */
 public interface AddressFilter extends Filter<Address>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.gui.filter.Filter#accept(java.lang.Object)
-   */
+  @Override
   public boolean accept(Address address) throws RemoteException;
   
   /**
@@ -33,9 +31,7 @@ public interface AddressFilter extends Filter<Address>
    */
   public final static AddressFilter ALL = new AddressFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
-     */
+    @Override
     public boolean accept(Address address) throws RemoteException
     {
       return true;
@@ -47,9 +43,7 @@ public interface AddressFilter extends Filter<Address>
    */
   public final static AddressFilter INLAND = new AddressFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
-     */
+    @Override
     public boolean accept(Address address) throws RemoteException
     {
       if (address == null)
@@ -67,9 +61,7 @@ public interface AddressFilter extends Filter<Address>
    */
   public final static AddressFilter FOREIGN = new AddressFilter()
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.AddressFilter#accept(de.willuhn.jameica.hbci.rmi.Address)
-     */
+    @Override
     public boolean accept(Address address) throws RemoteException
     {
       if (address == null)

@@ -93,9 +93,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     this.type = type;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
 		this.group = new SimpleContainer(parent);
@@ -116,7 +114,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
 		ButtonArea buttons = new ButtonArea();
 		Button button = new Button(i18n.tr("Export starten"),new Action()
 		{
-			public void handleAction(Object context) throws ApplicationException
+			@Override
+                        public void handleAction(Object context) throws ApplicationException
 			{
 				export();
 			}
@@ -125,7 +124,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
     buttons.addButton(button);
 		buttons.addButton(i18n.tr("Abbrechen"), new Action()
 		{
-			public void handleAction(Object context) throws ApplicationException
+			@Override
+                        public void handleAction(Object context) throws ApplicationException
 			{
 				close();
 			}
@@ -192,6 +192,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     final IOFormat format = exp.format;
 
     BackgroundTask t = new BackgroundTask() {
+      @Override
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         try
@@ -245,7 +246,9 @@ public class ExportDialog extends AbstractDialog implements Extendable
         }
       }
 
+      @Override
       public void interrupt() {}
+      @Override
       public boolean isInterrupted()
       {
         return false;
@@ -323,17 +326,13 @@ public class ExportDialog extends AbstractDialog implements Extendable
 		return this.exporterListe;
 	}
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();
@@ -371,41 +370,31 @@ public class ExportDialog extends AbstractDialog implements Extendable
       this.format = format;
 		}
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String arg0) throws RemoteException
     {
       return this.format.getName();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[] {"name"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return this.exporter.getClass().getName() + "#" + this.format.getName();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "name";
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
     	if (arg0 == null)
@@ -422,9 +411,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       return this.exporter;
     }
 
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
+    @Override
     public int compareTo(Object o)
     {
       if (o == null || !(o instanceof ExpotFormat))

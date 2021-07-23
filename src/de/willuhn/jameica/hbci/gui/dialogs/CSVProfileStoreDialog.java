@@ -160,6 +160,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
       return this.apply;
     
     this.apply = new Button(i18n.tr("Übernehmen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         // Name uebernehmen
@@ -192,9 +193,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
     return this.apply;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
 	{
     Container c = new SimpleContainer(parent);
@@ -206,9 +205,6 @@ public class CSVProfileStoreDialog extends AbstractDialog
     c.addInput(name);
     
     name.getControl().addKeyListener(new KeyAdapter() {
-      /**
-       * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-       */
       @Override
       public void keyReleased(KeyEvent e)
       {
@@ -278,9 +274,7 @@ public class CSVProfileStoreDialog extends AbstractDialog
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return this.profile;

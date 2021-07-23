@@ -46,9 +46,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl<Sam
     super(view);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getTransfer()
-   */
+  @Override
   public SammelUeberweisung getTransfer() throws RemoteException
   {
     if (transfer != null)
@@ -62,9 +60,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl<Sam
     return transfer;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getListe()
-   */
+  @Override
   public SammelUeberweisungList getListe() throws RemoteException
   {
     if (table != null)
@@ -74,9 +70,7 @@ public class SammelUeberweisungControl extends AbstractSammelTransferControl<Sam
     return table;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getBuchungen()
-   */
+  @Override
   public TablePart getBuchungen() throws RemoteException
   {
     if (this.buchungen != null)

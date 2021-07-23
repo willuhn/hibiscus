@@ -83,6 +83,7 @@ public class SynchronizeList extends TablePart
 
     // BUGZILLA 583
     this.setFormatter(new TableFormatter() {
+      @Override
       public void format(TableItem item)
       {
         try
@@ -182,9 +183,7 @@ public class SynchronizeList extends TablePart
     syncButtonListener.handleEvent(null);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     if (this.syncButton != null)
@@ -193,6 +192,7 @@ public class SynchronizeList extends TablePart
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mcSync);
     Application.getMessagingFactory().getMessagingQueue("jameica.gui.view.unbind").registerMessageConsumer(this.mcCache);
     parent.addDisposeListener(new DisposeListener() {
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(mcSync);
@@ -246,9 +246,7 @@ public class SynchronizeList extends TablePart
    */
   private class Options implements Action
   {
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
       try
@@ -263,9 +261,6 @@ public class SynchronizeList extends TablePart
         {
           KontoAuswahlDialog d1 = new KontoAuswahlDialog(null,KontoFilter.SYNCED,KontoAuswahlDialog.POSITION_CENTER)
           {
-            /**
-             * @see de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog#getApplyButton()
-             */
             @Override
             public Button getApplyButton()
             {
@@ -309,9 +304,6 @@ public class SynchronizeList extends TablePart
    */
   private class SyncStart implements Action
   {
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
     @Override
     public void handleAction(Object context) throws ApplicationException
     {
@@ -372,9 +364,7 @@ public class SynchronizeList extends TablePart
   private static class Configure implements Action
   {
 
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
       if (!(context instanceof SynchronizeJob))
@@ -389,25 +379,19 @@ public class SynchronizeList extends TablePart
    */
   private class SyncMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{QueryMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(final Message message) throws Exception
     {
       GUI.getDisplay().asyncExec(new Runnable()
@@ -447,25 +431,19 @@ public class SynchronizeList extends TablePart
    */
   private class CacheMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
     }
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{QueryMessage.class};
     }
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       cacheUnchecked();
@@ -477,9 +455,6 @@ public class SynchronizeList extends TablePart
    */
   private class SyncButtonListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {

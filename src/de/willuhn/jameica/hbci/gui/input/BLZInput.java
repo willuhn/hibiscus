@@ -67,9 +67,6 @@ public class BLZInput extends AccountInput
     
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.TextInput#getControl()
-   */
   @Override
   public Control getControl()
   {
@@ -105,9 +102,7 @@ public class BLZInput extends AccountInput
     return c;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.TextInput#setValue(java.lang.Object)
-   */
+  @Override
   public void setValue(Object value)
   {
     super.setValue(value);
@@ -120,9 +115,7 @@ public class BLZInput extends AccountInput
    */
   private class BLZListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event arg0)
     {
       try

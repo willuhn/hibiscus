@@ -22,9 +22,6 @@ import de.willuhn.util.ApplicationException;
  */
 public class KontoauszugPdfSettings implements Action
 {
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
   @Override
   public void handleAction(Object context) throws ApplicationException
   {

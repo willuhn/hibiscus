@@ -67,9 +67,7 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
 		
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferBuchungControl#getBuchung()
-   */
+  @Override
   public SepaSammelLastBuchung getBuchung()
 	{
 		if (this.buchung != null)
@@ -83,6 +81,7 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
+  @Override
   public AddressInput getEmpfaengerName() throws RemoteException
   {
     if (empfName != null)
@@ -184,8 +183,8 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
 
   /**
    * Ueberschrieben, um die Lastschrift-spezifischen Attribute zu setzen.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferBuchungControl#handleStore()
    */
+  @Override
   public synchronized boolean handleStore()
   {
     SepaSammelLastBuchung s = null;
@@ -259,9 +258,7 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
   private class EmpfaengerListener implements Listener
   {
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
       if (event == null)
         return;

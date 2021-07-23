@@ -25,8 +25,8 @@ public class LastschriftNew implements Action
    * Abhaengig davon wird das eine oder andere Feld in der neuen Lastschrift
    * vorausgefuellt oder die uebergebene Lastschrift geladen.
    * Wenn nichts angegeben ist, wird eine leere Lastschrift erstellt und angezeigt.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		Lastschrift u = null;

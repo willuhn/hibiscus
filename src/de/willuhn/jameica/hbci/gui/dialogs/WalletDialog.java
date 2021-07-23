@@ -48,17 +48,13 @@ public class WalletDialog extends AbstractDialog
     this.setSize(560,400);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Wallet wallet = Settings.getWallet();

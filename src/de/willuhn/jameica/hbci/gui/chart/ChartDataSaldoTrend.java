@@ -57,25 +57,19 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
   }
 
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-   */
+  @Override
   public List getData() throws RemoteException
   {
     return this.data;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf#getLabel()
-   */
+  @Override
   public String getLabel() throws RemoteException
   {
     return i18n.tr("Monatsdurchschnitt");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf#getCurve()
-   */
+  @Override
   public boolean getCurve()
   {
     return true;
@@ -117,9 +111,7 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
     return item;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isFilled()
-   */
+  @Override
   public boolean isFilled() throws RemoteException
   {
     return false;

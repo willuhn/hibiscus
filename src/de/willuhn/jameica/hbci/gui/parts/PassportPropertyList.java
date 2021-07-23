@@ -62,9 +62,7 @@ public class PassportPropertyList implements Part
   }
   
   
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     Container container = new SimpleContainer(parent);
@@ -168,9 +166,7 @@ public class PassportPropertyList implements Part
   {
     private Listener forward = new DelayedListener(new Listener()
     {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
+      @Override
       public void handleEvent(Event event)
       {
         // hier kommt dann das verzoegerte Event an.
@@ -179,9 +175,7 @@ public class PassportPropertyList implements Part
     
     });
 
-    /**
-     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-     */
+    @Override
     public void keyReleased(KeyEvent e)
     {
       forward.handleEvent(null);
@@ -230,9 +224,7 @@ public class PassportPropertyList implements Part
       this.value = value;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject other) throws RemoteException
     {
       if (other == null || !(other instanceof Value))
@@ -240,9 +232,7 @@ public class PassportPropertyList implements Part
       return this.getID().equals(other.getID());
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String name) throws RemoteException
     {
       if ("name".equals(name))
@@ -252,25 +242,19 @@ public class PassportPropertyList implements Part
       return this.value;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[]{"prefix","name","value"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return this.prefix + this.name + this.value;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "name";

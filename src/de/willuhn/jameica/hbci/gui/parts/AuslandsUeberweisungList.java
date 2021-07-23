@@ -40,9 +40,7 @@ public class AuslandsUeberweisungList extends AbstractTransferList
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.AuslandsUeberweisungList());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#initColums()
-   */
+  @Override
   protected void initColums()
   {
     addColumn(new KontoColumn());
@@ -54,17 +52,13 @@ public class AuslandsUeberweisungList extends AbstractTransferList
     addColumn(new AusgefuehrtColumn());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getObjectType()
-   */
+  @Override
   protected Class getObjectType()
   {
     return AuslandsUeberweisung.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getList(java.lang.Object, java.util.Date, java.util.Date, java.lang.String)
-   */
+  @Override
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     DBIterator list = super.getList(konto, from, to, text);

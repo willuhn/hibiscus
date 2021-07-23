@@ -47,9 +47,7 @@ public class LineChart extends AbstractChart<LineChartData>
 {
   private boolean stacked = false;
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#redraw()
-   */
+  @Override
   public void redraw() throws RemoteException
   {
     if (getChart() == null || getChart().isDisposed())
@@ -131,9 +129,7 @@ public class LineChart extends AbstractChart<LineChartData>
     getChart().getAxisSet().adjustRange();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     if (getChart() != null)

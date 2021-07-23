@@ -81,9 +81,7 @@ public class SepaExportDialog extends AbstractDialog
     });
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container c = new SimpleContainer(parent);
@@ -99,6 +97,7 @@ public class SepaExportDialog extends AbstractDialog
     ButtonArea buttons = new ButtonArea();
     this.ok = new Button(i18n.tr("Export starten"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         painVersion = (SepaVersion) version.getValue();
@@ -140,6 +139,7 @@ public class SepaExportDialog extends AbstractDialog
     
     buttons.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -197,6 +197,7 @@ public class SepaExportDialog extends AbstractDialog
     
     final FileInput input = new FileInput(f.getAbsolutePath(),true)
     {
+      @Override
       protected void customize(FileDialog fd)
       {
         if (path != null && path.length() > 0)
@@ -218,9 +219,7 @@ public class SepaExportDialog extends AbstractDialog
     return input;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return this.getFile();

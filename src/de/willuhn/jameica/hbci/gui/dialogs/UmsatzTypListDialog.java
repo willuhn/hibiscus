@@ -94,17 +94,13 @@ public class UmsatzTypListDialog extends AbstractDialog
     setSize(settings.getInt("window.width",WINDOW_WIDTH),settings.getInt("window.height",WINDOW_HEIGHT));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return choosen;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent,true);
@@ -126,6 +122,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     buttons.addButton(this.getApplyButton());
     buttons.addButton(i18n.tr("K&eine Kategorie"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         choosen = null;
@@ -134,6 +131,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     },null,false,"list-remove.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -207,9 +205,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     this.table.addColumn(i18n.tr("Kommentar"),"kommentar");
     this.table.setFormatter(new TableFormatter()
     {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
-       */
+      @Override
       public void format(TableItem item)
       {
         if (item == null)
@@ -285,6 +281,7 @@ public class UmsatzTypListDialog extends AbstractDialog
    */
   private class Apply implements Action
   {
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
       UmsatzTypBean b = (UmsatzTypBean) getTable().getSelection();
@@ -303,9 +300,7 @@ public class UmsatzTypListDialog extends AbstractDialog
   {
     private Listener forward = new DelayedListener(150,new Listener()
     {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
+      @Override
       public void handleEvent(Event event)
       {
         TablePart table = getTable();
@@ -335,9 +330,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     
     });
 
-    /**
-     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-     */
+    @Override
     public void keyReleased(KeyEvent e)
     {
       forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht

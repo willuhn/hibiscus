@@ -38,9 +38,7 @@ public class ChartDataSaldoForecast extends AbstractChartDataSaldo
     this.end   = end;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-   */
+  @Override
   public List getData() throws RemoteException
   {
     if (this.data != null)
@@ -50,9 +48,7 @@ public class ChartDataSaldoForecast extends AbstractChartDataSaldo
     return this.data;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
-   */
+  @Override
   public String getLabel() throws RemoteException
   {
     if (this.konto != null)

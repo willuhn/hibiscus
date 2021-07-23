@@ -105,6 +105,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     addItem(new UmsatzBookedItem(i18n.tr("Kategorie zuordnen..."),new UmsatzAssign(),"x-office-spreadsheet.png","ALT+K"));
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Kategorie bearbeiten..."),new UmsatzTypNew(),"document-open.png")
     {
+      @Override
       public boolean isEnabledFor(Object o)
       {
         // Wen es ein Umsatz ist, dann nur aktivieren, wenn der Umsatz eine Kategorie hat
@@ -127,6 +128,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     });
     addItem(new ContextMenuItem(i18n.tr("Neue Kategorie anlegen..."),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         // BUGZILLA 926
@@ -173,9 +175,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       }
     },"ok.png")
     {
-      /**
-       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-       */
+      @Override
       public boolean isEnabledFor(Object o)
       {
         return NeueUmsaetze.getID() != null;
@@ -241,9 +241,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       super(text,action,icon);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
@@ -270,9 +268,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       super(text,action,icon);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
@@ -305,9 +301,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     {
       super(i18n.tr("Öffnen"),new UmsatzDetail(),"document-open.png");
     }
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o instanceof Umsatz)
@@ -316,9 +310,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();
@@ -342,9 +334,7 @@ public class UmsatzList extends ContextMenu implements Extendable
       this.setShortcut(shortcut);
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if ((o instanceof Umsatz) || (o instanceof Umsatz[]))

@@ -30,9 +30,6 @@ public class KontoauszugExport extends Export
     super(Kontoauszug.class);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.Export#handleAction(java.lang.Object)
-   */
   @Override
   public void handleAction(Object context) throws ApplicationException
   {

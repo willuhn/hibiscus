@@ -69,9 +69,7 @@ public class PassportAuswahlDialog extends AbstractDialog
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container c = new SimpleContainer(parent);
@@ -139,9 +137,7 @@ public class PassportAuswahlDialog extends AbstractDialog
     return this.comment;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return this.passport;

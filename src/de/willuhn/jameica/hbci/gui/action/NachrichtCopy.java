@@ -29,8 +29,8 @@ public class NachrichtCopy implements Action
 
   /**
    * Als Context kann ein Objekt vom Typ Nachricht uebergeben werden.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     if (!(context instanceof Nachricht))

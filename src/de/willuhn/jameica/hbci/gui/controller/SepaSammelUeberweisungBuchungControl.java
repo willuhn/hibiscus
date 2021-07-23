@@ -30,9 +30,7 @@ public class SepaSammelUeberweisungBuchungControl extends AbstractSepaSammelTran
 		
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferBuchungControl#getBuchung()
-   */
+  @Override
   public SepaSammelUeberweisungBuchung getBuchung()
 	{
 		if (this.buchung != null)

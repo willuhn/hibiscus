@@ -40,9 +40,7 @@ public class ExportSaldoExtension implements Extension
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
-   */
+  @Override
   public void extend(Extendable extendable)
   {
     if (!(extendable instanceof ExportDialog))
@@ -61,6 +59,7 @@ public class ExportSaldoExtension implements Extension
     final CheckboxInput check = new CheckboxInput(initial);
     check.setName(i18n.tr("Spalte \"Saldo\" in der Datei anzeigen"));
     check.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         Boolean value = (Boolean) check.getValue();

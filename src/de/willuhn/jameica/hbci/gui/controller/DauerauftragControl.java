@@ -63,9 +63,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     super(view);
   }
 
-	/**
-	 * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
-	 */
+	@Override
 	public HibiscusTransfer getTransfer() throws RemoteException
 	{
 	  return (Dauerauftrag) this.getCurrentObject();
@@ -241,8 +239,8 @@ public class DauerauftragControl extends AbstractTransferControl {
 
   /**
    * Ueberschreiben wir, um die Auswahl des Kontos zu verbieten, wenn der Dauerauftrag schon aktiv ist.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getKontoAuswahl()
    */
+  @Override
   public KontoInput getKontoAuswahl() throws RemoteException
   {
     KontoInput i = super.getKontoAuswahl();
@@ -251,9 +249,7 @@ public class DauerauftragControl extends AbstractTransferControl {
   }
 
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getBetrag()
-   */
+  @Override
   public Input getBetrag() throws RemoteException
   {
     Input i = super.getBetrag();
@@ -264,9 +260,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerName()
-   */
+  @Override
   public AddressInput getEmpfaengerName() throws RemoteException
   {
     AddressInput i = super.getEmpfaengerName();
@@ -279,9 +273,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerKonto()
-   */
+  @Override
   public TextInput getEmpfaengerKonto() throws RemoteException
   {
     TextInput i = super.getEmpfaengerKonto();
@@ -291,9 +283,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getEmpfaengerBlz()
-   */
+  @Override
   public TextInput getEmpfaengerBlz() throws RemoteException
   {
     TextInput i = super.getEmpfaengerBlz();
@@ -303,9 +293,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck()
-   */
+  @Override
   public TextInput getZweck() throws RemoteException
   {
     TextInput i = super.getZweck();
@@ -315,9 +303,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getZweck2()
-   */
+  @Override
   public DialogInput getZweck2() throws RemoteException
   {
     DialogInput i = super.getZweck2();
@@ -327,9 +313,7 @@ public class DauerauftragControl extends AbstractTransferControl {
     return i;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
-   */
+  @Override
   public synchronized boolean handleStore()
   {
     return true;
@@ -341,9 +325,7 @@ public class DauerauftragControl extends AbstractTransferControl {
    */
   private class NextDateListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event)
     {
       try

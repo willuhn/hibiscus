@@ -81,9 +81,6 @@ public class UmsatzTypVerlauf implements Part
       this.name = name;
     }
     
-    /**
-     * @see java.lang.Enum#toString()
-     */
     @Override
     public String toString()
     {
@@ -136,9 +133,7 @@ public class UmsatzTypVerlauf implements Part
     this.chart.redraw();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     try
@@ -185,9 +180,6 @@ public class UmsatzTypVerlauf implements Part
     final List<MenuItem> items = new ArrayList<MenuItem>();
     SelectionListener l = new SelectionAdapter()
     {
-      /**
-       * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-       */
       @Override
       public void widgetSelected(SelectionEvent e)
       {
@@ -325,49 +317,37 @@ public class UmsatzTypVerlauf implements Part
       this.chartStopDate = (stop != null && stop.before(max)) ? start : max;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-     */
+    @Override
     public List getData() throws RemoteException
     {
       return this.entries;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
-     */
+    @Override
     public String getLabel() throws RemoteException
     {
       return (String) this.group.getAttribute("name");
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
-     */
+    @Override
     public String getDataAttribute() throws RemoteException
     {
       return "betrag";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelAttribute()
-     */
+    @Override
     public String getLabelAttribute() throws RemoteException
     {
       return "monat";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
-     */
+    @Override
     public boolean getCurve()
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
-     */
+    @Override
     public int[] getColor() throws RemoteException
     {
       UmsatzTyp ut = this.group.getUmsatzTyp();
@@ -381,9 +361,7 @@ public class UmsatzTypVerlauf implements Part
       return ut.getColor();
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
-     */
+    @Override
     public boolean isFilled() throws RemoteException
     {
       return true;
@@ -398,9 +376,7 @@ public class UmsatzTypVerlauf implements Part
     private double betrag = 0;
     private Date monat;
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject other) throws RemoteException
     {
       if (other == null || other.getID() == null)
@@ -408,9 +384,7 @@ public class UmsatzTypVerlauf implements Part
       return other.getID().equals(this.getID());
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String name) throws RemoteException
     {
       if ("betrag".equals(name))
@@ -420,17 +394,13 @@ public class UmsatzTypVerlauf implements Part
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[]{"betrag","monat"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       if (monat == null)
@@ -438,9 +408,7 @@ public class UmsatzTypVerlauf implements Part
       return monat.toString();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "betrag";

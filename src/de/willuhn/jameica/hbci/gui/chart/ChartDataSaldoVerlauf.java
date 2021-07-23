@@ -35,18 +35,12 @@ public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
     this.data = data;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-   */
   @Override
   public List getData()
   {
     return this.data;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
-   */
   @Override
   public String getLabel() throws RemoteException
   {

@@ -46,9 +46,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl<Samm
     super(view);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getTransfer()
-   */
+  @Override
   public SammelLastschrift getTransfer() throws RemoteException
   {
     if (transfer != null)
@@ -62,9 +60,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl<Samm
     return transfer;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getListe()
-   */
+  @Override
   public SammelLastschriftList getListe() throws RemoteException
   {
     if (table != null)
@@ -74,9 +70,7 @@ public class SammelLastschriftControl extends AbstractSammelTransferControl<Samm
     return table;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferControl#getBuchungen()
-   */
+  @Override
   public TablePart getBuchungen() throws RemoteException
   {
     if (this.buchungen != null)

@@ -66,9 +66,6 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     this.setSideImage(SWTUtil.getImage("dialog-warning-large.png"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void paint(Composite parent) throws Exception
   {
@@ -210,9 +207,6 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
     return true;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
   @Override
   protected Boolean getData() throws Exception
   {

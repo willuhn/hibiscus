@@ -66,9 +66,7 @@ public class TurnusEditDialog extends AbstractDialog {
     this.turnus = turnus;
   }
 
-	/**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+	@Override
 	protected void paint(Composite parent) throws Exception
 	{
 		Container group = new SimpleContainer(parent);
@@ -91,6 +89,7 @@ public class TurnusEditDialog extends AbstractDialog {
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
 		{
+			@Override
 			public void handleAction(Object context) throws ApplicationException
 			{
 			  try
@@ -106,6 +105,7 @@ public class TurnusEditDialog extends AbstractDialog {
 		},null,true,"ok.png");
 		buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
 		{
+			@Override
 			public void handleAction(Object context) throws ApplicationException
 			{
 				close();
@@ -114,9 +114,7 @@ public class TurnusEditDialog extends AbstractDialog {
 		group.addButtonArea(buttonArea);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return getTurnus();
@@ -276,9 +274,7 @@ public class TurnusEditDialog extends AbstractDialog {
   private class TagListener implements Listener
   {
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event)
     {
       try
@@ -326,33 +322,25 @@ public class TurnusEditDialog extends AbstractDialog {
         this.name = i18n.tr("wöchentlich");
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String arg0) throws RemoteException
     {
       return name;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return ""+id;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "foo";
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
       if (arg0 == null)
@@ -360,9 +348,7 @@ public class TurnusEditDialog extends AbstractDialog {
       return this.getID().equals(arg0.getID());
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[] {"foo"};
@@ -382,33 +368,25 @@ public class TurnusEditDialog extends AbstractDialog {
         this.name = TurnusHelper.getWochentag(id);
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String arg0) throws RemoteException
     {
       return name;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return ""+id;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "foo";
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
       if (arg0 == null)
@@ -416,9 +394,7 @@ public class TurnusEditDialog extends AbstractDialog {
       return this.getID().equals(arg0.getID());
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[] {"foo"};

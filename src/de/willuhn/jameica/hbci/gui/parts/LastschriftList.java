@@ -33,17 +33,13 @@ public class LastschriftList extends AbstractTransferList
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.LastschriftList());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getObjectType()
-   */
+  @Override
   protected Class getObjectType()
   {
     return Lastschrift.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractTransferList#getList(java.lang.Object, java.util.Date, java.util.Date, java.lang.String)
-   */
+  @Override
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     DBIterator list = super.getList(konto, from, to, text);

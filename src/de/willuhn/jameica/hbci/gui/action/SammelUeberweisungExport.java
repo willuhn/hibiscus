@@ -18,9 +18,7 @@ import de.willuhn.jameica.hbci.rmi.SammelUeberweisung;
 public class SammelUeberweisungExport extends AbstractSammelTransferExport
 {
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractSammelTransferExport#getExportClass()
-   */
+  @Override
   Class getExportClass()
   {
     return SammelUeberweisung.class;

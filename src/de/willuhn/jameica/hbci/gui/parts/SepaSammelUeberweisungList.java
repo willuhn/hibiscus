@@ -32,9 +32,7 @@ public class SepaSammelUeberweisungList extends AbstractSepaSammelTransferList i
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SepaSammelUeberweisungList());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractSammelTransferList#getObjectType()
-   */
+  @Override
   protected Class getObjectType()
   {
     return SepaSammelUeberweisung.class;

@@ -104,17 +104,11 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     setSize(settings.getInt("window.width",WINDOW_WIDTH),settings.getInt("window.height",WINDOW_HEIGHT));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void paint(Composite parent) throws Exception
   {
     Container scroll = new ScrolledContainer(parent,1)
     {
-      /**
-       * @see de.willuhn.jameica.gui.util.ScrolledContainer#update()
-       */
       @Override
       public void update()
       {
@@ -463,9 +457,6 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     return this.getExampleText();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
   @Override
   protected Object getData() throws Exception
   {
@@ -580,9 +571,6 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
    */
   private class IntervalListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {
@@ -625,9 +613,6 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
    */
   private class ReloadListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {
@@ -679,9 +664,6 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
    */
   private class SupportListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {

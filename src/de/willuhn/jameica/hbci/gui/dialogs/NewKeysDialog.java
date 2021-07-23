@@ -92,17 +92,13 @@ public class NewKeysDialog extends AbstractDialog
 		iniletter = new INILetter(passport,INILetter.TYPE_USER);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#onEscape()
-   */
+  @Override
   protected void onEscape()
   {
     // Kein Escape in diesem Dialog
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
 		SimpleContainer group = new SimpleContainer(parent);
@@ -277,9 +273,7 @@ public class NewKeysDialog extends AbstractDialog
     return this.error;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;

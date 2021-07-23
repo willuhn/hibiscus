@@ -332,9 +332,6 @@ public class KontoauszugPdfControl extends AbstractControl
       File f = name != null && path != null ? new File(path,name) : null;
       this.datei = new FileInput(f != null ? f.getAbsolutePath() : null,false)
       {
-        /**
-         * @see de.willuhn.jameica.gui.input.FileInput#customize(org.eclipse.swt.widgets.FileDialog)
-         */
         @Override
         protected void customize(FileDialog fd)
         {
@@ -476,9 +473,6 @@ public class KontoauszugPdfControl extends AbstractControl
   private class KontoListener implements Listener
   {
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {

@@ -80,9 +80,7 @@ public class AuslandsUeberweisungList extends ContextMenu
     {
       super(text,action,icon);
     }
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o instanceof AuslandsUeberweisung[])
@@ -97,9 +95,8 @@ public class AuslandsUeberweisungList extends ContextMenu
    */
   private class UNeu extends AuslandsUeberweisungNew
 	{
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
     	super.handleAction(null);
@@ -124,9 +121,7 @@ public class AuslandsUeberweisungList extends ContextMenu
       super(text, a, icon);
     }
 
-	  /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null || !(o instanceof AuslandsUeberweisung))
@@ -166,9 +161,7 @@ public class AuslandsUeberweisungList extends ContextMenu
       super(text, a, icon);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null || (!(o instanceof AuslandsUeberweisung) && !(o instanceof AuslandsUeberweisung[])))

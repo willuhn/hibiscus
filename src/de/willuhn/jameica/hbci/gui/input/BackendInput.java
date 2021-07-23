@@ -59,9 +59,6 @@ public class BackendInput extends SelectInput
     this.setName(i18n.tr("Zugangsweg"));
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#format(java.lang.Object)
-   */
   @Override
   protected String format(Object bean)
   {

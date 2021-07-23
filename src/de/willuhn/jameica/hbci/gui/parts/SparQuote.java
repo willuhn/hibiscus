@@ -99,6 +99,7 @@ public class SparQuote implements Part
   {
     this.listener = new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         try
@@ -259,6 +260,7 @@ public class SparQuote implements Part
     this.range = new RangeInput(ranges,this.getFrom(),this.getTo(),"auswertungen.spartquote.filter.range");
     this.range.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         if (range.getValue() != null && range.hasChanged())
@@ -269,9 +271,7 @@ public class SparQuote implements Part
     return this.range;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     load();
@@ -301,9 +301,6 @@ public class SparQuote implements Part
     ButtonArea topButtons = new ButtonArea();
     topButtons.addButton(i18n.tr("Exportieren..."),new SparQuoteExport()
     {
-      /**
-       * @see de.willuhn.jameica.hbci.gui.action.SparQuoteExport#handleAction(java.lang.Object)
-       */
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
@@ -319,7 +316,7 @@ public class SparQuote implements Part
       }
     },null,false,"document-save.png");
     topButtons.addButton(i18n.tr("Aktualisieren"), new Action() {
-
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         listener.handleEvent(null);
@@ -338,6 +335,7 @@ public class SparQuote implements Part
     
     final boolean bold = de.willuhn.jameica.hbci.Settings.getBoldValues();
     this.table.setFormatter(new TableFormatter() {
+      @Override
       public void format(TableItem item)
       {
         if (item == null || item.getData() == null)
@@ -648,17 +646,13 @@ public class SparQuote implements Part
    */
   private class ChartDataSparQuote implements LineChartData
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-     */
+    @Override
     public List getData() throws RemoteException
     {
       return data;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
-     */
+    @Override
     public String getLabel() throws RemoteException
     {
       Object o = getKontoAuswahl().getValue();
@@ -669,41 +663,30 @@ public class SparQuote implements Part
       return i18n.tr("Alle Konten");
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
-     */
+    @Override
     public String getDataAttribute() throws RemoteException
     {
       return "sparquote";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelAttribute()
-     */
+    @Override
     public String getLabelAttribute() throws RemoteException
     {
       return "start";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
-     */
+    @Override
     public boolean getCurve()
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
-     */
+    @Override
     public int[] getColor() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
-     */
     @Override
     public boolean isFilled() throws RemoteException
     {
@@ -716,25 +699,19 @@ public class SparQuote implements Part
    */
   private class ChartDataTrend extends ChartDataSparQuote
   {
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-     */
+    @Override
     public List getData() throws RemoteException
     {
       return trend;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
-     */
+    @Override
     public String getLabel() throws RemoteException
     {
       return i18n.tr("Trend");
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
-     */
+    @Override
     public boolean getCurve()
     {
       return true;

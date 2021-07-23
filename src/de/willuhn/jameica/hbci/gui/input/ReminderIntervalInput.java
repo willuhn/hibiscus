@@ -201,17 +201,13 @@ public class ReminderIntervalInput implements Input
     return this.containsInterval;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getValue()
-   */
+  @Override
   public Object getValue()
   {
     return this.input.getValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
-   */
+  @Override
   public void setValue(Object value)
   {
     this.input.setValue(value);
@@ -226,41 +222,31 @@ public class ReminderIntervalInput implements Input
     return this.end;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#hasChanged()
-   */
+  @Override
   public boolean hasChanged()
   {
     return this.input.hasChanged();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getControl()
-   */
+  @Override
   public Control getControl()
   {
     return this.input.getControl();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#addListener(org.eclipse.swt.widgets.Listener)
-   */
+  @Override
   public void addListener(Listener l)
   {
     this.input.addListener(l);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setComment(java.lang.String)
-   */
+  @Override
   public void setComment(String comment)
   {
     this.input.setComment(comment);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent)
   {
     this.input.paint(parent);
@@ -280,97 +266,73 @@ public class ReminderIntervalInput implements Input
     });
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#paint(org.eclipse.swt.widgets.Composite, int)
-   */
+  @Override
   public void paint(Composite parent, int width)
   {
     this.input.paint(parent,width);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#focus()
-   */
+  @Override
   public void focus()
   {
     this.input.focus();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#disable()
-   */
+  @Override
   public void disable()
   {
     this.input.disable();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#enable()
-   */
+  @Override
   public void enable()
   {
     this.input.enable();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setEnabled(boolean)
-   */
+  @Override
   public void setEnabled(boolean enabled)
   {
     this.input.setEnabled(enabled);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#isEnabled()
-   */
+  @Override
   public boolean isEnabled()
   {
     return this.input.isEnabled();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setMandatory(boolean)
-   */
+  @Override
   public void setMandatory(boolean mandatory)
   {
     this.input.setMandatory(mandatory);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#isMandatory()
-   */
+  @Override
   public boolean isMandatory()
   {
     return this.input.isMandatory();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setName(java.lang.String)
-   */
+  @Override
   public void setName(String name)
   {
     this.input.setName(name);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getName()
-   */
+  @Override
   public String getName()
   {
     return this.input.getName();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setData(java.lang.String, java.lang.Object)
-   */
+  @Override
   public void setData(String key, Object data)
   {
     this.input.setData(key,data);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getData(java.lang.String)
-   */
+  @Override
   public Object getData(String key)
   {
     return this.input.getData(key);
@@ -381,17 +343,13 @@ public class ReminderIntervalInput implements Input
    */
   private class DateChangedConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{QueryMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (dialog == null)
@@ -405,9 +363,7 @@ public class ReminderIntervalInput implements Input
       dialog.setDate((Date) data);
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

@@ -174,17 +174,13 @@ public abstract class AbstractTransferList extends AbstractFromToList
     return this.pending;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#hasChanged()
-   */
+  @Override
   protected boolean hasChanged()
   {
     return InputCompat.valueHasChanged(super.hasChanged(), pending);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     // Damit wir den MessageConsumer beim Schliessen wieder entfernen
@@ -199,9 +195,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
     this.getLeft().addInput(this.getPending());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.lang.Object, java.util.Date, java.util.Date, java.lang.String)
-   */
+  @Override
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
@@ -246,9 +240,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
         this.delayed = new DelayedListener(listener);
     }
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
@@ -257,9 +249,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
       };
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (message == null)
@@ -299,9 +289,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
         delayed.handleEvent(null);
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

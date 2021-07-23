@@ -42,9 +42,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
   }
 
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
-   */
+  @Override
   public HibiscusTransfer getTransfer() throws RemoteException
   {
     return (Lastschrift) getCurrentObject();
@@ -64,9 +62,7 @@ public class LastschriftControl extends AbstractBaseUeberweisungControl
 		return table;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTextSchluessel()
-   */
+  @Override
   public Input getTextSchluessel() throws RemoteException
   {
     if (textschluessel != null)

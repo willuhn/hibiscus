@@ -39,9 +39,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
    */
   protected abstract UmsatzDetailControl getControl();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception {
 
     final UmsatzDetailControl control = getControl();

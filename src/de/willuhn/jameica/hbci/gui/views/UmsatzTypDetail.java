@@ -34,9 +34,7 @@ public class UmsatzTypDetail extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     final UmsatzTypControl control = new UmsatzTypControl(this);
@@ -70,6 +68,7 @@ public class UmsatzTypDetail extends AbstractView
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Löschen"),   new DBObjectDelete(),control.getCurrentObject(),false,"user-trash-full.png");
     buttons.addButton(i18n.tr("Duplizieren..."), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (control.handleStore())
@@ -88,6 +87,7 @@ public class UmsatzTypDetail extends AbstractView
     },null,false,"edit-copy.png");
     buttons.addButton(i18n.tr("&Speichern"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();

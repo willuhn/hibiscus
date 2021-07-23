@@ -59,6 +59,7 @@ public abstract class AbstractDateInput extends DateInput
     
     // Listener zur Ueberwachung der Aenderungen
     this.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         store();
@@ -101,9 +102,7 @@ public abstract class AbstractDateInput extends DateInput
     this.setValue(this.getDefault());
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.DateInput#setValue(java.lang.Object)
-   */
+  @Override
   public void setValue(Object value)
   {
     super.setValue(value);

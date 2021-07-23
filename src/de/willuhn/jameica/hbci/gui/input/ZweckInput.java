@@ -47,7 +47,6 @@ public class ZweckInput extends TextInput
    * Ueberschrieben, um die in SEPA-Verwendungszwecken erlaubten Zeichen automatisch zu entfernen.
    * Dann kann der User per Zwischenablage auch unerlaubte Zeichen einfuegen. Hibiscus schneidet die
    * dann automatisch raus.
-   * @see de.willuhn.jameica.gui.input.TextInput#getControl()
    */
   @Override
   public Control getControl()
@@ -60,6 +59,7 @@ public class ZweckInput extends TextInput
     // BUGZILLA 1495 - nicht erlaubte Zeichen automatisch rausschneiden
     this.control.addListener(SWT.Verify, new Listener()
     {
+      @Override
       public void handleEvent(Event e)
       {
         if (e.text == null || e.text.length() == 0)

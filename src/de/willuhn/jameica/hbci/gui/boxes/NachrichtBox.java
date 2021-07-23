@@ -43,33 +43,25 @@ public class NachrichtBox extends AbstractBox implements Box
   private NachrichtList list = null;
   private MessageConsumer mc = new MyMessageConsumer();
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
-   */
+  @Override
   public boolean getDefaultEnabled()
   {
     return true;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
-   */
+  @Override
   public int getDefaultIndex()
   {
     return 0;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getName()
-   */
+  @Override
   public String getName()
   {
     return "Hibiscus: " + i18n.tr("System-Nachrichten der Bank");
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     DBIterator iterator = Settings.getDBService().createList(Nachricht.class);
@@ -93,17 +85,13 @@ public class NachrichtBox extends AbstractBox implements Box
     
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
-   */
+  @Override
   public boolean isActive()
   {
     return super.isActive() && isEnabled(); // Nicht konfigurierbar
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.AbstractBox#isEnabled()
-   */
+  @Override
   public boolean isEnabled()
   {
     try
@@ -124,27 +112,18 @@ public class NachrichtBox extends AbstractBox implements Box
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
     @Override
     public boolean autoRegister()
     {
       return false;
     }
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
     @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ImportMessage.class};
     }
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
     @Override
     public void handleMessage(Message message) throws Exception
     {
@@ -176,9 +155,6 @@ public class NachrichtBox extends AbstractBox implements Box
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
-   */
   @Override
   public int getHeight()
   {

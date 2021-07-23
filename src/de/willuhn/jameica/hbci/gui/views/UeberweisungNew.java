@@ -41,9 +41,7 @@ public class UeberweisungNew extends AbstractView
   private MessageConsumer mc = new MyMessageConsumer();
   private Ueberweisung transfer = null;
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception {
 
 		final UeberweisungControl control = new UeberweisungControl(this);
@@ -100,9 +98,7 @@ public class UeberweisungNew extends AbstractView
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
+  @Override
   public void unbind() throws ApplicationException
   {
     super.unbind();
@@ -117,17 +113,13 @@ public class UeberweisungNew extends AbstractView
   private class MyMessageConsumer implements MessageConsumer
   {
   
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ObjectChangedMessage.class};
     }
   
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (transfer == null)
@@ -142,9 +134,7 @@ public class UeberweisungNew extends AbstractView
         GUI.startView(UeberweisungNew.this,transfer);
     }
   
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

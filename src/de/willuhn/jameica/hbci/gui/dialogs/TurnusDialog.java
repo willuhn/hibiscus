@@ -49,9 +49,7 @@ public class TurnusDialog extends AbstractDialog
 		this.setTitle(i18n.tr("Zahlungsturnus auswählen"));
   }
 
-	/**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+	@Override
 	protected void paint(Composite parent) throws Exception
 	{
     // Erzeugen der Liste mit den existierenden Elementen
@@ -79,6 +77,7 @@ public class TurnusDialog extends AbstractDialog
     // Ein Formatter, der die initialen Turnusse rot markiert
     turnusList.setFormatter(new TableFormatter()
     {
+      @Override
       public void format(TableItem item)
       {
         try {
@@ -100,6 +99,7 @@ public class TurnusDialog extends AbstractDialog
     // Einer fuer die Neuanlage
     c.addItem(new ContextMenuItem(i18n.tr("Neu..."), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         handleEdit(null);
@@ -109,6 +109,7 @@ public class TurnusDialog extends AbstractDialog
     // Ein Contextmenu-Eintrag zum Bearbeiten    
     c.addItem(new ContextMenuItem(i18n.tr("Bearbeiten..."), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof Turnus))
@@ -117,9 +118,7 @@ public class TurnusDialog extends AbstractDialog
       }
     })
     {
-      /**
-       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-       */
+      @Override
       public boolean isEnabledFor(Object o)
       {
         try
@@ -142,6 +141,7 @@ public class TurnusDialog extends AbstractDialog
     // Ein Contextmenu-Eintrag zum Loeschen    
     c.addItem(new ContextMenuItem(i18n.tr("Löschen..."), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof Turnus))
@@ -158,9 +158,7 @@ public class TurnusDialog extends AbstractDialog
       }
     })
     {
-      /**
-       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-       */
+      @Override
       public boolean isEnabledFor(Object o)
       {
         try
@@ -188,6 +186,7 @@ public class TurnusDialog extends AbstractDialog
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Neu"), new Action()
 		{
+			@Override
 			public void handleAction(Object context) throws ApplicationException
 			{
         handleEdit(null);
@@ -195,6 +194,7 @@ public class TurnusDialog extends AbstractDialog
 		},null,false,"document-new.png");
 		buttonArea.addButton(i18n.tr("Übernehmen"), new Action()
 		{
+			@Override
 			public void handleAction(Object context) throws ApplicationException
 			{
         try
@@ -212,6 +212,7 @@ public class TurnusDialog extends AbstractDialog
 		},null,true,"ok.png");
 		buttonArea.addButton(i18n.tr("Abbrechen"), new Action()
 		{
+			@Override
 			public void handleAction(Object context) throws ApplicationException
 			{
         // Turnus entfernen
@@ -265,9 +266,7 @@ public class TurnusDialog extends AbstractDialog
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return turnus;

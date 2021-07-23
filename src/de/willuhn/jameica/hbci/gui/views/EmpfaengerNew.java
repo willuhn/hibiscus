@@ -36,9 +36,7 @@ public class EmpfaengerNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
 		GUI.getView().setTitle(i18n.tr("Adresse bearbeiten"));
@@ -71,6 +69,7 @@ public class EmpfaengerNew extends AbstractView
     
     Button store = new Button(i18n.tr("&Speichern"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();

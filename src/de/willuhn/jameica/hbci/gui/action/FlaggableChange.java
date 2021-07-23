@@ -42,8 +42,8 @@ public class FlaggableChange implements Action
 
   /**
    * Erwartet ein Objekt vom Typ <code>Flaggable</code> oder <code>Flaggable[]</code>.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		if (context == null)

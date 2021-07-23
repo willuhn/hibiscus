@@ -40,9 +40,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
     this.last = u;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);

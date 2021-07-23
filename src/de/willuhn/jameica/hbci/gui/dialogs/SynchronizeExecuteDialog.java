@@ -50,9 +50,7 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     this.jobs = jobs;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container container = new SimpleContainer(parent,true);
@@ -71,6 +69,7 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Jetzt ausführen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         close();
@@ -78,6 +77,7 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     },null,false,"mail-send-receive.png");
     buttons.addButton(i18n.tr("Synchronisierung abbrechen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -88,9 +88,6 @@ public class SynchronizeExecuteDialog extends AbstractDialog
     // buttons.paint(parent);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
   @Override
   protected Object getData() throws Exception
   {
