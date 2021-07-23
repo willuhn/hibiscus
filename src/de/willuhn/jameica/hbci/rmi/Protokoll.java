@@ -18,7 +18,8 @@ import java.util.Date;
  * wann welche Art von HBCI-Aktion (z.Bsp. Umsaetze abrufen oder Ueberweisung)
  * ausgefuehrt wurde.
  */
-public interface Protokoll extends HibiscusDBObject {
+public interface Protokoll extends HibiscusDBObject
+{
 
 	/**
 	 * Protokoll-Typ unbekannt (Default).
