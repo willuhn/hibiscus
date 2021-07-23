@@ -37,9 +37,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport
 {
   private final static String PREFIX_ENC = "encrypted:";
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#execute(java.sql.Connection, java.io.File)
-   */
+  @Override
   public void execute(Connection conn, File sqlScript) throws RemoteException
   {
     if (sqlScript == null)
@@ -87,9 +85,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getTransactionIsolationLevel()
-   */
+  @Override
   public int getTransactionIsolationLevel() throws RemoteException
   {
     return -1;
@@ -97,9 +93,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport
   
   private long lastCheck = 0;
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#checkConnection(java.sql.Connection)
-   */
+  @Override
   public void checkConnection(Connection conn) throws RemoteException
   {
     long newCheck = System.currentTimeMillis();

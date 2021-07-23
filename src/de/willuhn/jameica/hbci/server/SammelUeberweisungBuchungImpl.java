@@ -30,17 +30,13 @@ public class SammelUeberweisungBuchungImpl extends AbstractSammelTransferBuchung
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sueberweisungbuchung";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
+  @Override
   protected Class getForeignObject(String arg0) throws RemoteException
   {
     if ("sueberweisung_id".equals(arg0))
@@ -49,17 +45,13 @@ public class SammelUeberweisungBuchungImpl extends AbstractSammelTransferBuchung
     return super.getForeignObject(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getSammelTransfer()
-   */
+  @Override
   public SammelTransfer getSammelTransfer() throws RemoteException
   {
     return (SammelUeberweisung) getAttribute("sueberweisung_id");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setSammelTransfer(de.willuhn.jameica.hbci.rmi.SammelTransfer)
-   */
+  @Override
   public void setSammelTransfer(SammelTransfer s) throws RemoteException
   {
     setAttribute("sueberweisung_id",s);

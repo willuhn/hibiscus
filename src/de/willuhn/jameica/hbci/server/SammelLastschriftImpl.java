@@ -34,17 +34,13 @@ public class SammelLastschriftImpl extends AbstractSammelTransferImpl
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "slastschrift";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelLastschrift#getBuchungen()
-   */
+  @Override
   public DBIterator getBuchungen() throws RemoteException
   {
     DBIterator list = this.getService().createList(SammelLastBuchung.class);
@@ -53,9 +49,7 @@ public class SammelLastschriftImpl extends AbstractSammelTransferImpl
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#createBuchung()
-   */
+  @Override
   public SammelTransferBuchung createBuchung() throws RemoteException, ApplicationException
   {
     SammelLastBuchung b = (SammelLastBuchung) this.getService().createObject(SammelLastBuchung.class,null);

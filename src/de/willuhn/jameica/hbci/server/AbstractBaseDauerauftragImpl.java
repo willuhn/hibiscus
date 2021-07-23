@@ -32,33 +32,25 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "zweck";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#getErsteZahlung()
-   */
+  @Override
   public Date getErsteZahlung() throws RemoteException
   {
     return (Date) getAttribute("erste_zahlung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#getLetzteZahlung()
-   */
+  @Override
   public Date getLetzteZahlung() throws RemoteException
   {
 		return (Date) getAttribute("letzte_zahlung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#getTurnus()
-   */
+  @Override
   public Turnus getTurnus() throws RemoteException
   {
 		// Zwischen Dauerauftrag und Turnus existiert kein Constraint.
@@ -83,33 +75,25 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
 		return t;
   }
 
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#isActive()
-	 */
+        @Override
 	public boolean isActive() throws RemoteException
 	{
 		return getOrderID() != null && getOrderID().length() > 0;
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#setErsteZahlung(java.util.Date)
-   */
+  @Override
   public void setErsteZahlung(Date datum) throws RemoteException
   {
   	setAttribute("erste_zahlung",datum);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#setLetzteZahlung(java.util.Date)
-   */
+  @Override
   public void setLetzteZahlung(Date datum) throws RemoteException
   {
 		setAttribute("letzte_zahlung",datum);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#setTurnus(de.willuhn.jameica.hbci.rmi.Turnus)
-   */
+  @Override
   public void setTurnus(Turnus turnus) throws RemoteException
   {
   	if (turnus == null)
@@ -120,9 +104,7 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
 		setAttribute("tag",					new Integer(turnus.getTag()));
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#equals(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public boolean equals(GenericObject o) throws RemoteException
   {
 		if (o == null || !(o instanceof BaseDauerauftrag))
@@ -149,17 +131,13 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#getOrderID()
-   */
+  @Override
   public String getOrderID() throws RemoteException
   {
     return (String) getAttribute("orderid");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#setOrderID(java.lang.String)
-   */
+  @Override
   public void setOrderID(String id) throws RemoteException
   {
   	setAttribute("orderid",id);
@@ -168,10 +146,8 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
   /**
    * Ueberschreiben wir, um beim synthetischen Attribut "turnus_id" ein
    * Turnus-Objekt liefern zu koennen.
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getAttribute(java.lang.String)
    */
-  /**
-   */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
   	if ("turnus_id".equals(arg0))
@@ -181,9 +157,7 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
     return super.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseDauerauftrag#getNaechsteZahlung()
-   */
+  @Override
   public Date getNaechsteZahlung() throws RemoteException
   {
     return TurnusHelper.getNaechsteZahlung(this.getErsteZahlung(),

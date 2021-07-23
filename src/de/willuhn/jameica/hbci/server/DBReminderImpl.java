@@ -42,9 +42,7 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try
@@ -62,33 +60,25 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     this.insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBReminder#getUUID()
-   */
+  @Override
   public String getUUID() throws RemoteException
   {
     return (String) this.getAttribute("uuid");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBReminder#setUUID(java.lang.String)
-   */
+  @Override
   public void setUUID(String uuid) throws RemoteException
   {
     this.setAttribute("uuid",uuid);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBReminder#getReminder()
-   */
+  @Override
   public Reminder getReminder() throws RemoteException
   {
     String serialized = (String) this.getAttribute("content");
@@ -112,9 +102,7 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBReminder#setReminder(de.willuhn.jameica.reminder.Reminder)
-   */
+  @Override
   public void setReminder(Reminder reminder) throws RemoteException
   {
     if (reminder == null)
@@ -138,17 +126,13 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "uuid";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "reminder";

@@ -35,23 +35,17 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName() {
     return "protokoll";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException {
     return "kommentar";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#store()
-   */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     // Kommentar ggf. auf 1000 Zeichen kuerzen - H2 hat sich sonst affig ;)
@@ -61,9 +55,7 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
     super.store();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
 		try {
@@ -89,46 +81,34 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
 		}
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException {
     throw new ApplicationException(i18n.tr("Protokoll-Daten dürfen nicht geändert werden."));
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
+  @Override
   protected Class getForeignObject(String field) throws RemoteException {
 		if ("konto_id".equals(field))
 			return Konto.class;
 		return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Protokoll#getKonto()
-   */
+  @Override
   public Konto getKonto() throws RemoteException {
   	return (Konto) getAttribute("konto_id");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Protokoll#getKommentar()
-   */
+  @Override
   public String getKommentar() throws RemoteException {
     return (String) getAttribute("kommentar");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Protokoll#getDatum()
-   */
+  @Override
   public Date getDatum() throws RemoteException {
     return (Date) getAttribute("datum");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Protokoll#getTyp()
-   */
+  @Override
   public int getTyp() throws RemoteException {
 		Integer i = (Integer) getAttribute("typ");
 		if (i == null)
@@ -136,24 +116,18 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
 		return i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Protokoll#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void setKonto(Konto konto) throws RemoteException {
     setAttribute("konto_id",konto);
 
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Protokoll#setKommentar(java.lang.String)
-   */
+  @Override
   public void setKommentar(String kommentar) throws RemoteException {
   	setAttribute("kommentar",kommentar);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Protokoll#setTyp(int)
-   */
+  @Override
   public void setTyp(int typ) throws RemoteException {
 		if (typ != TYP_ERROR && typ != TYP_SUCCESS)
 			typ = TYP_UNKNOWN;

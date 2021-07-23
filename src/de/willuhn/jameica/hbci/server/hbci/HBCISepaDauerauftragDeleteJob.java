@@ -113,18 +113,13 @@ public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
 		}
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
     return this.dauerauftrag;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
-   */
+  @Override
   public void setJob(HBCIJob job) throws RemoteException, ApplicationException
   {
     // Job-Restrictions checken, wenn ein Zieldatum angegeben ist.
@@ -139,24 +134,18 @@ public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
     super.setJob(job);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier() {
     return "DauerSEPADel";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("SEPA-Dauerauftrag an {0} löschen",dauerauftrag.getGegenkontoName());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     dauerauftrag.delete();
@@ -164,9 +153,7 @@ public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
     Logger.info("sepa-dauerauftrag deleted successfully");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Löschen des SEPA-Dauerauftrages an {0}: {1}",new String[]{dauerauftrag.getGegenkontoName(),error});

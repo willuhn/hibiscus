@@ -29,17 +29,13 @@ public class DauerauftragImpl extends AbstractBaseDauerauftragImpl implements Da
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "dauerauftrag";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
-   */
+  @Override
   public long getChecksum() throws RemoteException
   {
 		String ersteZahlung  = getErsteZahlung() == null ? "" : HBCI.DATEFORMAT.format(getErsteZahlung());
@@ -60,9 +56,7 @@ public class DauerauftragImpl extends AbstractBaseDauerauftragImpl implements Da
 		return crc.getValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Dauerauftrag#getTextSchluessel()
-   */
+  @Override
   public String getTextSchluessel() throws RemoteException
   {
     return (String) getAttribute("typ");

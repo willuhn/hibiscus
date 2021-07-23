@@ -45,17 +45,13 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "bezeichnung";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try {
@@ -99,9 +95,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     try {
@@ -116,9 +110,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
-   */
+  @Override
   public void insert() throws RemoteException, ApplicationException
   {
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
@@ -126,9 +118,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     super.insert();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getKonto()
-   */
+  @Override
   public Konto getKonto() throws RemoteException
   {
     Integer i = (Integer) super.getAttribute("konto_id");
@@ -139,33 +129,25 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     return (Konto) cache.get(i);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void setKonto(Konto k) throws RemoteException
   {
     setAttribute("konto_id",(k == null || k.getID() == null) ? null : new Integer(k.getID()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#getTermin()
-   */
+  @Override
   public Date getTermin() throws RemoteException
   {
     return (Date) getAttribute("termin");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#getAusfuehrungsdatum()
-   */
+  @Override
   public Date getAusfuehrungsdatum() throws RemoteException
   {
     return (Date) getAttribute("ausgefuehrt_am");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#ausgefuehrt()
-   */
+  @Override
   public boolean ausgefuehrt() throws RemoteException
   {
     Integer i = (Integer) getAttribute("ausgefuehrt");
@@ -187,9 +169,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     return this.markingExecuted;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#setAusgefuehrt(boolean)
-   */
+  @Override
   public void setAusgefuehrt(boolean b) throws RemoteException, ApplicationException
   {
     try
@@ -206,17 +186,13 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#setTermin(java.util.Date)
-   */
+  @Override
   public void setTermin(Date termin) throws RemoteException
   {
     setAttribute("termin",termin);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#ueberfaellig()
-   */
+  @Override
   public boolean ueberfaellig() throws RemoteException
   {
     if (ausgefuehrt())
@@ -227,25 +203,19 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     return (termin.before(new Date()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getBezeichnung()
-   */
+  @Override
   public String getBezeichnung() throws RemoteException
   {
     return (String) getAttribute("bezeichnung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setBezeichnung(java.lang.String)
-   */
+  @Override
   public void setBezeichnung(String bezeichnung) throws RemoteException
   {
     setAttribute("bezeichnung", bezeichnung);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.Changeable#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     // Wir muessen auch alle Buchungen mitloeschen
@@ -283,9 +253,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.Changeable#store()
-   */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
@@ -295,8 +263,8 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   /**
    * Ueberschrieben, um ein Pseudo-Attribut "buchungen" zu erzeugen, welches
    * eine String-Repraesentation der enthaltenen Buchungen enthaelt.
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("summe".equals(arg0))
@@ -323,9 +291,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     return super.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#getSumme()
-   */
+  @Override
   public BigDecimal getSumme() throws RemoteException
   {
     BigDecimal sum = new BigDecimal(0);
@@ -341,17 +307,13 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     return sum;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#getPmtInfId()
-   */
+  @Override
   public String getPmtInfId() throws RemoteException
   {
     return (String) getAttribute("pmtinfid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#setPmtInfId(java.lang.String)
-   */
+  @Override
   public void setPmtInfId(String id) throws RemoteException
   {
     setAttribute("pmtinfid",id);
