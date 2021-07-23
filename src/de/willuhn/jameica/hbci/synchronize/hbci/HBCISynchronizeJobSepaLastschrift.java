@@ -23,9 +23,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISynchronizeJobSepaLastschrift extends SynchronizeJobSepaLastschrift implements HBCISynchronizeJob
 {
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJob#createHBCIJobs()
-   */
+  @Override
   public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
     return new AbstractHBCIJob[]{new HBCISepaLastschriftJob((SepaLastschrift) this.getContext(CTX_ENTITY))};

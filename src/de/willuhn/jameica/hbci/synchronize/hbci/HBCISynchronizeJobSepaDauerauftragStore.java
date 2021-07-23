@@ -24,9 +24,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISynchronizeJobSepaDauerauftragStore extends SynchronizeJobSepaDauerauftragStore implements HBCISynchronizeJob
 {
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJob#createHBCIJobs()
-   */
+  @Override
   public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
     // Den brauchen wir, damit das Aendern funktioniert.

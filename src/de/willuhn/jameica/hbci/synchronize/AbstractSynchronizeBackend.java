@@ -190,9 +190,9 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#create(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren oder weitere Context-Properties im Job zu setzen.
    */
+  @Override
   public <R> R create(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
   {
     try
@@ -219,9 +219,9 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren.
    */
+  @Override
   public boolean supports(Class<? extends SynchronizeJob> type, Konto konto)
   {
     try
@@ -238,9 +238,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public final List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     // Wenn kein Konto angegeben ist, ermitteln wir selbst die Liste
@@ -269,18 +267,16 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     return jobs;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public List<String> getPropertyNames(Konto k)
   {
     return null;
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#execute(java.util.List)
    * Kann ueberschrieben werden, um weitere Checks durchzufuehren.
    */
+  @Override
   public synchronized SynchronizeSession execute(List<SynchronizeJob> jobs) throws ApplicationException, OperationCanceledException
   {
     if (this.session != null)
@@ -294,9 +290,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     return s;
   }
   
-   /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getCurrentSession()
-   */
+  @Override
   public final SynchronizeSession getCurrentSession()
   {
     return this.session;
@@ -382,9 +376,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       return this.sync;
     }
     
-    /**
-     * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
-     */
+    @Override
     public final void run(ProgressMonitor monitor) throws ApplicationException
     {
       this.monitor = monitor;
@@ -513,9 +505,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,type));
     }
 
-    /**
-     * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
-     */
+    @Override
     public final void interrupt()
     {
       this.monitor.setStatusText(i18n.tr("Breche Synchronisierung via {0} ab",getName()));
@@ -527,9 +517,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
       session.setStatus(ProgressMonitor.STATUS_CANCEL);
     }
 
-    /**
-     * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-     */
+    @Override
     public final boolean isInterrupted()
     {
       return this.interrupted;

@@ -38,9 +38,7 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
     add(SynchronizeJobKontoauszug.class);
   }};
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getSynchronizeJobs(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public List<SynchronizeJob> getSynchronizeJobs(Konto k)
   {
     Class<SynchronizeJobKontoauszug> type = SynchronizeJobKontoauszug.class;
@@ -78,26 +76,19 @@ public class ScriptingSynchronizeJobProviderKontoauszug implements ScriptingSync
     return jobs;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
-   */
   @Override
   public boolean supports(Class<? extends SynchronizeJob> type, Konto k)
   {
     return true;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeJobProvider#getJobTypes()
-   */
+  @Override
   public List<Class<? extends SynchronizeJob>> getJobTypes()
   {
     return JOBS;
   }
   
-  /**
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
-   */
+  @Override
   public int compareTo(Object o)
   {
     // Umsaetze und Salden werden zum Schluss ausgefuehrt,

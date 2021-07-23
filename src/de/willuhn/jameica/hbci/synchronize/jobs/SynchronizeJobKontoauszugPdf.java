@@ -24,9 +24,7 @@ public class SynchronizeJobKontoauszugPdf extends AbstractSynchronizeJob
    */
   public final static String CTX_FORCE = "ctx.konto.kontoauszugpdf.force";
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#isRecurring()
-   */
+  @Override
   public boolean isRecurring()
   {
     return true;

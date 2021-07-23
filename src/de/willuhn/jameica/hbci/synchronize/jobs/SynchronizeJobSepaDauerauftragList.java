@@ -22,9 +22,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class SynchronizeJobSepaDauerauftragList extends AbstractSynchronizeJob
 {
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getName()
-   */
+  @Override
   public String getName() throws ApplicationException
   {
     try
@@ -39,18 +37,14 @@ public class SynchronizeJobSepaDauerauftragList extends AbstractSynchronizeJob
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.AbstractSynchronizeJob#configure()
-   */
+  @Override
   public void configure() throws ApplicationException
   {
     // Ueberschrieben, weil wir hier stattdessen die _Liste_ der Dauerauftraege anzeigen wollen
     new SepaDauerauftragList().handleAction(this.getContext(CTX_ENTITY));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#isRecurring()
-   */
+  @Override
   public boolean isRecurring()
   {
     return true;
