@@ -24,18 +24,12 @@ public class MarkOverdueInitialMessageConsumer implements MessageConsumer
 {
   @Resource private MarkOverdueMessageConsumer consumer;
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
   @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{SystemMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
   @Override
   public void handleMessage(Message message) throws Exception
   {
@@ -49,9 +43,6 @@ public class MarkOverdueInitialMessageConsumer implements MessageConsumer
     consumer.updateAll();
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
   @Override
   public boolean autoRegister()
   {

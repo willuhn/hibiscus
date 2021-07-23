@@ -56,18 +56,12 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     put(SepaDauerauftrag.class,       "hibiscus.navi.transfer.sepadauer");
   }};
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
   @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{QueryMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
   @Override
   public void handleMessage(Message message) throws Exception
   {
@@ -205,9 +199,6 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
   @Override
   public boolean autoRegister()
   {
