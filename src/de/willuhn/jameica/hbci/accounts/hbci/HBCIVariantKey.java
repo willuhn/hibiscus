@@ -26,18 +26,12 @@ public class HBCIVariantKey implements HBCIVariant
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.hbci.HBCIVariant#getName()
-   */
   @Override
   public String getName()
   {
     return i18n.tr("Schlüsseldatei");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.hbci.HBCIVariant#getInfo()
-   */
   @Override
   public InfoPanel getInfo()
   {
@@ -50,9 +44,6 @@ public class HBCIVariantKey implements HBCIVariant
     return info;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.hbci.HBCIVariant#create()
-   */
   @Override
   public void create() throws ApplicationException
   {

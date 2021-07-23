@@ -30,9 +30,7 @@ import de.willuhn.logging.Logger;
  */
 public class SepaDauerauftragAppointmentProvider extends AbstractAppointmentProvider<SepaDauerauftrag>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
-   */
+  @Override
   AbstractHibiscusAppointment createAppointment(Schedule<SepaDauerauftrag> schedule)
   {
     return new MyAppointment(schedule);
@@ -52,9 +50,7 @@ public class SepaDauerauftragAppointmentProvider extends AbstractAppointmentProv
       super(schedule);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
-     */
+    @Override
     public String getDescription()
     {
       try
@@ -70,9 +66,7 @@ public class SepaDauerauftragAppointmentProvider extends AbstractAppointmentProv
       }
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getName()
-     */
+    @Override
     public String getName()
     {
       try
@@ -88,9 +82,7 @@ public class SepaDauerauftragAppointmentProvider extends AbstractAppointmentProv
       }
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider.AbstractHibiscusAppointment#getColor()
-     */
+    @Override
     public RGB getColor()
     {
       // Hier gibt es keinen Ausgefuehrt-Status.
@@ -103,9 +95,7 @@ public class SepaDauerauftragAppointmentProvider extends AbstractAppointmentProv
       return Settings.getBuchungSollForeground().getRGB();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider.AbstractHibiscusAppointment#hasAlarm()
-     */
+    @Override
     public boolean hasAlarm()
     {
       // brauchen wir bei Dauerauftraegen nicht - da kuemmert sich die Bank drum

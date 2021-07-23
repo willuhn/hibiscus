@@ -23,9 +23,7 @@ import de.willuhn.logging.Logger;
  */
 public class SepaSammelLastschriftAppointmentProvider extends AbstractAppointmentProvider<SepaSammelLastschrift>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
-   */
+  @Override
   AbstractHibiscusAppointment createAppointment(Schedule<SepaSammelLastschrift> schedule)
   {
     return new MyAppointment(schedule);
@@ -45,9 +43,7 @@ public class SepaSammelLastschriftAppointmentProvider extends AbstractAppointmen
       super(schedule);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
-     */
+    @Override
     public String getDescription()
     {
       try
@@ -68,9 +64,7 @@ public class SepaSammelLastschriftAppointmentProvider extends AbstractAppointmen
       }
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getName()
-     */
+    @Override
     public String getName()
     {
       try

@@ -30,18 +30,12 @@ public class HBCIVariantPinTan implements HBCIVariant
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.hbci.HBCIVariant#getName()
-   */
   @Override
   public String getName()
   {
     return i18n.tr("PIN/TAN");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.hbci.HBCIVariant#getInfo()
-   */
   @Override
   public InfoPanel getInfo()
   {
@@ -54,9 +48,6 @@ public class HBCIVariantPinTan implements HBCIVariant
     return info;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.hbci.HBCIVariant#create()
-   */
   @Override
   public void create() throws ApplicationException
   {
