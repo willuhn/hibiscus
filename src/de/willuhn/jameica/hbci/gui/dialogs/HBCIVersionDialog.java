@@ -42,17 +42,13 @@ public class HBCIVersionDialog extends AbstractDialog
     setTitle(i18n.tr("HBCI-Version"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return version;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);
@@ -63,6 +59,7 @@ public class HBCIVersionDialog extends AbstractDialog
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         version = (String) input.getValue();
@@ -70,6 +67,7 @@ public class HBCIVersionDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException("cancelled while choosing hbci version");

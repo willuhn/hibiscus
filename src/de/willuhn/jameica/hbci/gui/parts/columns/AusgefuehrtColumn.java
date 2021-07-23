@@ -36,9 +36,7 @@ public class AusgefuehrtColumn extends Column
     super("ausgefuehrt_am",i18n.tr("Ausgeführt?"),null,false,Column.ALIGN_RIGHT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.parts.Column#getFormattedValue(java.lang.Object, java.lang.Object)
-   */
+  @Override
   public String getFormattedValue(Object value, Object context)
   {
     if (context != null && (context instanceof Terminable))
@@ -66,9 +64,6 @@ public class AusgefuehrtColumn extends Column
     return super.getFormattedValue(value,context);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.Column#compare(de.willuhn.jameica.gui.parts.AbstractTablePart.AbstractTableItem, de.willuhn.jameica.gui.parts.AbstractTablePart.AbstractTableItem)
-   */
   @Override
   public int compare(AbstractTableItem i1, AbstractTableItem i2)
   {

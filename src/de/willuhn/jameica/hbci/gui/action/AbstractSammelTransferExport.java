@@ -28,8 +28,8 @@ public abstract class AbstractSammelTransferExport implements Action
 
   /**
    * Erwartet ein Objekt vom Typ <code>SammelTransfer</code>.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();

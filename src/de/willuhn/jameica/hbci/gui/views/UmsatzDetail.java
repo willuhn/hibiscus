@@ -33,9 +33,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
   
   private UmsatzDetailControl control = null;
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     super.bind();
@@ -48,6 +46,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     
     this.checked = new Button(i18n.tr("Geprüft"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         new UmsatzMarkChecked().handleAction(context);
@@ -67,6 +66,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     {
       ab = new Button(i18n.tr("In Adressbuch übernehmen"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           new EmpfaengerAdd().handleAction(getControl().getUmsatz());
@@ -82,6 +82,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     {
       Button store = new Button(i18n.tr("&Speichern"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           getControl().handleStore();
@@ -94,6 +95,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     {
       Button store = new Button(i18n.tr("Speichern und &Zurück"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           if (getControl().handleStore())
@@ -107,9 +109,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     buttons.paint(getParent());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.views.AbstractUmsatzDetail#getControl()
-   */
+  @Override
   protected UmsatzDetailControl getControl()
   {
     if (this.control == null)

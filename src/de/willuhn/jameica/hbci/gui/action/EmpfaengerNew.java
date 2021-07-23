@@ -22,8 +22,8 @@ public class EmpfaengerNew implements Action
 
   /**
    * Erwartet ein Objekt vom Typ <code>Empfaenger</code> im Context.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     Address e = null;

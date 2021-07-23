@@ -59,6 +59,7 @@ public class SammelTransferBuchungList extends TablePart
   {
     super(list,action);
     addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null || !(o instanceof SammelTransferBuchung))
@@ -83,6 +84,7 @@ public class SammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Kontonummer"),"gegenkonto_nr");
     addColumn(new BlzColumn("gegenkonto_blz",i18n.tr("Bankleitzahl")));
     addColumn(i18n.tr("Betrag"),"this",new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null || !(o instanceof SammelTransferBuchung))
@@ -106,6 +108,7 @@ public class SammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Warnungen"),"warnung");
 
     setFormatter(new TableFormatter() {
+      @Override
       public void format(TableItem item) {
         try {
           SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
@@ -136,9 +139,7 @@ public class SammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Kontoinhaber"),"gegenkonto_name");
     addColumn(i18n.tr("Kontonummer"),"gegenkonto_nr");
     addColumn(i18n.tr("Bankleitzahl"),"gegenkonto_blz", new Formatter() {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
-       */
+      @Override
       public String format(Object o)
       {
         if (o == null)
@@ -157,6 +158,7 @@ public class SammelTransferBuchungList extends TablePart
     addColumn(i18n.tr("Warnungen"),"warnung");
 
     setFormatter(new TableFormatter() {
+      @Override
       public void format(TableItem item) {
         try {
           SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
@@ -180,11 +182,12 @@ public class SammelTransferBuchungList extends TablePart
 
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     parent.addDisposeListener(new DisposeListener() {
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -206,17 +209,13 @@ public class SammelTransferBuchungList extends TablePart
       super();
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ImportMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (message == null || !(message instanceof ImportMessage))
@@ -242,9 +241,7 @@ public class SammelTransferBuchungList extends TablePart
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

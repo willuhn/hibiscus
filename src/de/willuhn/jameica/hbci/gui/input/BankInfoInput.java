@@ -47,9 +47,6 @@ public class BankInfoInput extends SearchInput
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.SearchInput#startSearch(java.lang.String)
-   */
   @Override
   public List startSearch(String text)
   {

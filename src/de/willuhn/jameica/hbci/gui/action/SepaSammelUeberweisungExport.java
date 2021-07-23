@@ -17,9 +17,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
  */
 public class SepaSammelUeberweisungExport extends AbstractSepaSammelTransferExport<SepaSammelUeberweisung>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractSepaSammelTransferExport#getExportClass()
-   */
+  @Override
   Class<SepaSammelUeberweisung> getExportClass()
   {
     return SepaSammelUeberweisung.class;

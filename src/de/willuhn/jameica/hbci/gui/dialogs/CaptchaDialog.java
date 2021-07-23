@@ -115,9 +115,7 @@ public class CaptchaDialog extends AbstractDialog
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container container = new SimpleContainer(parent);
@@ -149,9 +147,7 @@ public class CaptchaDialog extends AbstractDialog
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return this.data;
@@ -194,6 +190,7 @@ public class CaptchaDialog extends AbstractDialog
     captcha.setLayoutData(new GridData(GridData.FILL_BOTH));
     captcha.addPaintListener(new PaintListener()
     {
+      @Override
       public void paintControl(PaintEvent e)
       {
         Point area = captcha.getSize();

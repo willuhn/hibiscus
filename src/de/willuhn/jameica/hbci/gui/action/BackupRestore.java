@@ -49,9 +49,7 @@ public class BackupRestore implements Action
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     // Wir checken vorher, ob die Datenbank leer ist. Ansonsten koennen wir das
@@ -95,9 +93,7 @@ public class BackupRestore implements Action
     Application.getController().start(new BackgroundTask() {
       private boolean cancel = false;
     
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
-       */
+      @Override
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         monitor.setStatusText(i18n.tr("Importiere Backup"));
@@ -175,17 +171,13 @@ public class BackupRestore implements Action
         }
       }
     
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-       */
+      @Override
       public boolean isInterrupted()
       {
         return this.cancel;
       }
     
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
-       */
+      @Override
       public void interrupt()
       {
         this.cancel = true;

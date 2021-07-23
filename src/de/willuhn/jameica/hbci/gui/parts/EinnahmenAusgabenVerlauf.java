@@ -33,9 +33,6 @@ public class EinnahmenAusgabenVerlauf implements Part
     this.data = werte;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   public void paint(Composite parent) throws RemoteException
   {

@@ -40,8 +40,8 @@ public class KontoFetchKontoauszug implements Action
   /**
 	 * Erwartet ein Objekt vom Typ <code>Konto</code> als Context.
 	 * Fehlt das Konto, dann wird es in einem Dialog abgefragt.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     Konto k = null;

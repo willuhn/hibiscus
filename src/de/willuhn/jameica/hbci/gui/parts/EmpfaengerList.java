@@ -115,6 +115,7 @@ public class EmpfaengerList extends TablePart implements Part
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
     addColumn(i18n.tr("Bankleitzahl"),"blz", new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null)
@@ -138,6 +139,7 @@ public class EmpfaengerList extends TablePart implements Part
     addColumn(i18n.tr("Gruppe"),"kategorie");
     addColumn(i18n.tr("Notiz"),"kommentar",new Formatter()
     {
+      @Override
       public String format(Object o)
       {
         if (o == null)
@@ -154,9 +156,7 @@ public class EmpfaengerList extends TablePart implements Part
     
     this.setFormatter(new TableFormatter()
     {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
-       */
+      @Override
       public void format(TableItem item)
       {
         try
@@ -198,9 +198,7 @@ public class EmpfaengerList extends TablePart implements Part
     Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     final TabFolder folder = new TabFolder(parent, SWT.NONE);
@@ -285,17 +283,13 @@ public class EmpfaengerList extends TablePart implements Part
       super();
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ImportMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (message == null || !(message instanceof ImportMessage))
@@ -316,9 +310,7 @@ public class EmpfaengerList extends TablePart implements Part
         listener.keyReleased(null);
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
@@ -330,17 +322,13 @@ public class EmpfaengerList extends TablePart implements Part
    */
   private class EmpfaengerChangedMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ObjectChangedMessage.class};
     }
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(final Message message) throws Exception
     {
       GUI.getDisplay().asyncExec(new Runnable()
@@ -361,9 +349,7 @@ public class EmpfaengerList extends TablePart implements Part
       });
     }
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
@@ -422,9 +408,7 @@ public class EmpfaengerList extends TablePart implements Part
   {
     private Listener forward = new DelayedListener(700,new Listener()
     {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
+      @Override
       public void handleEvent(Event event)
       {
         // hier kommt dann das verzoegerte Event an.
@@ -433,9 +417,7 @@ public class EmpfaengerList extends TablePart implements Part
     
     });
 
-    /**
-     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-     */
+    @Override
     public void keyReleased(KeyEvent e)
     {
       forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht

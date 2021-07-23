@@ -32,8 +32,8 @@ public class PassportDetail implements Action
 
   /**
    * Erwartet ein Objekt vom Typ {@link Passport} oder {@link Configuration}.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     try

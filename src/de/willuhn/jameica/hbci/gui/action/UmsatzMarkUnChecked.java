@@ -28,9 +28,6 @@ public class UmsatzMarkUnChecked extends FlaggableChange
     super(Umsatz.FLAG_CHECKED,false);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.FlaggableChange#postProcess(de.willuhn.jameica.hbci.rmi.Flaggable)
-   */
   @Override
   protected void postProcess(Flaggable o) throws Exception
   {

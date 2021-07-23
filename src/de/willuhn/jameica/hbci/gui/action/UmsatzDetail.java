@@ -24,8 +24,8 @@ public class UmsatzDetail implements Action
 
   /**
    * Erwartet ein Objekt vom Typ <code>Umsatz</code> im Context.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     // Falls die Aktion aus einem Tree heraus aufgerufen wurde

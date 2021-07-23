@@ -54,9 +54,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
     this.setTitle(i18n.tr("Zieldatum"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
 		Container group = new SimpleContainer(parent);
@@ -69,6 +67,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
     box = new CheckboxInput(true);
     box.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         Boolean b = (Boolean) box.getValue();
@@ -84,6 +83,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
     CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
     cd.setTitle(i18n.tr("Zieldatum"));
     cd.addCloseListener(new Listener() {
+      @Override
       public void handleEvent(Event event) {
         if (event == null || event.data == null || !(event.data instanceof Date))
           return;
@@ -127,6 +127,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
     ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Jetzt bei der Bank löschen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         Boolean b = (Boolean) box.getValue();
@@ -157,6 +158,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
     },null,false,"user-trash-full.png");
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -166,9 +168,7 @@ public class BaseDauerauftragDeleteDialog extends AbstractDialog
 		group.addButtonArea(b);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception {
     return date;
   }

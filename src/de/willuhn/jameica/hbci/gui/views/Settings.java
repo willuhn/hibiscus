@@ -46,9 +46,7 @@ public class Settings extends AbstractView implements Extendable
    */
   private TabFolder folder = null;
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
 		GUI.getView().setTitle(i18n.tr("Einstellungen"));
@@ -104,6 +102,7 @@ public class Settings extends AbstractView implements Extendable
     ButtonArea buttons = new ButtonArea();
 		buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
       	control.handleStore();
@@ -131,18 +130,14 @@ public class Settings extends AbstractView implements Extendable
     return this.folder;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
+  @Override
   public void unbind() throws ApplicationException
   {
     // Wir merken uns das aktive Tab
     lastActiveTab = new Integer(getTabFolder().getSelectionIndex());
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();

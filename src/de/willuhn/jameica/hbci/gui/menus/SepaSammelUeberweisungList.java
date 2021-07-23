@@ -75,9 +75,7 @@ public class SepaSammelUeberweisungList extends ContextMenu
    */
   private class SNeu extends SepaSammelUeberweisungNew
 	{
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
     	super.handleAction(null);
@@ -98,9 +96,7 @@ public class SepaSammelUeberweisungList extends ContextMenu
     {
       super(text,action,icon);
     }
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o instanceof SepaSammelUeberweisung[])
@@ -128,9 +124,7 @@ public class SepaSammelUeberweisungList extends ContextMenu
       super(text, a, icon);
     }
 
-	  /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
     	if (o == null || !(o instanceof SepaSammelUeberweisung))
@@ -166,9 +160,7 @@ public class SepaSammelUeberweisungList extends ContextMenu
       super(text, a, icon);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null || (!(o instanceof Terminable) && !(o instanceof Terminable[])))

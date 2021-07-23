@@ -29,8 +29,8 @@ public class EmpfaengerExport implements Action
 
   /**
    * Erwartet ein Objekt vom Typ <code>HibiscusAddress</code> oder <code>HibiscusAddress[]</code>.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();

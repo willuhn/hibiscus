@@ -65,9 +65,7 @@ public class SammelUeberweisungList extends ContextMenu
     {
       super(text,action,icon);
     }
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o instanceof SammelUeberweisung[])

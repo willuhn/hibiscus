@@ -54,8 +54,8 @@ public class HibiscusAddressUpdate implements Action
   
   /**
    * Erwartet ein Objekt vom Typ <code>Address</code>.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     // Wir haben gar keine Adresse als Basis. Dann muessen wir auch nichts vergleichen - Verhalten wie bisher.

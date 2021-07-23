@@ -37,7 +37,6 @@ public class PassportChange implements Action
 
   /**
    * Erwartet ein Objekt vom Typ PassportChangeRequest.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   @Override
   public void handleAction(Object context) throws ApplicationException

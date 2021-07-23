@@ -33,8 +33,8 @@ public class Duplicate implements Action
   /**
    * Dupliziert das Objekt und oeffnet es in einem neuen Dialog.
 	 * Erwartet ein Objekt vom Typ <code>Duplicatable</code> als Context.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		if (context == null || !(context instanceof Duplicatable))

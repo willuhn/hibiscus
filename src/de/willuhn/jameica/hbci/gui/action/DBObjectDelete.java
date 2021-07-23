@@ -43,8 +43,8 @@ public class DBObjectDelete implements Action
 
   /**
    * Erwartet ein Objekt vom Typ <code>DBObject</code> oder <code>DBObject[]</code> im Context.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		if (context == null)
@@ -118,25 +118,19 @@ public class DBObjectDelete implements Action
       this.list = list;
     }
     
-    /**
-     * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
-     */
+    @Override
     public void interrupt()
     {
       this.cancel = true;
     }
 
-    /**
-     * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-     */
+    @Override
     public boolean isInterrupted()
     {
       return this.cancel;
     }
 
-    /**
-     * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
-     */
+    @Override
     public void run(ProgressMonitor monitor) throws ApplicationException
     {
       try

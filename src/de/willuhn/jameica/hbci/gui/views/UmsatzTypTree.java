@@ -48,9 +48,7 @@ public class UmsatzTypTree extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     GUI.getView().setTitle(i18n.tr("Umsätze nach Kategorien"));
@@ -73,9 +71,7 @@ public class UmsatzTypTree extends AbstractView
       // Duerfen wir erst nach dem Zeichnen
       final Listener l = control.changedListener(t);
       t.getControl().addKeyListener(new KeyAdapter(){
-        /**
-         * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-         */
+        @Override
         public void keyReleased(KeyEvent e)
         {
           l.handleEvent(null);
@@ -93,12 +89,14 @@ public class UmsatzTypTree extends AbstractView
 
     buttons.addButton(i18n.tr("Alle aufklappen/zuklappen"), new Action() {
     
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleExpand();
       }
     },null,false,"folder.png");
     buttons.addButton(i18n.tr("Exportieren..."), new Action(){
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         // Muss ich in die Action verpacken, weil der Button sonst mit dem
@@ -119,6 +117,7 @@ public class UmsatzTypTree extends AbstractView
     },null,false,"document-save.png");
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleReload();

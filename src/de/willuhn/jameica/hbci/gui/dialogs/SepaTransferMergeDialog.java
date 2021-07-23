@@ -55,17 +55,13 @@ public class SepaTransferMergeDialog extends AbstractDialog
     this.setSize(420,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return delete;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     SimpleContainer container = new SimpleContainer(parent);
@@ -84,6 +80,7 @@ public class SepaTransferMergeDialog extends AbstractDialog
     ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Fortsetzen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (check != null)
@@ -93,6 +90,7 @@ public class SepaTransferMergeDialog extends AbstractDialog
     },null,false,"ok.png");
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
 				throw new OperationCanceledException();

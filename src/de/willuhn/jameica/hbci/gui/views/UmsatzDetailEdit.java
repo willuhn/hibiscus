@@ -24,9 +24,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
 {
   private UmsatzDetailEditControl control = null;
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     super.bind();
@@ -36,6 +34,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
@@ -44,6 +43,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
 
     buttons.addButton(i18n.tr("Speichern und &Zurück"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (getControl().handleStore())
@@ -56,6 +56,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
     {
       buttons.addButton(i18n.tr("Speichern und &weiteren Umsatz anlegen"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleNext();
@@ -66,9 +67,7 @@ public class UmsatzDetailEdit extends AbstractUmsatzDetail
     buttons.paint(getParent());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.views.AbstractUmsatzDetail#getControl()
-   */
+  @Override
   protected UmsatzDetailEditControl getControl()
   {
     if (this.control == null)

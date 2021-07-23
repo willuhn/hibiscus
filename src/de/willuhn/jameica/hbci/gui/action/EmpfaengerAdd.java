@@ -42,8 +42,8 @@ public class EmpfaengerAdd implements Action
    * Ausserdem Objekte des Typs <code>Address</code> sowie <code>Address[]</code> 
    * Die Empfaenger-Daten werden extrahiert und in der Datenbank gespeichert,
    * falls sie nicht schon existieren.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();

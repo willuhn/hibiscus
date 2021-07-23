@@ -44,9 +44,7 @@ public class BarChart extends AbstractChart
 {
   private Composite comp = null;
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#redraw()
-   */
+  @Override
   public void redraw() throws RemoteException
   {
     // redraw ohne paint() Weia ;)
@@ -182,9 +180,7 @@ public class BarChart extends AbstractChart
     getChart().getAxisSet().adjustRange();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     if (this.comp != null)

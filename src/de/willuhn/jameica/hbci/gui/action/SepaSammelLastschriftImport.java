@@ -27,9 +27,7 @@ import de.willuhn.util.I18N;
 public class SepaSammelLastschriftImport implements Action
 {
 
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();

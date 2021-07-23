@@ -34,9 +34,7 @@ public class SepaDauerauftragNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
 		final SepaDauerauftragControl control = new SepaDauerauftragControl(this);
@@ -86,6 +84,7 @@ public class SepaDauerauftragNew extends AbstractView
 		buttonArea.addButton(i18n.tr("Löschen"),	 		 new SepaDauerauftragDelete(), da, false,"user-trash-full.png");
 		buttonArea.addButton(s,										 		 new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleExecute();
@@ -93,6 +92,7 @@ public class SepaDauerauftragNew extends AbstractView
     },null,false,"emblem-important.png");
 		buttonArea.addButton(i18n.tr("&Speichern"), new Action()
 		{
+			@Override
 			public void handleAction(Object context) throws ApplicationException
 			{
 				control.handleStore();

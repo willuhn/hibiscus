@@ -32,9 +32,6 @@ public class UmsatzMarkChecked extends FlaggableChange
     super(Umsatz.FLAG_CHECKED,true);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
   @Override
   public void handleAction(Object context) throws ApplicationException
   {
@@ -42,9 +39,6 @@ public class UmsatzMarkChecked extends FlaggableChange
     super.handleAction(context);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.FlaggableChange#postProcess(de.willuhn.jameica.hbci.rmi.Flaggable)
-   */
   @Override
   protected void postProcess(Flaggable o) throws Exception
   {

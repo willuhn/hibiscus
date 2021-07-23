@@ -29,8 +29,8 @@ public class EinnahmeAusgabeExport implements Action
 
   /**
    * Erwartet ein Array mit Objekten des Typs <code>Einnahmeausgabe</code>
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     if (context == null || !(context instanceof EinnahmeAusgabeZeitraum[]))

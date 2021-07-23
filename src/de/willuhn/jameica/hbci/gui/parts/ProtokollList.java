@@ -47,6 +47,7 @@ public class ProtokollList extends AbstractFromToList
     
     this.setFormatter(new TableFormatter()
     {
+      @Override
       public void format(TableItem item)
       {
         Protokoll p = (Protokoll) item.getData();
@@ -78,8 +79,8 @@ public class ProtokollList extends AbstractFromToList
   
   /**
    * Ueberschrieben, weil der User das hier nicht auswaehlen koennen soll.
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getKonto()
    */
+  @Override
   public KontoInput getKonto() throws RemoteException
   {
     if (this.kontoAuswahl != null)
@@ -91,9 +92,7 @@ public class ProtokollList extends AbstractFromToList
     return this.kontoAuswahl;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractFromToList#getList(java.lang.Object, java.util.Date, java.util.Date, java.lang.String)
-   */
+  @Override
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
     if (konto == null || !(konto instanceof Konto))

@@ -76,9 +76,7 @@ public class AddressInput implements Input
 
     this.button = new Button("...",new Action()
     {
-      /**
-       * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-       */
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -103,83 +101,63 @@ public class AddressInput implements Input
     });
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#addListener(org.eclipse.swt.widgets.Listener)
-   */
+  @Override
   public void addListener(Listener l)
   {
     this.input.addListener(l);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#disable()
-   */
+  @Override
   public void disable()
   {
     this.input.disable();
     this.button.setEnabled(false);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#enable()
-   */
+  @Override
   public void enable()
   {
     this.input.enable();
     this.button.setEnabled(true);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#focus()
-   */
+  @Override
   public void focus()
   {
     this.input.focus();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getControl()
-   */
+  @Override
   public Control getControl()
   {
     return this.input.getControl();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getName()
-   */
+  @Override
   public String getName()
   {
     return this.input.getName();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getValue()
-   */
+  @Override
   public Object getValue()
   {
     return this.input.getValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#hasChanged()
-   */
+  @Override
   public boolean hasChanged()
   {
     return this.input.hasChanged();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#isEnabled()
-   */
+  @Override
   public boolean isEnabled()
   {
     return this.input.isEnabled();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#isMandatory()
-   */
+  @Override
   public boolean isMandatory()
   {
     return this.input.isMandatory();
@@ -215,9 +193,7 @@ public class AddressInput implements Input
     this.validChars = chars;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#paint(org.eclipse.swt.widgets.Composite, int)
-   */
+  @Override
   public void paint(Composite parent, int width)
   {
     Composite comp = new Composite(parent,SWT.NONE);
@@ -243,66 +219,50 @@ public class AddressInput implements Input
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent)
   {
     this.paint(parent,0);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setComment(java.lang.String)
-   */
+  @Override
   public void setComment(String comment)
   {
     this.input.setComment(comment);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setEnabled(boolean)
-   */
+  @Override
   public void setEnabled(boolean enabled)
   {
     this.input.setEnabled(enabled);
     this.button.setEnabled(enabled);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setMandatory(boolean)
-   */
+  @Override
   public void setMandatory(boolean mandatory)
   {
     this.input.setMandatory(mandatory);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setName(java.lang.String)
-   */
+  @Override
   public void setName(String name)
   {
     this.input.setName(name);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
-   */
+  @Override
   public void setValue(Object value)
   {
     this.input.setValue(value);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#setData(java.lang.String, java.lang.Object)
-   */
+  @Override
   public void setData(String key, Object data)
   {
     this.data.put(key,data);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.Input#getData(java.lang.String)
-   */
+  @Override
   public Object getData(String key)
   {
     return this.data.get(key);
@@ -327,6 +287,7 @@ public class AddressInput implements Input
       this.setMaxLength(HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
       this.addListener(new Listener()
       {
+        @Override
         public void handleEvent(Event event)
         {
           try
@@ -343,9 +304,7 @@ public class AddressInput implements Input
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.input.SearchInput#setText(java.lang.String)
-     */
+    @Override
     public void setText(String s)
     {
       String before = s;
@@ -356,9 +315,7 @@ public class AddressInput implements Input
         GUI.getView().setErrorText(i18n.tr("Im Namen wurden nicht zulässige Zeichen entfernt"));
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.input.SearchInput#format(java.lang.Object)
-     */
+    @Override
     protected String format(Object bean)
     {
       if (bean == null)
@@ -404,17 +361,13 @@ public class AddressInput implements Input
     }
 
 
-    /**
-     * @see de.willuhn.jameica.gui.input.SearchInput#setValue(java.lang.Object)
-     */
+    @Override
     public void setValue(Object o)
     {
       super.setValue(o);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.input.SearchInput#startSearch(java.lang.String)
-     */
+    @Override
     public List startSearch(String text)
     {
       try

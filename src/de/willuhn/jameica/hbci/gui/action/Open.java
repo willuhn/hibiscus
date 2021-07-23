@@ -61,9 +61,7 @@ public class Open implements Action
     actionMap.put(Kontoauszug.class,            KontoauszugOpen.class);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     if (context == null)

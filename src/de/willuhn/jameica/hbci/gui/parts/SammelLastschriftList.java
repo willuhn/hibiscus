@@ -32,9 +32,7 @@ public class SammelLastschriftList extends AbstractSammelTransferList implements
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SammelLastschriftList());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractSammelTransferList#getObjectType()
-   */
+  @Override
   protected Class getObjectType()
   {
     return SammelLastschrift.class;

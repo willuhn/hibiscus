@@ -23,41 +23,31 @@ public abstract class AbstractChartDataSaldo implements LineChartData
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
-   */
+  @Override
   public String getDataAttribute() throws RemoteException
   {
     return "value";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelAttribute()
-   */
+  @Override
   public String getLabelAttribute() throws RemoteException
   {
     return "date";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()
-   */
+  @Override
   public boolean getCurve()
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
-   */
+  @Override
   public int[] getColor() throws RemoteException
   {
     return null;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isFilled()
-   */
+  @Override
   public boolean isFilled() throws RemoteException
   {
     return true;

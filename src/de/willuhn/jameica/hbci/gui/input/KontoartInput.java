@@ -39,7 +39,6 @@ public class KontoartInput extends SelectInput
   
   /**
    * Liefert nicht die enum zurueck sonderen den Integer-Wert.
-   * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
    */
   @Override
   public Object getValue()

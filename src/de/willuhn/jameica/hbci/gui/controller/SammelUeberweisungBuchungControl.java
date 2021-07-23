@@ -52,9 +52,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 		i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferBuchungControl#getBuchung()
-   */
+  @Override
   public SammelTransferBuchung getBuchung()
 	{
 		if (this.buchung != null)
@@ -63,9 +61,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 		return this.buchung;
 	}
 
-	/**
-	 * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferBuchungControl#handleStore(boolean)
-	 */
+	@Override
 	public synchronized void handleStore(boolean next)
 	{
 		try {
@@ -148,9 +144,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 		}
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSammelTransferBuchungControl#getTextSchluessel()
-   */
+  @Override
   public SelectInput getTextSchluessel() throws RemoteException
   {
     if (this.textschluessel != null)

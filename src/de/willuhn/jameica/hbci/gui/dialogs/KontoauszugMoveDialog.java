@@ -216,9 +216,6 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     return this.apply;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void paint(Composite parent) throws Exception
   {
@@ -245,6 +242,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     b.addButton(this.getApplyButton());
     b.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -440,9 +438,6 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
     });
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
   @Override
   protected Kontoauszug getData() throws Exception
   {

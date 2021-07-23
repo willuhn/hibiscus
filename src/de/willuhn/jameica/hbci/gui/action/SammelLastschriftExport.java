@@ -18,9 +18,7 @@ import de.willuhn.jameica.hbci.rmi.SammelLastschrift;
 public class SammelLastschriftExport extends AbstractSammelTransferExport
 {
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractSammelTransferExport#getExportClass()
-   */
+  @Override
   Class getExportClass()
   {
     return SammelLastschrift.class;

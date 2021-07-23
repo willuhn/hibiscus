@@ -74,9 +74,7 @@ public class HBCITraceDialog extends AbstractDialog
     this.setSize(400,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     this.panel = new NotificationPanel();
@@ -98,6 +96,7 @@ public class HBCITraceDialog extends AbstractDialog
 		b.addButton(this.getApplyButton());
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
 				throw new OperationCanceledException();
@@ -109,9 +108,7 @@ public class HBCITraceDialog extends AbstractDialog
     getKontoAuswahl().focus(); // damit wir direkt mit dem Cursor die Auswahl treffen koennen
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;
@@ -148,9 +145,6 @@ public class HBCITraceDialog extends AbstractDialog
     String file = "hbcitrace_" + DF.format(new Date()) + ".log";
     this.file = new FileInput(new File(dir,file).getPath(),true)
     {
-      /**
-       * @see de.willuhn.jameica.gui.input.FileInput#customize(org.eclipse.swt.widgets.FileDialog)
-       */
       @Override
       protected void customize(FileDialog fd)
       {
@@ -239,6 +233,7 @@ public class HBCITraceDialog extends AbstractDialog
     
     this.apply = new Button(i18n.tr("Speichern"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (export())

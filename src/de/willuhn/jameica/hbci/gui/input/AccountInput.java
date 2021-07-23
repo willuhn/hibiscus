@@ -32,6 +32,7 @@ public class AccountInput extends TextInput
     super(value,maxlength);
     this.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         String s = (String) getValue();
@@ -44,7 +45,6 @@ public class AccountInput extends TextInput
   
   /**
    * Ueberschrieben, um zusaetzlich noch die Leerzeichen zuzulassen.
-   * @see de.willuhn.jameica.gui.input.AbstractInput#setValidChars(java.lang.String)
    */
   @Override
   public void setValidChars(String chars)

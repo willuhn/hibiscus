@@ -56,9 +56,7 @@ public class About extends AbstractDialog
     this.setPanelText(i18n.tr("Hibiscus {0}",plugin.getManifest().getVersion().toString()));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
@@ -145,9 +143,7 @@ public class About extends AbstractDialog
     this.setSize(SWT.DEFAULT,530);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;

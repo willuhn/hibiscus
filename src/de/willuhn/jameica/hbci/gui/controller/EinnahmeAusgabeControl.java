@@ -120,9 +120,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
       this.size = size;
     }
 
-    /**
-     * @see java.lang.Enum#toString()
-     */
     @Override
     public String toString()
     {
@@ -283,9 +280,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
     tree.setFormatter(new TreeFormatter()
     {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
-       */
+      @Override
       public void format(TreeItem item)
       {
         if (item == null || item.getData() instanceof EinnahmeAusgabeTreeNode)

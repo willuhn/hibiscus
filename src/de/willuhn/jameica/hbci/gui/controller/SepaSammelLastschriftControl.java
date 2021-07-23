@@ -85,8 +85,8 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
   
   /**
    * Ueberschrieben, um einen Namensvorschlag anzuzeigen.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getName()
    */
+  @Override
   public Input getName() throws RemoteException
   {
     if (this.name != null)
@@ -133,8 +133,8 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
   
   /**
    * Ueberschrieben, um die Lastschrift-spezifischen Attribute zu setzen.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#handleStore()
    */
+  @Override
   public synchronized boolean handleStore()
   {
     try
@@ -167,9 +167,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
 
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getTransfer()
-   */
+  @Override
   public SepaSammelLastschrift getTransfer() throws RemoteException
   {
     if (transfer != null)
@@ -183,18 +181,13 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     return transfer;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getSynchronizeJobType()
-   */
   @Override
   public Class<? extends SynchronizeJob> getSynchronizeJobType()
   {
     return SynchronizeJobSepaSammelLastschrift.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getListe()
-   */
+  @Override
   public SepaSammelLastschriftList getListe() throws RemoteException
   {
     if (table != null)
@@ -204,9 +197,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
     return table;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractSepaSammelTransferControl#getBuchungen()
-   */
+  @Override
   public TablePart getBuchungen() throws RemoteException
   {
     if (this.buchungen != null)

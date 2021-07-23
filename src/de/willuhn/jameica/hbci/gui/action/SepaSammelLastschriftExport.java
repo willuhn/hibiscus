@@ -17,9 +17,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
  */
 public class SepaSammelLastschriftExport extends AbstractSepaSammelTransferExport<SepaSammelLastschrift>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractSepaSammelTransferExport#getExportClass()
-   */
+  @Override
   Class<SepaSammelLastschrift> getExportClass()
   {
     return SepaSammelLastschrift.class;

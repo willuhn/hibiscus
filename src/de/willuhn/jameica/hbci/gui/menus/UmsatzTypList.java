@@ -56,9 +56,7 @@ public class UmsatzTypList extends ContextMenu implements Extendable
    */
   private class UNeu extends UmsatzTypNew
   {
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
       // BUGZILLA 925
@@ -89,9 +87,7 @@ public class UmsatzTypList extends ContextMenu implements Extendable
       super(i18n.tr("Öffnen"),new UmsatzTypNew(),"document-open.png");
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o instanceof UmsatzTyp[])
@@ -100,9 +96,7 @@ public class UmsatzTypList extends ContextMenu implements Extendable
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();

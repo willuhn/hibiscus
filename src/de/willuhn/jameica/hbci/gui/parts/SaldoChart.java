@@ -223,9 +223,7 @@ public class SaldoChart implements Part
     return this.onlyActive;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     try
@@ -262,9 +260,7 @@ public class SaldoChart implements Part
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
           {
           
-            /**
-             * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-             */
+            @Override
             public void handleAction(Object context) throws ApplicationException
             {
               Event event=new Event();
@@ -378,9 +374,7 @@ public class SaldoChart implements Part
     private Date startPrev = new Date();
     private Date endPrev = new Date();
     
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event)
     {
       if (chart == null)

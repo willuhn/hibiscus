@@ -38,9 +38,7 @@ public class SepaDauerauftragList extends AbstractView
   
   private MessageConsumer mc = new MyMessageConsumer();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     SepaDauerauftragControl control = new SepaDauerauftragControl(this);
@@ -66,9 +64,7 @@ public class SepaDauerauftragList extends AbstractView
     print.setEnabled(table.getSelection() != null); // einmal initial ausloesen
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
+  @Override
   public void unbind() throws ApplicationException
   {
     super.unbind();
@@ -82,17 +78,13 @@ public class SepaDauerauftragList extends AbstractView
   private class MyMessageConsumer implements MessageConsumer
   {
   
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ObjectChangedMessage.class};
     }
   
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       GenericObject o = ((ObjectChangedMessage) message).getObject();
@@ -104,9 +96,7 @@ public class SepaDauerauftragList extends AbstractView
         GUI.startView(SepaDauerauftragList.this,null);
     }
   
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

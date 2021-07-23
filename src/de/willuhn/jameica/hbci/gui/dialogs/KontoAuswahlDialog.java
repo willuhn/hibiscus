@@ -92,9 +92,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);
@@ -109,6 +107,7 @@ public class KontoAuswahlDialog extends AbstractDialog
 		b.addButton(this.getApplyButton());
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         choosen = null;
@@ -124,8 +123,8 @@ public class KontoAuswahlDialog extends AbstractDialog
   /**
    * Liefert das ausgewaehlte Konto zurueck oder <code>null</code> wenn der
    * Abbrechen-Knopf gedrueckt wurde.
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
+  @Override
   protected Object getData() throws Exception
   {
     return choosen;
@@ -144,6 +143,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     this.auswahl = new KontoInput(this.preselected,this.filter);
     this.auswahl.setComment(null);
     auswahl.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         preselected = (Konto) auswahl.getValue();
@@ -289,6 +289,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     
     this.apply = new Button(i18n.tr("Übernehmen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         choosen = preselected;

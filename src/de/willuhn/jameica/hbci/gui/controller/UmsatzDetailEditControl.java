@@ -58,9 +58,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     super(view);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerName()
-   */
+  @Override
   public Input getEmpfaengerName() throws RemoteException
   {
     Input input = super.getEmpfaengerName();
@@ -74,9 +72,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerName2()
-   */
+  @Override
   public Input getEmpfaengerName2() throws RemoteException
   {
     Input input = super.getEmpfaengerName2();
@@ -85,9 +81,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerKonto()
-   */
+  @Override
   public Input getEmpfaengerKonto() throws RemoteException
   {
     Input input = super.getEmpfaengerKonto();
@@ -96,9 +90,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEmpfaengerBLZ()
-   */
+  @Override
   public Input getEmpfaengerBLZ() throws RemoteException
   {
     Input input = super.getEmpfaengerBLZ();
@@ -107,9 +99,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getBetrag()
-   */
+  @Override
   public Input getBetrag() throws RemoteException
   {
     if (this.betrag != null)
@@ -147,9 +137,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return this.betrag;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getSaldo()
-   */
+  @Override
   public Input getSaldo() throws RemoteException
   {
     if (this.saldo == null)
@@ -167,9 +155,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return this.saldo;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweck()
-   */
+  @Override
   public Input getZweck()
   {
     if (this.zweck != null)
@@ -179,9 +165,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return this.zweck;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getDatum()
-   */
+  @Override
   public Input getDatum() throws RemoteException
   {
     Input input = super.getDatum();
@@ -193,9 +177,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getValuta()
-   */
+  @Override
   public Input getValuta() throws RemoteException
   {
     Input input = super.getValuta();
@@ -207,9 +189,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
   }
 
-	/**
-	 * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getPrimanota()
-	 */
+	@Override
 	public Input getPrimanota() throws RemoteException
 	{
     Input input = super.getPrimanota();
@@ -223,6 +203,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
+	@Override
 	public Input getArt() throws RemoteException
 	{
     Input input = super.getArt();
@@ -236,6 +217,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
+	@Override
 	public Input getCustomerRef() throws RemoteException
 	{
     Input input = super.getCustomerRef();
@@ -244,9 +226,6 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
 	}
 	
-	/**
-	 * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getEndToEndId()
-	 */
 	@Override
 	public Input getEndToEndId() throws RemoteException
 	{
@@ -256,9 +235,6 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
 	  return input;
 	}
 	
-	/**
-	 * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getMandateId()
-	 */
 	@Override
 	public Input getMandateId() throws RemoteException
 	{
@@ -268,9 +244,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getGvCode()
-   */
+  @Override
   public Input getGvCode() throws RemoteException
   {
     Input input = super.getGvCode();
@@ -279,9 +253,6 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return input;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getZweckSwitch()
-   */
   @Override
   public CheckboxInput getZweckSwitch() throws RemoteException
   {
@@ -292,8 +263,8 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   
   /**
    * Ueberschrieben, um den Verwendungszweck bei Bedarf umgebrochen anzuzeigen. 
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getUsage(boolean)
    */
+  @Override
   protected String getUsage(boolean showAll)
   {
     try
@@ -325,9 +296,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
     return "";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#handleStore()
-   */
+  @Override
   public boolean handleStore()
   {
     Umsatz u = getUmsatz();
@@ -503,9 +472,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
   private class EmpfaengerListener implements Listener
   {
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
       if (event == null || event.data == null || !(event.data instanceof Address))
         return;

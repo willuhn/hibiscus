@@ -60,8 +60,8 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 
 	/**
 	 * Ueberschrieben, damit wir bei Bedarf eine neue Ueberweisung erzeugen koennen.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#getTransfer()
    */
+  @Override
   public HibiscusTransfer getTransfer() throws RemoteException
 	{
     if (transfer != null)
@@ -119,10 +119,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     return this.typ;
   }
   
-  
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTermin()
-   */
+  @Override
   public TerminInput getTermin() throws RemoteException
   {
     if (this.termin != null)
@@ -183,9 +180,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
 		return table;
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractBaseUeberweisungControl#getTextSchluessel()
-   */
+  @Override
   public Input getTextSchluessel() throws RemoteException
   {
     if (textschluessel != null)
@@ -254,8 +249,8 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
   
   /**
    * Ueberschrieben, um das Flag fuer die Termin-Ueberweisung zu speichern.
-   * @see de.willuhn.jameica.hbci.gui.controller.AbstractTransferControl#handleStore()
    */
+  @Override
   public synchronized boolean handleStore()
   {
     try
@@ -307,9 +302,7 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       return           i18n.tr("Überweisung");
     }
     
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    @Override
     public boolean equals(Object o)
     {
       if (o == null || !(o instanceof Typ))

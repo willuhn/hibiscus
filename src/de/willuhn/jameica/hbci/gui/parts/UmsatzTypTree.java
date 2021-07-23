@@ -85,9 +85,7 @@ public class UmsatzTypTree extends TreePart
     
     this.setFormatter(new TreeFormatter()
     {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.TreeFormatter#format(org.eclipse.swt.widgets.TreeItem)
-       */
+      @Override
       public void format(TreeItem item)
       {
         if (item == null)
@@ -138,9 +136,7 @@ public class UmsatzTypTree extends TreePart
   
   
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.TreePart#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     super.paint(parent);
@@ -148,9 +144,7 @@ public class UmsatzTypTree extends TreePart
     Application.getMessagingFactory().registerMessageConsumer(mc);
     parent.addDisposeListener(new DisposeListener()
     {
-      /**
-       * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
-       */
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -163,25 +157,19 @@ public class UmsatzTypTree extends TreePart
    */
   private class MyMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ObjectDeletedMessage.class,ImportMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       ObjectMessage msg = (ObjectMessage) message;

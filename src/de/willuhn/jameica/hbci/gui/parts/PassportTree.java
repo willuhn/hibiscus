@@ -101,6 +101,7 @@ public class PassportTree extends TreePart
       }
     },"document-open.png")
     {
+      @Override
       public boolean isEnabledFor(Object o)
       {
         return (o instanceof ConfigObject) && super.isEnabledFor(o);
@@ -153,6 +154,7 @@ public class PassportTree extends TreePart
       }
     },"user-trash-full.png")
     {
+      @Override
       public boolean isEnabledFor(Object o)
       {
         return (o instanceof ConfigObject) && super.isEnabledFor(o);
@@ -222,9 +224,7 @@ public class PassportTree extends TreePart
       this.passport = passport;
     }
     
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject o) throws RemoteException
     {
       if (o == null || !(o instanceof PassportObject))
@@ -233,41 +233,31 @@ public class PassportTree extends TreePart
       return this.getID().equals(other.getID());
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String name) throws RemoteException
     {
       return BeanUtil.get(passport,name);
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return this.passport.getClass().getName();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "description";
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getChildren()
-     */
+    @Override
     public GenericIterator getChildren() throws RemoteException
     {
       if (this.children != null)
@@ -283,33 +273,25 @@ public class PassportTree extends TreePart
       return this.children;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getParent()
-     */
+    @Override
     public GenericObjectNode getParent() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getPath()
-     */
+    @Override
     public GenericIterator getPath() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
-     */
+    @Override
     public GenericIterator getPossibleParents() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
-     */
+    @Override
     public boolean hasChild(GenericObjectNode children) throws RemoteException
     {
       return this.getChildren().contains(children) != null;
@@ -335,9 +317,7 @@ public class PassportTree extends TreePart
       this.config = config;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject o) throws RemoteException
     {
       if (o == null || !(o instanceof PassportObject))
@@ -346,9 +326,7 @@ public class PassportTree extends TreePart
       return this.getID().equals(other.getID());
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String name) throws RemoteException
     {
       if ("name".equals(name))
@@ -357,17 +335,13 @@ public class PassportTree extends TreePart
       return BeanUtil.get(this.config,name);
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       if (this.config instanceof GenericObject)
@@ -376,9 +350,7 @@ public class PassportTree extends TreePart
       return this.config.getClass().getName() + ":" + this.config.getDescription();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "description";

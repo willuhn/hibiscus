@@ -82,9 +82,7 @@ public class ImportDialog extends AbstractDialog
     settings.setStoreWhenRead(true);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
 		Container group = new SimpleContainer(parent);
@@ -171,9 +169,7 @@ public class ImportDialog extends AbstractDialog
     {
       private boolean interrupted = false;
       
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
-       */
+      @Override
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         try
@@ -205,17 +201,13 @@ public class ImportDialog extends AbstractDialog
         }
       }
 
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
-       */
+      @Override
       public void interrupt()
       {
         this.interrupted = true;
       }
       
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-       */
+      @Override
       public boolean isInterrupted()
       {
         return this.interrupted;
@@ -277,9 +269,7 @@ public class ImportDialog extends AbstractDialog
 		return importerListe;
 	}
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;
@@ -299,41 +289,31 @@ public class ImportDialog extends AbstractDialog
       this.format = format;
 		}
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String arg0) throws RemoteException
     {
       return this.format.getName();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[] {"name"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return this.importer.getClass().getName() + "#" + this.format.getClass().getName();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "name";
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
     	if (arg0 == null)
@@ -341,9 +321,7 @@ public class ImportDialog extends AbstractDialog
 	    return this.getID().equals(arg0.getID());
     }
 
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
+    @Override
     public int compareTo(Object o)
     {
       if (o == null || !(o instanceof Imp))

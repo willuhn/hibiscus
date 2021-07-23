@@ -178,9 +178,7 @@ public class KontoInput extends SelectInput
     this.setRememberSelection(s,true);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#getControl()
-   */
+  @Override
   public Control getControl()
   {
     if (this.control != null)
@@ -269,9 +267,7 @@ public class KontoInput extends SelectInput
     return l;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
-   */
+  @Override
   public Object getValue()
   {
     Object o = super.getValue();
@@ -284,9 +280,7 @@ public class KontoInput extends SelectInput
     return o;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#format(java.lang.Object)
-   */
+  @Override
   protected String format(Object bean)
   {
     if (bean == null)
@@ -353,9 +347,7 @@ public class KontoInput extends SelectInput
    */
   private class KontoListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
 
       try {
@@ -388,17 +380,13 @@ public class KontoInput extends SelectInput
    */
   private class SaldoMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{SaldoMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       SaldoMessage msg = (SaldoMessage) message;
@@ -456,9 +444,7 @@ public class KontoInput extends SelectInput
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

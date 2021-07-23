@@ -50,17 +50,13 @@ public class NewInstKeysDialog extends AbstractDialog
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#onEscape()
-   */
+  @Override
   protected void onEscape()
   {
     // Escape is nich. Der User soll explizit auf "Abbrechen" klicken
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
 		Container group = new SimpleContainer(parent);
@@ -103,9 +99,7 @@ public class NewInstKeysDialog extends AbstractDialog
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return choosen;

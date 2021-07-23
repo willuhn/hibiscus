@@ -29,9 +29,7 @@ import de.willuhn.util.ApplicationException;
 public class SepaSammelUeberweisungExecute extends AbstractSepaSammelTransferExecute
 {
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.action.AbstractSepaSammelTransferExecute#execute(de.willuhn.jameica.hbci.rmi.SepaSammelTransfer)
-   */
+  @Override
   void execute(final SepaSammelTransfer transfer) throws ApplicationException, RemoteException
   {
     Konto konto = transfer.getKonto();
