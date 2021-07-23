@@ -24,17 +24,13 @@ public class RDH2Format extends HBCI4JavaFormat
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("RDH-Format (StarMoney, ProfiCash, VR-NetWorld, Sfirm)");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#hasFeature(int)
-   */
+  @Override
   public boolean hasFeature(int feature)
   {
     switch (feature)
@@ -49,9 +45,7 @@ public class RDH2Format extends HBCI4JavaFormat
   }
 
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.HBCI4JavaFormat#getPassportType()
-   */
+  @Override
   String getPassportType()
   {
     return "RDHXFile";

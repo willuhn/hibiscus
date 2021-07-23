@@ -20,17 +20,13 @@ import de.willuhn.jameica.system.Platform;
  */
 public class ChipDriveMicroReader extends AbstractReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return "CTAPI: Chipdrive Micro / Towitoko Kartenzwerg";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
     switch (Application.getPlatform().getOS())
@@ -49,9 +45,7 @@ public class ChipDriveMicroReader extends AbstractReader
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     int os = Application.getPlatform().getOS();
@@ -60,17 +54,13 @@ public class ChipDriveMicroReader extends AbstractReader
            os == Platform.OS_LINUX_64;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useSoftPin()
-   */
+  @Override
   public boolean useSoftPin()
   {
     return true;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.server.AbstractReader#getPort()
-   */
+  @Override
   public String getPort()
   {
     return "COM/USB";

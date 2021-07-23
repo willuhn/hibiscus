@@ -52,9 +52,7 @@ public class RDHKeyImpl implements RDHKey
     this.file = file;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String attribute) throws RemoteException
   {
     if ("file".equals(attribute))
@@ -68,9 +66,7 @@ public class RDHKeyImpl implements RDHKey
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
-   */
+  @Override
   public String getDescription()
   {
     try
@@ -87,49 +83,37 @@ public class RDHKeyImpl implements RDHKey
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()
-   */
+  @Override
   public Class getConfigDialog() throws RemoteException
   {
     return Detail.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#delete()
-   */
+  @Override
   public void delete() throws ApplicationException
   {
     RDHKeyFactory.removeKey(this);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-   */
+  @Override
   public String[] getAttributeNames() throws RemoteException
   {
     return new String[] {"file","enabled","hbciversion","alias","shared"};
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
+  @Override
   public String getID() throws RemoteException
   {
     return getFilename();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "file";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public boolean equals(GenericObject other) throws RemoteException
   {
     if (other == null)
@@ -137,73 +121,55 @@ public class RDHKeyImpl implements RDHKey
     return getID().equals(other.getID());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#getFilename()
-   */
+  @Override
   public String getFilename() throws RemoteException
   {
     return file.getAbsolutePath();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#getHBCIVersion()
-   */
+  @Override
   public String getHBCIVersion() throws RemoteException
   {
     return settings.getString(getID() + ".hbciversion",null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#setHBCIVersion(java.lang.String)
-   */
+  @Override
   public void setHBCIVersion(String version) throws RemoteException
   {
     settings.setAttribute(getID() + ".hbciversion",version);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#isEnabled()
-   */
+  @Override
   public boolean isEnabled() throws RemoteException
   {
     return settings.getBoolean(getID() + ".enabled",true);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#setEnabled(boolean)
-   */
+  @Override
   public void setEnabled(boolean enabled) throws RemoteException
   {
   	settings.setAttribute(getID() + ".enabled",enabled);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#setFilename(java.lang.String)
-   */
+  @Override
   public void setFilename(String filename) throws RemoteException
   {
     this.file = new File(filename);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#getAlias()
-   */
+  @Override
   public String getAlias() throws RemoteException
   {
     return settings.getString(getID() + ".alias",null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#setAlias(java.lang.String)
-   */
+  @Override
   public void setAlias(String alias) throws RemoteException
   {
     settings.setAttribute(getID() + ".alias",alias);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#getKonten()
-   */
+  @Override
   public Konto[] getKonten() throws RemoteException
   {
     String[] ids = settings.getList(getID() + ".konto",null);
@@ -225,9 +191,7 @@ public class RDHKeyImpl implements RDHKey
     return (Konto[])konten.toArray(new Konto[0]);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#setKonten(de.willuhn.jameica.hbci.rmi.Konto[])
-   */
+  @Override
   public void setKonten(Konto[] k) throws RemoteException
   {
     if (k == null || k.length == 0)
@@ -244,9 +208,7 @@ public class RDHKeyImpl implements RDHKey
     settings.setAttribute(getID() + ".konto",ids);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey#load()
-   */
+  @Override
   public HBCIPassport load() throws RemoteException, ApplicationException, OperationCanceledException
   {
     return getFormat().load(this);

@@ -161,9 +161,7 @@ public class PtSecMech
     return "[" + this.id + "] " + this.name;
   }
 
-  /**
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+  @Override
   public boolean equals(Object obj)
   {
     if (obj == null || !(obj instanceof PtSecMech))
@@ -191,9 +189,7 @@ public class PtSecMech
            s.contains("comfort");
   }
   
-  /**
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString()
   {
     return this.id + ":" + this.name;

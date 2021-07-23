@@ -56,17 +56,13 @@ public class DDVConfig implements Configuration
     return this.id;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
-   */
+  @Override
   public String getDescription()
   {
     return this.getReaderPreset().getName() + " (" + this.getName() + ")";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()
-   */
+  @Override
   public Class getConfigDialog() throws RemoteException
   {
     return Detail.class;
@@ -367,9 +363,7 @@ public class DDVConfig implements Configuration
     settings.setAttribute(this.getPrefix() + "konto",(String[]) null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#delete()
-   */
+  @Override
   public void delete() throws ApplicationException
   {
     DDVConfigFactory.delete(this);

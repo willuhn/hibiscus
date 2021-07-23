@@ -49,9 +49,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     this.myKey = key;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     // Erst das Parent zeichnen, damit wir anschliessend die

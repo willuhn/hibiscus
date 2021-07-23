@@ -49,17 +49,13 @@ public class PCSCWrapperReader extends AbstractReader
                  );
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("CTAPI: PC/SC-Kartenleser via pcsc-ctapi-wrapper");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
     int os = Application.getPlatform().getOS();
@@ -79,9 +75,7 @@ public class PCSCWrapperReader extends AbstractReader
     return "";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     // Haben wir Locations fuer das OS?

@@ -56,9 +56,7 @@ public class PinTanConfigImpl implements PinTanConfig
     this.file = file;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String attribute) throws RemoteException
   {
     if ("blz".equals(attribute))
@@ -88,9 +86,7 @@ public class PinTanConfigImpl implements PinTanConfig
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
-   */
+  @Override
   public String getDescription()
   {
     try
@@ -131,49 +127,37 @@ public class PinTanConfigImpl implements PinTanConfig
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()
-   */
+  @Override
   public Class getConfigDialog() throws RemoteException
   {
     return Detail.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Configuration#delete()
-   */
+  @Override
   public void delete() throws ApplicationException
   {
     PinTanConfigFactory.delete(this);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-   */
+  @Override
   public String[] getAttributeNames() throws RemoteException
   {
     return new String[] {"blz","bank","url","port","filtertype","hbciversion"};
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
+  @Override
   public String getID() throws RemoteException
   {
     return PinTanConfigFactory.toRelativePath(getFilename());
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "url";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public boolean equals(GenericObject other) throws RemoteException
   {
     if (other == null)
@@ -185,34 +169,26 @@ public class PinTanConfigImpl implements PinTanConfig
     return getID().equals(other.getID());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getHBCIVersion()
-   */
+  @Override
   public String getHBCIVersion() throws RemoteException
   {
     String ppVersion = StringUtils.trimToNull(this.getPassport().getHBCIVersion());
     return settings.getString(getID() + ".hbciversion",ppVersion != null ? ppVersion : HBCIVersion.HBCI_300.getId());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setHBCIVersion(java.lang.String)
-   */
+  @Override
   public void setHBCIVersion(String version) throws RemoteException
   {
     settings.setAttribute(getID() + ".hbciversion",version);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getURL()
-   */
+  @Override
   public String getURL() throws RemoteException
   {
     return this.getPassport().getHost();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setURL(java.lang.String)
-   */
+  @Override
   public void setURL(String url) throws RemoteException
   {
     if (url == null || url.length() == 0)
@@ -229,113 +205,85 @@ public class PinTanConfigImpl implements PinTanConfig
     this.getPassport().setHost(url);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getPort()
-   */
+  @Override
   public int getPort() throws RemoteException
   {
     return this.getPassport().getPort().intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setPort(int)
-   */
+  @Override
   public void setPort(int port) throws RemoteException
   {
     this.getPassport().setPort(Integer.valueOf(port));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getFilterType()
-   */
+  @Override
   public String getFilterType() throws RemoteException
   {
     return this.getPassport().getFilterType();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setFilterType(java.lang.String)
-   */
+  @Override
   public void setFilterType(String type) throws RemoteException
   {
     this.getPassport().setFilterType(type);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getBLZ()
-   */
+  @Override
   public String getBLZ() throws RemoteException
   {
     return this.getPassport().getBLZ();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCustomerId()
-   */
+  @Override
   public String getCustomerId() throws RemoteException
   {
     return this.getPassport().getCustomerId();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCustomerId(java.lang.String)
-   */
+  @Override
   public void setCustomerId(String customer) throws RemoteException
   {
     this.getPassport().setCustomerId(customer);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getUserId()
-   */
+  @Override
   public String getUserId() throws RemoteException
   {
     return this.getPassport().getUserId();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setUserId(java.lang.String)
-   */
+  @Override
   public void setUserId(String user) throws RemoteException
   {
     this.getPassport().setUserId(user);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getFilename()
-   */
+  @Override
   public String getFilename() throws RemoteException
   {
     return file.getAbsolutePath();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getPassport()
-   */
+  @Override
   public HBCIPassport getPassport() throws RemoteException
   {
     return this.loader.load();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getBezeichnung()
-   */
+  @Override
   public String getBezeichnung() throws RemoteException
   {
     return settings.getString(getID() + ".bezeichnung",null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setBezeichnung(java.lang.String)
-   */
+  @Override
   public void setBezeichnung(String bezeichnung) throws RemoteException
   {
     settings.setAttribute(getID() + ".bezeichnung",bezeichnung);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getKonten()
-   */
+  @Override
   public Konto[] getKonten() throws RemoteException
   {
     // Und jetzt laden wir die Liste neu
@@ -365,9 +313,7 @@ public class PinTanConfigImpl implements PinTanConfig
     return konten.toArray(new Konto[0]);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setKonten(de.willuhn.jameica.hbci.rmi.Konto[])
-   */
+  @Override
   public void setKonten(Konto[] k) throws RemoteException
   {
     if (k == null || k.length == 0)
@@ -384,9 +330,7 @@ public class PinTanConfigImpl implements PinTanConfig
     settings.setAttribute(getID() + ".konto",ids);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getStoredSecMech()
-   */
+  @Override
   public PtSecMech getStoredSecMech() throws RemoteException
   {
     // Wir haben migriert. Vorher wurde nur die ID des Verfahrens gespeichert.
@@ -397,17 +341,12 @@ public class PinTanConfigImpl implements PinTanConfig
     return PtSecMech.create(settings.getString(getID() + ".secmech",null));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setStoredSecMech(de.willuhn.jameica.hbci.passports.pintan.PtSecMech)
-   */
+  @Override
   public void setStoredSecMech(PtSecMech mech) throws RemoteException
   {
     settings.setAttribute(getID() + ".secmech",mech != null ? mech.toString() : null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCurrentSecMech()
-   */
   @Override
   public PtSecMech getCurrentSecMech() throws RemoteException
   {
@@ -418,18 +357,12 @@ public class PinTanConfigImpl implements PinTanConfig
     return mech != null ? mech : this.getStoredSecMech();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCurrentSecMech(de.willuhn.jameica.hbci.passports.pintan.PtSecMech)
-   */
   @Override
   public void setCurrentSecMech(PtSecMech mech) throws RemoteException
   {
     settings.setAttribute(getID() + ".secmech.current",mech != null ? mech.toString() : null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getAvailableSecMechs()
-   */
   @Override
   public List<PtSecMech> getAvailableSecMechs() throws RemoteException
   {
@@ -449,36 +382,24 @@ public class PinTanConfigImpl implements PinTanConfig
     return result;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setAvailableSecMechs(java.lang.String)
-   */
   @Override
   public void setAvailableSecMechs(String list) throws RemoteException
   {
     settings.setAttribute(getID() + ".secmech.list",list);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCardReader()
-   */
   @Override
   public String getCardReader() throws RemoteException
   {
     return settings.getString(getID() + ".cardreader",null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCardReader(java.lang.String)
-   */
   @Override
   public void setCardReader(String name) throws RemoteException
   {
     settings.setAttribute(getID() + ".cardreader",name);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isChipTANUSB()
-   */
   @Override
   public Boolean isChipTANUSB() throws RemoteException
   {
@@ -486,52 +407,36 @@ public class PinTanConfigImpl implements PinTanConfig
     return s != null ? Boolean.valueOf(s) : null;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setChipTANUSB(java.lang.Boolean)
-   */
   @Override
   public void setChipTANUSB(Boolean b) throws RemoteException
   {
     settings.setAttribute(getID() + ".chiptan.usb.enabled",(String) (b != null ? b.toString() : null));
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isConvertFlickerToQRCode()
-   */
   @Override
   public boolean isConvertFlickerToQRCode() throws RemoteException
   {
     return settings.getBoolean(getID() + ".chiptan.flicker2qrcode.enabled",false);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setConvertFlickerToQRCode(boolean)
-   */
   @Override
   public void setConvertFlickerToQRCode(boolean b) throws RemoteException
   {
     settings.setAttribute(getID() + ".chiptan.flicker2qrcode.enabled",b);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedias()
-   */
+  @Override
   public String[] getTanMedias() throws RemoteException
   {
     return settings.getList(getID() + ".tanmedias",new String[0]);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setTanMedias(java.lang.String[])
-   */
+  @Override
   public void setTanMedias(String[] names) throws RemoteException
   {
     settings.setAttribute(getID() + ".tanmedias",names);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getAvailableTanMedias()
-   */
   @Override
   public List<String> getAvailableTanMedias() throws RemoteException
   {
@@ -551,18 +456,13 @@ public class PinTanConfigImpl implements PinTanConfig
     return result;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setAvailableTanMedias(java.lang.String)
-   */
   @Override
   public void setAvailableTanMedias(String list) throws RemoteException
   {
     settings.setAttribute(getID() + ".tanmedias.list",list);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#addTanMedia(java.lang.String)
-   */
+  @Override
   public void addTanMedia(String name) throws RemoteException
   {
     if (name == null || name.length() == 0)
@@ -589,41 +489,31 @@ public class PinTanConfigImpl implements PinTanConfig
     this.setTanMedias(list.toArray(new String[0]));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedia()
-   */
+  @Override
   public String getTanMedia() throws RemoteException
   {
     return settings.getString(getID() + ".tanmedia",null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setTanMedia(java.lang.String)
-   */
+  @Override
   public void setTanMedia(String name) throws RemoteException
   {
     settings.setAttribute(getID() + ".tanmedia",name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getShowTan()
-   */
+  @Override
   public boolean getShowTan() throws RemoteException
   {
     return settings.getBoolean(getID() + ".showtan",true);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setShowTan(boolean)
-   */
+  @Override
   public void setShowTan(boolean show) throws RemoteException
   {
     settings.setAttribute(getID() + ".showtan",show);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getCustomProperty(java.lang.String)
-   */
+  @Override
   public String getCustomProperty(String name) throws RemoteException
   {
     if (name == null)
@@ -631,9 +521,7 @@ public class PinTanConfigImpl implements PinTanConfig
     return settings.getString(getID() + "." + name,null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setCustomProperty(java.lang.String, java.lang.String)
-   */
+  @Override
   public void setCustomProperty(String name, String value) throws RemoteException
   {
     if (name == null)
@@ -642,9 +530,6 @@ public class PinTanConfigImpl implements PinTanConfig
     settings.setAttribute(getID() + "." + name,value);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#reload()
-   */
   @Override
   public void reload() throws RemoteException
   {

@@ -285,6 +285,7 @@ public class Controller extends AbstractControl {
 
     keyList = new TablePart(RDHKeyFactory.getKeys(),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         GUI.startView(Detail.class,context);
@@ -304,6 +305,7 @@ public class Controller extends AbstractControl {
     // Kontext: Details.
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null)
@@ -320,10 +322,12 @@ public class Controller extends AbstractControl {
     },"document-open.png"));
 
     ctx.addItem(new ContextMenuItem(i18n.tr("Neuer Schlüssel..."),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException {startCreate();}
     },"document-new.png"));
     ctx.addItem(new ContextMenuItem(i18n.tr("Schlüssel importieren..."),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         startImport();
@@ -336,6 +340,7 @@ public class Controller extends AbstractControl {
     ctx.addItem(new ActivateKey(false));
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -375,6 +380,7 @@ public class Controller extends AbstractControl {
     // Format fuer aktiv/inaktiv
     keyList.setFormatter(new TableFormatter()
     {
+      @Override
       public void format(TableItem item)
       {
         try
@@ -701,6 +707,7 @@ public class Controller extends AbstractControl {
       super((activate ? i18n.tr("Schlüssel aktivieren") : i18n.tr("Schlüssel deaktivieren")),
         new Action()
         {
+          @Override
           public void handleAction(Object context) throws ApplicationException
           {
             if (context == null)
@@ -719,9 +726,7 @@ public class Controller extends AbstractControl {
       this.activate = activate;
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null)

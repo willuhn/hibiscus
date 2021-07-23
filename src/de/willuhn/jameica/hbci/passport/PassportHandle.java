@@ -101,7 +101,6 @@ public interface PassportHandle extends Remote
    * @param msg
    * @param datatype
    * @param retData
-   * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    * @return true, wenn der Handler den Callback behandeln konnte.
    * @throws Exception
    */

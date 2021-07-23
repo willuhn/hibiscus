@@ -35,17 +35,13 @@ import de.willuhn.util.ApplicationException;
  */
 public class SizRdhDirectFormat extends AbstractSizRdhFormat
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("SizRDH-Format, parallele Nutzung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#importKey(java.io.File)
-   */
+  @Override
   public RDHKey importKey(File file) throws ApplicationException, OperationCanceledException
   {
     // Checken, ob die Datei lesbar ist.
@@ -69,9 +65,7 @@ public class SizRdhDirectFormat extends AbstractSizRdhFormat
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#load(de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey)
-   */
+  @Override
   public HBCIPassport load(RDHKey key) throws ApplicationException, OperationCanceledException
   {
     HBCICallback callback = null;

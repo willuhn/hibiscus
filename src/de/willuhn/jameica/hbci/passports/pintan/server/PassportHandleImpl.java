@@ -83,9 +83,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     this.config = config;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#open()
-   */
+  @Override
   public HBCIHandler open() throws RemoteException, ApplicationException
   {
 
@@ -195,16 +193,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		}
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#isOpen()
-   */
+  @Override
   public boolean isOpen() throws RemoteException {
 		return handler != null && hbciPassport != null;
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#close()
-   */
+  @Override
   public void close() throws RemoteException {
 		if (hbciPassport == null && handler == null)
 			return;
@@ -284,9 +278,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#getKonten()
-   */
+  @Override
   public Konto[] getKonten() throws RemoteException, ApplicationException
   {
   	Logger.info("reading accounts from pin/tan passport");
@@ -318,9 +310,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		}
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
-   */
+  @Override
   public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
   {
     switch (reason)

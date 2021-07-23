@@ -28,9 +28,7 @@ public class View extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     GUI.getView().setTitle(i18n.tr("Chipkarten-Konfigurationen"));
@@ -45,6 +43,7 @@ public class View extends AbstractView
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Kartenleser suchen..."), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleScan();
@@ -52,6 +51,7 @@ public class View extends AbstractView
     },null,false,"system-search.png");
     buttons.addButton(i18n.tr("Kartenleser manuell anlegen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleCreate();

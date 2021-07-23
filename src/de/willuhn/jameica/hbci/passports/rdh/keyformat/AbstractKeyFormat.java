@@ -15,18 +15,12 @@ package de.willuhn.jameica.hbci.passports.rdh.keyformat;
  */
 public abstract class AbstractKeyFormat implements KeyFormat
 {
-  /**
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
-   */
   @Override
   public int compareTo(KeyFormat o)
   {
     return Integer.compare(this.getOrder(),o.getOrder());
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#getOrder()
-   */
   @Override
   public int getOrder()
   {
