@@ -20,9 +20,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 @Lifecycle(Type.REQUEST)
 public class SepaSammelLastschriftScheduleProvider extends AbstractTransferScheduleProvider<SepaSammelLastschrift>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("SEPA-Sammellastschriften");

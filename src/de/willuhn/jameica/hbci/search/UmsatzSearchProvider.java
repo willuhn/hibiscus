@@ -34,17 +34,13 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzSearchProvider implements SearchProvider
 {
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Umsätze");
   }
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
-   */
+  @Override
   public List search(String search) throws RemoteException, ApplicationException
   {
     if (search == null || search.length() == 0)
@@ -75,17 +71,13 @@ public class UmsatzSearchProvider implements SearchProvider
       this.umsatz = u;
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#execute()
-     */
+    @Override
     public void execute() throws RemoteException, ApplicationException
     {
       new UmsatzDetail().handleAction(this.umsatz);
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#getName()
-     */
+    @Override
     public String getName()
     {
       try

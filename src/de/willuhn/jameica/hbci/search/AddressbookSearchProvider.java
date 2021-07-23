@@ -30,17 +30,13 @@ import de.willuhn.util.ApplicationException;
 public class AddressbookSearchProvider implements SearchProvider
 {
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Adressbuch");
   }
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
-   */
+  @Override
   public List search(String search) throws RemoteException,
       ApplicationException
   {
@@ -88,17 +84,13 @@ public class AddressbookSearchProvider implements SearchProvider
       this.address = a;
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#execute()
-     */
+    @Override
     public void execute() throws RemoteException, ApplicationException
     {
       new EmpfaengerNew().handleAction(this.address);
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#getName()
-     */
+    @Override
     public String getName()
     {
       try

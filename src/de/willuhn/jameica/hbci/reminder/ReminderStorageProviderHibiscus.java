@@ -47,18 +47,14 @@ import de.willuhn.jameica.system.JameicaException;
 @Lifecycle(Type.CONTEXT)
 public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProvider
 {
-  /**
-   * @see de.willuhn.jameica.reminder.ReminderStorageProvider#get(java.lang.String)
-   */
+  @Override
   public Reminder get(String uuid) throws Exception
   {
     DBReminder r = this.getDBReminder(uuid);
     return r != null ? r.getReminder() : null;
   }
 
-  /**
-   * @see de.willuhn.jameica.reminder.ReminderStorageProvider#add(de.willuhn.jameica.reminder.Reminder)
-   */
+  @Override
   public String add(Reminder reminder) throws Exception
   {
     if (reminder == null)
@@ -75,9 +71,7 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
   }
 
 
-  /**
-   * @see de.willuhn.jameica.reminder.ReminderStorageProvider#update(java.lang.String, de.willuhn.jameica.reminder.Reminder)
-   */
+  @Override
   public void update(String uuid, Reminder reminder) throws Exception
   {
     if (StringUtils.trimToNull(uuid) == null)
@@ -96,9 +90,7 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
     r.store();
   }
 
-  /**
-   * @see de.willuhn.jameica.reminder.ReminderStorageProvider#delete(java.lang.String)
-   */
+  @Override
   public Reminder delete(String uuid) throws Exception
   {
     if (StringUtils.trimToNull(uuid) == null)
@@ -115,9 +107,7 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
     return reminder;
   }
 
-  /**
-   * @see de.willuhn.jameica.reminder.ReminderStorageProvider#getUUIDs()
-   */
+  @Override
   public String[] getUUIDs() throws Exception
   {
     return (String[]) Settings.getDBService().execute("select uuid from reminder",null,new ResultSetExtractor() {

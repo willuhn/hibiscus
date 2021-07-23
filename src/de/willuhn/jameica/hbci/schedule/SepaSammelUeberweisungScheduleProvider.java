@@ -20,9 +20,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 @Lifecycle(Type.REQUEST)
 public class SepaSammelUeberweisungScheduleProvider extends AbstractTransferScheduleProvider<SepaSammelUeberweisung>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("SEPA-Sammelüberweisungen");

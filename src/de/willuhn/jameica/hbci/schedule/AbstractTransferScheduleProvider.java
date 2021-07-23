@@ -46,9 +46,7 @@ public abstract class AbstractTransferScheduleProvider<T extends Terminable & Hi
   
   private DBIterator list = null;
   
-  /**
-   * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getSchedules(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
-   */
+  @Override
   public List<Schedule<T>> getSchedules(Konto k, Date from, Date to)
   {
     List<Schedule<T>> result = new LinkedList<Schedule<T>>();

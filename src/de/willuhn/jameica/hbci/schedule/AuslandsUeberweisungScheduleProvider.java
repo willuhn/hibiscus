@@ -20,9 +20,7 @@ import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 @Lifecycle(Type.REQUEST)
 public class AuslandsUeberweisungScheduleProvider extends AbstractTransferScheduleProvider<AuslandsUeberweisung>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("SEPA-Überweisungen");

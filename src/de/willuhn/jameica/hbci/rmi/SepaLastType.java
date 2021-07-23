@@ -87,9 +87,6 @@ public enum SepaLastType
     return this.description;
   }
   
-  /**
-   * @see java.lang.Enum#toString()
-   */
   @Override
   public String toString()
   {

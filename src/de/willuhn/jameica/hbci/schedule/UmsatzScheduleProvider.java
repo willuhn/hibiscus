@@ -35,9 +35,7 @@ public class UmsatzScheduleProvider implements ScheduleProvider<Umsatz>
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.hbci.schedule.ScheduleProvider#getSchedules(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
-   */
+  @Override
   public List<Schedule<Umsatz>> getSchedules(Konto k, Date from, Date to)
   {
     List<Schedule<Umsatz>> result = new LinkedList<Schedule<Umsatz>>();
@@ -66,9 +64,7 @@ public class UmsatzScheduleProvider implements ScheduleProvider<Umsatz>
     return result;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.calendar.AppointmentProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("Umsätze");
