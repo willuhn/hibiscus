@@ -87,7 +87,8 @@ class Cache
    */
   static Cache get(final Class<? extends DBObject> type, boolean init) throws RemoteException
   {
-    return get(type,new ObjectFactory() {
+    return get(type, new ObjectFactory()
+    {
       public DBIterator load() throws RemoteException
       {
         return Settings.getDBService().createList(type);

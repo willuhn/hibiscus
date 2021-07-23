@@ -23,7 +23,8 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung der HBCI-Protokollierung pro Konto.
  */
-public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll {
+public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
+{
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -31,21 +32,24 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
    * ct.
    * @throws java.rmi.RemoteException
    */
-  public ProtokollImpl() throws RemoteException {
+  public ProtokollImpl() throws RemoteException
+  {
     super();
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
-  protected String getTableName() {
+  protected String getTableName()
+  {
     return "protokoll";
   }
 
   /**
    * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryAttribute() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException
+  {
     return "kommentar";
   }
 
@@ -66,7 +70,8 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
    */
   protected void insertCheck() throws ApplicationException
   {
-		try {
+    try
+    {
 			if (getKonto() == null)
 				throw new ApplicationException(i18n.tr("Konto fehlt."));
 
@@ -92,14 +97,16 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  protected void updateCheck() throws ApplicationException {
+  protected void updateCheck() throws ApplicationException
+  {
     throw new ApplicationException(i18n.tr("Protokoll-Daten dürfen nicht geändert werden."));
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
-  protected Class getForeignObject(String field) throws RemoteException {
+  protected Class getForeignObject(String field) throws RemoteException
+  {
 		if ("konto_id".equals(field))
 			return Konto.class;
 		return null;
@@ -108,28 +115,32 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getKonto()
    */
-  public Konto getKonto() throws RemoteException {
+  public Konto getKonto() throws RemoteException
+  {
   	return (Konto) getAttribute("konto_id");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getKommentar()
    */
-  public String getKommentar() throws RemoteException {
+  public String getKommentar() throws RemoteException
+  {
     return (String) getAttribute("kommentar");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getDatum()
    */
-  public Date getDatum() throws RemoteException {
+  public Date getDatum() throws RemoteException
+  {
     return (Date) getAttribute("datum");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#getTyp()
    */
-  public int getTyp() throws RemoteException {
+  public int getTyp() throws RemoteException
+  {
 		Integer i = (Integer) getAttribute("typ");
 		if (i == null)
 			return TYP_UNKNOWN;
@@ -139,7 +150,8 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
-  public void setKonto(Konto konto) throws RemoteException {
+  public void setKonto(Konto konto) throws RemoteException
+  {
     setAttribute("konto_id",konto);
 
   }
@@ -147,14 +159,16 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#setKommentar(java.lang.String)
    */
-  public void setKommentar(String kommentar) throws RemoteException {
+  public void setKommentar(String kommentar) throws RemoteException
+  {
   	setAttribute("kommentar",kommentar);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Protokoll#setTyp(int)
    */
-  public void setTyp(int typ) throws RemoteException {
+  public void setTyp(int typ) throws RemoteException
+  {
 		if (typ != TYP_ERROR && typ != TYP_SUCCESS)
 			typ = TYP_UNKNOWN;
 		setAttribute("typ",new Integer(typ));

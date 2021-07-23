@@ -398,7 +398,8 @@ public abstract class Range
   /**
    * Zeitraum ab heute vor einem Jahr
    * */
-  public static class Last356Days extends LastYears{
+  public static class Last356Days extends LastYears
+  {
     protected Last356Days()
     {
        super(1, "Letzte 365 Tage");
@@ -408,7 +409,8 @@ public abstract class Range
   /**
    * Zeitraum ab heute vor drei Jahren
    * */
-  public static class Last3Years extends LastYears{
+  public static class Last3Years extends LastYears
+  {
     protected Last3Years()
     {
        super(3, "Letzte 3 Jahre");
@@ -418,7 +420,8 @@ public abstract class Range
   /**
    * Zeitraum ab heute vor fünf Jahren
    * */
-  public static class Last5Years extends LastYears{
+  public static class Last5Years extends LastYears
+  {
     protected Last5Years()
     {
        super(5, "Letzte 5 Jahre");
@@ -428,7 +431,8 @@ public abstract class Range
   /**
    * Zeitraum ab heute vor zehn Jahren
    * */
-  public static class Last10Years extends LastYears{
+  public static class Last10Years extends LastYears
+  {
     protected Last10Years()
     {
        super(10, "Letzte 10 Jahre");

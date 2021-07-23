@@ -59,7 +59,8 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
    */
   protected void deleteCheck() throws ApplicationException
   {
-		try {
+		try
+		{
 			if (isInitial())
 				throw new ApplicationException(i18n.tr("Turnus ist Bestandteil der System-Daten und kann nicht gelöscht werden."));
 		}
@@ -75,7 +76,8 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
    */
   protected void insertCheck() throws ApplicationException
   {
-  	try {
+    try
+    {
 
   		if (getZeiteinheit() != Turnus.ZEITEINHEIT_MONATLICH && getZeiteinheit() != Turnus.ZEITEINHEIT_WOECHENTLICH)
   			throw new ApplicationException(i18n.tr("Bitte wählen Sie eine gültige Zeiteinheit aus"));

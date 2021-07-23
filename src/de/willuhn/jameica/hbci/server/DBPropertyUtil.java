@@ -353,7 +353,8 @@ public class DBPropertyUtil
     try
     {
       final String localPrefix = createScopeIdentifier(prefix,scope);
-      final Map<String,DBProperty> cache = CACHE.get(localPrefix,new Callable<Map<String,DBProperty>>() {
+      final Map<String, DBProperty> cache = CACHE.get(localPrefix, new Callable<Map<String, DBProperty>>()
+      {
         /**
          * @see java.util.concurrent.Callable#call()
          */

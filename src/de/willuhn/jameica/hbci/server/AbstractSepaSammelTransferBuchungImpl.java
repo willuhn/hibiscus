@@ -53,7 +53,8 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
    */
   protected void insertCheck() throws ApplicationException
   {
-    try {
+    try
+    {
       if (getSammelTransfer() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie den zugehörigen Sammel-Auftrag aus."));
 

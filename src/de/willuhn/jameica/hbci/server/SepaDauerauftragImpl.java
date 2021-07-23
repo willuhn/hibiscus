@@ -97,7 +97,8 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
    */
   protected void insertCheck() throws ApplicationException
   {
-    try {
+    try
+    {
       
       Konto k = getKonto();
 

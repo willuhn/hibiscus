@@ -38,7 +38,8 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
    * ct.
    * @throws RemoteException
    */
-  public AbstractHibiscusTransferImpl() throws RemoteException {
+  public AbstractHibiscusTransferImpl() throws RemoteException
+  {
     super();
   }
 
@@ -81,8 +82,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  protected void insertCheck() throws ApplicationException {
-  	try {
+  protected void insertCheck() throws ApplicationException
+  {
+    try
+    {
 			if (getKonto() == null)
 				throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
 			if (getKonto().isNewObject())
@@ -139,14 +142,16 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  protected void updateCheck() throws ApplicationException {
+  protected void updateCheck() throws ApplicationException
+  {
 		insertCheck();
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#getKonto()
    */
-  public Konto getKonto() throws RemoteException {
+  public Konto getKonto() throws RemoteException
+  {
     Integer i = (Integer) super.getAttribute("konto_id");
     if (i == null)
       return null; // Kein Konto zugeordnet
@@ -158,7 +163,8 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
    */
-  public double getBetrag() throws RemoteException {
+  public double getBetrag() throws RemoteException
+  {
 		Double d = (Double) getAttribute("betrag");
 		if (d == null)
 			return 0;
@@ -168,84 +174,96 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
    */
-  public String getZweck() throws RemoteException {
+  public String getZweck() throws RemoteException
+  {
     return (String) getAttribute("zweck");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
    */
-  public String getZweck2() throws RemoteException {
+  public String getZweck2() throws RemoteException
+  {
 		return (String) getAttribute("zweck2");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
-  public void setKonto(Konto konto) throws RemoteException {
+  public void setKonto(Konto konto) throws RemoteException
+  {
     setAttribute("konto_id",(konto == null || konto.getID() == null) ? null : new Integer(konto.getID()));
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
-  public void setBetrag(double betrag) throws RemoteException {
+  public void setBetrag(double betrag) throws RemoteException
+  {
 		setAttribute("betrag", new Double(betrag));
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck(java.lang.String)
    */
-  public void setZweck(String zweck) throws RemoteException {
+  public void setZweck(String zweck) throws RemoteException
+  {
 		setAttribute("zweck",zweck);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck2(java.lang.String)
    */
-  public void setZweck2(String zweck2) throws RemoteException {
+  public void setZweck2(String zweck2) throws RemoteException
+  {
 		setAttribute("zweck2",zweck2);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
    */
-  public String getGegenkontoNummer() throws RemoteException {
+  public String getGegenkontoNummer() throws RemoteException
+  {
     return (String) getAttribute("empfaenger_konto");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
    */
-  public String getGegenkontoBLZ() throws RemoteException {
+  public String getGegenkontoBLZ() throws RemoteException
+  {
 		return (String) getAttribute("empfaenger_blz");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
    */
-  public String getGegenkontoName() throws RemoteException {
+  public String getGegenkontoName() throws RemoteException
+  {
 		return (String) getAttribute("empfaenger_name");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoNummer(java.lang.String)
    */
-  public void setGegenkontoNummer(String konto) throws RemoteException {
+  public void setGegenkontoNummer(String konto) throws RemoteException
+  {
 		setAttribute("empfaenger_konto",konto != null ? konto.toUpperCase() : null);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoBLZ(java.lang.String)
    */
-  public void setGegenkontoBLZ(String blz) throws RemoteException {
+  public void setGegenkontoBLZ(String blz) throws RemoteException
+  {
 		setAttribute("empfaenger_blz",blz);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoName(java.lang.String)
    */
-  public void setGegenkontoName(String name) throws RemoteException {
+  public void setGegenkontoName(String name) throws RemoteException
+  {
 		setAttribute("empfaenger_name",name);
   }
 

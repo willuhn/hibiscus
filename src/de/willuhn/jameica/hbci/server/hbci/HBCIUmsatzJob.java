@@ -238,7 +238,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         for (int j = 0; j<existing.size(); j++)
         {
           GenericObject dbObject = existing.next();
-          if (dbObject.equals(umsatz)) {
+          if (dbObject.equals(umsatz))
+          {
             counter++;
             fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
           }
@@ -251,7 +252,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           // neu. Dazu zaehlen wir mit, wie oft wir gerade einen "gleichen" 
           // Umsatz empfangen haben. 
           Integer countInCurrentJobResult = duplicates.get(fromDB);
-          if (countInCurrentJobResult == null) {
+          if (countInCurrentJobResult == null)
+          {
             duplicates.put(fromDB, 1);
             skipped++;
             continue;

@@ -82,7 +82,8 @@ public class UmsatzUtil
       params = new String[]{(String) kontoOrGroup};
     }
     
-    return (Date) Settings.getDBService().execute(query,params,new ResultSetExtractor() {
+    return (Date) Settings.getDBService().execute(query, params, new ResultSetExtractor()
+    {
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (!rs.next())

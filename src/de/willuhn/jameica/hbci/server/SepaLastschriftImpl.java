@@ -53,7 +53,8 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
-  public Duplicatable duplicate() throws RemoteException {
+  public Duplicatable duplicate() throws RemoteException
+  {
     SepaLastschriftImpl u = (SepaLastschriftImpl) getService().createObject(SepaLastschrift.class,null);
     u.setBetrag(getBetrag());
     u.setGegenkontoNummer(getGegenkontoNummer());
@@ -93,8 +94,10 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  protected void insertCheck() throws ApplicationException {
-    try {
+  protected void insertCheck() throws ApplicationException
+  {
+    try
+    {
       Konto k = getKonto();
 
       if (k == null)

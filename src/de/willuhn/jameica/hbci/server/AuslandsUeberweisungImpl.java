@@ -34,21 +34,24 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   /**
    * @throws RemoteException
    */
-  public AuslandsUeberweisungImpl() throws RemoteException {
+  public AuslandsUeberweisungImpl() throws RemoteException
+  {
     super();
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
-  protected String getTableName() {
+  protected String getTableName()
+  {
     return "aueberweisung";
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
    */
-  public Duplicatable duplicate() throws RemoteException {
+  public Duplicatable duplicate() throws RemoteException
+  {
     AuslandsUeberweisung u = (AuslandsUeberweisung) getService().createObject(AuslandsUeberweisung.class,null);
     u.setBetrag(getBetrag());
     u.setGegenkontoNummer(getGegenkontoNummer());
@@ -69,20 +72,22 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  protected void insertCheck() throws ApplicationException {
+  protected void insertCheck() throws ApplicationException
+  {
     
-    try {
+    try
+    {
       Konto k = getKonto();
 
       if (k == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte speichern Sie zunächst das Konto"));
-      
+
       String kiban = k.getIban();
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
-      
+
       String bic = k.getBic();
       if (bic == null || bic.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));

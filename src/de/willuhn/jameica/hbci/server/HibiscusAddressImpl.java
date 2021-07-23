@@ -23,37 +23,42 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung einer Hibiscus-Adresse.
  */
-public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements HibiscusAddress {
+public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements HibiscusAddress
+{
 
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
    * @throws RemoteException
    */
-  public HibiscusAddressImpl() throws RemoteException {
+  public HibiscusAddressImpl() throws RemoteException
+  {
     super();
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
-  protected String getTableName() {
+  protected String getTableName()
+  {
     return "empfaenger";
   }
 
   /**
    * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryAttribute() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException
+  {
     return "name";
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  protected void insertCheck() throws ApplicationException {
-		try
-		{
+  protected void insertCheck() throws ApplicationException
+  {
+    try
+    {
       //////////////////////////////////////////////////////////////////////////
       // Kontoinhaber
       String name = this.getName();
@@ -125,14 +130,16 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  protected void updateCheck() throws ApplicationException {
+  protected void updateCheck() throws ApplicationException
+  {
 		insertCheck();
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Address#getKontonummer()
    */
-  public String getKontonummer() throws RemoteException {
+  public String getKontonummer() throws RemoteException
+  {
     return (String) getAttribute("kontonummer");
   }
 
@@ -147,28 +154,32 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
   /**
    * @see de.willuhn.jameica.hbci.rmi.Address#getName()
    */
-  public String getName() throws RemoteException {
+  public String getName() throws RemoteException
+  {
 		return (String) getAttribute("name");
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setKontonummer(java.lang.String)
    */
-  public void setKontonummer(String kontonummer) throws RemoteException {
+  public void setKontonummer(String kontonummer) throws RemoteException
+  {
   	setAttribute("kontonummer",kontonummer);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBlz(java.lang.String)
    */
-  public void setBlz(String blz) throws RemoteException {
+  public void setBlz(String blz) throws RemoteException
+  {
     setAttribute("blz",blz);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setName(java.lang.String)
    */
-  public void setName(String name) throws RemoteException {
+  public void setName(String name) throws RemoteException
+  {
   	setAttribute("name",name);
   }
 

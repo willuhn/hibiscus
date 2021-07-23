@@ -97,7 +97,8 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     if (umsatz.getBetrag() > 0.0d)
     {
       this.einnahmen += umsatz.getBetrag();
-    } else
+    }
+    else
     {
       this.ausgaben += -umsatz.getBetrag();
     }

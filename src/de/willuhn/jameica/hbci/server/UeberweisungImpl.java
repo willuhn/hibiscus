@@ -30,14 +30,16 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
   /**
    * @throws RemoteException
    */
-  public UeberweisungImpl() throws RemoteException {
+  public UeberweisungImpl() throws RemoteException
+  {
     super();
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
-  protected String getTableName() {
+  protected String getTableName()
+  {
     return "ueberweisung";
   }
 

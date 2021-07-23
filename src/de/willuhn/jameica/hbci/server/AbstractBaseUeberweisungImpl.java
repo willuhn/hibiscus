@@ -33,14 +33,16 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   /**
    * @throws RemoteException
    */
-  public AbstractBaseUeberweisungImpl() throws RemoteException {
+  public AbstractBaseUeberweisungImpl() throws RemoteException
+  {
     super();
   }
 
   /**
    * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryAttribute() throws RemoteException {
+  public String getPrimaryAttribute() throws RemoteException
+  {
     return "zweck";
   }
 
@@ -103,7 +105,8 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#getTermin()
    */
-  public Date getTermin() throws RemoteException {
+  public Date getTermin() throws RemoteException
+  {
     return (Date) getAttribute("termin");
   }
 
@@ -118,7 +121,8 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#ausgefuehrt()
    */
-  public boolean ausgefuehrt() throws RemoteException {
+  public boolean ausgefuehrt() throws RemoteException
+  {
 		Integer i = (Integer) getAttribute("ausgefuehrt");
 		if (i == null)
 			return false;
@@ -128,14 +132,16 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#setTermin(java.util.Date)
    */
-  public void setTermin(Date termin) throws RemoteException {
+  public void setTermin(Date termin) throws RemoteException
+  {
 		setAttribute("termin",termin);
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Terminable#ueberfaellig()
    */
-  public boolean ueberfaellig() throws RemoteException {
+  public boolean ueberfaellig() throws RemoteException
+  {
     if (ausgefuehrt())
     	return false;
     Date termin = getTermin();

@@ -57,7 +57,8 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
    */
   protected void insertCheck() throws ApplicationException
   {
-    try {
+    try
+    {
       if (getKonto() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus."));
       if (getKonto().isNewObject())
@@ -81,7 +82,8 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
    */
   protected void updateCheck() throws ApplicationException
   {
-    try {
+    try
+    {
       if (!whileStore && ausgefuehrt())
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt und kann daher nicht mehr geändert werden."));
     }
@@ -223,7 +225,8 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
   {
     // Wir muessen auch alle Buchungen mitloeschen
     // da Constraints dorthin existieren.
-    try {
+    try
+    {
       this.transactionBegin();
 
       int count = 0;

@@ -58,7 +58,8 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
    */
   protected void insertCheck() throws ApplicationException
   {
-    try {
+    try
+    {
       
       Konto k = getKonto();
 
@@ -104,7 +105,8 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
    */
   protected void updateCheck() throws ApplicationException
   {
-    try {
+    try
+    {
       if (!this.markingExecuted() && this.ausgefuehrt())
         throw new ApplicationException(i18n.tr("Auftrag wurde bereits ausgeführt und kann daher nicht mehr geändert werden."));
     }
@@ -250,7 +252,8 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   {
     // Wir muessen auch alle Buchungen mitloeschen
     // da Constraints dorthin existieren.
-    try {
+    try
+    {
       this.transactionBegin();
 
       int count = 0;

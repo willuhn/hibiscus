@@ -165,7 +165,8 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
    */
-  public String getIdentifier() {
+  public String getIdentifier()
+  {
 		if (active)
 			return "DauerSEPAEdit";
   	return "DauerSEPANew";
