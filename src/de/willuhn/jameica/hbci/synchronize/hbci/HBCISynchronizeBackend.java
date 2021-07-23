@@ -626,13 +626,17 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       @Override
       public void run()
       {
-        try {
+        try
+        {
           this.result = this.internalExecute();
         }
-        catch (Exception e) { // wir fangen nur Exceptions, keine Errors
+        catch (Exception e)
+        {
+          // wir fangen nur Exceptions, keine Errors
           this.exception = e;
         }
-        catch (Throwable t) {
+        catch (Throwable t)
+        {
           if (t instanceof Error)
             throw (Error) t;
           throw new Error(t);
