@@ -39,7 +39,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Abstrakter Controller fuer die Dialoge "Buchung einer Sammellastschrift/-ueberweisung bearbeiten".
- * @author willuhn
  */
 public abstract class AbstractSammelTransferBuchungControl extends AbstractControl
 {

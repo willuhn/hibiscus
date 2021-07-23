@@ -17,7 +17,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Interface fuer den Datenbank-Service von Hibiscus.
- * @author willuhn
  */
 public interface HBCIDBService extends DBService
 {

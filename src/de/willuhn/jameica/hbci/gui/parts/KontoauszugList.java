@@ -937,7 +937,6 @@ public class KontoauszugList extends UmsatzList
 
   /**
    * Hilfsklasse fuer das Suchfeld.
-   * @author willuhn
    */
   private class SearchInput extends ButtonInput
   {

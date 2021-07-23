@@ -9,9 +9,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.rdh.rmi;
 
-/**
- * @author willuhn
- */
 public interface Passport extends de.willuhn.jameica.hbci.passport.Passport
 {
 

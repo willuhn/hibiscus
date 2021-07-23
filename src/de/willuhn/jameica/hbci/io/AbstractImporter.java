@@ -164,7 +164,6 @@ public abstract class AbstractImporter implements Importer
 
   /**
    * Hilfsklasse, damit wir uns den Objekt-Typ merken koennen.
-   * @author willuhn
    */
   class MyIOFormat implements IOFormat
   {

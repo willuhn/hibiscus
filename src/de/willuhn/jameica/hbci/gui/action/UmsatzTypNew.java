@@ -22,7 +22,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Action zum Erstellen einer neuen Umsatz-Kategorie.
- * @author willuhn
  */
 public class UmsatzTypNew implements Action
 {

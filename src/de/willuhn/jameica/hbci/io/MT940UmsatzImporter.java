@@ -206,7 +206,6 @@ public class MT940UmsatzImporter implements Importer
   /**
    * Hilfsklasse um getPassport umzubiegen.
    * BUGZILLA 255
-   * @author willuhn
    */
   private class MyGVRKUms extends GVRKUms
   {

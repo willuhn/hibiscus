@@ -41,9 +41,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-/**
- * @author willuhn
- */
 public class PassportHandleImpl extends UnicastRemoteObject implements PassportHandle
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
