@@ -18,9 +18,7 @@ package de.willuhn.jameica.hbci.synchronize.jobs;
 public class SynchronizeJobSepaLastschrift extends AbstractSynchronizeJob
 {
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#isRecurring()
-   */
+  @Override
   public boolean isRecurring()
   {
     return false;

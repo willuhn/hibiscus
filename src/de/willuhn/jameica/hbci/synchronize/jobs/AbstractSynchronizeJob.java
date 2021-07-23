@@ -30,49 +30,36 @@ public abstract class AbstractSynchronizeJob implements SynchronizeJob
   private Konto konto = null;
   private Map<String,Object> ctx = new HashMap<String,Object>();
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getContext(java.lang.String)
-   */
+  @Override
   public Object getContext(String key)
   {
     return this.ctx.get(key);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#setContext(java.lang.String, java.lang.Object)
-   */
+  @Override
   public void setContext(String key, Object value)
   {
     this.ctx.put(key,value);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getKonto()
-   */
+  @Override
   public Konto getKonto()
   {
     return this.konto;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void setKonto(Konto konto)
   {
     this.konto = konto;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#configure()
-   */
+  @Override
   public void configure() throws ApplicationException
   {
     new Open().handleAction(this.getContext(SynchronizeJob.CTX_ENTITY));
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getName()
-   */
   @Override
   public String getName() throws ApplicationException
   {

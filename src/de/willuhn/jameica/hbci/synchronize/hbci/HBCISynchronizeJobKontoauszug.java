@@ -27,9 +27,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISynchronizeJobKontoauszug extends SynchronizeJobKontoauszug implements HBCISynchronizeJob
 {
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJob#createHBCIJobs()
-   */
+  @Override
   public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
     // BUGZILLA 346: Das bleibt weiterhin

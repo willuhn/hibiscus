@@ -37,9 +37,7 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeJob#createHBCIJobs()
-   */
+  @Override
   public AbstractHBCIJob[] createHBCIJobs() throws RemoteException, ApplicationException
   {
     Konto k       = (Konto) this.getContext(CTX_ENTITY);
@@ -55,9 +53,6 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
     return jobs.toArray(new AbstractHBCIJob[jobs.size()]);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.AbstractSynchronizeJob#getName()
-   */
   @Override
   public String getName() throws ApplicationException
   {
