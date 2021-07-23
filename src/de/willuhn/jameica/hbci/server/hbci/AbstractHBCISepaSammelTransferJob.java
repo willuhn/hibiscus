@@ -136,9 +136,6 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
 		}
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
@@ -154,9 +151,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
     return this.transfer;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     transfer.setAusgefuehrt(true);
@@ -166,9 +161,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
     Logger.info("sepa sammellastschrift submitted successfully");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Ausführen des SEPA-Sammelauftrages [Bezeichnung: {0}]: {1}",new String[]{transfer.getBezeichnung(),error});
@@ -176,9 +169,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
     return msg;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
-   */
+  @Override
   protected void markCancelled() throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Ausführung des SEPA-Sammelauftrages [Bezeichnung: {0}] abgebrochen",transfer.getBezeichnung());

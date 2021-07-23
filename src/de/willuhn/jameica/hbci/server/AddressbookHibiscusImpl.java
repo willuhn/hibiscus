@@ -49,9 +49,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     super();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Addressbook#contains(de.willuhn.jameica.hbci.rmi.Address)
-   */
+  @Override
   public Address contains(Address address) throws RemoteException
   {
     if (address == null)
@@ -76,9 +74,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     return null;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Addressbook#findAddresses(java.lang.String)
-   */
+  @Override
   public List findAddresses(String text) throws RemoteException
   {
     List<Address> result = new ArrayList<Address>();
@@ -130,9 +126,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
     return result;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Addressbook#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("Hibiscus-Adressbuch");
@@ -242,57 +236,43 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       this.konto = konto;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.Address#getBlz()
-     */
+    @Override
     public String getBlz() throws RemoteException
     {
       return this.konto.getBLZ();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.Address#getKommentar()
-     */
+    @Override
     public String getKommentar() throws RemoteException
     {
       return this.konto.getKommentar();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.Address#getKontonummer()
-     */
+    @Override
     public String getKontonummer() throws RemoteException
     {
       return this.konto.getKontonummer();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.Address#getName()
-     */
+    @Override
     public String getName() throws RemoteException
     {
       return this.konto.getName();
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.Address#getBic()
-     */
+    @Override
     public String getBic() throws RemoteException
     {
       return this.konto.getBic();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.Address#getIban()
-     */
+    @Override
     public String getIban() throws RemoteException
     {
       return this.konto.getIban();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.Address#getKategorie()
-     */
+    @Override
     public String getKategorie() throws RemoteException
     {
       return i18n.tr("Eigenes Konto");

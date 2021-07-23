@@ -31,9 +31,7 @@ public class LastschriftImpl extends AbstractBaseUeberweisungImpl
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "lastschrift";

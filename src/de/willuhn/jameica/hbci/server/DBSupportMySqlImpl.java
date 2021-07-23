@@ -28,33 +28,25 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 {
   private final static String DRIVER = "com.mysql.jdbc.Driver";
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
-   */
+  @Override
   public String getJdbcDriver()
   {
     return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver",DRIVER);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcPassword()
-   */
+  @Override
   public String getJdbcPassword()
   {
     return this.getEncrypted("database.driver.mysql.password");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcUrl()
-   */
+  @Override
   public String getJdbcUrl()
   {
     return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcurl","jdbc:mysql://localhost:3306/hibiscus?useUnicode=Yes&characterEncoding=ISO8859_1&serverTimezone=Europe/Paris");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcUsername()
-   */
+  @Override
   public String getJdbcUsername()
   {
     return HBCIDBService.SETTINGS.getString("database.driver.mysql.username","hibiscus");
@@ -65,8 +57,8 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    * Andernfalls wuerde jeder Hibiscus-Client beim ersten Start versuchen, diese anzulegen.
    * Das soll der Admin sicherheitshalber manuell durchfuehren. Wir hinterlassen stattdessen
    * nur einen Hinweistext mit den auszufuehrenden SQL-Scripts.
-   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#execute(java.sql.Connection, java.io.File)
    */
+  @Override
   public void execute(Connection conn, File sqlScript) throws RemoteException
   {
     if (sqlScript == null)
@@ -87,33 +79,25 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getScriptPrefix()
-   */
+  @Override
   public String getScriptPrefix() throws RemoteException
   {
     return "mysql-";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getSQLTimestamp(java.lang.String)
-   */
+  @Override
   public String getSQLTimestamp(String content) throws RemoteException
   {
     return MessageFormat.format("(UNIX_TIMESTAMP({0})*1000)", new Object[]{content});
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getInsertWithID()
-   */
+  @Override
   public boolean getInsertWithID() throws RemoteException
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#getTransactionIsolationLevel()
-   */
+  @Override
   public int getTransactionIsolationLevel() throws RemoteException
   {
     // damit sehen wir Datenbank-Updates durch andere

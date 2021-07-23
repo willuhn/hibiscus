@@ -43,9 +43,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     super();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Addressbook#findAddresses(java.lang.String)
-   */
+  @Override
   public List findAddresses(String text) throws RemoteException
   {
     Addressbook[] books = getAddressbooks();
@@ -70,8 +68,8 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
    * Falls die Adresse in mehreren Adressbuechern existiert, aus welchem
    * der Adressbuecher die Adresse verwendet wird. Die Funktion sollte daher
    * nur verwendet werden, um <b>ueberhaupt</b> festzustellen, ob die Adresse existiert.
-   * @see de.willuhn.jameica.hbci.rmi.Addressbook#contains(de.willuhn.jameica.hbci.rmi.Address)
    */
+  @Override
   public Address contains(Address address) throws RemoteException
   {
     Addressbook[] books = getAddressbooks();
@@ -87,9 +85,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AddressbookService#getAddressbooks()
-   */
+  @Override
   public synchronized Addressbook[] getAddressbooks() throws RemoteException
   {
     if (this.books == null)
@@ -140,9 +136,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     return this.books;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AddressbookService#hasExternalAddressbooks()
-   */
+  @Override
   public boolean hasExternalAddressbooks() throws RemoteException
   {
     // Adressbuch 1 sind wir selbst
@@ -153,33 +147,25 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     return books != null && books.length > 2;
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("Alle Adressbücher");
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#isStartable()
-   */
+  @Override
   public boolean isStartable() throws RemoteException
   {
     return !isStarted();
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#isStarted()
-   */
+  @Override
   public boolean isStarted() throws RemoteException
   {
     return this.started;
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#start()
-   */
+  @Override
   public void start() throws RemoteException
   {
     if (isStarted())
@@ -190,9 +176,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
     this.started = true;
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#stop(boolean)
-   */
+  @Override
   public void stop(boolean arg0) throws RemoteException
   {
     if (!isStarted())

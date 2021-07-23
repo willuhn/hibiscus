@@ -43,17 +43,13 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sepaslast";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
@@ -87,9 +83,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#getBuchungen()
-   */
+  @Override
   public List<SepaSammelLastBuchung> getBuchungen() throws RemoteException
   {
     DBIterator list = this.getService().createList(SepaSammelLastBuchung.class);
@@ -98,9 +92,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     return PseudoIterator.asList(list);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#createBuchung()
-   */
+  @Override
   public SepaSammelLastBuchung createBuchung() throws RemoteException, ApplicationException
   {
     SepaSammelLastBuchung b = (SepaSammelLastBuchung) this.getService().createObject(SepaSammelLastBuchung.class,null);
@@ -110,9 +102,7 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     return b;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#getSequenceType()
-   */
+  @Override
   public SepaLastSequenceType getSequenceType() throws RemoteException
   {
     String val = (String) getAttribute("sequencetype");
@@ -130,33 +120,25 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setSequenceType(de.willuhn.jameica.hbci.rmi.SepaLastSequenceType)
-   */
+  @Override
   public void setSequenceType(SepaLastSequenceType type) throws RemoteException
   {
     setAttribute("sequencetype",type != null ? type.name() : null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#getTargetDate()
-   */
+  @Override
   public Date getTargetDate() throws RemoteException
   {
     return (Date) getAttribute("targetdate");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setTargetDate(java.util.Date)
-   */
+  @Override
   public void setTargetDate(Date date) throws RemoteException
   {
     setAttribute("targetdate",date);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#getType()
-   */
+  @Override
   public SepaLastType getType() throws RemoteException
   {
     String val = (String) getAttribute("sepatype");
@@ -174,33 +156,25 @@ public class SepaSammelLastschriftImpl extends AbstractSepaSammelTransferImpl<Se
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setType(de.willuhn.jameica.hbci.rmi.SepaLastType)
-   */
+  @Override
   public void setType(SepaLastType type) throws RemoteException
   {
     setAttribute("sepatype",type != null ? type.name() : null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#getOrderId()
-   */
+  @Override
   public String getOrderId() throws RemoteException
   {
     return (String) this.getAttribute("orderid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift#setOrderId(java.lang.String)
-   */
+  @Override
   public void setOrderId(String orderId) throws RemoteException
   {
     this.setAttribute("orderid",orderId);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
+  @Override
   public Duplicatable duplicate() throws RemoteException
   {
     SepaSammelLastschrift l = null;

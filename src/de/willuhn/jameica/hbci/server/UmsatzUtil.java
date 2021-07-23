@@ -83,6 +83,7 @@ public class UmsatzUtil
     }
     
     return (Date) Settings.getDBService().execute(query,params,new ResultSetExtractor() {
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (!rs.next())

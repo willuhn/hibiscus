@@ -61,25 +61,19 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "konto";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "kontonummer";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try
@@ -137,117 +131,85 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getKontonummer()
-   */
+  @Override
   public String getKontonummer() throws RemoteException
   {
     return (String) getAttribute("kontonummer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getBLZ()
-   */
+  @Override
   public String getBLZ() throws RemoteException
   {
     return (String) getAttribute("blz");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return (String) getAttribute("name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getPassportClass()
-   */
+  @Override
   public String getPassportClass() throws RemoteException
   {
     return (String) getAttribute("passport_class");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getBackendClass()
-   */
   @Override
   public String getBackendClass() throws RemoteException
   {
     return (String) getAttribute("backend_class");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getAccountType()
-   */
   @Override
   public Integer getAccountType() throws RemoteException
   {
     return (Integer) getAttribute("acctype");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setKontonummer(java.lang.String)
-   */
+  @Override
   public void setKontonummer(String kontonummer) throws RemoteException
   {
     setAttribute("kontonummer", kontonummer);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setBLZ(java.lang.String)
-   */
+  @Override
   public void setBLZ(String blz) throws RemoteException
   {
     setAttribute("blz", blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setName(java.lang.String)
-   */
+  @Override
   public void setName(String name) throws RemoteException
   {
     setAttribute("name", name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setPassportClass(java.lang.String)
-   */
+  @Override
   public void setPassportClass(String passport) throws RemoteException
   {
     setAttribute("passport_class", passport);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setBackendClass(java.lang.String)
-   */
   @Override
   public void setBackendClass(String backend) throws RemoteException
   {
     setAttribute("backend_class", backend);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setAccountType(java.lang.Integer)
-   */
   @Override
   public void setAccountType(Integer i) throws RemoteException
   {
     setAttribute("acctype",i);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     if (this.isNewObject())
@@ -405,41 +367,31 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getWaehrung()
-   */
+  @Override
   public String getWaehrung() throws RemoteException
   {
     return (String) getAttribute("waehrung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setWaehrung(java.lang.String)
-   */
+  @Override
   public void setWaehrung(String waehrung) throws RemoteException
   {
     setAttribute("waehrung", waehrung);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getKundennummer()
-   */
+  @Override
   public String getKundennummer() throws RemoteException
   {
     return (String) getAttribute("kundennummer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setKundennummer(java.lang.String)
-   */
+  @Override
   public void setKundennummer(String kundennummer) throws RemoteException
   {
     setAttribute("kundennummer", kundennummer);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldo()
-   */
+  @Override
   public double getSaldo() throws RemoteException
   {
     Double d = (Double) getAttribute("saldo");
@@ -448,9 +400,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return d.doubleValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoAvailable()
-   */
+  @Override
   public double getSaldoAvailable() throws RemoteException
   {
     Double d = (Double) getAttribute("saldo_available");
@@ -459,17 +409,13 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return d.doubleValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSaldoDatum()
-   */
+  @Override
   public Date getSaldoDatum() throws RemoteException
   {
     return (Date) getAttribute("saldo_datum");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#reset()
-   */
+  @Override
   public void reset() throws RemoteException
   {
     setAttribute("saldo_datum", null);
@@ -477,17 +423,13 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     setAttribute("saldo_available",null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsaetze()
-   */
+  @Override
   public DBIterator getUmsaetze() throws RemoteException
   {
     return getUmsaetze(-1);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsaetze(int)
-   */
+  @Override
   public DBIterator getUmsaetze(int days) throws RemoteException
   {
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
@@ -503,9 +445,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsaetze(Date, Date)
-   */
+  @Override
   public DBIterator getUmsaetze(Date start, Date end) throws RemoteException
   {
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
@@ -517,9 +457,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getUeberweisungen()
-   */
+  @Override
   public DBIterator getUeberweisungen() throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) getService();
@@ -531,9 +469,6 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getUmsatzTypen()
-   */
   @Override
   public DBIterator getUmsatzTypen() throws RemoteException
   {
@@ -545,9 +480,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getAuslandsUeberweisungen()
-   */
+  @Override
   public DBIterator getAuslandsUeberweisungen() throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) getService();
@@ -559,9 +492,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaLastschriften()
-   */
+  @Override
   public DBIterator getSepaLastschriften() throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) getService();
@@ -573,9 +504,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaSammelLastschriften()
-   */
+  @Override
   public DBIterator getSepaSammelLastschriften() throws RemoteException
   {
     DBIterator list = getService().createList(SepaSammelLastschrift.class);
@@ -583,9 +512,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaSammelUeberweisungen()
-   */
+  @Override
   public DBIterator getSepaSammelUeberweisungen() throws RemoteException
   {
     DBIterator list = getService().createList(SepaSammelUeberweisung.class);
@@ -593,9 +520,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getDauerauftraege()
-   */
+  @Override
   public DBIterator getDauerauftraege() throws RemoteException
   {
     DBIterator list = getService().createList(Dauerauftrag.class);
@@ -603,9 +528,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSepaDauerauftraege()
-   */
+  @Override
   public DBIterator getSepaDauerauftraege() throws RemoteException
   {
     DBIterator list = getService().createList(SepaDauerauftrag.class);
@@ -613,9 +536,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getLastschriften()
-   */
+  @Override
   public DBIterator getLastschriften() throws RemoteException
   {
     DBIterator list = getService().createList(Lastschrift.class);
@@ -623,9 +544,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSammelLastschriften()
-   */
+  @Override
   public DBIterator getSammelLastschriften() throws RemoteException
   {
     DBIterator list = getService().createList(SammelLastschrift.class);
@@ -633,9 +552,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getSammelUeberweisungen()
-   */
+  @Override
   public DBIterator getSammelUeberweisungen() throws RemoteException
   {
     DBIterator list = getService().createList(SammelUeberweisung.class);
@@ -643,9 +560,6 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getKontoauszuege()
-   */
   @Override
   public DBIterator getKontoauszuege() throws RemoteException
   {
@@ -654,25 +568,19 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getBezeichnung()
-   */
+  @Override
   public String getBezeichnung() throws RemoteException
   {
     return (String) getAttribute("bezeichnung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setBezeichnung(java.lang.String)
-   */
+  @Override
   public void setBezeichnung(String bezeichnung) throws RemoteException
   {
     setAttribute("bezeichnung", bezeichnung);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getProtokolle()
-   */
+  @Override
   public DBIterator getProtokolle() throws RemoteException
   {
     HBCIDBService service = (HBCIDBService) getService();
@@ -683,18 +591,14 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return list;
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
-   */
+  @Override
   public void insert() throws RemoteException, ApplicationException
   {
     super.insert();
     addToProtokoll(i18n.tr("Konto angelegt"), Protokoll.TYP_SUCCESS);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#store()
-   */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     if (hasChanged())
@@ -704,10 +608,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     Cache.clear(Konto.class); // Cache loeschen
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#addToProtokoll(java.lang.String,
-   *      int)
-   */
+  @Override
   public final void addToProtokoll(String kommentar, int protokollTyp) throws RemoteException
   {
     if (kommentar == null || kommentar.length() == 0 || this.getID() == null)
@@ -731,9 +632,8 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
    * Die Funktion ueberschreiben wir um ein zusaetzliches virtuelles Attribut
    * "longname" einzufuehren. Bei Abfrage dieses Attributs wird "[Kontonummer]
    * Bezeichnung" zurueckgeliefert.
-   * 
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("numumsaetze".equals(arg0))
@@ -778,9 +678,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return super.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
-   */
+  @Override
   public long getChecksum() throws RemoteException
   {
     String s = getBLZ() + getKontonummer() + getKundennummer() + getUnterkonto();
@@ -789,26 +687,20 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return crc.getValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setSaldo(double)
-   */
+  @Override
   public void setSaldo(double saldo) throws RemoteException
   {
     setAttribute("saldo", Double.isNaN(saldo) ? null : new Double(saldo));
     setAttribute("saldo_datum", new Date());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setSaldoAvailable(double)
-   */
+  @Override
   public void setSaldoAvailable(double saldo) throws RemoteException
   {
     setAttribute("saldo_available", Double.isNaN(saldo) ? null : new Double(saldo));
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getNumUmsaetze()
-   */
+  @Override
   public int getNumUmsaetze() throws RemoteException
   {
     if (this.isNewObject())
@@ -819,6 +711,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     HBCIDBService service = (HBCIDBService) this.getService();
     ResultSetExtractor rs = new ResultSetExtractor()
     {
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (rs.next())
@@ -831,66 +724,50 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     return i == null ? 0 : i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getLongName()
-   */
+  @Override
   public String getLongName() throws RemoteException
   {
     return (String) getAttribute("longname");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getUnterkonto()
-   */
+  @Override
   public String getUnterkonto() throws RemoteException
   {
     return (String) getAttribute("unterkonto");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setUnterkonto(java.lang.String)
-   */
+  @Override
   public void setUnterkonto(String unterkonto) throws RemoteException
   {
     setAttribute("unterkonto",unterkonto);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getKommentar()
-   */
+  @Override
   public String getKommentar() throws RemoteException
   {
     return (String) getAttribute("kommentar");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setKommentar(java.lang.String)
-   */
+  @Override
   public void setKommentar(String kommentar) throws RemoteException
   {
     setAttribute("kommentar",kommentar);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
-   */
+  @Override
   public int getFlags() throws RemoteException
   {
     Integer i = (Integer) this.getAttribute("flags");
     return i == null ? UmsatzTyp.FLAG_NONE : i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#hasFlag(int)
-   */
+  @Override
   public boolean hasFlag(int flag) throws RemoteException
   {
     return (this.getFlags() & flag) == flag;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
-   */
+  @Override
   public void setFlags(int flags) throws RemoteException
   {
     if (flags < 0)
@@ -899,49 +776,37 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     this.setAttribute("flags",new Integer(flags));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getBic()
-   */
+  @Override
   public String getBic() throws RemoteException
   {
     return (String) getAttribute("bic");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBic(java.lang.String)
-   */
+  @Override
   public void setBic(String bic) throws RemoteException
   {
     setAttribute("bic",bic);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getIban()
-   */
+  @Override
   public String getIban() throws RemoteException
   {
     return (String) getAttribute("iban");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setIban(java.lang.String)
-   */
+  @Override
   public void setIban(String iban) throws RemoteException
   {
     setAttribute("iban",iban);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#getKategorie()
-   */
+  @Override
   public String getKategorie() throws RemoteException
   {
     return (String) this.getAttribute("kategorie");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Konto#setKategorie(java.lang.String)
-   */
+  @Override
   public void setKategorie(String kategorie) throws RemoteException
   {
     this.setAttribute("kategorie",kategorie);

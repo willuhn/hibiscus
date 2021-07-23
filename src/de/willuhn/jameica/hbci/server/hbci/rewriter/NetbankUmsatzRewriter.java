@@ -27,9 +27,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 @Lifecycle(Type.CONTEXT)
 public class NetbankUmsatzRewriter implements UmsatzRewriter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.rewriter.UmsatzRewriter#getBlzList()
-   */
+  @Override
   public List<String> getBlzList()
   {
     List<String> list = new ArrayList<String>();
@@ -47,9 +45,7 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.rewriter.UmsatzRewriter#rewrite(de.willuhn.jameica.hbci.rmi.Umsatz)
-   */
+  @Override
   public void rewrite(Umsatz u) throws Exception
   {
     String name = u.getGegenkontoName();

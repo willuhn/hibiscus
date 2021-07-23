@@ -30,49 +30,37 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "name";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "property";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return (String) getAttribute("name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#getValue()
-   */
+  @Override
   public String getValue() throws RemoteException
   {
     return (String) getAttribute("content");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#setName(java.lang.String)
-   */
+  @Override
   public void setName(String name) throws RemoteException
   {
     setAttribute("name",name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#setValue(java.lang.String)
-   */
+  @Override
   public void setValue(String value) throws RemoteException
   {
     setAttribute("content",value);

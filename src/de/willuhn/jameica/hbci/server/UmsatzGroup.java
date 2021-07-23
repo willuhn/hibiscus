@@ -61,41 +61,31 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
     this.umsaetze.add(umsatz);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
-   */
+  @Override
   public GenericIterator getChildren() throws RemoteException
   {
     return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[umsaetze.size()]));
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getParent()
-   */
+  @Override
   public GenericObjectNode getParent() throws RemoteException
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPath()
-   */
+  @Override
   public GenericIterator getPath() throws RemoteException
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
-   */
+  @Override
   public GenericIterator getPossibleParents() throws RemoteException
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
-   */
+  @Override
   public boolean hasChild(GenericObjectNode node) throws RemoteException
   {
     for (int i=0;i<this.umsaetze.size();++i)
@@ -107,9 +97,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
     return false;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public boolean equals(GenericObject other) throws RemoteException
   {
     if (other == null || !(other instanceof UmsatzGroup))
@@ -117,9 +105,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
     return this.getID().equals(other.getID());
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if (this.typ == null && "name".equalsIgnoreCase(arg0))
@@ -143,25 +129,19 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
     return this.typ == null ? null : this.typ.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-   */
+  @Override
   public String[] getAttributeNames() throws RemoteException
   {
     return this.typ == null ? new String[]{"name"} : this.typ.getAttributeNames();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
+  @Override
   public String getID() throws RemoteException
   {
     return this.typ == null ? "<unassigned>" : this.typ.getID();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return this.typ == null ? "name" : this.typ.getPrimaryAttribute();
@@ -169,8 +149,8 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
 
   /**
    * Implementiert, damit wir nach dem Feld "nummer" sortieren koennen.
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
+  @Override
   public int compareTo(Object o)
   {
     if (o == null || !(o instanceof UmsatzGroup))

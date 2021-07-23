@@ -42,17 +42,13 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sepalastschrift";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
+  @Override
   public Duplicatable duplicate() throws RemoteException {
     SepaLastschriftImpl u = (SepaLastschriftImpl) getService().createObject(SepaLastschrift.class,null);
     u.setBetrag(getBetrag());
@@ -90,9 +86,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     return u;
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException {
     try {
       Konto k = getKonto();
@@ -193,116 +187,88 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#setTextSchluessel(java.lang.String)
-   */
+  @Override
   public void setTextSchluessel(String schluessel) throws RemoteException
   {
     if (schluessel != null && schluessel.length() > 0)
       throw new RemoteException("textschluessel not allowed for foreign transfer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setGegenkontoBLZ(java.lang.String)
-   */
+  @Override
   public void setGegenkontoBLZ(String blz) throws RemoteException
   {
     setAttribute("empfaenger_bic",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getGegenkontoBLZ()
-   */
+  @Override
   public String getGegenkontoBLZ() throws RemoteException
   {
     return (String) getAttribute("empfaenger_bic");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setWeitereVerwendungszwecke(java.lang.String[])
-   */
+  @Override
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
     if (list != null && list.length > 0)
       throw new RemoteException("extended usages not allowed for foreign transfer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setZweck2(java.lang.String)
-   */
+  @Override
   public void setZweck2(String zweck2) throws RemoteException
   {
     if (zweck2 != null && zweck2.length() > 0)
       throw new RemoteException("second usage not allowed for sepa debit");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
-   */
+  @Override
   public String getEndtoEndId() throws RemoteException
   {
     return (String) getAttribute("endtoendid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
-   */
+  @Override
   public void setEndtoEndId(String id) throws RemoteException
   {
     setAttribute("endtoendid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getMandateId()
-   */
+  @Override
   public String getMandateId() throws RemoteException
   {
     return (String) getAttribute("mandateid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setMandateId(java.lang.String)
-   */
+  @Override
   public void setMandateId(String id) throws RemoteException
   {
     setAttribute("mandateid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getSignatureDate()
-   */
+  @Override
   public Date getSignatureDate() throws RemoteException
   {
     return (Date) getAttribute("sigdate");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getCreditorId()
-   */
+  @Override
   public String getCreditorId() throws RemoteException
   {
     return (String) getAttribute("creditorid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setCreditorId(java.lang.String)
-   */
+  @Override
   public void setCreditorId(String id) throws RemoteException
   {
     setAttribute("creditorid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setSignatureDate(java.util.Date)
-   */
+  @Override
   public void setSignatureDate(Date date) throws RemoteException
   {
     setAttribute("sigdate",date);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getSequenceType()
-   */
+  @Override
   public SepaLastSequenceType getSequenceType() throws RemoteException
   {
     String val = (String) getAttribute("sequencetype");
@@ -320,33 +286,25 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setSequenceType(de.willuhn.jameica.hbci.rmi.SepaLastSequenceType)
-   */
+  @Override
   public void setSequenceType(SepaLastSequenceType type) throws RemoteException
   {
     setAttribute("sequencetype",type != null ? type.name() : null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getTargetDate()
-   */
+  @Override
   public Date getTargetDate() throws RemoteException
   {
     return (Date) getAttribute("targetdate");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setTargetDate(java.util.Date)
-   */
+  @Override
   public void setTargetDate(Date date) throws RemoteException
   {
     setAttribute("targetdate",date);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getType()
-   */
+  @Override
   public SepaLastType getType() throws RemoteException
   {
     String val = (String) getAttribute("sepatype");
@@ -364,58 +322,42 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setType(de.willuhn.jameica.hbci.rmi.SepaLastType)
-   */
+  @Override
   public void setType(SepaLastType type) throws RemoteException
   {
     setAttribute("sepatype",type != null ? type.name() : null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#getOrderId()
-   */
+  @Override
   public String getOrderId() throws RemoteException
   {
     return (String) this.getAttribute("orderid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaLastschrift#setOrderId(java.lang.String)
-   */
+  @Override
   public void setOrderId(String orderId) throws RemoteException
   {
     this.setAttribute("orderid",orderId);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
-   */
+  @Override
   public String getPmtInfId() throws RemoteException
   {
     return (String) getAttribute("pmtinfid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
-   */
+  @Override
   public void setPmtInfId(String id) throws RemoteException
   {
     setAttribute("pmtinfid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
-   */
   @Override
   public String getPurposeCode() throws RemoteException
   {
     return (String) getAttribute("purposecode");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
-   */
   @Override
   public void setPurposeCode(String code) throws RemoteException
   {

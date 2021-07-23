@@ -74,9 +74,7 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
       setJobParam("targetdate",targetDate);
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier()
   {
     if (this.type != null)
@@ -86,17 +84,13 @@ public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransfer
     return SepaLastType.DEFAULT.getMultiJobName();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("SEPA-Sammellastschrift {0}",getSammelTransfer().getBezeichnung());
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCISepaSammelTransferJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     super.markExecuted();
