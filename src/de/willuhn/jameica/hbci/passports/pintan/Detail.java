@@ -88,7 +88,8 @@ public class Detail extends AbstractView
       PtSecMech secMech = control.getConfig().getStoredSecMech();
       ButtonArea buttons = new ButtonArea();
       String tanMedia = control.getConfig().getTanMedia();
-      Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
+      Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action()
+      {
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleDeleteTanSettings();

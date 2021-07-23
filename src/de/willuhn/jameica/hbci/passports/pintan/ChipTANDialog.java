@@ -68,7 +68,8 @@ public class ChipTANDialog extends TANDialog
   private ChipTanCardService service = null;
   private CheckboxInput autoContinue = null;
   
-  private final Listener resizeListener = new DelayedListener(new Listener() {
+  private final Listener resizeListener = new DelayedListener(new Listener()
+  {
     @Override
     public void handleEvent(Event event)
     {
@@ -147,7 +148,8 @@ public class ChipTANDialog extends TANDialog
     
     this.autoContinue = new CheckboxInput(SETTINGS.getBoolean(PARAM_AUTOCONTINUE,false));
     this.autoContinue.setName(i18n.tr("Bei Erhalt der TAN automatisch fortsetzen"));
-    this.autoContinue.addListener(new Listener() {
+    this.autoContinue.addListener(new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)
@@ -294,7 +296,8 @@ public class ChipTANDialog extends TANDialog
       };
       usbThread.start();
       
-      getShell().addDisposeListener(new DisposeListener() {
+      getShell().addDisposeListener(new DisposeListener()
+      {
         @Override
         public void widgetDisposed(DisposeEvent e)
         {
@@ -337,7 +340,8 @@ public class ChipTANDialog extends TANDialog
     if (s == null || s.length() == 0)
       return;
     
-    GUI.getDisplay().asyncExec(new Runnable() {
+    GUI.getDisplay().asyncExec(new Runnable()
+    {
       
       @Override
       public void run()
@@ -402,7 +406,8 @@ public class ChipTANDialog extends TANDialog
       
       // Redraw ausloesen
       // Wir sind hier nicht im Event-Dispatcher-Thread von SWT. Daher uebergeben wir das an diesen
-      canvas.getDisplay().syncExec(new Runnable() {
+      canvas.getDisplay().syncExec(new Runnable()
+      {
         public void run()
         {
           // Wir muessen hier nochmal checken, weil das inzwischen disposed sein kann.
@@ -495,7 +500,8 @@ public class ChipTANDialog extends TANDialog
         spinner.setMaximum(FlickerRenderer.FREQUENCY_MAX);
         spinner.setIncrement(1);
         spinner.setTextLimit(2);
-        spinner.addSelectionListener(new SelectionAdapter() {
+        spinner.addSelectionListener(new SelectionAdapter()
+        {
           public void widgetSelected(SelectionEvent e)
           {
             int freq = spinner.getSelection();
@@ -563,7 +569,8 @@ public class ChipTANDialog extends TANDialog
           update(e.gc);
         }
       });
-      this.canvas.addDisposeListener(new DisposeListener() {
+      this.canvas.addDisposeListener(new DisposeListener()
+      {
         public void widgetDisposed(DisposeEvent e)
         {
           // Update-Thread stoppen

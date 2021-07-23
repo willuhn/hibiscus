@@ -24,7 +24,8 @@ import de.willuhn.jameica.hbci.rmi.Konto;
  * die Unterstuetzung von DDV-Chipkarten vorhandene
  * <i>de.willuhn.jameica.passports.ddv.server.PassportImpl</i> dienen.
  */
-public interface Passport extends Remote {
+public interface Passport extends Remote
+{
 
 
 	/**

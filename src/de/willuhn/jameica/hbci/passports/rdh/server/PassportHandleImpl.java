@@ -93,7 +93,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
 		Logger.info("open rdh passport");
-		try {
+    try
+    {
 	
       RDHKey activeKey = this.key != null ? this.key : RDHKeyFactory.findByKonto(passport != null ? passport.getKonto() : null);
       
@@ -183,7 +184,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		}
 		finally
 		{
-	    try {
+	    try
+	    {
 	      Logger.info("closing rdh passport");
 	      handler.close();
 	    }
@@ -233,7 +235,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   public Konto[] getKonten() throws RemoteException, ApplicationException
   {
 		Logger.info("reading accounts from rdh passport");
-		try {
+		try
+		{
 			open();
 			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
 			if (konten == null || konten.length == 0)
@@ -254,10 +257,14 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		}
 		finally
 		{
-			try {
+			try
+			{
 				close();
 			}
-			catch (RemoteException e2) {/*useless*/}
+			catch (RemoteException e2)
+			{
+				/*useless*/
+			}
 		}
   }
 

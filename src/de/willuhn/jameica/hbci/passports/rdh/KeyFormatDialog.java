@@ -68,7 +68,8 @@ public class KeyFormatDialog extends AbstractDialog
     this.warn.setName("");
     this.warn.setColor(Color.ERROR);
     
-    final Action action = new Action() {
+    final Action action = new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         Object o = table.getSelection();
@@ -99,7 +100,8 @@ public class KeyFormatDialog extends AbstractDialog
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), action,null,false,"ok.png");
-    buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+    buttons.addButton(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException("cancelled in key format dialog");

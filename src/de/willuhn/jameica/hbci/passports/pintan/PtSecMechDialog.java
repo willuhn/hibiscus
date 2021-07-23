@@ -101,7 +101,8 @@ public class PtSecMechDialog extends AbstractDialog
     group.addCheckbox(getSave(),i18n.tr("Auswahl speichern"));
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Übernehmen"),new Action() {
+    buttons.addButton(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         try

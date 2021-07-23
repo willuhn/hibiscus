@@ -82,7 +82,8 @@ public class SelectConfigDialog extends AbstractDialog
     group.addPart(table);
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Übernehmen"), new Action() {
+    buttons.addButton(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         selected = (PinTanConfig) table.getSelection();

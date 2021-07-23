@@ -51,7 +51,8 @@ public abstract class AbstractReader implements Reader
       
 
       case Platform.OS_WINDOWS:
-        try {
+        try
+        {
           f = new File("C:/Windows/System32");
           if (f.isDirectory() && f.exists()) return f;
 
@@ -75,7 +76,8 @@ public abstract class AbstractReader implements Reader
         return f;
 
       case Platform.OS_WINDOWS_64:
-        try {
+        try
+        {
 
           f = new File("C:/Windows/SysWOW64");
           if (f.isDirectory() && f.exists()) return f;

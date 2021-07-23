@@ -68,7 +68,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
    * @param passport
    * @throws RemoteException
    */
-  public PassportHandleImpl(PassportImpl passport) throws RemoteException {
+  public PassportHandleImpl(PassportImpl passport) throws RemoteException
+  {
     super();
 		this.passport = passport;
   }
@@ -77,7 +78,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
    * @param config
    * @throws RemoteException
    */
-  public PassportHandleImpl(PinTanConfig config) throws RemoteException {
+  public PassportHandleImpl(PinTanConfig config) throws RemoteException
+  {
     super();
     this.config = config;
   }
@@ -92,7 +94,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			return handler;
 
 		Logger.info("open pin/tan passport");
-		try {
+    try
+    {
 	
       if (config == null && this.passport == null)
         throw new ApplicationException(i18n.tr("Keine Konfiguration oder Konto ausgewählt"));
@@ -207,14 +210,16 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   /**
    * @see de.willuhn.jameica.hbci.passport.PassportHandle#isOpen()
    */
-  public boolean isOpen() throws RemoteException {
+  public boolean isOpen() throws RemoteException
+  {
 		return handler != null && hbciPassport != null;
 	}
 
   /**
    * @see de.willuhn.jameica.hbci.passport.PassportHandle#close()
    */
-  public void close() throws RemoteException {
+  public void close() throws RemoteException
+  {
 		if (hbciPassport == null && handler == null)
 			return;
 
@@ -225,11 +230,15 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		}
 		finally
 		{
-	    try {
+	    try
+	    {
 	      Logger.info("closing pin/tan passport");
 	      handler.close();
 	    }
-	    catch (Exception e) {/*useless*/}
+	    catch (Exception e)
+	    {
+	      /*useless*/
+	    }
 	    hbciPassport = null;
 	    handler = null;
 
@@ -299,7 +308,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   public Konto[] getKonten() throws RemoteException, ApplicationException
   {
   	Logger.info("reading accounts from pin/tan passport");
-		try {
+    try
+    {
 			open();
 			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
 			if (konten == null || konten.length == 0)
@@ -323,7 +333,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			try {
 				close();
 			}
-			catch (RemoteException e2) {/*useless*/}
+			catch (RemoteException e2)
+			{
+				/*useless*/
+			}
 		}
   }
 

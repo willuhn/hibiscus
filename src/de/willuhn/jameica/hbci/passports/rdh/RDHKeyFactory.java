@@ -203,7 +203,8 @@ public class RDHKeyFactory
       Logger.error(ae.getMessage());
       
       // Meldung wurde sonst nicht in der GUI angezeigt. Siehe http://www.onlinebanking-forum.de/forum/topic.php?p=106085#real106085
-      GUI.getDisplay().asyncExec(new Runnable() {
+      GUI.getDisplay().asyncExec(new Runnable()
+      {
         public void run()
         {
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));

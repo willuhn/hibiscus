@@ -178,21 +178,27 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   /**
    * @see de.willuhn.jameica.hbci.passport.PassportHandle#isOpen()
    */
-  public boolean isOpen() throws RemoteException {
+  public boolean isOpen() throws RemoteException
+  {
 		return handler != null && hbciPassport != null;
-	}
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.passport.PassportHandle#close()
    */
-  public void close() throws RemoteException {
+  public void close() throws RemoteException
+  {
 		if (hbciPassport == null && handler == null)
 			return;
-		try {
+    try
+    {
 			Logger.info("closing ddv passport");
 			handler.close();
-		}
-		catch (Exception e) {/*useless*/}
+    }
+    catch (Exception e)
+    {
+      /* useless */
+    }
 		hbciPassport = null;
 		handler = null;
 
@@ -210,7 +216,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   public Konto[] getKonten() throws RemoteException, ApplicationException
   {
   	Logger.info("reading accounts from ddv passport");
-		try {
+    try
+    {
 			open();
 			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
 			if (konten == null || konten.length == 0)
@@ -231,10 +238,14 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		}
 		finally
 		{
-			try {
+			try
+			{
 				close();
 			}
-			catch (RemoteException e2) {/*useless*/}
+			catch (RemoteException e2)
+			{
+				/*useless*/
+			}
 		}
   }
 
@@ -244,7 +255,8 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
   {
     
-    switch (reason) {
+    switch (reason)
+    {
     
       case HBCICallback.NEED_SOFTPIN:
       {

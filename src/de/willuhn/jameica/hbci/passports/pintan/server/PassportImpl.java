@@ -37,14 +37,16 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
   /**
    * @throws RemoteException
    */
-  public PassportImpl() throws RemoteException {
+  public PassportImpl() throws RemoteException
+  {
     super();
   }
 
   /**
    * @see de.willuhn.jameica.hbci.passport.Passport#getName()
    */
-  public String getName() throws RemoteException {
+  public String getName() throws RemoteException
+  {
     return i18n.tr("PIN/TAN");
   }
 
@@ -72,7 +74,8 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
   /**
    * @see de.willuhn.jameica.hbci.passport.Passport#getConfigDialog()
    */
-  public Class getConfigDialog() throws RemoteException {
+  public Class getConfigDialog() throws RemoteException
+  {
     return View.class;
   }
 

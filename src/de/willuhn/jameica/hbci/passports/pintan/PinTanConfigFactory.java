@@ -205,7 +205,8 @@ public class PinTanConfigFactory
 
     HBCIUtils.setParam("client.passport.PinTan.checkcert","1");
 
-    return new PassportLoader() {
+    return new PassportLoader()
+    {
 
       private HBCIPassport p = null;
 

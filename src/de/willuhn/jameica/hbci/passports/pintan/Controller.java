@@ -92,7 +92,8 @@ public class Controller extends AbstractControl
    * ct.
    * @param view
    */
-  public Controller(AbstractView view) {
+  public Controller(AbstractView view)
+  {
     super(view);
   }
 
@@ -132,29 +133,40 @@ public class Controller extends AbstractControl
 
     ContextMenu ctx = new ContextMenu();
 
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         if (context == null)
           return;
         try
         {
           GUI.startView(Detail.class,context);
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
           Logger.error("error while loading config",e);
           GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen der Konfiguration"));
         }
       }
     },"document-open.png"));
 
-    ctx.addItem(new ContextMenuItem(i18n.tr("PIN/TAN-Zugang anlegen"),new Action() {
-      public void handleAction(Object context) throws ApplicationException {handleCreate();}
-    },"document-new.png"));
+    ctx.addItem(new ContextMenuItem(i18n.tr("PIN/TAN-Zugang anlegen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleCreate();
+      }
+    }, "document-new.png"));
 
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException {handleDelete((PinTanConfig)context);}
-    },"user-trash-full.png"));
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleDelete((PinTanConfig) context);
+      }
+    }, "user-trash-full.png"));
 
     configList.setContextMenu(ctx);
     configList.setMulti(false);
@@ -286,7 +298,8 @@ public class Controller extends AbstractControl
     this.useUsb = new CheckboxInput(b == null || b.booleanValue());
     this.useUsb.setName(i18n.tr("Kartenleser per USB zur TAN-Erzeugung verwenden"));
     
-    final Listener l = new Listener() {
+    final Listener l = new Listener()
+    {
       
       @Override
       public void handleEvent(Event event)

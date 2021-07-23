@@ -67,7 +67,8 @@ public class SelectKeyDialog extends AbstractDialog
     Container container = new SimpleContainer(parent);
     container.addText(i18n.tr("Bitte wählen Sie den zu verwendenden Schlüssel aus"),true);
 
-    final Button apply = new Button(i18n.tr("Übernehmen"), new Action() {
+    final Button apply = new Button(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new Apply().handleAction(table.getSelection());
@@ -83,13 +84,15 @@ public class SelectKeyDialog extends AbstractDialog
       l.add(new KeyObject(key));
     }
     
-    this.table = new TablePart(l, new Action() {
+    this.table = new TablePart(l, new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         new Apply().handleAction(context);
       }
     });
-    table.setFormatter(new TableFormatter() {
+    table.setFormatter(new TableFormatter()
+    {
       public void format(TableItem item)
       {
         if (item == null || item.getData() == null)
@@ -107,7 +110,8 @@ public class SelectKeyDialog extends AbstractDialog
       }
     });
     
-    table.addSelectionListener(new Listener() {
+    table.addSelectionListener(new Listener()
+    {
       public void handleEvent(Event event)
       {
         apply.setEnabled(table.getSelection() != null);
@@ -122,7 +126,8 @@ public class SelectKeyDialog extends AbstractDialog
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(apply);
-    buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+    buttons.addButton(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();

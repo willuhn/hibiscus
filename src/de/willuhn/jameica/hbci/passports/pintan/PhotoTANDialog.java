@@ -54,7 +54,8 @@ public class PhotoTANDialog extends TANDialog
   private Button smaller = null;
   private Button larger = null;
   
-  private final Listener resizeListener = new DelayedListener(new Listener() {
+  private final Listener resizeListener = new DelayedListener(new Listener()
+  {
     @Override
     public void handleEvent(Event event)
     {

@@ -117,7 +117,8 @@ public class TANDialog extends AbstractDialog
       
       if (session != null)
       {
-        this.addCloseListener(new Listener() {
+        this.addCloseListener(new Listener()
+        {
           
           @Override
           public void handleEvent(Event event)
@@ -186,7 +187,8 @@ public class TANDialog extends AbstractDialog
     if (this.okButton != null)
       return this.okButton;
     
-    this.okButton = new Button("    " + i18n.tr("OK") + "    ",new Action() {
+    this.okButton = new Button("    " + i18n.tr("OK") + "    ", new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         tan = (String) getTANInput().getValue();
@@ -239,7 +241,8 @@ public class TANDialog extends AbstractDialog
     final PasswordInput tan = this.getTANInput();
     c.addInput(tan);
     
-    tan.getControl().addKeyListener(new KeyAdapter() {
+    tan.getControl().addKeyListener(new KeyAdapter()
+    {
       /**
        * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
        */
@@ -260,14 +263,28 @@ public class TANDialog extends AbstractDialog
     buttons.addButton(new Cancel());
     bottom.addButtonArea(buttons);
 
-    addShellListener(new ShellListener() {
-      public void shellClosed(ShellEvent e) {
+    addShellListener(new ShellListener()
+    {
+      public void shellClosed(ShellEvent e)
+      {
         throw new OperationCanceledException("dialog cancelled via close button");
       }
-      public void shellActivated(ShellEvent e) {}
-      public void shellDeactivated(ShellEvent e) {}
-      public void shellDeiconified(ShellEvent e) {}
-      public void shellIconified(ShellEvent e) {}
+
+      public void shellActivated(ShellEvent e)
+      {
+      }
+
+      public void shellDeactivated(ShellEvent e)
+      {
+      }
+
+      public void shellDeiconified(ShellEvent e)
+      {
+      }
+
+      public void shellIconified(ShellEvent e)
+      {
+      }
     });
     
     this.getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));

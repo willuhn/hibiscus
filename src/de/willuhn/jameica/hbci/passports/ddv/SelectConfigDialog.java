@@ -51,7 +51,8 @@ public class SelectConfigDialog extends AbstractDialog
     LabelGroup group = new LabelGroup(parent,i18n.tr("Konfiguration"));
     group.addText(text == null ? i18n.tr("Bitte wählen Sie die zu verwendende Kartenleser-Konfiguration aus") : text,true);
     
-    final TablePart table = new TablePart(DDVConfigFactory.getConfigs(), new Action() {
+    final TablePart table = new TablePart(DDVConfigFactory.getConfigs(), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof DDVConfig))
@@ -68,7 +69,8 @@ public class SelectConfigDialog extends AbstractDialog
     table.paint(parent);
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Übernehmen"), new Action() {
+    buttons.addButton(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         selected = (DDVConfig) table.getSelection();
@@ -77,7 +79,8 @@ public class SelectConfigDialog extends AbstractDialog
         close();
       }
     },null,true);
-    buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+    buttons.addButton(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();

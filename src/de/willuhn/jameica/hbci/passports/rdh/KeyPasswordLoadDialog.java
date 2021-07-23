@@ -112,7 +112,8 @@ public class KeyPasswordLoadDialog extends PasswordDialog
     if (this.filename == null)
       return;
     
-    Part p = new Part() {
+    Part p = new Part()
+    {
       public void paint(Composite parent) throws RemoteException
       {
         String text = i18n.tr("Schlüsseldatei: {0}",filename);
@@ -123,7 +124,8 @@ public class KeyPasswordLoadDialog extends PasswordDialog
         comment.setLayoutData(new GridData(GridData.FILL_BOTH));
         // Workaround fuer Windows, weil dort mehrzeilige
         // Labels nicht korrekt umgebrochen werden.
-        comment.addControlListener(new ControlAdapter() {
+        comment.addControlListener(new ControlAdapter()
+        {
           public void controlResized(ControlEvent e)
           {
             comment.setSize(comment.computeSize(comment.getSize().x,SWT.DEFAULT));

@@ -108,7 +108,8 @@ public class DDVConfigFactory
     }
 
     // Alphabetisch sortieren
-    Collections.sort(presets,new Comparator<Reader>() {
+    Collections.sort(presets, new Comparator<Reader>()
+    {
       public int compare(Reader r1, Reader r2)
       {
         return r1.getName().compareTo(r2.getName());
@@ -375,7 +376,11 @@ public class DDVConfigFactory
     try
     {
       Thread.sleep(250L);
-    } catch (Exception e) { /* ignore */}
+    }
+    catch (Exception e)
+    {
+      /* ignore */
+    }
     
     return false;
   }

@@ -126,29 +126,40 @@ public class Controller extends AbstractControl
 
     ContextMenu ctx = new ContextMenu();
 
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action() {
-      public void handleAction(Object context) throws ApplicationException {
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
         if (context == null)
           return;
         try
         {
           GUI.startView(Detail.class,context);
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
           Logger.error("error while loading config",e);
           GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anlegen der Konfiguration"));
         }
       }
     },"document-open.png"));
 
-    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Konfiguration..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException {handleCreate();}
-    },"document-new.png"));
+    ctx.addItem(new ContextMenuItem(i18n.tr("Neue Konfiguration..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleCreate();
+      }
+    }, "document-new.png"));
 
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException {handleDelete((DDVConfig)context);}
-    },"user-trash-full.png"));
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        handleDelete((DDVConfig) context);
+      }
+    }, "user-trash-full.png"));
 
     this.configList.setContextMenu(ctx);
     this.configList.setMulti(false);
@@ -391,7 +402,8 @@ public class Controller extends AbstractControl
         if (config != null)
         {
           // wenn wir einen gefunden haben, uebernehmen wir die Daten.
-          GUI.getDisplay().asyncExec(new Runnable() {
+          GUI.getDisplay().asyncExec(new Runnable()
+          {
             public void run()
             {
               Reader reader = config.getReaderPreset();
@@ -632,7 +644,8 @@ public class Controller extends AbstractControl
     if (!handleStore())
       return;
 
-    Application.getController().start(new BackgroundTask() {
+    Application.getController().start(new BackgroundTask()
+    {
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         HBCIPassportChipcard passport = null;
@@ -706,8 +719,14 @@ public class Controller extends AbstractControl
         }
       }
       
-      public boolean isInterrupted(){return false;}
-      public void interrupt(){}
+      public boolean isInterrupted()
+      {
+        return false;
+      }
+
+      public void interrupt()
+      {
+      }
     });
   }
 
@@ -721,7 +740,8 @@ public class Controller extends AbstractControl
      */
     public void handleEvent(Event event)
     {
-      try {
+      try
+      {
         Reader r = (Reader) getReaderPresets().getValue();
         if (r == null)
           return;

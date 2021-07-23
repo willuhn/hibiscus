@@ -59,7 +59,8 @@ import de.willuhn.util.I18N;
 /**
  * Controller, der die Eingaben zur Konfiguration des Passports handelt.
  */
-public class Controller extends AbstractControl {
+public class Controller extends AbstractControl
+{
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
@@ -92,7 +93,8 @@ public class Controller extends AbstractControl {
    * ct.
    * @param view
    */
-  public Controller(AbstractView view) {
+  public Controller(AbstractView view)
+  {
     super(view);
   }
 
@@ -319,9 +321,13 @@ public class Controller extends AbstractControl {
       }
     },"document-open.png"));
 
-    ctx.addItem(new ContextMenuItem(i18n.tr("Neuer Schlüssel..."),new Action() {
-      public void handleAction(Object context) throws ApplicationException {startCreate();}
-    },"document-new.png"));
+    ctx.addItem(new ContextMenuItem(i18n.tr("Neuer Schlüssel..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        startCreate();
+      }
+    }, "document-new.png"));
     ctx.addItem(new ContextMenuItem(i18n.tr("Schlüssel importieren..."),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -335,7 +341,8 @@ public class Controller extends AbstractControl {
     ctx.addItem(new ActivateKey(true));
     ctx.addItem(new ActivateKey(false));
     ctx.addItem(ContextMenuItem.SEPARATOR);
-    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new Action() {
+    ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         try

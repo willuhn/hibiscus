@@ -68,7 +68,8 @@ public class SelectSizEntryDialog extends AbstractDialog
       list.add(e);
     }
     
-    final TablePart table = new TablePart(list, new Action() {
+    final TablePart table = new TablePart(list, new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof Entry))
@@ -85,7 +86,8 @@ public class SelectSizEntryDialog extends AbstractDialog
     table.paint(parent);
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Übernehmen"), new Action() {
+    buttons.addButton(i18n.tr("Übernehmen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         Object o = table.getSelection();
@@ -97,7 +99,8 @@ public class SelectSizEntryDialog extends AbstractDialog
         close();
       }
     },null,false,"ok.png");
-    buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+    buttons.addButton(i18n.tr("Abbrechen"), new Action()
+    {
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
