@@ -33,9 +33,7 @@ import de.willuhn.util.ProgressMonitor;
 public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Exporter
 {
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (os == null)
@@ -180,9 +178,7 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSIO#getSupportedObjectTypes()
-   */
+  @Override
   Class[] getSupportedObjectTypes()
   {
     return new Class[]{
@@ -191,9 +187,6 @@ public class DTAUSSammelTransferExporter extends AbstractDTAUSIO implements Expo
     };
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {

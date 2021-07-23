@@ -43,9 +43,7 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
   
   private Konto konto = null;
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.csv.Format#getDefaultProfile()
-   */
+  @Override
   public synchronized Profile getDefaultProfile()
   {
     if (this.profile == null)
@@ -84,18 +82,14 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
   //    return T.class;
   //  }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.csv.Format#getImportListener()
-   */
+  @Override
   public ImportListener getImportListener()
   {
     if (this.listener == null)
     {
       this.listener = new ImportListener(){
         
-        /**
-         * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeSet(de.willuhn.jameica.hbci.io.csv.ImportEvent)
-         */
+        @Override
         public void beforeSet(ImportEvent event) throws OperationCanceledException
         {
           Map<String,Object> values = (Map<String,Object>) event.data;
@@ -121,9 +115,7 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
           }
         }
 
-        /**
-         * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeStore(de.willuhn.jameica.hbci.io.csv.ImportEvent)
-         */
+        @Override
         public void beforeStore(ImportEvent event) throws OperationCanceledException
         {
           try

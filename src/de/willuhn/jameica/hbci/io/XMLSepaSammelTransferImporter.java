@@ -41,9 +41,6 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class XMLSepaSammelTransferImporter extends XMLImporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.XMLImporter#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
   @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
@@ -58,6 +55,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
     try
     {
       reader = new XmlReader(is, new ObjectFactory() {
+        @Override
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObject object = (AbstractDBObject) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
@@ -175,9 +173,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (objectType == null)
@@ -192,9 +188,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
         return i18n.tr("Hibiscus-Format");
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[] {"*.xml"};

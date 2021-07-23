@@ -34,17 +34,13 @@ public class PrintSupportUeberweisung extends AbstractPrintSupportBaseUeberweisu
     this.u = u;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("Überweisung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportBaseUeberweisung#customize(net.sf.paperclips.GridPrint)
-   */
+  @Override
   void customize(GridPrint grid) throws RemoteException, ApplicationException
   {
     super.customize(grid);

@@ -45,9 +45,7 @@ public class MT940UmsatzImporter implements Importer
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
 
@@ -169,31 +167,26 @@ public class MT940UmsatzImporter implements Importer
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("Swift MT940-Format");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
     
     IOFormat f = new IOFormat() {
+      @Override
       public String getName()
       {
         return MT940UmsatzImporter.this.getName();
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[] {"*.sta"};
@@ -212,8 +205,8 @@ public class MT940UmsatzImporter implements Importer
   {
     /**
      * Wir liefern hier einen Dummy-Passport zurueck.
-     * @see org.kapott.hbci.GV_Result.HBCIJobResultImpl#getPassport()
      */
+    @Override
     public HBCIPassport getPassport()
     {
       return new HBCIPassport()

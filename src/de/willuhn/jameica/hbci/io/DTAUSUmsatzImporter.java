@@ -27,9 +27,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSImporter#create(de.willuhn.datasource.rmi.DBObject, java.lang.Object, de.jost_net.OBanToo.Dtaus.CSatz, de.jost_net.OBanToo.Dtaus.ASatz)
-   */
+  @Override
   void create(DBObject skel, Object context, CSatz csatz, ASatz asatz)
     throws RemoteException, ApplicationException
   {
@@ -67,9 +65,7 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
   }
 
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractDTAUSIO#getSupportedObjectTypes()
-   */
+  @Override
   Class[] getSupportedObjectTypes()
   {
     return new Class[]

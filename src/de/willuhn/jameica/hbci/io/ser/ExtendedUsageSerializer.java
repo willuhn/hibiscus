@@ -22,9 +22,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
  */
 public class ExtendedUsageSerializer extends DefaultSerializer<String[]>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#serialize(java.lang.Object, java.lang.Object)
-   */
+  @Override
   public String serialize(Object context, String[] value) throws IOException
   {
     if (value == null)
@@ -39,9 +37,7 @@ public class ExtendedUsageSerializer extends DefaultSerializer<String[]>
     return sb.toString();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#unserialize(java.lang.Object, java.lang.String)
-   */
+  @Override
   public String[] unserialize(Object context, String value) throws IOException
   {
     if (value == null || value.length() == 0)

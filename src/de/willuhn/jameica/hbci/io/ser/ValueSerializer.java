@@ -25,9 +25,7 @@ public class ValueSerializer extends DefaultSerializer<Double>
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#serialize(java.lang.Object, java.lang.Object)
-   */
+  @Override
   public String serialize(Object context, Double value) throws IOException
   {
     if (value == null)
@@ -36,9 +34,7 @@ public class ValueSerializer extends DefaultSerializer<Double>
     return HBCI.DECIMALFORMAT.format(value) + " " + HBCIProperties.CURRENCY_DEFAULT_DE;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#unserialize(java.lang.Object, java.lang.String)
-   */
+  @Override
   public Double unserialize(Object context, String value) throws IOException
   {
     if (value == null || value.length() == 0)

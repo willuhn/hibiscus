@@ -33,9 +33,6 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
 {
   private final static DateFormat ISO_DATE = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractImporter#importObject(java.lang.Object, int, java.util.Map)
-   */
   @Override
   void importObject(Object o, int idx, Map ctx) throws Exception
   {
@@ -67,18 +64,12 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
     Application.getMessagingFactory().sendMessage(new ImportMessage(u));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractImporter#getSupportedObjectTypes()
-   */
   @Override
   Class[] getSupportedObjectTypes()
   {
     return new Class[]{AuslandsUeberweisung.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaImporter#getSupportedPainType()
-   */
   @Override
   Type getSupportedPainType()
   {

@@ -27,9 +27,7 @@ public class PrintSupportSammelUeberweisung extends AbstractPrintSupportSammelTr
     super(ctx);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("Sammel-Überweisung");

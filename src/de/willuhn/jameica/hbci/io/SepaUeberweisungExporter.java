@@ -27,9 +27,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
  */
 public class SepaUeberweisungExporter extends AbstractSepaExporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, java.util.Properties)
-   */
   @Override
   protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
@@ -57,27 +54,18 @@ public class SepaUeberweisungExporter extends AbstractSepaExporter
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getPainType()
-   */
   @Override
   protected Type getPainType()
   {
     return Type.PAIN_001;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getJobName()
-   */
   @Override
   protected String getJobName()
   {
     return "UebSEPA";
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getSupportedObjectTypes()
-   */
   @Override
   Class[] getSupportedObjectTypes()
   {

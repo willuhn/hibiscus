@@ -17,9 +17,7 @@ import java.io.IOException;
  */
 public class BooleanSerializer extends DefaultSerializer<Boolean>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.Serializer#unserialize(java.lang.Object, java.lang.String)
-   */
+  @Override
   public Boolean unserialize(Object context, String value) throws IOException
   {
     return Boolean.valueOf(value);

@@ -64,9 +64,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
     return this.ctx;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object data = this.getContext();
@@ -196,9 +194,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("Umsätze");

@@ -43,9 +43,6 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
 {
   private final static DateFormat ISO_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#setup(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
   @Override
   void setup(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
   {
@@ -69,9 +66,6 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
     super.setup(objects, format, os, monitor);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, de.willuhn.jameica.hbci.io.AbstractSepaExporter.JobContext)
-   */
   @Override
   protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
@@ -125,18 +119,12 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
     ctx.meta.put("count",count);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getPainType()
-   */
   @Override
   protected Type getPainType()
   {
     return Type.PAIN_008;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getJobName()
-   */
   @Override
   protected String getJobName()
   {
@@ -145,9 +133,6 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
     return SepaLastType.CORE.getJobName();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getSupportedObjectTypes()
-   */
   @Override
   Class[] getSupportedObjectTypes()
   {

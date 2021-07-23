@@ -30,9 +30,7 @@ public class PrintSupportAuslandsUeberweisung extends AbstractPrintSupportSepaTr
     super(u);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     try

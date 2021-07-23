@@ -27,9 +27,7 @@ public class PrintSupportLastschrift extends AbstractPrintSupportBaseUeberweisun
     super(l);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("Lastschrift");

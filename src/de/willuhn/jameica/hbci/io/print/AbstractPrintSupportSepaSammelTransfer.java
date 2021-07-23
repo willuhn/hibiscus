@@ -51,9 +51,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
     this.ctx = ctx;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     T a = this.getAuftrag();

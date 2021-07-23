@@ -43,27 +43,18 @@ public abstract class AbstractSepaExporter extends AbstractExporter
   
   private Map<OutputStream,JobContext> jobs = Collections.synchronizedMap(new HashMap<OutputStream,JobContext>());
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
   @Override
   public String getName()
   {
     return i18n.tr("SEPA-XML");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getFileExtensions()
-   */
   @Override
   String[] getFileExtensions()
   {
     return new String[]{"*.xml"};
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#setup(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
   @Override
   void setup(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
   {
@@ -117,9 +108,6 @@ public abstract class AbstractSepaExporter extends AbstractExporter
     ctx.props.setProperty("sepaid",     Long.toString(System.currentTimeMillis()));
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#commit(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
   @Override
   void commit(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
   {
@@ -145,9 +133,6 @@ public abstract class AbstractSepaExporter extends AbstractExporter
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#exportObject(java.lang.Object, int, java.io.OutputStream)
-   */
   @Override
   void exportObject(Object o, int idx, OutputStream os) throws Exception
   {

@@ -46,33 +46,26 @@ public class ZUGFeRDImporter implements Importer
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N(); 
 
-  /** 
-   * @see de.willuhn.jameica.hbci.io.IO#getName() 
-   */ 
-  @Override 
+  @Override
   public String getName() 
   { 
     return i18n.tr("PDF-Rechnung im ZUGFeRD-Format"); 
-  } 
+  }
 
-  /** 
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class) 
-   */ 
-  @Override 
+  @Override
   public IOFormat[] getIOFormats(Class objectType) 
   { 
     if (!AuslandsUeberweisung.class.equals(objectType)) 
       return null; // Wir bieten uns nur fuer SEPA-Ueberweisungen an 
 
     IOFormat f = new IOFormat() { 
+      @Override
       public String getName() 
       { 
         return ZUGFeRDImporter.this.getName(); 
       } 
 
-      /** 
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions() 
-       */ 
+      @Override
       public String[] getFileExtensions() 
       { 
         return new String[] {"*.pdf"}; 
@@ -81,10 +74,7 @@ public class ZUGFeRDImporter implements Importer
     return new IOFormat[] { f }; 
   } 
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
-  @Override 
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask bgt) throws RemoteException, ApplicationException
   { 
     monitor.setStatusText(i18n.tr("Importiere ZUGFeRD-Datei"));

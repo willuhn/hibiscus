@@ -45,9 +45,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
   private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     
@@ -245,32 +243,26 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
    */
   protected abstract String toString(T t) throws RemoteException;
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {
     return ext != null && (ExportAddSumRowExtension.KEY_SUMROW_ADD.equals(ext) || ExportSaldoExtension.KEY_SALDO_SHOW.equals(ext));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (!Umsatz.class.equals(objectType))
       return null;
     
     IOFormat format = new IOFormat() {
+      @Override
       public String getName()
       {
         return AbstractPDFUmsatzExporter.this.getName();
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[]{"pdf"};

@@ -56,9 +56,7 @@ public class CsvImporter implements Importer
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     ICsvListReader csv = null;
@@ -290,9 +288,7 @@ public class CsvImporter implements Importer
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     // Wir checken, fuer welche Datentypen wir einen CSV-Treiber haben
@@ -331,9 +327,7 @@ public class CsvImporter implements Importer
     return formats.toArray(new IOFormat[formats.size()]);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("CSV-Format");
@@ -387,17 +381,13 @@ public class CsvImporter implements Importer
       this.format = f;
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-     */
+    @Override
     public String getName()
     {
       return CsvImporter.this.getName();
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-     */
+    @Override
     public String[] getFileExtensions()
     {
       return new String[]{"*.csv","*.txt"};

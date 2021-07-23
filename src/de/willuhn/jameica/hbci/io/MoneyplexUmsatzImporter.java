@@ -54,9 +54,7 @@ public class MoneyplexUmsatzImporter implements Importer
 
   private Map<String,UmsatzTyp> cache = new HashMap<String,UmsatzTyp>();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     cache.clear(); // Cache leeren
@@ -405,31 +403,26 @@ public class MoneyplexUmsatzImporter implements Importer
     return null;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("Moneyplex-Format");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
     
     IOFormat f = new IOFormat() {
+      @Override
       public String getName()
       {
         return MoneyplexUmsatzImporter.this.getName();
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[] {"*.xml"};

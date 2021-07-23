@@ -119,17 +119,13 @@ public class Column implements Serializable, Cloneable
     this.serializer = serializer;
   }
 
-  /**
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString()
   {
     return this.name;
   }
 
-  /**
-   * @see java.lang.Object#clone()
-   */
+  @Override
   public Object clone() throws CloneNotSupportedException
   {
     Column clone = (Column) super.clone();
@@ -140,9 +136,6 @@ public class Column implements Serializable, Cloneable
     return clone;
   }
   
-  /**
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj)
   {

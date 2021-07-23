@@ -45,9 +45,7 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
     this.ctx = ctx;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object data = this.ctx;
@@ -154,9 +152,7 @@ public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("SEPA-Dauerauftrag");

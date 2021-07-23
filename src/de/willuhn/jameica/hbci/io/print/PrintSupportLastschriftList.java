@@ -29,17 +29,13 @@ public class PrintSupportLastschriftList extends AbstractPrintSupportBaseUeberwe
     super(ctx);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("Lastschriften");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportBaseUeberweisungList#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object ctx = this.getContext();
