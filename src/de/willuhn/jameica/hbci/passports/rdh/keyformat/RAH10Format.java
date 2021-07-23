@@ -15,26 +15,18 @@ package de.willuhn.jameica.hbci.passports.rdh.keyformat;
  */
 public class RAH10Format extends HBCI4JavaFormat
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.HBCI4JavaFormat#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("RAH10-Format (experimentell - derzeit ungetestet)");
   }
   
-  /**
-   * Liefert den Passport-Typ gemaess HBCI4Java.
-   * @return Passport-Typ.
-   */
+  @Override
   String getPassportType()
   {
     return "RAH10"; 
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.AbstractKeyFormat#getOrder()
-   */
   @Override
   public int getOrder()
   {

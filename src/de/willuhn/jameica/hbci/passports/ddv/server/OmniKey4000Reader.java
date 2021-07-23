@@ -21,17 +21,13 @@ import de.willuhn.jameica.system.Platform;
  */
 public class OmniKey4000Reader extends AbstractReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return "CTAPI: Omnikey 4000 (PC-Card)";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
     switch (Application.getPlatform().getOS())
@@ -44,25 +40,19 @@ public class OmniKey4000Reader extends AbstractReader
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     return Application.getPlatform().getOS() == Platform.OS_WINDOWS;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useSoftPin()
-   */
+  @Override
   public boolean useSoftPin()
   {
     return true;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.server.AbstractReader#getCTNumber()
-   */
+  @Override
   public int getCTNumber()
   {
     return 1;

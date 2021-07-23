@@ -115,6 +115,7 @@ public class Controller extends AbstractControl
 
     this.configList = new TablePart(DDVConfigFactory.getConfigs(),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         GUI.startView(Detail.class,context);
@@ -127,6 +128,7 @@ public class Controller extends AbstractControl
     ContextMenu ctx = new ContextMenu();
 
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException {
         if (context == null)
           return;
@@ -142,11 +144,13 @@ public class Controller extends AbstractControl
     },"document-open.png"));
 
     ctx.addItem(new ContextMenuItem(i18n.tr("Neue Konfiguration..."),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException {handleCreate();}
     },"document-new.png"));
 
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException {handleDelete((DDVConfig)context);}
     },"user-trash-full.png"));
 
@@ -371,9 +375,7 @@ public class Controller extends AbstractControl
     {
       private boolean stop = false;
       
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
-       */
+      @Override
       public void run(final ProgressMonitor monitor) throws ApplicationException
       {
         final DDVConfig config = DDVConfigFactory.scan(monitor,this);
@@ -419,17 +421,13 @@ public class Controller extends AbstractControl
         }
       }
 
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
-       */
+      @Override
       public void interrupt()
       {
         this.stop = true;
       }
 
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-       */
+      @Override
       public boolean isInterrupted()
       {
         return this.stop;
@@ -633,6 +631,7 @@ public class Controller extends AbstractControl
       return;
 
     Application.getController().start(new BackgroundTask() {
+      @Override
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         HBCIPassportChipcard passport = null;
@@ -706,7 +705,9 @@ public class Controller extends AbstractControl
         }
       }
       
+      @Override
       public boolean isInterrupted(){return false;}
+      @Override
       public void interrupt(){}
     });
   }
@@ -716,9 +717,7 @@ public class Controller extends AbstractControl
    */
   private class PresetListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event)
     {
       try {

@@ -46,17 +46,13 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
 {
   protected static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("HBCI4Java/Hibiscus-Format");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#hasFeature(int)
-   */
+  @Override
   public boolean hasFeature(int feature)
   {
     switch (feature)
@@ -70,9 +66,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#importKey(java.io.File)
-   */
+  @Override
   public RDHKey importKey(File file) throws ApplicationException, OperationCanceledException
   {
     // Checken, ob die Datei lesbar ist.
@@ -96,9 +90,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#createKey(java.io.File)
-   */
+  @Override
   public RDHKey createKey(File file) throws ApplicationException, OperationCanceledException
   {
     HBCIHandler handler = null;
@@ -186,9 +178,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#load(de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey)
-   */
+  @Override
   public HBCIPassport load(RDHKey key) throws ApplicationException, OperationCanceledException
   {
     return load(key,false);

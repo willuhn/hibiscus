@@ -60,9 +60,6 @@ public class KeyPasswordSaveDialog extends NewPasswordDialog
     setText(text + "\n");
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.NewPasswordDialog#checkPassword(java.lang.String, java.lang.String)
-   */
   @Override
   protected boolean checkPassword(String password, String password2)
   {

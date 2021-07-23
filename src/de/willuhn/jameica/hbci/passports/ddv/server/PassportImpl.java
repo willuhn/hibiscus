@@ -39,23 +39,17 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
     super();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getHandle()
-   */
+  @Override
   public PassportHandle getHandle() throws RemoteException {
     return new PassportHandleImpl(this.konto);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getName()
-   */
+  @Override
   public String getName() throws RemoteException {
     return i18n.tr("Chipkartenleser");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getInfo()
-   */
+  @Override
   public String getInfo() throws RemoteException
   {
     List<DDVConfig> list = DDVConfigFactory.getConfigs();
@@ -70,24 +64,18 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
     return i18n.tr("vorhandene Kartenleser-Konfigurationen: {0}",Integer.toString(list.size()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getConfigurations()
-   */
+  @Override
   public List<? extends Configuration> getConfigurations() throws RemoteException
   {
     return DDVConfigFactory.getConfigs();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getConfigDialog()
-   */
+  @Override
   public Class getConfigDialog() throws RemoteException {
     return View.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#init(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void init(Konto konto) throws RemoteException
   {
     this.konto = konto;

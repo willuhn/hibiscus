@@ -187,6 +187,7 @@ public class TANDialog extends AbstractDialog
       return this.okButton;
     
     this.okButton = new Button("    " + i18n.tr("OK") + "    ",new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         tan = (String) getTANInput().getValue();
@@ -198,9 +199,7 @@ public class TANDialog extends AbstractDialog
   }
   
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     // Oberer Bereich
@@ -240,9 +239,6 @@ public class TANDialog extends AbstractDialog
     c.addInput(tan);
     
     tan.getControl().addKeyListener(new KeyAdapter() {
-      /**
-       * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-       */
       @Override
       public void keyReleased(KeyEvent e)
       {
@@ -261,13 +257,14 @@ public class TANDialog extends AbstractDialog
     bottom.addButtonArea(buttons);
 
     addShellListener(new ShellListener() {
+      @Override
       public void shellClosed(ShellEvent e) {
         throw new OperationCanceledException("dialog cancelled via close button");
       }
-      public void shellActivated(ShellEvent e) {}
-      public void shellDeactivated(ShellEvent e) {}
-      public void shellDeiconified(ShellEvent e) {}
-      public void shellIconified(ShellEvent e) {}
+      @Override public void shellActivated(ShellEvent e) {}
+      @Override public void shellDeactivated(ShellEvent e) {}
+      @Override public void shellDeiconified(ShellEvent e) {}
+      @Override public void shellIconified(ShellEvent e) {}
     });
     
     this.getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
@@ -340,9 +337,6 @@ public class TANDialog extends AbstractDialog
     return context;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
   @Override
   protected Object getData() throws Exception
   {

@@ -51,9 +51,7 @@ public class SelectSizEntryDialog extends AbstractDialog
     setTitle(i18n.tr("Schlüsselauswahl"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);
@@ -69,6 +67,7 @@ public class SelectSizEntryDialog extends AbstractDialog
     }
     
     final TablePart table = new TablePart(list, new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof Entry))
@@ -86,6 +85,7 @@ public class SelectSizEntryDialog extends AbstractDialog
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         Object o = table.getSelection();
@@ -98,6 +98,7 @@ public class SelectSizEntryDialog extends AbstractDialog
       }
     },null,false,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -106,9 +107,7 @@ public class SelectSizEntryDialog extends AbstractDialog
     buttons.paint(parent);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return selected.getId();

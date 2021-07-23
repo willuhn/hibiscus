@@ -59,9 +59,7 @@ public class KeyFormatDialog extends AbstractDialog
     setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     this.warn = new LabelInput("");
@@ -69,6 +67,7 @@ public class KeyFormatDialog extends AbstractDialog
     this.warn.setColor(Color.ERROR);
     
     final Action action = new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         Object o = table.getSelection();
@@ -100,6 +99,7 @@ public class KeyFormatDialog extends AbstractDialog
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), action,null,false,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException("cancelled in key format dialog");
@@ -111,9 +111,7 @@ public class KeyFormatDialog extends AbstractDialog
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return this.choosen;

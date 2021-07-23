@@ -30,9 +30,7 @@ public class Detail extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
 
@@ -89,6 +87,7 @@ public class Detail extends AbstractView
       ButtonArea buttons = new ButtonArea();
       String tanMedia = control.getConfig().getTanMedia();
       Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleDeleteTanSettings();
@@ -109,6 +108,7 @@ public class Detail extends AbstractView
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("BPD/UPD"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleDisplayProperties();
@@ -116,6 +116,7 @@ public class Detail extends AbstractView
     },null,false,"document-properties.png");
     buttons.addButton(i18n.tr("Synchronisieren"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleSync();
@@ -123,6 +124,7 @@ public class Detail extends AbstractView
     },null,false,"view-refresh.png");
     buttons.addButton(i18n.tr("Konfiguration testen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
 				control.handleTest();
@@ -130,6 +132,7 @@ public class Detail extends AbstractView
     },null,false,"dialog-information.png");
     buttons.addButton(i18n.tr("Speichern"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
@@ -138,9 +141,7 @@ public class Detail extends AbstractView
     buttons.paint(getParent());
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#canBookmark()
-   */
+  @Override
   public boolean canBookmark()
   {
     return false;

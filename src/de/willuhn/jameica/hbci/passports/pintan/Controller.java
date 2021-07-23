@@ -119,6 +119,7 @@ public class Controller extends AbstractControl
 
     configList = new TablePart(PinTanConfigFactory.getConfigs(),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         GUI.startView(Detail.class,context);
@@ -133,6 +134,7 @@ public class Controller extends AbstractControl
     ContextMenu ctx = new ContextMenu();
 
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException {
         if (context == null)
           return;
@@ -148,11 +150,13 @@ public class Controller extends AbstractControl
     },"document-open.png"));
 
     ctx.addItem(new ContextMenuItem(i18n.tr("PIN/TAN-Zugang anlegen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException {handleCreate();}
     },"document-new.png"));
 
     ctx.addItem(ContextMenuItem.SEPARATOR);
     ctx.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException {handleDelete((PinTanConfig)context);}
     },"user-trash-full.png"));
 

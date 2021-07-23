@@ -41,17 +41,13 @@ import de.willuhn.util.ApplicationException;
  */
 public class SizRdhFormat extends AbstractSizRdhFormat
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("SizRDH-Format, Import und Konvertierung in Hibiscus-Format");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#importKey(java.io.File)
-   */
+  @Override
   public RDHKey importKey(File file) throws ApplicationException, OperationCanceledException
   {
     // Checken, ob die Datei lesbar ist.
@@ -164,9 +160,7 @@ public class SizRdhFormat extends AbstractSizRdhFormat
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#load(de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey)
-   */
+  @Override
   public HBCIPassport load(RDHKey key) throws ApplicationException, OperationCanceledException
   {
     // Hihi - nach dem Import ist das ja dann unser Format ;)
