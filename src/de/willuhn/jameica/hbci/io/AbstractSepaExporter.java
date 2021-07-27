@@ -175,7 +175,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
    * Schreibt die Eigenschaften des Auftrages in die Properties. 
    * @param o das zu exportierende Objekt.
    * @param idx der Index in der Liste der Objekte.
-   * @param props die Properties.
+   * @param ctx der Auftragskontext.
    * @throws Exception
    */
   protected abstract void exportObject(Object o, int idx, JobContext ctx) throws Exception;

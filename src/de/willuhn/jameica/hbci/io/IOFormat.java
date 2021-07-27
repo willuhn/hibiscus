@@ -23,7 +23,7 @@ public interface IOFormat
 {
   /**
    * Liefert einen sprechenden Namen fuer das Datei-Format.
-   * Zum Beispiel &quotCSV-Datei&quot;
+   * Zum Beispiel &quot;CSV-Datei&quot;
    * @return Sprechender Name des Datei-Formats.
    */
   public String getName();
