@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0954 BIC nicht mehr basierend auf IBAN vorbefüllen, wenn bereits eine eingetragen wurde
   * BUG: 0953 Das Vergrößern des Flicker-Codes führte ab einer gewissen Größe zu Darstellungsfehlern
   * BUG: 0952 Option "Nur aktive Konten" in "Saldo im Verlauf" wurde nicht gespeichert
   * BUG: 0951 Bearbeiten eines Umsatzes: Beim Übernehmen einer Adresse wurde Kto/BLZ statt IBAN/BIC übernommen 

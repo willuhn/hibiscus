@@ -86,7 +86,10 @@ public class IBANInput extends TextInput
         return;
       
       // 2. Wenn wir ein BICInput haben, dann gleich noch die BIC ermitteln und
-      // vervollstaendigen
+      // vervollstaendigen. Aber nur, wenn nicht schon eine BIC eingetragen ist.
+      if (StringUtils.trimToNull((String)this.bicInput.getValue()) != null)
+        return;
+      
       String bic = StringUtils.trimToNull(iban.getBIC());
       if (bic == null)
         return;
