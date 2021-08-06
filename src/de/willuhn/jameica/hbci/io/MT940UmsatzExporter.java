@@ -243,10 +243,8 @@ public class MT940UmsatzExporter implements Exporter
    */
   protected void sort(List<Umsatz> list)
   {
-    Collections.sort(list,new Comparator<Umsatz>() {
-      /**
-       * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-       */
+    list.sort(new Comparator<Umsatz>()
+    {
       @Override
       public int compare(Umsatz o1, Umsatz o2)
       {

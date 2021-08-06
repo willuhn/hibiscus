@@ -80,7 +80,9 @@ public class SynchronizeEngine
       }
       
       // Wir sortieren die Backends so, dass das Primaer-Backend immer Vorrang hat
-      Collections.sort(this.backends,new Comparator<SynchronizeBackend>() {
+      this.backends.sort(new Comparator<SynchronizeBackend>()
+      {
+        @Override
         public int compare(SynchronizeBackend o1, SynchronizeBackend o2)
         {
           
