@@ -297,8 +297,7 @@ public class CSVImportDialog extends AbstractDialog
         // wieder (wird fuer die naechste Zeile geleert und neu
         // befuellt. Daher koennen wir sie nicht so einfach hier
         // reinpacken sondern muessen die Werte rauskopieren
-        List<String> l = new ArrayList();
-        l.addAll(line);
+        List<String> l = new ArrayList(line);
         lines.add(l);
 
         // Wir verwenden als Basis die Zeile mit den meisten Spalten
