@@ -100,7 +100,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getSQLTimestamp(String content) throws RemoteException
   {
-    return MessageFormat.format("(UNIX_TIMESTAMP({0})*1000)", new Object[]{content});
+    return MessageFormat.format("(UNIX_TIMESTAMP({0})*1000)", content);
   }
 
   /**

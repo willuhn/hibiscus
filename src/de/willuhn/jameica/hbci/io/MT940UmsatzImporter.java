@@ -146,7 +146,7 @@ public class MT940UmsatzImporter implements Importer
           error++;
         }
       }
-      monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
+      monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", ""+created, ""+error));
       monitor.addPercentComplete(1);
     }
     catch (OperationCanceledException oce)

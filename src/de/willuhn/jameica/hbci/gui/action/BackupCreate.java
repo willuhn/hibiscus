@@ -259,7 +259,7 @@ public class BackupCreate implements Action
       catch (Exception e)
       {
         Logger.error("error while writing object " + BeanUtil.toString(o) + " - skipping",e);
-        monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(o),e.getMessage()}));
+        monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe", BeanUtil.toString(o), e.getMessage()));
       }
     }
   }
@@ -291,7 +291,7 @@ public class BackupCreate implements Action
       catch (Exception e)
       {
         Logger.error("error while writing object " + BeanUtil.toString(o) + " - skipping",e);
-        monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(o),e.getMessage()}));
+        monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe", BeanUtil.toString(o), e.getMessage()));
       }
     }
   }
@@ -323,7 +323,7 @@ public class BackupCreate implements Action
     catch (Exception e)
     {
       Logger.error("error while writing object " + BeanUtil.toString(node) + " - skipping",e);
-      monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(node),e.getMessage()}));
+      monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe", BeanUtil.toString(node), e.getMessage()));
     }
   }
   

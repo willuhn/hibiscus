@@ -169,7 +169,7 @@ public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
    */
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
-    String msg = i18n.tr("Fehler beim Löschen des SEPA-Dauerauftrages an {0}: {1}",new String[]{dauerauftrag.getGegenkontoName(),error});
+    String msg = i18n.tr("Fehler beim Löschen des SEPA-Dauerauftrages an {0}: {1}", dauerauftrag.getGegenkontoName(), error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }

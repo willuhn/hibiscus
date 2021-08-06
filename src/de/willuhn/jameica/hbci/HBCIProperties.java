@@ -327,7 +327,7 @@ public class HBCIProperties
     for (int i=0;i<c.length;++i)
     {
       if (validChars.indexOf(c[i]) == -1)
-        throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf in \"{1}\" nicht verwendet werden",new String[]{""+c[i],chars})); 
+        throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf in \"{1}\" nicht verwendet werden", "" + c[i], chars));
     }
   }
 
@@ -346,7 +346,7 @@ public class HBCIProperties
     
     // Erstmal schauen, ob der Text ohne Codierung vielleicht schon zu lang ist.
     if (chars.length() > maxLength)
-      throw new ApplicationException(i18n.tr("Der Text \"{0}\" ist zu lang. Bitte geben Sie maximal {1} Zeichen ein", new String[]{chars,""+maxLength}));
+      throw new ApplicationException(i18n.tr("Der Text \"{0}\" ist zu lang. Bitte geben Sie maximal {1} Zeichen ein", chars, ""+maxLength));
   }
   
   /**

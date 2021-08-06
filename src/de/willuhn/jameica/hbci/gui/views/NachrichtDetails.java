@@ -44,7 +44,7 @@ public class NachrichtDetails extends AbstractView {
     SimpleContainer container = new SimpleContainer(getParent(),true,1);
     String name = HBCIProperties.getNameForBank(n.getBLZ());
     if (name != null)
-      container.addText(i18n.tr("{0} [BLZ: {1}]", new String[] {name,n.getBLZ()}) + "\n",true);
+      container.addText(i18n.tr("{0} [BLZ: {1}]", name, n.getBLZ()) + "\n", true);
     else
       container.addText(i18n.tr("BLZ: {0}", new String[] {n.getBLZ()}) + "\n",true);
 

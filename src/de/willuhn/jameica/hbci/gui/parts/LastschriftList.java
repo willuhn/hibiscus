@@ -50,7 +50,7 @@ public class LastschriftList extends AbstractTransferList
     if (text != null && text.length() > 0)
     {
       String s = "%" + text.toLowerCase() + "%";
-      list.addFilter("(LOWER(empfaenger_konto) like ? or LOWER(empfaenger_name) like ? or LOWER(zweck) like ? or LOWER(zweck2) like ? or LOWER(zweck3) like ?)", new Object[]{s,s,s,s,s});
+      list.addFilter("(LOWER(empfaenger_konto) like ? or LOWER(empfaenger_name) like ? or LOWER(zweck) like ? or LOWER(zweck2) like ? or LOWER(zweck3) like ?)", s, s, s, s, s);
     }
 
     return list;

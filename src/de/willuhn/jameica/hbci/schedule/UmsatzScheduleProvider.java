@@ -49,8 +49,8 @@ public class UmsatzScheduleProvider implements ScheduleProvider<Umsatz>
       if (k != null)
         list.addFilter("konto_id = " + k.getID());
 
-      if (from != null) list.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-      if (to   != null) list.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
+      if (from != null) list.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
+      if (to   != null) list.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
       list.setOrder("ORDER BY " + service.getSQLTimestamp("datum"));
 
       while (list.hasNext())

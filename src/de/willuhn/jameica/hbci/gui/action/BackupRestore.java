@@ -145,7 +145,7 @@ public class BackupRestore implements Action
               else
               {
                 Logger.error("unable to import " + o.getClass().getName() + ":" + o.getID() + ", skipping",e);
-                monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe",new String[]{BeanUtil.toString(o),e.getMessage()}));
+                monitor.log("  " + i18n.tr("{0} fehlerhaft ({1}), überspringe", BeanUtil.toString(o), e.getMessage()));
               }
             }
             if (count++ % 100 == 0)

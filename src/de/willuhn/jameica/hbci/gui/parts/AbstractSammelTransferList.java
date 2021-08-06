@@ -172,11 +172,11 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
     DBIterator list = service.createList(getObjectType());
-    if (from != null) list.addFilter("termin >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-    if (to   != null) list.addFilter("termin <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
+    if (from != null) list.addFilter("termin >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
+    if (to   != null) list.addFilter("termin <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
     if (text != null && text.length() > 0)
     {
-      list.addFilter("LOWER(bezeichnung) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
+      list.addFilter("LOWER(bezeichnung) like ?", "%" + text.toLowerCase() + "%");
     }
     
     if (konto != null && (konto instanceof Konto))

@@ -334,7 +334,7 @@ public class KontoInput extends SelectInput
       if (k.getSaldoDatum() != null)
       {
         sb.append(", ");
-        sb.append(i18n.tr("Saldo: {0} {1}", new String[]{HBCI.DECIMALFORMAT.format(k.getSaldo()),k.getWaehrung()}));
+        sb.append(i18n.tr("Saldo: {0} {1}", HBCI.DECIMALFORMAT.format(k.getSaldo()), k.getWaehrung()));
       }
 
       if (disabled)
@@ -371,7 +371,7 @@ public class KontoInput extends SelectInput
 
         Date datum = konto.getSaldoDatum();
         if (datum != null)
-          setComment(i18n.tr("Saldo: {0} {1} vom {2}", new String[]{HBCI.DECIMALFORMAT.format(konto.getSaldo()),w,HBCI.DATEFORMAT.format(datum)}));
+          setComment(i18n.tr("Saldo: {0} {1} vom {2}", HBCI.DECIMALFORMAT.format(konto.getSaldo()), w, HBCI.DATEFORMAT.format(datum)));
         else
           setComment("");
       }

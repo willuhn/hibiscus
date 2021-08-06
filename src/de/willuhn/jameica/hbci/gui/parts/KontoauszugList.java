@@ -970,7 +970,7 @@ public class KontoauszugList extends UmsatzList
                 
                 // Mal schauen, obs den Typ schon gibt
                 DBIterator existing = de.willuhn.jameica.hbci.Settings.getDBService().createList(UmsatzTyp.class);
-                existing.addFilter("pattern = ?", new Object[]{text});
+                existing.addFilter("pattern = ?", text);
                 UmsatzTyp typ = null; 
                 if (existing.size() > 0)
                 {

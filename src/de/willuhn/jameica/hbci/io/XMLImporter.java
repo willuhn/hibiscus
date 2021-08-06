@@ -122,7 +122,7 @@ public class XMLImporter implements Importer
           error++;
         }
       }
-      monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
+      monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", ""+created, ""+error));
       monitor.setPercentComplete(100);
     }
     catch (OperationCanceledException oce)

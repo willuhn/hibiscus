@@ -38,7 +38,7 @@ public class ProtokollList extends AbstractView
       if (s1 == null) s1 = "";
 
       String s2 = k.getKontonummer();
-      GUI.getView().setTitle(i18n.tr("Protokoll des Kontos: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
+      GUI.getView().setTitle(i18n.tr("Protokoll des Kontos: {0} [Kto.-Nr.: {1}]", s1, s2));
     }
     else
       GUI.getView().setTitle(i18n.tr("Protokoll des Kontos"));
