@@ -122,13 +122,9 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
 			setJobParam("turnus",turnus.getIntervall());
 			setJobParam("execday",turnus.getTag());
 		}
-		catch (RemoteException e)
+		catch (ApplicationException | RemoteException e)
 		{
 			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			throw e2;
 		}
 		catch (Throwable t)
 		{

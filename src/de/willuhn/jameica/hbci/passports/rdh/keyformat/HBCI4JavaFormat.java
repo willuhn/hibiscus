@@ -134,13 +134,9 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Schlüssel erfolgreich erstellt"), StatusBarMessage.TYPE_SUCCESS));
       return key;
     }
-    catch (ApplicationException ae)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      throw oce;
+      throw e;
     }
     catch (Exception e)
     {

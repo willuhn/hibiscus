@@ -135,13 +135,9 @@ public class SizRdhFormat extends AbstractSizRdhFormat
       key.setFormat(new HBCI4JavaFormat()); // wir tragen nicht uns selbst ein - da wir den ja ins HBCI4Java-Format konvertiert haben
       return key;
     }
-    catch (ApplicationException ae)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      throw oce;
+      throw e;
     }
     catch (Exception e)
     {

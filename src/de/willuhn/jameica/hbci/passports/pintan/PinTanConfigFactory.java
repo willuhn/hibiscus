@@ -178,13 +178,9 @@ public class PinTanConfigFactory
         // Das kann passieren, wenn der Passport unvollstaendig ist
       }
     }
-    catch (ApplicationException ae)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      throw oce;
+      throw e;
     }
     catch (Exception e)
     {

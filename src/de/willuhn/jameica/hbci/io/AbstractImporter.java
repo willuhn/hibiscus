@@ -74,13 +74,9 @@ public abstract class AbstractImporter implements Importer
       this.commit(objects,format,is,monitor);
       monitor.log(i18n.tr("{0} importiert, {1} fehlerhaft",Integer.toString(success),Integer.toString(failed)));
     }
-    catch (OperationCanceledException oce)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+      throw e;
     }
     catch (Exception e)
     {

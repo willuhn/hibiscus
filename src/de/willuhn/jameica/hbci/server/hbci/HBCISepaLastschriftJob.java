@@ -115,13 +115,9 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       if (targetDate != null)
         setJobParam("targetdate",targetDate);
 		}
-		catch (RemoteException e)
+		catch (ApplicationException | RemoteException e)
 		{
 			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			throw e2;
 		}
 		catch (Throwable t)
 		{

@@ -57,13 +57,9 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 			
 			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
     }
-		catch (RemoteException e)
+		catch (ApplicationException | RemoteException e)
 		{
 			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			throw e2;
 		}
 		catch (Throwable t)
 		{

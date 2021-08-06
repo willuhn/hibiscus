@@ -267,15 +267,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       
       this.transactionCommit();
     }
-    catch (RemoteException re)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      this.transactionRollback();
-      throw ae;
+      throw e;
     }
   }
 
@@ -346,7 +341,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       
       this.transactionCommit();
     }
-    catch (RemoteException re)
+    catch (ApplicationException | RemoteException e)
     {
       try
       {
@@ -356,19 +351,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       {
         Logger.error("unable to rollback transaction",e2);
       }
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw ae;
+      throw e;
     }
   }
 }

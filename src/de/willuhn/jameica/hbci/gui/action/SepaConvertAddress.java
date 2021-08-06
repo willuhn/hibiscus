@@ -62,13 +62,9 @@ public class SepaConvertAddress implements Action
       if (!Application.getCallback().askUser(q))
         return;
     }
-    catch (ApplicationException ae)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      throw oce;
+      throw e;
     }
     catch (Exception e)
     {

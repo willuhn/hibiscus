@@ -181,20 +181,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			handler=new HBCIHandler(hbciVersion,hbciPassport);
 			return handler;
 		}
-    catch (RemoteException re)
+    catch (ApplicationException | OperationCanceledException | RemoteException e)
     {
       close();
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      close();
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      close();
-      throw oce;
+      throw e;
     }
 		catch (Exception e)
 		{

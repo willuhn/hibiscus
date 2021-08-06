@@ -260,13 +260,9 @@ public class CsvImporter implements Importer
       // Fertig.
       monitor.setStatusText(i18n.tr("{0} importiert, {1} fehlerhaft, {2} übersprungen", new String[]{Integer.toString(created),Integer.toString(error),Integer.toString(skipped)}));
     }
-    catch (OperationCanceledException oce)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+      throw e;
     }
     catch (Exception e)
     {
