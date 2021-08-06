@@ -68,7 +68,9 @@ public class AccountBalanceService
       Logger.info("  found " + this.providers.size() + " provider(s)");
       
       // Wir sortieren die Provider so, dass der Standard-Provider immer als letzter an die Reihe kommt.
-      Collections.sort(this.providers,new Comparator<AccountBalanceProvider>() {
+      this.providers.sort(new Comparator<AccountBalanceProvider>()
+      {
+        @Override
         public int compare(AccountBalanceProvider o1, AccountBalanceProvider o2)
         {
           

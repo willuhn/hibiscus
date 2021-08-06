@@ -69,7 +69,8 @@ public class AccountService
       }
       
       // Wir sortieren die Provider so, dass der Primaer-Provider immer Vorrang hat
-      Collections.sort(this.providers,new Comparator<AccountProvider>() {
+      this.providers.sort(new Comparator<AccountProvider>()
+      {
         public int compare(AccountProvider o1, AccountProvider o2)
         {
           

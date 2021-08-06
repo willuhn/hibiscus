@@ -94,8 +94,9 @@ public class HBCIAccountProvider implements AccountProvider
           Logger.error("unable to load hbci varian " + c.getName() + ", skipping",e);
         }
       }
-      
-      Collections.sort(this.variants,new Comparator<HBCIVariant>() {
+
+      this.variants.sort(new Comparator<HBCIVariant>()
+      {
         public int compare(HBCIVariant o1, HBCIVariant o2)
         {
           if (PRIMARY.isInstance(o1))

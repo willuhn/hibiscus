@@ -108,7 +108,8 @@ public class DDVConfigFactory
     }
 
     // Alphabetisch sortieren
-    Collections.sort(presets,new Comparator<Reader>() {
+    presets.sort(new Comparator<Reader>()
+    {
       public int compare(Reader r1, Reader r2)
       {
         return r1.getName().compareTo(r2.getName());
