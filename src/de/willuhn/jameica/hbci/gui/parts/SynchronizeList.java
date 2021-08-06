@@ -294,6 +294,7 @@ public class SynchronizeList extends TablePart
       }
       catch (ApplicationException ae)
       {
+        // hier notwendig, da nächster Catch alles fängt
         throw ae;
       }
       catch (Exception e)
