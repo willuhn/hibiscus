@@ -250,7 +250,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
-			return (Konto[]) result.toArray(new Konto[result.size()]);
+			return (Konto[]) result.toArray(new Konto[0]);
 		}
 		finally
 		{

@@ -87,7 +87,7 @@ public class RDHKeyFactory
     }
     
     Collections.sort(list);
-    return (KeyFormat[]) list.toArray(new KeyFormat[list.size()]);
+    return (KeyFormat[]) list.toArray(new KeyFormat[0]);
   }
 
 	/**
@@ -300,7 +300,7 @@ public class RDHKeyFactory
 			  continue;
       readable.add(new RDHKeyImpl(new File(found[i])));
 		}
-		return PseudoIterator.fromArray((RDHKey[]) readable.toArray(new RDHKey[readable.size()]));
+		return PseudoIterator.fromArray((RDHKey[]) readable.toArray(new RDHKey[0]));
 	}
 
 	/**
@@ -363,7 +363,7 @@ public class RDHKeyFactory
         newList.add(f.getAbsolutePath());
         
       }
-      settings.setAttribute("key",(String[]) newList.toArray(new String[newList.size()]));
+      settings.setAttribute("key",(String[]) newList.toArray(new String[0]));
     }
     catch (RemoteException re)
     {

@@ -66,7 +66,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
    */
   public GenericIterator getChildren() throws RemoteException
   {
-    return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[umsaetze.size()]));
+    return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[0]));
   }
 
   /**

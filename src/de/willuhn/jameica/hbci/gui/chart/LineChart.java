@@ -102,7 +102,7 @@ public class LineChart extends AbstractChart<LineChartData>
         id += " " + cd.getLabel();
       
       ILineSeries lineSeries = (ILineSeries) getChart().getSeriesSet().createSeries(SeriesType.LINE,id);
-      lineSeries.setXDateSeries(labelLine.toArray(new Date[labelLine.size()]));
+      lineSeries.setXDateSeries(labelLine.toArray(new Date[0]));
       lineSeries.setYSeries(toArray(dataLine));
       
       

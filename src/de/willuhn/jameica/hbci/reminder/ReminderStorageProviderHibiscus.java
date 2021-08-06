@@ -128,8 +128,8 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
         {
           list.add(rs.getString(1));
         }
-        
-        return list.toArray(new String[list.size()]);
+
+        return list.toArray(new String[0]);
       }
     });
   }

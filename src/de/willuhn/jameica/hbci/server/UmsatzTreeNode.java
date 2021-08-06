@@ -109,7 +109,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     Collections.sort(children);
     all.addAll(children);
     all.addAll(this.umsaetze);
-    return PseudoIterator.fromArray((GenericObject[])all.toArray(new GenericObject[all.size()]));
+    return PseudoIterator.fromArray((GenericObject[])all.toArray(new GenericObject[0]));
   }
 
   /**

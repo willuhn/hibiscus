@@ -224,7 +224,7 @@ public class UmsatzTree extends TreePart
       }
       ////////////////////////////////////////////////////////////////
 
-      super.setList(PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[items.size()])));
+      super.setList(PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[0])));
       this.featureEvent(Feature.Event.REFRESH,null);
     }
     catch (RemoteException re)

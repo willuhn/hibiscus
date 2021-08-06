@@ -169,7 +169,7 @@ public class ErweiterteVerwendungszwecke implements Part
     // Wir sichern die neuen Zeilen als "orig", damit sie wieder
     // da sind, wenn der Dialog ohne geaenderte Daten nochmal
     // geoeffnet wird.
-    this.orig = list.toArray(new String[list.size()]);
+    this.orig = list.toArray(new String[0]);
     return this.orig;
   }
 }

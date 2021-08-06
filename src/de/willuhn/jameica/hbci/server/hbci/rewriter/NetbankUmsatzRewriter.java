@@ -99,7 +99,7 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
     if (lines.size() == 0) return; // haben wir noch was uebrig?
 
     // 3. weitere Verwendungszwecke
-    u.setWeitereVerwendungszwecke(lines.toArray(new String[lines.size()]));
+    u.setWeitereVerwendungszwecke(lines.toArray(new String[0]));
   }
   
   /**

@@ -45,7 +45,7 @@ public class HBCISynchronizeJobKontoauszug extends SynchronizeJobKontoauszug imp
     if (o.getSyncSaldo() || (forceSaldo != null && forceSaldo.booleanValue())) jobs.add(new HBCISaldoJob(k));
     if (o.getSyncKontoauszuege() || (forceUmsatz != null && forceUmsatz.booleanValue())) jobs.add(new HBCIUmsatzJob(k));
 
-    return jobs.toArray(new AbstractHBCIJob[jobs.size()]);
+    return jobs.toArray(new AbstractHBCIJob[0]);
   }
 
 }

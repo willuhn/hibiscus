@@ -328,7 +328,7 @@ public class CsvImporter implements Importer
       Logger.error("no csv formats found");
     }
 
-    return formats.toArray(new IOFormat[formats.size()]);
+    return formats.toArray(new IOFormat[0]);
   }
   
   /**

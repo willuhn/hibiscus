@@ -153,7 +153,7 @@ public class BarChart extends AbstractChart
         continue; // wir haben gar keine Werte
 
       IAxis axis = getChart().getAxisSet().getXAxis(0);
-      axis.setCategorySeries(labelLine.toArray(new String[labelLine.size()]));
+      axis.setCategorySeries(labelLine.toArray(new String[0]));
       axis.enableCategory(true);
 
       IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,Integer.toString(i));

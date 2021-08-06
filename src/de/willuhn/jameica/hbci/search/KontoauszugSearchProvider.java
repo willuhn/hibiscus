@@ -124,8 +124,8 @@ public class KontoauszugSearchProvider implements SearchProvider
         {
           params.add(HBCI.DATEFORMAT.format(erstellt));
         }
-        
-        String[] s = params.toArray(new String[params.size()]);
+
+        String[] s = params.toArray(new String[0]);
         if (s.length == 4)
           return i18n.tr("Kontoauszug {2}-{3}, abgerufen am {0} ({1})",s);
         

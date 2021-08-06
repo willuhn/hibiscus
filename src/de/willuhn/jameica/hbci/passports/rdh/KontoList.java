@@ -79,7 +79,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
         linked.add(konten[i]);
       }
     }
-    GenericIterator exclude = PseudoIterator.fromArray((GenericObject[])linked.toArray(new GenericObject[linked.size()]));
+    GenericIterator exclude = PseudoIterator.fromArray((GenericObject[])linked.toArray(new GenericObject[0]));
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     
     /////////////////////////////////////////////////////////////////
     // Tabelle erzeugen und nur die relevanten markieren
-    GenericIterator all = PseudoIterator.fromArray((Konto[]) konten.toArray(new Konto[konten.size()]));
+    GenericIterator all = PseudoIterator.fromArray((Konto[]) konten.toArray(new Konto[0]));
 
     // Die derzeit markierten
     GenericIterator checked = null;

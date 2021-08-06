@@ -84,7 +84,7 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
       hash.put(ueb.getID(),new MyResult(ueb));
     }
 
-    return Arrays.asList(hash.values().toArray(new MyResult[hash.size()]));
+    return Arrays.asList(hash.values().toArray(new MyResult[0]));
   }
   
   /**
