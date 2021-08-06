@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.accounts.hbci;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -95,16 +93,12 @@ public class HBCIAccountProvider implements AccountProvider
         }
       }
 
-      this.variants.sort(new Comparator<HBCIVariant>()
-      {
-        public int compare(HBCIVariant o1, HBCIVariant o2)
-        {
-          if (PRIMARY.isInstance(o1))
-            return -1;
-          if (PRIMARY.isInstance(o2))
-            return 1;
-          return o1.getName().compareTo(o2.getName());
-        }
+      this.variants.sort((v1, v2) -> {
+        if (PRIMARY.isInstance(v1))
+          return -1;
+        if (PRIMARY.isInstance(v2))
+          return 1;
+        return v1.getName().compareTo(v2.getName());
       });
     }
     catch (ClassNotFoundException e)

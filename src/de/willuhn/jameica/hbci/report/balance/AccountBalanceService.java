@@ -11,8 +11,6 @@
 
 package de.willuhn.jameica.hbci.report.balance;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -68,20 +66,13 @@ public class AccountBalanceService
       Logger.info("  found " + this.providers.size() + " provider(s)");
       
       // Wir sortieren die Provider so, dass der Standard-Provider immer als letzter an die Reihe kommt.
-      this.providers.sort(new Comparator<AccountBalanceProvider>()
-      {
-        @Override
-        public int compare(AccountBalanceProvider o1, AccountBalanceProvider o2)
-        {
-          
-          if (DEFAULT.isInstance(o1))
-            return 1;
-          if (DEFAULT.isInstance(o2))
-            return -1;
-          
-          // Ansonsten alphabetisch nach Name
-          return o1.getName().compareTo(o2.getName());
-        }
+      this.providers.sort((provider1, provider2) -> {
+        if (DEFAULT.isInstance(provider1))
+          return 1;
+        if (DEFAULT.isInstance(provider2))
+          return -1;
+        // Ansonsten alphabetisch nach Name
+        return provider1.getName().compareTo(provider2.getName());
       });
     }
     catch (ClassNotFoundException e)

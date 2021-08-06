@@ -10,8 +10,6 @@
 
 package de.willuhn.jameica.hbci.accounts;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,19 +67,13 @@ public class AccountService
       }
       
       // Wir sortieren die Provider so, dass der Primaer-Provider immer Vorrang hat
-      this.providers.sort(new Comparator<AccountProvider>()
-      {
-        public int compare(AccountProvider o1, AccountProvider o2)
-        {
-          
-          if (PRIMARY.isInstance(o1))
-            return -1;
-          if (PRIMARY.isInstance(o2))
-            return 1;
-          
-          // Ansonsten alphabetisch nach Name
-          return o1.getName().compareTo(o2.getName());
-        }
+      this.providers.sort((p1, p2) -> {
+        if (PRIMARY.isInstance(p1))
+          return -1;
+        if (PRIMARY.isInstance(p2))
+          return 1;
+        // Ansonsten alphabetisch nach Name
+        return p1.getName().compareTo(p2.getName());
       });
     }
     catch (ClassNotFoundException e)
