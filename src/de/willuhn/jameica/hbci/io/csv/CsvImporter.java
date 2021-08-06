@@ -349,10 +349,8 @@ public class CsvImporter implements Importer
    */
   private static byte[] copy(InputStream is) throws IOException
   {
-    BufferedInputStream bis = null;
-    try
+    try (BufferedInputStream bis = new BufferedInputStream(is))
     {
-      bis = new BufferedInputStream(is);
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       
       byte[] buf = new byte[4096];
@@ -363,10 +361,6 @@ public class CsvImporter implements Importer
           bos.write(buf,0,read);
       }
       return bos.toByteArray();
-    }
-    finally
-    {
-      bis.close();
     }
   }
   
