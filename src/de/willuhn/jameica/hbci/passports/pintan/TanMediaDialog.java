@@ -213,9 +213,8 @@ public class TanMediaDialog extends AbstractDialog
         Logger.error("unable to get previous tan medias",e);
       }
     }
-    
-    List<String> result = new ArrayList<String>();
-    result.addAll(set);
+
+    List<String> result = new ArrayList<String>(set);
     Collections.sort(result);
     
     this.media = new SelectInput(result,null);

@@ -65,9 +65,8 @@ public class NetbankUmsatzRewriter implements UmsatzRewriter
       return; // Steht schon was drin
     
     String[] s = VerwendungszweckUtil.toArray(u);
-    List<String> lines = new ArrayList<String>();
-    lines.addAll(Arrays.asList(s));
-    
+    List<String> lines = new ArrayList<String>(Arrays.asList(s));
+
     if (lines.size() == 0)
       return; // Kein Verwendungszweck da
     
