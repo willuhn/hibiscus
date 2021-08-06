@@ -84,12 +84,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
       T group = this.getGroup(u);
       String key = group != null ? group.getID() : null;
       groupMap.put(key,group);
-      List<Umsatz> list = umsaetze.get(key);
-      if (list == null)
-      {
-        list = new ArrayList<Umsatz>();
-        umsaetze.put(key,list);
-      }
+      List<Umsatz> list = umsaetze.computeIfAbsent(key, k -> new ArrayList<Umsatz>());
       list.add(u);
     }
 
