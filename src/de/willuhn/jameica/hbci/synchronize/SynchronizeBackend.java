@@ -14,6 +14,7 @@ import java.util.List;
 
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
+import de.willuhn.jameica.hbci.HasName;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
 
@@ -23,7 +24,7 @@ import de.willuhn.util.ApplicationException;
  * Die Standard-Implementierung von Hibiscus verwendet HBCI. Es koennen aber
  * weitere hinzugefuegt werden. Eine weitere verwendet z.Bsp. die Scripting-Funktionen.
  */
-public interface SynchronizeBackend
+public interface SynchronizeBackend extends HasName
 {
   /**
    * Queue, an die der aktuelle Prozess-Status der Synchronisierung (RUNNING, ERROR, DONE, CANCEL) geschickt wird.
@@ -100,6 +101,7 @@ public interface SynchronizeBackend
    * Liefert einen sprechenden Namen fuer das Backend.
    * @return sprechender Name fuer das Backend.
    */
+  @Override
   public String getName();
 }
 

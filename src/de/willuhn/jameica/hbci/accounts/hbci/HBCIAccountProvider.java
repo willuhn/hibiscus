@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.accounts.AccountProvider;
 import de.willuhn.jameica.hbci.accounts.hbci.action.HBCIAccountNew;
+import de.willuhn.jameica.hbci.util.ProviderComparator;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -93,13 +94,8 @@ public class HBCIAccountProvider implements AccountProvider
         }
       }
 
-      this.variants.sort((v1, v2) -> {
-        if (PRIMARY.isInstance(v1))
-          return -1;
-        if (PRIMARY.isInstance(v2))
-          return 1;
-        return v1.getName().compareTo(v2.getName());
-      });
+      // Wir sortieren die Provider so, dass der Primaer-Provider immer Vorrang hat
+      this.variants.sort(new ProviderComparator<>(PRIMARY, true));
     }
     catch (ClassNotFoundException e)
     {

@@ -17,6 +17,7 @@ import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.accounts.hbci.HBCIAccountProvider;
+import de.willuhn.jameica.hbci.util.ProviderComparator;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -35,7 +36,7 @@ public class AccountService
   /**
    * Der Primaer-Provider. Der steht immer oben.
    */
-  private final static Class<? extends HBCIAccountProvider> PRIMARY = HBCIAccountProvider.class;
+  private final static Class<? extends AccountProvider> PRIMARY = HBCIAccountProvider.class;
 
   /**
    * Liefert eine Liste der gefundenen Provider.
@@ -67,14 +68,7 @@ public class AccountService
       }
       
       // Wir sortieren die Provider so, dass der Primaer-Provider immer Vorrang hat
-      this.providers.sort((p1, p2) -> {
-        if (PRIMARY.isInstance(p1))
-          return -1;
-        if (PRIMARY.isInstance(p2))
-          return 1;
-        // Ansonsten alphabetisch nach Name
-        return p1.getName().compareTo(p2.getName());
-      });
+      this.providers.sort(new ProviderComparator<>(PRIMARY, true));
     }
     catch (ClassNotFoundException e)
     {

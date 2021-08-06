@@ -11,17 +11,19 @@
 package de.willuhn.jameica.hbci.accounts.hbci;
 
 import de.willuhn.jameica.gui.parts.InfoPanel;
+import de.willuhn.jameica.hbci.HasName;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Interface fuer eine HBCI-Zugangsvariante.
  */
-public interface HBCIVariant
+public interface HBCIVariant extends HasName
 {
   /**
    * Liefert einen sprechenden Namen fuer die HBCI-Variante.
    * @return sprechender Name fuer die HBCI-Variante.
    */
+  @Override
   public String getName();
   
   /**
