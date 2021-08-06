@@ -17,12 +17,13 @@ import java.util.List;
 import de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Value;
+import de.willuhn.jameica.hbci.HasName;
 
 /**
  * Interface fuer einen AccountBalance-Provider.
  * Der Provider liefert Salden fuer ein Konto, was bei einem Fonds/Depot anders funktioniert als bei einem Girokonto. 
  */
-public interface AccountBalanceProvider
+public interface AccountBalanceProvider extends HasName
 {
 
   /**
@@ -54,6 +55,7 @@ public interface AccountBalanceProvider
    * Liefert einen Namen für Anzeige und Sortierung
    * @return einen Namen für Anzeige und Sortierung
    */
+  @Override
   public String getName();
 }
 

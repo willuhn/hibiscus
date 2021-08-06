@@ -18,6 +18,7 @@ import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.util.ProviderComparator;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -66,14 +67,7 @@ public class AccountBalanceService
       Logger.info("  found " + this.providers.size() + " provider(s)");
       
       // Wir sortieren die Provider so, dass der Standard-Provider immer als letzter an die Reihe kommt.
-      this.providers.sort((provider1, provider2) -> {
-        if (DEFAULT.isInstance(provider1))
-          return 1;
-        if (DEFAULT.isInstance(provider2))
-          return -1;
-        // Ansonsten alphabetisch nach Name
-        return provider1.getName().compareTo(provider2.getName());
-      });
+      this.providers.sort(new ProviderComparator<>(DEFAULT, false));
     }
     catch (ClassNotFoundException e)
     {

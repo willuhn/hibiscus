@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.willuhn.jameica.hbci.util.ProviderComparator;
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.annotation.Lifecycle;
@@ -78,13 +79,7 @@ public class SynchronizeEngine
       }
       
       // Wir sortieren die Backends so, dass das Primaer-Backend immer Vorrang hat
-      this.backends.sort((o1, o2) -> {
-        if (PRIMARY.isInstance(o1))
-          return -1;
-        if (PRIMARY.isInstance(o2))
-          return 1;
-        return 0;
-      });
+      this.backends.sort(new ProviderComparator<>(PRIMARY, true));
     }
     catch (ClassNotFoundException e)
     {
