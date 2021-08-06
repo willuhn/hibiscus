@@ -351,10 +351,6 @@ public class SynchronizeList extends TablePart
       {
         // ignore
       }
-      catch (ApplicationException ae)
-      {
-        throw ae;
-      }
       catch (RemoteException re)
       {
         Logger.error("error while synchronizing",re);

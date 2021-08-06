@@ -222,10 +222,6 @@ public class RDHKeyImpl implements RDHKey
       {
         Logger.warn("konto " + ids[i] + " does not exist, skipping");
       }
-      catch (RemoteException re)
-      {
-        throw re;
-      }
     }
     return (Konto[])konten.toArray(new Konto[konten.size()]);
   }
