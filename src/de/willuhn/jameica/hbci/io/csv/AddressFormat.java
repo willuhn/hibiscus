@@ -93,7 +93,7 @@ public class AddressFormat implements Format<HibiscusAddress>
 
             HibiscusAddress t = (HibiscusAddress) data; 
             if (this.addressbook.contains(t) != null)
-              throw new OperationCanceledException(i18n.tr("Adresse (Kto {0}, BLZ {1}) existiert bereits, überspringe Zeile", new String[]{t.getKontonummer(),t.getBlz()}));
+              throw new OperationCanceledException(i18n.tr("Adresse (Kto {0}, BLZ {1}) existiert bereits, überspringe Zeile", t.getKontonummer(), t.getBlz()));
           }
           catch (OperationCanceledException oce)
           {

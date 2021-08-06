@@ -476,7 +476,7 @@ public class SparQuote implements Part
       umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
 
     if (start != null)
-      umsaetze.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
+      umsaetze.addFilter("datum >= ?", new java.sql.Date(start.getTime()));
 
     while (umsaetze.hasNext())
     {

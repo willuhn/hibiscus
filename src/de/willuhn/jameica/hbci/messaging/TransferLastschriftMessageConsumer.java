@@ -105,8 +105,8 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
       if (konto != null && blz != null)
       {
         DBIterator list = service.createList(Konto.class);
-        list.addFilter("kontonummer = ?", new Object[]{konto});
-        list.addFilter("blz = ?",         new Object[]{blz});
+        list.addFilter("kontonummer = ?", konto);
+        list.addFilter("blz = ?", blz);
         if (list.hasNext())
         {
           // Jepp, wir haben das Konto.

@@ -289,12 +289,15 @@ public class UmsatzList extends TablePart implements Extendable
       if (curr == null)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
-      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {5}, Einnahmen: {3} {5}, Ausgaben: {4} {5}",new String[]{Integer.toString(size),
-                                                                                                        Integer.toString(list.length),
-                                                                                                        HBCI.DECIMALFORMAT.format(sum),
-                                                                                                        HBCI.DECIMALFORMAT.format(income),
-                                                                                                        HBCI.DECIMALFORMAT.format(Math.abs(expenses)),
-                                                                                                        curr});
+      //@formatter:off
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {5}, Einnahmen: {3} {5}, Ausgaben: {4} {5}",
+                     Integer.toString(size),
+                     Integer.toString(list.length),
+                     HBCI.DECIMALFORMAT.format(sum),
+                     HBCI.DECIMALFORMAT.format(income),
+                     HBCI.DECIMALFORMAT.format(Math.abs(expenses)),
+                     curr);
+      //@formatter:on
     }
     catch (Exception e)
     {

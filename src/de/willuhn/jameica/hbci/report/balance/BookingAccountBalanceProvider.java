@@ -68,10 +68,10 @@ public class BookingAccountBalanceProvider implements AccountBalanceProvider
       DBIterator list = UmsatzUtil.getUmsaetze();
       if (konto != null)
         list.addFilter("konto_id = " + konto.getID());
-  
-      list.addFilter("datum >= ?", new Object[] { new java.sql.Date(start.getTime()) });
-      list.addFilter("datum <= ?", new Object[] { new java.sql.Date(end.getTime()) });
-      
+
+      list.addFilter("datum >= ?", new java.sql.Date(start.getTime()));
+      list.addFilter("datum <= ?", new java.sql.Date(end.getTime()));
+
       // Jetzt kommt die Homogenisierung ;)
       // Wir brauchen genau einen Messwert pro Tag. Das ist wichtig,
       // damit auch unterschiedliche Konten in einem Chart ueberlagernd

@@ -60,7 +60,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
     if (s2 == null)
       GUI.getView().setTitle(i18n.tr("Buchungsdetails. {0}",s1));
     else
-      GUI.getView().setTitle(i18n.tr("Buchungsdetails. {0}, Saldo: {1}",new String[]{s1,s2}));
+      GUI.getView().setTitle(i18n.tr("Buchungsdetails. {0}, Saldo: {1}", s1, s2));
 
     ColumnLayout columns = new ColumnLayout(getParent(),2);
     SimpleContainer left = new SimpleContainer(columns.getComposite());

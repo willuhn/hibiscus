@@ -193,7 +193,7 @@ public class TextSchluessel
    */
   public String toString()
   {
-    return i18n.tr("[{0}] {1}", new String[]{this.code,this.name});
+    return i18n.tr("[{0}] {1}", this.code, this.name);
   }
   
   /**

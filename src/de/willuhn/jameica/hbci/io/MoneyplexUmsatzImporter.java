@@ -128,7 +128,7 @@ public class MoneyplexUmsatzImporter implements Importer
           error++;
         }
       }
-      monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
+      monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", ""+created, ""+error));
       monitor.addPercentComplete(1);
     }
     catch (ApplicationException ae)
@@ -396,7 +396,7 @@ public class MoneyplexUmsatzImporter implements Importer
   private UmsatzTyp findTyp(String name, UmsatzTyp parent) throws Exception
   {
     DBIterator i = Settings.getDBService().createList(UmsatzTyp.class);
-    i.addFilter("name = ?",new Object[]{name});
+    i.addFilter("name = ?", name);
     if (parent != null) i.addFilter("parent_id = " + parent.getID());
 
     if (i.hasNext())

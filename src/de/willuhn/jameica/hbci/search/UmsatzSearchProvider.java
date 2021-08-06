@@ -102,17 +102,21 @@ public class UmsatzSearchProvider implements SearchProvider
         betrag = Math.abs(betrag);
         if (gegenkontoName == null || gegenkontoName.length() == 0)
         {
-          return i18n.tr("{0}: {1} {2} - {3}", new String[]{HBCI.DATEFORMAT.format(date),
-                                                            HBCI.DECIMALFORMAT.format(betrag), 
-                                                            konto.getWaehrung(),
-                                                            zweck});
+          //@formatter:off
+          return i18n.tr("{0}: {1} {2} - {3}", HBCI.DATEFORMAT.format(date),
+                                               HBCI.DECIMALFORMAT.format(betrag),
+                                               konto.getWaehrung(),
+                                               zweck);
+          //@formatter:on
         }
-        return i18n.tr("{0}: {1} {2} {3} {4} - {5}", new String[]{HBCI.DATEFORMAT.format(date),
-                                                                  HBCI.DECIMALFORMAT.format(betrag), 
-                                                                  konto.getWaehrung(),
-                                                                  rel,
-                                                                  gegenkontoName,
-                                                                  zweck});
+        //@formatter:off
+        return i18n.tr("{0}: {1} {2} {3} {4} - {5}", HBCI.DATEFORMAT.format(date),
+                                                     HBCI.DECIMALFORMAT.format(betrag),
+                                                     konto.getWaehrung(),
+                                                     rel,
+                                                     gegenkontoName,
+                                                     zweck);
+        //@formatter:on
       }
       catch (RemoteException re)
       {

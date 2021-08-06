@@ -118,7 +118,7 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
       try
       {
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        return i18n.tr("{0}: {1}",new String[] {HBCI.DATEFORMAT.format(u.getTermin()),u.getBezeichnung()});
+        return i18n.tr("{0}: {1}", HBCI.DATEFORMAT.format(u.getTermin()), u.getBezeichnung());
       }
       catch (RemoteException re)
       {

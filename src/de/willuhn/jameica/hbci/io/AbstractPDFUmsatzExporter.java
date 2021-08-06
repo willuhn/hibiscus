@@ -110,7 +110,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
     try
     {
       // Der Export
-      String subTitle = i18n.tr("{0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
+      String subTitle = i18n.tr("{0} - {1}", startDate == null ? "" : HBCI.DATEFORMAT.format(startDate), endDate == null ? "" : HBCI.DATEFORMAT.format(endDate));
       reporter = new Reporter(os,monitor,i18n.tr("Umsätze") + (filter != null && filter.booleanValue() ? (" (" + i18n.tr("gefiltert") + ")") : ""), subTitle, objects.length  );
 
       reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER, 30, Reporter.COLOR_BG);

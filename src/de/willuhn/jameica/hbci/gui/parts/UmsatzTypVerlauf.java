@@ -238,7 +238,7 @@ public class UmsatzTypVerlauf implements Part
     
     private List<Umsatz> getRecursiveUmsaetze(UmsatzTreeNode group) {
       List<Umsatz> result = new ArrayList<Umsatz>(group.getUmsaetze());
-      for (UmsatzTreeNode unterkategorie : group.getSubGroups()) {
+      for (UmsatzTreeNode unterkategorie: group.getSubGroups()) {
         result.addAll(getRecursiveUmsaetze(unterkategorie));
       }
       return result;

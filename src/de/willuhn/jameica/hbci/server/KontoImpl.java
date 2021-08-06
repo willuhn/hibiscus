@@ -498,7 +498,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     {
       long d = days * 24l * 60l * 60l * 1000l;
       Date start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
-      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
+      list.addFilter("datum >= ?", new java.sql.Date(start.getTime()));
     }
     return list;
   }
@@ -511,9 +511,9 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
     if (start != null)
-      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(DateUtil.startOfDay(start).getTime())});
+      list.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(start).getTime()));
     if (end != null)
-      list.addFilter("datum <= ?", new Object[] {new java.sql.Date(DateUtil.endOfDay(end).getTime())});
+      list.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     return list;
   }
 

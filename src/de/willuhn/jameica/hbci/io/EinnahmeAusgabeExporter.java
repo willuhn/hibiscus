@@ -121,7 +121,7 @@ public class EinnahmeAusgabeExporter implements Exporter
     }
 
     if (start != null && end != null)
-      return i18n.tr("Zeitraum {0} - {1}", new String[]{HBCI.DATEFORMAT.format(start),HBCI.DATEFORMAT.format(end)});
+      return i18n.tr("Zeitraum {0} - {1}", HBCI.DATEFORMAT.format(start), HBCI.DATEFORMAT.format(end));
     
     return "";
   }

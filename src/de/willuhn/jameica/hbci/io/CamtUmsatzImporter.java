@@ -119,7 +119,7 @@ public class CamtUmsatzImporter implements Importer
         stats = doImport(100,1,is,konto,monitor,t);
       }
       
-      monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{Integer.toString(stats.created),Integer.toString(stats.error)}));
+      monitor.setStatusText(i18n.tr("{0} Umsätze erfolgreich importiert, {1} fehlerhafte übersprungen", Integer.toString(stats.created), Integer.toString(stats.error)));
     }
     catch (OperationCanceledException oce)
     {

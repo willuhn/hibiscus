@@ -80,7 +80,7 @@ public class KontoNew extends AbstractView
       String s2 = k.getKontonummer();
       if (s2 == null) s2 = "";
 
-      GUI.getView().setTitle(i18n.tr("Konto-Details: {0} [Kto.-Nr.: {1}]",new String[]{s1,s2}));
+      GUI.getView().setTitle(i18n.tr("Konto-Details: {0} [Kto.-Nr.: {1}]", s1, s2));
     }
     else
   		GUI.getView().setTitle(i18n.tr("Konto-Details: Neues Konto"));

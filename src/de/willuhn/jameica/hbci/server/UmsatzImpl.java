@@ -524,7 +524,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       if (kto == null || kto.length() == 0 || blz == null || blz.length() == 0)
         return null;
 
-      return i18n.tr("Kto. {0}, BLZ {1}", new String[]{kto,blz});
+      return i18n.tr("Kto. {0}, BLZ {1}", kto, blz);
     }
 
     return super.getAttribute(arg0);

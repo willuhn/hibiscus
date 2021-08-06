@@ -314,10 +314,12 @@ public class UmsatzTree extends TreePart
       if (curr == null)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
-      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}",new String[]{Integer.toString(this.umsatzCount),
-                                                                              Integer.toString(list.length),
-                                                                              HBCI.DECIMALFORMAT.format(sum),
-                                                                              curr});
+      //@formatter:off
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}", Integer.toString(this.umsatzCount),
+                                                                  Integer.toString(list.length),
+                                                                  HBCI.DECIMALFORMAT.format(sum),
+                                                                  curr);
+      //@formatter:on
     }
     catch (Throwable t)
     {

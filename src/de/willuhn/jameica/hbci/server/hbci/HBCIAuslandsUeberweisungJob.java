@@ -161,7 +161,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   public String getName() throws RemoteException
   {
-    return i18n.tr("SEPA-Überweisung an {0} (IBAN: {1})",new String[]{ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer()});
+    return i18n.tr("SEPA-Überweisung an {0} (IBAN: {1})", ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer());
   }
 
   /**
@@ -181,7 +181,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   protected String markFailed(String error) throws ApplicationException, RemoteException
   {
-    String msg = i18n.tr("Fehler beim Ausführen des Auftrages an {0}: {1}",new String[]{ueberweisung.getGegenkontoName(),error});
+    String msg = i18n.tr("Fehler beim Ausführen des Auftrages an {0}: {1}", ueberweisung.getGegenkontoName(), error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }

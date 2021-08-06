@@ -559,10 +559,10 @@ public class UmsatzTypUtil
       DBIterator list = UmsatzUtil.getUmsaetze();
 
       if (von != null)
-        list.addFilter("datum >= ?", new Object[] {new java.sql.Date(von.getTime())});
-      
+        list.addFilter("datum >= ?", new java.sql.Date(von.getTime()));
+
       if (bis != null)
-        list.addFilter("datum <= ?", new Object[] {new java.sql.Date(bis.getTime())});
+        list.addFilter("datum <= ?", new java.sql.Date(bis.getTime()));
 
       // Alle, die fest zugeordnet sind, sowieso nicht
       list.addFilter("umsatztyp_id is null");
