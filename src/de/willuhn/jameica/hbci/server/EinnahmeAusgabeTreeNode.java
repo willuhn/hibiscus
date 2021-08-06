@@ -158,7 +158,7 @@ public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, Generic
   @Override
   public GenericIterator getChildren() throws RemoteException
   {
-    return PseudoIterator.fromArray((EinnahmeAusgabe[]) children.toArray(new EinnahmeAusgabe[children.size()]));
+    return PseudoIterator.fromArray((EinnahmeAusgabe[]) children.toArray(new EinnahmeAusgabe[0]));
   }
 
   /**

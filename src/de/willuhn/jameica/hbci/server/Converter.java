@@ -116,7 +116,7 @@ public class Converter
     //    "999" drin, dann sind diese Variablen alle null, und der ungeparste 
     //    Inhalt des Feldes :86: steht komplett in "additional".
 
-    String[] lines = (String[]) u.usage.toArray(new String[u.usage.size()]);
+    String[] lines = (String[]) u.usage.toArray(new String[0]);
 
     if (u.isCamt && u.usage != null)
     {

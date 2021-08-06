@@ -632,7 +632,7 @@ public class Controller extends AbstractControl
       Konto[] konten = null;
       List checked = getKontoAuswahl().getItems();
       if (checked != null && checked.size() > 0)
-        konten = (Konto[]) checked.toArray(new Konto[checked.size()]);
+        konten = (Konto[]) checked.toArray(new Konto[0]);
       config.setKonten(konten);
       
       String version = (String) getHBCIVersion().getValue();

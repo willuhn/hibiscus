@@ -82,7 +82,7 @@ public class EinnahmenAusgaben extends AbstractView
         try
         {
           List data = control.getTree().getItems();
-          new EinnahmeAusgabeExport().handleAction(data.toArray(new EinnahmeAusgabeZeitraum[data.size()]));
+          new EinnahmeAusgabeExport().handleAction(data.toArray(new EinnahmeAusgabeZeitraum[0]));
         }
         catch (RemoteException re)
         {

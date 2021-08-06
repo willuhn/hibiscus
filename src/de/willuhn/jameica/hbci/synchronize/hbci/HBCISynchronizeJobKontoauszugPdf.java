@@ -52,7 +52,7 @@ public class HBCISynchronizeJobKontoauszugPdf extends SynchronizeJobKontoauszugP
     if (o.getSyncKontoauszuegePdf() || (force != null && force.booleanValue()))
       jobs.add(new HBCIKontoauszugJob(k));
 
-    return jobs.toArray(new AbstractHBCIJob[jobs.size()]);
+    return jobs.toArray(new AbstractHBCIJob[0]);
   }
   
   /**

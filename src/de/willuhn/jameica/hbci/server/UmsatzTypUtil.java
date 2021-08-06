@@ -138,7 +138,7 @@ public class UmsatzTypUtil
         root.add(t);
       }
     }
-    return PseudoIterator.fromArray(root.toArray(new UmsatzTypBean[root.size()]));
+    return PseudoIterator.fromArray(root.toArray(new UmsatzTypBean[0]));
   }
 
   /**
@@ -574,7 +574,7 @@ public class UmsatzTypUtil
         if (matches(u))
           result.add(u);
       }
-      return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[result.size()]));
+      return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[0]));
     }
 
     /**

@@ -170,7 +170,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       if (u.isAssigned() || matches(u)) // entweder fest zugeordnet oder passt via Suchfilter
         result.add(u);
     }
-    return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[result.size()]));
+    return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[0]));
   }
 
   /**

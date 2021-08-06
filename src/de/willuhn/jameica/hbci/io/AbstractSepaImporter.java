@@ -99,8 +99,8 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     List<Properties> props = new ArrayList<Properties>();
     ISEPAParser parser = SEPAParserFactory.get(version);
     parser.parse(new ByteArrayInputStream(bos.toByteArray()),props);
-    
-    return props.toArray(new Properties[props.size()]);
+
+    return props.toArray(new Properties[0]);
   }
   
   /**

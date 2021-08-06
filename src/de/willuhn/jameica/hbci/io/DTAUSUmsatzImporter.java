@@ -60,8 +60,8 @@ public class DTAUSUmsatzImporter extends AbstractDTAUSImporter
     {
       lines.add(csatz.getVerwendungszweck(i));
     }
-    VerwendungszweckUtil.apply(u,lines.toArray(new String[lines.size()]));
-    
+    VerwendungszweckUtil.apply(u,lines.toArray(new String[0]));
+
     u.store();
   
   }

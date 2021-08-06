@@ -770,7 +770,7 @@ public class KontoauszugList extends UmsatzList
       Exporter.SESSION.put("pdf.start",getStart().getValue());
       Exporter.SESSION.put("pdf.end",getEnd().getValue());
 
-      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
+      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[0]);
       new UmsatzExport().handleAction(u);
     }
     catch (ApplicationException ae)

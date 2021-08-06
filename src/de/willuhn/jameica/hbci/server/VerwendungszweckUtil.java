@@ -335,7 +335,7 @@ public class VerwendungszweckUtil
     List<String> l = clean(true,lines);
     if (l.size() > 0) t.setZweck(l.remove(0));  // Zeile 1
     if (l.size() > 0) t.setZweck2(l.remove(0)); // Zeile 2
-    if (l.size() > 0) t.setWeitereVerwendungszwecke(l.toArray(new String[l.size()])); // Zeile 3 - x
+    if (l.size() > 0) t.setWeitereVerwendungszwecke(l.toArray(new String[0])); // Zeile 3 - x
   }
 
   /**
@@ -462,10 +462,10 @@ public class VerwendungszweckUtil
       for (String s:wvz)
         lines.add(s);
     }
-    
-    String[] list = lines.toArray(new String[lines.size()]);
+
+    String[] list = lines.toArray(new String[0]);
     List<String> result = clean(false,list);
-    return result.toArray(new String[result.size()]);
+    return result.toArray(new String[0]);
   }
 
   /**
