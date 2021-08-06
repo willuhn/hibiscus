@@ -103,12 +103,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
         }
 
         Konto k = u.getKonto();
-        List<Umsatz> list = groups.get(k.getID());
-        if (list == null)
-        {
-          list = new LinkedList<Umsatz>();
-          groups.put(k.getID(),list);
-        }
+        List<Umsatz> list = groups.computeIfAbsent(k.getID(), k1 -> new LinkedList<Umsatz>());
         list.add(u);
       }
       
