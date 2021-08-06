@@ -19,8 +19,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -243,28 +241,23 @@ public class MT940UmsatzExporter implements Exporter
    */
   protected void sort(List<Umsatz> list)
   {
-    list.sort(new Comparator<Umsatz>()
-    {
-      @Override
-      public int compare(Umsatz o1, Umsatz o2)
+    list.sort((u1, u2) -> {
+      try
       {
-        try
-        {
-          Date d1 = (Date) o1.getAttribute("datum_pseudo");
-          Date d2 = (Date) o2.getAttribute("datum_pseudo");
-          if (d1 == d2)
-            return 0;
-          if (d1 == null)
-            return -1;
-          if (d2 == null)
-            return 1;
-          return d1.compareTo(d2);
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to sort data",re);
+        Date d1 = (Date) u1.getAttribute("datum_pseudo");
+        Date d2 = (Date) u2.getAttribute("datum_pseudo");
+        if (d1 == d2)
           return 0;
-        }
+        if (d1 == null)
+          return -1;
+        if (d2 == null)
+          return 1;
+        return d1.compareTo(d2);
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to sort data",re);
+        return 0;
       }
     });
   }

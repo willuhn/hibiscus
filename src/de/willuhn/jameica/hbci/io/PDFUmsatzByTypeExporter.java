@@ -11,8 +11,6 @@
 package de.willuhn.jameica.hbci.io;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -51,21 +49,16 @@ public class PDFUmsatzByTypeExporter extends AbstractPDFUmsatzExporter<UmsatzTyp
   {
     try
     {
-      groups.sort(new Comparator<UmsatzTyp>()
-      {
-        @Override
-        public int compare(UmsatzTyp o1, UmsatzTyp o2)
+      groups.sort((typ1, typ2) -> {
+        try
         {
-          try
-          {
-            return UmsatzTypUtil.compare(o1,o2);
-          }
-          catch (RemoteException re)
-          {
-            Logger.error("unable to compare categories",re);
-          }
-          return 0;
+          return UmsatzTypUtil.compare(typ1,typ2);
         }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to compare categories",re);
+        }
+        return 0;
       });
     }
     catch (Exception e)

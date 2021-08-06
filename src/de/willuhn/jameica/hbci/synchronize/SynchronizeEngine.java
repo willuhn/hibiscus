@@ -11,8 +11,6 @@
 package de.willuhn.jameica.hbci.synchronize;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,18 +78,12 @@ public class SynchronizeEngine
       }
       
       // Wir sortieren die Backends so, dass das Primaer-Backend immer Vorrang hat
-      this.backends.sort(new Comparator<SynchronizeBackend>()
-      {
-        @Override
-        public int compare(SynchronizeBackend o1, SynchronizeBackend o2)
-        {
-          
-          if (PRIMARY.isInstance(o1))
-            return -1;
-          if (PRIMARY.isInstance(o2))
-            return 1;
-          return 0;
-        }
+      this.backends.sort((o1, o2) -> {
+        if (PRIMARY.isInstance(o1))
+          return -1;
+        if (PRIMARY.isInstance(o2))
+          return 1;
+        return 0;
       });
     }
     catch (ClassNotFoundException e)
