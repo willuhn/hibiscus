@@ -108,6 +108,23 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           Logger.warn("future start date " + saldoDatum + " given. this is not allowed, changing to current date " + now);
           this.saldoDatum = now;
         }
+        else
+        {
+          // andernfalls pruefen, ob das Datum innerhalb der von der Bank erlaubten Zeitspanne liegt
+          int timeRange = KontoUtil.getUmsaetzeTimeRange(konto, true);
+          if (timeRange > 0)
+          {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(now);
+            cal.add(Calendar.DATE, -timeRange);
+            Date earliestDate = cal.getTime();
+            if (saldoDatum.before(earliestDate))
+            {
+              Logger.warn("start date " + saldoDatum + " is more than " + timeRange + " days ago. this is not allowed, changing to earliest date " + earliestDate);
+              this.saldoDatum = earliestDate;
+            }
+          }
+        }
         
         this.saldoDatum = DateUtil.startOfDay(this.saldoDatum);
         Logger.info("startdate: " + HBCI.LONGDATEFORMAT.format(this.saldoDatum));

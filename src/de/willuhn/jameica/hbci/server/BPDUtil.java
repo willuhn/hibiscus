@@ -68,6 +68,11 @@ public class BPDUtil
     KontoauszugPdf("KontoauszugPdf","HKEKP"),
     
     /**
+     * Query fuer die Suche nach den BPD-Parametern fuer den Abruf der Umsaetze.
+     */
+    Umsatz("KUmsZeit","HKKAZ")
+
+    /**
      * Query fuer Abruf der Umsaetze im CAMT-Format.
      */
     UmsatzCamt("KUmsZeitCamt","HKCAZ")
