@@ -90,23 +90,23 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
       this.saldoDatum = konto.getSaldoDatum();
       if (this.saldoDatum != null)
       {
+        // Mal schauen, ob wir ein konfiguriertes Offset haben
+        int offset = res.getSettings().getInt("umsatz.startdate.offset", 0);
+        if (offset != 0)
+        {
+          Logger.info("using custom offset for startdate: " + offset);
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(this.saldoDatum);
+          cal.add(Calendar.DATE, offset);
+          this.saldoDatum = cal.getTime();
+        }
+
         // BUGZILLA 917 - checken, ob das Datum vielleicht in der Zukunft liegt. Das ist nicht zulaessig
         Date now = new Date();
         if (saldoDatum.after(now))
         {
           Logger.warn("future start date " + saldoDatum + " given. this is not allowed, changing to current date " + now);
           this.saldoDatum = now;
-        }
-        
-        // Mal schauen, ob wir ein konfiguriertes Offset haben
-        int offset = res.getSettings().getInt("umsatz.startdate.offset",0);
-        if (offset != 0)
-        {
-          Logger.info("using custom offset for startdate: " + offset);
-          Calendar cal = Calendar.getInstance();
-          cal.setTime(this.saldoDatum);
-          cal.add(Calendar.DATE,offset);
-          this.saldoDatum = cal.getTime();
         }
         
         this.saldoDatum = DateUtil.startOfDay(this.saldoDatum);
