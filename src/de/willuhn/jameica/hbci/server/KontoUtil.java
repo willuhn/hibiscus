@@ -35,6 +35,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.TypedProperties;
 
 /**
  * Hilfsklasse mit statischen Funktionen fuer Konten.
@@ -202,6 +203,38 @@ public class KontoUtil
     }
   }
   
+  /**
+   * Extrahiert aus den BPD die Zeitspanne, fuer die laut Bank Umsaetze eines Kontos abgerufen werden koennen.
+   * @param k das betreffende Konto.
+   * @param askForCamtIfPossible true, wenn der User hier auch gefragt werden darf, ob die Umsaetze per CAMT abgerufen werden sollen, falls er die Entscheidung noch nicht getroffen hat.
+   * @return -1, wenn kein Konto angegeben wurde, ansonsten Wert des Parameters "timerange" aus den BPD oder 0, falls der Parameter fehlt.
+   */
+  public static int getUmsaetzeTimeRange(Konto k, boolean askForCamtIfPossible)
+  {
+    if (k == null)
+    {
+      Logger.warn("unable to get time range from BPD, no account given");
+      return -1;
+    }
+
+    boolean usingCamt = useCamt(k, askForCamtIfPossible);
+    Support support = BPDUtil.getSupport(k, usingCamt ? Query.UmsatzCamt : Query.Umsatz);
+    TypedProperties bpd = (support != null && support.isSupported()) ? support.getBpd() : null;
+    if (bpd == null)
+    {
+      Logger.debug("unable to get BPD");
+      return 0;
+    }
+
+    int timeRange = bpd.getInt("timerange", 0);
+    if (timeRange > 0)
+    {
+      Logger.debug("time range from BPD for " + (usingCamt ? "KUmsZeitCamt" : "KUmsZeit") + ": " + timeRange);
+    }
+
+    return timeRange;
+  }
+
 
   /**
    * Sucht das Konto in der Datenbank.

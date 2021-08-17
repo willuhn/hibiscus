@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0957 Korrektur des Startdatums beim Umsatzabruf, falls es außerhalb einer von der Bank in den BPD festgelegten Zeitspanne liegt
+  * BUG: 0956 Korrektur des Startdatums beim Umsatzabruf, falls es in der Zukunft liegt, erst nachdem ggf. ein Offset hinzugezählt wurde
   * NEW: 0955 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.09.2021
   * BUG: 0954 BIC nicht mehr basierend auf IBAN vorbefüllen, wenn bereits eine eingetragen wurde
   * BUG: 0953 Das Vergrößern des Flicker-Codes führte ab einer gewissen Größe zu Darstellungsfehlern
