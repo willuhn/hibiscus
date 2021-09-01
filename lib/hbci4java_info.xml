@@ -1,6 +1,6 @@
 <info>
   <name>HBCI4Java</name>
   <description>Java-basierte Implementierung des HBCI-Protokolls</description>
-  <url>http://hbci4java.kapott.org/</url>
-  <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
+  <url>https://github.com/hbci4j/hbci4java/</url>
+  <license>LGPL - https://github.com/hbci4j/hbci4java/blob/master/LICENSE</license>
 </info>
