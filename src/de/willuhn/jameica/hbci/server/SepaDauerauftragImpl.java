@@ -120,6 +120,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
 
       HBCIProperties.checkChars(s, HBCIProperties.HBCI_IBAN_VALIDCHARS);
       HBCIProperties.checkLength(s, HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      HBCIProperties.checkIBAN(s);
 
       if (StringUtils.trimToNull(getGegenkontoBLZ()) != null)
         HBCIProperties.checkBIC(getGegenkontoBLZ());

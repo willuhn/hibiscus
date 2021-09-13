@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0958 Strengere Prüfung der IBAN im Zahlungsverkehr - bisher wurden hier unbekannte IBANs toleriert, wenn die Option zur CRC-Prüfung aktiv war
   * NEW: 0957 Korrektur des Startdatums beim Umsatzabruf, falls es außerhalb einer von der Bank in den BPD festgelegten Zeitspanne liegt
   * BUG: 0956 Korrektur des Startdatums beim Umsatzabruf, falls es in der Zukunft liegt, erst nachdem ggf. ein Offset hinzugezählt wurde
   * NEW: 0955 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.09.2021

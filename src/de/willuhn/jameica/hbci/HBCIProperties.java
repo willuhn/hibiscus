@@ -519,14 +519,14 @@ public class HBCIProperties
    * @see HBCIUtils#checkIBANCRC(java.lang.String)
    * @param iban die IBAN.
    * @return true, wenn die IBAN ok ist.
-   * @deprecated Bitte {@link HBCIProperties#getIBAN(String)} verwenden.
+   * @deprecated Bitte {@link HBCIProperties#checkIBAN(String)} verwenden.
    */
   @Deprecated
   public final static boolean checkIBANCRC(String iban)
   {
     try
     {
-      getIBAN(iban);
+      checkIBAN(iban);
       return true;
     }
     catch (ApplicationException ae)
@@ -557,6 +557,7 @@ public class HBCIProperties
     
     return bic;
   }
+  
   /**
    * Prueft die Gueltigkeit einer Creditor-ID (Gläubiger-Identifikationsnummer)
    * anhand von Pruefziffern.
@@ -637,7 +638,67 @@ public class HBCIProperties
       throw new ApplicationException(se.getMessage());
     }
   }
-  
+
+
+  /**
+   * Prueft die IBAN auf Gueltigkeit.
+   * @param iban die IBAN.
+   * @throws ApplicationException die Fehlermeldung, wenn die IBAN nicht korrekt ist.
+   */
+  public final static void checkIBAN(String iban) throws ApplicationException
+  {
+    if (StringUtils.trimToNull(iban) == null)
+      throw new ApplicationException(i18n.tr("Bitte geben Sie eine IBAN ein"));
+    
+    iban = StringUtils.deleteWhitespace(iban);
+    
+    if (iban == null || iban.length() == 0)
+      throw new ApplicationException(i18n.tr("Bitte geben Sie eine IBAN ein"));
+    
+    // Wir checken selbst bei deaktivierter Pruefung wenigstens bei deutschen IBANs die Laenge
+    if (iban.toLowerCase().startsWith("de") && iban.length() != 22)
+      throw new ApplicationException(i18n.tr("Bitte prüfen Sie die Länge der IBAN"));
+
+    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
+      return;
+
+    try
+    {
+      final IBAN i = new IBAN(iban);
+      
+      // Rückgabe-Code checken
+      IBANCode code = i.getCode();
+      if (code == null || code == IBANCode.GUELTIG)
+        return;
+      
+      // Tolerieren wir ebenfalls
+      if (code == IBANCode.KONTONUMMERERSETZT || 
+          code == IBANCode.GEMELDETEBLZZURLOESCHUNGVORGEMERKT ||
+          code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
+        return;
+
+      throw new ApplicationException(code.getMessage());
+    }
+    catch (SEPAException e)
+    {
+      // Haben wir einen Fehlercode?
+      Fehler f = e.getFehler();
+      if (f != null)
+      {
+        String msg = obantooCodes.get(f);
+        if (msg != null)
+          throw new ApplicationException(i18n.tr("IBAN \"{0}\": {1}",iban,msg));
+      }
+
+      // Oder alternativ einen Fehlertext?
+      String msg = e.getMessage();
+      if (msg != null)
+        throw new ApplicationException(i18n.tr("IBAN \"{0}\": {1}",iban,msg));
+    }
+    
+    throw new ApplicationException(i18n.tr("IBAN ungültig: \"{0}\"",iban));
+  }
+
 
   /**
    * Erzeugt die IBAN aus der uebergebenen Bankverbindung.

@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2021 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -58,7 +58,7 @@ public class QueryIBANCRCMessageConsumer implements MessageConsumer
 
     try
     {
-      HBCIProperties.getIBAN(data.toString());
+      HBCIProperties.checkIBAN(data.toString());
       qm.setData(Boolean.TRUE);
     }
     catch (ApplicationException ae)
@@ -68,11 +68,3 @@ public class QueryIBANCRCMessageConsumer implements MessageConsumer
   }
 
 }
-
-
-/**********************************************************************
- * $Log: QueryIBANCRCMessageConsumer.java,v $
- * Revision 1.1  2009/02/17 00:00:02  willuhn
- * @N BUGZILLA 159 - Erster Code fuer Auslands-Ueberweisungen
- *
- **********************************************************************/
