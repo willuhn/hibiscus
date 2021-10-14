@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 /**
  * Bildet einen SEPA-Dauerauftrag in Hibiscus ab.
  */
-public interface SepaDauerauftrag extends HibiscusTransfer, Checksum, BaseDauerauftrag, SepaPayment, SepaBooking
+public interface SepaDauerauftrag extends HibiscusTransfer, Checksum, Duplicatable, BaseDauerauftrag, SepaPayment, SepaBooking
 {
   /**
    * Liefert true, wenn die Bank mitgeteilt hat, dass der Auftrag aenderbar ist.
