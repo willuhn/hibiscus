@@ -7,9 +7,5 @@
 #set($konto = $umsatz.Konto)
 #set($kat = "")
 #set($kat = $!{umsatz.UmsatzTyp.Name})
-#set($name = $!{umsatz.GegenkontoName})
-#if($!{umsatz.GegenkontoName2})
-#set($name = $name + " " + $!{umsatz.GegenkontoName2})
-#end
-"$!{umsatz.ID}";"$!{konto.Iban}";"$!{konto.Bic}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{name}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";#if($fullUsage)"$!{filter.escape($!{umsatz.Zweck})}"#else"$!{filter.escape($!{umsatz.getAttribute("SVWZ")})}"#end;"#if($fullUsage)$!{filter.escape($!{umsatz.Zweck2})}#end";#if(!$hideSaldo)"$!{decimalformat.format(${umsatz.Saldo})}";#end"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{filter.escape($!{umsatz.Kommentar})}";"#if($fullUsage)#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{filter.escape($!{ewz})} #end#end";"$!{umsatz.Art}";#if($umsatz.hasFlag(2))"ja"#end;"$!{umsatz.endToEndId}"
+"$!{umsatz.ID}";"$!{konto.Iban}";"$!{konto.Bic}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{umsatz.getAttribute('empfaenger')}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";#if($fullUsage)"$!{filter.escape($!{umsatz.Zweck})}"#else"$!{filter.escape($!{umsatz.getAttribute("SVWZ")})}"#end;"#if($fullUsage)$!{filter.escape($!{umsatz.Zweck2})}#end";#if(!$hideSaldo)"$!{decimalformat.format(${umsatz.Saldo})}";#end"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{filter.escape($!{umsatz.Kommentar})}";"#if($fullUsage)#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{filter.escape($!{ewz})} #end#end";"$!{umsatz.Art}";#if($umsatz.hasFlag(2))"ja"#end;"$!{umsatz.endToEndId}"
 #end
