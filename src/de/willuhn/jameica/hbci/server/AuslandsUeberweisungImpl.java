@@ -99,6 +99,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
 
       HBCIProperties.checkChars(s, HBCIProperties.HBCI_IBAN_VALIDCHARS);
       HBCIProperties.checkLength(s, HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      HBCIProperties.checkIBAN(s);
 
       if (StringUtils.trimToNull(getGegenkontoBLZ()) != null)
         HBCIProperties.checkBIC(getGegenkontoBLZ());

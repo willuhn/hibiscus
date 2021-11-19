@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.system.Application;
@@ -46,6 +47,27 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
   protected String getTableName()
   {
     return "sepadauerauftrag";
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
+   */
+  @Override
+  public Duplicatable duplicate() throws RemoteException
+  {
+    SepaDauerauftrag u = (SepaDauerauftrag) getService().createObject(SepaDauerauftrag.class,null);
+    u.setBetrag(getBetrag());
+    u.setGegenkontoNummer(getGegenkontoNummer());
+    u.setGegenkontoName(getGegenkontoName());
+    u.setGegenkontoBLZ(getGegenkontoBLZ());
+    u.setKonto(getKonto());
+    u.setZweck(getZweck());
+    u.setEndtoEndId(getEndtoEndId());
+    u.setPmtInfId(getPmtInfId());
+    u.setPurposeCode(getPurposeCode());
+    u.setLetzteZahlung(getLetzteZahlung());
+    u.setTurnus(getTurnus());
+    return u;
   }
 
   /**
@@ -120,6 +142,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
 
       HBCIProperties.checkChars(s, HBCIProperties.HBCI_IBAN_VALIDCHARS);
       HBCIProperties.checkLength(s, HBCIProperties.HBCI_IBAN_MAXLENGTH);
+      HBCIProperties.checkIBAN(s);
 
       if (StringUtils.trimToNull(getGegenkontoBLZ()) != null)
         HBCIProperties.checkBIC(getGegenkontoBLZ());

@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchSepaDauerauftraege;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragDelete;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragNew;
@@ -42,6 +43,8 @@ public class SepaDauerauftragList extends ContextMenu
     addItem(new ContextMenuItem(i18n.tr("Neuer Dauerauftrag..."),    new DNeu(),"text-x-generic.png"));
 		addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."),        new SepaDauerauftragDelete(),"user-trash-full.png"));
 		addItem(ContextMenuItem.SEPARATOR);
+    addItem(new CheckedSingleContextMenuItem(i18n.tr("Duplizieren..."), new Duplicate(),"edit-copy.png"));
+    addItem(ContextMenuItem.SEPARATOR);
 		addItem(new ContextMenuItem(i18n.tr("Daueraufträge abrufen..."), new KontoFetchSepaDauerauftraege(),"mail-send-receive.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Drucken..."),new Action() {

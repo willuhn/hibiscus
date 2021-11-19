@@ -47,7 +47,7 @@ public class About extends AbstractDialog
    */
   public About(int position)
   {
-    super(position,false);
+    super(position,true);
 
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(HBCI.class);
     final I18N i18n = plugin.getResources().getI18N();
@@ -88,7 +88,7 @@ public class About extends AbstractDialog
     container.addPart(text);
 
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Datenbank-Informationen"), new Action() {
+    buttons.addButton(i18n.tr("Datenbank Infos"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -142,7 +142,7 @@ public class About extends AbstractDialog
     
     container.addButtonArea(buttons);
     
-    setSize(SWT.DEFAULT,530); // BUGZILLA 269
+    this.setSize(SWT.DEFAULT,530);
   }
 
   /**
@@ -154,98 +154,3 @@ public class About extends AbstractDialog
   }
 
 }
-
-
-/**********************************************************************
- * $Log: About.java,v $
- * Revision 1.18  2011/08/08 16:05:42  willuhn
- * @C Wallet-Dialog per Default nicht anzeigen
- *
- * Revision 1.17  2011-08-08 16:02:46  willuhn
- * @N Dialog zum Anzeigen des Wallet-Inhaltes - nur zu Testzwecken
- *
- * Revision 1.16  2011-08-05 11:21:59  willuhn
- * @N Erster Code fuer eine Umsatz-Preview
- * @C Compiler-Warnings
- * @N DateFromInput/DateToInput - damit sind die Felder fuer den Zeitraum jetzt ueberall einheitlich
- *
- * Revision 1.15  2011-05-11 10:20:29  willuhn
- * @N OCE fangen
- *
- * Revision 1.14  2010-10-29 09:35:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2010-10-29 09:27:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2010-10-29 09:26:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2010-10-28 22:49:00  willuhn
- * @C Groesse nicht mehr aenderbar
- *
- * Revision 1.10  2010-10-11 20:46:20  willuhn
- * @N BUGZILLA 928
- *
- * Revision 1.9  2010-10-05 21:39:18  willuhn
- * @C Doppelte Spenden-Funktion entfernt - jetzt nur noch ueber die DonateView
- *
- * Revision 1.8  2010-09-06 20:44:57  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2008/07/07 15:37:17  willuhn
- * @B Typo
- *
- * Revision 1.6  2008/05/06 10:10:56  willuhn
- * @N Diagnose-Dialog, mit dem man die JDBC-Verbindungsdaten (u.a. auch das JDBC-Passwort) ausgeben kann
- *
- * Revision 1.5  2008/04/15 16:16:34  willuhn
- * @B BUGZILLA 584
- *
- * Revision 1.4  2007/12/12 11:17:41  willuhn
- * @N Datenbank-Version in About-Dialog anzeigen
- *
- * Revision 1.3  2006/10/07 19:35:09  willuhn
- * @B Zugriff auf buildnumber hatte sich mit neuem Pluginloader geaendert
- *
- * Revision 1.2  2006/08/29 11:16:56  willuhn
- * @B Bug 269
- *
- * Revision 1.1  2005/11/07 18:51:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2005/07/14 20:24:34  web0
- * *** empty log message ***
- *
- * Revision 1.10  2005/07/14 18:03:54  web0
- * @N buildnumber/date in About-Dialog
- *
- * Revision 1.9  2005/03/31 23:05:46  web0
- * @N geaenderte Startseite
- * @N klickbare Links
- *
- * Revision 1.8  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.7  2004/10/11 22:41:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/10/08 13:37:48  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/07/25 17:15:05  willuhn
- * @C PluginLoader is no longer static
- *
- * Revision 1.4  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/06/08 22:28:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/05/18 22:45:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/05/18 22:40:59  willuhn
- * @N added about screen
- *
- **********************************************************************/

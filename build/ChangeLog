@@ -1,3 +1,22 @@
+2021-11-19 Version 2.10.4
+
+  * NEW: 0962 CSV-Export von Umsätzen: Name2 mit exportieren, falls vorhanden
+  * NEW: 0961 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.12.2021
+  * NEW: 0960 Beim Klick auf "Umsätze abrufen..." in Umsatzliste die Kontoauswahl überspringen, wenn bereits ein Konto ausgewählt ist
+  * NEW: 0959 Duplizieren von Daueraufträgen per Kontextmenü
+  * NEW: 0958 Strengere Prüfung der IBAN im Zahlungsverkehr - bisher wurden hier unbekannte IBANs toleriert, wenn die Option zur CRC-Prüfung aktiv war
+  * NEW: 0957 Korrektur des Startdatums beim Umsatzabruf, falls es außerhalb einer von der Bank in den BPD festgelegten Zeitspanne liegt
+  * BUG: 0956 Korrektur des Startdatums beim Umsatzabruf, falls es in der Zukunft liegt, erst nachdem ggf. ein Offset hinzugezählt wurde
+  * NEW: 0955 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.09.2021
+  * BUG: 0954 BIC nicht mehr basierend auf IBAN vorbefüllen, wenn bereits eine eingetragen wurde
+  * BUG: 0953 Das Vergrößern des Flicker-Codes führte ab einer gewissen Größe zu Darstellungsfehlern
+  * BUG: 0952 Option "Nur aktive Konten" in "Saldo im Verlauf" wurde nicht gespeichert
+  * BUG: 0951 Bearbeiten eines Umsatzes: Beim Übernehmen einer Adresse wurde Kto/BLZ statt IBAN/BIC übernommen 
+  * NEW: 0950 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 07.06.2021
+  * BUG: 0949 Ungültigen Resize-Wert im PhotoTAN-Dialog ignorieren - siehe https://homebanking-hilfe.de/forum/topic.php?p=159450#real159450
+  * BUG: 0948 Nachtrag zu 0941: Die UnsupportedOperationException kam zwar nicht mehr, dafür stimmte die Berechnung aber bei Sommer-/Winterzeitwechsel nicht mehr. Vor der Verwendung das SQL-Date in Util-Date umwandeln
+  * NEW: 0947 TAN-Dialog: Zeilenumbruch bei Auftrag und Konto
+
 2021-04-20 Version 2.10.3
 
   * NEW: 0946 Verlustfreies Vergrößern/Verkleinern der PhotoTAN und Zusammenführen von PhotoTAN und QRTAN in einem gemeinsamen Dialog

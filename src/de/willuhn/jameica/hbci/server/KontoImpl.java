@@ -120,7 +120,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       {
         HBCIProperties.checkLength(iban, HBCIProperties.HBCI_IBAN_MAXLENGTH);
         HBCIProperties.checkChars(iban, HBCIProperties.HBCI_IBAN_VALIDCHARS);
-        HBCIProperties.getIBAN(iban);
+        HBCIProperties.checkIBAN(iban);
       }
       if (bic != null && bic.length() > 0)
       {

@@ -218,7 +218,23 @@ public class KontoauszugList extends UmsatzList
         handlePrint();
       }
     },null,false,"document-save.png");
-    buttons.addButton(i18n.tr("Umsätze abrufen..."), new KontoFetchUmsaetze(),null,false,"mail-send-receive.png");
+    buttons.addButton(i18n.tr("Umsätze abrufen..."), new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        Object ctx = null;
+        try
+        {
+          ctx = getKontoAuswahl().getValue();
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to get current konto",re);
+        }
+        new KontoFetchUmsaetze().handleAction(ctx);
+      }
+    },null,false,"mail-send-receive.png");
     buttons.addButton(i18n.tr("Filter zurücksetzen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException

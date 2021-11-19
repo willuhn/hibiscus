@@ -678,8 +678,8 @@ public class Controller extends AbstractControl {
     }
     catch (Throwable t)
     {
-      Logger.error("error while exporting key",t);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Export der Schlüsseldatei"),StatusBarMessage.TYPE_ERROR));
+      Logger.error("error while creating key",t);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Schlüsseldatei"),StatusBarMessage.TYPE_ERROR));
     }
 
   }

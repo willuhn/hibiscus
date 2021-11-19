@@ -512,11 +512,11 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       Address empfaenger = (Address) event.data;
 
       try {
-        getEmpfaengerKonto().setValue(empfaenger.getKontonummer());
+        getEmpfaengerKonto().setValue(empfaenger.getIban());
 
-        String blz = empfaenger.getBlz();
-        getEmpfaengerBLZ().setValue(blz);
-        String name = HBCIProperties.getNameForBank(blz);
+        String bic = empfaenger.getBic();
+        getEmpfaengerBLZ().setValue(bic);
+        String name = HBCIProperties.getNameForBank(bic);
         getEmpfaengerBLZ().setComment(name);
       }
       catch (RemoteException er)
