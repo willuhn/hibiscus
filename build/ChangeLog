@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+2021-11-19 Version 2.10.4
+
   * NEW: 0962 CSV-Export von Umsätzen: Name2 mit exportieren, falls vorhanden
   * NEW: 0961 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.12.2021
   * NEW: 0960 Beim Klick auf "Umsätze abrufen..." in Umsatzliste die Kontoauswahl überspringen, wenn bereits ein Konto ausgewählt ist
