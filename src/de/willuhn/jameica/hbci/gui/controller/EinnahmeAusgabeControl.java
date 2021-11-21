@@ -98,7 +98,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
     ;
 
     private String name;
+    /**
+     * Typ des Tages zur Adressierung innerhalb des Intervalls
+     */
     private int type;
+    /**
+     * Intervalldauer
+     */
     private int size;
 
     /**
@@ -589,7 +595,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       Calendar calendar = Calendar.getInstance();
       calendar.setTime(DateUtil.startOfDay(start));
-      while (calendar.getTime().before(end))
+      // Prüfe auf time <= end mit !after(), damit bei start==end auch ein Intervallknoten bestimmt wird.
+      while (!calendar.getTime().after(end))
       {
         calendar.set(interval.type, 1);
         Date nodeFrom = calendar.getTime();
