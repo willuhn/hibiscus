@@ -610,15 +610,16 @@ public class EinnahmeAusgabeControl extends AbstractControl
         calendar.set(interval.type, 1);
         Date nodeFrom = calendar.getTime();
 
-        // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
+        // ermittle den Zeitpunkt unmittelbar vor dem nächsten Zeitraumstart
         calendar.add(interval.size, 1);
-        calendar.setTimeInMillis(calendar.getTime().getTime() - 1);
+        calendar.add(Calendar.MILLISECOND, -1);
         Date nodeTo = DateUtil.startOfDay(calendar.getTime());
 
         List<EinnahmeAusgabe> werte = getEmptyNodes(nodeFrom, nodeTo, konten);
         result.add(new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte));
         // ermittle den Start des nächsten Zeitraums
         calendar.setTime(nodeFrom);
+        // eine Intervalldauer in die Zukunft springen
         calendar.add(interval.size, 1);
       }
     }
