@@ -74,7 +74,7 @@ public class KontoUtil
       return null;
     
     // BUGZILLA 365
-    // Fuehrende Nullen schneiden wir ab
+    // Fuehrende Nullen abschneiden
     if (kontonummer.startsWith("0"))
       kontonummer = kontonummer.replaceAll("^0{1,}","");
 
@@ -109,6 +109,8 @@ public class KontoUtil
       String kTest = test.getKontonummer();
       if (kTest == null || kTest.length() == 0)
         continue;
+
+      // Fuehrende Nullen abschneiden
       if (kTest.startsWith("0"))
         kTest = kTest.replaceAll("^0{1,}","");
       
