@@ -440,7 +440,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // haben ja einen Saldo von 0,00. Wir nehmen daher das Flag mit auf.
     // Aber nur bei Vormerkbuchungen, damit die Checksummen der valutierten
     // Buchungen gleich bleiben
-    if ((getFlags() & FLAG_NOTBOOKED) != 0)
+    if (hasFlag(FLAG_NOTBOOKED))
       s += "notbooked";
     
 		CRC32 crc = new CRC32();
@@ -583,7 +583,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
           getZweck(),
           k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(getBetrag())
         };
-        if ((this.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+        if (!this.hasFlag(Umsatz.FLAG_NOTBOOKED))
           k.addToProtokoll(i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Datum {3}, Zweck: {4}] {5} gelöscht",fields),Protokoll.TYP_SUCCESS);
       }
       

@@ -116,7 +116,7 @@ public class UmsatzDetailControl extends AbstractControl
     if (this.kommentar != null)
       return this.kommentar;
     this.kommentar = new TextAreaInput(this.getUmsatz().getKommentar());
-    this.kommentar.setEnabled((getUmsatz().getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
+    this.kommentar.setEnabled(!getUmsatz().hasFlag(Umsatz.FLAG_NOTBOOKED));
     return this.kommentar;
   }
   
@@ -218,7 +218,7 @@ public class UmsatzDetailControl extends AbstractControl
     this.umsatzTyp = new UmsatzTypInput(ut,typ, false);
     this.umsatzTyp.setComment("");
     
-    this.umsatzTyp.setEnabled((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0);
+    this.umsatzTyp.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED));
     return this.umsatzTyp;
   }
 

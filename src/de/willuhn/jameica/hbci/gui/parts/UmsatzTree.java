@@ -105,7 +105,7 @@ public class UmsatzTree extends TreePart
           if (i instanceof Umsatz)
           {
             Umsatz u = (Umsatz) i;
-            if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+            if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
               item.setForeground(de.willuhn.jameica.gui.util.Color.COMMENT.getSWTColor());
 
             item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
