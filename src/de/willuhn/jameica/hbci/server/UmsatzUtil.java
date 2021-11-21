@@ -165,8 +165,8 @@ public class UmsatzUtil
 
   /**
    * Liefert alle Umsaetze, jedoch mit vereinheitlichter Vorsortierung.
-   * @param backwards chronologisch (alte zuerst) = true.
-   * umgekehrt chronologisch (neue zuerst) = false.
+   * @param backwards chronologisch (alte zuerst) = false.
+   * umgekehrt chronologisch (neue zuerst) = true.
    * @return sortierte Liste der Umsaetze.
    * @throws RemoteException
    */
