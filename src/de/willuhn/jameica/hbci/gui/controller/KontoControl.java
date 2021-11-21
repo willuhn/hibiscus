@@ -823,8 +823,8 @@ public class KontoControl extends AbstractControl
    */
   private void applyOfflineState(boolean offline) throws RemoteException
   {
-    int flags = getKonto().getFlags();
-    boolean have = getKonto().hasFlag(Konto.FLAG_OFFLINE);
+    final int flags = getKonto().getFlags();
+    final boolean have = getKonto().hasFlag(Konto.FLAG_OFFLINE);
     if (offline && !have)
       getKonto().setFlags(flags | Konto.FLAG_OFFLINE);
     else if (!offline && have)

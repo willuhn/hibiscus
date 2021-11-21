@@ -42,7 +42,7 @@ public class KontoDisable implements Action
     try
     {
       // Ist schon deaktiviert
-      if ((k.getFlags() & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED)
+      if (k.hasFlag(Konto.FLAG_DISABLED))
         return;
 
       String s = i18n.tr("Sind Sie sicher, dass Sie das Konto deaktivieren möchten?\n\n" +

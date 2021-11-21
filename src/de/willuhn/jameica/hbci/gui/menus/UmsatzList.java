@@ -360,7 +360,7 @@ public class UmsatzList extends ContextMenu implements Extendable
         {
           for (int i=0;i<umsaetze.length;++i)
           {
-            if ((umsaetze[i].getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+            if (umsaetze[i].hasFlag(Umsatz.FLAG_NOTBOOKED))
               return false;
           }
         }
