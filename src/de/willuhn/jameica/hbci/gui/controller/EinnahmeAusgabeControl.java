@@ -438,9 +438,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // Daten für das nächste relevante Intervall vorbereiten; 'while' da es möglich wäre, dass es für einen Zeitraum in der Mitte gar keine Umsätze gab
       while (currentNode == null || umsatz.getDatum().after(currentNode.getEnddatum()))
       {
-        // Bei einem User kam es zu einer IndexOutOfBoundsException. Das Szenario konnte ich mir nicht erklaeren
-        // Da es aber ohnehin unschoen ist, per Index auf eine Liste zuzugreifen, ohne in der Schleife sicherzustellen,
-        // dass die Liste ueberhaupt lang genug ist, breche ich hier einfach ab.
+        // Wenn der Filterzeitraum identisches Start- und Enddatum hat, es an diesem Tag
+        // aber einen Umsatz auf dem gewählten Konto gibt, so bekommt man eine leere Liste nodes.
+        // Ggf. gibt es weitere Fälle, die eine IndexOutOfBoundsException auslösen können.
+        // Dasher ist Prüfung des index erforderlich.
         if (index >= nodes.size())
         {
           Date end = currentNode != null ? currentNode.getEnddatum() : null;
