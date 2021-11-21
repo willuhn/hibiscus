@@ -351,17 +351,23 @@ public class EinnahmeAusgabeControl extends AbstractControl
     // wenn die Umsatzliste leer ist, erfolgt keine Gruppierung, es wird nur der Gesamtzeitraum
     // ausgewertet und da keine Umsätze zugeordnet werden müssen, spielen fehlende Datumsangaben keine Rolle
     Interval interval = umsatzList.isEmpty() ? Interval.ALL : (Interval) getInterval().getValue();
-    List<EinnahmeAusgabeTreeNode> result = createEmptyNodes(start, end, konten, interval);
-    addData(result, umsatzList, saldenProKonto);
+    List<EinnahmeAusgabeTreeNode> nodes = createEmptyNodes(start, end, konten, interval);
 
     this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
+    if (nodes.isEmpty())
+    {
+      Logger.warn("no nodes created between range starts on " + startFirstInterval + " and range ends on " + end);
+      return this.werte;
+    }
+    addData(nodes, umsatzList, saldenProKonto);
+
     if (interval == Interval.ALL)
     {
       // Es gibt nur einen Zweig - da reichen uns die darunterliegenden Elemente
-      this.werte.addAll(getChildren(result.get(0)));
+      this.werte.addAll(getChildren(nodes.get(0)));
     } else
     {
-      this.werte.addAll(result);
+      this.werte.addAll(nodes);
     }
     return this.werte;
   }
@@ -439,7 +445,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       while (currentNode == null || umsatz.getDatum().after(currentNode.getEnddatum()))
       {
         // Wenn der Filterzeitraum identisches Start- und Enddatum hat, es an diesem Tag
-        // aber einen Umsatz auf dem gewählten Konto gibt, so bekommt man eine leere Liste nodes.
+        // aber einen Umsatz auf dem gewählten Konto gibt, so bekam man eine leere Liste nodes.
         // Ggf. gibt es weitere Fälle, die eine IndexOutOfBoundsException auslösen können.
         // Dasher ist Prüfung des index erforderlich.
         if (index >= nodes.size())
