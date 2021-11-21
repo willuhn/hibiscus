@@ -89,8 +89,8 @@ public class KontoUtil
     while (konten.hasNext())
     {
       // Fuehrende Nullen abschneiden und dann vergleichen
-      Konto test = (Konto) konten.next();
-      int current = test.getFlags();
+      final Konto konto = (Konto) konten.next();
+      int current = konto.getFlags();
 
       if (flag == Konto.FLAG_NONE)
       {
@@ -106,7 +106,7 @@ public class KontoUtil
           continue;
       }
       
-      String kTest = test.getKontonummer();
+      String kTest = konto.getKontonummer();
       if (kTest == null || kTest.length() == 0)
         continue;
       if (kTest.startsWith("0"))
@@ -114,7 +114,7 @@ public class KontoUtil
       
       // Mal schauen, ob die Kontonummern jetzt uebereinstimmen
       if (kTest.equals(kontonummer))
-        return test;
+        return konto;
     }
     
     return null;
@@ -265,8 +265,8 @@ public class KontoUtil
     konten.addFilter("lower(iban) = ?", iban.toLowerCase()); // case insensitive
     while (konten.hasNext())
     {
-      Konto test = (Konto) konten.next();
-      int current = test.getFlags();
+      final Konto konto = (Konto) konten.next();
+      int current = konto.getFlags();
 
       if (flag == Konto.FLAG_NONE)
       {
@@ -282,7 +282,7 @@ public class KontoUtil
           continue;
       }
       
-      return test;
+      return konto;
     }
     
     return null;
