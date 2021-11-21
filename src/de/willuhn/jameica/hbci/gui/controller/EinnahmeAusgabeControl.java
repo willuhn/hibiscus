@@ -480,8 +480,14 @@ public class EinnahmeAusgabeControl extends AbstractControl
       {
         EinnahmeAusgabe ea = kontoEntry.getValue();
         List<Value> saldo = saldoProKonto.get(ea.getKonto().getID());
+        if (saldo.isEmpty())
+        {
+          // sollte nicht passieren, aber sonst wird tagEnde im Folgenden negativ
+          continue;
+        }
         if (tagEnde >= saldo.size())
         {
+          Logger.warn("Unexpected access to saldo, should pick day at index " + tagEnde + " but saldo has only " + saldo.size() + " days. Using last available day instead");
           tagEnde = saldo.size() - 1;
         }
           
