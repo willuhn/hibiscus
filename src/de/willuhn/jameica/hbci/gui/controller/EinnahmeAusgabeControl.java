@@ -479,11 +479,14 @@ public class EinnahmeAusgabeControl extends AbstractControl
       for (Entry<String, EinnahmeAusgabe> kontoEntry : kontoMap.entrySet())
       {
         EinnahmeAusgabe ea = kontoEntry.getValue();
-        if(tagEnde >= saldoProKonto.get(ea.getKonto().getID()).size()) 
-          tagEnde = saldoProKonto.get(ea.getKonto().getID()).size() - 1;
+        List<Value> saldo = saldoProKonto.get(ea.getKonto().getID());
+        if (tagEnde >= saldo.size())
+        {
+          tagEnde = saldo.size() - 1;
+        }
           
-        ea.setAnfangssaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagStart).getValue());
-        ea.setEndsaldo(saldoProKonto.get(ea.getKonto().getID()).get(tagEnde).getValue());
+        ea.setAnfangssaldo(saldo.get(tagStart).getValue());
+        ea.setEndsaldo(saldo.get(tagEnde).getValue());
       }
       
       tagStart = tagEnde;
