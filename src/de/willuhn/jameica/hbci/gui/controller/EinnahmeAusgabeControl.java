@@ -92,8 +92,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
   private enum Interval
   {
     ALL(-1, -1, i18n.tr("Gesamtzeitraum")), 
-    YEAR(Calendar.DAY_OF_YEAR, Calendar.YEAR,i18n.tr("Jahr")),
-    MONTH(Calendar.DAY_OF_MONTH, Calendar.MONDAY, i18n.tr("Monat")),
+    YEAR(Calendar.DAY_OF_YEAR, Calendar.YEAR, i18n.tr("Jahr")),
+    MONTH(Calendar.DAY_OF_MONTH, Calendar.MONTH, i18n.tr("Monat")),
     
     ;
 
