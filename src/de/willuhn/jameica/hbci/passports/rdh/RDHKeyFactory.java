@@ -176,7 +176,7 @@ public class RDHKeyFactory
       final int ft = KeyFormat.FEATURE_CREATE;
       KeyFormat[] formats = RDHKeyFactory.getKeyFormats(ft);
       
-      KeyFormat format = null;
+      KeyFormat format;
       if (formats != null && formats.length == 1)
       {
         format = formats[0];
@@ -232,7 +232,7 @@ public class RDHKeyFactory
 		if (!i.hasNext())
 			throw new ApplicationException(i18n.tr("Bitte erstellen Sie zuerst eine Schlüsseldatei"));
 
-    RDHKey key = null;
+    RDHKey key;
     
 
     ArrayList keys = new ArrayList();

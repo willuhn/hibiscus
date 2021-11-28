@@ -184,7 +184,7 @@ public class KontoNew extends AbstractView
 
     ButtonArea buttons = new ButtonArea();
 
-    Button fetch = null;
+    Button fetch;
 
     Konto konto = control.getKonto();
     if (konto.hasFlag(Konto.FLAG_OFFLINE))

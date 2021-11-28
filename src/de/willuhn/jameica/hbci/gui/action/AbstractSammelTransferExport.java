@@ -39,7 +39,7 @@ public abstract class AbstractSammelTransferExport implements Action
 
 		try
     {
-		  SammelTransfer[] list = null;
+		  SammelTransfer[] list;
 		  if (context instanceof SammelTransfer)
 		    list = new SammelTransfer[]{(SammelTransfer) context};
 		  else

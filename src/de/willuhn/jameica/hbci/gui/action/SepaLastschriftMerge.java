@@ -37,7 +37,7 @@ public class SepaLastschriftMerge implements Action
     if (!(context instanceof SepaLastschrift) && !(context instanceof SepaLastschrift[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
-    SepaLastschrift[] source = null;
+    SepaLastschrift[] source;
     
     if (context instanceof SepaLastschrift)
       source = new SepaLastschrift[]{(SepaLastschrift) context};

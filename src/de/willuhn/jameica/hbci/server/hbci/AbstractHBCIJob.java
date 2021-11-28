@@ -149,7 +149,7 @@ public abstract class AbstractHBCIJob
   		Object key = i.next();
   		Object value = params.get(key);
   		
-  		String name = null;
+  		String name;
   		Integer idx = null;
   		if (key instanceof SimpleEntry)
   		{

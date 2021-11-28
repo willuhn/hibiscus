@@ -40,7 +40,7 @@ public class TerminableMarkExecuted implements Action
     if (context == null)
       return;
 
-    Terminable t[] = null;
+    Terminable[] t;
     if (context instanceof Terminable)
       t = new Terminable[]{(Terminable) context};
     else

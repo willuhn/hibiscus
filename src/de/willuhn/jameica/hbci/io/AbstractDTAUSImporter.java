@@ -107,7 +107,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
         
         DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
 
-        CSatz c = null;
+        CSatz c;
         while ((c = parser.next()) != null)
         {
           try

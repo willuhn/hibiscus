@@ -971,7 +971,7 @@ public class KontoauszugList extends UmsatzList
                 // Mal schauen, obs den Typ schon gibt
                 DBIterator existing = de.willuhn.jameica.hbci.Settings.getDBService().createList(UmsatzTyp.class);
                 existing.addFilter("pattern = ?", new Object[]{text});
-                UmsatzTyp typ = null; 
+                UmsatzTyp typ;
                 if (existing.size() > 0)
                 {
                   if (!Application.getCallback().askUser(i18n.tr("Eine Umsatz-Kategorie mit diesem Suchbegriff existiert bereits. Überschreiben?")))

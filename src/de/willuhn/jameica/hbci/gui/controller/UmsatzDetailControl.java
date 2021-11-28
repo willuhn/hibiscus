@@ -260,7 +260,7 @@ public class UmsatzDetailControl extends AbstractControl
       return this.empfaengerBlz;
     
     String value = getUmsatz().getGegenkontoBLZ();
-    boolean isBic = value == null || value.trim().length() == 0; // Per Default ist es eine BIC
+    boolean isBic;
     try
     {
       HBCIProperties.checkChars(value,HBCIProperties.HBCI_BLZ_VALIDCHARS); // Wenn das keine Exception wirft, muss es eine BLZ sein

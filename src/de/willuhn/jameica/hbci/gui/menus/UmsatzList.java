@@ -349,7 +349,7 @@ public class UmsatzList extends ContextMenu implements Extendable
     {
       if ((o instanceof Umsatz) || (o instanceof Umsatz[]))
       {
-        Umsatz[] umsaetze = null;
+        Umsatz[] umsaetze;
         
         if (o instanceof Umsatz)
           umsaetze = new Umsatz[]{(Umsatz) o};

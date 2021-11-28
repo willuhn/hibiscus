@@ -220,7 +220,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			}
 
 			ArrayList result = new ArrayList();
-			Konto k = null;
+			Konto k;
 			for (int i=0;i<konten.length;++i)
 			{
 				k = Converter.HBCIKonto2HibiscusKonto(konten[i], PassportImpl.class);

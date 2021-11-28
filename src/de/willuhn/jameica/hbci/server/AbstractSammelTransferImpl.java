@@ -229,7 +229,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
       int count = 0;
       // dann die Dauerauftraege
       DBIterator list = getBuchungen();
-      SammelTransferBuchung b = null;
+      SammelTransferBuchung b;
       while (list.hasNext())
       {
         b = (SammelTransferBuchung) list.next();

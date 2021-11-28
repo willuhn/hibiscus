@@ -235,7 +235,7 @@ public class UmsatzTypListDialog extends AbstractDialog
               item.setText(0,b.getPathName());
           }
           
-          Color c = null;
+          Color c;
           
           if (ut.isCustomColor())
           {

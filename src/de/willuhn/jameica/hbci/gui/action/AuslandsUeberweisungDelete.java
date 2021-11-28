@@ -47,7 +47,7 @@ public class AuslandsUeberweisungDelete extends DBObjectDelete
     {
       boolean array = (context instanceof AuslandsUeberweisung[]);
       
-      AuslandsUeberweisung[] list = null;
+      AuslandsUeberweisung[] list;
       if (array)
         list = (AuslandsUeberweisung[]) context;
       else
@@ -62,7 +62,7 @@ public class AuslandsUeberweisungDelete extends DBObjectDelete
       
       if (count > 0)
       {
-        String msg = null;
+        String msg;
         
         if (array)
         {

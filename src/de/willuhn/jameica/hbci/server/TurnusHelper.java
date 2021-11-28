@@ -122,7 +122,7 @@ public class TurnusHelper
     int tag = turnus.getTag();
     int iv  = turnus.getIntervall();
 
-    Date test = null;
+    Date test;
     
     // eigentlich gehoert hier ein "while true" hin, ich will aber eine
     // Abbruchbedingung, damit das Teil keine 1000 Jahre in die Zukunft

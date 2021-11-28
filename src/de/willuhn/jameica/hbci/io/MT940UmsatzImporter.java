@@ -80,7 +80,7 @@ public class MT940UmsatzImporter implements Importer
 
       InputStreamReader encodedIs = new InputStreamReader(is,MT940UmsatzExporter.CHARSET);
       StringBuffer sb = new StringBuffer();
-      int read = 0;
+      int read;
       char[] buf = new char[8192];
 
       while ((read = encodedIs.read(buf)) != -1)

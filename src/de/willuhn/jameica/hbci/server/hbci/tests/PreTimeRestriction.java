@@ -60,7 +60,7 @@ public class PreTimeRestriction implements Restriction
 
 		Logger.debug("testing first payment date " + date.toString() + " against restriction \"minpretime\": " + min);
 
-		int i = 0;
+		int i;
 		try
 		{
 			i = Integer.parseInt(min);
@@ -89,7 +89,7 @@ public class PreTimeRestriction implements Restriction
 
 		Logger.debug("testing first payment date " + date.toString() + " against restriction \"maxpretime\": " + max);
 
-		int i = 0;
+		int i;
 		try
 		{
 			i = Integer.parseInt(max);

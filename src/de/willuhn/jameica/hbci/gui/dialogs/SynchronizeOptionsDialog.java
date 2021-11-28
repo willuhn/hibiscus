@@ -135,7 +135,7 @@ public class SynchronizeOptionsDialog extends AbstractDialog
    */
   private Input createCustomProperty(String name) throws RemoteException
   {
-    Input t = null;
+    Input t;
     if (name.endsWith("(true/false)"))
     {
       String newName = name.replace("(true/false)","").trim();

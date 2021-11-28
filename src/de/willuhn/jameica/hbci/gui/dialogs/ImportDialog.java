@@ -120,7 +120,7 @@ public class ImportDialog extends AbstractDialog
    */
   private void doImport() throws ApplicationException
   {
-    Imp imp = null;
+    Imp imp;
 
     try
     {

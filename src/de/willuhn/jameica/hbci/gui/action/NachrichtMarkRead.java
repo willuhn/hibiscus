@@ -42,7 +42,7 @@ public class NachrichtMarkRead implements Action
 
     boolean array = (context instanceof Nachricht[]);
 
-    Nachricht[] list = null;
+    Nachricht[] list;
     if (array)
       list = (Nachricht[]) context;
     else

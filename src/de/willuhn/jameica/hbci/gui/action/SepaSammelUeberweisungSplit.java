@@ -44,7 +44,7 @@ public class SepaSammelUeberweisungSplit implements Action
     if (!(context instanceof SepaSammelUeberweisung) && !(context instanceof SepaSammelUeberweisung[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Sammelaufträge aus"));
 
-    SepaSammelUeberweisung[] source = null;
+    SepaSammelUeberweisung[] source;
     
     if (context instanceof SepaSammelUeberweisung)
       source = new SepaSammelUeberweisung[]{(SepaSammelUeberweisung) context};

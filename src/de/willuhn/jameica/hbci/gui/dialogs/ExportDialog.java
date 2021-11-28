@@ -141,7 +141,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
    */
   private void export() throws ApplicationException
   {
-    ExpotFormat exp = null;
+    ExpotFormat exp;
 
     try
     {

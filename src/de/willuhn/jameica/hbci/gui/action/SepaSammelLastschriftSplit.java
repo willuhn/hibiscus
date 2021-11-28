@@ -44,7 +44,7 @@ public class SepaSammelLastschriftSplit implements Action
     if (!(context instanceof SepaSammelLastschrift) && !(context instanceof SepaSammelLastschrift[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Sammelaufträge aus"));
 
-    SepaSammelLastschrift[] source = null;
+    SepaSammelLastschrift[] source;
     
     if (context instanceof SepaSammelLastschrift)
       source = new SepaSammelLastschrift[]{(SepaSammelLastschrift) context};

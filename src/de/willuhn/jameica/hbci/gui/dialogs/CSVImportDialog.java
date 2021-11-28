@@ -290,7 +290,7 @@ public class CSVImportDialog extends AbstractDialog
         getError().setValue(i18n.tr("Encoding {0} ignoriert, wird nicht unterstützt",enc));
       }
       csv = new CsvListReader(new InputStreamReader(new ByteArrayInputStream(this.data),charset != null ? charset : Charset.defaultCharset()),prefs);
-      List<String> line = null;
+      List<String> line;
       while ((line = csv.read()) != null)
       {
         // Der CSV-Reader verwendet das List-Objekt leider immer

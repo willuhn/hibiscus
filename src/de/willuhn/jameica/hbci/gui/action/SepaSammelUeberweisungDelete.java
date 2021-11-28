@@ -47,7 +47,7 @@ public class SepaSammelUeberweisungDelete extends DBObjectDelete
     {
       boolean array = (context instanceof SepaSammelUeberweisung[]);
       
-      SepaSammelUeberweisung[] list = null;
+      SepaSammelUeberweisung[] list;
       if (array)
         list = (SepaSammelUeberweisung[]) context;
       else
@@ -62,7 +62,7 @@ public class SepaSammelUeberweisungDelete extends DBObjectDelete
       
       if (count > 0)
       {
-        String msg = null;
+        String msg;
         
         if (array)
         {

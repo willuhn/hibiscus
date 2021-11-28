@@ -60,7 +60,7 @@ public class KontoauszugDelete implements Action
 	    {
 	      protected void extend(Container container) throws Exception
 	      {
-	        String text = null;
+	        String text;
 	        
 	        if (file != null)
 	        {

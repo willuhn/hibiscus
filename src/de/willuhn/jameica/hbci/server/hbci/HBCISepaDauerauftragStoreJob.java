@@ -194,7 +194,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
     else
       konto.addToProtokoll(i18n.tr("SEPA-Dauerauftrag ausgeführt an {0} ",empfName),Protokoll.TYP_SUCCESS);
 
-    String orderID = null;
+    String orderID;
     HBCIJobResult result = this.getJobResult();
     if (result instanceof GVRDauerNew)
       orderID = ((GVRDauerNew)result).getOrderId();

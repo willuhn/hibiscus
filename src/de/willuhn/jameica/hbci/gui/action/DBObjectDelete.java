@@ -86,7 +86,7 @@ public class DBObjectDelete implements Action
       return;
     }
 
-    DBObject[] list = null;
+    DBObject[] list;
     if (array)
       list = (DBObject[]) context;
     else

@@ -57,7 +57,7 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     checked.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED) && !u.hasFlag(Umsatz.FLAG_CHECKED));
     buttons.addButton(checked);
     
-    Button ab = null;
+    Button ab;
     final Address found = getControl().getAddressbookEntry();
     if (found != null)
     {

@@ -76,7 +76,7 @@ public class XMLUmsatzImporter extends XMLImporter
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
 
-      Konto konto = null;
+      Konto konto;
       if (context instanceof Konto)
       {
         konto = (Konto) context;
@@ -99,7 +99,7 @@ public class XMLUmsatzImporter extends XMLImporter
       int created = 0;
       int error   = 0;
 
-      Umsatz umsatz = null;
+      Umsatz umsatz;
       while ((umsatz = (Umsatz) reader.read()) != null)
       {
         if (monitor != null)

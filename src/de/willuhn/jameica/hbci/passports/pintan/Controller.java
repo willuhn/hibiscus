@@ -590,7 +590,7 @@ public class Controller extends AbstractControl
    */
   public synchronized void handleCreate()
   {
-    PinTanConfig conf = null;
+    PinTanConfig conf;
     try
     {
       Logger.info("creating new pin/tan config");

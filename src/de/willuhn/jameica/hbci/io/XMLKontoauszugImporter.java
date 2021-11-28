@@ -75,7 +75,7 @@ public class XMLKontoauszugImporter extends XMLImporter
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
 
-      Konto konto = null;
+      Konto konto;
       if (context instanceof Konto)
       {
         konto = (Konto) context;
@@ -97,7 +97,7 @@ public class XMLKontoauszugImporter extends XMLImporter
       int created = 0;
       int error   = 0;
 
-      Kontoauszug ka = null;
+      Kontoauszug ka;
       while ((ka = (Kontoauszug) reader.read()) != null)
       {
         if (monitor != null)

@@ -89,7 +89,7 @@ public class CamtUmsatzImporter implements Importer
         // Wir kriegen aus dem ZIP-Inputstream nicht raus, wieviele Dateien enthalten sind sondern koennen nur drueber iterieren.
         // Daher rechnen wir fuer den Fortschrittsbalken mal pauschal mit 22 Dateien (pro Buchungstag aka Wochentag eines Monats eine Datei)
         ZipInputStream zis = new ZipInputStream(is);
-        ZipEntry ze = null;
+        ZipEntry ze;
         double fc = 22d;
         int no = 1;
         while ((ze = zis.getNextEntry()) != null)

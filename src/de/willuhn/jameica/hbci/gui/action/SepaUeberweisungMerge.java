@@ -48,7 +48,7 @@ public class SepaUeberweisungMerge implements Action
     if (!(context instanceof AuslandsUeberweisung) && !(context instanceof AuslandsUeberweisung[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Aufträge aus"));
 
-    AuslandsUeberweisung[] source = null;
+    AuslandsUeberweisung[] source;
     
     if (context instanceof AuslandsUeberweisung)
       source = new AuslandsUeberweisung[]{(AuslandsUeberweisung) context};

@@ -404,7 +404,7 @@ public class HBCIProperties
     if (bic == null)
       return null;
     
-    Bank bank = null;
+    Bank bank;
     
     // Wenn sie 8 Zeichen lang ist, gehen wir davon aus, dass es eine BLZ ist.
     // Sonst versuchen wir es als BIC zu interpretieren.

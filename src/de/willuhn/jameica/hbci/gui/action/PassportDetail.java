@@ -44,7 +44,7 @@ public class PassportDetail implements Action
         return;
       }
       
-      Passport p = null;
+      Passport p;
       if (context instanceof Passport)
       {
         p = (Passport) context;

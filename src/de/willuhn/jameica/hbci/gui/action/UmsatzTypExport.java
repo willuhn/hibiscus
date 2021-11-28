@@ -42,7 +42,7 @@ public class UmsatzTypExport implements Action
         !(UmsatzTyp[].class.isAssignableFrom(context.getClass())))
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsatz-Kategorien aus"));
 
-    Object[] u = null;
+    Object[] u;
 		try {
 
 			if (context instanceof UmsatzTyp)

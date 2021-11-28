@@ -141,7 +141,7 @@ public class DialogFactory
     if (key == null)
       return null;
 
-    PINEntry entry = null;
+    PINEntry entry;
     
     // Cache checken - ob der fuer die ganze Sitzung stehen bleibt oder nur fuer die
     // Dauer der Synchronisierung, das entscheiden wir nicht hier sondern am Ende der

@@ -76,7 +76,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
 
-      Konto konto = null;
+      Konto konto;
       try
       {
         // Wir fragen das Konto grundsaetzlich manuell ab. Siehe BUGZILLA 700
@@ -97,7 +97,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
 
       SepaSammelTransfer currentTransfer = null;
       
-      DBObject object = null;
+      DBObject object;
       while ((object = (DBObject) reader.read()) != null)
       {
         if (monitor != null)

@@ -39,7 +39,7 @@ public abstract class AbstractSepaSammelTransferExport<T extends SepaSammelTrans
 
 		try
     {
-		  SepaSammelTransfer[] list = null;
+		  SepaSammelTransfer[] list;
 		  if (context instanceof SepaSammelTransfer)
 		    list = new SepaSammelTransfer[]{(SepaSammelTransfer) context};
 		  else

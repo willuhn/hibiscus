@@ -408,7 +408,7 @@ public class KontoList extends TablePart implements Part, Extendable
   {
     try
     {
-      List<Konto> items = null;
+      List<Konto> items;
       Object o = this.getSelection();
 
       // Nur wenn mehr als ein Konto markiert ist, nehmen

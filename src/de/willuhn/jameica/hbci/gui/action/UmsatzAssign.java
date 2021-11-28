@@ -42,7 +42,7 @@ public class UmsatzAssign implements Action
     if (!(context instanceof Umsatz) && !(context instanceof Umsatz[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Umsätze aus"));
 
-    Umsatz[] umsaetze = null;
+    Umsatz[] umsaetze;
     
     if (context instanceof Umsatz)
       umsaetze = new Umsatz[]{(Umsatz) context};

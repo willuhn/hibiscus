@@ -52,7 +52,7 @@ public class FlaggableChange implements Action
     if (!(context instanceof Flaggable) && !(context instanceof Flaggable[]))
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Datensätze aus"));
 
-    Flaggable[] objects = null;
+    Flaggable[] objects;
     
     if (context instanceof Flaggable)
       objects = new Flaggable[]{(Flaggable) context};

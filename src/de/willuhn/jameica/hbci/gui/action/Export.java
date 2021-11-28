@@ -58,7 +58,7 @@ public class Export implements Action
     if (export == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie die zu exportierenden Daten aus"));
 
-    Object[] objects = null;
+    Object[] objects;
     
     if (export instanceof Object[])
       objects = (Object[]) export;

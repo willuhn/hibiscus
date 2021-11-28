@@ -123,7 +123,7 @@ public class CsvImporter implements Importer
       int created       = 0;
       int error         = 0;
       int skipped       = 0;
-      DBObject object   = null;
+      DBObject object;
       String value      = null;
       List<Column> cols = p.getColumns();
       ImportListener l  = f.getImportListener();
@@ -356,7 +356,7 @@ public class CsvImporter implements Importer
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       
       byte[] buf = new byte[4096];
-      int read   = 0;
+      int read;
       while ((read = is.read(buf)) != -1)
       {
         if (read > 0) // Nur schreiben, wenn wirklich was gelesen wurde

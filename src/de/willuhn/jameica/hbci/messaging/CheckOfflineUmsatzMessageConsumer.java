@@ -87,7 +87,7 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     }
 
     // Checken, ob wir ein lokal passendes Offline-Konto haben
-    Konto gegenkonto = null;
+    Konto gegenkonto;
     String s = StringUtils.trimToNull(u.getGegenkontoNummer());
     if (s == null)
     {

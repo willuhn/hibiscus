@@ -188,7 +188,7 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
    */
   public synchronized boolean handleStore()
   {
-    SepaSammelLastBuchung s = null;
+    SepaSammelLastBuchung s;
     SepaSammelLastschrift t = null;
     
     try

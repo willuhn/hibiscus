@@ -37,7 +37,7 @@ import de.willuhn.util.ApplicationException;
 public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
 {
 
-	private Konto konto = null;
+	private Konto konto;
 
   /**
    * @param konto Konto, ueber welches die existierenden SEPA-Dauerauftraege abgerufen werden.
@@ -113,8 +113,8 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
     DBIterator existing        = konto.getSepaDauerauftraege();
     GVRDauerList.Dauer[] lines = result.getEntries();
 
-    SepaDauerauftrag remote = null;
-    SepaDauerauftrag local  = null;
+    SepaDauerauftrag remote;
+    SepaDauerauftrag local;
     
     // Hier drin merken wir uns alle SepaDauerauftraege, die beim Abgleich
     // gefunden wurden. Denn die muessen garantiert nicht lokal geloescht werden.

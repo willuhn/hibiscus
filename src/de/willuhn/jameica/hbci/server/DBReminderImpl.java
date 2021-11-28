@@ -123,7 +123,7 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
       return;
     }
     
-    XMLEncoder encoder = null;
+    XMLEncoder encoder;
     try
     {
       ByteArrayOutputStream os = new ByteArrayOutputStream();

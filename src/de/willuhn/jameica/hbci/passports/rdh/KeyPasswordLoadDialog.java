@@ -85,7 +85,7 @@ public class KeyPasswordLoadDialog extends PasswordDialog
       Logger.error("unable to determine current konto",e);
     }
     
-    String text = null;
+    String text;
     if (s != null)
     {
       setTitle(i18n.tr("Schlüsseldatei. Konto: {0}",s));

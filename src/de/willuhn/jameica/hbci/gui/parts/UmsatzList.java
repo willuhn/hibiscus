@@ -453,7 +453,7 @@ public class UmsatzList extends TablePart implements Extendable
             else if (umsaetze != null)
             {
               removeAll();
-              Date date = null;
+              Date date;
               Date limit = null;
               if (t > 0)
               {

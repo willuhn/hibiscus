@@ -264,7 +264,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       // BUGZILLA #70 http://www.willuhn.de/bugzilla/show_bug.cgi?id=70
       // Erst die Umsaetze loeschen
       DBIterator list = getUmsaetze();
-      Umsatz um = null;
+      Umsatz um;
       while (list.hasNext())
       {
         um = (Umsatz) list.next();
@@ -273,7 +273,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       
       // Die fest zugeordneten Kategorien loesen
       list = getUmsatzTypen();
-      UmsatzTyp ut = null;
+      UmsatzTyp ut;
       while (list.hasNext())
       {
         ut = (UmsatzTyp) list.next();
@@ -283,7 +283,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       
       // dann die Kontoauszuege
       list = getKontoauszuege();
-      Kontoauszug az = null;
+      Kontoauszug az;
       while (list.hasNext())
       {
         az = (Kontoauszug) list.next();
@@ -292,7 +292,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // dann die Dauerauftraege
       list = getDauerauftraege();
-      Dauerauftrag da = null;
+      Dauerauftrag da;
       while (list.hasNext())
       {
         da = (Dauerauftrag) list.next();
@@ -301,7 +301,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // dann die SEPA-Dauerauftraege
       list = getSepaDauerauftraege();
-      SepaDauerauftrag sda = null;
+      SepaDauerauftrag sda;
       while (list.hasNext())
       {
         sda = (SepaDauerauftrag) list.next();
@@ -310,7 +310,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       
       // noch die Lastschriften
       list = getLastschriften();
-      Lastschrift ls = null;
+      Lastschrift ls;
       while (list.hasNext())
       {
         ls = (Lastschrift) list.next();
@@ -319,7 +319,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // und die Sammel-Lastschriften
       list = getSammelLastschriften();
-      SammelLastschrift sls = null;
+      SammelLastschrift sls;
       while (list.hasNext())
       {
         sls = (SammelLastschrift) list.next();
@@ -328,7 +328,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // und jetzt die Ueberweisungen
       list = getUeberweisungen();
-      Ueberweisung u = null;
+      Ueberweisung u;
       while (list.hasNext())
       {
         u = (Ueberweisung) list.next();
@@ -337,7 +337,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // und jetzt die Sammel-Ueberweisungen
       list = getSammelUeberweisungen();
-      SammelUeberweisung su = null;
+      SammelUeberweisung su;
       while (list.hasNext())
       {
         su = (SammelUeberweisung) list.next();
@@ -346,7 +346,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // und jetzt die Auslandsueberweisungen
       list = getAuslandsUeberweisungen();
-      AuslandsUeberweisung au = null;
+      AuslandsUeberweisung au;
       while (list.hasNext())
       {
         au = (AuslandsUeberweisung) list.next();
@@ -355,7 +355,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // SEPA-Lastschriften
       list = getSepaLastschriften();
-      SepaLastschrift sl = null;
+      SepaLastschrift sl;
       while (list.hasNext())
       {
         sl = (SepaLastschrift) list.next();
@@ -364,7 +364,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // SEPA-Sammellastschriften
       list = getSepaSammelLastschriften();
-      SepaSammelLastschrift ssl = null;
+      SepaSammelLastschrift ssl;
       while (list.hasNext())
       {
         ssl = (SepaSammelLastschrift) list.next();
@@ -373,7 +373,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // SEPA-Sammelueberweisungen
       list = getSepaSammelUeberweisungen();
-      SepaSammelUeberweisung ssu = null;
+      SepaSammelUeberweisung ssu;
       while (list.hasNext())
       {
         ssu = (SepaSammelUeberweisung) list.next();
@@ -382,7 +382,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
 
       // und noch die Protokolle
       list = getProtokolle();
-      Protokoll p = null;
+      Protokoll p;
       while (list.hasNext())
       {
         p = (Protokoll) list.next();

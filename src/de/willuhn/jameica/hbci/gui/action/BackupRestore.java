@@ -126,7 +126,7 @@ public class BackupRestore implements Action
           });
           
           long count = 1;
-          GenericObject o = null;
+          GenericObject o;
           while ((o = reader.read()) != null)
           {
             try

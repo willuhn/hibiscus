@@ -36,7 +36,7 @@ public class KontoFetchFromPassport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    Passport passport = null;
+    Passport passport;
     
     try
     {

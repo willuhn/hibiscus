@@ -413,7 +413,7 @@ public class KontoInput extends SelectInput
         {
           // Checken, ob wir das Konto in der Liste haben. Wenn ja, aktualisieren
           // wir dessen Saldo
-          List list = null;
+          List list;
 
           try
           {

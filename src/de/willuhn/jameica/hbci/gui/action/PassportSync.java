@@ -72,7 +72,7 @@ public class PassportSync implements Action
           };
           Logger.addTarget(target);
 
-          PassportHandle handle = null;
+          PassportHandle handle;
           if (context instanceof Passport)
             handle = ((Passport)context).getHandle();
           else
