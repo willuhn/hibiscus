@@ -497,8 +497,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         return null;
       try
       {
-        Integer i = Integer.valueOf(n);
-        return i;
+        return new Integer(n);
       }
       catch (Exception e)
       {

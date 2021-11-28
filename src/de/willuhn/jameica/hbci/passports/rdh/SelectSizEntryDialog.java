@@ -73,8 +73,7 @@ public class SelectSizEntryDialog extends AbstractDialog
       {
         if (context == null || !(context instanceof Entry))
           return;
-        Entry e = (Entry) context;
-        selected = e;
+        selected = (Entry) context;
         close();
       }
     });
@@ -92,8 +91,7 @@ public class SelectSizEntryDialog extends AbstractDialog
         if (o == null || !(o instanceof Entry))
           return;
 
-        Entry e = (Entry) context;
-        selected = e;
+        selected = (Entry) context;
         close();
       }
     },null,false,"ok.png");

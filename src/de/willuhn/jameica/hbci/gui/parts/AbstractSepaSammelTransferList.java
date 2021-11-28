@@ -116,8 +116,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
             item.setForeground(Color.COMMENT.getSWTColor());
 
           // Checken, ob der Auftrag einen Reminder hat oder ob es ein geclonter Auftrag ist
-          HibiscusDBObject o = (HibiscusDBObject) l;
-          String uuid = MetaKey.REMINDER_UUID.get(o);
+          String uuid = MetaKey.REMINDER_UUID.get(l);
           if (uuid != null)
           {
             try
@@ -131,7 +130,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
               Logger.error("unable to determine reminder",e);
             }
           }
-          else if (MetaKey.REMINDER_TEMPLATE.get(o) != null)
+          else if (MetaKey.REMINDER_TEMPLATE.get(l) != null)
           {
             item.setImage(4,SWTUtil.getImage("edit-copy.png"));
           }
