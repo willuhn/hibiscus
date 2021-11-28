@@ -47,7 +47,7 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
   private final static int WINDOW_WIDTH = 800;
   private final static int WINDOW_HEIGHT= 400;
   
-  private Konto konto         = null;
+  private final Konto konto;
   private TablePart deps      = null;
   private CheckboxInput check = null;
   private Button apply        = null;
@@ -224,9 +224,9 @@ public class KontoDeleteDialog extends AbstractDialog<Boolean>
    */
   public class Dep
   {
-    private String name = null;
-    private int size = 0;
-    private String comment = null;
+    private String name;
+    private int size;
+    private String comment;
     
     /**
      * ct.

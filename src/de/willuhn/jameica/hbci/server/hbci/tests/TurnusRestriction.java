@@ -25,10 +25,10 @@ import de.willuhn.util.I18N;
  */
 public class TurnusRestriction implements Restriction
 {
-	private Turnus turnus = null;
-	private Properties p  = null;
+	private final Turnus turnus;
+	private final Properties p;
 	
-	private I18N i18n;
+	private final I18N i18n;
 
   /**
    * ct.

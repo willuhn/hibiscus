@@ -42,7 +42,7 @@ public class KeyFormatDialog extends AbstractDialog
   private TablePart table   = null;
   private KeyFormat choosen = null;
   private LabelInput warn   = null;
-  private int neededFeature = KeyFormat.FEATURE_CREATE;
+  private final int neededFeature;
   
   /**
    * ct.

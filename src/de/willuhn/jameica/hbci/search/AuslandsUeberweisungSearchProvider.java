@@ -73,7 +73,7 @@ public class AuslandsUeberweisungSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private AuslandsUeberweisung u = null;
+    private final AuslandsUeberweisung u;
     
     /**
      * ct.

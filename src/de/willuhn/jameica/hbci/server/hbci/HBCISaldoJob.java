@@ -31,7 +31,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISaldoJob extends AbstractHBCIJob {
 
-	private Konto konto = null;
+	private Konto konto;
 
   /**
 	 * ct.

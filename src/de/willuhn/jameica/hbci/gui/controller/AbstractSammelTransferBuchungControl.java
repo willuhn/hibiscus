@@ -59,7 +59,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 
 	private CheckboxInput storeAddress = null;
 
-	private I18N i18n                  = null;
+	private final I18N i18n;
 
   /**
    * ct.

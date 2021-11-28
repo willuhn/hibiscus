@@ -43,7 +43,7 @@ public enum SepaLastSequenceType
   
   ;
   
-  private String description = null;
+  private final String description;
   
   /**
    * ct.

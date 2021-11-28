@@ -41,7 +41,7 @@ public class PassportAuswahlDialog extends AbstractDialog
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private Konto konto         = null;
+  private final Konto konto;
   private PassportInput input = null;
   private Passport passport   = null;
   private LabelInput comment  = null;

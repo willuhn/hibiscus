@@ -43,7 +43,7 @@ public class PainVersionDialog extends AbstractDialog
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private Type type               = null;
+  private final Type type;
   private SepaVersion painVersion = null;
   private Button ok               = null;
 

@@ -64,7 +64,7 @@ public class UmsatzSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Umsatz umsatz = null;
+    private final Umsatz umsatz;
     
     /**
      * ct.

@@ -68,7 +68,7 @@ public class UmsatzTypTreeControl extends AbstractControl
   private UmsatzTypVerlauf chart   = null;
   private boolean expanded         = false;
   
-  private Listener listener        = null;
+  private final Listener listener;
   
   /**
    * ct.

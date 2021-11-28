@@ -90,7 +90,7 @@ public class SparQuote implements Part
   private List<UmsatzEntry> data       = new ArrayList<UmsatzEntry>();
   private List<UmsatzEntry> trend      = new ArrayList<UmsatzEntry>();
 
-  private Listener listener            = null; // BUGZILLA 575
+  private final Listener listener; // BUGZILLA 575
 
   /**
    * ct.

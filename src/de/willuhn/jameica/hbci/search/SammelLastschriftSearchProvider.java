@@ -91,7 +91,7 @@ public class SammelLastschriftSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private SammelLastschrift u = null;
+    private final SammelLastschrift u;
     
     /**
      * ct.

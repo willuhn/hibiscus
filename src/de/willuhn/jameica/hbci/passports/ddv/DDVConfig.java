@@ -36,7 +36,7 @@ public class DDVConfig implements Configuration
   public final static String[] PORTS = new String[] {"COM/USB","COM2/USB2","USB3","USB4","USB5","USB6"};
   
   private final static Settings settings = new Settings(DDVConfig.class);
-  private String id = null;
+  private final String id;
 
   /**
    * ct.

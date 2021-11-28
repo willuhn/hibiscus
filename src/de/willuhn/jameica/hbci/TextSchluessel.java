@@ -108,8 +108,8 @@ public class TextSchluessel
     list.add(new TextSchluessel(TS_SPENDE,   i18n.tr("Spende")));
   }
 
-  private String code = null;
-  private String name = null;
+  private String code;
+  private String name;
   
   /**
    * Liefert eine Liste der Textschluessel-Objekte mit den genannten Codes.

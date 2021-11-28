@@ -87,7 +87,7 @@ public class KontoList extends TablePart implements Part, Extendable
   private CheckboxInput onlyActive = null;
   private SelectInput accountType = null;
   
-  private MessageConsumer mc = null;
+  private final MessageConsumer mc;
   private boolean showFilter = true;
   
   private Listener listener = new MyListener();

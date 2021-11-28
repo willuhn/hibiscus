@@ -36,7 +36,7 @@ public class SelectConfigDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private PinTanConfig selected = null;
-  private GenericIterator list  = null;
+  private final GenericIterator list;
   private String text           = null;
 
   /**

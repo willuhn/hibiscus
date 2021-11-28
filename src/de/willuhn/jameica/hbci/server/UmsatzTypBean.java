@@ -30,7 +30,7 @@ public class UmsatzTypBean implements GenericObjectNode
 {
   private UmsatzTypBean parent = null;
   private List<UmsatzTypBean> children = new LinkedList<UmsatzTypBean>();
-  private UmsatzTyp typ = null;
+  private final UmsatzTyp typ;
   private Integer level = null;
   
   /**

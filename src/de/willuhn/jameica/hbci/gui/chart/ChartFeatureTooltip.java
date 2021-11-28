@@ -232,10 +232,10 @@ public class ChartFeatureTooltip implements ChartFeature
    */
   protected class SeriesData
   {
-    double closestX = 0;
-    double closestY = 0;
-    int seriesIndex = 0;
-    ISeries closestSerie = null;
+    final double closestX;
+    final double closestY;
+    final int seriesIndex;
+    final ISeries closestSerie;
     
     /**
      * ct.

@@ -90,7 +90,7 @@ public class SepaSammelUeberweisungSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private SepaSammelUeberweisung u = null;
+    private final SepaSammelUeberweisung u;
     
     /**
      * ct.

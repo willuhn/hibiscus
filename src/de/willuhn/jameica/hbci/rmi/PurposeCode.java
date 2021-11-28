@@ -98,8 +98,8 @@ public enum PurposeCode
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private String code;
-  private String name;
+  private final String code;
+  private final String name;
   
   /**
    * ct.

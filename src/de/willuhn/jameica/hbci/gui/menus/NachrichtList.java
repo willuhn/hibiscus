@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
 public class NachrichtList extends ContextMenu
 {
 
-	private I18N i18n;
+	private final I18N i18n;
 
 	/**
 	 * Erzeugt das Kontext-Menu fuer eine Liste von Nachrichten.

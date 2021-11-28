@@ -43,7 +43,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 {
-  private DBSupport driver = null;
+  private DBSupport driver;
   
   /**
    * @throws RemoteException
@@ -134,7 +134,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   public void checkConsistency() throws RemoteException, ApplicationException
   {
     Logger.info("determine current database version");
-    Version version = null;
+    Version version;
     try
     {
       version = VersionUtil.getVersion(this,"db");

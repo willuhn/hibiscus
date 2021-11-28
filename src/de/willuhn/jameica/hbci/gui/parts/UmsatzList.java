@@ -80,8 +80,8 @@ public class UmsatzList extends TablePart implements Extendable
   static Map cache = new HashMap();
   
 
-  private MessageConsumer mcChanged = null;
-  private MessageConsumer mcNew     = null;
+  private MessageConsumer mcChanged;
+  private MessageConsumer mcNew;
 
   private UmsatzDaysInput days      = null;
 
@@ -362,7 +362,7 @@ public class UmsatzList extends TablePart implements Extendable
   {
     private boolean sleep = true;
     private Thread timeout = null;
-    private Calendar cal = null;
+    private final Calendar cal;
    
     private KL() throws RemoteException
     {

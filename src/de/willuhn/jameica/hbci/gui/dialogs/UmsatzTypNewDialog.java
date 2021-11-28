@@ -34,9 +34,9 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypNewDialog extends AbstractDialog
 {
-  private I18N i18n        = null;
+  private final I18N i18n;
   private LabelInput check = null;
-  private UmsatzTypControl control = null;
+  private final UmsatzTypControl control;
   
   /**
    * @param position

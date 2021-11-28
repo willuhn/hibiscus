@@ -210,7 +210,7 @@ public class PassportTree extends TreePart
    */
   private static class PassportObject implements GenericObjectNode
   {
-    private Passport passport        = null;
+    private final Passport passport;
     private GenericIterator children = null;
     
     /**
@@ -321,8 +321,8 @@ public class PassportTree extends TreePart
    */
   private static class ConfigObject implements GenericObject
   {
-    private Passport passport    = null;
-    private Configuration config = null;
+    private final Passport passport;
+    private final Configuration config;
     
     /**
      * ct.

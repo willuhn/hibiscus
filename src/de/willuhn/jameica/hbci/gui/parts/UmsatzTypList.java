@@ -48,8 +48,8 @@ import de.willuhn.util.I18N;
 public class UmsatzTypList extends TablePart implements Part
 {
 
-  private I18N i18n = null;
-  private MessageConsumer mc = null;
+  private I18N i18n;
+  private MessageConsumer mc;
   
   private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
 

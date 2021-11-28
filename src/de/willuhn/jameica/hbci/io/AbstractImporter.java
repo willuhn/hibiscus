@@ -168,7 +168,7 @@ public abstract class AbstractImporter implements Importer
    */
   class MyIOFormat implements IOFormat
   {
-    Class type = null;
+    final Class type;
     
     /**
      * ct.

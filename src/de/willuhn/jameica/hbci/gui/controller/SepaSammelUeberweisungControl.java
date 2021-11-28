@@ -316,7 +316,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
    */
   public class Typ
   {
-    private boolean termin = false;
+    private final boolean termin;
     
     /**
      * ct.

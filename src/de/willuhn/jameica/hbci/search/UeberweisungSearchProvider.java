@@ -76,7 +76,7 @@ public class UeberweisungSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Ueberweisung u = null;
+    private final Ueberweisung u;
     
     /**
      * ct.

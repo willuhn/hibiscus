@@ -25,10 +25,10 @@ import de.willuhn.util.I18N;
  */
 public class PreTimeRestriction implements Restriction
 {
-	private Properties p  = null;
-	private Date date     = null;
+	private final Properties p;
+	private final Date date;
 	
-	private I18N i18n;
+	private final I18N i18n;
 
   /**
    * ct.

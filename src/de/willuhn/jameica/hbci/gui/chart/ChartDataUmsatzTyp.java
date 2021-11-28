@@ -27,8 +27,8 @@ import de.willuhn.util.I18N;
 public class ChartDataUmsatzTyp implements ChartData
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private int type = UmsatzTyp.TYP_EGAL;
-  private int days = -1;
+  private final int type;
+  private final int days;
   
   /**
    * @param typ Art der Umsaetze.
@@ -102,7 +102,7 @@ public class ChartDataUmsatzTyp implements ChartData
    */
   public class Entry
   {
-    private UmsatzTyp ut = null;
+    private final UmsatzTyp ut;
     
     /**
      * ct.

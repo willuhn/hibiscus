@@ -21,7 +21,7 @@ public abstract class AbstractHBCI4JavaFeature implements Feature
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private org.kapott.hbci.manager.Feature feature = null;
+  private final org.kapott.hbci.manager.Feature feature;
   
   /**
    * ct.

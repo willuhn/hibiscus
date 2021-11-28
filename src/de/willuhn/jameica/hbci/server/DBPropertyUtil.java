@@ -41,9 +41,9 @@ import de.willuhn.util.TypedProperties;
 public class DBPropertyUtil
 {
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(DBPropertyUtil.class);
-  private static int timeout = 0;
+  private static final int timeout;
 
-  private static Cache<String,Map<String,DBProperty>> CACHE = null;
+  private static final Cache<String,Map<String,DBProperty>> CACHE;
   
   static
   {
@@ -91,8 +91,8 @@ public class DBPropertyUtil
     
     ;
     
-    private String value = null;
-    private Set<String> filter = null;
+    private final String value;
+    private final Set<String> filter;
     
     /**
      * ct.

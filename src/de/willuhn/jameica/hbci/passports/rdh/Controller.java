@@ -450,7 +450,7 @@ public class Controller extends AbstractControl {
    */
   public synchronized void changePassword()
   {
-    HBCIPassport passport = null;
+    HBCIPassport passport;
     HBCICallback callback = null;
     
     try
@@ -499,7 +499,7 @@ public class Controller extends AbstractControl {
       return;
     }
     
-    HBCIPassport passport = null;
+    HBCIPassport passport;
     try
     {
       if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
@@ -691,7 +691,7 @@ public class Controller extends AbstractControl {
   private class ActivateKey extends CheckedContextMenuItem
   {
 
-    private boolean activate;
+    private final boolean activate;
 
     /**
      * @param activate

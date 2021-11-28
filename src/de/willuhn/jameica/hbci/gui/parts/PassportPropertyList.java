@@ -47,7 +47,7 @@ public class PassportPropertyList implements Part
   private final static String PREFIX_BPD = "BPD";
   private final static String PREFIX_UPD = "UPD";
   
-  private HBCIPassport passport = null;
+  private final HBCIPassport passport;
   private List<Value> list      = new ArrayList<Value>();
   private PropertyTable table   = null;
   private TextInput search      = null;
@@ -213,9 +213,9 @@ public class PassportPropertyList implements Part
    */
   private static class Value implements GenericObject
   {
-    private String prefix = null;
-    private String name   = null;
-    private String value  = null;
+    private final String prefix;
+    private final String name;
+    private final String value;
     
     /**
      * ct.

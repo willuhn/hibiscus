@@ -35,9 +35,9 @@ public class RangeInput extends SelectInput
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private String param = null;
-  private Input from = null;
-  private Input to = null;
+  private final String param;
+  private final Input from;
+  private final Input to;
   private boolean inUpdate = false;
   
   /**

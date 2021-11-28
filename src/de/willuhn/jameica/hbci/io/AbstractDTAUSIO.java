@@ -111,7 +111,7 @@ public abstract class AbstractDTAUSIO implements IO
    */
   class MyIOFormat implements IOFormat
   {
-    Class type = null;
+    final Class type;
     
     /**
      * ct.

@@ -26,8 +26,8 @@ public class FlaggableChange implements Action
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private int flags   = 0;
-  private boolean add = true;
+  private final int flags;
+  private final boolean add;
   
   /**
    * ct.

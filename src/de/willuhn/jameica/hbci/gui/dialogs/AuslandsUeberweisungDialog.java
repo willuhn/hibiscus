@@ -27,7 +27,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
  */
 public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
 {
-	private AuslandsUeberweisung ueb;
+	private final AuslandsUeberweisung ueb;
 
   /**
    * ct.

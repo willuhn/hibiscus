@@ -84,7 +84,7 @@ public class XMLImporter implements Importer
       int created = 0;
       int error   = 0;
 
-      DBObject object = null;
+      DBObject object;
       while ((object = (DBObject) reader.read()) != null)
       {
         if (monitor != null)

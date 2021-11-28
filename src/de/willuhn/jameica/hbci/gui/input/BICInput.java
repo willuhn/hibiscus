@@ -30,7 +30,7 @@ public class BICInput extends AccountInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private Listener listener = null;
+  private final Listener listener;
 
   // erlauben wir zwar erstmal, ersetzen wir aber noch
   private final static String LOWERCASE_CHARS = "abcdefghijklmnopqrstuvwxyz"; 

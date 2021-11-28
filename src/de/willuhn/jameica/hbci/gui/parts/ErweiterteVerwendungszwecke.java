@@ -44,12 +44,12 @@ public class ErweiterteVerwendungszwecke implements Part
 {
   private final static I18N i18n    = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private String[] orig             = null;
+  private String[] orig;
   private List<TextInput> fields    = new ArrayList<TextInput>();
   private Button add                = null;
   
-  private boolean readonly          = false;
-  private Konto konto               = null;
+  private boolean readonly;
+  private Konto konto;
 
   /**
    * ct.

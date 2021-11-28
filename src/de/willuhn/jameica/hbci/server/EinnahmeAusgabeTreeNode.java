@@ -16,9 +16,9 @@ import de.willuhn.jameica.util.DateUtil;
  */
 public class EinnahmeAusgabeTreeNode implements EinnahmeAusgabeZeitraum, GenericObjectNode
 {
-  private Date startdatum;
-  private Date enddatum;
-  private List<EinnahmeAusgabe> children;
+  private final Date startdatum;
+  private final Date enddatum;
+  private final List<EinnahmeAusgabe> children;
 
   /**
    * @param from Startdatum des Zeitraums

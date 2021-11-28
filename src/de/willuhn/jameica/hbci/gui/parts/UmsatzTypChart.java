@@ -41,7 +41,7 @@ import de.willuhn.util.I18N;
 public class UmsatzTypChart implements Part
 {
   
-  private I18N i18n   = null;
+  private final I18N i18n;
   private int start   = UmsatzDaysInput.getDefaultDays();
 
   /**

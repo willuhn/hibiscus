@@ -76,7 +76,7 @@ public class LastschriftSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Lastschrift l = null;
+    private final Lastschrift l;
     
     /**
      * ct.

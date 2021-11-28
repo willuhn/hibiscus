@@ -40,8 +40,8 @@ public interface Reader
     
     ;
 
-    private String id = null;
-    private String headerParam = null;
+    private final String id;
+    private final String headerParam;
     
     /**
      * ct.

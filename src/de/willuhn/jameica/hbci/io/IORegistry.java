@@ -26,10 +26,10 @@ public class IORegistry
 {
 
   // Liste der Export-Filter
-  private static List<Exporter> exporters = null;
+  private static final List<Exporter> exporters;
 
   // Liste der Importer
-  private static List<Importer> importers = null;
+  private static final List<Importer> importers;
 
   static
   {

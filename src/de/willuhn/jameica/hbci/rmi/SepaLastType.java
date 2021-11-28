@@ -43,9 +43,9 @@ public enum SepaLastType
    */
   public static SepaLastType DEFAULT = CORE;
   
-  private String jobName = null;
-  private String multiJobName = null;
-  private String description = null;
+  private final String jobName;
+  private final String multiJobName;
+  private final String description;
   
   /**
    * ct.

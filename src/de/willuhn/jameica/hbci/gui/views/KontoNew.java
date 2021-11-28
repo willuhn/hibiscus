@@ -54,7 +54,7 @@ public class KontoNew extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private KontoControl control = null;
+  private final KontoControl control;
   
   @Resource
   private SynchronizeEngine synchronizeEngine = null;

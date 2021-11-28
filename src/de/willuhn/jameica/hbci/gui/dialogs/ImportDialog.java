@@ -57,10 +57,10 @@ public class ImportDialog extends AbstractDialog
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private Input importerListe     = null;
-  private GenericObject context   = null;	
-  private Class type              = null;
+  private final GenericObject context;
+  private final Class type;
   
-  private Settings  settings      = null;
+  private final Settings  settings;
   private BackgroundTask task     = null;
 
   /**
@@ -290,8 +290,8 @@ public class ImportDialog extends AbstractDialog
    */
   private class Imp implements GenericObject, Comparable
 	{
-		private Importer importer = null;
-    private IOFormat format   = null;
+    private final Importer importer;
+    private final IOFormat format;
 		
 		private Imp(Importer importer, IOFormat format)
 		{

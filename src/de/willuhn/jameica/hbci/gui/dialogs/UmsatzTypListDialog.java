@@ -64,9 +64,9 @@ public class UmsatzTypListDialog extends AbstractDialog
   private final static int WINDOW_WIDTH = 370;
   private final static int WINDOW_HEIGHT = 500;
 
-  private List<UmsatzTypBean> list = null;
-  private UmsatzTyp choosen        = null;
-  private int typ                  = UmsatzTyp.TYP_EGAL;
+  private List<UmsatzTypBean> list;
+  private UmsatzTyp choosen;
+  private final int typ;
   
   private TextInput search         = null;
   private TablePart table          = null;

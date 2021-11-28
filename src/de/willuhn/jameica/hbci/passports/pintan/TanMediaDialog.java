@@ -49,9 +49,9 @@ public class TanMediaDialog extends AbstractDialog
 
   private SelectInput media   = null;
   private CheckboxInput save  = null;
-  private PinTanConfig config = null;
+  private final PinTanConfig config;
 
-  private String options      = null;
+  private final String options;
   private String choosen      = null;
   
   /**

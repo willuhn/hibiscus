@@ -55,7 +55,7 @@ public class CaptchaDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private InputStream image = null;
+  private final InputStream image;
   private String data       = null;
   
   private TextInput solution = null;

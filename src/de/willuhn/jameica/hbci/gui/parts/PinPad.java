@@ -38,7 +38,7 @@ public class PinPad implements Part
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private Composite comp      = null;
-  private PasswordInput input = null;
+  private final PasswordInput input;
   
   /**
    * ct.

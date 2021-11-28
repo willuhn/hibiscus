@@ -55,7 +55,7 @@ public class KontoauszugMoveDialog extends AbstractDialog<Kontoauszug>
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static int WINDOW_WIDTH = 580;
   
-  private Kontoauszug[] list = null;
+  private Kontoauszug[] list;
   private DirectoryInput target = null;
   private CheckboxInput overwrite = null;
   private CheckboxInput delete = null;

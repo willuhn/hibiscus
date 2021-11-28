@@ -45,8 +45,8 @@ public class CSVProfileStoreDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static int WINDOW_WIDTH = 500;
   
-  private Format format          = null;
-  private Profile profile        = null;
+  private final Format format;
+  private final Profile profile;
   private Button apply           = null;
   private TextInput name         = null;
   private LabelInput hint        = null;

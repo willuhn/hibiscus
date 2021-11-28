@@ -64,7 +64,7 @@ import de.willuhn.logging.Logger;
  */
 public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
 {
-  private MessageConsumer mc = null;
+  private final MessageConsumer mc;
   private CheckboxInput pending = null;
 
   /**
@@ -260,7 +260,7 @@ public abstract class AbstractSepaSammelTransferList extends AbstractFromToList
   public class TransferMessageConsumer implements MessageConsumer
   {
     private DelayedListener insertDelay = null;
-    private DelayedListener updateDelay = null;
+    private final DelayedListener updateDelay;
     
     /**
      * ct.

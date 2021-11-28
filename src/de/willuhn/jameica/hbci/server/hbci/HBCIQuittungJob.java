@@ -32,7 +32,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCIQuittungJob extends AbstractHBCIJob
 {
-  private Kontoauszug ka = null;
+  private Kontoauszug ka;
 
   /**
 	 * ct.

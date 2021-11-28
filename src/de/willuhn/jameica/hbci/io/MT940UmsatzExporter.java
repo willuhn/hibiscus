@@ -319,7 +319,7 @@ public class MT940UmsatzExporter implements Exporter
   {
     private String[] search  = new String[]{"Ü", "Ö", "Ä", "ü", "ö", "ä", "ß"};
     private String[] replace = new String[]{"UE","OE","AE","ue","oe","ae","ss"};
-    private boolean doReplace = true;
+    private boolean doReplace;
     
     /**
      * ct.

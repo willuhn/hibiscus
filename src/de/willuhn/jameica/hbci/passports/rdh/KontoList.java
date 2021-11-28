@@ -32,7 +32,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
  */
 public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
 {
-  private RDHKey myKey = null;
+  private final RDHKey myKey;
 
   /**
    * ct.

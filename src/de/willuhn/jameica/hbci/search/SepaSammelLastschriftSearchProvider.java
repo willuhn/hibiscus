@@ -92,7 +92,7 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private SepaSammelLastschrift u = null;
+    private final SepaSammelLastschrift u;
     
     /**
      * ct.

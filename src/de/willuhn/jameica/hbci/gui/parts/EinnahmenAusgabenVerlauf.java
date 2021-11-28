@@ -22,7 +22,7 @@ public class EinnahmenAusgabenVerlauf implements Part
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private VergleichBarChart chart   = null;
-  private List<EinnahmeAusgabeZeitraum> data = null;
+  private List<EinnahmeAusgabeZeitraum> data;
 
   /**
    * Konstruktor mit anzuzeigenden Werten

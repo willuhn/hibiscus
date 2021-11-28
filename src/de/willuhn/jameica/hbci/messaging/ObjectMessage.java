@@ -18,7 +18,7 @@ import de.willuhn.jameica.messaging.Message;
  */
 public class ObjectMessage implements Message
 {
-  private GenericObject object = null;
+  private final GenericObject object;
 
   /**
    * ct.

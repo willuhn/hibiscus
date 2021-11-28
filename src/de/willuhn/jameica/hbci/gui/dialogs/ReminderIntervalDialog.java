@@ -49,9 +49,9 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private ReminderInterval interval = null;
+  private ReminderInterval interval;
   private Date start                = null;
-  private Date end                  = null;
+  private Date end;
   
   private ReminderIntervalInput input = null;
   private DateInput endInput          = null;

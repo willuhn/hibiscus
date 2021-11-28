@@ -84,7 +84,7 @@ public class EmpfaengerControl extends AbstractControl
   private Part sammelList2        = null;
   private Part umsatzList         = null;
   
-  private IbanListener ibanListener = new IbanListener();
+  private final IbanListener ibanListener = new IbanListener();
   
   /**
    * @param view

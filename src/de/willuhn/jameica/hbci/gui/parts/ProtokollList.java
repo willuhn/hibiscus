@@ -33,7 +33,7 @@ import de.willuhn.jameica.util.DateUtil;
 public class ProtokollList extends AbstractFromToList
 {
   private KontoInput kontoAuswahl = null;
-  private Konto konto = null;
+  private final Konto konto;
   
   /**
    * ct.

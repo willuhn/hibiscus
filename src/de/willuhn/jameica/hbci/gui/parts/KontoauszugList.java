@@ -94,7 +94,7 @@ public class KontoauszugList extends UmsatzList
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings syssettings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   
-  private UmsatzTyp searchTyp          = null;
+  private UmsatzTyp searchTyp;
   private SearchInput search           = null;
   private CheckboxInput regex          = null;
 
@@ -115,7 +115,7 @@ public class KontoauszugList extends UmsatzList
   private DecimalInput betragFrom      = null;
   private DecimalInput betragTo        = null;
 
-  private Listener listener            = null;
+  private Listener listener;
   
   private boolean disposed             = false; // BUGZILLA 462
   private boolean changed              = false;

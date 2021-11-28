@@ -53,8 +53,8 @@ public class ReminderIntervalInput implements Input
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private Terminable order              = null;
-  private Input input                   = null;
+  private final Terminable order;
+  private Input input;
   private ReminderIntervalDialog dialog = null;
   private boolean containsInterval      = false;
   private Date end                      = null;

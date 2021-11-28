@@ -67,12 +67,12 @@ public class EmpfaengerList extends TablePart implements Part
   
   private Addressbook book       = null;
   private TextInput search       = null;
-  private KeyAdapter listener    = null;
-  private AddressFilter filter   = null;
-  private boolean createButton   = true;
+  private final KeyAdapter listener;
+  private final AddressFilter filter;
+  private final boolean createButton;
 
-  private MessageConsumer mcImport = null;
-  private MessageConsumer mcChanged = null;
+  private final MessageConsumer mcImport;
+  private final MessageConsumer mcChanged;
   
   private static Settings mySettings = new Settings(EmpfaengerList.class);
 

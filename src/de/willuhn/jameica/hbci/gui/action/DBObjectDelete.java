@@ -31,7 +31,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBObjectDelete implements Action
 {
-  private I18N i18n = null;
+  private final I18N i18n;
   
   /**
    * ct.
@@ -107,7 +107,7 @@ public class DBObjectDelete implements Action
   private class Worker implements BackgroundTask
   {
     private boolean cancel = false;
-    private DBObject[] list = null;
+    private final DBObject[] list;
 
     /**
      * ct.

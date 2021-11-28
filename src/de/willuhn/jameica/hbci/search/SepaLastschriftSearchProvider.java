@@ -75,7 +75,7 @@ public class SepaLastschriftSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private SepaLastschrift u = null;
+    private final SepaLastschrift u;
     
     /**
      * ct.

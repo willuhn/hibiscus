@@ -36,8 +36,8 @@ public class TerminInput extends DateInput
   
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private Terminable auftrag = null;
-  private Listener listener  = null;
+  private Terminable auftrag;
+  private Listener listener;
   
   /**
    * ct.

@@ -20,9 +20,9 @@ import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
  */
 public class Schedule<T extends HibiscusDBObject>
 {
-  private Date date = null;
-  private T context = null;
-  private boolean planned = false;
+  private final Date date;
+  private final T context;
+  private final boolean planned;
   
   /**
    * ct.

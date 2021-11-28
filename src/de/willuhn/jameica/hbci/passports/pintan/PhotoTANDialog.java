@@ -45,7 +45,7 @@ public class PhotoTANDialog extends TANDialog
 {
   private final static Settings SETTINGS = new Settings(PhotoTANDialog.class);
   
-  private byte[] bytes = null;
+  private byte[] bytes;
   private int initialSize = 0;
   private int currentSize = 0;
   private Image image = null;

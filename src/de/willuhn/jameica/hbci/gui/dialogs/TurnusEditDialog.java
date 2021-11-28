@@ -44,7 +44,7 @@ public class TurnusEditDialog extends AbstractDialog {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   // Das Fachobjekt
-  private Turnus turnus = null;
+  private Turnus turnus;
 
   private SelectInput intervall       = null;
   private SelectInput zeiteinheit     = null;
@@ -314,7 +314,7 @@ public class TurnusEditDialog extends AbstractDialog {
   private class Zeiteinheit implements GenericObject
   {
 
-    private int id = -1;
+    private final int id;
     private String name = pleaseChoose;
 
     private Zeiteinheit(int id)
@@ -372,7 +372,7 @@ public class TurnusEditDialog extends AbstractDialog {
   private class Tag implements GenericObject
   {
 
-    private int id = -1;
+    private final int id;
     private String name = pleaseChoose;
 
     private Tag(int id)

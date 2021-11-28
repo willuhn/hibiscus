@@ -35,7 +35,7 @@ public class NewInstKeysDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static int WINDOW_WIDTH = 540;
 
-	private HBCIPassport passport = null;
+	private final HBCIPassport passport;
 	private Boolean choosen       = null;
 
   /**

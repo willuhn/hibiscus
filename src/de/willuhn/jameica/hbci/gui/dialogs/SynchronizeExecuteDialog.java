@@ -35,7 +35,7 @@ public class SynchronizeExecuteDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private List<SynchronizeJob> jobs = null;
+  private final List<SynchronizeJob> jobs;
   
   /**
    * ct.

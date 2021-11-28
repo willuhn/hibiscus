@@ -26,9 +26,9 @@ import de.willuhn.logging.Logger;
  */
 public class SynchronizeOptions implements Serializable
 {
-  private String id = null;
-  private boolean offline  = false;
-  private boolean disabled = false;
+  private String id;
+  private boolean offline;
+  private boolean disabled;
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
   /**

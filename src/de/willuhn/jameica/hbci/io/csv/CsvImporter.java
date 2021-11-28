@@ -376,7 +376,7 @@ public class CsvImporter implements Importer
    */
   private class MyIOFormat implements IOFormat
   {
-    private Format format = null;
+    private final Format format;
     
     /**
      * ct.

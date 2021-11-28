@@ -22,7 +22,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class PrintSupportUeberweisung extends AbstractPrintSupportBaseUeberweisung
 {
-  private Ueberweisung u = null;
+  private final Ueberweisung u;
   
   /**
    * ct.

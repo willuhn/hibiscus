@@ -35,10 +35,10 @@ import de.willuhn.util.ApplicationException;
 public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 {
 
-	private AuslandsUeberweisung ueberweisung = null;
-  private boolean isTermin                  = false;
-  private boolean isUmb                     = false;
-	private Konto konto                       = null;
+  private AuslandsUeberweisung ueberweisung;
+  private boolean isTermin;
+  private boolean isUmb;
+  private Konto konto;
 
   /**
 	 * ct.

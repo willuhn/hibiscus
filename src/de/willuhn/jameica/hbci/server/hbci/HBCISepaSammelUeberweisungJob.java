@@ -25,7 +25,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransferJob<SepaSammelUeberweisung>
 {
-  private boolean isTermin = false;
+  private boolean isTermin;
 
   /**
 	 * ct.

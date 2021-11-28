@@ -35,8 +35,8 @@ import de.willuhn.util.ApplicationException;
 public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTransfer> extends AbstractHBCIJob
 {
 
-	private T transfer = null;
-	private Konto konto = null;
+	private T transfer;
+	private Konto konto;
 	
   /**
 	 * ct.

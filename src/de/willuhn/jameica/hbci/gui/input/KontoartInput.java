@@ -22,7 +22,7 @@ import de.willuhn.util.I18N;
 public class KontoartInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private Integer current = null;
+  private final Integer current;
   
   /**
    * ct.

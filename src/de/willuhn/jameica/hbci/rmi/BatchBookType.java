@@ -42,9 +42,9 @@ public enum BatchBookType
    */
   public static BatchBookType DEFAULT = NONE;
   
-  private Boolean bv = null;
-  private String value = null;
-  private String description = null;
+  private final Boolean bv;
+  private final String value;
+  private final String description;
   
   /**
    * ct.

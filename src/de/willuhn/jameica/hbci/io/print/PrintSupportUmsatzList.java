@@ -44,7 +44,7 @@ import net.sf.paperclips.TextStyle;
  */
 public class PrintSupportUmsatzList extends AbstractPrintSupport
 {
-  private Object ctx = null;
+  private final Object ctx;
   
   /**
    * ct.

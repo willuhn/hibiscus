@@ -48,8 +48,8 @@ public class HBCITraceMessage implements Message
     CLOSE,
   }
   
-  private Type type = null;
-  private String data = null;
+  private final Type type;
+  private final String data;
   
   /**
    * ct.

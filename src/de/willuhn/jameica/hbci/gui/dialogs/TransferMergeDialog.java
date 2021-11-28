@@ -56,7 +56,7 @@ public class TransferMergeDialog extends AbstractDialog
 {
 
 	private final static I18N i18n    = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-	private SammelTransfer transfer   = null;
+	private SammelTransfer transfer;
   private Boolean delete            = Boolean.FALSE;
 
   private CheckboxInput useExisting = null;

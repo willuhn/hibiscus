@@ -52,14 +52,14 @@ public class Reporter
   private List<PdfPCell> headers = new ArrayList<PdfPCell>();
   private List<Integer> widths = new ArrayList<Integer>();
 
-  private OutputStream out = null;
-  private Document rpt = null;
+  private final OutputStream out;
+  private final Document rpt;
   private PdfPTable table = null;
 
-  private int maxRecords = 0;
+  private final int maxRecords;
   private int currRecord = 0;
 
-  private ProgressMonitor monitor = null;
+  private final ProgressMonitor monitor;
   
   /**
    * Farbvorgabe fuer normalen Text.

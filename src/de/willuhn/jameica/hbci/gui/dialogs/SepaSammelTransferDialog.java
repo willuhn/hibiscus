@@ -27,7 +27,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
  */
 public class SepaSammelTransferDialog extends AbstractExecuteDialog
 {
-	private SepaSammelTransfer st;
+	private final SepaSammelTransfer st;
 
   /**
    * ct.

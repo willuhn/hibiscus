@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
  */
 public class DauerauftragList extends TablePart implements Part
 {
-  private I18N i18n = null;
+  private I18N i18n;
 
   /**
    * @param action

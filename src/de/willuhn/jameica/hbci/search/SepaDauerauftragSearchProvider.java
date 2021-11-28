@@ -74,7 +74,7 @@ public class SepaDauerauftragSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private SepaDauerauftrag u = null;
+    private final SepaDauerauftrag u;
     
     /**
      * ct.

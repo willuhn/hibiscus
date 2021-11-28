@@ -71,7 +71,7 @@ public class KontoSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Konto konto = null;
+    private final Konto konto;
     
     /**
      * ct.

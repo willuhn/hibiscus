@@ -35,7 +35,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
 {
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private UmsatzTyp typ                 = null;
+  private final UmsatzTyp typ;
   private UmsatzTreeNode parent         = null;
   private List<UmsatzTreeNode> children = new ArrayList<UmsatzTreeNode>();
   private List<Umsatz> umsaetze         = new ArrayList<Umsatz>();

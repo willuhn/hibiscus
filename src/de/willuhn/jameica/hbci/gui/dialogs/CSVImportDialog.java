@@ -66,8 +66,8 @@ public class CSVImportDialog extends AbstractDialog
 
   private SelectInput profiles      = null;
   private Profile result            = null;
-  private Format format             = null;
-  private byte[] data               = null;
+  private final Format format;
+  private final byte[] data;
 
   private TextInput sepChar         = null;
   private TextInput quoteChar       = null;

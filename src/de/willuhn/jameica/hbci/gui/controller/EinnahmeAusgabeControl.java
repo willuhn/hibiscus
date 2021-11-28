@@ -97,15 +97,15 @@ public class EinnahmeAusgabeControl extends AbstractControl
     
     ;
 
-    private String name;
+    private final String name;
     /**
      * Typ des Tages zur Adressierung innerhalb des Intervalls
      */
-    private int type;
+    private final int type;
     /**
      * Intervalldauer
      */
-    private int size;
+    private final int size;
 
     /**
      * ct.

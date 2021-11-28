@@ -49,7 +49,7 @@ import de.willuhn.util.I18N;
  */
 public class SepaDauerauftragList extends TablePart implements Part
 {
-  private MessageConsumer mc = null;
+  private MessageConsumer mc;
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 

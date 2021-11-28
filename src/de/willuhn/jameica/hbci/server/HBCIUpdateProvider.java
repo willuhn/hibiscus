@@ -30,10 +30,10 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class HBCIUpdateProvider implements UpdateProvider
 {
-  private Version version     = null;
-  private Connection conn     = null;
-  private Manifest manifest   = null;
-  private PluginResources res = null;
+  private final Version version;
+  private final Connection conn;
+  private final Manifest manifest;
+  private final PluginResources res;
 
   /**
    * ct

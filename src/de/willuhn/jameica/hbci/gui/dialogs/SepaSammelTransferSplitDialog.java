@@ -30,8 +30,8 @@ public class SepaSammelTransferSplitDialog extends AbstractDialog
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 	
-  private int count           = 1;
-  private boolean canDelete   = false;
+  private final int count;
+  private final boolean canDelete;
   private Boolean delete      = null;
 
   private CheckboxInput check = null;

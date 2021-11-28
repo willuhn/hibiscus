@@ -62,7 +62,7 @@ public class TANDialog extends AbstractDialog
   protected final static int WINDOW_WIDTH  = 500;
   protected final static int WINDOW_HEIGHT = 550;
 
-  protected PinTanConfig config = null;
+  protected final PinTanConfig config;
   private HibiscusDBObject context = null;
   
   private NotificationPanel panel = null;

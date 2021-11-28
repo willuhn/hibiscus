@@ -34,7 +34,7 @@ import net.sf.paperclips.TextPrint;
  */
 public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrintSupport
 {
-  private BaseUeberweisung auftrag = null;
+  private final BaseUeberweisung auftrag;
   
   /**
    * ct.

@@ -48,8 +48,8 @@ public class KontoAuswahlDialog extends AbstractDialog
   
   private String text        = null;
   private Konto choosen      = null;
-  private Konto preselected  = null;
-	private KontoFilter filter = null;
+  private Konto preselected;
+  private final KontoFilter filter;
 	
 	private Button apply        = null;
 	private KontoInput auswahl  = null;

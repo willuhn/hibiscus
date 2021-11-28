@@ -109,9 +109,9 @@ public enum MetaKey
 
   ;
 
-  private String name         = null;
-  private String description  = null;
-  private String defaultValue = null;
+  private final String name;
+  private final String description;
+  private final String defaultValue;
   
   /**
    * ct.

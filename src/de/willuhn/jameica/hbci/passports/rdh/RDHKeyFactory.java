@@ -40,7 +40,7 @@ public class RDHKeyFactory
 
 	private static Settings settings = new Settings(RDHKeyFactory.class);
 
-	private static I18N i18n;
+	private static final I18N i18n;
 	
 	static
 	{

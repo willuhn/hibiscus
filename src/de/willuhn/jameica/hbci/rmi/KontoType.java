@@ -80,9 +80,9 @@ public enum KontoType
    */
   public final static KontoType DEFAULT = GIRO;
   
-  private int min;
-  private int max;
-  private String name;
+  private final int min;
+  private final int max;
+  private final String name;
   
   /**
    * ct.

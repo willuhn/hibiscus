@@ -190,8 +190,8 @@ public class HBCIVersionInput extends SelectInput
    */
   private static class HBCIVersion
   {
-    private org.kapott.hbci.manager.HBCIVersion version = null;
-    private boolean active = true;
+    private final org.kapott.hbci.manager.HBCIVersion version;
+    private final boolean active;
 
     /**
      * ct.

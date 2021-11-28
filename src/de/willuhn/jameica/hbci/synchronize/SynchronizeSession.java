@@ -23,7 +23,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class SynchronizeSession
 {
-  private Worker worker = null;
+  private final Worker worker;
   private int status = ProgressMonitor.STATUS_NONE;
   private double progressWindow = 100d;
   private List<String> warnings = new ArrayList<String>();

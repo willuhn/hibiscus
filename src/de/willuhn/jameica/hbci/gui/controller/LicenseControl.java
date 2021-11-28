@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
 public class LicenseControl extends AbstractControl {
 
   private Part libList = null;
-  private I18N i18n = null;
+  private final I18N i18n;
 
   /**
    * ct.

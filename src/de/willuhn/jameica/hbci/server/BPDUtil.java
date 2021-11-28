@@ -79,8 +79,8 @@ public class BPDUtil
     
     ;
     
-    private String query  = null;
-    private String gvcode = null;
+    private final String query;
+    private final String gvcode;
     
     /**
      * ct.

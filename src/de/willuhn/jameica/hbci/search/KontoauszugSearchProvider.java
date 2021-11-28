@@ -80,7 +80,7 @@ public class KontoauszugSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Kontoauszug u = null;
+    private final Kontoauszug u;
     
     /**
      * ct.

@@ -32,7 +32,7 @@ import de.willuhn.util.I18N;
 public class RangeList extends TablePart
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private String category = null;
+  private final String category;
   
   /**
    * ct.

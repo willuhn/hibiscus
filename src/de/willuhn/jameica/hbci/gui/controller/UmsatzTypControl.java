@@ -406,7 +406,7 @@ public class UmsatzTypControl extends AbstractControl
    */
   public static class UmsatzTypObject implements GenericObject
   {
-    private int typ = UmsatzTyp.TYP_EGAL;
+    private final int typ;
     
     /**
      * ct

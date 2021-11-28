@@ -101,7 +101,7 @@ public abstract class AbstractAppointmentProvider<T extends HibiscusDBObject> im
    */
   abstract class AbstractHibiscusAppointment extends AbstractAppointment
   {
-    protected Schedule<T> schedule = null;
+    protected final Schedule<T> schedule;
     
     /**
      * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#execute()

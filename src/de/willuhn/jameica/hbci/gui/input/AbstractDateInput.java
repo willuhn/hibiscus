@@ -34,7 +34,7 @@ public abstract class AbstractDateInput extends DateInput
   
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private String param = null;
+  private final String param;
   
   /**
    * ct.

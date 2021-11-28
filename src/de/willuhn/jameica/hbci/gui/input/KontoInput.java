@@ -48,10 +48,10 @@ public class KontoInput extends SelectInput
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoInput.class);
 
-  private Konto konto = null;
+  private Konto konto;
   private static List<String> groups = null;
 
-  private KontoListener listener = null;
+  private KontoListener listener;
   private String token = null;
   private boolean store = true;
   private Control control = null;

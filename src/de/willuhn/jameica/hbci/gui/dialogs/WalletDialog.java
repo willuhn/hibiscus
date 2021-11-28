@@ -96,8 +96,8 @@ public class WalletDialog extends AbstractDialog
    */
   public class Entry 
   {
-    private String name  = null;
-    private String value = null;
+    private final String name;
+    private final String value;
     
     private Entry(String name, Serializable s)
     {

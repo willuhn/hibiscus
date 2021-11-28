@@ -45,11 +45,11 @@ public class PtSecMechDialog extends AbstractDialog
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings SETTINGS = new Settings(PtSecMechDialog.class);
 
-  private String options      = null;
+  private final String options;
 
   private SelectInput type    = null;
   private CheckboxInput save  = null;
-  private PinTanConfig config = null;
+  private final PinTanConfig config;
   
   private PtSecMech choosen   = null;
   

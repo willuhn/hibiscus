@@ -66,10 +66,10 @@ public class SynchronizeOptionsDialog extends AbstractDialog
   
   private final static int WINDOW_WIDTH = 500;
   
-  private Konto konto                   = null;
-  private boolean offline               = false;
-  private boolean syncAvail             = false;
-  private SynchronizeOptions options    = null;
+  private final Konto konto;
+  private boolean offline;
+  private boolean syncAvail;
+  private SynchronizeOptions options;
   private CheckboxInput syncOffline     = null;
   private CheckboxInput syncSaldo       = null;
   private CheckboxInput syncUmsatz      = null;

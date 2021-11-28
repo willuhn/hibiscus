@@ -33,9 +33,9 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
 {
-	private SepaDauerauftrag dauerauftrag = null;
-	private Konto konto 						     	= null;
-	private Date date                     = null;
+	private SepaDauerauftrag dauerauftrag;
+	private Konto konto;
+	private Date date;
 
   /**
 	 * ct.

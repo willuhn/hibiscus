@@ -28,7 +28,7 @@ import de.willuhn.jameica.hbci.Settings;
 class Cache
 {
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Cache.class);
-  private static int timeout = 0;
+  private static final int timeout;
   
   // Enthaelt alle Caches.
   private final static Map<Class,Cache> caches = new HashMap<Class,Cache>();

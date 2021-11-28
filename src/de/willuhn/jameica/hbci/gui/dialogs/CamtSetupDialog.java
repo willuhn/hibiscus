@@ -45,7 +45,7 @@ public class CamtSetupDialog extends AbstractDialog
 
   private final static int WINDOW_WIDTH = 780;
   
-  private Konto konto = null;
+  private final Konto konto;
   private CheckboxInput switchAll = null;
   private Boolean value = null;
   

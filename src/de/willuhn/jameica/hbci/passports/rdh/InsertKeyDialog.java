@@ -23,7 +23,7 @@ import de.willuhn.util.I18N;
 public class InsertKeyDialog extends WaitDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private File file = null;
+  private final File file;
 
   /**
    * @param f die Schluesseldatei.

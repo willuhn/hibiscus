@@ -176,7 +176,7 @@ public class SelectKeyDialog extends AbstractDialog
   private class KeyObject implements GenericObject
   {
 
-    private RDHKey key = null;
+    private final RDHKey key;
     
     private KeyObject(RDHKey key)
     {

@@ -309,7 +309,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
   {
     private ProgressMonitor monitor  = null;
     private JobGroup currentJobGroup = null;
-    private Synchronization sync     = null;
+    private Synchronization sync;
     private boolean interrupted      = false;
     
     /**
@@ -541,7 +541,7 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
    */
   protected abstract class JobGroup
   {
-    private Konto konto = null;
+    private final Konto konto;
     protected List<SynchronizeJob> jobs = new ArrayList<SynchronizeJob>();
     
     /**

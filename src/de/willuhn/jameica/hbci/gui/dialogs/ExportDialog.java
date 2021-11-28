@@ -72,8 +72,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
 
   private Input exporterListe     = null;
   private CheckboxInput openFile  = null;
-  private Object[] objects        = null;	
-  private Class type              = null;
+  private final Object[] objects;
+  private final Class type;
 
   private boolean exportEnabled   = true;
   private Container group         = null;
@@ -362,8 +362,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
    */
   public class ExpotFormat implements GenericObject, Comparable
 	{
-		private Exporter exporter   = null;
-    private IOFormat format = null;
+		private final Exporter exporter;
+		private final IOFormat format;
 		
 		private ExpotFormat(Exporter exporter, IOFormat format)
 		{

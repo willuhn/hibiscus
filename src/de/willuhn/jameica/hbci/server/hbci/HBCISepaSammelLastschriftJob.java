@@ -32,7 +32,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class HBCISepaSammelLastschriftJob extends AbstractHBCISepaSammelTransferJob<SepaSammelLastschrift>
 {
-  private SepaLastType type = null;
+  private SepaLastType type;
 
   /**
 	 * ct.

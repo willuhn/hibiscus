@@ -37,7 +37,7 @@ import de.willuhn.util.I18N;
  */
 public class NachrichtList extends TablePart implements Part
 {
-  private I18N i18n = null;
+  private final I18N i18n;
 
   /**
    * ct.

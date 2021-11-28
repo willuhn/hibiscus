@@ -69,9 +69,9 @@ public abstract class AbstractFromToList extends TablePart implements Part
   private Input text             = null;
   private Container left         = null;
 
-  protected Listener listener    = null;
+  protected final Listener listener;
   
-  private ButtonArea buttons     = null;
+  private final ButtonArea buttons;
 
   /**
    * ct.

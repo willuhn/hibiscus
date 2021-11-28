@@ -76,7 +76,7 @@ public class DauerauftragSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Dauerauftrag u = null;
+    private final Dauerauftrag u;
     
     /**
      * ct.

@@ -63,7 +63,7 @@ import de.willuhn.logging.Logger;
  */
 public abstract class AbstractTransferList extends AbstractFromToList
 {
-  private MessageConsumer mc = null;
+  private final MessageConsumer mc;
   private CheckboxInput pending = null;
 
   /**

@@ -23,9 +23,9 @@ import de.willuhn.util.I18N;
  */
 public class CanTermDelRestriction implements Restriction
 {
-	private Properties p  = null;
+	private final Properties p;
 	
-	private I18N i18n;
+	private final I18N i18n;
 
   /**
    * ct.

@@ -34,7 +34,7 @@ import de.willuhn.util.I18N;
 public class PassportPropertyDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private HBCIPassport passport = null;
+  private final HBCIPassport passport;
 
   /**
    * ct.

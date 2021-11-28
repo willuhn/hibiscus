@@ -21,8 +21,8 @@ import de.willuhn.jameica.hbci.server.Value;
  */
 public class ChartDataSaldoVerlauf extends AbstractChartDataSaldo
 {
-  private Konto konto      = null;
-  private List<Value> data = null;
+  private final Konto konto;
+  private final List<Value> data;
   
   /**
    * ct. 

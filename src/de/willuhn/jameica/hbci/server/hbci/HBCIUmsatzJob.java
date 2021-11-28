@@ -60,8 +60,8 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 {
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
-	private Konto konto     = null;
-	private Date saldoDatum = null;
+	private Konto konto;
+	private Date saldoDatum;
 
   /**
 	 * ct.

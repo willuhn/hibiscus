@@ -40,7 +40,7 @@ public class SammelUeberweisungBuchungControl extends AbstractSammelTransferBuch
 	private SammelTransferBuchung buchung	  = null;
   private SelectInput textschluessel      = null;
 	
-	private I18N i18n                       = null;
+	private final I18N i18n;
 
   /**
    * ct.

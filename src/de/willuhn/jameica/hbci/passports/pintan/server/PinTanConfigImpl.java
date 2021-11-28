@@ -42,8 +42,8 @@ public class PinTanConfigImpl implements PinTanConfig
 
   private final static Settings settings = new Settings(PinTanConfig.class);
 
-  private PassportLoader loader = null;
-  private File file             = null;
+  private final PassportLoader loader;
+  private final File file;
   
   /**
    * ct.

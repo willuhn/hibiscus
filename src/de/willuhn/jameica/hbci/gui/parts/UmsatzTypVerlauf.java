@@ -65,9 +65,9 @@ public class UmsatzTypVerlauf implements Part
     
     ;
     
-    private int type;
-    private int size;
-    private String name;
+    private final int type;
+    private final int size;
+    private final String name;
     
     /**
      * ct.
@@ -230,7 +230,7 @@ public class UmsatzTypVerlauf implements Part
    */
   private class ChartDataUmsatz implements LineChartData
   {
-    private UmsatzTreeNode group = null;
+    private final UmsatzTreeNode group;
     private List<Entry> entries  = new ArrayList<Entry>();
     private boolean hasData      = false;
     private Date chartStartDate  = null;

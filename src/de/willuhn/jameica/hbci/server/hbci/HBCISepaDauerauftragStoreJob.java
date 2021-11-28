@@ -44,10 +44,10 @@ import de.willuhn.util.ApplicationException;
 public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
 {
 
-	private SepaDauerauftrag dauerauftrag = null;
-	private Konto konto 							    = null;
+	private SepaDauerauftrag dauerauftrag;
+	private Konto konto;
 
-	private boolean active = false;
+	private boolean active;
 
   /**
 	 * ct.

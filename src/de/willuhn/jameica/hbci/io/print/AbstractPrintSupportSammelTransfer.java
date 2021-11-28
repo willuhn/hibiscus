@@ -37,7 +37,7 @@ import net.sf.paperclips.TextPrint;
  */
 public abstract class AbstractPrintSupportSammelTransfer extends AbstractPrintSupport
 {
-  private Object ctx = null;
+  private final Object ctx;
   
   /**
    * ct.

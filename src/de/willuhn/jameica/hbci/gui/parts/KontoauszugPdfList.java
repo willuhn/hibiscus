@@ -76,7 +76,7 @@ public class KontoauszugPdfList extends TablePart
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private MessageConsumer mc            = null;
+  private final MessageConsumer mc;
 
   private KontoInput kontoAuswahl       = null;
   private Input from                    = null;
@@ -85,7 +85,7 @@ public class KontoauszugPdfList extends TablePart
   private CheckboxInput unread          = null;
   private CheckboxInput inclusiveFilter = null;
 
-  private Listener listener             = null;
+  private final Listener listener;
 
   /**
    * ct.
@@ -497,7 +497,7 @@ public class KontoauszugPdfList extends TablePart
    */
   private class KontoAction implements Action
   {
-    private Action redirect = null;
+    private final Action redirect;
     
     /**
      * ct.

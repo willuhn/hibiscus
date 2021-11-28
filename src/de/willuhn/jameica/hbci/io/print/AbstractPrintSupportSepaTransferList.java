@@ -37,7 +37,7 @@ import net.sf.paperclips.TextStyle;
  */
 public abstract class AbstractPrintSupportSepaTransferList extends AbstractPrintSupport
 {
-  private Object ctx = null;
+  private final Object ctx;
   
   /**
    * ct.

@@ -77,7 +77,7 @@ public class AddressbookSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private Address address = null;
+    private final Address address;
     
     /**
      * ct.

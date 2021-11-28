@@ -199,10 +199,10 @@ public class VelocityExporter implements Exporter
    */
   public class VelocityFormat implements IOFormat
   {
-    private String extension = null;
-    private String variant   = null;
+    private final String extension;
+    private final String variant;
     
-    private File template = null;
+    private final File template;
     
     /**
      * ct.

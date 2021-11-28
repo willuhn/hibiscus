@@ -68,7 +68,7 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
   private final static int WINDOW_WIDTH = 700;
   private final static int WINDOW_HEIGHT = 500;
 
-  private Konto konto = null;
+  private Konto konto;
   
   private KontoInput kontoAuswahl = null;
   private LabelInput hinweise = null;

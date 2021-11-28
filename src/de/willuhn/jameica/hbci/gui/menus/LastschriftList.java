@@ -31,7 +31,7 @@ import de.willuhn.util.I18N;
  */
 public class LastschriftList extends ContextMenu
 {
-	private I18N i18n	= null;
+	private final I18N i18n;
 
 	/**
 	 * Erzeugt ein Kontext-Menu fuer eine Liste von Lastschriften.

@@ -25,7 +25,7 @@ public class Export implements Action
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private Class type = null;
+  private final Class type;
   private Object data = null;
   
   /**

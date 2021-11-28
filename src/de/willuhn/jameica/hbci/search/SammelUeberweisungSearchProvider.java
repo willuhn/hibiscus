@@ -91,7 +91,7 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
    */
   private class MyResult implements Result
   {
-    private SammelUeberweisung u = null;
+    private final SammelUeberweisung u;
     
     /**
      * ct.

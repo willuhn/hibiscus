@@ -39,9 +39,9 @@ import de.willuhn.util.ApplicationException;
 public class HBCISepaLastschriftJob extends AbstractHBCIJob
 {
 
-	private SepaLastschrift lastschrift = null;
-	private SepaLastType type           = null;
-	private Konto konto                 = null;
+	private SepaLastschrift lastschrift;
+	private SepaLastType type;
+	private Konto konto;
 
   /**
 	 * ct.

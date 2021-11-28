@@ -27,7 +27,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
  */
 public class SepaLastschriftDialog extends AbstractExecuteDialog
 {
-	private SepaLastschrift last;
+	private final SepaLastschrift last;
 
   /**
    * ct.

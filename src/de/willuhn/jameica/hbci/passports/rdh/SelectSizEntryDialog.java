@@ -36,7 +36,7 @@ import de.willuhn.util.I18N;
 public class SelectSizEntryDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private String data     = null;
+  private final String data;
   private Entry selected  = null;
 
   /**
@@ -120,9 +120,9 @@ public class SelectSizEntryDialog extends AbstractDialog
   public class Entry
   {
 
-    private String id     = null;
-    private String userid = null;
-    private String bank   = null;
+    private final String id;
+    private final String userid;
+    private String bank;
     
     private Entry(String data)
     {

@@ -159,7 +159,7 @@ public abstract class AbstractExporter implements Exporter
    */
   class MyIOFormat implements IOFormat
   {
-    Class type = null;
+    final Class type;
     
     /**
      * ct.

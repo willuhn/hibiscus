@@ -231,7 +231,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
   public class KontoAddress implements Address
   {
 
-    private Konto konto = null;
+    private final Konto konto;
 
     /**
      * Der Konstruktor erwartet ein Konto-Objekt. Dieses wird dann als Adresse bereitgestellt.

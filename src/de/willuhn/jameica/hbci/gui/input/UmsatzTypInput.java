@@ -38,7 +38,7 @@ public class UmsatzTypInput extends SelectInput
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  private boolean haveComments      = false;
+  private boolean haveComments;
   private boolean haveCustomComment = false;
   private boolean haveAutoComment   = false;
 

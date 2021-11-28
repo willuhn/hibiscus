@@ -352,8 +352,8 @@ public abstract class Range
    */
   private abstract static class LastYears extends Range
   {
-    private String text;
-    private int years;
+    private final String text;
+    private final int years;
 
     protected LastYears(int years, String text)
     {

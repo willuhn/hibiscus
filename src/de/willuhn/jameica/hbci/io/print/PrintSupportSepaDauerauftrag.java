@@ -34,7 +34,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class PrintSupportSepaDauerauftrag extends AbstractPrintSupport
 {
-  private Object ctx = null;
+  private final Object ctx;
   
   /**
    * ct.

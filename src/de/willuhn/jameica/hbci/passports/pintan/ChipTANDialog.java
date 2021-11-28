@@ -63,7 +63,7 @@ public class ChipTANDialog extends TANDialog
   
   private final static String PARAM_AUTOCONTINUE = "usb.autocontinue";
   
-  private String code = null;
+  private String code;
   private boolean usb = false;
   private ChipTanCardService service = null;
   private CheckboxInput autoContinue = null;

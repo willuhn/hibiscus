@@ -687,8 +687,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
    */
   public class Typ
   {
-    private boolean termin = false;
-    private boolean umb    = false;
+    private final boolean termin;
+    private final boolean umb;
     
     /**
      * ct.

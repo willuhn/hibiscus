@@ -53,7 +53,7 @@ public class SepaExportDialog extends AbstractDialog
   private final static DateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  private Type type               = null;
+  private final Type type;
   private SepaVersion painVersion = null;
   private File file               = null;
   private Button ok               = null;

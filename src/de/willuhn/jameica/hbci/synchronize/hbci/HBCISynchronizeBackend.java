@@ -508,7 +508,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
      */
     private class TaskHandleInit extends AbstractTaskWrapper<PassportHandle>
     {
-      private Passport passport = null;
+      private final Passport passport;
 
       /**
        * ct.
@@ -546,7 +546,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
      */
     private class TaskHandleOpen extends AbstractTaskWrapper<HBCIHandler>
     {
-      private PassportHandle handle = null;
+      private final PassportHandle handle;
 
       /**
        * ct.

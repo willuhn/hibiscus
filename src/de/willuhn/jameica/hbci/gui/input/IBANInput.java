@@ -29,7 +29,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class IBANInput extends TextInput
 {
-  private Input bicInput = null;
+  private final Input bicInput;
   
   /**
    * ct.

@@ -45,7 +45,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class HBCIKontoauszugJob extends AbstractHBCIJob
 {
-	private Konto konto = null;
+	private Konto konto;
 	
 	private List<AbstractHBCIJob> followers = new ArrayList<AbstractHBCIJob>();
 

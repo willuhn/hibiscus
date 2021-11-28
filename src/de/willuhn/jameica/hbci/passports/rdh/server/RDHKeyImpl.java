@@ -40,7 +40,7 @@ import de.willuhn.util.MultipleClassLoader;
 public class RDHKeyImpl implements RDHKey
 {
 
-  private File file = null;
+  private File file;
   private Settings settings = new Settings(RDHKey.class);
 
   /**

@@ -123,7 +123,7 @@ public class KontoList extends ContextMenu implements Extendable
    */
   private class AccountItem extends CheckedSingleContextMenuItem
   {
-    private boolean offline = false;
+    private final boolean offline;
 
     /**
      * ct.
@@ -228,7 +228,7 @@ public class KontoList extends ContextMenu implements Extendable
    */
   private class ChangeFlagsMenuItem extends CheckedSingleContextMenuItem
   {
-    boolean f1 = false;
+    final boolean f1;
 
     /**
      * ct.

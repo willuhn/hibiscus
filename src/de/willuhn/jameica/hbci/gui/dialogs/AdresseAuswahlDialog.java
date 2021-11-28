@@ -47,7 +47,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
   private final static int WINDOW_WIDTH = 640;
   private final static int WINDOW_HEIGHT = 460;
 	private Address choosen        = null;
-	private AddressFilter filter   = null;
+	private final AddressFilter filter;
 
   /**
    * ct.

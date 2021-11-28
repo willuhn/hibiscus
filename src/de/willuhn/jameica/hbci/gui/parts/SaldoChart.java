@@ -76,7 +76,7 @@ public class SaldoChart implements Part
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
 
-  private Konto konto             = null;
+  private final Konto konto;
   private boolean tiny            = false;
   
   private KontoInput kontoauswahl = null;

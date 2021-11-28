@@ -20,17 +20,17 @@ public class PassportChangeRequest
   /**
    * Der zu aendernde Passport.
    */
-  public AbstractHBCIPassport passport = null;
+  public final AbstractHBCIPassport passport;
   
   /**
    * Die neue Kundenkennung.
    */
-  public String custId = null;
+  public final String custId;
   
   /**
    * Die neue Benutzerkennung.
    */
-  public String userId = null;
+  public final String userId;
   
   /**
    * ct.

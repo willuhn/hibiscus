@@ -30,7 +30,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
  */
 public class SepaDauerauftragDialog extends AbstractExecuteDialog
 {
-	private SepaDauerauftrag auftrag;
+	private final SepaDauerauftrag auftrag;
 
   /**
    * ct.
