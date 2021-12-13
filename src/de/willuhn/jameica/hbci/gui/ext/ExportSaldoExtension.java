@@ -37,30 +37,29 @@ public class ExportSaldoExtension implements Extension
    * Der Context-Schluessel fuer die Option zum Ausblenden des Saldo im Export.
    */
   public final static String KEY_SALDO_SHOW = "saldo.show";
-  
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
-   */
+
+  @Override
   public void extend(Extendable extendable)
   {
     if (!(extendable instanceof ExportDialog))
       return;
-    
+
     ExportDialog e = (ExportDialog) extendable;
-    
+
     Class type = e.getType();
     if (!type.isAssignableFrom(Umsatz.class))
       return;
-    
+
     // Erstmal per Default einblenden
     boolean initial = ExportDialog.SETTINGS.getBoolean(KEY_SALDO_SHOW,true);
     Exporter.SESSION.put(KEY_SALDO_SHOW,initial);
-    
+
     final CheckboxInput check = new CheckboxInput(initial);
     check.setName(i18n.tr("Spalte \"Saldo\" in der Datei anzeigen"));
     check.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         Boolean value = (Boolean) check.getValue();
@@ -68,10 +67,10 @@ public class ExportSaldoExtension implements Extension
         ExportDialog.SETTINGS.setAttribute(KEY_SALDO_SHOW,value.booleanValue());
       }
     });
-    
+
     final Container c = e.getContainer();
     c.addInput(check);
-    
+
     // Jetzt noch ein Listener an die Auswahl-Box mit dem Format.
     // Wenn das aktuell ausgewaehlte Format diese Extension nicht unterstuetzt,
     // dann deaktivieren wir uns selbst
@@ -79,21 +78,20 @@ public class ExportSaldoExtension implements Extension
     {
       final Input format = e.getExporterList();
       Listener l = new Listener() {
-        
         @Override
         public void handleEvent(Event event)
         {
           ExportDialog.ExpotFormat exp = (ExportDialog.ExpotFormat) format.getValue();
           if (exp == null)
             return;
-          
+
           Exporter exporter = exp.getExporter();
           check.setEnabled(exporter.suppportsExtension(KEY_SALDO_SHOW));
         }
       };
-      
+
       format.getControl().addListener(SWT.Selection,l);
-      
+
       // Einmal initial ausloesen
       l.handleEvent(null);
     }
@@ -103,5 +101,3 @@ public class ExportSaldoExtension implements Extension
     }
   }
 }
-
-

@@ -30,7 +30,7 @@ public interface Exporter extends IO
    * Eine Session fuer zusaetzliche Parameter.
    */
   public final static Session SESSION = new Session();
-  
+
   /**
    * Exportiert die genannten Objekte in den angegebenen OutputStream.
    * @param objects die zu exportierenden Objekte.
@@ -43,7 +43,7 @@ public interface Exporter extends IO
    * @throws ApplicationException 
    */
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException;
-  
+
   /**
    * Liefert true, wenn der Exporter die angegebene Extension unterstuetzt.
    * Hintergrund: Im Export-Dialog koennen verschiedene Optionen (wie etwa "Spalte Saldo ausblenden") angezeigt

@@ -38,29 +38,28 @@ public class ExportAddSumRowExtension implements Extension
    * Der Context-Schluessel fuer die Option zum Ausblenden des Saldo im Export.
    */
   public final static String KEY_SUMROW_ADD = "sumrow.add";
-  
+
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
-   */
+
+  @Override
   public void extend(Extendable extendable)
   {
     if (!(extendable instanceof ExportDialog))
       return;
-    
+
     ExportDialog e = (ExportDialog) extendable;
-    
+
     Class type = e.getType();
     if (!type.isAssignableFrom(Umsatz.class) && !type.isAssignableFrom(UmsatzTree.class))
       return;
 
     boolean initial = ExportDialog.SETTINGS.getBoolean(KEY_SUMROW_ADD,false);
     Exporter.SESSION.put(KEY_SUMROW_ADD,initial);
-    
+
     final CheckboxInput check = new CheckboxInput(initial);
     check.setName(i18n.tr("Summe-Zeile am Ende der Datei anfügen"));
     check.addListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         Boolean value = (Boolean) check.getValue();
@@ -68,7 +67,7 @@ public class ExportAddSumRowExtension implements Extension
         ExportDialog.SETTINGS.setAttribute(KEY_SUMROW_ADD,value.booleanValue());
       }
     });
-    
+
     final Container c = e.getContainer();
     c.addInput(check);
 
@@ -79,21 +78,20 @@ public class ExportAddSumRowExtension implements Extension
     {
       final Input format = e.getExporterList();
       Listener l = new Listener() {
-        
         @Override
         public void handleEvent(Event event)
         {
           ExportDialog.ExpotFormat exp = (ExportDialog.ExpotFormat) format.getValue();
           if (exp == null)
             return;
-          
+
           Exporter exporter = exp.getExporter();
           check.setEnabled(exporter.suppportsExtension(KEY_SUMROW_ADD));
         }
       };
-      
+
       format.getControl().addListener(SWT.Selection,l);
-      
+
       // Einmal initial ausloesen
       l.handleEvent(null);
     }
@@ -103,5 +101,3 @@ public class ExportAddSumRowExtension implements Extension
     }
   }
 }
-
-
