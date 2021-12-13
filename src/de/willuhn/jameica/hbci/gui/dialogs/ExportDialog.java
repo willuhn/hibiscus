@@ -94,8 +94,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
   @Override
   protected void paint(Composite parent) throws Exception
   {
-		this.group = new SimpleContainer(parent);
-		this.group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
+    this.group = new SimpleContainer(parent);
+    this.group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
 
     Input formats = getExporterList();
     this.group.addInput(formats);
@@ -109,12 +109,12 @@ public class ExportDialog extends AbstractDialog implements Extendable
     // BUGZILLA 789
     ExtensionRegistry.extend(this);
 
-		ButtonArea buttons = new ButtonArea();
-		Button expBtn = new Button(i18n.tr("Export starten"), x -> export(), null, true, "ok.png");
+    ButtonArea buttons = new ButtonArea();
+    Button expBtn = new Button(i18n.tr("Export starten"), x -> export(), null, true, "ok.png");
     expBtn.setEnabled(exportEnabled);
     buttons.addButton(expBtn);
-		buttons.addButton(i18n.tr("Abbrechen"), x -> close(), null, false, "process-stop.png");
-		this.group.addButtonArea(buttons);
+    buttons.addButton(i18n.tr("Abbrechen"), x -> close(), null, false, "process-stop.png");
+    this.group.addButtonArea(buttons);
 
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
