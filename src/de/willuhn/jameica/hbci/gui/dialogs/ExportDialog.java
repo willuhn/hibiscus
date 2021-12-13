@@ -286,7 +286,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     Exporter[] exporters = IORegistry.getExporters();
 
     int size             = 0;
-    ArrayList<ExportFormat> l = new ArrayList<>();
+    ArrayList<ExportFormat> supportedExportFormats = new ArrayList<>();
     String lastFormat    = SETTINGS.getString("lastformat",null);
     ExportFormat selected = null;
 
@@ -305,7 +305,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       {
         size++;
         ExportFormat e = new ExportFormat(exp, format);
-        l.add(e);
+        supportedExportFormats.add(e);
 
         if (lastFormat != null && lastFormat.equals(e.format.getName()))
           selected = e;
@@ -318,8 +318,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
 		}
 		else
 		{
-		  Collections.sort(l);
-		  this.exporterListe = new SelectInput(l, selected);
+		  Collections.sort(supportedExportFormats);
+		  this.exporterListe = new SelectInput(supportedExportFormats, selected);
 		}
 		this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
 		return this.exporterListe;
