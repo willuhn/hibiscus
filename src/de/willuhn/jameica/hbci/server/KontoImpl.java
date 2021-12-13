@@ -822,8 +822,8 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (rs.next())
-          return new Integer(rs.getInt(1));
-        return new Integer(0);
+          return Integer.valueOf(rs.getInt(1));
+        return Integer.valueOf(0);
       }
     };
 

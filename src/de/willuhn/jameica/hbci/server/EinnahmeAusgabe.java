@@ -11,6 +11,7 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -229,9 +230,11 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
    */
   public double getDifferenz()
   {
-    BigDecimal v1 = new BigDecimal(this.anfangssaldo + this.einnahmen - this.ausgaben);
-    BigDecimal v2 = new BigDecimal(endsaldo);
-    return v1.subtract(v2).setScale(2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
+    BigDecimal va = new BigDecimal(this.anfangssaldo);
+    BigDecimal vin = new BigDecimal(this.einnahmen);
+    BigDecimal vout = new BigDecimal(this.ausgaben);
+    BigDecimal ve = new BigDecimal(this.endsaldo);
+    return va.add(vin).subtract(vout).subtract(ve).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
   }
 
   /**
