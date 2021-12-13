@@ -40,7 +40,7 @@ public class UmsatzDetail implements Action
     {
       Umsatz u = (Umsatz) context;
       Konto k = u.getKonto();
-      if (k != null && (k.getFlags() & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+      if (k != null && k.hasFlag(Konto.FLAG_OFFLINE))
       {
         new UmsatzDetailEdit().handleAction(context);
         return;

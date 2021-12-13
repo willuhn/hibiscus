@@ -102,7 +102,7 @@ public class KontoUtil
       {
         // Ein Flag ist angegeben. Dann kommt das Konto nur
         // in Frage, wenn es dieses Flag besitzt
-        if ((current & flag) != flag)
+        if (!test.hasFlag(flag))
           continue;
       }
       
@@ -278,7 +278,7 @@ public class KontoUtil
       {
         // Ein Flag ist angegeben. Dann kommt das Konto nur
         // in Frage, wenn es dieses Flag besitzt
-        if ((current & flag) != flag)
+        if (!test.hasFlag(flag))
           continue;
       }
       

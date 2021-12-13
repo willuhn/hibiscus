@@ -176,15 +176,12 @@ public class KontoList extends TablePart implements Part, Extendable
           
           item.setForeground(saldocolumn+1,ColorUtil.getForeground(k.getSaldoAvailable()));
 
-          // Checken, ob Konto deaktiviert ist
-          int flags = k.getFlags();
-
           // Deaktivierte Konten grau
-          if ((flags & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED)
+          if (k.hasFlag(Konto.FLAG_DISABLED))
             item.setForeground(Color.COMMENT.getSWTColor());
 
           // Offline-Konten blau
-          else if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+          else if (k.hasFlag(Konto.FLAG_OFFLINE))
             item.setForeground(Color.LINK.getSWTColor());
 
           // Sonst schwarz

@@ -45,7 +45,7 @@ public class SaldoFinder
     {
       Umsatz u = (Umsatz) umsaetze.next();
       // Vormerkbuchungen werden nicht beruecksichtigt, weil sie keinen Saldo haben
-      if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) == Umsatz.FLAG_NOTBOOKED)
+      if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
         continue;
       this.map.put(u.getDatum(),u.getSaldo());
     }
