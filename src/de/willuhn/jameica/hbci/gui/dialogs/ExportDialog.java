@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -321,9 +320,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
 		}
 		else
 		{
-	    Collections.sort(l);
-	    ExportFormat[] exp = l.toArray(new ExportFormat[0]);
-	    this.exporterListe = new SelectInput(PseudoIterator.fromArray(exp),selected);
+		  Collections.sort(l);
+		  this.exporterListe = new SelectInput(l, selected);
 		}
 		this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
 		return this.exporterListe;
