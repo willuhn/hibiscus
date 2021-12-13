@@ -141,11 +141,11 @@ public class ExportDialog extends AbstractDialog implements Extendable
    */
   private void export() throws ApplicationException
   {
-    ExpotFormat exp;
+    ExportFormat exp;
 
     try
     {
-      exp = (ExpotFormat) getExporterList().getValue();
+      exp = (ExportFormat) getExporterList().getValue();
     }
     catch (Exception e)
     {
@@ -288,9 +288,9 @@ public class ExportDialog extends AbstractDialog implements Extendable
     Exporter[] exporters = IORegistry.getExporters();
 
     int size             = 0;
-    ArrayList<ExpotFormat> l = new ArrayList<>();
+    ArrayList<ExportFormat> l = new ArrayList<>();
     String lastFormat    = SETTINGS.getString("lastformat",null);
-    ExpotFormat selected = null;
+    ExportFormat selected = null;
 
     for (Exporter exp : exporters)
     {
@@ -306,7 +306,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       for (IOFormat format : formats)
       {
         size++;
-        ExpotFormat e = new ExpotFormat(exp, format);
+        ExportFormat e = new ExportFormat(exp, format);
         l.add(e);
 
         String lf = e.format.getName();
@@ -322,7 +322,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
 		else
 		{
 	    Collections.sort(l);
-	    ExpotFormat[] exp = (ExpotFormat[]) l.toArray(new ExpotFormat[size]);
+	    ExportFormat[] exp = l.toArray(new ExportFormat[0]);
 	    this.exporterListe = new SelectInput(PseudoIterator.fromArray(exp),selected);
 		}
 		this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
@@ -362,12 +362,12 @@ public class ExportDialog extends AbstractDialog implements Extendable
 	/**
 	 * Hilfsklasse zur Anzeige der Exporter.
    */
-  public class ExpotFormat implements GenericObject, Comparable
+  public static class ExportFormat implements GenericObject, Comparable
 	{
 		private final Exporter exporter;
 		private final IOFormat format;
 
-		private ExpotFormat(Exporter exporter, IOFormat format)
+		private ExportFormat(Exporter exporter, IOFormat format)
 		{
 			this.exporter = exporter;
       this.format = format;

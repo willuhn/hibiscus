@@ -81,7 +81,7 @@ public class ExportSaldoExtension implements Extension
         @Override
         public void handleEvent(Event event)
         {
-          ExportDialog.ExpotFormat exp = (ExportDialog.ExpotFormat) format.getValue();
+          ExportDialog.ExportFormat exp = (ExportDialog.ExportFormat) format.getValue();
           if (exp == null)
             return;
 
