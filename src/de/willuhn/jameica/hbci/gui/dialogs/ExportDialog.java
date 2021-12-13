@@ -274,14 +274,14 @@ public class ExportDialog extends AbstractDialog implements Extendable
     return this.openFile;
   }
 
-	/**
-	 * Liefert eine Liste der verfuegbaren Exporter.
+  /**
+   * Liefert eine Liste der verfuegbaren Exporter.
    * @return Liste der Exporter.
    */
   public Input getExporterList()
-	{
-		if (this.exporterListe != null)
-			return this.exporterListe;
+  {
+    if (this.exporterListe != null)
+      return this.exporterListe;
 
     Exporter[] exporters = IORegistry.getExporters();
 
@@ -310,18 +310,18 @@ public class ExportDialog extends AbstractDialog implements Extendable
       }
     }
 
-		if (supportedExportFormats.isEmpty())
-		{
-		  this.exporterListe = new LabelInput(i18n.tr("Keine Export-Filter verfügbar"));
-		}
-		else
-		{
-		  Collections.sort(supportedExportFormats);
-		  this.exporterListe = new SelectInput(supportedExportFormats, selected);
-		}
-		this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
-		return this.exporterListe;
-	}
+    if (supportedExportFormats.isEmpty())
+    {
+      this.exporterListe = new LabelInput(i18n.tr("Keine Export-Filter verfügbar"));
+    }
+    else
+    {
+      Collections.sort(supportedExportFormats);
+      this.exporterListe = new SelectInput(supportedExportFormats, selected);
+    }
+    this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
+    return this.exporterListe;
+  }
 
   @Override
   protected Object getData() throws Exception
@@ -353,19 +353,19 @@ public class ExportDialog extends AbstractDialog implements Extendable
     return this.type;
   }
 
-	/**
-	 * Hilfsklasse zur Anzeige der Exporter.
+  /**
+   * Hilfsklasse zur Anzeige der Exporter.
    */
   public static class ExportFormat implements GenericObject, Comparable<ExportFormat>
-	{
-		private final Exporter exporter;
-		private final IOFormat format;
+  {
+    private final Exporter exporter;
+    private final IOFormat format;
 
-		private ExportFormat(Exporter exporter, IOFormat format)
-		{
-			this.exporter = exporter;
+    private ExportFormat(Exporter exporter, IOFormat format)
+    {
+      this.exporter = exporter;
       this.format = format;
-		}
+    }
 
     @Override
     public Object getAttribute(String arg0) throws RemoteException
@@ -394,9 +394,9 @@ public class ExportDialog extends AbstractDialog implements Extendable
     @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
-    	if (arg0 == null)
-	      return false;
-	    return this.getID().equals(arg0.getID());
+      if (arg0 == null)
+        return false;
+      return this.getID().equals(arg0.getID());
     }
 
     /**
