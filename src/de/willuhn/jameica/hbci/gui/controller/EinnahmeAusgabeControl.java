@@ -98,7 +98,13 @@ public class EinnahmeAusgabeControl extends AbstractControl
     ;
 
     private String name;
+    /**
+     * Typ des Tages zur Adressierung innerhalb des Intervalls
+     */
     private int type;
+    /**
+     * Intervalldauer
+     */
     private int size;
 
     /**
@@ -438,9 +444,10 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // Daten für das nächste relevante Intervall vorbereiten; 'while' da es möglich wäre, dass es für einen Zeitraum in der Mitte gar keine Umsätze gab
       while (currentNode == null || umsatz.getDatum().after(currentNode.getEnddatum()))
       {
-        // Bei einem User kam es zu einer IndexOutOfBoundsException. Das Szenario konnte ich mir nicht erklaeren
-        // Da es aber ohnehin unschoen ist, per Index auf eine Liste zuzugreifen, ohne in der Schleife sicherzustellen,
-        // dass die Liste ueberhaupt lang genug ist, breche ich hier einfach ab.
+        // Wenn der Filterzeitraum identisches Start- und Enddatum hat, es an diesem Tag
+        // aber einen Umsatz auf dem gewählten Konto gibt, so bekam man eine leere Liste nodes.
+        // Ggf. gibt es weitere Fälle, die eine IndexOutOfBoundsException auslösen können.
+        // Daher ist Prüfung des index erforderlich.
         if (index >= nodes.size())
         {
           Date end = currentNode != null ? currentNode.getEnddatum() : null;
@@ -587,7 +594,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
         calendar.set(interval.type, 1);
         Date nodeFrom = calendar.getTime();
 
-        // ermittle den Zeipunkt unmittelbar vor dem nächsten Zeitraumstart
+        // ermittle den Zeitpunkt unmittelbar vor dem nächsten Zeitraumstart
         calendar.add(interval.size, 1);
         calendar.setTimeInMillis(calendar.getTime().getTime() - 1);
         Date nodeTo = DateUtil.startOfDay(calendar.getTime());
@@ -596,6 +603,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
         result.add(new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte));
         // ermittle den Start des nächsten Zeitraums
         calendar.setTime(nodeFrom);
+        // eine Intervalldauer in die Zukunft springen
         calendar.add(interval.size, 1);
       }
     }
