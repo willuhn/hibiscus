@@ -25,7 +25,7 @@ import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 
 /**
- * Markiert das Navigations-Element "Auswertungen->Umsaetze", wenn neue Umsaetze vorhanden sind.
+ * Markiert das Navigations-Element "Auswertungen-&gt;Umsaetze", wenn neue Umsaetze vorhanden sind.
  */
 public class MarkerUmsatzMessageConsumer implements MessageConsumer
 {

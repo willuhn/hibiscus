@@ -246,7 +246,7 @@ public class HBCIProperties
 
   /**
    * Text-Replacements fuer SEPA.
-   * Die in SEPA nicht zulaessigen Zeichen "&*%$üצהÜײִß" werden ersetzt.
+   * Die in SEPA nicht zulaessigen Zeichen "{@code &*%$üצהÜײִß}" werden ersetzt.
    */
   public final static String[][] TEXT_REPLACEMENTS_SEPA = new String[][] {new String[]{"&","*","%","$","ü", "צ", "ה", "Ü", "ײ", "ִ", "ß"},
                                                                           new String[]{"+",".",".",".","ue","oe","ae","Ue","Oe","Ae","ss"}};

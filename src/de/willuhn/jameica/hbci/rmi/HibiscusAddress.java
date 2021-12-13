@@ -49,7 +49,7 @@ public interface HibiscusAddress extends Address, HibiscusDBObject
   /**
    * Liefert den Namen der Bank.
    * Ist nur fuer auslaendische Banken sinnvoll, da HBCI4Java fuer
-   * deutsche Banken eine Mapping-Tabelle BLZ->Bankname mitbringt.
+   * deutsche Banken eine Mapping-Tabelle BLZ-&gt;Bankname mitbringt.
    * @return Name der Bank.
    * @throws RemoteException
    */
@@ -58,7 +58,7 @@ public interface HibiscusAddress extends Address, HibiscusDBObject
   /**
    * Speichert den Namen der Bank.
    * Ist nur fuer auslaendische Banken sinnvoll, da HBCI4Java fuer
-   * deutsche Banken eine Mapping-Tabelle BLZ->Bankname mitbringt.
+   * deutsche Banken eine Mapping-Tabelle BLZ-&gt;Bankname mitbringt.
    * @param name Name der Bank.
    * @throws RemoteException
    */
