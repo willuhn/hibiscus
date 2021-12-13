@@ -308,8 +308,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
         ExportFormat e = new ExportFormat(exp, format);
         l.add(e);
 
-        String lf = e.format.getName();
-        if (lastFormat != null && lf != null && lf.equals(lastFormat))
+        if (lastFormat != null && lastFormat.equals(e.format.getName()))
           selected = e;
       }
     }
