@@ -178,7 +178,7 @@ public class PhotoTANDialog extends TANDialog
       int width = resize + 100;
       final int displayHeight = GUI.getDisplay().getBounds().height;
       Point p = this.getShell().computeSize(width,SWT.DEFAULT);
-      int height = p.y >= displayHeight ? displayHeight : p.y;
+      int height = Math.min(p.y, displayHeight);
       this.setSize(width,height);
     }
     
