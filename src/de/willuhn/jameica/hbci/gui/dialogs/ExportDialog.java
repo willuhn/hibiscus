@@ -362,7 +362,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
 	/**
 	 * Hilfsklasse zur Anzeige der Exporter.
    */
-  public static class ExportFormat implements GenericObject, Comparable
+  public static class ExportFormat implements GenericObject, Comparable<ExportFormat>
 	{
 		private final Exporter exporter;
 		private final IOFormat format;
@@ -415,13 +415,14 @@ public class ExportDialog extends AbstractDialog implements Extendable
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo(ExportFormat other)
     {
-      if (o == null || !(o instanceof ExpotFormat))
+      if (other == null)
         return -1;
+
       try
       {
-        return this.format.getName().compareTo(((ExpotFormat)o).format.getName());
+        return this.format.getName().compareTo(other.format.getName());
       }
       catch (Exception e)
       {
@@ -429,5 +430,5 @@ public class ExportDialog extends AbstractDialog implements Extendable
       }
       return 0;
     }
-	}
+  }
 }
