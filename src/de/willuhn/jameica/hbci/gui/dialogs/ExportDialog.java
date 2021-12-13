@@ -110,9 +110,9 @@ public class ExportDialog extends AbstractDialog implements Extendable
     ExtensionRegistry.extend(this);
 
 		ButtonArea buttons = new ButtonArea();
-		Button button = new Button(i18n.tr("Export starten"), x -> export(), null, true, "ok.png");
-    button.setEnabled(exportEnabled);
-    buttons.addButton(button);
+		Button expBtn = new Button(i18n.tr("Export starten"), x -> export(), null, true, "ok.png");
+    expBtn.setEnabled(exportEnabled);
+    buttons.addButton(expBtn);
 		buttons.addButton(i18n.tr("Abbrechen"), x -> close(), null, false, "process-stop.png");
 		this.group.addButtonArea(buttons);
 
