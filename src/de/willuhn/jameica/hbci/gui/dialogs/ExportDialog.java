@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -111,24 +110,10 @@ public class ExportDialog extends AbstractDialog implements Extendable
     ExtensionRegistry.extend(this);
 
 		ButtonArea buttons = new ButtonArea();
-		Button button = new Button(i18n.tr("Export starten"),new Action()
-		{
-			@Override
-                        public void handleAction(Object context) throws ApplicationException
-			{
-				export();
-			}
-		},null,true,"ok.png");
+		Button button = new Button(i18n.tr("Export starten"), x -> export(), null, true, "ok.png");
     button.setEnabled(exportEnabled);
     buttons.addButton(button);
-		buttons.addButton(i18n.tr("Abbrechen"), new Action()
-		{
-			@Override
-                        public void handleAction(Object context) throws ApplicationException
-			{
-				close();
-			}
-		},null,false,"process-stop.png");
+		buttons.addButton(i18n.tr("Abbrechen"), x -> close(), null, false, "process-stop.png");
 		this.group.addButtonArea(buttons);
 
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
