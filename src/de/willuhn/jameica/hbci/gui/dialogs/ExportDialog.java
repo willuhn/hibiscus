@@ -277,9 +277,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
 	/**
 	 * Liefert eine Liste der verfuegbaren Exporter.
    * @return Liste der Exporter.
-	 * @throws Exception
    */
-  public Input getExporterList() throws Exception
+  public Input getExporterList()
 	{
 		if (this.exporterListe != null)
 			return this.exporterListe;
