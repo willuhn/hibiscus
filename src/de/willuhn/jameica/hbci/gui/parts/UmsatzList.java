@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -118,7 +119,9 @@ public class UmsatzList extends TablePart implements Extendable
       this.umsaetze = PseudoIterator.asList(list);
     
     this.addFeature(new FeatureShortcut()); // Wir unterstuetzen Shortcuts
-    
+
+    final DateFormatter df  = new DateFormatter(HBCI.DATEFORMAT);
+    final DateFormatter dfs = new DateFormatter(HBCI.SHORTDATEFORMAT);
     final boolean bold = Settings.getBoldValues();
     
     setMulti(true);
@@ -132,6 +135,11 @@ public class UmsatzList extends TablePart implements Extendable
         try {
           item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
 
+          final Date datum = u.getDatum();
+          final Date valuta = u.getValuta();
+          if (!Objects.equals(datum,valuta))
+            item.setText(4,df.format(datum) + " (" + dfs.format(valuta) + ")");
+          
           if (bold)
             item.setFont(5,Font.BOLD.getSWTFont());
 
@@ -174,7 +182,7 @@ public class UmsatzList extends TablePart implements Extendable
     else
       addColumn(i18n.tr("Verwendungszweck"),        Tag.SVWZ.name());
     
-    addColumn(i18n.tr("Datum"),                     "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
+    addColumn(i18n.tr("Datum"),                     "datum_pseudo", df);
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
