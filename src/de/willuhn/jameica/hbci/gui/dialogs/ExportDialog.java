@@ -299,7 +299,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       IOFormat[] formats = exp.getIOFormats(type);
       if (formats == null || formats.length == 0)
       {
-        Logger.debug("exporter " + exp.getName() + " provides no export formats for " + type + " skipping");
+        Logger.debug("Exporter " + exp.getName() + " provides no export formats for " + type + ". Skipping");
         continue;
       }
       for (IOFormat format : formats)
