@@ -77,7 +77,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
 
     // Wir haben unterschiedliche Konten. Die Auftraege koennen aber nur einem Konto zugeordnet sein.
     // Wir fragen daher den User.
-    Konto konto = null;
+    Konto konto;
     if (ids.size() > 1)
     {
       KontoAuswahlDialog d = new KontoAuswahlDialog(null,KontoFilter.FOREIGN,KontoAuswahlDialog.POSITION_CENTER);
