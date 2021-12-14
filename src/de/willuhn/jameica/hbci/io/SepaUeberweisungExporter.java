@@ -27,17 +27,14 @@ import de.willuhn.jameica.hbci.rmi.Konto;
  */
 public class SepaUeberweisungExporter extends AbstractSepaExporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, java.util.Properties)
-   */
   @Override
   protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
     Properties props = ctx.props;
-    
+
     AuslandsUeberweisung u = (AuslandsUeberweisung) o;
     Konto k = u.getKonto();
-    
+
     props.setProperty(SepaUtil.insertIndex("dst.bic",idx),    StringUtils.trimToEmpty(u.getGegenkontoBLZ()));
     props.setProperty(SepaUtil.insertIndex("dst.iban",idx),   StringUtils.trimToEmpty(u.getGegenkontoNummer()));
     props.setProperty(SepaUtil.insertIndex("dst.name",idx),   StringUtils.trimToEmpty(u.getGegenkontoName()));
@@ -47,7 +44,7 @@ public class SepaUeberweisungExporter extends AbstractSepaExporter
     props.setProperty(SepaUtil.insertIndex("endtoendid",idx), StringUtils.trimToEmpty(u.getEndtoEndId()));
     props.setProperty(SepaUtil.insertIndex("purposecode",idx),   StringUtils.trimToEmpty(u.getPurposeCode()));
     props.setProperty("pmtinfid",StringUtils.trimToEmpty(u.getPmtInfId()));
-    
+
     if (u.isTerminUeberweisung())
     {
       SimpleDateFormat df = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
@@ -57,32 +54,21 @@ public class SepaUeberweisungExporter extends AbstractSepaExporter
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getPainType()
-   */
   @Override
   protected Type getPainType()
   {
     return Type.PAIN_001;
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getJobName()
-   */
+
   @Override
   protected String getJobName()
   {
     return "UebSEPA";
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getSupportedObjectTypes()
-   */
+
   @Override
   Class[] getSupportedObjectTypes()
   {
     return new Class[]{AuslandsUeberweisung.class};
   }
 }
-
-
