@@ -43,9 +43,6 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
 {
   private final static DateFormat ISO_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#setup(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
   @Override
   void setup(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
   {
@@ -57,7 +54,7 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
       if (conflict.size() > 1)
         break;
     }
-    
+
     if (conflict.size() > 1)
     {
       String txt = i18n.tr("Die Lastschriften enthalten unterschiedliche Lastschrift-Arten, Sequenz-Typen oder Zieltermine.\n" +
@@ -65,21 +62,18 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
       Application.getCallback().notifyUser(txt);
       throw new OperationCanceledException("conflicting sequencetype, targetdate or type");
     }
-    
+
     super.setup(objects, format, os, monitor);
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, de.willuhn.jameica.hbci.io.AbstractSepaExporter.JobContext)
-   */
+
   @Override
   protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
     Properties props = ctx.props;
-    
+
     SepaSammelLastschrift u = (SepaSammelLastschrift) o;
     Konto k = u.getKonto();
-   
+
     // Wir nehmen die globalen Properties von der ersten Lastschrift
     if (idx == 0)
     {
@@ -91,12 +85,12 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
       props.setProperty("sequencetype", u.getSequenceType().name());
       props.setProperty("targetdate",   u.getTargetDate() != null ? ISO_DATE.format(u.getTargetDate()) : SepaUtil.DATE_UNDEFINED);
       props.setProperty("type",         type.name());
-      
+
       String batchbook = MetaKey.SEPA_BATCHBOOK.get(u);
       if (batchbook != null)
         props.setProperty("batchbook", batchbook);
     }
-    
+
     Integer count = (Integer) ctx.meta.get("count");
     if (count == null)
       count = 0;
@@ -112,7 +106,7 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
       props.setProperty(SepaUtil.insertIndex("btg.curr",count),     k.getWaehrung() != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE);
       props.setProperty(SepaUtil.insertIndex("usage",count),        StringUtils.trimToEmpty(b.getZweck()));
       props.setProperty(SepaUtil.insertIndex("endtoendid",count),   StringUtils.trimToEmpty(b.getEndtoEndId()));
-      
+
       props.setProperty(SepaUtil.insertIndex("creditorid",count),   StringUtils.trimToEmpty(b.getCreditorId()));
       props.setProperty(SepaUtil.insertIndex("mandateid",count),    StringUtils.trimToEmpty(b.getMandateId()));
       props.setProperty(SepaUtil.insertIndex("manddateofsig",count),ISO_DATE.format(b.getSignatureDate()));
@@ -120,23 +114,16 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
       count++;
     }
 
-
     // Weil wir eine Liste von Auftraegen mit Buchungen haben, muessen wir den Zaehler selbst zaehlen
     ctx.meta.put("count",count);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getPainType()
-   */
   @Override
   protected Type getPainType()
   {
     return Type.PAIN_008;
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getJobName()
-   */
+
   @Override
   protected String getJobName()
   {
@@ -144,16 +131,13 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
     // Im Property "type" ist aber der korrekte Typ hinterlegt.
     return SepaLastType.CORE.getJobName();
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getSupportedObjectTypes()
-   */
+
   @Override
   Class[] getSupportedObjectTypes()
   {
     return new Class[]{SepaSammelLastschrift.class};
   }
-  
+
   /**
    * Generiert einen Lookup-Key fuer den Auftrag um zu checken, ob er in die SEPA XML-Datei passt.
    * @param l der Auftrag.
@@ -164,19 +148,17 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
   {
     StringBuffer sb = new StringBuffer();
     sb.append(l.getSequenceType().name() + "-");
-    
+
     SepaLastType type = l.getType();
     if (type == null)
       type = SepaLastType.DEFAULT;
     sb.append(type.name() + "-");
-    
+
     Date target = l.getTargetDate();
     if (target != null)
       sb.append(HBCI.DATEFORMAT.format(target) + "-");
-    
+
     return sb.toString();
   }
 
 }
-
-

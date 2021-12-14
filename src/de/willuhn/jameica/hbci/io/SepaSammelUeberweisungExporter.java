@@ -30,9 +30,6 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
  */
 public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#exportObject(java.lang.Object, int, java.util.Properties)
-   */
   @Override
   protected void exportObject(Object o, int idx, JobContext ctx) throws Exception
   {
@@ -47,15 +44,15 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       String batchbook = MetaKey.SEPA_BATCHBOOK.get(u);
       if (batchbook != null)
         props.setProperty("batchbook", batchbook);
-      
+
       props.setProperty("pmtinfid", StringUtils.trimToEmpty(u.getPmtInfId()));
 
     }
-    
+
     Integer count = (Integer) ctx.meta.get("count");
     if (count == null)
       count = 0;
-    
+
     List<SepaSammelUeberweisungBuchung> buchungen = u.getBuchungen();
     for (int i=0;i<buchungen.size();++i)
     {
@@ -70,7 +67,7 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       props.setProperty(SepaUtil.insertIndex("purposecode",count),  StringUtils.trimToEmpty(b.getPurposeCode()));
       count++;
     }
-    
+
     if (u.isTerminUeberweisung())
     {
       SimpleDateFormat df = new SimpleDateFormat(SepaUtil.DATE_FORMAT);
@@ -78,38 +75,26 @@ public class SepaSammelUeberweisungExporter extends AbstractSepaExporter
       if (date != null)
         props.setProperty("date",date);
     }
-    
+
     // Weil wir eine Liste von Auftraegen mit Buchungen haben, muessen wir den Zaehler selbst zaehlen
     ctx.meta.put("count",count);
-
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getPainType()
-   */
   @Override
   protected Type getPainType()
   {
     return Type.PAIN_001;
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractSepaExporter#getJobName()
-   */
+
   @Override
   protected String getJobName()
   {
     return "UebSEPA";
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getSupportedObjectTypes()
-   */
+
   @Override
   Class[] getSupportedObjectTypes()
   {
     return new Class[]{SepaSammelUeberweisung.class};
   }
 }
-
-

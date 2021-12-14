@@ -40,35 +40,26 @@ import de.willuhn.util.ProgressMonitor;
 public abstract class AbstractSepaExporter extends AbstractExporter
 {
   private final static String SYSPROP_FORMATTED = "sepa.pain.formatted";
-  
+
   private Map<OutputStream,JobContext> jobs = Collections.synchronizedMap(new HashMap<OutputStream,JobContext>());
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+
   @Override
   public String getName()
   {
     return i18n.tr("SEPA-XML");
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getFileExtensions()
-   */
+
   @Override
   String[] getFileExtensions()
   {
     return new String[]{"*.xml"};
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#setup(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+
   @Override
   void setup(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
   {
     super.setup(objects, format, os, monitor);
-    
+
     // Checken, ob die Auftraege zum selben Konto gehoeren
     Set<String> ids = new HashSet<String>();
     for (Object o:objects)
@@ -83,7 +74,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
       if (ids.size() > 1)
         break;
     }
-    
+
     // Wir haben unterschiedliche Konten. Die Auftraege koennen aber nur einem Konto zugeordnet sein.
     // Wir fragen daher den User.
     Konto konto = null;
@@ -100,11 +91,10 @@ public abstract class AbstractSepaExporter extends AbstractExporter
     {
       konto = this.getKonto(objects[0]); // Ansonsten das Konto des ersten Objektes
     }
-    
-    
+
     JobContext ctx = new JobContext();
     this.jobs.put(os,ctx); // dem Stream zuordnen
-    
+
     // User nach der SEPA-Version fragen, die verwendet werden soll.
     PainVersionDialog d = new PainVersionDialog(this.getPainType());
     SepaVersion version = (SepaVersion) d.open();
@@ -116,10 +106,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
     ctx.props.setProperty("src.name",   StringUtils.trimToEmpty(konto.getName()));
     ctx.props.setProperty("sepaid",     Long.toString(System.currentTimeMillis()));
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#commit(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+
   @Override
   void commit(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws Exception
   {
@@ -139,21 +126,18 @@ public abstract class AbstractSepaExporter extends AbstractExporter
         System.setProperty(SYSPROP_FORMATTED,backup);
       else
         System.clearProperty(SYSPROP_FORMATTED);
-      
+
       jobs.remove(os);
       super.commit(objects, format, os, monitor);
     }
   }
-  
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#exportObject(java.lang.Object, int, java.io.OutputStream)
-   */
+
   @Override
   void exportObject(Object o, int idx, OutputStream os) throws Exception
   {
     this.exportObject(o,idx,jobs.get(os));
   }
-  
+
   /**
    * Liefert das Konto fuer das angegebene Objekt.
    * @param o das Objekt.
@@ -164,13 +148,13 @@ public abstract class AbstractSepaExporter extends AbstractExporter
   {
     if (o instanceof HibiscusTransfer)
       return ((HibiscusTransfer) o).getKonto();
-    
+
     if (o instanceof SepaSammelTransfer)
       return ((SepaSammelTransfer) o).getKonto();
-    
+
     return null;
   }
-  
+
   /**
    * Schreibt die Eigenschaften des Auftrages in die Properties. 
    * @param o das zu exportierende Objekt.
@@ -185,13 +169,13 @@ public abstract class AbstractSepaExporter extends AbstractExporter
    * @return der zu verwendende SEPA PAIN-Type.
    */
   protected abstract Type getPainType();
-  
+
   /**
    * Liefert den zu verwendenden HBCI4Java-Jobname.
    * @return der zu verwendende HBCI4Java-Jobname.
    */
   protected abstract String getJobName();
-  
+
   /**
    * Container, der den Job-Context haelt.
    */
@@ -200,7 +184,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
     protected SepaVersion version = null;
     protected Properties props = new Properties();
     protected Map meta = new HashMap();
-    
+
   }
 
 }
