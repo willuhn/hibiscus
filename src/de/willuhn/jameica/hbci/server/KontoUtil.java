@@ -74,7 +74,7 @@ public class KontoUtil
       return null;
     
     // BUGZILLA 365
-    // Fuehrende Nullen schneiden wir ab
+    // Fuehrende Nullen abschneiden
     if (kontonummer.startsWith("0"))
       kontonummer = kontonummer.replaceAll("^0{1,}","");
 
@@ -108,7 +108,7 @@ public class KontoUtil
       if (kTest == null || kTest.length() == 0)
         continue;
 
-      // Fuehrende Nullen abschneiden und dann vergleichen
+      // Fuehrende Nullen abschneiden
       if (kTest.startsWith("0"))
         kTest = kTest.replaceAll("^0{1,}","");
       
@@ -288,7 +288,7 @@ public class KontoUtil
   }
 
   /**
-   * Liefert den Anfangssaldo eines Tages bzw. des 1. Tages nach diesem Datum mit Ums‰tzen
+   * Liefert den Anfangssaldo eines Tages bzw. des 1. Tages nach diesem Datum mit Ums√§tzen
    * oder <code>0.0</code> wenn er noch nie abgefragt wurde.
    * @param konto das Konto.
    * @param datum Datum.
@@ -318,8 +318,8 @@ public class KontoUtil
         return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
     }
 
-    // Im angegebenen Zeitraum waren keine Ums‰tze zu finden. Deshalb suchen wir
-    // fr¸here Ums‰tze.
+    // Im angegebenen Zeitraum waren keine Ums√§tze zu finden. Deshalb suchen wir
+    // fr√ºhere Ums√§tze.
     list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
     
@@ -339,7 +339,7 @@ public class KontoUtil
   }
 
   /**
-   * Liefert den Endsaldo eines Tages bzw. des 1. Tages vor diesem Datum mit Ums‰tzen oder
+   * Liefert den Endsaldo eines Tages bzw. des 1. Tages vor diesem Datum mit Ums√§tzen oder
    * <code>0.0</code> wenn er noch nie abgefragt wurde.
    * @param konto das Konto.
    * @param datum Datum.

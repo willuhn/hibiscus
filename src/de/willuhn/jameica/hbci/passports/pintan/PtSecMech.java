@@ -92,7 +92,7 @@ public class PtSecMech
   
   /**
    * Erzeugt ein PTSechMech-Objekt aus dem Text.
-   * Der Text ist fuer gewoehnlich so zusammengesetzt: "<id>:<name>".
+   * Der Text ist fuer gewoehnlich so zusammengesetzt: "{@code <id>:<name>}".
    * @param text der zu parsende Text.
    * @return das PTSechMech-Objekt oder NULL, wenn es kein interpretierbares TAN-Verfahren war.
    */

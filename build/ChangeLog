@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0963 Umsatzliste: Valuta-Datum in Klammern hinter Buchungsdatum anzeigen, wenn es abweicht
+
 2021-11-19 Version 2.10.4
 
   * NEW: 0962 CSV-Export von Umsätzen: Name2 mit exportieren, falls vorhanden

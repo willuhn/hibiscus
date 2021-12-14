@@ -61,6 +61,11 @@ public class HBCI extends AbstractPlugin
   public static DateFormat DATEFORMAT       = new CustomDateFormat("dd.MM.yyyy");
 
   /**
+   * Datums-Format dd.MM.
+   */
+  public static DateFormat SHORTDATEFORMAT  = new CustomDateFormat("dd.MM.");
+
+  /**
    * Datums-Format ddMMyyyy.
    */
   public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");

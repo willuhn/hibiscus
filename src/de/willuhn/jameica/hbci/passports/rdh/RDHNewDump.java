@@ -38,11 +38,11 @@ import org.xml.sax.SAXException;
  * drin steht.
  * Der Code ist aus "HBCIPassportRDHNew" (HBCI4Java) zusammenkopiert.
  * Aufruf:
- * 
+ * {@code
  * java -cp hbci4java-....jar \
  *   de.willuhn.jameica.hbci.passports.rdh.RDHNewDump \
  *   <Schluesseldatei> <Passwort>
- * 
+ * }
  */
 public class RDHNewDump
 {

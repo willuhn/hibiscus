@@ -37,7 +37,7 @@ public class ImportListener
    * Das wird z.Bsp. gebraucht, wenn ein Property in der Bean aus mehreren CSV-Spalten
    * zusammengesetzt ist.
    * @param event das Import-Event.
-   * Das Property "data" ist eine Map<String,Object> mit den Property-Namen als
+   * Das Property "data" ist eine {@code Map<String,Object>} mit den Property-Namen als
    * Keys und den deserialisierten Property-Werten als Values.
    * @throws OperationCanceledException wenn das Objekt uebersprungen werden soll.
    */
