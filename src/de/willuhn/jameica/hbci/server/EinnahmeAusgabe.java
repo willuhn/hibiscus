@@ -42,7 +42,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
   private Date enddatum;
   
   private boolean isSumme = false;
-  private boolean anfangsSaldoDurchUmsatzGesetzt;
+  private boolean anfangsSaldoDurchUmsatzGesetzt = false;
 
   /**
    * ct.
