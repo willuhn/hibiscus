@@ -19,10 +19,13 @@ import de.willuhn.util.Session;
 
 /**
  * Basis-Interface aller Exporter.
+ * <p>
  * Alle Klassen, die dieses Interface implementieren, werden automatisch
  * von Hibiscus erkannt und dem Benutzer als Export-Moeglichkeit angeboten
  * insofern sie einen parameterlosen Konstruktor mit dem Modifier "public"
  * besitzen (Java-Bean-Konvention).
+ *
+ * @see de.willuhn.jameica.hbci.io.IORegistry
  */
 public interface Exporter extends IO
 {
@@ -30,26 +33,30 @@ public interface Exporter extends IO
    * Eine Session fuer zusaetzliche Parameter.
    */
   public final static Session SESSION = new Session();
-  
+
   /**
    * Exportiert die genannten Objekte in den angegebenen OutputStream.
+   *
    * @param objects die zu exportierenden Objekte.
    * @param format das vom User ausgewaehlte Export-Format.
    * @param os der Ziel-Ausgabe-Stream.
    * Der Exporter muss den OutputStream selbst schliessen!
    * @param monitor ein Monitor, an den der Exporter Ausgaben ueber seinen
    * Bearbeitungszustand ausgeben kann.
+   *
    * @throws RemoteException
    * @throws ApplicationException 
    */
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException;
-  
+
   /**
    * Liefert true, wenn der Exporter die angegebene Extension unterstuetzt.
+   * <p>
    * Hintergrund: Im Export-Dialog koennen verschiedene Optionen (wie etwa "Spalte Saldo ausblenden") angezeigt
    * werden. Manche Export-Formate unterstuetzen diese Option jedoch gar nicht, sodass sie ignoriert werden wuerde.
    * Aus dem Grund kann der Exporter selbst mitteilen, ob er die angegebene Option unterstuetzt.
    * Unterstuetzt er sie nicht, wir die Option automatisch deaktiviert.
+   *
    * @param ext der Name der Extension.
    * @return true, wenn er die Extension unterstuetzt.
    */

@@ -25,8 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -63,7 +61,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
    * Zugriff auf die Settings des Export-Dialogs.
    */
   public final static Settings SETTINGS = new Settings(ExportDialog.class);
-  
+
   private final static int WINDOW_WIDTH = 550;
 
   private static DateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
@@ -72,8 +70,8 @@ public class ExportDialog extends AbstractDialog implements Extendable
 
   private Input exporterListe     = null;
   private CheckboxInput openFile  = null;
-  private Object[] objects        = null;	
-  private Class type              = null;
+  private final Object[] objects;
+  private final Class type;
 
   private boolean exportEnabled   = true;
   private Container group         = null;
@@ -93,19 +91,17 @@ public class ExportDialog extends AbstractDialog implements Extendable
     this.type = type;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
-		this.group = new SimpleContainer(parent);
-		this.group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
+    this.group = new SimpleContainer(parent);
+    this.group.addText(i18n.tr("Bitte wählen Sie das gewünschte Dateiformat aus für den Export aus"),true);
 
     Input formats = getExporterList();
     this.group.addInput(formats);
-    
+
     this.exportEnabled = !(formats instanceof LabelInput);
-    
+
     CheckboxInput open = this.getOpenFile();
     open.setEnabled(this.exportEnabled);
     this.group.addInput(open);
@@ -113,39 +109,27 @@ public class ExportDialog extends AbstractDialog implements Extendable
     // BUGZILLA 789
     ExtensionRegistry.extend(this);
 
-		ButtonArea buttons = new ButtonArea();
-		Button button = new Button(i18n.tr("Export starten"),new Action()
-		{
-			public void handleAction(Object context) throws ApplicationException
-			{
-				export();
-			}
-		},null,true,"ok.png");
-    button.setEnabled(exportEnabled);
-    buttons.addButton(button);
-		buttons.addButton(i18n.tr("Abbrechen"), new Action()
-		{
-			public void handleAction(Object context) throws ApplicationException
-			{
-				close();
-			}
-		},null,false,"process-stop.png");
-		this.group.addButtonArea(buttons);
-		
+    ButtonArea buttons = new ButtonArea();
+    Button expBtn = new Button(i18n.tr("Export starten"), x -> export(), null, true, "ok.png");
+    expBtn.setEnabled(exportEnabled);
+    buttons.addButton(expBtn);
+    buttons.addButton(i18n.tr("Abbrechen"), x -> close(), null, false, "process-stop.png");
+    this.group.addButtonArea(buttons);
+
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
-  
+
   /**
    * Exportiert die Daten.
    * @throws ApplicationException
    */
   private void export() throws ApplicationException
   {
-    ExpotFormat exp = null;
+    ExportFormat exp;
 
     try
     {
-      exp = (ExpotFormat) getExporterList().getValue();
+      exp = (ExportFormat) getExporterList().getValue();
     }
     catch (Exception e)
     {
@@ -171,7 +155,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
       fd.setFilterPath(path);
 
     final String s = fd.open();
-    
+
     if (s == null || s.length() == 0)
     {
       close();
@@ -179,7 +163,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     }
 
     final File file = new File(s);
-    
+
     // Wir merken uns noch das Verzeichnis vom letzten mal
     SETTINGS.setAttribute("lastdir",file.getParent());
 
@@ -192,6 +176,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
     final IOFormat format = exp.format;
 
     BackgroundTask t = new BackgroundTask() {
+      @Override
       public void run(ProgressMonitor monitor) throws ApplicationException
       {
         try
@@ -203,7 +188,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
           GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
           monitor.setStatusText(i18n.tr("Daten exportiert nach {0}",s));
-          
+
           if (open)
           {
             GUI.getDisplay().asyncExec(new Runnable() {
@@ -245,7 +230,12 @@ public class ExportDialog extends AbstractDialog implements Extendable
         }
       }
 
-      public void interrupt() {}
+      @Override
+      public void interrupt()
+      {
+      }
+
+      @Override
       public boolean isInterrupted()
       {
         return false;
@@ -268,77 +258,68 @@ public class ExportDialog extends AbstractDialog implements Extendable
     }
     return this.openFile;
   }
-  
-	/**
-	 * Liefert eine Liste der verfuegbaren Exporter.
+
+  /**
+   * Liefert eine Liste der verfuegbaren Exporter.
    * @return Liste der Exporter.
-	 * @throws Exception
    */
-  public Input getExporterList() throws Exception
-	{
-		if (this.exporterListe != null)
-			return this.exporterListe;
+  public Input getExporterList()
+  {
+    if (this.exporterListe != null)
+      return this.exporterListe;
 
     Exporter[] exporters = IORegistry.getExporters();
 
-    int size             = 0;
-    ArrayList l          = new ArrayList();
+    ArrayList<ExportFormat> supportedExportFormats = new ArrayList<>();
     String lastFormat    = SETTINGS.getString("lastformat",null);
-    ExpotFormat selected = null;
+    ExportFormat selected = null;
 
-    for (int i=0;i<exporters.length;++i)
-		{
-      Exporter exp = exporters[i];
+    for (Exporter exp : exporters)
+    {
       if (exp == null)
         continue;
+
       IOFormat[] formats = exp.getIOFormats(type);
       if (formats == null || formats.length == 0)
       {
-        Logger.debug("exporter " + exp.getName() + " provides no export formats for " + type + " skipping");
+        Logger.debug("Exporter " + exp.getName() + " provides no export formats for " + type + ". Skipping");
         continue;
       }
-      for (int j=0;j<formats.length;++j)
+      for (IOFormat format : formats)
       {
-        size++;
-        ExpotFormat e = new ExpotFormat(exp,formats[j]);
-        l.add(e);
-        
-        String lf = e.format.getName();
-        if (lastFormat != null && lf != null && lf.equals(lastFormat))
+        ExportFormat e = new ExportFormat(exp, format);
+        supportedExportFormats.add(e);
+
+        if (lastFormat != null && lastFormat.equals(e.format.getName()))
           selected = e;
       }
-		}
+    }
 
-		if (size == 0)
-		{
-		  this.exporterListe = new LabelInput(i18n.tr("Keine Export-Filter verfügbar"));
-		}
-		else
-		{
-	    Collections.sort(l);
-	    ExpotFormat[] exp = (ExpotFormat[]) l.toArray(new ExpotFormat[size]);
-	    this.exporterListe = new SelectInput(PseudoIterator.fromArray(exp),selected);
-		}
-		this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
-		return this.exporterListe;
-	}
+    if (supportedExportFormats.isEmpty())
+    {
+      this.exporterListe = new LabelInput(i18n.tr("Keine Export-Filter verfügbar"));
+    }
+    else
+    {
+      Collections.sort(supportedExportFormats);
+      this.exporterListe = new SelectInput(supportedExportFormats, selected);
+    }
+    this.exporterListe.setName(i18n.tr("Verfügbare Formate"));
+    return this.exporterListe;
+  }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;
   }
-  
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();
   }
-  
+
   /**
    * Liefert den Formular-Container zur Erweiterung durch Extensions.
    * @return der Formular-Container zur Erweiterung durch Extensions.
@@ -347,7 +328,7 @@ public class ExportDialog extends AbstractDialog implements Extendable
   {
     return this.group;
   }
-  
+
   /**
    * Liefert den zu exportierenden Objekt-Typ.
    * @return der zu exportierenden Objekt-Typ.
@@ -356,63 +337,53 @@ public class ExportDialog extends AbstractDialog implements Extendable
   {
     return this.type;
   }
-  
-	/**
-	 * Hilfsklasse zur Anzeige der Exporter.
-   */
-  public class ExpotFormat implements GenericObject, Comparable
-	{
-		private Exporter exporter   = null;
-    private IOFormat format = null;
-		
-		private ExpotFormat(Exporter exporter, IOFormat format)
-		{
-			this.exporter = exporter;
-      this.format = format;
-		}
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+  /**
+   * Hilfsklasse zur Anzeige der Exporter.
+   */
+  public static class ExportFormat implements GenericObject, Comparable<ExportFormat>
+  {
+    private final Exporter exporter;
+    private final IOFormat format;
+
+    private ExportFormat(Exporter exporter, IOFormat format)
+    {
+      this.exporter = exporter;
+      this.format = format;
+    }
+
+    @Override
     public Object getAttribute(String arg0) throws RemoteException
     {
       return this.format.getName();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[] {"name"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return this.exporter.getClass().getName() + "#" + this.format.getName();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "name";
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
-    	if (arg0 == null)
-	      return false;
-	    return this.getID().equals(arg0.getID());
+      if (arg0 == null)
+        return false;
+      return this.getID().equals(arg0.getID());
     }
-    
+
     /**
      * Liefert den zugehoerigen Exporter.
      * @return der zugehoerige Exporter.
@@ -422,16 +393,15 @@ public class ExportDialog extends AbstractDialog implements Extendable
       return this.exporter;
     }
 
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object o)
+    @Override
+    public int compareTo(ExportFormat other)
     {
-      if (o == null || !(o instanceof ExpotFormat))
+      if (other == null)
         return -1;
+
       try
       {
-        return this.format.getName().compareTo(((ExpotFormat)o).format.getName());
+        return this.format.getName().compareTo(other.format.getName());
       }
       catch (Exception e)
       {
@@ -439,5 +409,5 @@ public class ExportDialog extends AbstractDialog implements Extendable
       }
       return 0;
     }
-	}
+  }
 }
