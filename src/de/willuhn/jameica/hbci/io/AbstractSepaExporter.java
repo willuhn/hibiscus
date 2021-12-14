@@ -97,8 +97,7 @@ public abstract class AbstractSepaExporter extends AbstractExporter
 
     // User nach der SEPA-Version fragen, die verwendet werden soll.
     PainVersionDialog d = new PainVersionDialog(this.getPainType());
-    SepaVersion version = (SepaVersion) d.open();
-    ctx.version = version;
+    ctx.version = (SepaVersion) d.open();
 
     // Header-Infos zuweisen
     ctx.props.setProperty("src.bic",    StringUtils.trimToEmpty(konto.getBic()));
