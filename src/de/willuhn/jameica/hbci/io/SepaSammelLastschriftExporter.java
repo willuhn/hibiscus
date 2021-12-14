@@ -96,9 +96,8 @@ public class SepaSammelLastschriftExporter extends AbstractSepaExporter
       count = 0;
 
     List<SepaSammelLastBuchung> buchungen = u.getBuchungen();
-    for (int i=0;i<buchungen.size();++i)
+    for (SepaSammelLastBuchung b : buchungen)
     {
-      SepaSammelLastBuchung b = buchungen.get(i);
       props.setProperty(SepaUtil.insertIndex("dst.bic",count),      StringUtils.trimToEmpty(b.getGegenkontoBLZ()));
       props.setProperty(SepaUtil.insertIndex("dst.iban",count),     StringUtils.trimToEmpty(b.getGegenkontoNummer()));
       props.setProperty(SepaUtil.insertIndex("dst.name",count),     StringUtils.trimToEmpty(b.getGegenkontoName()));
