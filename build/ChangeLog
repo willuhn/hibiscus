@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0965 Play/Pause-Button für Flicker-Code sowie Option "[x] Automatisch starten"
   * BUG: 0964 In der Auswertung "Einnahmen/Ausgaben" konnte es fälschlicherweise zur Anzeige von Differenzen kommen
   * NEW: 0963 Umsatzliste: Valuta-Datum in Klammern hinter Buchungsdatum anzeigen, wenn es abweicht
 

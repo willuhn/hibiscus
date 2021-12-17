@@ -38,6 +38,7 @@ import org.kapott.hbci.manager.FlickerRenderer;
 import org.kapott.hbci.smartcardio.ChipTanCardService;
 import org.kapott.hbci.smartcardio.SmartCardService;
 
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.input.CheckboxInput;
@@ -62,9 +63,12 @@ public class ChipTANDialog extends TANDialog
   private final static Settings SETTINGS = new Settings(ChipTANDialog.class);
   
   private final static String PARAM_AUTOCONTINUE = "usb.autocontinue";
+  private final static String PARAM_AUTOPLAY     = "flicker.autoplay";
   
   private String code = null;
   private boolean usb = false;
+  private boolean run = true;
+
   private ChipTanCardService service = null;
   private CheckboxInput autoContinue = null;
   
@@ -88,6 +92,7 @@ public class ChipTANDialog extends TANDialog
   {
     super(config);
     this.code = code;
+    this.run = SETTINGS.getBoolean(PARAM_AUTOPLAY,true);
     this.checkUSB();
     Logger.info("using chiptan " + (this.usb ? "USB" : "OPTIC"));
     
@@ -315,15 +320,14 @@ public class ChipTANDialog extends TANDialog
     else
     {
       this.setInfoText(Type.INFO,i18n.tr("Klicken Sie \"-\" bzw. \"+\", um die Breite anzupassen."));
-      
       final Container c = new SimpleContainer(container.getComposite(),false,1);
       Composite comp = new Composite(c.getComposite(),SWT.NONE);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.grabExcessHorizontalSpace = true;
       comp.setLayoutData(gd);
       comp.setLayout(new GridLayout(1,false));
-
-      FlickerPart flicker = new FlickerPart(this.code);
+      
+      final FlickerPart flicker = new FlickerPart(this.code);
       flicker.paint(comp);
     }
   }
@@ -374,7 +378,9 @@ public class ChipTANDialog extends TANDialog
     
     private Color black = GUI.getDisplay().getSystemColor(SWT.COLOR_BLACK);
     private Color white = GUI.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-    
+
+    private de.willuhn.jameica.gui.parts.Button play = null;
+
     /**
      * ct.
      * @param code der anzuzeigende Flicker-Code.
@@ -573,10 +579,64 @@ public class ChipTANDialog extends TANDialog
       //
       //////////////////////////////////////////////////////////////////////////
 
-
       
-      // Und los gehts
-      this.start();
+      //////////////////////////////////////////////////////////////////////////
+      //
+      {
+        Composite playComp = new Composite(parent,SWT.NONE);
+        GridData playGd = new GridData();
+        playGd.grabExcessHorizontalSpace = true;
+        playGd.horizontalAlignment = SWT.CENTER;
+        playComp.setLayoutData(playGd);
+        playComp.setLayout(new GridLayout(2,false));
+
+        this.play = new de.willuhn.jameica.gui.parts.Button("",new Action() {
+          
+          @Override
+          public void handleAction(Object context) throws ApplicationException
+          {
+            updatePlay();
+          }
+        },null,false,run ? "media-playback-stop.png" : "media-playback-start.png");
+        
+        
+        final CheckboxInput autorun = new CheckboxInput(run);
+        autorun.addListener(new Listener() {
+          
+          @Override
+          public void handleEvent(Event event)
+          {
+            final Boolean b = (Boolean) autorun.getValue();
+            SETTINGS.setAttribute(PARAM_AUTOPLAY,b.booleanValue());
+          }
+        });
+        autorun.setName(i18n.tr("Automatisch starten"));
+
+        play.paint(playComp);
+        autorun.paint(playComp);
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
+      
+      
+      if (run)
+        this.start();
+    }
+
+    /**
+     * Startet/Stoppt den Flicker-Code.
+     */
+    private void updatePlay()
+    {
+      if (play == null)
+        return;
+
+      run = !run;
+      play.setIcon(run ? "media-playback-stop.png" : "media-playback-start.png");
+      if (run)
+        this.start();
+      else
+        this.stop();
     }
 
     /**
