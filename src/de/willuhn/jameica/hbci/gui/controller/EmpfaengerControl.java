@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import com.google.common.base.Objects;
+
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
@@ -329,9 +331,9 @@ public class EmpfaengerControl extends AbstractControl
             {
               IBAN i = new IBAN(iban);
               SEPALand land = i.getLand();
-              if (land.getBankIdentifierLength() == null)
+              if (land == null || !Objects.equal(land.getKennzeichen(),"DE"))
               {
-                Logger.info("length of bank identifier unknown for this country");
+                Logger.info("no auto completion of national account information for this country");
                 return;
               }
               
