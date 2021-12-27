@@ -13,8 +13,11 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -31,6 +34,7 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.Synchronize;
@@ -62,6 +66,8 @@ public class SynchronizeList extends TablePart
   // Wir cachen die Liste der vom User explizit abgewaehlten Aufgaben waehrend der Sitzung
   private static Map<String,Boolean> uncheckedCache = new HashMap<String,Boolean>();
   
+  private static Set<String> selectedCache = new HashSet<String>(); 
+  
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private MessageConsumer mcSync  = new SyncMessageConsumer();
   private MessageConsumer mcCache = new CacheMessageConsumer();
@@ -77,7 +83,7 @@ public class SynchronizeList extends TablePart
   {
     super(new Configure());
     this.addColumn(i18n.tr("Offene Synchronisierungsaufgaben"),"name");
-    this.setSummary(false);
+    this.removeFeature(FeatureSummary.class);
     this.setCheckable(true);
     this.setMulti(true);
 
@@ -123,6 +129,10 @@ public class SynchronizeList extends TablePart
     init();
   }
   
+  /**
+   * Setzt bzw. aktiviert das Haekchen bei den ausgewaehlten Datensaetzen.
+   * @param b true, wenn die Haekchen gesetzt werden sollen.
+   */
   private void setChecked(boolean b)
   {
     Object o = getSelection();
@@ -139,47 +149,79 @@ public class SynchronizeList extends TablePart
    * Initialisiert die Liste der Synchronisierungsaufgaben
    * @throws RemoteException
    */
-  private void init() throws RemoteException
+  private void init()
   {
-    this.syncList.clear();
-    
-    this.removeAll(); // leer machen
-    
-    // Liste der Sync-Jobs hinzufuegen
-    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    List<SynchronizeBackend> backends = service.get(SynchronizeEngine.class).getBackends();
-    for (SynchronizeBackend backend:backends)
+    try
     {
-      Synchronization sync = new Synchronization();
-      sync.setBackend(backend);
-      List<SynchronizeJob> jobs = backend.getSynchronizeJobs(null); // fuer alle Konten
-      if (jobs != null)
+      this.syncList.clear();
+      
+      this.removeAll(); // leer machen
+      
+      // Liste der Sync-Jobs hinzufuegen
+      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      List<SynchronizeBackend> backends = service.get(SynchronizeEngine.class).getBackends();
+      for (SynchronizeBackend backend:backends)
       {
-        for (SynchronizeJob job:jobs)
+        Synchronization sync = new Synchronization();
+        sync.setBackend(backend);
+        List<SynchronizeJob> jobs = backend.getSynchronizeJobs(null); // fuer alle Konten
+        if (jobs != null)
         {
-          boolean checked = true;
-          try
+          for (SynchronizeJob job:jobs)
           {
-            // nicht markiert, wenn das letzte Mal explizit abgewaehlt
-            checked = !uncheckedCache.containsKey(job.getName());
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to determine if job was unchecked",e);
-          }
-          this.addItem(job,checked);
+            boolean checked = true;
+            try
+            {
+              // nicht markiert, wenn das letzte Mal explizit abgewaehlt
+              checked = !uncheckedCache.containsKey(job.getName());
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to determine if job was unchecked",e);
+            }
+            this.addItem(job,checked);
 
-          sync.getJobs().add(job);
+            sync.getJobs().add(job);
+          }
+          
+          // Die Synchronisation brauchen wir nur dann zur Liste tun, wenn Jobs vorhanden sind
+          if (jobs.size() > 0)
+            this.syncList.add(sync);
         }
-        
-        // Die Synchronisation brauchen wir nur dann zur Liste tun, wenn Jobs vorhanden sind
-        if (jobs.size() > 0)
-          this.syncList.add(sync);
       }
+      
+      // Sync-Button-Status aktualisieren
+      syncButtonListener.handleEvent(null);
     }
-
-    // Sync-Button-Status aktualisieren
-    syncButtonListener.handleEvent(null);
+    catch (Exception e)
+    {
+      Logger.error("unable to init sync list",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Anzeige der Synchronisierungsaufgaben fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
+    }
+  }
+  
+  /**
+   * Stellt die Selektierung wieder her.
+   */
+  private void restoreSelect()
+  {
+    // Selektion wiederherstellen
+    try
+    {
+      final List<SynchronizeJob> selected = new LinkedList<SynchronizeJob>();
+      for (Object job:this.getItems(false))
+      {
+        final SynchronizeJob j = (SynchronizeJob) job;
+        if (selectedCache.contains(j.getName()))
+          selected.add(j);
+      }
+      if (selected.size() > 0)
+        this.select(selected.toArray());
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to restore selection",e);
+    }
   }
 
   /**
@@ -209,6 +251,7 @@ public class SynchronizeList extends TablePart
     
     // Erst nach dem paint() machen, damit der initiale Checked-State aus dem Cache beachtet wird
     this.init();
+    this.restoreSelect();
     
     ButtonArea b = new ButtonArea();
     b.addButton(i18n.tr("Synchronisierungsoptionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
@@ -217,9 +260,9 @@ public class SynchronizeList extends TablePart
   }
   
   /**
-   * Cached die Liste der abgewaehlten Aufgaben.
+   * Cached die Liste der abgewaehlten Aufgaben und selektierten Zeilen.
    */
-  private void cacheUnchecked()
+  private void cacheState()
   {
     try
     {
@@ -234,6 +277,24 @@ public class SynchronizeList extends TablePart
           uncheckedCache.put(j.getName(),Boolean.TRUE);
         }
       }
+      
+      selectedCache.clear();
+      final Object o = this.getSelection();
+      if (o != null)
+      {
+        if (o instanceof SynchronizeJob[])
+        {
+          for (SynchronizeJob j:(SynchronizeJob[])o)
+          {
+            selectedCache.add(j.getName());
+          }
+        }
+        else
+        {
+          selectedCache.add(((SynchronizeJob)o).getName());
+        }
+      }
+
     }
     catch (Exception e)
     {
@@ -281,12 +342,16 @@ public class SynchronizeList extends TablePart
         
         if (k == null)
           return;
+        
+        cacheState();
 
         SynchronizeOptionsDialog d = new SynchronizeOptionsDialog(k,SynchronizeOptionsDialog.POSITION_CENTER);
         d.open();
         
         // So, jetzt muessen wir die Liste der Sync-Jobs neu befuellen
         init();
+        
+        restoreSelect();
       }
       catch (OperationCanceledException oce)
       {
@@ -317,7 +382,7 @@ public class SynchronizeList extends TablePart
     {
       try
       {
-        cacheUnchecked();
+        cacheState();
         
         Logger.info("Collecting synchronize jobs");
         List<SynchronizeJob> selected = getItems(true);
@@ -468,7 +533,7 @@ public class SynchronizeList extends TablePart
      */
     public void handleMessage(Message message) throws Exception
     {
-      cacheUnchecked();
+      cacheState();
     }
   }
   

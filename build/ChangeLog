@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0967 Wiederherstellen der Selektion in der Liste der Synchronisierungsaufgaben
   * BUG: 0966 Kontonummer und BLZ im Adressbuch nur noch für DE-IBANs vervollständigen
   * NEW: 0965 Play/Pause-Button für Flicker-Code sowie Option "[x] Automatisch starten"
   * BUG: 0964 In der Auswertung "Einnahmen/Ausgaben" konnte es fälschlicherweise zur Anzeige von Differenzen kommen
