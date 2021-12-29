@@ -322,25 +322,6 @@ public class EinnahmeAusgabeControl extends AbstractControl
     return tree;
   }
 
-  private Date getStartOfFirstInterval(Date start, Interval interval)
-  {
-    if (start == null)
-    {
-      return null;
-    }
-    if (interval == Interval.ALL)
-    {
-      return start;
-    }
-
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(DateUtil.startOfDay(start));
-    // Tag auf den ersten im Intervall setzen
-    calendar.set(interval.type, 1);
-
-    return calendar.getTime();
-  }
-
   /**
    * Ermittelt die Liste der Knoten für den Baum. Wenn keine Aufschlüsselung gewünscht ist,
    * werden die Zeilen ohne Elternknoten angezeigt.
@@ -356,11 +337,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
     Date start = (Date) this.getStart().getValue();
     Date end = (Date) this.getEnd().getValue();
-    // Datum zu Beginn des Intervalls für Umsatzliste und Saldenauswahl, damit es mit Startdatum in nodes übereinstimmt
-    final Date startFirstInterval = getStartOfFirstInterval(start, (Interval) getInterval().getValue());
 
     List<Konto> konten = getSelectedAccounts();
-    List<Umsatz> umsatzList = getUmsaetze(konten, startFirstInterval, end);
+    List<Umsatz> umsatzList = getUmsaetze(konten, start, end);
     if (!umsatzList.isEmpty())
     // bei offenen Zeiträumen können wir den ersten und letzten Umsatztag ermitteln
     {
@@ -373,12 +352,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
         end = umsatzList.get(umsatzList.size() - 1).getDatum();
       }
     }
-    Map<String, List<Value>> saldenProKonto = getSaldenProKonto(konten, startFirstInterval, end);
+    Map<String, List<Value>> saldenProKonto = getSaldenProKonto(konten, start, end);
     
     // wenn die Umsatzliste leer ist, erfolgt keine Gruppierung, es wird nur der Gesamtzeitraum
     // ausgewertet und da keine Umsätze zugeordnet werden müssen, spielen fehlende Datumsangaben keine Rolle
     Interval interval = umsatzList.isEmpty() ? Interval.ALL : (Interval) getInterval().getValue();
-    List<EinnahmeAusgabeTreeNode> nodes = createEmptyNodes(startFirstInterval, end, konten, interval);
+    List<EinnahmeAusgabeTreeNode> nodes = createEmptyNodes(start, end, konten, interval);
 
     this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
     if (nodes.isEmpty())
