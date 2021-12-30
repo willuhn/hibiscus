@@ -612,6 +612,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       // Prüfe auf time <= end mit !after(), damit bei start==end auch ein Intervallknoten bestimmt wird.
       while (!calendar.getTime().after(end))
       {
+        // Tag auf den ersten im Intervall setzen
         calendar.set(interval.type, 1);
         Date nodeFrom = calendar.getTime();
 
