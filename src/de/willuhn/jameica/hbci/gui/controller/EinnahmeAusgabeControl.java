@@ -426,6 +426,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
     final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);
     Map<String, List<Value>> saldenProKonto = new HashMap<String, List<Value>>();
+    if ((start == null) || (end == null))
+    {
+      return saldenProKonto;
+    }
+    
     final Calendar cal = Calendar.getInstance();
     cal.setTime(start);
     cal.add(Calendar.DAY_OF_MONTH, -1); // Salden um einen Tag nach vorne verlängern, weil die Salden immer nur für das Ende eines Tages berechnet werden
@@ -480,7 +485,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       {
         EinnahmeAusgabe ea = kontoEntry.getValue();
         List<Value> saldo = saldoProKonto.get(ea.getKonto().getID());
-        if (saldo.isEmpty())
+        if ((saldo == null) || saldo.isEmpty())
         {
           // sollte nicht passieren, aber sonst wird tagEnde im Folgenden negativ
           continue;
