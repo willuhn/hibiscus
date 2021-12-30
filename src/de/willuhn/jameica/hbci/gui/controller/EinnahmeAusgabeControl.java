@@ -461,8 +461,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
         // Daher ist Prüfung des index erforderlich.
         if (index >= nodes.size())
         {
-          Date end = currentNode != null ? currentNode.getEnddatum() : null;
-          Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + end);
+          Date endInterval = (currentNode != null ? currentNode.getEnddatum() : null);
+          Logger.warn("found umsatz at date " + umsatz.getDatum() + " outside last interval ending at " + endInterval);
           return;
         }
         
