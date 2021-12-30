@@ -365,7 +365,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       Logger.warn("no nodes created between range starts on " + start + " and range ends on " + end);
       return this.werte;
     }
-    addData(nodes, umsatzList, saldenProKonto);
+    addData(nodes, umsatzList, saldenProKonto, start, end);
 
     if (interval == Interval.ALL)
     {
@@ -444,7 +444,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     return saldenProKonto;
   }
   
-  private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList, Map<String, List<Value>> saldoProKonto) throws RemoteException
+  private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList, Map<String, List<Value>> saldoProKonto, Date start, Date end) throws RemoteException
   {
     int index = 0;
     EinnahmeAusgabeTreeNode currentNode = null;
@@ -480,7 +480,9 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       Map<String, EinnahmeAusgabe> kontoMap = getKontoDataMap(node);
       
-      int tagEnde = tagStart + (int) getDifferenceDays(node.getStartdatum(), node.getEnddatum()) + 1;
+      final Date startDatum = (tagStart == 0 ? start : node.getStartdatum());
+      final Date endDatum = (end.before(node.getEnddatum()) ? end : node.getEnddatum());
+      int tagEnde = tagStart + (int) getDifferenceDays(startDatum, endDatum) + 1;
       for (Entry<String, EinnahmeAusgabe> kontoEntry : kontoMap.entrySet())
       {
         EinnahmeAusgabe ea = kontoEntry.getValue();
