@@ -362,7 +362,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
     if (nodes.isEmpty())
     {
-      Logger.warn("no nodes created between range starts on " + startFirstInterval + " and range ends on " + end);
+      Logger.warn("no nodes created between range starts on " + start + " and range ends on " + end);
       return this.werte;
     }
     addData(nodes, umsatzList, saldenProKonto);
