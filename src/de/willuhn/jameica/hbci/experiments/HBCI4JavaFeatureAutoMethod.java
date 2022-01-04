@@ -26,9 +26,6 @@ public class HBCI4JavaFeatureAutoMethod extends AbstractHBCI4JavaFeature
     super(Feature.PINTAN_INIT_AUTOMETHOD);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDescription()
-   */
   @Override
   public String getDescription()
   {
