@@ -21,9 +21,7 @@ import de.willuhn.jameica.hbci.server.Value;
  */
 public class ForecastProviderSepaSammelUeberweisung extends AbstractForecastProvider<SepaSammelUeberweisung>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.forecast.AbstractForecastProvider#createValue(de.willuhn.jameica.hbci.schedule.Schedule)
-   */
+  @Override
   Value createValue(Schedule<SepaSammelUeberweisung> schedule) throws RemoteException
   {
     // Negativ-Betrag verwenden

@@ -32,18 +32,14 @@ public abstract class AbstractForecastProvider<T extends HibiscusDBObject> imple
 {
   private ScheduleProvider provider = null;
 
-  /**
-   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#getName()
-   */
+  @Override
   public String getName()
   {
     ScheduleProvider provider = this.getScheduleProvider();
     return provider != null ? provider.getName() : "<unknown provider>";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#getData(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date, java.util.Date)
-   */
+  @Override
   public List<Value> getData(Konto k, Date from, Date to) throws Exception
   {
     List<Value> result = new LinkedList<Value>();
