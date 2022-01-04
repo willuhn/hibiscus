@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0968 Update auf HBCI4Java 3.1.56 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.56
   * NEW: 0967 Wiederherstellen der Selektion in der Liste der Synchronisierungsaufgaben
   * BUG: 0966 Kontonummer und BLZ im Adressbuch nur noch für DE-IBANs vervollständigen
   * NEW: 0965 Play/Pause-Button für Flicker-Code sowie Option "[x] Automatisch starten"
