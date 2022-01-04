@@ -255,9 +255,6 @@ public class HBCIVariantPinTanController extends AbstractControl
       
       this.addListener(new Listener()
       {
-        /**
-         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-         */
         @Override
         public void handleEvent(Event event)
         {
@@ -267,9 +264,6 @@ public class HBCIVariantPinTanController extends AbstractControl
       });
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.input.TextInput#getValue()
-     */
     @Override
     public Object getValue()
     {
@@ -280,9 +274,6 @@ public class HBCIVariantPinTanController extends AbstractControl
       return this.cleanUrl(s);
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.input.TextInput#setValue(java.lang.Object)
-     */
     @Override
     public void setValue(Object value)
     {
@@ -314,9 +305,6 @@ public class HBCIVariantPinTanController extends AbstractControl
    */
   private class Step1Listener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {
@@ -340,9 +328,6 @@ public class HBCIVariantPinTanController extends AbstractControl
    */
   private class Step2Listener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {
