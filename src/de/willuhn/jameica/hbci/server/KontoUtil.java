@@ -288,7 +288,7 @@ public class KontoUtil
   }
 
   /**
-   * Liefert den Anfangssaldo eines Tages bzw. des 1. Tages nach diesem Datum mit UmsÃ¤tzen
+   * Liefert den Anfangssaldo eines Tages bzw. des 1. Tages nach diesem Datum mit Umsätzen
    * oder <code>0.0</code> wenn er noch nie abgefragt wurde.
    * @param konto das Konto.
    * @param datum Datum.
@@ -318,8 +318,8 @@ public class KontoUtil
         return u.getSaldo() - u.getBetrag(); // Wir ziehen den Betrag noch ab, um den Saldo VOR der Buchung zu kriegen
     }
 
-    // Im angegebenen Zeitraum waren keine UmsÃ¤tze zu finden. Deshalb suchen wir
-    // frÃ¼here UmsÃ¤tze.
+    // Im angegebenen Zeitraum waren keine Umsätze zu finden. Deshalb suchen wir
+    // frühere Umsätze.
     list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + konto.getID());
     
@@ -339,7 +339,7 @@ public class KontoUtil
   }
 
   /**
-   * Liefert den Endsaldo eines Tages bzw. des 1. Tages vor diesem Datum mit UmsÃ¤tzen oder
+   * Liefert den Endsaldo eines Tages bzw. des 1. Tages vor diesem Datum mit Umsätzen oder
    * <code>0.0</code> wenn er noch nie abgefragt wurde.
    * @param konto das Konto.
    * @param datum Datum.

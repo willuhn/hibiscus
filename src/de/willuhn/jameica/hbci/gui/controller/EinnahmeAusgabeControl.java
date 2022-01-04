@@ -225,7 +225,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
-   * Liefert ein Auswahl-Feld fÃ¼r die zeitliche Gruppierung.
+   * Liefert ein Auswahl-Feld für die zeitliche Gruppierung.
    * @return Auswahl-Feld
    * */
   public SelectInput getInterval()
@@ -249,7 +249,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
   
   /**
-   * Liefert ein Balkendiagramm bei dem Ausgaben und Einnahmen gegenÃ¼bergestellt werden 
+   * Liefert ein Balkendiagramm bei dem Ausgaben und Einnahmen gegenübergestellt werden
    * @return Balkendiagramm
    * @throws RemoteException 
    */
@@ -322,27 +322,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     return tree;
   }
 
-  private Date getStartOfFirstInterval(Date start, Interval interval)
-  {
-    if (start == null)
-    {
-      return null;
-    }
-    if (interval == Interval.ALL)
-    {
-      return start;
-    }
-
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(DateUtil.startOfDay(start));
-    // Tag auf den ersten im Intervall setzen
-    calendar.set(interval.type, 1);
-
-    return calendar.getTime();
-  }
-
   /**
-   * Ermittelt die Liste der Knoten fÃ¼r den Baum. Wenn keine AufschlÃ¼sselung gewÃ¼nscht ist,
+   * Ermittelt die Liste der Knoten für den Baum. Wenn keine Aufschlüsselung gewünscht ist,
    * werden die Zeilen ohne Elternknoten angezeigt.
    * @return Liste mit den Werten.
    * @throws RemoteException
@@ -356,13 +337,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
     Date start = (Date) this.getStart().getValue();
     Date end = (Date) this.getEnd().getValue();
-    // Datum zu Beginn des Intervalls fÃ¼r Umsatzliste und Saldenauswahl, damit es mit Startdatum in nodes Ã¼bereinstimmt
-    final Date startFirstInterval = getStartOfFirstInterval(start, (Interval) getInterval().getValue());
 
     List<Konto> konten = getSelectedAccounts();
-    List<Umsatz> umsatzList = getUmsaetze(konten, startFirstInterval, end);
+    List<Umsatz> umsatzList = getUmsaetze(konten, start, end);
     if (!umsatzList.isEmpty())
-    // bei offenen ZeitrÃ¤umen kÃ¶nnen wir den ersten und letzten Umsatztag ermitteln
+    // bei offenen Zeiträumen können wir den ersten und letzten Umsatztag ermitteln
     {
       if (start == null)
       {
@@ -373,20 +352,20 @@ public class EinnahmeAusgabeControl extends AbstractControl
         end = umsatzList.get(umsatzList.size() - 1).getDatum();
       }
     }
-    Map<String, List<Value>> saldenProKonto = getSaldenProKonto(konten, startFirstInterval, end);
+    Map<String, List<Value>> saldenProKonto = getSaldenProKonto(konten, start, end);
     
     // wenn die Umsatzliste leer ist, erfolgt keine Gruppierung, es wird nur der Gesamtzeitraum
-    // ausgewertet und da keine UmsÃ¤tze zugeordnet werden mÃ¼ssen, spielen fehlende Datumsangaben keine Rolle
+    // ausgewertet und da keine Umsätze zugeordnet werden müssen, spielen fehlende Datumsangaben keine Rolle
     Interval interval = umsatzList.isEmpty() ? Interval.ALL : (Interval) getInterval().getValue();
-    List<EinnahmeAusgabeTreeNode> nodes = createEmptyNodes(startFirstInterval, end, konten, interval);
+    List<EinnahmeAusgabeTreeNode> nodes = createEmptyNodes(start, end, konten, interval);
 
     this.werte = new ArrayList<EinnahmeAusgabeZeitraum>();
     if (nodes.isEmpty())
     {
-      Logger.warn("no nodes created between range starts on " + startFirstInterval + " and range ends on " + end);
+      Logger.warn("no nodes created between range starts on " + start + " and range ends on " + end);
       return this.werte;
     }
-    addData(nodes, umsatzList, saldenProKonto);
+    addData(nodes, umsatzList, saldenProKonto, start, end);
 
     if (interval == Interval.ALL)
     {
@@ -415,7 +394,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       umsaetze.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     }
-    // TODO funktioniert das mit allen unterstÃ¼tzten Datenbankversionen?
+    // TODO funktioniert das mit allen unterstützten Datenbankversionen?
     umsaetze.addFilter("konto_id in (" + Joiner.on(",").join(kontoIds) + ")");
     List<Umsatz> umsatzList = new ArrayList<Umsatz>();
     while (umsaetze.hasNext())
@@ -430,12 +409,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
-   * Liefert die Salden pro Konto fÃ¼r den angegebenen Zeitraum.
+   * Liefert die Salden pro Konto für den angegebenen Zeitraum.
    * Zu beachten ist, dass ein Tagessaldo immer am Ende eines Tages berechnet wird. 
-   * Da fÃ¼r Auswertungen ein Anfangssaldo angezeigt werden soll, welcher der Endsaldo des vorhergehenden Tages ist, 
-   * wird als erstes Element der Liste ein zusÃ¤tzlicher Tag eingefÃ¼gt.
+   * Da für Auswertungen ein Anfangssaldo angezeigt werden soll, welcher der Endsaldo des vorhergehenden Tages ist,
+   * wird als erstes Element der Liste ein zusätzlicher Tag eingefügt.
    * 
-   * Beispiel: start=7.11., end=8.11. -> Liste enthÃ¤lt 6.11., 7.11., 8.11. 
+   * Beispiel: start=7.11., end=8.11. -> Liste enthält 6.11., 7.11., 8.11.
    * @param konten
    * @param start
    * @param end
@@ -447,9 +426,14 @@ public class EinnahmeAusgabeControl extends AbstractControl
     final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
     final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);
     Map<String, List<Value>> saldenProKonto = new HashMap<String, List<Value>>();
+    if ((start == null) || (end == null))
+    {
+      return saldenProKonto;
+    }
+    
     final Calendar cal = Calendar.getInstance();
     cal.setTime(start);
-    cal.add(Calendar.DAY_OF_MONTH, -1); // Salden um einen Tag nach vorne verlÃ¤ngern, weil die Salden immer nur fÃ¼r das Ende eines Tages berechnet werden
+    cal.add(Calendar.DAY_OF_MONTH, -1); // Salden um einen Tag nach vorne verlängern, weil die Salden immer nur für das Ende eines Tages berechnet werden
     Date saldoStart = cal.getTime();
     for (Konto konto : konten)
     {
@@ -460,25 +444,25 @@ public class EinnahmeAusgabeControl extends AbstractControl
     return saldenProKonto;
   }
   
-  private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList, Map<String, List<Value>> saldoProKonto) throws RemoteException
+  private void addData(List<EinnahmeAusgabeTreeNode> nodes, List<Umsatz> umsatzList, Map<String, List<Value>> saldoProKonto, Date start, Date end) throws RemoteException
   {
     int index = 0;
     EinnahmeAusgabeTreeNode currentNode = null;
-    // Map der Daten fÃ¼r eine Konto-ID fÃ¼r schnelles Zuweisen der UmsÃ¤tze
+    // Map der Daten für eine Konto-ID für schnelles Zuweisen der Umsätze
     Map<String, EinnahmeAusgabe> kontoData = null;
     for (Umsatz umsatz : umsatzList)
     {
-      // Daten fÃ¼r das nÃ¤chste relevante Intervall vorbereiten; 'while' da es mÃ¶glich wÃ¤re, dass es fÃ¼r einen Zeitraum in der Mitte gar keine UmsÃ¤tze gab
+      // Daten für das nächste relevante Intervall vorbereiten; 'while' da es möglich wäre, dass es für einen Zeitraum in der Mitte gar keine Umsätze gab
       while (currentNode == null || umsatz.getDatum().after(currentNode.getEnddatum()))
       {
         // Wenn der Filterzeitraum identisches Start- und Enddatum hat, es an diesem Tag
-        // aber einen Umsatz auf dem gewÃ¤hlten Konto gibt, so bekam man eine leere Liste nodes.
-        // Ggf. gibt es weitere FÃ¤lle, die eine IndexOutOfBoundsException auslÃ¶sen kÃ¶nnen.
-        // Daher ist PrÃ¼fung des index erforderlich.
+        // aber einen Umsatz auf dem gewählten Konto gibt, so bekam man eine leere Liste nodes.
+        // Ggf. gibt es weitere Fälle, die eine IndexOutOfBoundsException auslösen können.
+        // Daher ist Prüfung des index erforderlich.
         if (index >= nodes.size())
         {
-          Date end = currentNode != null ? currentNode.getEnddatum() : null;
-          Logger.warn("found umsatz outside range, date: " + umsatz.getDatum() + ", range ends " + end);
+          Date endInterval = (currentNode != null ? currentNode.getEnddatum() : null);
+          Logger.warn("found umsatz at date " + umsatz.getDatum() + " outside last interval ending at " + endInterval);
           return;
         }
         
@@ -496,12 +480,14 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       Map<String, EinnahmeAusgabe> kontoMap = getKontoDataMap(node);
       
-      int tagEnde = tagStart + (int) getDifferenceDays(node.getStartdatum(), node.getEnddatum()) + 1;
+      final Date startDatum = (tagStart == 0 ? start : node.getStartdatum());
+      final Date endDatum = (end.before(node.getEnddatum()) ? end : node.getEnddatum());
+      int tagEnde = tagStart + (int) getDifferenceDays(startDatum, endDatum) + 1;
       for (Entry<String, EinnahmeAusgabe> kontoEntry : kontoMap.entrySet())
       {
         EinnahmeAusgabe ea = kontoEntry.getValue();
         List<Value> saldo = saldoProKonto.get(ea.getKonto().getID());
-        if (saldo.isEmpty())
+        if ((saldo == null) || saldo.isEmpty())
         {
           // sollte nicht passieren, aber sonst wird tagEnde im Folgenden negativ
           continue;
@@ -608,7 +594,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
   }
 
   /**
-   * Erstelle die finale Struktur - nur ohne BetrÃ¤ge und Salden
+   * Erstelle die finale Struktur - nur ohne Beträge und Salden
    */
   private List<EinnahmeAusgabeTreeNode> createEmptyNodes(Date start, Date end, List<Konto> konten, Interval interval) throws RemoteException
   {
@@ -625,20 +611,21 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       Calendar calendar = Calendar.getInstance();
       calendar.setTime(DateUtil.startOfDay(start));
-      // PrÃ¼fe auf time <= end mit !after(), damit bei start==end auch ein Intervallknoten bestimmt wird.
+      // Prüfe auf time <= end mit !after(), damit bei start==end auch ein Intervallknoten bestimmt wird.
       while (!calendar.getTime().after(end))
       {
+        // Tag auf den ersten im Intervall setzen
         calendar.set(interval.type, 1);
         Date nodeFrom = calendar.getTime();
 
-        // ermittle den Zeitpunkt unmittelbar vor dem nÃ¤chsten Zeitraumstart
+        // ermittle den Zeitpunkt unmittelbar vor dem nächsten Zeitraumstart
         calendar.add(interval.size, 1);
         calendar.add(Calendar.MILLISECOND, -1);
         Date nodeTo = DateUtil.startOfDay(calendar.getTime());
 
         List<EinnahmeAusgabe> werte = getEmptyNodes(nodeFrom, nodeTo, konten);
         result.add(new EinnahmeAusgabeTreeNode(nodeFrom, nodeTo, werte));
-        // ermittle den Start des nÃ¤chsten Zeitraums
+        // ermittle den Start des nächsten Zeitraums
         calendar.setTime(nodeFrom);
         // eine Intervalldauer in die Zukunft springen
         calendar.add(interval.size, 1);
