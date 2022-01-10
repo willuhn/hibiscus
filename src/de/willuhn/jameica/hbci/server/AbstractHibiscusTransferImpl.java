@@ -190,7 +190,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException {
-		setAttribute("betrag", new Double(betrag));
+		setAttribute("betrag", Double.valueOf(betrag));
   }
 
   /**

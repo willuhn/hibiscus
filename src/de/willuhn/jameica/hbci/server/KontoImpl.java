@@ -794,7 +794,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
    */
   public void setSaldo(double saldo) throws RemoteException
   {
-    setAttribute("saldo", Double.isNaN(saldo) ? null : new Double(saldo));
+    setAttribute("saldo", Double.isNaN(saldo) ? null : Double.valueOf(saldo));
     setAttribute("saldo_datum", new Date());
   }
 
@@ -803,7 +803,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
    */
   public void setSaldoAvailable(double saldo) throws RemoteException
   {
-    setAttribute("saldo_available", Double.isNaN(saldo) ? null : new Double(saldo));
+    setAttribute("saldo_available", Double.isNaN(saldo) ? null : Double.valueOf(saldo));
   }
   
   /**

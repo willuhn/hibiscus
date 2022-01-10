@@ -508,7 +508,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     }
     
     if ("umsatz".equals(arg0))
-      return new Double(getUmsatz());
+      return Double.valueOf(getUmsatz());
 
     return super.getAttribute(arg0);
   }

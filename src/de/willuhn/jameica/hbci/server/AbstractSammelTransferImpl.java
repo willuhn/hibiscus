@@ -278,7 +278,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("summe".equals(arg0))
-      return new Double(this.getSumme());
+      return Double.valueOf(this.getSumme());
 
     if ("anzahl".equals(arg0))
     {

@@ -137,7 +137,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
         Umsatz u = (Umsatz) this.umsaetze.get(i);
         betrag+= u.getBetrag();
       }
-      return new Double(betrag);
+      return Double.valueOf(betrag);
     }
     
     return this.typ == null ? null : this.typ.getAttribute(arg0);
