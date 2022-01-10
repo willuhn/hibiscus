@@ -61,7 +61,7 @@ public class RDHKeyImpl implements RDHKey
     if ("file".equals(attribute))
       return getFilename();
 		if ("enabled".equals(attribute))
-			return new Boolean(isEnabled());
+			return Boolean.valueOf(isEnabled());
     if ("alias".equals(attribute))
       return getAlias();
     if ("format".equals(attribute))

@@ -763,7 +763,7 @@ public class Controller extends AbstractControl
           getCTAPI().setValue("");
         }
         
-        getSoftPin().setValue(new Boolean(r.useSoftPin()));
+        getSoftPin().setValue(Boolean.valueOf(r.useSoftPin()));
     	}
     	catch (Exception e)
     	{

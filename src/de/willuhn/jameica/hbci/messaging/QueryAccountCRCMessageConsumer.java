@@ -62,7 +62,7 @@ public class QueryAccountCRCMessageConsumer implements MessageConsumer
       return;
     }
     
-    qm.setData(new Boolean(HBCIProperties.checkAccountCRC(s[0],s[1])));
+    qm.setData(Boolean.valueOf(HBCIProperties.checkAccountCRC(s[0],s[1])));
   }
 
 }
