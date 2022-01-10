@@ -123,7 +123,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // Anlegen des Datensatzes. Dann koennen wir anschliessend
     // beliebig aendern und muessen uns nicht mehr mit
     // "hasChangedByUser" herumschlagen
-    setAttribute("checksum",new Long(getChecksum()));
+    setAttribute("checksum", Long.valueOf(getChecksum()));
     super.insert();
   }
 
