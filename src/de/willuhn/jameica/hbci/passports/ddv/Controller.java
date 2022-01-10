@@ -754,7 +754,7 @@ public class Controller extends AbstractControl
           
           int ctNumber = r.getCTNumber();
           if (ctNumber >= 0)
-            getCTNumber().setValue(new Integer(ctNumber));
+            getCTNumber().setValue(Integer.valueOf(ctNumber));
 
           getCTAPI().setValue(s);
         }

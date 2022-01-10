@@ -737,7 +737,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("numumsaetze".equals(arg0))
-      return new Integer(getNumUmsaetze());
+      return Integer.valueOf(getNumUmsaetze());
 
     final boolean extralong = "extralongname".equals(arg0);
     if ("longname".equals(arg0) || extralong)
@@ -896,7 +896,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     if (flags < 0)
       return; // ungueltig
     
-    this.setAttribute("flags",new Integer(flags));
+    this.setAttribute("flags", Integer.valueOf(flags));
   }
 
   /**

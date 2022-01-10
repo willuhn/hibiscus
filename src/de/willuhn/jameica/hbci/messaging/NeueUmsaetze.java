@@ -105,7 +105,7 @@ public class NeueUmsaetze implements MessageConsumer
 
     try
     {
-      return (((Integer)u.getAttribute("id-int")).compareTo(new Integer(first)) >= 0);
+      return (((Integer)u.getAttribute("id-int")).compareTo(Integer.valueOf(first)) >= 0);
     }
     catch (Exception e)
     {

@@ -140,7 +140,7 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
    */
   public void setTerminUeberweisung(boolean termin) throws RemoteException
   {
-    setAttribute("banktermin",termin ? new Integer(1) : null);
+    setAttribute("banktermin",termin ? Integer.valueOf(1) : null);
   }
 
 }

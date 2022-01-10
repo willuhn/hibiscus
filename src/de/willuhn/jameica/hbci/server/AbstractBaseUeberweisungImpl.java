@@ -96,7 +96,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
   public void insert() throws RemoteException, ApplicationException
   {
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
-      setAttribute("ausgefuehrt",new Integer(0));
+      setAttribute("ausgefuehrt", Integer.valueOf(0));
     super.insert();
   }
 
@@ -165,7 +165,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     try
     {
       markingExecuted = true;
-      setAttribute("ausgefuehrt",new Integer(b ? 1 : 0));
+      setAttribute("ausgefuehrt", Integer.valueOf(b ? 1 : 0));
       setAttribute("ausgefuehrt_am",new Date());
       store();
       Logger.info("[" + getTableName() + ":" + getID() + "] (" + BeanUtil.toString(this) + ") - executed: " + b);
