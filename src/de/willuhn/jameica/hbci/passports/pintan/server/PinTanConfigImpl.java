@@ -69,7 +69,7 @@ public class PinTanConfigImpl implements PinTanConfig
     if ("url".equals(attribute))
       return getURL();
     if ("port".equals(attribute))
-      return new Integer(getPort());
+      return Integer.valueOf(getPort());
     if ("filtertype".equals(attribute))
       return getFilterType();
     if ("hbciversion".equals(attribute))
@@ -81,7 +81,7 @@ public class PinTanConfigImpl implements PinTanConfig
     if ("bezeichnung".equals(attribute))
       return getBezeichnung();
     if ("showtan".equals(attribute))
-      return new Boolean(getShowTan());
+      return Boolean.valueOf(getShowTan());
     if ("tanmedia".equals(attribute))
       return getTanMedia();
     if ("tanmedias".equals(attribute))
@@ -243,7 +243,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public void setPort(int port) throws RemoteException
   {
-    this.getPassport().setPort(new Integer(port));
+    this.getPassport().setPort(Integer.valueOf(port));
   }
 
   /**

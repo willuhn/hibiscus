@@ -167,7 +167,7 @@ public class Reporter
   public void addHeaderColumn(String text, int align, int width, BaseColor color)
   {
     headers.add(getDetailCell(text, align, color));
-    widths.add(new Integer(width));
+    widths.add(Integer.valueOf(width));
   }
 
   /**

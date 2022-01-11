@@ -202,7 +202,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
    */
   public void setBetrag(double betrag) throws RemoteException
   {
-    setAttribute("betrag", new Double(betrag));
+    setAttribute("betrag", Double.valueOf(betrag));
   }
 
   /**

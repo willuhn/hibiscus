@@ -61,7 +61,7 @@ public class InsertKeyDialog extends WaitDialog
    */
   protected Object getData() throws Exception
   {
-    return new Boolean(file.exists() && file.canRead() && file.canWrite());
+    return Boolean.valueOf(file.exists() && file.canRead() && file.canWrite());
   }
 
   /**

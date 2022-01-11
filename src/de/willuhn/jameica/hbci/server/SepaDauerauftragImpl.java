@@ -235,7 +235,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
    */
   public void setChangable(boolean b) throws RemoteException
   {
-    setAttribute("canchange", new Integer(b ? 1 : 0));
+    setAttribute("canchange", Integer.valueOf(b ? 1 : 0));
   }
   
   /**
@@ -245,7 +245,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
    */
   public void setDeletable(boolean b) throws RemoteException
   {
-    setAttribute("candelete", new Integer(b ? 1 : 0));
+    setAttribute("candelete", Integer.valueOf(b ? 1 : 0));
   }
   
   /**

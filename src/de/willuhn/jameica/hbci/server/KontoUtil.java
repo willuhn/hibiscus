@@ -477,8 +477,8 @@ public class KontoUtil
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (rs.next())
-          return new Double(rs.getDouble(1));
-        return new Double(0.0d);
+          return Double.valueOf(rs.getDouble(1));
+        return Double.valueOf(0.0d);
       }
     };
 

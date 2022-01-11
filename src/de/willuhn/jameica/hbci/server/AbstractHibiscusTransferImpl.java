@@ -183,14 +183,14 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
-    setAttribute("konto_id",(konto == null || konto.getID() == null) ? null : new Integer(konto.getID()));
+    setAttribute("konto_id",(konto == null || konto.getID() == null) ? null : Integer.valueOf(konto.getID()));
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException {
-		setAttribute("betrag", new Double(betrag));
+		setAttribute("betrag", Double.valueOf(betrag));
   }
 
   /**

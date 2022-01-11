@@ -405,7 +405,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
    */
   public void setRegex(boolean regex) throws RemoteException
   {
-    setAttribute("isregex", new Integer(regex ? 1 : 0));
+    setAttribute("isregex", Integer.valueOf(regex ? 1 : 0));
   }
 
   @Override
@@ -497,7 +497,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         return null;
       try
       {
-        Integer i = new Integer(n);
+        Integer i = Integer.valueOf(n);
         return i;
       }
       catch (Exception e)
@@ -508,7 +508,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     }
     
     if ("umsatz".equals(arg0))
-      return new Double(getUmsatz());
+      return Double.valueOf(getUmsatz());
 
     return super.getAttribute(arg0);
   }
@@ -657,7 +657,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
    */
   public void setTyp(int typ) throws RemoteException
   {
-    setAttribute("umsatztyp",new Integer(typ));
+    setAttribute("umsatztyp", Integer.valueOf(typ));
   }
 
   /**
@@ -694,7 +694,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
    */
   public void setCustomColor(boolean b) throws RemoteException
   {
-    setAttribute("customcolor", new Integer(b ? 1 : 0));
+    setAttribute("customcolor", Integer.valueOf(b ? 1 : 0));
   }
 
   /**
@@ -753,7 +753,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   @Override
   public void setKonto(Konto konto) throws RemoteException
   {
-    final Integer id = (konto == null || konto.getID() == null) ? null : new Integer(konto.getID());
+    final Integer id = (konto == null || konto.getID() == null) ? null : Integer.valueOf(konto.getID());
     setAttribute("konto_id",id);
     
     // Eine Zuordnung kann nur zu Konto ODER Kategorie moeglich sein - nicht beides gleichzeitig
@@ -811,6 +811,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     if (flags < 0)
       return; // ungueltig
     
-    this.setAttribute("flags",new Integer(flags));
+    this.setAttribute("flags", Integer.valueOf(flags));
   }
 }

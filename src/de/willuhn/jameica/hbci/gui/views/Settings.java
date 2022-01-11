@@ -137,7 +137,7 @@ public class Settings extends AbstractView implements Extendable
   public void unbind() throws ApplicationException
   {
     // Wir merken uns das aktive Tab
-    lastActiveTab = new Integer(getTabFolder().getSelectionIndex());
+    lastActiveTab = Integer.valueOf(getTabFolder().getSelectionIndex());
   }
   
   /**

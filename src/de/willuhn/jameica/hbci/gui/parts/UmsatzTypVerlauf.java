@@ -414,7 +414,7 @@ public class UmsatzTypVerlauf implements Part
     public Object getAttribute(String name) throws RemoteException
     {
       if ("betrag".equals(name))
-        return new Double(betrag);
+        return Double.valueOf(betrag);
       if ("monat".equals(name))
         return monat;
       return null;
