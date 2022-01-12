@@ -58,7 +58,7 @@ public class UmsatzExport implements Action
         UmsatzTreeNode node = (UmsatzTreeNode) context;
         List<Umsatz> result = new ArrayList<Umsatz>();
         collect(node,result);
-        u = result.toArray(new Umsatz[result.size()]);
+        u = result.toArray(new Umsatz[0]);
       }
       else if (context instanceof UmsatzTreeNode[])
       {
@@ -67,7 +67,7 @@ public class UmsatzExport implements Action
         {
           collect(node,result);
         }
-        u = result.toArray(new Umsatz[result.size()]);
+        u = result.toArray(new Umsatz[0]);
       }
 
 		   if (u == null || u.length == 0)

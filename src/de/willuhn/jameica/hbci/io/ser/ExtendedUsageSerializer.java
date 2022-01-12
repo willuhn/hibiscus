@@ -70,7 +70,7 @@ public class ExtendedUsageSerializer extends DefaultSerializer<String[]>
       lines.add(value);
     }
     
-    return lines.toArray(new String[lines.size()]);
+    return lines.toArray(new String[0]);
 
   }
 

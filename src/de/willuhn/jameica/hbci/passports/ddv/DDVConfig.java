@@ -289,7 +289,7 @@ public class DDVConfig implements Configuration
     if (fixedIds.size() != ids.length)
     {
       Logger.info("fixing list of assigned accounts");
-      settings.setAttribute(getPrefix() + "konto",fixedIds.toArray(new String[fixedIds.size()]));
+      settings.setAttribute(getPrefix() + "konto",fixedIds.toArray(new String[0]));
     }
     return konten;
   }

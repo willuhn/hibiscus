@@ -187,8 +187,8 @@ public class VelocityExporter implements Exporter
       
       l.add(new VelocityFormat(ext,variant,ef));
     }
-    
-    loaded = (IOFormat[]) l.toArray(new IOFormat[l.size()]);
+
+    loaded = (IOFormat[]) l.toArray(new IOFormat[0]);
     this.formats.put(type,loaded);
     return loaded;
     

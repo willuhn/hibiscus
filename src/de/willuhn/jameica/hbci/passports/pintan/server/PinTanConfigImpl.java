@@ -365,9 +365,9 @@ public class PinTanConfigImpl implements PinTanConfig
     if (fixedIds.size() != ids.length)
     {
       Logger.info("fixing list of assigned accounts");
-      settings.setAttribute(getID() + ".konto",fixedIds.toArray(new String[fixedIds.size()]));
+      settings.setAttribute(getID() + ".konto",fixedIds.toArray(new String[0]));
     }
-    return konten.toArray(new Konto[konten.size()]);
+    return konten.toArray(new Konto[0]);
   }
 
   /**
@@ -573,7 +573,7 @@ public class PinTanConfigImpl implements PinTanConfig
     list.add(0,name);
 
     // Abspeichern
-    this.setTanMedias(list.toArray(new String[list.size()]));
+    this.setTanMedias(list.toArray(new String[0]));
   }
 
   /**

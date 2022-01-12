@@ -350,7 +350,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     {
       buchungen.add(list.next());
     }
-    return (SammelTransferBuchung[]) buchungen.toArray(new SammelTransferBuchung[buchungen.size()]);
+    return (SammelTransferBuchung[]) buchungen.toArray(new SammelTransferBuchung[0]);
   }
 
   /**

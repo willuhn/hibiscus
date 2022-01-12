@@ -102,7 +102,7 @@ public class DeutscheBankUmsatzRewriter implements UmsatzRewriter
           if (list.size() == 0) return; // haben wir noch was uebrig?
 
           // 3. weitere Verwendungszwecke
-          u.setWeitereVerwendungszwecke(list.toArray(new String[list.size()]));
+          u.setWeitereVerwendungszwecke(list.toArray(new String[0]));
         }
       }
     }

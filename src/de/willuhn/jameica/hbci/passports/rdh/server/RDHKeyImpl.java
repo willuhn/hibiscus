@@ -227,7 +227,7 @@ public class RDHKeyImpl implements RDHKey
         throw re;
       }
     }
-    return (Konto[])konten.toArray(new Konto[konten.size()]);
+    return (Konto[])konten.toArray(new Konto[0]);
   }
 
   /**
