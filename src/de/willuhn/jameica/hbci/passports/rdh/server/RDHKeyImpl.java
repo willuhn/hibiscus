@@ -35,7 +35,6 @@ import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
- * @author willuhn
  */
 public class RDHKeyImpl implements RDHKey
 {

@@ -17,7 +17,6 @@ import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 
 /**
  * Implementierung einer einzelnen Buchung einer Sammellastschrift.
- * @author willuhn
  */
 public class SammelLastBuchungImpl extends AbstractSammelTransferBuchungImpl implements SammelLastBuchung
 {

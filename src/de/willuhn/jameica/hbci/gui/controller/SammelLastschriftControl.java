@@ -29,7 +29,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung des Controllers fuer den Dialog "Liste der Sammellastschriften".
- * @author willuhn
  */
 public class SammelLastschriftControl extends AbstractSammelTransferControl<SammelLastschrift>
 {

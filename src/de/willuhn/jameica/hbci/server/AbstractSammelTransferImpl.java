@@ -28,7 +28,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Abstrakte Basis-Implementierung des Containers fuer Sammel-Transfers.
- * @author willuhn
  */
 public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObject implements SammelTransfer, Terminable
 {

@@ -38,9 +38,6 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.MultipleClassLoader;
 import de.willuhn.util.ProgressMonitor;
 
-/**
- * @author willuhn
- */
 public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 {
   private DBSupport driver = null;

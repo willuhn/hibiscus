@@ -23,7 +23,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 /**
  * Interface fuer eine einzelne PIN/TAN-Konfiguration fuer eine
  * spezifische Bank.
- * @author willuhn
  */
 public interface PinTanConfig extends GenericObject, Configuration
 {

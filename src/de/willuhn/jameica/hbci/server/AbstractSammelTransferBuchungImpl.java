@@ -24,7 +24,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Implementierung einer einzelnen Buchung eines Sammel-Auftrages.
- * @author willuhn
  */
 public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscusDBObject implements SammelTransferBuchung, Duplicatable
 {

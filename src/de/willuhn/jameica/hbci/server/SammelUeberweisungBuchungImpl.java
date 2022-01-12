@@ -17,7 +17,6 @@ import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 
 /**
  * Implementierung einer einzelnen Buchung einer Sammel-Ueberweisung.
- * @author willuhn
  */
 public class SammelUeberweisungBuchungImpl extends AbstractSammelTransferBuchungImpl implements SammelUeberweisungBuchung
 {

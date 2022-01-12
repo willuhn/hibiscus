@@ -35,7 +35,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
- * @author willuhn
  */
 public class PinTanConfigImpl implements PinTanConfig
 {
