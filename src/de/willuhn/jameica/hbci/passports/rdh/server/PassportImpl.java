@@ -27,7 +27,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Implementierung des Passports fuer Schluesseldatei.
- * @author willuhn
  */
 public class PassportImpl extends UnicastRemoteObject implements Passport
 {

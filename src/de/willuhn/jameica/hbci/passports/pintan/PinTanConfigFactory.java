@@ -38,7 +38,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Factory zum Laden, Erzeugen und Finden von PIN/TAN-Konfigurationen. 
- * @author willuhn
  */
 public class PinTanConfigFactory
 {

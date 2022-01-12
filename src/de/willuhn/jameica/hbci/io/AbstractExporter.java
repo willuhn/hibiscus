@@ -151,7 +151,6 @@ public abstract class AbstractExporter implements Exporter
 
   /**
    * Hilfsklasse, damit wir uns den Objekt-Typ merken koennen.
-   * @author willuhn
    */
   class MyIOFormat implements IOFormat
   {

@@ -28,7 +28,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
- * @author willuhn
  */
 public class Settings
 {
