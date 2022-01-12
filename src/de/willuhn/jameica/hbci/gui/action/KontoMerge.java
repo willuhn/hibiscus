@@ -128,7 +128,7 @@ public class KontoMerge implements Action
           {
             // Wenn ein Konto fehlschlaegt, soll nicht gleich der ganze Vorgang abbrechen
             Logger.error("error while storing konto",e);
-            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anlegen des Kontos {0}: {1}", new String[]{konto.getLongName(),e.getMessage()}),StatusBarMessage.TYPE_ERROR));
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Anlegen des Kontos {0}: {1}", konto.getLongName(), e.getMessage()), StatusBarMessage.TYPE_ERROR));
           }
         }
       }

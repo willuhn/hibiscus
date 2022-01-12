@@ -69,7 +69,7 @@ public class SammelTransferBuchungList extends TablePart
           SammelTransfer s = sb.getSammelTransfer();
           if (s == null)
             return null;
-          return i18n.tr("{0}: {1}", new String[]{HBCI.DATEFORMAT.format(s.getTermin()),s.getBezeichnung()});
+          return i18n.tr("{0}: {1}", HBCI.DATEFORMAT.format(s.getTermin()), s.getBezeichnung());
         }
         catch (RemoteException e)
         {

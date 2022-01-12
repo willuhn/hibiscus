@@ -287,8 +287,8 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
             return;
           
           DBIterator list = getBuchung().getList();
-          list.addFilter("gegenkonto_nr = ?",new Object[]{gegenKonto.getKontonummer()});
-          list.addFilter("gegenkonto_blz = ?",  new Object[]{gegenKonto.getBlz()});
+          list.addFilter("gegenkonto_nr = ?", gegenKonto.getKontonummer());
+          list.addFilter("gegenkonto_blz = ?", gegenKonto.getBlz());
           list.setOrder("order by id desc");
           if (list.hasNext())
           {

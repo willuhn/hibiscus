@@ -428,9 +428,13 @@ public class KontoList extends TablePart implements Part, Extendable
       }
 
       if (selected)
-        return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}",new String[]{Integer.toString(items.size()),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
-      
-      return i18n.tr("Gesamt-Saldo: {0} {1}",new String[]{HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
+        //@formatter:off
+        return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}", Integer.toString(items.size()),
+                                                                     HBCI.DECIMALFORMAT.format(sum),
+                                                                     HBCIProperties.CURRENCY_DEFAULT_DE);
+        //@formatter:on
+
+      return i18n.tr("Gesamt-Saldo: {0} {1}", HBCI.DECIMALFORMAT.format(sum), HBCIProperties.CURRENCY_DEFAULT_DE);
     }
     catch (Exception ex)
     {

@@ -76,7 +76,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
 
       int blzLen = getGegenkontoBLZ().length();
       if (blzLen != HBCIProperties.HBCI_BLZ_LENGTH)
-        throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", new String[]{getGegenkontoBLZ(),""+HBCIProperties.HBCI_BLZ_LENGTH}));
+        throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", getGegenkontoBLZ(), ""+HBCIProperties.HBCI_BLZ_LENGTH));
 
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 

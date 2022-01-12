@@ -98,7 +98,7 @@ public class DBSupportPostgreSQLImpl extends AbstractDBSupportImpl
    */
   public String getSQLTimestamp(String content) throws RemoteException
   {
-    return MessageFormat.format("({0}::timestamp)", new Object[]{content});
+    return MessageFormat.format("({0}::timestamp)", content);
   }
 
   /**

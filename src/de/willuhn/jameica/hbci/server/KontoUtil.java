@@ -84,8 +84,8 @@ public class KontoUtil
     
     DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
     DBIterator konten = service.createList(Konto.class);
-    konten.addFilter("kontonummer like ?", new Object[]{"%" + kontonummer});
-    konten.addFilter("blz = ?", new Object[]{blz});
+    konten.addFilter("kontonummer like ?", "%" + kontonummer);
+    konten.addFilter("blz = ?", blz);
     while (konten.hasNext())
     {
       final Konto konto = (Konto) konten.next();

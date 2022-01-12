@@ -251,14 +251,14 @@ public class CsvImporter implements Importer
           if (!(e instanceof ApplicationException))
             Logger.error("unable to import line",e);
 
-          monitor.log("  " + i18n.tr("Fehler in Zeile {0}: {1}",new String[]{Integer.toString(csv.getLineNumber()),e.getMessage()}));
+          monitor.log("  " + i18n.tr("Fehler in Zeile {0}: {1}", Integer.toString(csv.getLineNumber()), e.getMessage()));
           error++;
         }
       }
       while ((line = csv.read()) != null);
 
       // Fertig.
-      monitor.setStatusText(i18n.tr("{0} importiert, {1} fehlerhaft, {2} übersprungen", new String[]{Integer.toString(created),Integer.toString(error),Integer.toString(skipped)}));
+      monitor.setStatusText(i18n.tr("{0} importiert, {1} fehlerhaft, {2} übersprungen", Integer.toString(created), Integer.toString(error), Integer.toString(skipped)));
     }
     catch (OperationCanceledException oce)
     {

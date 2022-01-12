@@ -152,10 +152,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     DBIterator list = UmsatzUtil.getUmsaetze();
 
     if (von != null)
-      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(von.getTime())});
-    
+      list.addFilter("datum >= ?", new java.sql.Date(von.getTime()));
+
     if (bis != null)
-      list.addFilter("datum <= ?", new Object[] {new java.sql.Date(bis.getTime())});
+      list.addFilter("datum <= ?", new java.sql.Date(bis.getTime()));
 
     if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
       list.addFilter("umsatztyp_id is null");
@@ -385,7 +385,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     }
     catch (Exception e)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Ungültiger regulärer Ausdruck \"{0}\": {1}", new String[]{s,e.getMessage()}),StatusBarMessage.TYPE_ERROR));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Ungültiger regulärer Ausdruck \"{0}\": {1}", s, e.getMessage()), StatusBarMessage.TYPE_ERROR));
       Logger.error("invalid regex pattern: " + e.getMessage(),e);
       return false;
     }
