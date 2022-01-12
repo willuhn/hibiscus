@@ -79,10 +79,8 @@ public class RDHNewDump
     DocumentBuilder db=dbf.newDocumentBuilder();
 
     Element root = null;
-    CipherInputStream ci = null;
-    try
+    try (CipherInputStream ci = new CipherInputStream(new FileInputStream(args[0]), cipher))
     {
-      ci = new CipherInputStream(new FileInputStream(args[0]),cipher);
       root=db.parse(ci).getDocumentElement();
     }
     catch (CharConversionException e1)
@@ -93,11 +91,6 @@ public class RDHNewDump
     {
       System.out.println("Passwort falsch (bis JDK 1.4)");
       return;
-    }
-    finally
-    {
-      if (ci != null)
-        ci.close();
     }
 
     TransformerFactory tfac=TransformerFactory.newInstance();

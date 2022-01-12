@@ -393,15 +393,10 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       super.delete();
       this.transactionCommit();
     }
-    catch (RemoteException e)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
       throw e;
-    }
-    catch (ApplicationException e2)
-    {
-      this.transactionRollback();
-      throw e2;
     }
   }
 

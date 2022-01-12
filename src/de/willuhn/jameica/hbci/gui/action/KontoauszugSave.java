@@ -80,10 +80,6 @@ public class KontoauszugSave implements Action
       KontoauszugPdfUtil.store(k,file);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontoauszug gespeichert"),StatusBarMessage.TYPE_SUCCESS));
     }
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
     catch (RemoteException re)
     {
       Logger.error("unable to save file",re);

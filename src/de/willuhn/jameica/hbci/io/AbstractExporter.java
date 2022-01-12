@@ -54,13 +54,9 @@ public abstract class AbstractExporter implements Exporter
       this.commit(objects,format,os,monitor);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Daten exportiert"),StatusBarMessage.TYPE_SUCCESS));
     }
-    catch (OperationCanceledException oce)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+      throw e;
     }
     catch (Exception e)
     {

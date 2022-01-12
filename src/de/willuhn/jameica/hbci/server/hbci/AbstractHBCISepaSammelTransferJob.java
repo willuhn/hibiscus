@@ -121,13 +121,9 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
         
       }
 		}
-		catch (RemoteException e)
+		catch (ApplicationException | RemoteException e)
 		{
 			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			throw e2;
 		}
 		catch (Throwable t)
 		{

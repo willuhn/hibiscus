@@ -260,13 +260,9 @@ public class CsvImporter implements Importer
       // Fertig.
       monitor.setStatusText(i18n.tr("{0} importiert, {1} fehlerhaft, {2} übersprungen", Integer.toString(created), Integer.toString(error), Integer.toString(skipped)));
     }
-    catch (OperationCanceledException oce)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+      throw e;
     }
     catch (Exception e)
     {
@@ -349,10 +345,8 @@ public class CsvImporter implements Importer
    */
   private static byte[] copy(InputStream is) throws IOException
   {
-    BufferedInputStream bis = null;
-    try
+    try (BufferedInputStream bis = new BufferedInputStream(is))
     {
-      bis = new BufferedInputStream(is);
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       
       byte[] buf = new byte[4096];
@@ -363,10 +357,6 @@ public class CsvImporter implements Importer
           bos.write(buf,0,read);
       }
       return bos.toByteArray();
-    }
-    finally
-    {
-      bis.close();
     }
   }
   

@@ -83,15 +83,10 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
       super.delete();
       this.transactionCommit();
     }
-    catch (RemoteException e)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
       throw e;
-    }
-    catch (ApplicationException e2)
-    {
-      this.transactionRollback();
-      throw e2;
     }
   }
   

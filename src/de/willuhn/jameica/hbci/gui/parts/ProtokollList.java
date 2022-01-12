@@ -69,6 +69,7 @@ public class ProtokollList extends AbstractFromToList
         }
         catch (RemoteException e)
         {
+          // ignorieren, falls Aufruf von getTyp() scheitert
         }
       }
     });

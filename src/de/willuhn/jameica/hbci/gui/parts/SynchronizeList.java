@@ -359,6 +359,7 @@ public class SynchronizeList extends TablePart
       }
       catch (ApplicationException ae)
       {
+        // hier notwendig, da nächster Catch alles fängt
         throw ae;
       }
       catch (Exception e)
@@ -415,10 +416,6 @@ public class SynchronizeList extends TablePart
       catch (OperationCanceledException oce)
       {
         // ignore
-      }
-      catch (ApplicationException ae)
-      {
-        throw ae;
       }
       catch (RemoteException re)
       {

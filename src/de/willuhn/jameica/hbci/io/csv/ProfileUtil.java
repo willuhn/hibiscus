@@ -68,10 +68,8 @@ public class ProfileUtil
       return result;
     
     Logger.info("reading csv profile " + file);
-    XMLDecoder decoder = null;
-    try
+    try (XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file))))
     {
-      decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
       decoder.setExceptionListener(new ExceptionListener()
       {
         public void exceptionThrown(Exception e)
@@ -118,17 +116,6 @@ public class ProfileUtil
       Logger.error("unable to read profile " + file,e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Laden der Profile fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
-    finally
-    {
-      if (decoder != null)
-      {
-        try
-        {
-          decoder.close();
-        }
-        catch (Exception e) { /* useless */}
-      }
-    }
     return result;
   }
   
@@ -166,10 +153,8 @@ public class ProfileUtil
     File file = new File(dir,format.getClass().getName() + ".xml");
     
     Logger.info("writing csv profile " + file);
-    XMLEncoder encoder = null;
-    try
+    try (XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file))))
     {
-      encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
       encoder.setExceptionListener(new ExceptionListener()
       {
         public void exceptionThrown(Exception e)
@@ -193,16 +178,7 @@ public class ProfileUtil
     }
     catch (Exception e)
     {
-      Logger.error("unable to store profile " + file,e);
-    }
-    finally
-    {
-      if (encoder != null) {
-        try {
-          encoder.close();
-        }
-        catch (Exception e) { /* useless */}
-      }
+      Logger.error("unable to store profile " + file, e);
     }
   }
   

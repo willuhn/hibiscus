@@ -47,13 +47,9 @@ public class KontoauszugExport extends Export
       if (!Application.getCallback().askUser(note,true))
         return;
     }
-    catch (OperationCanceledException oce)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+      throw e;
     }
     catch (Exception e)
     {

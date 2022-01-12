@@ -589,7 +589,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       
       this.transactionCommit();
     }
-    catch (RemoteException re)
+    catch (ApplicationException | RemoteException e)
     {
       try
       {
@@ -599,19 +599,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       {
         Logger.error("unable to rollback transaction",e2);
       }
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw ae;
+      throw e;
     }
   }
 
