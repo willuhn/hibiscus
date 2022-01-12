@@ -34,10 +34,7 @@ public class XMLSepaSammelTransferExporter extends XMLExporter
     for (SepaSammelTransfer t:transfers)
     {
       all.add(t);
-      for (Object b:t.getBuchungen())
-      {
-        all.add(b);
-      }
+      all.addAll(t.getBuchungen());
     }
     super.doExport(all.toArray(),format,os,monitor);
   }
