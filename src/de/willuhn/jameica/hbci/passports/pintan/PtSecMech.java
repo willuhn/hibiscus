@@ -174,14 +174,14 @@ public class PtSecMech
   }
   
   /**
-   * Liefert true, wenn es ein Verfahren ist, das prinzipiell USB-tauglich ist.
-   * @return true, wenn es ein Verfahren ist, das prinzipiell USB-tauglich ist.
+   * Liefert true, wenn es sich um ein Flicker-Code Verfahren handelt.
+   * @return true, wenn es sich um ein Flicker-Code Verfahren handelt.
    */
-  public boolean useUSB()
+  public boolean isFlickerCode()
   {
     if (this.name == null)
       return false;
-    
+
     String s = this.name.toLowerCase();
     return s.contains("usb") ||
            s.contains("optic") ||

@@ -208,8 +208,12 @@ public class ChipTANDialog extends TANDialog
   {
     // Checken, ob wir chipTAN USB ausgewaehlt haben
     PtSecMech mech = config != null ? config.getCurrentSecMech() : null;
-    if (mech == null || !mech.useUSB())
+    if (mech == null || !mech.isFlickerCode())
       return; // brauchen wir gar nicht weiter ueberlegen
+    
+    // User hat die Konvertierung in einen Flicker-Code aktiviert. Dann brauchen wir USB nicht mehr checken
+    if (config != null && config.isConvertFlickerToQRCode())
+      return;
     
     // Checken, ob der User schon entschieden hatte, dass er chipTAN USB NICHT nutzen moechte
     Boolean use = config != null ? config.isChipTANUSB() : null;

@@ -497,6 +497,24 @@ public class PinTanConfigImpl implements PinTanConfig
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isConvertFlickerToQRCode()
+   */
+  @Override
+  public boolean isConvertFlickerToQRCode() throws RemoteException
+  {
+    return settings.getBoolean(getID() + ".chiptan.flicker2qrcode.enabled",false);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setConvertFlickerToQRCode(boolean)
+   */
+  @Override
+  public void setConvertFlickerToQRCode(boolean b) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".chiptan.flicker2qrcode.enabled",b);
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedias()
    */
   public String[] getTanMedias() throws RemoteException
