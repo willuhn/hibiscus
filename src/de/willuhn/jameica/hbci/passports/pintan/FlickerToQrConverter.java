@@ -18,10 +18,10 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
-import javax.xml.bind.DatatypeConverter;
 
 import org.kapott.hbci.comm.Comm;
 
+import de.willuhn.logging.Logger;
 import io.nayuki.fastqrcodegen.QrCode;
 import io.nayuki.fastqrcodegen.QrSegment;
 
@@ -56,7 +56,7 @@ public class FlickerToQrConverter
    */
   public static String convert(String flicker) throws IOException
   {
-    byte[] data = DatatypeConverter.parseHexBinary(flicker);
+    byte[] data = parseHexBinary(flicker);
 
     byte[] dk = new byte[] { (byte) (0x44), (byte) (0x4B) }; // DK
     byte[] ams = new byte[] { (byte) (0x4E) }; // N
@@ -75,8 +75,6 @@ public class FlickerToQrConverter
     ImageIO.write(img, "png", stream);
     baos.flush();
 
-    // Logger.debug("PNG hexdump: " + javax.xml.bind.DatatypeConverter.printHexBinary(baos.toByteArray()));
-
     StringBuilder sb = new StringBuilder();
 
     String buf = "image/png";
@@ -92,6 +90,44 @@ public class FlickerToQrConverter
     sb.append(buf);
 
     return sb.toString();
+  }
+  
+  /**
+   * Parst den Text als HEX-String.
+   * @param hex der HEX-String.
+   * @return Binaerdaten.
+   */
+  public static byte[] parseHexBinary(String hex)
+  {
+    final String hexChars = "0123456789abcdef";
+    boolean nextByte = true;
+    int b = 0;
+    int idx = 0;
+    
+    hex = hex.trim().toLowerCase();
+    final byte[] result = new byte[hex.length() / 2];
+
+    for (char c : hex.toCharArray())
+    {
+      int pos = hexChars.indexOf(c);
+      if (pos < 0)
+      {
+        Logger.warn("invalid non-hex char found: " + c);
+        continue;
+      }
+
+      b = (b << 4) | (pos & 0xFF);
+      nextByte = !nextByte;
+
+      if (nextByte)
+      {
+        result[idx] = (byte) (b & 0xFF);
+        b = 0;
+        idx++;
+      }
+    }
+
+    return result;
   }
 
   /**
