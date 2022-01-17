@@ -97,4 +97,40 @@ public class TestFlickerToQrConverter
     
     assertImageEquals(imgExpected, imgActual);
   }
+
+  /**
+   * @throws Exception
+   */
+  @Test
+  public void testInvalidLength() throws Exception
+  {
+    try
+    {
+      FlickerToQrConverter.convert("1DC80138323131323334354A30313233343536373839463130302C3030020");
+      Assert.fail("Hätte fehlschlagen müssen");
+    }
+    catch (Exception e)
+    {
+      Assert.assertEquals(IllegalArgumentException.class,e.getClass());
+    }
+  }
+
+
+  /**
+   * @throws Exception
+   */
+  @Test
+  public void testInvalidChar() throws Exception
+  {
+    try
+    {
+      FlickerToQrConverter.convert("1DC80138323131323334354A30313233343536373839463130302C30300ß");
+      Assert.fail("Hätte fehlschlagen müssen");
+    }
+    catch (Exception e)
+    {
+      Assert.assertEquals(IllegalArgumentException.class,e.getClass());
+    }
+    
+  }
 }

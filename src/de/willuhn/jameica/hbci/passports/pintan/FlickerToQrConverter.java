@@ -21,7 +21,6 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.kapott.hbci.comm.Comm;
 
-import de.willuhn.logging.Logger;
 import io.nayuki.fastqrcodegen.QrCode;
 import io.nayuki.fastqrcodegen.QrSegment;
 
@@ -96,8 +95,9 @@ public class FlickerToQrConverter
    * Parst den Text als HEX-String.
    * @param hex der HEX-String.
    * @return Binaerdaten.
+   * @throws IllegalArgumentException wenn die Eingabedaten kein lesbarer HEX-String waren.
    */
-  public static byte[] parseHexBinary(String hex)
+  public static byte[] parseHexBinary(String hex) throws IllegalArgumentException
   {
     final String hexChars = "0123456789abcdef";
     boolean nextByte = true;
@@ -105,16 +105,16 @@ public class FlickerToQrConverter
     int idx = 0;
     
     hex = hex.trim().toLowerCase();
+    if (hex.length() % 2 != 0)
+      throw new IllegalArgumentException("hex string " + hex + " has invalid length: " + hex.length());
+    
     final byte[] result = new byte[hex.length() / 2];
 
     for (char c : hex.toCharArray())
     {
       int pos = hexChars.indexOf(c);
       if (pos < 0)
-      {
-        Logger.warn("invalid non-hex char found: " + c);
-        continue;
-      }
+        throw new IllegalArgumentException("invalid hex char " + c + " found in " + hex);
 
       b = (b << 4) | (pos & 0xFF);
       nextByte = !nextByte;
