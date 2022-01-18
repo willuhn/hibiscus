@@ -177,7 +177,7 @@ public class UmsatzList extends TablePart implements Extendable
     addColumn(i18n.tr("Flags"),                     "flags");
     addColumn(i18n.tr("Gegenkonto"),                "empfaenger");
     
-    if (settings.getBoolean("usage.list.all",false))
+    if (settings.getBoolean("usage.display.all",false))
       addColumn(i18n.tr("Verwendungszweck"),        "mergedzweck");
     else
       addColumn(i18n.tr("Verwendungszweck"),        Tag.SVWZ.name());

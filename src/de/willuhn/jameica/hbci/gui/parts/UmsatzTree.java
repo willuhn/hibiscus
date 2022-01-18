@@ -147,7 +147,7 @@ public class UmsatzTree extends TreePart
     
     });
     this.addColumn(i18n.tr("Bezeichnung"),      "name");
-    if (settings.getBoolean("usage.list.all",false))
+    if (settings.getBoolean("usage.display.all",false))
       addColumn(i18n.tr("Verwendungszweck"),    "mergedzweck");
     else
       addColumn(i18n.tr("Verwendungszweck"),    Tag.SVWZ.name());
