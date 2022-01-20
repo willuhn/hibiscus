@@ -51,6 +51,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.Reminder;
 import de.willuhn.jameica.reminder.ReminderStorageProvider;
 import de.willuhn.jameica.services.BeanService;
@@ -204,22 +205,51 @@ public abstract class AbstractTransferList extends AbstractFromToList
    */
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
+    int filterCount = 0;
+    
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
     
     DBIterator list = service.createList(getObjectType());
-    if (from != null) list.addFilter("termin >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
-    if (to   != null) list.addFilter("termin <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
+    if (from != null)
+    {
+      list.addFilter("termin >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
+      filterCount++;
+    }
+    if (to != null)
+    {
+      list.addFilter("termin <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
+      filterCount++;
+    }
 
-    if (konto != null && (konto instanceof Konto))
-      list.addFilter("konto_id = " + ((Konto) konto).getID());
-    else if (konto != null && (konto instanceof String))
-      list.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) konto);
+    if (konto != null)
+    {
+      if (konto instanceof Konto)
+        list.addFilter("konto_id = " + ((Konto) konto).getID());
+      else if (konto instanceof String)
+        list.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) konto);
+      
+      filterCount++;
+    }
     
     boolean pending = ((Boolean) this.getPending().getValue()).booleanValue();
     if (pending)
+    {
       list.addFilter("ausgefuehrt = 0");
+      filterCount++;
+    }
 
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
+
+    if (filterCount > 0)
+    {
+      final int all = service.createList(getObjectType()).size();
+      final int size = list.size();
+      if (all != size)
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Suchkriterien: {0} - Anzeige: {1} von {2} Aufträgen",Integer.toString(filterCount), Integer.toString(size), Integer.toString(all)),StatusBarMessage.TYPE_INFO));
+      else
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Suchkriterien: {0}",Integer.toString(filterCount)),StatusBarMessage.TYPE_INFO));
+    }
+
     return list;
   }
   

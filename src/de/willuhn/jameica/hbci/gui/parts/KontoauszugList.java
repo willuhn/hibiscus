@@ -666,7 +666,7 @@ public class KontoauszugList extends UmsatzList
     if (typ != null) this.filterCount++;
 
     if (this.filterCount > 0)
-    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)),StatusBarMessage.TYPE_INFO));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)),StatusBarMessage.TYPE_INFO));
     
     if (search != null)
     {
