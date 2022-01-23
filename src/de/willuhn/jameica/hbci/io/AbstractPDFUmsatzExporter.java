@@ -58,7 +58,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
 
     Date startDate     = first.getDatum();
     Date endDate       = first.getDatum();
-    Map<String,List> umsaetze = new HashMap<String,List>();
+    Map<String,List<Umsatz>> umsaetze = new HashMap<>();
     
     if (monitor != null) 
     {
@@ -66,11 +66,11 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
       monitor.addPercentComplete(1);
     }
     
-    Map<String,T> groupMap = new HashMap<String,T>();
+    Map<String,T> groupMap = new HashMap<>();
 
-    for (int i=0;i<objects.length;++i)
+    for (Object object : objects)
     {
-      Umsatz u = (Umsatz) objects[i];
+      Umsatz u = (Umsatz) object;
 
       // Wir ermitteln bei der Gelegenheit das Maximal- und Minimal-Datum
       Date date = u.getDatum();
@@ -84,7 +84,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
       T group = this.getGroup(u);
       String key = group != null ? group.getID() : null;
       groupMap.put(key,group);
-      List<Umsatz> list = umsaetze.computeIfAbsent(key, k -> new ArrayList<Umsatz>());
+      List<Umsatz> list = umsaetze.computeIfAbsent(key, k -> new ArrayList<>());
       list.add(u);
     }
 

@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.io;
 
 import java.io.OutputStream;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
@@ -129,13 +130,12 @@ public abstract class AbstractExporter implements Exporter
       return null;
 
     Class[] supported = getSupportedObjectTypes();
-    if (supported == null || supported.length == 0)
-      return null;
-
-    for (Class supportedObjType : supported)
+    if (supported != null && supported.length > 0)
     {
-      if (objectType.equals(supportedObjType))
+      if (Arrays.asList(supported).contains(objectType))
+      {
         return new IOFormat[]{new MyIOFormat(objectType)};
+      }
     }
     return null;
   }

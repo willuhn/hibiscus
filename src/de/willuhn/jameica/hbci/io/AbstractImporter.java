@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.io;
 
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -147,13 +148,12 @@ public abstract class AbstractImporter implements Importer
       return null;
 
     Class[] supported = getSupportedObjectTypes();
-    if (supported == null || supported.length == 0)
-      return null;
-
-    for (Class supportedObjType : supported)
+    if (supported != null && supported.length > 0)
     {
-      if (objectType.equals(supportedObjType))
+      if (Arrays.asList(supported).contains(objectType))
+      {
         return new IOFormat[]{new MyIOFormat(objectType)};
+      }
     }
     return null;
   }

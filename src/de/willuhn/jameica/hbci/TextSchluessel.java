@@ -130,6 +130,7 @@ public class TextSchluessel
         if (code.equals(ts.getCode()))
         {
           l.add(ts);
+          break;
         }
       }
     }

@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.kapott.hbci.manager.HBCIUtils;
@@ -73,14 +74,10 @@ public class PinTanConfigFactory
     boolean found = false;
     if (existing != null && existing.length > 0)
     {
-      for (String configID : existing)
+      if(Arrays.asList(existing).contains(config.getID()))
       {
-        if (configID.equals(config.getID()))
-        {
-          Logger.info("updating existing config");
-          found = true;
-          break;
-        }
+        Logger.info("updating existing config");
+        found = true;
       }
     }
 

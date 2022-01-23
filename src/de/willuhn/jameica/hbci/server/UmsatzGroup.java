@@ -32,7 +32,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
   private final static transient I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private UmsatzTyp typ = null;
-  private ArrayList<Umsatz> umsaetze = new ArrayList();
+  private ArrayList<Umsatz> umsaetze = new ArrayList<>();
   
   /**
    * ct.
