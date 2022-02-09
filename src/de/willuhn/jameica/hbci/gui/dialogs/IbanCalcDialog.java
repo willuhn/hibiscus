@@ -61,25 +61,19 @@ public class IbanCalcDialog extends AbstractDialog
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#isModeless()
-   */
+  @Override
   protected boolean isModeless()
   {
     return true;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container container1 = new SimpleContainer(parent);
@@ -102,6 +96,7 @@ public class IbanCalcDialog extends AbstractDialog
     
     buttons.addButton(i18n.tr("Berechnen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         calc();
@@ -109,6 +104,7 @@ public class IbanCalcDialog extends AbstractDialog
     },null,true,"accessories-calculator.png");
     buttons.addButton(i18n.tr("Schlieﬂen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         close();
@@ -136,6 +132,7 @@ public class IbanCalcDialog extends AbstractDialog
     this.konto.addListener(this.listener);
     this.konto.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         String s = (String) konto.getValue();
@@ -280,9 +277,6 @@ public class IbanCalcDialog extends AbstractDialog
   private class CalcListener implements Listener
   {
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
     @Override
     public void handleEvent(Event event)
     {

@@ -25,8 +25,8 @@ public class SammelUeberweisungBuchungNew implements Action
    * Buchung einer Sammel-Ueberweisung angegeben werden. Abhaengig davon wird
    * entweder eine neue Buchung erzeugt oder die existierende
    * geoeffnet.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		SammelUeberweisungBuchung u = null;

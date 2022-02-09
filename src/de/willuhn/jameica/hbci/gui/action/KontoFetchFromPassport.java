@@ -32,8 +32,8 @@ public class KontoFetchFromPassport implements Action
 
   /**
    * Erwartet ein Objekt vom Typ <code>de.willuhn.jameica.hbci.passport.Passport</code>.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     Passport passport = null;

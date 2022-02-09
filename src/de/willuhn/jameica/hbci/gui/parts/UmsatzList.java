@@ -127,6 +127,7 @@ public class UmsatzList extends TablePart implements Extendable
     setMulti(true);
     setFormatter(new TableFormatter()
     {
+      @Override
       public void format(TableItem item)
       {
         Umsatz u = (Umsatz) item.getData();
@@ -207,6 +208,7 @@ public class UmsatzList extends TablePart implements Extendable
 
     this.addSelectionListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         refreshSummary();
@@ -247,9 +249,6 @@ public class UmsatzList extends TablePart implements Extendable
     this.filter = visible;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
-   */
   @Override
   protected String getSummary()
   {
@@ -306,9 +305,7 @@ public class UmsatzList extends TablePart implements Extendable
     return super.getSummary();
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzList(this.konto));
@@ -372,9 +369,7 @@ public class UmsatzList extends TablePart implements Extendable
       this.cal = Calendar.getInstance();
     }
     
-    /**
-     * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-     */
+    @Override
     public void keyReleased(KeyEvent e)
     {
       // Wenn ein Timeout existiert, verlaengern wir einfach
@@ -556,9 +551,7 @@ public class UmsatzList extends TablePart implements Extendable
       }
     });
     
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
@@ -566,9 +559,7 @@ public class UmsatzList extends TablePart implements Extendable
       };
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (message == null)
@@ -585,9 +576,7 @@ public class UmsatzList extends TablePart implements Extendable
       this.delay.handleEvent(null);
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
@@ -600,9 +589,7 @@ public class UmsatzList extends TablePart implements Extendable
    */
   public class UmsatzNewMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
@@ -620,9 +607,7 @@ public class UmsatzList extends TablePart implements Extendable
       }
     });
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (message == null)
@@ -675,18 +660,14 @@ public class UmsatzList extends TablePart implements Extendable
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return UmsatzList.class.getName();

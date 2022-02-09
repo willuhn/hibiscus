@@ -78,9 +78,7 @@ public class UmsatzTypList extends TablePart implements Part
 
     this.setFormatter(new TableFormatter()
     {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
-       */
+      @Override
       public void format(TableItem item)
       {
         if (item == null)
@@ -132,9 +130,7 @@ public class UmsatzTypList extends TablePart implements Part
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     parent.addDisposeListener(new DisposeListener() {
@@ -154,17 +150,13 @@ public class UmsatzTypList extends TablePart implements Part
   private class MyMessageConsumer implements MessageConsumer
   {
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
@@ -173,9 +165,7 @@ public class UmsatzTypList extends TablePart implements Part
       };
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       final GenericObject data = ((ObjectMessage)message).getObject();

@@ -226,9 +226,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
    */
   private class KontoListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
 
       try {
@@ -275,9 +273,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
       }, "user-trash-full.png");
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null)
@@ -324,9 +320,7 @@ public abstract class AbstractSammelTransferControl<T extends SammelTransfer> ex
       },"text-x-generic.png");
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       try

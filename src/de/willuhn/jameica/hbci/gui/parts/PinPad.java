@@ -49,9 +49,7 @@ public class PinPad implements Part
     this.input = input;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     if (this.comp != null)

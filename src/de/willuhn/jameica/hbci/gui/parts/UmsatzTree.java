@@ -85,6 +85,7 @@ public class UmsatzTree extends TreePart
     
     this.setFormatter(new TreeFormatter() {
     
+      @Override
       public void format(TreeItem item)
       {
         if (item == null || item.getData() == null)
@@ -167,9 +168,7 @@ public class UmsatzTree extends TreePart
   }
 
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.TreePart#setList(de.willuhn.datasource.GenericIterator)
-   */
+  @Override
   public void setList(GenericIterator list)
   {
     this.umsatzCount = 0;
@@ -273,9 +272,6 @@ public class UmsatzTree extends TreePart
     return node;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.TreePart#createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event, java.lang.Object)
-   */
   @Override
   protected Context createFeatureEventContext(Event e, Object data)
   {

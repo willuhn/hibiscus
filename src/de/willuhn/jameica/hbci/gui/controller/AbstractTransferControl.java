@@ -358,9 +358,7 @@ public abstract class AbstractTransferControl extends AbstractControl
    */
   private class KontoListener implements Listener
 	{
-		/**
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 */
+		@Override
 		public void handleEvent(Event event) {
 
 			try {
@@ -385,9 +383,7 @@ public abstract class AbstractTransferControl extends AbstractControl
    */
   private class KontonummerListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event)
     {
       try
@@ -416,9 +412,7 @@ public abstract class AbstractTransferControl extends AbstractControl
   private class EmpfaengerListener implements Listener
 	{
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
     	if (event == null)
     		return;

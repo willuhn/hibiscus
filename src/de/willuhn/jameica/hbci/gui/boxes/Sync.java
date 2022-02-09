@@ -31,17 +31,13 @@ public class Sync extends AbstractBox implements Box
 
   private SynchronizeList list = null;
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getName()
-   */
+  @Override
   public String getName()
   {
     return "Hibiscus: " + i18n.tr("Konten synchronisieren");
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     // BUGZILLA 433
@@ -49,33 +45,25 @@ public class Sync extends AbstractBox implements Box
     list.paint(parent);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
-   */
+  @Override
   public int getDefaultIndex()
   {
     return 2;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
-   */
+  @Override
   public boolean getDefaultEnabled()
   {
     return true;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
-   */
+  @Override
   public int getHeight()
   {
     return 200;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
-   */
+  @Override
   public boolean isActive()
   {
     return super.isActive() && !Settings.isFirstStart();

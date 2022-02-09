@@ -593,9 +593,7 @@ public class SepaLastschriftControl extends AbstractControl
 
     private boolean found = false;
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       boolean b = foreign.accept(konto);
@@ -610,9 +608,7 @@ public class SepaLastschriftControl extends AbstractControl
    */
   private class KontoListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
 
       try {
@@ -646,9 +642,7 @@ public class SepaLastschriftControl extends AbstractControl
   private class EmpfaengerListener implements Listener
   {
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
       if (event == null)
         return;

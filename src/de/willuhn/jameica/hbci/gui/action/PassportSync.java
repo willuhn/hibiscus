@@ -39,8 +39,8 @@ public class PassportSync implements Action
   /**
    * Erwartet ein Objekt vom Typ <code>de.willuhn.jameica.hbci.passport.Passport</code> oder
    * <code>de.willuhn.jameica.hbci.passport.PassportHandle</code> oder
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(final Object context) throws ApplicationException
   {
 		final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();

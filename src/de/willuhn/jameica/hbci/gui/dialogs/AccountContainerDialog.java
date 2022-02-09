@@ -72,9 +72,7 @@ public class AccountContainerDialog extends AbstractDialog
     setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container c = new SimpleContainer(parent);
@@ -145,9 +143,7 @@ public class AccountContainerDialog extends AbstractDialog
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return container;
@@ -229,6 +225,7 @@ public class AccountContainerDialog extends AbstractDialog
 
     this.host = new TextInput(this.passport.getHost())
     {
+      @Override
       public Object getValue()
       {
         // Ueberschrieben, um ggf. das https:// am Anfang abzuschneiden

@@ -80,9 +80,7 @@ public class SepaLastschriftList extends ContextMenu
     {
       super(text,action,icon);
     }
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o instanceof SepaLastschrift[])
@@ -97,9 +95,7 @@ public class SepaLastschriftList extends ContextMenu
    */
   private class UNeu extends SepaLastschriftNew
 	{
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
     	super.handleAction(null);
@@ -124,9 +120,7 @@ public class SepaLastschriftList extends ContextMenu
       super(text, a, icon);
     }
 
-	  /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null || !(o instanceof SepaLastschrift))
@@ -166,9 +160,7 @@ public class SepaLastschriftList extends ContextMenu
       super(text, a, icon);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null || (!(o instanceof SepaLastschrift) && !(o instanceof SepaLastschrift[])))

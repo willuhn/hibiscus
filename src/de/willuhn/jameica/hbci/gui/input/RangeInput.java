@@ -115,6 +115,7 @@ public class RangeInput extends SelectInput
     // der Aenderungen auf Von/Bis
     this.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         Range choosen = (Range) getValue();

@@ -54,9 +54,7 @@ public class BICInput extends AccountInput
     this.listener.handleEvent(null);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.TextInput#setValue(java.lang.Object)
-   */
+  @Override
   public void setValue(Object value)
   {
     super.setValue(value);
@@ -69,9 +67,7 @@ public class BICInput extends AccountInput
    */
   private class BICListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event arg0)
     {
       try

@@ -100,9 +100,7 @@ public class CSVImportDialog extends AbstractDialog
 
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     // BUGZILLA 281
@@ -112,6 +110,7 @@ public class CSVImportDialog extends AbstractDialog
     ButtonArea b = new ButtonArea();
     b.addButton(i18n.tr("CSV-Datei neu laden"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         reload();
@@ -204,6 +203,7 @@ public class CSVImportDialog extends AbstractDialog
     ButtonArea b2 = new ButtonArea();
     b2.addButton(i18n.tr("Import starten"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         result = getProfile();
@@ -380,8 +380,8 @@ public class CSVImportDialog extends AbstractDialog
   
   /**
    * Liefert das angepasste Mapping zurueck.
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
+  @Override
   protected Object getData() throws Exception
   {
     return this.result;

@@ -274,9 +274,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
 
     private boolean found = false;
 
-    /**
-     * @see de.willuhn.jameica.hbci.gui.filter.KontoFilter#accept(de.willuhn.jameica.hbci.rmi.Konto)
-     */
+    @Override
     public boolean accept(Konto konto) throws RemoteException
     {
       boolean b = foreign.accept(konto);
@@ -292,9 +290,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
    */
   private class KontoListener implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event) {
 
       try {
@@ -333,9 +329,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
       super(i18n.tr("Buchung(en) löschen..."),new DBObjectDelete(), "user-trash-full.png");
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null)
@@ -388,9 +382,7 @@ public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTran
       },"text-x-generic.png");
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       try

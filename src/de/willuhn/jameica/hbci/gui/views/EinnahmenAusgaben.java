@@ -45,9 +45,7 @@ public class EinnahmenAusgaben extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     GUI.getView().setTitle(i18n.tr("Einnahmen/Ausgaben"));
@@ -77,6 +75,7 @@ public class EinnahmenAusgaben extends AbstractView
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Exportieren..."), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -93,9 +92,7 @@ public class EinnahmenAusgaben extends AbstractView
     },null,false,"document-save.png");
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
-      /**
-       * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-       */
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleReload();

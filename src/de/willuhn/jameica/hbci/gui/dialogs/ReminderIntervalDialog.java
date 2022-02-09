@@ -86,9 +86,7 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     this.start = date != null ? date : new Date();
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container ct = new SimpleContainer(parent,true);
@@ -207,9 +205,7 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     ct.addButtonArea(buttons);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected ReminderInterval getData() throws Exception
   {
     return this.interval;

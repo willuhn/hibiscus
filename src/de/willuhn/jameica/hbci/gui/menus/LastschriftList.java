@@ -47,6 +47,7 @@ public class LastschriftList extends ContextMenu
     addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Drucken..."),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         new Print().handleAction(new PrintSupportLastschriftList(context));
@@ -70,9 +71,7 @@ public class LastschriftList extends ContextMenu
     {
       super(text,action,icon);
     }
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o instanceof Lastschrift[])

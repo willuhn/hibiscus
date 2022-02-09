@@ -49,9 +49,7 @@ public class DateFromInput extends AbstractDateInput
     this.setComment(i18n.tr("Frühestes Datum"));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.input.AbstractDateInput#getDefault()
-   */
+  @Override
   Date getDefault()
   {
     Calendar cal = Calendar.getInstance();

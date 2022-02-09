@@ -61,6 +61,7 @@ public class NachrichtList extends TablePart implements Part
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setFormatter(new TableFormatter()
     {
+      @Override
       public void format(TableItem item)
       {
         if (item == null || item.getData() == null)
@@ -79,6 +80,7 @@ public class NachrichtList extends TablePart implements Part
     addColumn(i18n.tr("Datum"),"datum",new DateFormatter(HBCI.DATEFORMAT));
     addColumn(i18n.tr("Bank"),"blz", new Formatter()
     {
+      @Override
       public String format(Object o)
       {
         if (o == null)
@@ -88,6 +90,7 @@ public class NachrichtList extends TablePart implements Part
       }
     });
     addColumn(i18n.tr("Nachricht"),"nachricht", new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null)

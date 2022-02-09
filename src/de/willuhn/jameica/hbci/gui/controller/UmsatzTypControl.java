@@ -151,6 +151,7 @@ public class UmsatzTypControl extends AbstractControl
       this.pattern.addListener(new Listener()
       {
       
+        @Override
         public void handleEvent(Event event)
         {
           // Wir testen sofort, ob der regulaere Ausdruck vielleicht
@@ -209,9 +210,7 @@ public class UmsatzTypControl extends AbstractControl
     this.customColor = new CheckboxInput(getUmsatzTyp().isCustomColor());
     this.customColor.addListener(new Listener()
     {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
+      @Override
       public void handleEvent(Event event)
       {
         try
@@ -426,9 +425,7 @@ public class UmsatzTypControl extends AbstractControl
       return this.typ;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject other) throws RemoteException
     {
       if (other == this)
@@ -438,33 +435,25 @@ public class UmsatzTypControl extends AbstractControl
       return this.typ == ((UmsatzTypObject)other).typ;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String arg0) throws RemoteException
     {
       return UmsatzTypUtil.getNameForType(this.typ);
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[]{"name"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return String.valueOf(this.typ);
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "name";

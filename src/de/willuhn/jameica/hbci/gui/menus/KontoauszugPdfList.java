@@ -97,9 +97,6 @@ public class KontoauszugPdfList extends ContextMenu
       super(text, a, icon);
     }
 
-    /**
-	   * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
-	   */
 	  @Override
 	  public boolean isEnabledFor(Object o)
 	  {

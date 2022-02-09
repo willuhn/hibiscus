@@ -260,9 +260,7 @@ public abstract class AbstractSammelTransferBuchungControl extends AbstractContr
 	private class GegenkontoListener implements Listener
 	{
 
-		/**
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 */
+		@Override
 		public void handleEvent(Event event) {
 			if (event == null)
 				return;

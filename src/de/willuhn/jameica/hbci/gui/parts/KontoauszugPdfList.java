@@ -97,6 +97,7 @@ public class KontoauszugPdfList extends TablePart
     this.addFeature(new FeatureShortcut());
 
     this.listener = new Listener() {
+      @Override
       public void handleEvent(Event event) {
         // Wenn das event "null" ist, kann es nicht von SWT ausgeloest worden sein
         // sondern manuell von uns. In dem Fall machen wir ein forciertes Update
@@ -152,6 +153,7 @@ public class KontoauszugPdfList extends TablePart
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.KontoauszugPdfList());
     
     this.addChangeListener(new TableChangeListener() {
+      @Override
       public void itemChanged(Object object, String attribute, String newValue) throws ApplicationException
       {
         try
@@ -179,9 +181,7 @@ public class KontoauszugPdfList extends TablePart
 
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     final TabFolder folder = new TabFolder(parent, SWT.NONE);
@@ -209,6 +209,7 @@ public class KontoauszugPdfList extends TablePart
     buttons.addButton(i18n.tr("Einstellungen"),new KontoAction(new KontoauszugPdfSettings()),null,false,"document-properties.png");
     buttons.addButton(i18n.tr("Aktualisieren"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         handleReload(true);
@@ -219,6 +220,7 @@ public class KontoauszugPdfList extends TablePart
     this.handleReload(true);
     
     parent.addDisposeListener(new DisposeListener() {
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         Application.getMessagingFactory().unRegisterMessageConsumer(mc);
@@ -290,6 +292,7 @@ public class KontoauszugPdfList extends TablePart
     this.range = new RangeInput(this.getFrom(),this.getTo(),Range.CATEGORY_AUSWERTUNG,"kontoauszuege.filter.range");
     this.range.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         if (range.getValue() != null && range.hasChanged())
@@ -420,9 +423,7 @@ public class KontoauszugPdfList extends TablePart
    */
   public class TransferMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
@@ -431,9 +432,7 @@ public class KontoauszugPdfList extends TablePart
       };
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(final Message message) throws Exception
     {
       if (message == null)
@@ -474,9 +473,7 @@ public class KontoauszugPdfList extends TablePart
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;
@@ -508,9 +505,6 @@ public class KontoauszugPdfList extends TablePart
       this.redirect = redirect;
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
     @Override
     public void handleAction(Object context) throws ApplicationException
     {

@@ -70,17 +70,13 @@ public class Overview extends AbstractBox implements Box
   
   private MessageConsumer mc = new SaldoMessageConsumer();
   
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getName()
-   */
+  @Override
   public String getName()
   {
     return "Hibiscus: " + i18n.tr("Finanz-Übersicht");
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     Container group = new SimpleContainer(parent);
@@ -103,17 +99,13 @@ public class Overview extends AbstractBox implements Box
     });
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
-   */
+  @Override
   public int getDefaultIndex()
   {
     return 0;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
-   */
+  @Override
   public boolean getDefaultEnabled()
   {
     return true;
@@ -328,9 +320,7 @@ public class Overview extends AbstractBox implements Box
     return einnahmen;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
-   */
+  @Override
   public boolean isActive()
   {
     return super.isActive() && !Settings.isFirstStart();
@@ -341,17 +331,13 @@ public class Overview extends AbstractBox implements Box
    */
   private class SaldoMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{SaldoMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       GUI.getDisplay().syncExec(new Runnable() {
@@ -362,9 +348,7 @@ public class Overview extends AbstractBox implements Box
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

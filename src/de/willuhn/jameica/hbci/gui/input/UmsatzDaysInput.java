@@ -55,9 +55,7 @@ public class UmsatzDaysInput extends ScaleInput
     this.addListener(this.listener);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.ScaleInput#getControl()
-   */
+  @Override
   public Control getControl()
   {
     if (c != null)
@@ -104,8 +102,8 @@ public class UmsatzDaysInput extends ScaleInput
 
   /**
    * Ueberschrieben, damit wir "-1" fuer "Alle Umsaetze" liefern koennen.
-   * @see de.willuhn.jameica.gui.input.ScaleInput#getValue()
    */
+  @Override
   public Object getValue()
   {
     int i = (Integer) super.getValue();
@@ -128,6 +126,7 @@ public class UmsatzDaysInput extends ScaleInput
    */
   private class RangeListener implements Listener
   {
+    @Override
     public void handleEvent(Event event)
     {
       try

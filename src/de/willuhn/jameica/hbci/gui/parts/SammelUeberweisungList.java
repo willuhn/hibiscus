@@ -32,9 +32,7 @@ public class SammelUeberweisungList extends AbstractSammelTransferList implement
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SammelUeberweisungList());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractSammelTransferList#getObjectType()
-   */
+  @Override
   protected Class getObjectType()
   {
     return SammelUeberweisung.class;

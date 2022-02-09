@@ -30,7 +30,6 @@ public abstract class AbstractSepaSammelTransferExport<T extends SepaSammelTrans
 
   /**
    * Erwartet ein Objekt vom Typ <code>SepaSammelTransfer</code>.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {

@@ -52,6 +52,7 @@ public class DauerauftragList extends TablePart implements Part
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     setFormatter(new TableFormatter()
     {
+      @Override
       public void format(TableItem item)
       {
         try
@@ -78,6 +79,7 @@ public class DauerauftragList extends TablePart implements Part
     addColumn(i18n.tr("Nächste Zahlung"),"naechste_zahlung", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("aktiv?"),"orderid",new Formatter()
     {
+      @Override
       public String format(Object o)
       {
         if (o == null)

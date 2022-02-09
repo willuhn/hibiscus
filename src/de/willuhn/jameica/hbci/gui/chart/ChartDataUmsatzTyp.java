@@ -56,9 +56,7 @@ public class ChartDataUmsatzTyp implements ChartData
     this.days = days;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-   */
+  @Override
   public List getData() throws RemoteException
   {
     DBIterator list = Settings.getDBService().createList(UmsatzTyp.class);
@@ -73,25 +71,19 @@ public class ChartDataUmsatzTyp implements ChartData
     return result;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
-   */
+  @Override
   public String getLabel() throws RemoteException
   {
     return i18n.tr("Umsatz-Verteilung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
-   */
+  @Override
   public String getDataAttribute() throws RemoteException
   {
     return "umsatz";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabelAttribute()
-   */
+  @Override
   public String getLabelAttribute() throws RemoteException
   {
     return "name";

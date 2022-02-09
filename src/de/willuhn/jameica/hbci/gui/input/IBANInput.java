@@ -47,6 +47,7 @@ public class IBANInput extends TextInput
     
     this.addListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         String s = (String) getValue();
@@ -58,9 +59,6 @@ public class IBANInput extends TextInput
     });
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.TextInput#setValue(java.lang.Object)
-   */
   @Override
   public void setValue(Object value)
   {
@@ -104,7 +102,6 @@ public class IBANInput extends TextInput
   
   /**
    * Ueberschrieben, um sicherzustellen, dass die IBAN keine Leerzeichen enthaelt.
-   * @see de.willuhn.jameica.gui.input.TextInput#getValue()
    */
   @Override
   public Object getValue()
@@ -118,7 +115,6 @@ public class IBANInput extends TextInput
   
   /**
    * Ueberschrieben, um zusaetzlich noch die Leerzeichen zuzulassen.
-   * @see de.willuhn.jameica.gui.input.AbstractInput#setValidChars(java.lang.String)
    */
   @Override
   public void setValidChars(String chars)

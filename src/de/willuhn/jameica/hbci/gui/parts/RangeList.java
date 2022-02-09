@@ -67,9 +67,6 @@ public class RangeList extends TablePart
 
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {

@@ -32,9 +32,7 @@ public class CustomDateFormat extends SimpleDateFormat
     super(format);
   }
 
-  /**
-   * @see java.text.DateFormat#parse(java.lang.String)
-   */
+  @Override
   public Date parse(String source) throws ParseException
   {
     if (source == null || source.length() == 0)

@@ -41,18 +41,12 @@ public class ChartFeatureTooltip implements ChartFeature
   private int seriesIndex;
   protected boolean highlight;
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartFeature#onEvent(de.willuhn.jameica.hbci.gui.chart.ChartFeature.Event)
-   */
   @Override
   public boolean onEvent(Event e)
   {
     return e == Event.PAINT;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartFeature#handleEvent(de.willuhn.jameica.hbci.gui.chart.ChartFeature.Event, de.willuhn.jameica.hbci.gui.chart.ChartFeature.Context)
-   */
   @Override
   public void handleEvent(Event e, Context ctx)
   {
@@ -61,9 +55,6 @@ public class ChartFeatureTooltip implements ChartFeature
 
     control.addMouseTrackListener(new MouseTrackAdapter()
     {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
       @Override
       public void mouseHover(MouseEvent event)
       {

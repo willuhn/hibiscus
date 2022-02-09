@@ -40,8 +40,8 @@ public class SepaDauerauftragExecute implements Action
 
   /**
    * Erwartet einen SepaDauerauftrag als Context.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
 		if (! (context instanceof SepaDauerauftrag))

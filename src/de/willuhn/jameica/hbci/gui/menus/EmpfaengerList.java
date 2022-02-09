@@ -61,9 +61,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     ExtensionRegistry.extend(this);
 	}
 
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();
@@ -84,9 +82,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
       super(text,action,icon);
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       // erstmal checken, ob ueberhaupt was ausgewaehlt wurde
@@ -124,9 +120,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
    */
   private class ENeu extends EmpfaengerNew
   {
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
       super.handleAction(null);

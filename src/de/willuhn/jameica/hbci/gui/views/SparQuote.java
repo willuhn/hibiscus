@@ -22,9 +22,7 @@ import de.willuhn.util.I18N;
 public class SparQuote extends AbstractView
 {
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();

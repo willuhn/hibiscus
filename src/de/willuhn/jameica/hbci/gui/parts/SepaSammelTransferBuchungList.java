@@ -75,6 +75,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     super(list,action);
     
     addColumn(i18n.tr("Auftrag"),"this", new Formatter() {
+      @Override
       public String format(Object o)
       {
         if (o == null || !(o instanceof SepaSammelTransferBuchung))
@@ -103,6 +104,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     final boolean bold = Settings.getBoldValues();
     
     setFormatter(new TableFormatter() {
+      @Override
       public void format(TableItem item) {
         try {
           SepaSammelTransferBuchung b = (SepaSammelTransferBuchung) item.getData();
@@ -122,6 +124,7 @@ public class SepaSammelTransferBuchungList extends TablePart
     
     this.addSelectionListener(new Listener()
     {
+      @Override
       public void handleEvent(Event event)
       {
         refreshSummary();
@@ -131,8 +134,8 @@ public class SepaSammelTransferBuchungList extends TablePart
  
   /**
    * Ueberschrieben, um einen DisposeListener an das Composite zu haengen.
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     parent.addDisposeListener(new DisposeListener() {
@@ -144,9 +147,6 @@ public class SepaSammelTransferBuchungList extends TablePart
     super.paint(parent);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
-   */
   @Override
   protected String getSummary()
   {
@@ -198,17 +198,13 @@ public class SepaSammelTransferBuchungList extends TablePart
       super();
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{ImportMessage.class};
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(Message message) throws Exception
     {
       if (message == null || !(message instanceof ImportMessage))
@@ -234,9 +230,7 @@ public class SepaSammelTransferBuchungList extends TablePart
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

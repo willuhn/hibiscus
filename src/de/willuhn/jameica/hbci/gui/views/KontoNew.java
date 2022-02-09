@@ -66,9 +66,7 @@ public class KontoNew extends AbstractView
   {
     this.control = new KontoControl(this);
   }
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     final Konto k = control.getKonto();
@@ -165,6 +163,7 @@ public class KontoNew extends AbstractView
 		buttonArea.addButton(control.getDelButton());
 		buttonArea.addButton(i18n.tr("&Speichern"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
       	control.handleStore();
@@ -216,18 +215,14 @@ public class KontoNew extends AbstractView
     buttons.paint(getParent());
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#reload()
-   */
+  @Override
   public void reload() throws ApplicationException
   {
     control.handleReload();
     super.reload();
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
+  @Override
   public void unbind() throws ApplicationException
   {
     Application.getMessagingFactory().unRegisterMessageConsumer(control.getSaldoMessageConsumer());

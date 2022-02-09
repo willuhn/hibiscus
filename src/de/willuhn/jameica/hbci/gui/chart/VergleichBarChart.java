@@ -47,9 +47,6 @@ public class VergleichBarChart extends AbstractChart
   private Composite comp = null;
   private List<EinnahmeAusgabeZeitraum> data = null;
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#redraw()
-   */
   @Override
   public void redraw() throws RemoteException
   {
@@ -162,9 +159,7 @@ public class VergleichBarChart extends AbstractChart
     this.comp.layout(true);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     if (this.comp != null)

@@ -161,25 +161,21 @@ public class HBCIVersionInput extends SelectInput
    *   <li>plus</li>
    *   <li>300</li>
    * </ul>
-   * @see de.willuhn.jameica.gui.input.Input#getValue()
    */
+  @Override
   public Object getValue()
   {
     HBCIVersion o = (HBCIVersion) super.getValue();
     return o != null ? o.getId() : null;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#setPreselected(java.lang.Object)
-   */
+  @Override
   public void setPreselected(Object preselected)
   {
     super.setPreselected((preselected instanceof String) ? findById((String) preselected) : null);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#setValue(java.lang.Object)
-   */
+  @Override
   public void setValue(Object o)
   {
     super.setValue((o instanceof String) ? findById((String) o) : null);
@@ -213,9 +209,6 @@ public class HBCIVersionInput extends SelectInput
       return this.version.getId();
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {

@@ -61,9 +61,7 @@ public class SepaDauerauftragList extends ContextMenu
    */
   private class DNeu extends SepaDauerauftragNew
 	{
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
     	super.handleAction(null);

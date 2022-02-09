@@ -29,9 +29,7 @@ public class SepaLastschriftMerge implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     if (!(context instanceof SepaLastschrift) && !(context instanceof SepaLastschrift[]))

@@ -51,9 +51,7 @@ public class UmsatzTypChart implements Part
     this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     try
@@ -84,6 +82,7 @@ public class UmsatzTypChart implements Part
       {
         private ChartData myEData = null;
         private ChartData myAData = null;
+        @Override
         public void handleEvent(Event event)
         {
           try

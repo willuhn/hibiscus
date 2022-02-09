@@ -39,43 +39,33 @@ public class FirstStart extends AbstractBox
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
-   */
+  @Override
   public boolean isActive()
   {
     // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
     return Settings.isFirstStart();
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
-   */
+  @Override
   public boolean getDefaultEnabled()
   {
     // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
     return Settings.isFirstStart();
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
-   */
+  @Override
   public int getDefaultIndex()
   {
     return 0;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#getName()
-   */
+  @Override
   public String getName()
   {
     return "Hibiscus: " + i18n.tr("Bank-Zugang einrichten");
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.boxes.Box#isEnabled()
-   */
+  @Override
   public boolean isEnabled()
   {
     // Diese Box kann nur beim ersten erfolgreichen Start ausgewaehlt/angezeigt werden.
@@ -83,9 +73,7 @@ public class FirstStart extends AbstractBox
     return  mf.isInstalled() && Settings.isFirstStart();
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     // Wir unterscheiden hier beim Layout nach Windows/OSX und Rest.
@@ -142,9 +130,7 @@ public class FirstStart extends AbstractBox
     buttons.paint(comp);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.boxes.AbstractBox#getHeight()
-   */
+  @Override
   public int getHeight()
   {
     return 180;

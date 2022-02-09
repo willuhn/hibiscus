@@ -64,9 +64,6 @@ public class CamtSetupDialog extends AbstractDialog
     
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void paint(Composite parent) throws Exception
   {
@@ -165,9 +162,6 @@ public class CamtSetupDialog extends AbstractDialog
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
   @Override
   protected Object getData() throws Exception
   {

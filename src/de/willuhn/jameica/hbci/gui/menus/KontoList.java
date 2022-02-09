@@ -150,9 +150,7 @@ public class KontoList extends ContextMenu implements Extendable
       this.offline = offline;
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       try
@@ -180,18 +178,14 @@ public class KontoList extends ContextMenu implements Extendable
    */
   private class KNeu extends KontoNew
   {
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
       super.handleAction(null);
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
-   */
+  @Override
   public String getExtendableID()
   {
     return this.getClass().getName();
@@ -243,9 +237,7 @@ public class KontoList extends ContextMenu implements Extendable
       this.f1 = f1;
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
-     */
+    @Override
     public boolean isEnabledFor(Object o)
     {
       if (o == null || !(o instanceof Flaggable))

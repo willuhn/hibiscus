@@ -261,9 +261,7 @@ public class EmpfaengerControl extends AbstractControl
     
     List<String> list = (List<String>) Settings.getDBService().execute("select kategorie from empfaenger where kategorie is not null and kategorie != '' group by kategorie order by LOWER(kategorie)",null,new ResultSetExtractor()
     {
-      /**
-       * @see de.willuhn.datasource.rmi.ResultSetExtractor#extract(java.sql.ResultSet)
-       */
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         List<String> list = new ArrayList<String>();
@@ -443,9 +441,7 @@ public class EmpfaengerControl extends AbstractControl
 	 */
 	private class IbanListener implements Listener
 	{
-	  /**
-	   * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-	   */
+	  @Override
 	  public void handleEvent(Event event)
 	  {
 	    try

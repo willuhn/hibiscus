@@ -90,18 +90,14 @@ public class PINDialog extends PasswordDialog
     }
   }
 
-	/**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     super.paint(parent);
     getShell().pack();
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#checkPassword(java.lang.String)
-   */
+  @Override
   protected boolean checkPassword(String password)
 	{
     // BUGZILLA 28 http://www.willuhn.de/bugzilla/show_bug.cgi?id=28

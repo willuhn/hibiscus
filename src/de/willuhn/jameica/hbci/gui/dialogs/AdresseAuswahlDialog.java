@@ -72,9 +72,7 @@ public class AdresseAuswahlDialog extends AbstractDialog
     setSize(settings.getInt("window.width",WINDOW_WIDTH),settings.getInt("window.height",WINDOW_HEIGHT));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Action a = new Action() {
@@ -152,8 +150,8 @@ public class AdresseAuswahlDialog extends AbstractDialog
   /**
    * Liefert das ausgewaehlte Konto zurueck oder <code>null</code> wenn der
    * Abbrechen-Knopf gedrueckt wurde.
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    */
+  @Override
   protected Object getData() throws Exception
   {
     return choosen;

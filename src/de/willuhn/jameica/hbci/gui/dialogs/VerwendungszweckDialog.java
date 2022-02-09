@@ -83,17 +83,15 @@ public class VerwendungszweckDialog extends AbstractDialog
   }
 
   /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
    * Liefert ein String-Array mit den Verwendungszwecken.
    */
+  @Override
   public Object getData() throws Exception
   {
     return this.lines;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container container = new SimpleContainer(parent,true,1);
@@ -101,6 +99,7 @@ public class VerwendungszweckDialog extends AbstractDialog
 
     ButtonArea buttons = new ButtonArea();
     Button apply = new Button(i18n.tr("Übernehmen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -119,6 +118,7 @@ public class VerwendungszweckDialog extends AbstractDialog
     
     buttons.addButton(apply);
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();

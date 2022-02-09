@@ -57,9 +57,7 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   private org.eclipse.swtchart.Chart chart = null;
   private List<ChartFeature> features = new ArrayList<ChartFeature>();
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#setTitle(java.lang.String)
-   */
+  @Override
   public void setTitle(String title)
   {
     this.title = title;
@@ -67,17 +65,13 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
       this.chart.getTitle().setText(this.title);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#getTitle()
-   */
+  @Override
   public String getTitle()
   {
     return this.title;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#getChart()
-   */
+  @Override
   public org.eclipse.swtchart.Chart getChart()
   {
     return this.chart;
@@ -98,7 +92,6 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     {
       /**
        * Schaltet die Sichtbarkeit der Series bei Doppelklick um.
-       * @see org.eclipse.swt.events.MouseAdapter#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
        */
       @Override
       public void mouseDoubleClick(MouseEvent e)
@@ -141,9 +134,6 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     MenuItem item = new MenuItem(m, SWT.PUSH);
     item.setText(text);
     item.addSelectionListener(new SelectionAdapter() {
-      /**
-       * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-       */
       @Override
       public void widgetSelected(SelectionEvent e)
       {
@@ -177,27 +167,21 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#addData(de.willuhn.jameica.hbci.gui.chart.ChartData)
-   */
+  @Override
   public void addData(T data)
   {
     if (data != null)
       this.data.add(data);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#removeData(de.willuhn.jameica.hbci.gui.chart.ChartData)
-   */
+  @Override
   public void removeData(T data)
   {
     if (data != null)
       this.data.remove(data);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#removeAllData()
-   */
+  @Override
   public void removeAllData()
   {
     if (this.data != null)
@@ -268,15 +252,11 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
   }
   
 
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public void paint(Composite parent) throws RemoteException
   {
     parent.addDisposeListener(new DisposeListener() {
-      /**
-       * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
-       */
+      @Override
       public void widgetDisposed(DisposeEvent e)
       {
         try
@@ -299,18 +279,12 @@ public abstract class AbstractChart<T extends ChartData> implements Chart<T>
     this.featureEvent(Event.PAINT);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#addFeature(de.willuhn.jameica.hbci.gui.chart.ChartFeature)
-   */
   @Override
   public void addFeature(ChartFeature feature)
   {
     this.features.add(feature);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.Chart#removeFeature(de.willuhn.jameica.hbci.gui.chart.ChartFeature)
-   */
   @Override
   public void removeFeature(ChartFeature feature)
   {

@@ -113,6 +113,7 @@ public class UmsatzTypInput extends SelectInput
     // Kommentar aktualisieren
     this.addListener(new Listener() {
     
+      @Override
       public void handleEvent(Event event)
       {
         refreshComment();
@@ -121,9 +122,6 @@ public class UmsatzTypInput extends SelectInput
     });
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
-   */
   @Override
   public Object getValue()
   {
@@ -131,9 +129,6 @@ public class UmsatzTypInput extends SelectInput
     return b != null ? b.getTyp() : null;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.input.AbstractInput#setComment(java.lang.String)
-   */
   @Override
   public void setComment(String comment)
   {

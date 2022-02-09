@@ -28,8 +28,8 @@ public class SepaSammelLastBuchungNew implements Action
    * Buchung einer Lastschrift angegeben werden. Abhaengig davon wird
    * entweder eine neue Buchung erzeugt oder die existierende
    * geoeffnet.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
+  @Override
   public void handleAction(Object context) throws ApplicationException
   {
     SepaSammelLastBuchung u = null;

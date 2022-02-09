@@ -97,6 +97,7 @@ public class SepaDauerauftragList extends TablePart implements Part
     addColumn(i18n.tr("Nächste Zahlung"),"naechste_zahlung", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("aktiv?"),"orderid",new Formatter()
     {
+      @Override
       public String format(Object o)
       {
         if (o == null)
@@ -122,9 +123,7 @@ public class SepaDauerauftragList extends TablePart implements Part
     Application.getMessagingFactory().registerMessageConsumer(this.mc);
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   public synchronized void paint(Composite parent) throws RemoteException
   {
     parent.addDisposeListener(new DisposeListener() {
@@ -141,9 +140,7 @@ public class SepaDauerauftragList extends TablePart implements Part
    */
   public class TransferMessageConsumer implements MessageConsumer
   {
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-     */
+    @Override
     public Class[] getExpectedMessageTypes()
     {
       return new Class[]{
@@ -152,9 +149,7 @@ public class SepaDauerauftragList extends TablePart implements Part
       };
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-     */
+    @Override
     public void handleMessage(final Message message) throws Exception
     {
       if (message == null)
@@ -193,9 +188,7 @@ public class SepaDauerauftragList extends TablePart implements Part
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-     */
+    @Override
     public boolean autoRegister()
     {
       return false;

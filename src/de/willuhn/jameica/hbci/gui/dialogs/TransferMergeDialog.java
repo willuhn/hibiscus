@@ -78,16 +78,12 @@ public class TransferMergeDialog extends AbstractDialog
     this.setSize(550,SWT.DEFAULT);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception {
     return this.transfer;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
 
@@ -112,6 +108,7 @@ public class TransferMergeDialog extends AbstractDialog
     ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Übernehmen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -162,6 +159,7 @@ public class TransferMergeDialog extends AbstractDialog
     },null,false,"ok.png");
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
 				throw new OperationCanceledException();
@@ -195,9 +193,7 @@ public class TransferMergeDialog extends AbstractDialog
     this.useExisting.setName(i18n.tr("Einem existierenden Sammel-Auftrag zuordnen"));
     this.useExisting.addListener(new Listener()
     {
-      /**
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
+      @Override
       public void handleEvent(Event event)
       {
         try

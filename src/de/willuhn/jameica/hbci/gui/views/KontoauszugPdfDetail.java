@@ -31,9 +31,6 @@ public class KontoauszugPdfDetail extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
   @Override
   public void bind() throws Exception
   {
@@ -75,6 +72,7 @@ public class KontoauszugPdfDetail extends AbstractView
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("&Öffnen"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleOpen();
@@ -82,6 +80,7 @@ public class KontoauszugPdfDetail extends AbstractView
     },null,true,"application-pdf.png");
     buttons.addButton(i18n.tr("&Speichern"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
@@ -90,6 +89,7 @@ public class KontoauszugPdfDetail extends AbstractView
 
     buttons.addButton(i18n.tr("Speichern und &Zurück"),new Action()
     {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (control.handleStore())

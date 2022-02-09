@@ -23,9 +23,7 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
 {
   private List<Value> data = null;
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getData()
-   */
+  @Override
   public List getData() throws RemoteException
   {
     return this.data;
@@ -62,17 +60,13 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getLabel()
-   */
+  @Override
   public String getLabel() throws RemoteException
   {
     return i18n.tr("Summe");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isFilled()
-   */
+  @Override
   public boolean isFilled() throws RemoteException
   {
     return false;

@@ -38,9 +38,7 @@ public class SepaSammelLastschriftList extends AbstractSepaSammelTransferList im
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SepaSammelLastschriftList());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.gui.parts.AbstractSammelTransferList#getObjectType()
-   */
+  @Override
   protected Class getObjectType()
   {
     return SepaSammelLastschrift.class;
