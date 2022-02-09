@@ -42,18 +42,12 @@ public class HBCIAccountProvider implements AccountProvider
 
   private List<HBCIVariant> variants = null;
 
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.AccountProvider#getName()
-   */
   @Override
   public String getName()
   {
     return i18n.tr("FinTS/HBCI-Bankzugang");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.AccountProvider#getInfo()
-   */
   @Override
   public InfoPanel getInfo()
   {
@@ -118,9 +112,6 @@ public class HBCIAccountProvider implements AccountProvider
   }
 
   
-  /**
-   * @see de.willuhn.jameica.hbci.accounts.AccountProvider#create()
-   */
   @Override
   public void create() throws ApplicationException
   {

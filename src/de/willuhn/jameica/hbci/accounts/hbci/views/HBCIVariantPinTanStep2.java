@@ -31,9 +31,6 @@ public class HBCIVariantPinTanStep2 extends AbstractHBCIAccountView
 {
   @Resource private HBCIVariantPinTan variant;
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
   @Override
   public void bind() throws Exception
   {
