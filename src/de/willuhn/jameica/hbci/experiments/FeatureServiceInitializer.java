@@ -21,18 +21,12 @@ import de.willuhn.jameica.system.Application;
  */
 public class FeatureServiceInitializer implements MessageConsumer
 {
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
   @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{SystemMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
   @Override
   public void handleMessage(Message message) throws Exception
   {
@@ -45,9 +39,6 @@ public class FeatureServiceInitializer implements MessageConsumer
     bs.get(FeatureService.class);
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
   @Override
   public boolean autoRegister()
   {
