@@ -32,36 +32,24 @@ public abstract class AbstractHBCI4JavaFeature implements Feature
     this.feature = f;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.experiments.Feature#getName()
-   */
   @Override
   public String getName()
   {
     return this.feature.name();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.experiments.Feature#getDescription()
-   */
   @Override
   public String getDescription()
   {
     return "";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.experiments.Feature#getDefault()
-   */
   @Override
   public boolean getDefault()
   {
     return this.feature.getDefault();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.experiments.Feature#setEnabled(boolean)
-   */
   @Override
   public void setEnabled(boolean enabled)
   {
