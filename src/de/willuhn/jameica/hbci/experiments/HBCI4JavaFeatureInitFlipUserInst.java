@@ -17,7 +17,6 @@ import org.kapott.hbci.manager.Feature;
  */
 public class HBCI4JavaFeatureInitFlipUserInst extends AbstractHBCI4JavaFeature
 {
-
   /**
    * ct.
    */
@@ -27,13 +26,22 @@ public class HBCI4JavaFeatureInitFlipUserInst extends AbstractHBCI4JavaFeature
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDefault()
+   */
+  @Override
+  public boolean getDefault()
+  {
+    return true;
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDescription()
    */
   @Override
   public String getDescription()
   {
     return i18n.tr("Kehrt die Reihenfolge des Abrufs von BPD und UPD in der Dialoginitialisierung um.\n" + 
-                   "Die Aktivierung des Features kann beim Anlegen eines Postbank-Zugangs helfen, die korrekte Liste der verfügbaren TAN-Verfahren zu ermitteln.");
+                   "Die Aktivierung des Features kann beim Abrufen der für den User tatsächlich verfügbaren TAN-Verfahren helfen.");
   }
 
 }
