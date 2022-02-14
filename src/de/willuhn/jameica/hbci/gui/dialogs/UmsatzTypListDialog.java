@@ -28,10 +28,12 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
@@ -69,6 +71,7 @@ public class UmsatzTypListDialog extends AbstractDialog
   private int typ                  = UmsatzTyp.TYP_EGAL;
   
   private TextInput search         = null;
+  private CheckboxInput children   = null;
   private TablePart table          = null;
   private Button apply             = null;
   
@@ -112,6 +115,7 @@ public class UmsatzTypListDialog extends AbstractDialog
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
     TextInput text = this.getSearch();
     group.addInput(text);
+    group.addInput(this.getChildren());
     group.addPart(this.getTable());
 
     ////////////////
@@ -154,12 +158,31 @@ public class UmsatzTypListDialog extends AbstractDialog
         if (shell == null || shell.isDisposed())
           return;
         
-        Point size = shell.getSize();
+        final Point size = shell.getSize();
         Logger.debug("saving window size: " + size.x + "x" + size.y);
         settings.setAttribute("window.width",size.x);
         settings.setAttribute("window.height",size.y);
       }
     });
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der festgelegt werden kann, ob bei einer Suche die Unterkategorien mit angezeigt werden sollen.
+   * Auch denn, wenn sie den Suchbegriff nicht enthalten.
+   * @return die Checkbox.
+   */
+  private CheckboxInput getChildren()
+  {
+    if (this.children != null)
+      return this.children;
+    
+    this.children = new CheckboxInput(settings.getBoolean("search.children",true));
+    this.children.setName(i18n.tr("Unterkategorien von Treffern anzeigen"));
+    this.children.addListener(e -> {
+      settings.setAttribute("search.children",((Boolean) this.children.getValue()).booleanValue());
+      update();
+    });
+    return this.children;
   }
   
   /**
@@ -270,12 +293,7 @@ public class UmsatzTypListDialog extends AbstractDialog
       }
     });
     
-    this.table.addSelectionListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        getApplyButton().setEnabled(event.data != null);
-      }
-    });
+    this.table.addSelectionListener(e -> getApplyButton().setEnabled(e.data != null));
     this.getApplyButton().setEnabled(this.choosen != null);
     return this.table;
   }
@@ -295,6 +313,39 @@ public class UmsatzTypListDialog extends AbstractDialog
   }
   
   /**
+   * Aktualisiert die Anzeige.
+   */
+  private void update()
+  {
+    TablePart table = getTable();
+    table.removeAll();
+    
+    final boolean children = ((Boolean) getChildren().getValue()).booleanValue();
+    String text = (String) getSearch().getValue();
+    text = text.trim().toLowerCase();
+    try
+    {
+      for (UmsatzTypBean t:list)
+      {
+        if (text.length() == 0)
+        {
+          table.addItem(t);
+          continue;
+        }
+        
+        if (!t.getTyp().getName().toLowerCase().contains(text))
+          continue;
+
+        addItems(t,children);
+      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("error while adding items to table",re);
+    }
+  }
+  
+  /**
    * Da KeyAdapter/KeyListener nicht von swt.Listener abgeleitet
    * sind, muessen wir leider dieses schraege Konstrukt verenden,
    * um den DelayedListener verwenden zu koennen
@@ -308,31 +359,8 @@ public class UmsatzTypListDialog extends AbstractDialog
        */
       public void handleEvent(Event event)
       {
-        TablePart table = getTable();
-        table.removeAll();
-        
-        String text = (String) getSearch().getValue();
-        text = text.trim().toLowerCase();
-        try
-        {
-          for (UmsatzTypBean t:list)
-          {
-            if (text.length() == 0)
-            {
-              table.addItem(t);
-              continue;
-            }
-            
-            if (t.getTyp().getName().toLowerCase().contains(text))
-              table.addItem(t);
-          }
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("error while adding items to table",re);
-        }
+        update();
       }
-    
     });
 
     /**
@@ -341,6 +369,26 @@ public class UmsatzTypListDialog extends AbstractDialog
     public void keyReleased(KeyEvent e)
     {
       forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
+    }
+  }
+  
+  /**
+   * Fuegt das Element zur Liste hinzu und eventuell die Kinder.
+   * @param b das Element.
+   * @param recursive true, wenn auch die Kinder hinzugefuegt werden sollen.
+   * @throws RemoteException
+   */
+  private void addItems(UmsatzTypBean b, boolean recursive) throws RemoteException
+  {
+    final TablePart table = this.getTable();
+    table.addItem(b);
+    if (!recursive)
+      return;
+    
+    final GenericIterator<UmsatzTypBean> children = b.getChildren();
+    while (children.hasNext())
+    {
+      addItems(children.next(),recursive);
     }
   }
   
