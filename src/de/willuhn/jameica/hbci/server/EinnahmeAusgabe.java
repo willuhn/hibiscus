@@ -112,9 +112,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     return this.konto;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getText()
-   */
+  @Override
   public String getText()
   {
     return this.isSumme ? i18n.tr("Summe") : this.text;
@@ -138,9 +136,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     this.anfangssaldo = anfangssaldo;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getEinnahmen()
-   */
+  @Override
   public double getEinnahmen()
   {
     return this.einnahmen;
@@ -155,9 +151,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     this.einnahmen = einnahmen;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getAusgaben()
-   */
+  @Override
   public double getAusgaben()
   {
     return this.ausgaben;
@@ -190,9 +184,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     this.endsaldo = endsaldo;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getStartdatum()
-   */
+  @Override
   public Date getStartdatum()
   {
     return this.startdatum;
@@ -207,9 +199,7 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     this.startdatum = startdatum;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum#getEnddatum()
-   */
+  @Override
   public Date getEnddatum()
   {
     return this.enddatum;
@@ -273,18 +263,12 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     this.isSumme = b;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-   */
   @Override
   public boolean equals(GenericObject arg0) throws RemoteException
   {
     return arg0 == this;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
   @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
@@ -306,9 +290,6 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-   */
   @Override
   public String[] getAttributeNames() throws RemoteException
   {
@@ -324,27 +305,18 @@ public class EinnahmeAusgabe implements EinnahmeAusgabeZeitraum
 
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
   @Override
   public String getID() throws RemoteException
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
   @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "text";
   }
   
-  /**
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString()
   {

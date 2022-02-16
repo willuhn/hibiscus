@@ -255,9 +255,6 @@ public class UmsatzTypUtil
    */
   public static class UmsatzTypUnassigned implements UmsatzTyp
   {
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#getAttribute(java.lang.String)
-     */
     @Override
     public Object getAttribute(String attribute) throws RemoteException
     {
@@ -267,111 +264,72 @@ public class UmsatzTypUtil
       return null;
     }
     
-    /**
-     * @see de.willuhn.datasource.rmi.DBObjectNode#getTopLevelList()
-     */
     @Override
     public GenericIterator getTopLevelList() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObjectNode#setParent(de.willuhn.datasource.rmi.DBObjectNode)
-     */
     @Override
     public void setParent(DBObjectNode arg0) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#addDeleteListener(de.willuhn.datasource.rmi.Listener)
-     */
     @Override
     public void addDeleteListener(Listener arg0) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#addStoreListener(de.willuhn.datasource.rmi.Listener)
-     */
     @Override
     public void addStoreListener(Listener arg0) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#equals(de.willuhn.datasource.GenericObject)
-     */
     @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#getAttributeType(java.lang.String)
-     */
     @Override
     public String getAttributeType(String arg0) throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#getList()
-     */
     @Override
     public DBIterator getList() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#getPrimaryAttribute()
-     */
     @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "name";
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#load(java.lang.String)
-     */
     @Override
     public void load(String arg0) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#removeDeleteListener(de.willuhn.datasource.rmi.Listener)
-     */
     @Override
     public void removeDeleteListener(Listener arg0) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.DBObject#removeStoreListener(de.willuhn.datasource.rmi.Listener)
-     */
     @Override
     public void removeStoreListener(Listener arg0) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
     @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[]{"name","indented","kommentar"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
     @Override
     public String getID() throws RemoteException
     {
@@ -380,179 +338,116 @@ public class UmsatzTypUtil
       return "-1";
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Transactionable#transactionBegin()
-     */
     @Override
     public void transactionBegin() throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Transactionable#transactionCommit()
-     */
     @Override
     public void transactionCommit() throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Transactionable#transactionRollback()
-     */
     @Override
     public void transactionRollback() throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Changeable#clear()
-     */
     @Override
     public void clear() throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Changeable#delete()
-     */
     @Override
     public void delete() throws RemoteException, ApplicationException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Changeable#isNewObject()
-     */
     @Override
     public boolean isNewObject() throws RemoteException
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Changeable#overwrite(de.willuhn.datasource.rmi.DBObject)
-     */
     @Override
     public void overwrite(DBObject arg0) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.rmi.Changeable#store()
-     */
     @Override
     public void store() throws RemoteException, ApplicationException
     {
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getChildren()
-     */
     @Override
     public GenericIterator getChildren() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getParent()
-     */
     @Override
     public GenericObjectNode getParent() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getPath()
-     */
     @Override
     public GenericIterator getPath() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
-     */
     @Override
     public GenericIterator getPossibleParents() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
-     */
     @Override
     public boolean hasChild(GenericObjectNode arg0) throws RemoteException
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getName()
-     */
     @Override
     public String getName() throws RemoteException
     {
       return "<" + i18n.tr("Nicht zugeordnet") + ">";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setName(java.lang.String)
-     */
     @Override
     public void setName(String name) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getNummer()
-     */
     @Override
     public String getNummer() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setNummer(java.lang.String)
-     */
     @Override
     public void setNummer(String nummer) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getPattern()
-     */
     @Override
     public String getPattern() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setPattern(java.lang.String)
-     */
     @Override
     public void setPattern(String pattern) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze()
-     */
     @Override
     public GenericIterator getUmsaetze() throws RemoteException
     {
       return getUmsaetze(-1);
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze(java.util.Date, java.util.Date)
-     */
     @Override
     public GenericIterator getUmsaetze(Date von, Date bis) throws RemoteException
     {
@@ -577,9 +472,6 @@ public class UmsatzTypUtil
       return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[0]));
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze(int)
-     */
     @Override
     public GenericIterator getUmsaetze(int days) throws RemoteException
     {
@@ -592,18 +484,12 @@ public class UmsatzTypUtil
       return getUmsaetze(start, null);
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz()
-     */
     @Override
     public double getUmsatz() throws RemoteException
     {
       return getUmsatz(-1);
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(java.util.Date, java.util.Date)
-     */
     @Override
     public double getUmsatz(Date von, Date bis) throws RemoteException
     {
@@ -619,9 +505,6 @@ public class UmsatzTypUtil
       return sum;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(int)
-     */
     @Override
     public double getUmsatz(int days) throws RemoteException
     {
@@ -637,43 +520,28 @@ public class UmsatzTypUtil
       return sum;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isRegex()
-     */
     @Override
     public boolean isRegex() throws RemoteException
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getTyp()
-     */
     @Override
     public int getTyp() throws RemoteException
     {
       return UmsatzTyp.TYP_EGAL;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setTyp(int)
-     */
     @Override
     public void setTyp(int typ) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setRegex(boolean)
-     */
     @Override
     public void setRegex(boolean regex) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#matches(de.willuhn.jameica.hbci.rmi.Umsatz, boolean)
-     */
     @Override
     public boolean matches(Umsatz umsatz, boolean allowReassign) throws RemoteException, PatternSyntaxException
     {
@@ -689,43 +557,28 @@ public class UmsatzTypUtil
       return umsatz.getUmsatzTyp() == null;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#matches(de.willuhn.jameica.hbci.rmi.Umsatz)
-     */
     public boolean matches(de.willuhn.jameica.hbci.rmi.Umsatz umsatz) throws RemoteException
     {
       return matches(umsatz,false);
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getColor()
-     */
     @Override
     public int[] getColor() throws RemoteException
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setColor(int[])
-     */
     @Override
     public void setColor(int[] rgb) throws RemoteException
     {
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isCustomColor()
-     */
     @Override
     public boolean isCustomColor() throws RemoteException
     {
       return false;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setCustomColor(boolean)
-     */
     @Override
     public void setCustomColor(boolean b) throws RemoteException
     {

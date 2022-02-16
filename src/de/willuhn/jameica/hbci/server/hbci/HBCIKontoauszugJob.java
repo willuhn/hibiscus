@@ -100,18 +100,13 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
 		}
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
     return this.konto;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier()
   {
     // Ist abhaengig davon, welche Job-Variante fuer das Konto unterstuetzt werden:
@@ -123,17 +118,13 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
     return GVKontoauszug.getLowlevelName();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("Elektronische Kontoauszüge {0}",konto.getLongName());
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     GVRKontoauszug result = (GVRKontoauszug) getJobResult();
@@ -194,18 +185,13 @@ public class HBCIKontoauszugJob extends AbstractHBCIJob
 
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getFollowerJobs()
-   */
   @Override
   public List<AbstractHBCIJob> getFollowerJobs() throws RemoteException, ApplicationException
   {
     return this.followers;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Abrufen der elektronischen Kontoauszüge: {0}",error);

@@ -70,6 +70,7 @@ public class UmsatzTypBean implements GenericObjectNode
    * Liefert das Eltern-Element oder NULL, wenn es ein Root-Element ist.
    * @return das Eltern-Element oder NULL, wenn es ein Root-Element ist.
    */
+  @Override
   public UmsatzTypBean getParent()
   {
     return parent;
@@ -134,9 +135,6 @@ public class UmsatzTypBean implements GenericObjectNode
     return this.parent.getPathName() + "/" + this.typ.getName();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-   */
   @Override
   public boolean equals(GenericObject arg0) throws RemoteException
   {
@@ -147,9 +145,6 @@ public class UmsatzTypBean implements GenericObjectNode
     return this.typ.equals(other.typ);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
   @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
@@ -159,45 +154,30 @@ public class UmsatzTypBean implements GenericObjectNode
     return this.typ.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-   */
   @Override
   public String[] getAttributeNames() throws RemoteException
   {
     return this.typ.getAttributeNames();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
   @Override
   public String getID() throws RemoteException
   {
     return this.typ.getID();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
   @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return this.typ.getPrimaryAttribute();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
-   */
   @Override
   public GenericIterator getChildren() throws RemoteException
   {
     return PseudoIterator.fromArray(this.children.toArray(new UmsatzTypBean[0]));
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPath()
-   */
   @Override
   public GenericIterator getPath() throws RemoteException
   {
@@ -217,18 +197,12 @@ public class UmsatzTypBean implements GenericObjectNode
     return PseudoIterator.fromArray(result.toArray(new UmsatzTypBean[0]));
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
-   */
   @Override
   public GenericIterator getPossibleParents() throws RemoteException
   {
     throw new UnsupportedOperationException("not implemented");
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
-   */
   @Override
   public boolean hasChild(GenericObjectNode node) throws RemoteException
   {

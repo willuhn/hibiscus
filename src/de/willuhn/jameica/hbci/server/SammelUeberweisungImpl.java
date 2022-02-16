@@ -33,17 +33,13 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sueberweisung";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getBuchungen()
-   */
+  @Override
   public DBIterator getBuchungen() throws RemoteException
   {
     DBIterator list = this.getService().createList(SammelUeberweisungBuchung.class);
@@ -52,9 +48,7 @@ public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#createBuchung()
-   */
+  @Override
   public SammelTransferBuchung createBuchung() throws RemoteException, ApplicationException
   {
     SammelUeberweisungBuchung b = (SammelUeberweisungBuchung) this.getService().createObject(SammelUeberweisungBuchung.class,null);

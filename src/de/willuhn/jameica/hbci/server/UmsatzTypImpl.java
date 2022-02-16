@@ -60,17 +60,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "umsatztyp";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try
@@ -114,25 +110,19 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     super.insertCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze()
-   */
+  @Override
   public GenericIterator getUmsaetze() throws RemoteException
   {
     return getUmsaetze(-1);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze(int)
-   */
+  @Override
   public GenericIterator getUmsaetze(int days) throws RemoteException
   {
     Date start = null;
@@ -144,9 +134,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return getUmsaetze(start, null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsaetze(Date, Date)
-   */
+  @Override
   public GenericIterator getUmsaetze(Date von, Date bis) throws RemoteException
   {
     DBIterator list = UmsatzUtil.getUmsaetze();
@@ -173,73 +161,55 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[0]));
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "name";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return (String) getAttribute("name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setName(java.lang.String)
-   */
+  @Override
   public void setName(String name) throws RemoteException
   {
     this.setAttribute("name", name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getNummer()
-   */
+  @Override
   public String getNummer() throws RemoteException
   {
     return (String) getAttribute("nummer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setNummer(java.lang.String)
-   */
+  @Override
   public void setNummer(String nummer) throws RemoteException
   {
     this.setAttribute("nummer", nummer);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getPattern()
-   */
+  @Override
   public String getPattern() throws RemoteException
   {
     return (String) getAttribute("pattern");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setPattern(java.lang.String)
-   */
+  @Override
   public void setPattern(String pattern) throws RemoteException
   {
     setAttribute("pattern", pattern);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#matches(de.willuhn.jameica.hbci.rmi.Umsatz)
-   */
+  @Override
   public boolean matches(Umsatz umsatz) throws RemoteException
   {
     return matches(umsatz,false);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#matches(de.willuhn.jameica.hbci.rmi.Umsatz, boolean)
-   */
+  @Override
   public boolean matches(Umsatz umsatz, boolean allowReassign) throws RemoteException
   {
     // Wenn der Umsatz fest zugeordnet ist, duerfen wir nicht nach Begriffen suchen
@@ -391,18 +361,14 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isRegex()
-   */
+  @Override
   public boolean isRegex() throws RemoteException
   {
     Integer i = (Integer) getAttribute("isregex");
     return i != null && i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setRegex(boolean)
-   */
+  @Override
   public void setRegex(boolean regex) throws RemoteException
   {
     setAttribute("isregex", Integer.valueOf(regex ? 1 : 0));
@@ -421,17 +387,13 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return (String) getAttribute("kommentar");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz()
-   */
+  @Override
   public double getUmsatz() throws RemoteException
   {
     return getUmsatz(-1);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(Date, Date)
-   */
+  @Override
   public double getUmsatz(Date von, Date bis) throws RemoteException
   {
     // Das kann man mal ueber einen SQL-Join schneller machen
@@ -455,9 +417,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return sum;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getUmsatz(int)
-   */
+  @Override
   public double getUmsatz(int days) throws RemoteException
   {
     // Das kann man mal ueber einen SQL-Join schneller machen
@@ -481,9 +441,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return sum;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("konto_id".equals(arg0))
@@ -513,9 +471,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return super.getAttribute(arg0);
   }
   
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#overwrite(de.willuhn.datasource.rmi.DBObject)
-   */
+  @Override
   public void overwrite(DBObject object) throws RemoteException
   {
     // Muessen wir ueberschreiben, weil wir fuer das Konto hier eine
@@ -531,9 +487,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     this.setKonto(((AbstractHibiscusTransferImpl)object).getKonto());
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     if (this.isNewObject())
@@ -578,9 +532,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
 
   /**
    * Ueberschrieben, um den Umsatztyp-Cache zu aktualisieren.
-   * 
-   * @see de.willuhn.datasource.db.AbstractDBObject#store()
    */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
@@ -588,9 +541,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     Cache.clear(UmsatzTyp.class); // Cache loeschen
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getColor()
-   */
+  @Override
   public int[] getColor() throws RemoteException
   {
     String color = (String) this.getAttribute("color");
@@ -617,9 +568,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setColor(int[])
-   */
+  @Override
   public void setColor(int[] rgb) throws RemoteException
   {
     if (rgb == null || rgb.length != 3)
@@ -638,26 +587,20 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     this.setAttribute("color",rgb[0] + "," + rgb[1] + "," + rgb[2]);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getTyp()
-   */
+  @Override
   public int getTyp() throws RemoteException
   {
     Integer i = (Integer) getAttribute("umsatztyp");
     return i == null ? UmsatzTyp.TYP_EGAL : i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setTyp(int)
-   */
+  @Override
   public void setTyp(int typ) throws RemoteException
   {
     setAttribute("umsatztyp", Integer.valueOf(typ));
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObjectNode#getPossibleParents()
-   */
+  @Override
   public GenericIterator getPossibleParents() throws RemoteException
   {
     DBIterator list = (DBIterator) super.getPossibleParents();
@@ -665,9 +608,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return list;
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObjectNode#getTopLevelList()
-   */
+  @Override
   public GenericIterator getTopLevelList() throws RemoteException
   {
     DBIterator list = (DBIterator) super.getTopLevelList();
@@ -675,26 +616,20 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#isCustomColor()
-   */
+  @Override
   public boolean isCustomColor() throws RemoteException
   {
     Integer i = (Integer) getAttribute("customcolor");
     return i != null && i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setCustomColor(boolean)
-   */
+  @Override
   public void setCustomColor(boolean b) throws RemoteException
   {
     setAttribute("customcolor", Integer.valueOf(b ? 1 : 0));
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObjectNode#getChildren()
-   */
+  @Override
   public GenericIterator getChildren() throws RemoteException
   {
     GenericIterator i = super.getChildren();
@@ -706,9 +641,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return di;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
   @Override
   public Object duplicate() throws RemoteException
   {
@@ -728,9 +660,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return t;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getKonto()
-   */
   @Override
   public Konto getKonto() throws RemoteException
   {
@@ -742,9 +671,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return (Konto) cache.get(i);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
-   */
   @Override
   public void setKonto(Konto konto) throws RemoteException
   {
@@ -756,18 +682,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       this.setKontoKategorie(null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getKontoKategorie()
-   */
   @Override
   public String getKontoKategorie() throws RemoteException
   {
     return (String) this.getAttribute("konto_kategorie");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#setKontoKategorie(java.lang.String)
-   */
   @Override
   public void setKontoKategorie(String kategorie) throws RemoteException
   {
@@ -778,18 +698,12 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       this.setAttribute("konto_id",null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#hasFlag(int)
-   */
   @Override
   public boolean hasFlag(int flag) throws RemoteException
   {
     return (this.getFlags() & flag) == flag;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
-   */
   @Override
   public int getFlags() throws RemoteException
   {
@@ -797,9 +711,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     return i == null ? Konto.FLAG_NONE : i.intValue();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
-   */
   @Override
   public void setFlags(int flags) throws RemoteException
   {

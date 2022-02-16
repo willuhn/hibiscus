@@ -29,17 +29,13 @@ public class SammelLastBuchungImpl extends AbstractSammelTransferBuchungImpl imp
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "slastbuchung";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
+  @Override
   protected Class getForeignObject(String arg0) throws RemoteException
   {
     if ("slastschrift_id".equals(arg0))
@@ -48,17 +44,13 @@ public class SammelLastBuchungImpl extends AbstractSammelTransferBuchungImpl imp
     return super.getForeignObject(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getSammelTransfer()
-   */
+  @Override
   public SammelTransfer getSammelTransfer() throws RemoteException
   {
     return (SammelLastschrift) getAttribute("slastschrift_id");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setSammelTransfer(de.willuhn.jameica.hbci.rmi.SammelTransfer)
-   */
+  @Override
   public void setSammelTransfer(SammelTransfer s) throws RemoteException
   {
     setAttribute("slastschrift_id",s);

@@ -36,25 +36,19 @@ public class NachrichtImpl extends AbstractHibiscusDBObject implements Nachricht
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "systemnachricht";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "nachricht";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try
@@ -71,33 +65,25 @@ public class NachrichtImpl extends AbstractHibiscusDBObject implements Nachricht
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     this.insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#getBLZ()
-   */
+  @Override
   public String getBLZ() throws RemoteException
   {
     return (String) getAttribute("blz");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#getDatum()
-   */
+  @Override
   public Date getDatum() throws RemoteException
   {
     return (Date) getAttribute("datum");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#isGelesen()
-   */
+  @Override
   public boolean isGelesen() throws RemoteException
   {
     Integer i = (Integer) getAttribute("gelesen");
@@ -106,49 +92,37 @@ public class NachrichtImpl extends AbstractHibiscusDBObject implements Nachricht
     return i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#getNachricht()
-   */
+  @Override
   public String getNachricht() throws RemoteException
   {
     return (String) getAttribute("nachricht");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#setBLZ(java.lang.String)
-   */
+  @Override
   public void setBLZ(String blz) throws RemoteException
   {
     this.setAttribute("blz",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#setDatum(java.util.Date)
-   */
+  @Override
   public void setDatum(Date datum) throws RemoteException
   {
     this.setAttribute("datum",datum);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#setGelesen(boolean)
-   */
+  @Override
   public void setGelesen(boolean b) throws RemoteException
   {
     this.setAttribute("gelesen", Integer.valueOf(b ? 1 : 0));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Nachricht#setNachricht(java.lang.String)
-   */
+  @Override
   public void setNachricht(String nachricht) throws RemoteException
   {
     this.setAttribute("nachricht",nachricht);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.Changeable#store()
-   */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     if (getDatum() == null)

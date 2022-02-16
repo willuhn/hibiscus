@@ -38,17 +38,13 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "zweck";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try {
@@ -103,33 +99,25 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
-   */
+  @Override
   public String getGegenkontoNummer() throws RemoteException
   {
     return (String) getAttribute("gegenkonto_nr");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
-   */
+  @Override
   public String getGegenkontoBLZ() throws RemoteException
   {
     return (String) getAttribute("gegenkonto_blz");
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("this".equals(arg0))
@@ -137,41 +125,31 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
     return super.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
-   */
+  @Override
   public String getGegenkontoName() throws RemoteException
   {
     return (String) getAttribute("gegenkonto_name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setGegenkontoNummer(java.lang.String)
-   */
+  @Override
   public void setGegenkontoNummer(String kontonummer) throws RemoteException
   {
     setAttribute("gegenkonto_nr",kontonummer);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setGegenkontoBLZ(java.lang.String)
-   */
+  @Override
   public void setGegenkontoBLZ(String blz) throws RemoteException
   {
     setAttribute("gegenkonto_blz",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setGegenkontoName(java.lang.String)
-   */
+  @Override
   public void setGegenkontoName(String name) throws RemoteException
   {
     setAttribute("gegenkonto_name",name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
-   */
+  @Override
   public double getBetrag() throws RemoteException
   {
     Double d = (Double) getAttribute("betrag");
@@ -180,49 +158,37 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
     return d.doubleValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
-   */
+  @Override
   public String getZweck() throws RemoteException
   {
     return (String) getAttribute("zweck");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
-   */
+  @Override
   public String getZweck2() throws RemoteException
   {
     return (String) getAttribute("zweck2");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setBetrag(double)
-   */
+  @Override
   public void setBetrag(double betrag) throws RemoteException
   {
     setAttribute("betrag", Double.valueOf(betrag));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setZweck(java.lang.String)
-   */
+  @Override
   public void setZweck(String zweck) throws RemoteException
   {
     setAttribute("zweck",zweck);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setZweck2(java.lang.String)
-   */
+  @Override
   public void setZweck2(String zweck2) throws RemoteException
   {
     setAttribute("zweck2",zweck2);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
+  @Override
   public Duplicatable duplicate() throws RemoteException
   {
     SammelTransferBuchung b = (SammelTransferBuchung) getService().createObject(this.getClass(),null);
@@ -238,49 +204,37 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
     return (Duplicatable) b;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getTextSchluessel()
-   */
+  @Override
   public String getTextSchluessel() throws RemoteException
   {
     return (String) getAttribute("typ");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setTextSchluessel(java.lang.String)
-   */
+  @Override
   public void setTextSchluessel(String schluessel) throws RemoteException
   {
     setAttribute("typ",schluessel);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
-   */
+  @Override
   public String[] getWeitereVerwendungszwecke() throws RemoteException
   {
     return VerwendungszweckUtil.split((String)this.getAttribute("zweck3"));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setWeitereVerwendungszwecke(java.lang.String[])
-   */
+  @Override
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
     setAttribute("zweck3",VerwendungszweckUtil.merge(list));
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#getWarnung()
-   */
+  @Override
   public String getWarnung() throws RemoteException
   {
     return (String) getAttribute("warnung");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setWarnung(java.lang.String)
-   */
+  @Override
   public void setWarnung(String warnung) throws RemoteException
   {
     setAttribute("warnung",warnung);

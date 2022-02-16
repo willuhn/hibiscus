@@ -209,9 +209,7 @@ public abstract class Range
    */
   public static class ThisWeek extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -219,9 +217,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -229,9 +225,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Woche: Diese");
@@ -243,27 +237,18 @@ public abstract class Range
    **/
   public static class All extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
     @Override
     public Date getStart()
     {
       return null;
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
     @Override
     public Date getEnd()
     {
       return null;
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {
@@ -276,9 +261,6 @@ public abstract class Range
    */
   public static class LastSevenDays extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
     @Override
     public Date getStart()
     {
@@ -288,9 +270,6 @@ public abstract class Range
       return DateUtil.startOfDay(d);
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
     @Override
     public Date getEnd()
     {
@@ -299,9 +278,6 @@ public abstract class Range
       return DateUtil.endOfDay(d);
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {
@@ -314,9 +290,6 @@ public abstract class Range
    */
   public static class LastThirtyDays extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
     @Override
     public Date getStart()
     {
@@ -326,9 +299,6 @@ public abstract class Range
       return DateUtil.startOfDay(d);
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
     @Override
     public Date getEnd()
     {
@@ -337,9 +307,6 @@ public abstract class Range
       return DateUtil.endOfDay(d);
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {
@@ -361,9 +328,6 @@ public abstract class Range
       this.text = text;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
     @Override
     public Date getStart()
     {
@@ -374,9 +338,6 @@ public abstract class Range
       return DateUtil.startOfDay(d);
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
     @Override
     public Date getEnd()
     {
@@ -385,9 +346,6 @@ public abstract class Range
       return DateUtil.endOfDay(d);
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {
@@ -440,9 +398,7 @@ public abstract class Range
    */
   public static class LastWeek extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -451,9 +407,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -462,9 +416,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Woche: Letzte");
@@ -476,9 +428,7 @@ public abstract class Range
    */
   public static class SecondLastWeek extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -487,9 +437,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -498,9 +446,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Woche: Vorletzte");
@@ -512,9 +458,7 @@ public abstract class Range
    */
   public static class ThisMonth extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -522,9 +466,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -532,9 +474,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Monat: Dieser");
@@ -546,9 +486,7 @@ public abstract class Range
    */
   public static class LastMonth extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -557,9 +495,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -568,9 +504,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Monat: Letzter");
@@ -582,9 +516,7 @@ public abstract class Range
    */
   public static class SecondLastMonth extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -593,9 +525,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -604,9 +534,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Monat: Vorletzter");
@@ -618,9 +546,7 @@ public abstract class Range
    */
   public static class Last12Months extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -629,9 +555,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -639,9 +563,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Monat: Letzte 12");
@@ -655,9 +577,7 @@ public abstract class Range
   {
     private final static int[] quarters = {0, 0, 0, 3, 3, 3, 6, 6, 6, 9, 9, 9};
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -666,9 +586,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -678,9 +596,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Quartal: Dieses");
@@ -692,9 +608,7 @@ public abstract class Range
    */
   public static class LastQuarter extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -703,9 +617,7 @@ public abstract class Range
       return cal.getTime();
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -715,9 +627,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Quartal: Letztes");
@@ -729,9 +639,7 @@ public abstract class Range
    */
   public static class SecondLastQuarter extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -740,9 +648,7 @@ public abstract class Range
       return cal.getTime();
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -752,9 +658,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Quartal: Vorletztes");
@@ -766,9 +670,7 @@ public abstract class Range
    */
   public static class ThisYear extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -777,9 +679,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -788,9 +688,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Jahr: Dieses");
@@ -802,9 +700,7 @@ public abstract class Range
    */
   public static class LastYear extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -814,9 +710,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -826,9 +720,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Jahr: Letztes");
@@ -840,9 +732,7 @@ public abstract class Range
    */
   public static class SecondLastYear extends Range
   {
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getStart()
-     */
+    @Override
     public Date getStart()
     {
       Calendar cal = this.createCalendar();
@@ -852,9 +742,7 @@ public abstract class Range
       return DateUtil.startOfDay(cal.getTime());
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
-     */
+    @Override
     public Date getEnd()
     {
       Calendar cal = this.createCalendar();
@@ -864,9 +752,7 @@ public abstract class Range
       return DateUtil.endOfDay(cal.getTime());
     }
     
-    /**
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
       return i18n.tr("Jahr: Vorletztes");

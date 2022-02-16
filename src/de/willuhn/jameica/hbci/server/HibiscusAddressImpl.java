@@ -34,23 +34,17 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName() {
     return "empfaenger";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException {
     return "name";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException {
 		try
 		{
@@ -122,131 +116,97 @@ public class HibiscusAddressImpl extends AbstractHibiscusDBObject implements Hib
 		}
   }
   
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException {
 		insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Address#getKontonummer()
-   */
+  @Override
   public String getKontonummer() throws RemoteException {
     return (String) getAttribute("kontonummer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Address#getBlz()
-   */
+  @Override
   public String getBlz() throws RemoteException
   {
     return (String) getAttribute("blz");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Address#getName()
-   */
+  @Override
   public String getName() throws RemoteException {
 		return (String) getAttribute("name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setKontonummer(java.lang.String)
-   */
+  @Override
   public void setKontonummer(String kontonummer) throws RemoteException {
   	setAttribute("kontonummer",kontonummer);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBlz(java.lang.String)
-   */
+  @Override
   public void setBlz(String blz) throws RemoteException {
     setAttribute("blz",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setName(java.lang.String)
-   */
+  @Override
   public void setName(String name) throws RemoteException {
   	setAttribute("name",name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Address#getKommentar()
-   */
+  @Override
   public String getKommentar() throws RemoteException
   {
     return (String) getAttribute("kommentar");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setKommentar(java.lang.String)
-   */
+  @Override
   public void setKommentar(String kommentar) throws RemoteException
   {
     setAttribute("kommentar",kommentar);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getBank()
-   */
+  @Override
   public String getBank() throws RemoteException
   {
     return (String) getAttribute("bank");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBank(java.lang.String)
-   */
+  @Override
   public void setBank(String name) throws RemoteException
   {
     setAttribute("bank",name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getBic()
-   */
+  @Override
   public String getBic() throws RemoteException
   {
     return (String) getAttribute("bic");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setBic(java.lang.String)
-   */
+  @Override
   public void setBic(String bic) throws RemoteException
   {
     setAttribute("bic",bic);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#getIban()
-   */
+  @Override
   public String getIban() throws RemoteException
   {
     return (String) getAttribute("iban");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setIban(java.lang.String)
-   */
+  @Override
   public void setIban(String iban) throws RemoteException
   {
     setAttribute("iban",iban);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Address#getKategorie()
-   */
+  @Override
   public String getKategorie() throws RemoteException
   {
     return (String) this.getAttribute("kategorie");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusAddress#setKategorie(java.lang.String)
-   */
+  @Override
   public void setKategorie(String kategorie) throws RemoteException
   {
     this.setAttribute("kategorie",kategorie);

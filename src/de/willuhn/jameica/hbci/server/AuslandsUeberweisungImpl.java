@@ -38,16 +38,12 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName() {
     return "aueberweisung";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
+  @Override
   public Duplicatable duplicate() throws RemoteException {
     AuslandsUeberweisung u = (AuslandsUeberweisung) getService().createObject(AuslandsUeberweisung.class,null);
     u.setBetrag(getBetrag());
@@ -66,9 +62,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     return u;
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException {
     
     try {
@@ -145,44 +139,34 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isTerminUeberweisung()
-   */
+  @Override
   public boolean isTerminUeberweisung() throws RemoteException
   {
     Integer i = (Integer) getAttribute("banktermin");
     return i != null && i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setTerminUeberweisung(boolean)
-   */
+  @Override
   public void setTerminUeberweisung(boolean termin) throws RemoteException
   {
     setAttribute("banktermin",termin ? Integer.valueOf(1) : null);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isUmbuchung()
-   */
+  @Override
   public boolean isUmbuchung() throws RemoteException
   {
     Integer i = (Integer) getAttribute("umbuchung");
     return i != null && i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setUmbuchung(boolean)
-   */
+  @Override
   public void setUmbuchung(boolean b) throws RemoteException
   {
     setAttribute("umbuchung",b ? Integer.valueOf(1) : null);
   }
 
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#ueberfaellig()
-   */
+  @Override
   public boolean ueberfaellig() throws RemoteException
   {
     // Termin-Auftraege werden sofort faellig gestellt, weil sie ja durch die Bank terminiert werden
@@ -192,93 +176,69 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     return super.ueberfaellig();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#setTextSchluessel(java.lang.String)
-   */
+  @Override
   public void setTextSchluessel(String schluessel) throws RemoteException
   {
     if (schluessel != null && schluessel.length() > 0)
       throw new RemoteException("textschluessel not allowed for foreign transfer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setGegenkontoBLZ(java.lang.String)
-   */
+  @Override
   public void setGegenkontoBLZ(String blz) throws RemoteException
   {
     setAttribute("empfaenger_bic",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getGegenkontoBLZ()
-   */
+  @Override
   public String getGegenkontoBLZ() throws RemoteException
   {
     return (String) getAttribute("empfaenger_bic");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setWeitereVerwendungszwecke(java.lang.String[])
-   */
+  @Override
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
     if (list != null && list.length > 0)
       throw new RemoteException("extended usages not allowed for foreign transfer");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setZweck2(java.lang.String)
-   */
+  @Override
   public void setZweck2(String zweck2) throws RemoteException
   {
     if (zweck2 != null && zweck2.length() > 0)
       throw new RemoteException("second usage not allowed for foreign transfer");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
-   */
+  @Override
   public String getEndtoEndId() throws RemoteException
   {
     return (String) getAttribute("endtoendid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
-   */
+  @Override
   public void setEndtoEndId(String id) throws RemoteException
   {
     setAttribute("endtoendid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
-   */
+  @Override
   public String getPmtInfId() throws RemoteException
   {
     return (String) getAttribute("pmtinfid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
-   */
+  @Override
   public void setPmtInfId(String id) throws RemoteException
   {
     setAttribute("pmtinfid",id);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
-   */
   @Override
   public String getPurposeCode() throws RemoteException
   {
     return (String) getAttribute("purposecode");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
-   */
   @Override
   public void setPurposeCode(String code) throws RemoteException
   {

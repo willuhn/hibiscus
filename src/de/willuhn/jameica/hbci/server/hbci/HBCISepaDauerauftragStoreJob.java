@@ -133,9 +133,6 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
 		}
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
@@ -143,9 +140,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
   }
 
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
-   */
+  @Override
   public void setJob(HBCIJob job) throws RemoteException, ApplicationException
   {
     // Tests fuer die Job-Restriktionen
@@ -158,18 +153,14 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
     super.setJob(job);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier() {
 		if (active)
 			return "DauerSEPAEdit";
   	return "DauerSEPANew";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     String empfName = dauerauftrag.getGegenkontoName();
@@ -178,9 +169,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
     return i18n.tr("SEPA-Dauerauftrag an {0}",empfName);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     String empfName = dauerauftrag.getGegenkontoName();
@@ -211,9 +200,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
     Logger.info("dauerauftrag submitted successfully");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Ausführen des SEPA-Dauerauftrages an {0}: {1}", dauerauftrag.getGegenkontoName(), error);

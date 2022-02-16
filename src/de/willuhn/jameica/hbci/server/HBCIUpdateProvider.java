@@ -50,17 +50,13 @@ public class HBCIUpdateProvider implements UpdateProvider
     this.res         = p.getResources();
   }
 
-  /**
-   * @see de.willuhn.sql.version.UpdateProvider#getConnection()
-   */
+  @Override
   public synchronized Connection getConnection() throws ApplicationException
   {
     return this.conn;
   }
 
-  /**
-   * @see de.willuhn.sql.version.UpdateProvider#getCurrentVersion()
-   */
+  @Override
   public int getCurrentVersion() throws ApplicationException
   {
     try
@@ -74,9 +70,7 @@ public class HBCIUpdateProvider implements UpdateProvider
     }
   }
 
-  /**
-   * @see de.willuhn.sql.version.UpdateProvider#getProgressMonitor()
-   */
+  @Override
   public ProgressMonitor getProgressMonitor()
   {
     // Liefert den Splashscreen oder im Servermode einen
@@ -84,18 +78,14 @@ public class HBCIUpdateProvider implements UpdateProvider
     return Application.getController().getApplicationCallback().getStartupMonitor();
   }
 
-  /**
-   * @see de.willuhn.sql.version.UpdateProvider#getUpdatePath()
-   */
+  @Override
   public File getUpdatePath() throws ApplicationException
   {
     // Ist das Unterverzeichnis "plugins" im Plugin
     return new File(manifest.getPluginDir(),"updates");
   }
 
-  /**
-   * @see de.willuhn.sql.version.UpdateProvider#setNewVersion(int)
-   */
+  @Override
   public void setNewVersion(int newVersion) throws ApplicationException
   {
     int current = getCurrentVersion();

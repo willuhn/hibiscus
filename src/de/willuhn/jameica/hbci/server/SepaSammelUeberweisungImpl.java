@@ -40,17 +40,13 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sepasueb";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#getBuchungen()
-   */
+  @Override
   public List<SepaSammelUeberweisungBuchung> getBuchungen() throws RemoteException
   {
     DBIterator list = this.getService().createList(SepaSammelUeberweisungBuchung.class);
@@ -59,9 +55,7 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     return PseudoIterator.asList(list);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransfer#createBuchung()
-   */
+  @Override
   public SepaSammelUeberweisungBuchung createBuchung() throws RemoteException, ApplicationException
   {
     SepaSammelUeberweisungBuchung b = (SepaSammelUeberweisungBuchung) this.getService().createObject(SepaSammelUeberweisungBuchung.class,null);
@@ -71,9 +65,7 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     return b;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
+  @Override
   public Duplicatable duplicate() throws RemoteException
   {
     SepaSammelUeberweisung u = null;
@@ -113,9 +105,6 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl#ueberfaellig()
-   */
   @Override
   public boolean ueberfaellig() throws RemoteException
   {
@@ -126,18 +115,14 @@ public class SepaSammelUeberweisungImpl extends AbstractSepaSammelTransferImpl<S
     return super.ueberfaellig();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung#isTerminUeberweisung()
-   */
+  @Override
   public boolean isTerminUeberweisung() throws RemoteException
   {
     Integer i = (Integer) getAttribute("banktermin");
     return i != null && i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung#setTerminUeberweisung(boolean)
-   */
+  @Override
   public void setTerminUeberweisung(boolean termin) throws RemoteException
   {
     setAttribute("banktermin",termin ? Integer.valueOf(1) : null);

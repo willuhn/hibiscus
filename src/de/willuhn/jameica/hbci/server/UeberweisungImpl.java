@@ -34,16 +34,12 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName() {
     return "ueberweisung";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
@@ -101,26 +97,20 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#isTerminUeberweisung()
-   */
+  @Override
   public boolean isTerminUeberweisung() throws RemoteException
   {
     Integer i = (Integer) getAttribute("banktermin");
     return i != null && i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setTerminUeberweisung(boolean)
-   */
+  @Override
   public void setTerminUeberweisung(boolean termin) throws RemoteException
   {
     setAttribute("banktermin",termin ? Integer.valueOf(1) : null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#ueberfaellig()
-   */
+  @Override
   public boolean ueberfaellig() throws RemoteException
   {
     // BUGZILLA 370 Termin-Ueberweisungen gelten sofort als faellig
@@ -130,18 +120,14 @@ public class UeberweisungImpl extends AbstractBaseUeberweisungImpl implements Ue
     return super.ueberfaellig();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#isUmbuchung()
-   */
+  @Override
   public boolean isUmbuchung() throws RemoteException
   {
     Integer i = (Integer) getAttribute("umbuchung");
     return i != null && i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Ueberweisung#setUmbuchung(boolean)
-   */
+  @Override
   public void setUmbuchung(boolean b) throws RemoteException
   {
     setAttribute("umbuchung",b ? Integer.valueOf(1) : null);

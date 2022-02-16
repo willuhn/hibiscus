@@ -76,58 +76,44 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
 		I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     return i18n.tr("Datenbank-Service für Hibiscus");
   }
 
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getAutoCommit()
-   */
+  @Override
   protected boolean getAutoCommit() throws RemoteException
   {
     return SETTINGS.getBoolean("autocommit",super.getAutoCommit());
   }
 
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcDriver()
-   */
+  @Override
   protected String getJdbcDriver() throws RemoteException
   {
     return this.driver.getJdbcDriver();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcPassword()
-   */
+  @Override
   protected String getJdbcPassword() throws RemoteException
   {
     return this.driver.getJdbcPassword();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcUrl()
-   */
+  @Override
   protected String getJdbcUrl() throws RemoteException
   {
     return this.driver.getJdbcUrl();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getJdbcUsername()
-   */
+  @Override
   protected String getJdbcUsername() throws RemoteException
   {
     return this.driver.getJdbcUsername();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#checkConsistency()
-   */
+  @Override
   public void checkConsistency() throws RemoteException, ApplicationException
   {
     Logger.info("determine current database version");
@@ -204,9 +190,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
   }
 
   
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getConnection()
-   */
+  @Override
   protected Connection getConnection() throws RemoteException
   {
     try
@@ -221,9 +205,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#executeUpdate(java.lang.String, java.lang.String[])
-   */
   @Override
   public int executeUpdate(String query, String... params) throws RemoteException
   {
@@ -273,9 +254,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
   }
   
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#createList(java.lang.Class)
-   */
   @Override
   public <T extends DBObject> DBIterator<T> createList(Class<? extends DBObject> arg0) throws RemoteException
   {
@@ -290,9 +268,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
   }
   
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#createObject(java.lang.Class, java.lang.String)
-   */
   @Override
   public <T extends DBObject> T createObject(Class<? extends DBObject> arg0, String arg1) throws RemoteException
   {
@@ -307,9 +282,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
   }
   
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#execute(java.lang.String, java.lang.Object[], de.willuhn.datasource.rmi.ResultSetExtractor)
-   */
   @Override
   public Object execute(String arg0, Object[] arg1, ResultSetExtractor arg2) throws RemoteException
   {
@@ -324,9 +296,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#install()
-   */
+  @Override
   public void install() throws RemoteException
   {
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -338,25 +308,19 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     this.driver.execute(getConnection(),file);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#getSQLTimestamp(java.lang.String)
-   */
+  @Override
   public String getSQLTimestamp(String content) throws RemoteException
   {
     return this.driver.getSQLTimestamp(content);
   }
 
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getInsertWithID()
-   */
+  @Override
   protected boolean getInsertWithID() throws RemoteException
   {
     return this.driver.getInsertWithID();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#checkConnection(java.sql.Connection)
-   */
+  @Override
   protected void checkConnection(Connection conn) throws SQLException
   {
     try
@@ -370,18 +334,14 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     super.checkConnection(conn);
   }
   
-  /**
-   * @see de.willuhn.datasource.db.DBServiceImpl#getTransactionIsolationLevel()
-   */
+  @Override
   protected int getTransactionIsolationLevel() throws RemoteException
   {
     // BUGZILLA 447
     return this.driver.getTransactionIsolationLevel();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#getDriver()
-   */
+  @Override
   public DBSupport getDriver() throws RemoteException
   {
     return this.driver;

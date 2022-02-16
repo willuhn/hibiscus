@@ -114,18 +114,13 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 		}
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
     return this.ueberweisung;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier()
   {
     if (isTermin)
@@ -136,9 +131,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
     return "UebSEPA";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
-   */
+  @Override
   public void setJob(HBCIJob job) throws RemoteException, ApplicationException
   {
     if (this.isTermin)
@@ -152,17 +145,13 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
     super.setJob(job);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("SEPA-Überweisung an {0} (IBAN: {1})", ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     ueberweisung.setAusgefuehrt(true);
@@ -172,9 +161,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
     Logger.info("foreign transfer submitted successfully");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws ApplicationException, RemoteException
   {
     String msg = i18n.tr("Fehler beim Ausführen des Auftrages an {0}: {1}", ueberweisung.getGegenkontoName(), error);
@@ -182,9 +169,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
     return msg;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markCancelled()
-   */
+  @Override
   protected void markCancelled() throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Ausführung des Auftrages an {0} abgebrochen",ueberweisung.getGegenkontoName());

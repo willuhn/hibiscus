@@ -38,9 +38,7 @@ public class CanTermDelRestriction implements Restriction
   	this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.tests.Restriction#test()
-   */
+  @Override
   public void test() throws ApplicationException
   {
 		String s = p.getProperty("cantermdel");

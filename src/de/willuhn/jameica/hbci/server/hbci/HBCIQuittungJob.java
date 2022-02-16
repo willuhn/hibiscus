@@ -82,26 +82,19 @@ public class HBCIQuittungJob extends AbstractHBCIJob
 		}
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
     return this.ka;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier()
   {
     return GVReceipt.getLowlevelName();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     int jahr   = this.getJahr();
@@ -154,9 +147,7 @@ public class HBCIQuittungJob extends AbstractHBCIJob
       
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     ka.setQuittiertAm(new Date());
@@ -165,9 +156,7 @@ public class HBCIQuittungJob extends AbstractHBCIJob
     Logger.info("marked account statement for range " + ka.getVon() + " - " + ka.getBis() + " as received, receipt: " + ka.getQuittungscode());
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Quittieren der elektronischen Kontoauszüge: {0}",error);

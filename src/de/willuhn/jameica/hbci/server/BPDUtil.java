@@ -245,6 +245,7 @@ public class BPDUtil
     String q = prefix + "Params%." + query.query + "Par%.SegHead.version";
     final String version = (String) service.execute("select max(content) from property where name like ?",new String[] {q},new ResultSetExtractor()
     {
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (rs.next())
@@ -280,6 +281,7 @@ public class BPDUtil
       String q = Prefix.UPD.value() + DBPropertyUtil.SEP + k.getKundennummer() + DBPropertyUtil.SEP + "UPA.usage";
       final Boolean ignoreUpd = (Boolean) service.execute("select name,content from property where name = ?",new String[] {q},new ResultSetExtractor()
       {
+        @Override
         public Object extract(ResultSet rs) throws RemoteException, SQLException
         {
           if (rs.next())
@@ -299,6 +301,7 @@ public class BPDUtil
     String q = Prefix.UPD.value() + DBPropertyUtil.SEP + "%" + DBPropertyUtil.SEP + "KInfo%";
     String segment = (String) service.execute("select name,content from property where name like ?",new String[] {q},new ResultSetExtractor()
     {
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         while (rs.next())
@@ -333,6 +336,7 @@ public class BPDUtil
     q = segment + ".AllowedGV%.code";
     final Boolean support = (Boolean) service.execute("select content from property where name like ? order by content",new String[] {q},new ResultSetExtractor()
     {
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         while (rs.next())
@@ -373,6 +377,7 @@ public class BPDUtil
     String q = prefix + "Params%." + query.query + "Par" + (version != null ? version : "%") + ".Par" + query.query + "%";
     service.execute("select name,content from property where name like ? order by name",new String[] {q},new ResultSetExtractor()
     {
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         while (rs.next())

@@ -42,9 +42,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("konto_id".equals(arg0))
@@ -60,9 +58,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     return super.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#overwrite(de.willuhn.datasource.rmi.DBObject)
-   */
+  @Override
   public void overwrite(DBObject object) throws RemoteException
   {
     // Muessen wir ueberschreiben, weil wir fuer das Konto hier eine
@@ -78,9 +74,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     this.setKonto(((AbstractHibiscusTransferImpl)object).getKonto());
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException {
   	try {
 			if (getKonto() == null)
@@ -136,16 +130,12 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   	}
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException {
 		insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#getKonto()
-   */
+  @Override
   public Konto getKonto() throws RemoteException {
     Integer i = (Integer) super.getAttribute("konto_id");
     if (i == null)
@@ -155,9 +145,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     return (Konto) cache.get(i);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
-   */
+  @Override
   public double getBetrag() throws RemoteException {
 		Double d = (Double) getAttribute("betrag");
 		if (d == null)
@@ -165,93 +153,67 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
 		return d.doubleValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
-   */
+  @Override
   public String getZweck() throws RemoteException {
     return (String) getAttribute("zweck");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
-   */
+  @Override
   public String getZweck2() throws RemoteException {
 		return (String) getAttribute("zweck2");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void setKonto(Konto konto) throws RemoteException {
     setAttribute("konto_id",(konto == null || konto.getID() == null) ? null : Integer.valueOf(konto.getID()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
-   */
+  @Override
   public void setBetrag(double betrag) throws RemoteException {
 		setAttribute("betrag", Double.valueOf(betrag));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck(java.lang.String)
-   */
+  @Override
   public void setZweck(String zweck) throws RemoteException {
 		setAttribute("zweck",zweck);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck2(java.lang.String)
-   */
+  @Override
   public void setZweck2(String zweck2) throws RemoteException {
 		setAttribute("zweck2",zweck2);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
-   */
+  @Override
   public String getGegenkontoNummer() throws RemoteException {
     return (String) getAttribute("empfaenger_konto");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
-   */
+  @Override
   public String getGegenkontoBLZ() throws RemoteException {
 		return (String) getAttribute("empfaenger_blz");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
-   */
+  @Override
   public String getGegenkontoName() throws RemoteException {
 		return (String) getAttribute("empfaenger_name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoNummer(java.lang.String)
-   */
+  @Override
   public void setGegenkontoNummer(String konto) throws RemoteException {
 		setAttribute("empfaenger_konto",konto != null ? konto.toUpperCase() : null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoBLZ(java.lang.String)
-   */
+  @Override
   public void setGegenkontoBLZ(String blz) throws RemoteException {
 		setAttribute("empfaenger_blz",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoName(java.lang.String)
-   */
+  @Override
   public void setGegenkontoName(String name) throws RemoteException {
 		setAttribute("empfaenger_name",name);
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     try
@@ -274,9 +236,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkonto(de.willuhn.jameica.hbci.rmi.Address)
-   */
+  @Override
   public void setGegenkonto(Address e) throws RemoteException
   {
   	if (e == null)
@@ -289,25 +249,19 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
   	this.setGegenkontoName(e.getName());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
-   */
+  @Override
   public String[] getWeitereVerwendungszwecke() throws RemoteException
   {
     return VerwendungszweckUtil.split((String) this.getAttribute("zweck3"));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setWeitereVerwendungszwecke(java.lang.String[])
-   */
+  @Override
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
     setAttribute("zweck3",VerwendungszweckUtil.merge(list));
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#store()
-   */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     try

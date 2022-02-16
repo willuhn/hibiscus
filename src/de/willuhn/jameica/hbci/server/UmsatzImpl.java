@@ -47,23 +47,17 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName() {
     return "umsatz";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException {
     return "zweck";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException {
 		try
 		{
@@ -107,16 +101,12 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 		}
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException {
 		insertCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
-   */
+  @Override
   public void insert() throws RemoteException, ApplicationException
   {
     // Wir speichern die Checksumme nun grundsaetzlich beim
@@ -127,9 +117,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     super.insert();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#getKonto()
-   */
+  @Override
   public Konto getKonto() throws RemoteException
   {
     Integer i = (Integer) super.getAttribute("konto_id");
@@ -140,32 +128,24 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     return (Konto) cache.get(i);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
-   */
+  @Override
   public String getGegenkontoName() throws RemoteException {
     return (String) getAttribute("empfaenger_name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
-   */
+  @Override
   public String getGegenkontoNummer() throws RemoteException
   {
     return (String) getAttribute("empfaenger_konto");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
-   */
+  @Override
   public String getGegenkontoBLZ() throws RemoteException
   {
     return (String) getAttribute("empfaenger_blz");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
-   */
+  @Override
   public double getBetrag() throws RemoteException {
 		Double d = (Double) getAttribute("betrag");
 		if (d == null)
@@ -173,37 +153,27 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 		return d.doubleValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getDatum()
-   */
+  @Override
   public Date getDatum() throws RemoteException {
 		return (Date) getAttribute("datum");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getValuta()
-   */
+  @Override
   public Date getValuta() throws RemoteException {
 		return (Date) getAttribute("valuta");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
-   */
+  @Override
   public String getZweck() throws RemoteException {
 		return (String) getAttribute("zweck");
   }
 
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
-	 */
+	@Override
 	public String getZweck2() throws RemoteException {
 		return (String) getAttribute("zweck2");
 	}
 
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkonto(de.willuhn.jameica.hbci.rmi.Address)
-	 */
+	@Override
 	public void setGegenkonto(Address e) throws RemoteException
 	{
     if (e == null)
@@ -226,65 +196,47 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     this.setGegenkontoName(e.getName());
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoName(java.lang.String)
-   */
+  @Override
   public void setGegenkontoName(String name) throws RemoteException {
 		setAttribute("empfaenger_name",name);
   }
 
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoNummer(java.lang.String)
-	 */
+	@Override
 	public void setGegenkontoNummer(String konto) throws RemoteException {
     setAttribute("empfaenger_konto",konto);
   }
   
-	/**
-	 * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setGegenkontoBLZ(java.lang.String)
-	 */
+	@Override
 	public void setGegenkontoBLZ(String blz) throws RemoteException {
     setAttribute("empfaenger_blz",blz);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
-   */
+  @Override
   public void setBetrag(double d) throws RemoteException {
 		setAttribute("betrag", Double.valueOf(d));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck(java.lang.String)
-   */
+  @Override
   public void setZweck(String zweck) throws RemoteException {
 		setAttribute("zweck",zweck);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setZweck2(java.lang.String)
-   */
+  @Override
   public void setZweck2(String zweck2) throws RemoteException {
 		setAttribute("zweck2",zweck2);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setDatum(java.util.Date)
-   */
+  @Override
   public void setDatum(Date d) throws RemoteException {
 		setAttribute("datum",d);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setValuta(java.util.Date)
-   */
+  @Override
   public void setValuta(Date d) throws RemoteException {
 		setAttribute("valuta",d);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void setKonto(Konto k) throws RemoteException {
     setAttribute("konto_id",(k == null || k.getID() == null) ? null : Integer.valueOf(k.getID()));
   }
@@ -295,8 +247,8 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    * nicht in der Datenbank existieren.
    * Da ein Umsatz von der Bank scheinbar keinen Identifier mitbringt,
    * muessen wir selbst einen fachlichen Vergleich durchfuehren.
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
    */
+  @Override
   public boolean equals(GenericObject o) throws RemoteException {
 		if (o == null || !(o instanceof Umsatz))
 			return false;
@@ -327,9 +279,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 		}
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getSaldo()
-   */
+  @Override
   public double getSaldo() throws RemoteException {
 		Double d = (Double) getAttribute("saldo");
 		if (d == null)
@@ -337,58 +287,42 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 		return d.doubleValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getPrimanota()
-   */
+  @Override
   public String getPrimanota() throws RemoteException {
 		return (String) getAttribute("primanota");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getArt()
-   */
+  @Override
   public String getArt() throws RemoteException {
 		return (String) getAttribute("art");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getCustomerRef()
-   */
+  @Override
   public String getCustomerRef() throws RemoteException {
 		return (String) getAttribute("customerref");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setSaldo(double)
-   */
+  @Override
   public void setSaldo(double s) throws RemoteException {
 		setAttribute("saldo", Double.valueOf(s));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setPrimanota(java.lang.String)
-   */
+  @Override
   public void setPrimanota(String primanota) throws RemoteException {
 		setAttribute("primanota",primanota);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setArt(java.lang.String)
-   */
+  @Override
   public void setArt(String art) throws RemoteException {
 		setAttribute("art",art);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setCustomerRef(java.lang.String)
-   */
+  @Override
   public void setCustomerRef(String ref) throws RemoteException {
 		setAttribute("customerref",ref);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
-   */
+  @Override
   public long getChecksum() throws RemoteException {
 
     Number n = (Number) this.getAttribute("checksum");
@@ -450,8 +384,8 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
 
   /**
    * Ueberschrieben, um ein synthetisches Attribute "mergedzweck" zu erzeugen.
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("umsatztyp".equals(arg0))
@@ -560,9 +494,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     try
@@ -603,31 +535,26 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getKommentar()
-   */
+  @Override
   public String getKommentar() throws RemoteException
   {
     return (String) getAttribute("kommentar");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setKommentar(java.lang.String)
-   */
+  @Override
   public void setKommentar(String kommentar) throws RemoteException
   {
     setAttribute("kommentar",kommentar);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getUmsatzTyp()
-   */
+  @Override
   public UmsatzTyp getUmsatzTyp() throws RemoteException
   {
     // ID von fest verdrahteten Kategorien
     Integer i = (Integer) super.getAttribute("umsatztyp_id");
 
     Cache cache = Cache.get(UmsatzTyp.class, new Cache.ObjectFactory() {
+      @Override
       public DBIterator load() throws RemoteException
       {
         return UmsatzTypUtil.getAll();
@@ -649,33 +576,25 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setUmsatzTyp(de.willuhn.jameica.hbci.rmi.UmsatzTyp)
-   */
+  @Override
   public void setUmsatzTyp(UmsatzTyp ut) throws RemoteException
   {
     setAttribute("umsatztyp_id",ut == null ? null : Integer.valueOf(ut.getID()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#isAssigned()
-   */
+  @Override
   public boolean isAssigned() throws RemoteException
   {
     return super.getAttribute("umsatztyp_id") != null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
-   */
+  @Override
   public String[] getWeitereVerwendungszwecke() throws RemoteException
   {
     return VerwendungszweckUtil.split((String)this.getAttribute("zweck3"));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setWeitereVerwendungszwecke(java.lang.String[])
-   */
+  @Override
   public void setWeitereVerwendungszwecke(String[] list) throws RemoteException
   {
     String s = VerwendungszweckUtil.merge(list);
@@ -693,26 +612,20 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     setAttribute("zweck3",s);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#getFlags()
-   */
+  @Override
   public int getFlags() throws RemoteException
   {
     Integer i = (Integer) this.getAttribute("flags");
     return i == null ? Umsatz.FLAG_NONE : i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#hasFlag(int)
-   */
+  @Override
   public boolean hasFlag(int flag) throws RemoteException
   {
     return (this.getFlags() & flag) == flag;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Flaggable#setFlags(int)
-   */
+  @Override
   public void setFlags(int flags) throws RemoteException
   {
     if (flags < 0)
@@ -721,41 +634,31 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     this.setAttribute("flags", Integer.valueOf(flags));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getGvCode()
-   */
+  @Override
   public String getGvCode() throws RemoteException
   {
     return (String) this.getAttribute("gvcode");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setGvCode(java.lang.String)
-   */
+  @Override
   public void setGvCode(String code) throws RemoteException
   {
     this.setAttribute("gvcode",code);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getAddKey()
-   */
+  @Override
   public String getAddKey() throws RemoteException
   {
     return (String) this.getAttribute("addkey");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setAddKey(java.lang.String)
-   */
+  @Override
   public void setAddKey(String key) throws RemoteException
   {
     this.setAttribute("addkey",key);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
+  @Override
   public Umsatz duplicate() throws RemoteException
   {
     Umsatz copy = (Umsatz) this.getService().createObject(Umsatz.class,null);
@@ -791,90 +694,60 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     return copy;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getTransactionId()
-   */
   @Override
   public String getTransactionId() throws RemoteException
   {
     return (String) this.getAttribute("txid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setTransactionId(java.lang.String)
-   */
   @Override
   public void setTransactionId(String id) throws RemoteException
   {
     this.setAttribute("txid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getPurposeCode()
-   */
   @Override
   public String getPurposeCode() throws RemoteException
   {
     return (String) this.getAttribute("purposecode");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setPurposeCode(java.lang.String)
-   */
   @Override
   public void setPurposeCode(String code) throws RemoteException
   {
     this.setAttribute("purposecode",code);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getEndToEndId()
-   */
   @Override
   public String getEndToEndId() throws RemoteException
   {
     return (String) this.getAttribute("endtoendid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setEndToEndId(java.lang.String)
-   */
   @Override
   public void setEndToEndId(String id) throws RemoteException
   {
     this.setAttribute("endtoendid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getMandateId()
-   */
   @Override
   public String getMandateId() throws RemoteException
   {
     return (String) this.getAttribute("mandateid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setMandateId(java.lang.String)
-   */
   @Override
   public void setMandateId(String id) throws RemoteException
   {
     this.setAttribute("mandateid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getGegenkontoName2()
-   */
   @Override
   public String getGegenkontoName2() throws RemoteException
   {
     return (String) this.getAttribute("empfaenger_name2");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setGegenkontoName2(java.lang.String)
-   */
   @Override
   public void setGegenkontoName2(String name) throws RemoteException
   {

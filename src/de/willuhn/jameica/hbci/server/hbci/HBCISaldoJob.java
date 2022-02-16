@@ -68,34 +68,25 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 		}
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
     return this.konto;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier()
   {
     return "SaldoReq";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("Saldo-Abruf {0}",konto.getLongName());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     GVRSaldoReq result = (GVRSaldoReq) getJobResult();
@@ -117,9 +108,7 @@ public class HBCISaldoJob extends AbstractHBCIJob {
     Logger.info("saldo fetched successfully");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Abrufen das Saldos: {0}",error);

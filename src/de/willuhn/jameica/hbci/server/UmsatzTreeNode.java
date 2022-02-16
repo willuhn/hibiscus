@@ -98,9 +98,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     return this.children;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
-   */
+  @Override
   public GenericIterator getChildren() throws RemoteException
   {
     List all = new ArrayList();
@@ -112,33 +110,25 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     return PseudoIterator.fromArray((GenericObject[])all.toArray(new GenericObject[0]));
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getParent()
-   */
+  @Override
   public GenericObjectNode getParent() throws RemoteException
   {
     return this.parent;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPath()
-   */
+  @Override
   public GenericIterator getPath() throws RemoteException
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
-   */
+  @Override
   public GenericIterator getPossibleParents() throws RemoteException
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
-   */
+  @Override
   public boolean hasChild(GenericObjectNode node) throws RemoteException
   {
     for (int i=0;i<this.umsaetze.size();++i)
@@ -156,9 +146,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     return false;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public boolean equals(GenericObject other) throws RemoteException
   {
     if (other == null || !(other instanceof UmsatzTreeNode))
@@ -166,9 +154,7 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     return this.getID().equals(other.getID());
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if (this.typ == null && "name".equalsIgnoreCase(arg0))
@@ -238,25 +224,19 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     this.ausgaben  = ausgaben;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-   */
+  @Override
   public String[] getAttributeNames() throws RemoteException
   {
     return this.typ == null ? new String[]{"name"} : this.typ.getAttributeNames();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
+  @Override
   public String getID() throws RemoteException
   {
     return this.typ == null ? "<unassigned>" : this.typ.getID();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return this.typ == null ? "name" : this.typ.getPrimaryAttribute();
@@ -264,8 +244,8 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
 
   /**
    * Implementiert, damit wir nach dem Feld "nummer" sortieren koennen.
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
+  @Override
   public int compareTo(Object o)
   {
     if (o == null || !(o instanceof UmsatzTreeNode))

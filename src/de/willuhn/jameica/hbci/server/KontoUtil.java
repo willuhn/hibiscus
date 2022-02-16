@@ -425,9 +425,7 @@ public class KontoUtil
   {
     return (List<String>) Settings.getDBService().execute("select kategorie from konto where kategorie is not null and kategorie != '' group by kategorie order by LOWER(kategorie)",null,new ResultSetExtractor()
     {
-      /**
-       * @see de.willuhn.datasource.rmi.ResultSetExtractor#extract(java.sql.ResultSet)
-       */
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         List<String> list = new ArrayList<String>();
@@ -474,6 +472,7 @@ public class KontoUtil
     HBCIDBService service = Settings.getDBService();
     ResultSetExtractor rs = new ResultSetExtractor()
     {
+      @Override
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (rs.next())

@@ -41,9 +41,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sepadauerauftrag";
@@ -70,9 +68,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     return u;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
-   */
+  @Override
   public long getChecksum() throws RemoteException
   {
     String ersteZahlung  = getErsteZahlung() == null ? "" : HBCI.DATEFORMAT.format(getErsteZahlung());
@@ -92,9 +88,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     return crc.getValue();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try {
@@ -178,50 +172,38 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#setGegenkontoBLZ(java.lang.String)
-   */
+  @Override
   public void setGegenkontoBLZ(String blz) throws RemoteException
   {
     setAttribute("empfaenger_bic",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getGegenkontoBLZ()
-   */
+  @Override
   public String getGegenkontoBLZ() throws RemoteException
   {
     return (String) getAttribute("empfaenger_bic");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
-   */
+  @Override
   public String getEndtoEndId() throws RemoteException
   {
     return (String) getAttribute("endtoendid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
-   */
+  @Override
   public void setEndtoEndId(String id) throws RemoteException
   {
     setAttribute("endtoendid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaDauerauftrag#canChange()
-   */
+  @Override
   public boolean canChange() throws RemoteException
   {
     Integer i = (Integer) getAttribute("canchange");
     return i != null && i.intValue() == 1;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaDauerauftrag#canDelete()
-   */
+  @Override
   public boolean canDelete() throws RemoteException
   {
     Integer i = (Integer) getAttribute("candelete");
@@ -248,34 +230,24 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     setAttribute("candelete", Integer.valueOf(b ? 1 : 0));
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#getPmtInfId()
-   */
+  @Override
   public String getPmtInfId() throws RemoteException
   {
     return (String) getAttribute("pmtinfid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaPayment#setPmtInfId(java.lang.String)
-   */
+  @Override
   public void setPmtInfId(String id) throws RemoteException
   {
     setAttribute("pmtinfid",id);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
-   */
   @Override
   public String getPurposeCode() throws RemoteException
   {
     return (String) getAttribute("purposecode");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
-   */
   @Override
   public void setPurposeCode(String code) throws RemoteException
   {

@@ -72,34 +72,25 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
 		}
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier()
   {
     return "DauerSEPAList";
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
     return this.konto;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("Abruf SEPA-Daueraufträge {0}",konto.getLongName());
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
 		GVRDauerList result = (GVRDauerList) getJobResult();
@@ -266,9 +257,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Fehler beim Abrufen der SEPA-Daueraufträge: {0}",error);

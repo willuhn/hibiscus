@@ -142,33 +142,24 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
 		}
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getContext()
-   */
   @Override
   protected HibiscusDBObject getContext()
   {
     return this.konto;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier() {
     return KontoUtil.useCamt(this.konto,true) ? "KUmsAllCamt" : "KUmsAll";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return i18n.tr("Umsatzabruf {0}",konto.getLongName());
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markExecuted()
-   */
+  @Override
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     konto.addToProtokoll(i18n.tr("Umsätze abgerufen"),Protokoll.TYP_SUCCESS);
@@ -519,9 +510,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     throw new IOException("cannot create file " + f + ", already exists");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#markFailed(java.lang.String)
-   */
+  @Override
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
     String msg = i18n.tr("Umsatzabruf fehlgeschlagen: {0}",error);

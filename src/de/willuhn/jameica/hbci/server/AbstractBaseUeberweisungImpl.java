@@ -37,17 +37,13 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException {
     return "zweck";
   }
 
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try
@@ -72,9 +68,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
 		try
@@ -90,9 +84,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 		super.updateCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
-   */
+  @Override
   public void insert() throws RemoteException, ApplicationException
   {
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
@@ -100,24 +92,18 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     super.insert();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#getTermin()
-   */
+  @Override
   public Date getTermin() throws RemoteException {
     return (Date) getAttribute("termin");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#getAusfuehrungsdatum()
-   */
+  @Override
   public Date getAusfuehrungsdatum() throws RemoteException
   {
     return (Date) getAttribute("ausgefuehrt_am");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#ausgefuehrt()
-   */
+  @Override
   public boolean ausgefuehrt() throws RemoteException {
 		Integer i = (Integer) getAttribute("ausgefuehrt");
 		if (i == null)
@@ -125,16 +111,12 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
 		return i.intValue() == 1;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#setTermin(java.util.Date)
-   */
+  @Override
   public void setTermin(Date termin) throws RemoteException {
 		setAttribute("termin",termin);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#ueberfaellig()
-   */
+  @Override
   public boolean ueberfaellig() throws RemoteException {
     if (ausgefuehrt())
     	return false;
@@ -157,9 +139,7 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     return this.markingExecuted;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#setAusgefuehrt(boolean)
-   */
+  @Override
   public void setAusgefuehrt(boolean b) throws RemoteException, ApplicationException
   {
     try
@@ -176,17 +156,13 @@ public abstract class AbstractBaseUeberweisungImpl extends AbstractHibiscusTrans
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#getTextSchluessel()
-   */
+  @Override
   public String getTextSchluessel() throws RemoteException
   {
     return (String) getAttribute("typ");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.BaseUeberweisung#setTextSchluessel(java.lang.String)
-   */
+  @Override
   public void setTextSchluessel(String schluessel) throws RemoteException
   {
     setAttribute("typ",schluessel);

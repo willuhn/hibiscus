@@ -39,9 +39,7 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
     this.isTermin = u.isTerminUeberweisung();
 	}
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getIdentifier()
-   */
+  @Override
   public String getIdentifier()
   {
     if (this.isTermin)
@@ -49,9 +47,6 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
     return "MultiUebSEPA";
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
-   */
   @Override
   public void setJob(HBCIJob job) throws RemoteException, ApplicationException
   {
@@ -65,9 +60,7 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
     super.setJob(job);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     if (this.isTermin)

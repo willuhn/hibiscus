@@ -28,9 +28,7 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractUpdate implements Update
 {
-  /**
-   * @see de.willuhn.sql.version.Update#execute(de.willuhn.sql.version.UpdateProvider)
-   */
+  @Override
   public void execute(UpdateProvider provider) throws ApplicationException
   {
     HBCIUpdateProvider myProvider = (HBCIUpdateProvider) provider;
@@ -80,9 +78,7 @@ public abstract class AbstractUpdate implements Update
    */
   protected abstract List<String> getStatements(Class<? extends DBSupport> driverClass);
 
-  /**
-   * @see de.willuhn.sql.version.Update#getName()
-   */
+  @Override
   public String getName()
   {
     return "database update " + this.getClass().getSimpleName();

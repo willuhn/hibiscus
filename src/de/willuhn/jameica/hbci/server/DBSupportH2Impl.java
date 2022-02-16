@@ -48,17 +48,13 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
-   */
+  @Override
   public String getJdbcDriver()
   {
     return "org.h2.Driver";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcPassword()
-   */
+  @Override
   public String getJdbcPassword()
   {
     String password = HBCIDBService.SETTINGS.getString("database.driver.h2.encryption.encryptedpassword",null);
@@ -105,9 +101,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcUrl()
-   */
+  @Override
   public String getJdbcUrl()
   {
     String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/h2db/hibiscus";
@@ -129,25 +123,19 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     return url;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcUsername()
-   */
+  @Override
   public String getJdbcUsername()
   {
     return "hibiscus";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getScriptPrefix()
-   */
+  @Override
   public String getScriptPrefix() throws RemoteException
   {
     return "h2-";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getSQLTimestamp(java.lang.String)
-   */
+  @Override
   public String getSQLTimestamp(String content) throws RemoteException
   {
     // Nicht noetig
@@ -155,17 +143,13 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     return content;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getInsertWithID()
-   */
+  @Override
   public boolean getInsertWithID() throws RemoteException
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#checkConnection(java.sql.Connection)
-   */
+  @Override
   public void checkConnection(Connection conn) throws RemoteException
   {
     // brauchen wir bei nicht, da Embedded

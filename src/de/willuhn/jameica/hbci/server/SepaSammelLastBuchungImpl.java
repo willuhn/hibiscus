@@ -37,17 +37,13 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sepaslastbuchung";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
+  @Override
   protected Class getForeignObject(String arg0) throws RemoteException
   {
     if ("sepaslast_id".equals(arg0))
@@ -56,9 +52,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
     return super.getForeignObject(arg0);
   }
   
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
@@ -89,9 +83,7 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferBuchungImpl#duplicate()
-   */
+  @Override
   public Duplicatable duplicate() throws RemoteException
   {
     SepaSammelLastBuchung b = (SepaSammelLastBuchung) super.duplicate();
@@ -101,65 +93,49 @@ public class SepaSammelLastBuchungImpl extends AbstractSepaSammelTransferBuchung
     return b;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#getSammelTransfer()
-   */
+  @Override
   public SepaSammelLastschrift getSammelTransfer() throws RemoteException
   {
     return (SepaSammelLastschrift) getAttribute("sepaslast_id");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#setSammelTransfer(de.willuhn.jameica.hbci.rmi.SepaSammelTransfer)
-   */
+  @Override
   public void setSammelTransfer(SepaSammelLastschrift s) throws RemoteException
   {
     setAttribute("sepaslast_id",s);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#getMandateId()
-   */
+  @Override
   public String getMandateId() throws RemoteException
   {
     return (String) getAttribute("mandateid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#setMandateId(java.lang.String)
-   */
+  @Override
   public void setMandateId(String id) throws RemoteException
   {
     setAttribute("mandateid",id);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#getSignatureDate()
-   */
+  @Override
   public Date getSignatureDate() throws RemoteException
   {
     return (Date) getAttribute("sigdate");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#setSignatureDate(java.util.Date)
-   */
+  @Override
   public void setSignatureDate(Date date) throws RemoteException
   {
     setAttribute("sigdate",date);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#getCreditorId()
-   */
+  @Override
   public String getCreditorId() throws RemoteException
   {
     return (String) getAttribute("creditorid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung#setCreditorId(java.lang.String)
-   */
+  @Override
   public void setCreditorId(String id) throws RemoteException
   {
     setAttribute("creditorid",id);

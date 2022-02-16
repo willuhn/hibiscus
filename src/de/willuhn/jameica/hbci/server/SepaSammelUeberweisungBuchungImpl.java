@@ -27,17 +27,13 @@ public class SepaSammelUeberweisungBuchungImpl extends AbstractSepaSammelTransfe
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "sepasuebbuchung";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
+  @Override
   protected Class getForeignObject(String arg0) throws RemoteException
   {
     if ("sepasueb_id".equals(arg0))
@@ -46,17 +42,13 @@ public class SepaSammelUeberweisungBuchungImpl extends AbstractSepaSammelTransfe
     return super.getForeignObject(arg0);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#getSammelTransfer()
-   */
+  @Override
   public SepaSammelUeberweisung getSammelTransfer() throws RemoteException
   {
     return (SepaSammelUeberweisung) getAttribute("sepasueb_id");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#setSammelTransfer(de.willuhn.jameica.hbci.rmi.SepaSammelTransfer)
-   */
+  @Override
   public void setSammelTransfer(SepaSammelUeberweisung s) throws RemoteException
   {
     setAttribute("sepasueb_id",s);

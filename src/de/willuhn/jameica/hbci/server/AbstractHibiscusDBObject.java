@@ -32,9 +32,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     super();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusDBObject#getMeta(java.lang.String, java.lang.String)
-   */
+  @Override
   public String getMeta(String name, String defaultValue) throws RemoteException
   {
     if (name == null || name.length() == 0)
@@ -47,9 +45,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     return DBPropertyUtil.get(DBPropertyUtil.Prefix.META,this.getTableName(),id,name,defaultValue);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.HibiscusDBObject#setMeta(java.lang.String, java.lang.String)
-   */
+  @Override
   public void setMeta(String name, String value) throws RemoteException
   {
     if (name == null || name.length() == 0)
@@ -62,9 +58,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     DBPropertyUtil.set(DBPropertyUtil.Prefix.META,this.getTableName(),id,name,value);
   }
   
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     if (this.isNewObject())
@@ -90,9 +84,6 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
     }
   }
   
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#store()
-   */
   @Override
   public void store() throws RemoteException, ApplicationException
   {

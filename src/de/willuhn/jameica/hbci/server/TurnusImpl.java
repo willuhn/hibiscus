@@ -38,25 +38,19 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "turnus";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "bezeichnung";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
+  @Override
   protected void deleteCheck() throws ApplicationException
   {
 		try {
@@ -70,9 +64,7 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 		}
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
   	try {
@@ -97,25 +89,19 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
   	}
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
   	insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#getBezeichnung()
-   */
+  @Override
   public String getBezeichnung() throws RemoteException
   {
     return TurnusHelper.createBezeichnung(this);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#getIntervall()
-   */
+  @Override
   public int getIntervall() throws RemoteException
   {
 		Integer i = (Integer) getAttribute("intervall");
@@ -124,17 +110,13 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 		return i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#setIntervall(int)
-   */
+  @Override
   public void setIntervall(int intervall) throws RemoteException
   {
   	setAttribute("intervall", Integer.valueOf(intervall));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#getZeiteinheit()
-   */
+  @Override
   public int getZeiteinheit() throws RemoteException
   {
 		Integer i = (Integer) getAttribute("zeiteinheit");
@@ -143,17 +125,13 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 		return i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#setZeiteinheit(int)
-   */
+  @Override
   public void setZeiteinheit(int zeiteinheit) throws RemoteException
   {
 		setAttribute("zeiteinheit", Integer.valueOf(zeiteinheit));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#getTag()
-   */
+  @Override
   public int getTag() throws RemoteException
   {
 		Integer i = (Integer) getAttribute("tag");
@@ -162,25 +140,19 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 		return i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#setTag(int)
-   */
+  @Override
   public void setTag(int tag) throws RemoteException
   {
 		setAttribute("tag", Integer.valueOf(tag));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Turnus#isInitial()
-   */
+  @Override
   public boolean isInitial() throws RemoteException
   {
 		return getAttribute("initial") != null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Checksum#getChecksum()
-   */
+  @Override
   public long getChecksum() throws RemoteException
   {
 		String s = ("" + getIntervall()) +
@@ -193,8 +165,8 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
 
   /**
    * Ueberschrieben, um ein virtuelles Attribut "bezeichnung" zu schaffen.
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
   	if ("bezeichnung".equals(arg0))
@@ -206,8 +178,8 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
    * Ueberschrieben, um zu pruefen, ob ein Turnus mit diesen Eigenschaften
    * vielleicht schon existiert. Ist dies der Fall, ignoriert die Funktion
    * das Speichern und kehrt fehlerfrei zurueck.
-   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
    */
+  @Override
   public void insert() throws RemoteException, ApplicationException
   {
 		DBIterator existing = getService().createList(Turnus.class);

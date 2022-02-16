@@ -43,17 +43,13 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "bezeichnung";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try {
@@ -75,9 +71,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     try {
@@ -92,9 +86,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
-   */
+  @Override
   public void insert() throws RemoteException, ApplicationException
   {
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
@@ -102,9 +94,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     super.insert();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
+  @Override
   protected Class getForeignObject(String arg0) throws RemoteException
   {
     if ("konto_id".equals(arg0))
@@ -112,41 +102,31 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getKonto()
-   */
+  @Override
   public Konto getKonto() throws RemoteException
   {
     return (Konto) getAttribute("konto_id");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void setKonto(Konto konto) throws RemoteException
   {
     setAttribute("konto_id", konto);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#getTermin()
-   */
+  @Override
   public Date getTermin() throws RemoteException
   {
     return (Date) getAttribute("termin");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#getAusfuehrungsdatum()
-   */
+  @Override
   public Date getAusfuehrungsdatum() throws RemoteException
   {
     return (Date) getAttribute("ausgefuehrt_am");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#ausgefuehrt()
-   */
+  @Override
   public boolean ausgefuehrt() throws RemoteException
   {
     Integer i = (Integer) getAttribute("ausgefuehrt");
@@ -159,9 +139,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
   // beim Speichern nicht um die Ohren fliegt.
   private boolean whileStore = false;
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#setAusgefuehrt(boolean)
-   */
+  @Override
   public void setAusgefuehrt(boolean b) throws RemoteException, ApplicationException
   {
     try
@@ -178,17 +156,13 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#setTermin(java.util.Date)
-   */
+  @Override
   public void setTermin(Date termin) throws RemoteException
   {
     setAttribute("termin",termin);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Terminable#ueberfaellig()
-   */
+  @Override
   public boolean ueberfaellig() throws RemoteException
   {
     if (ausgefuehrt())
@@ -199,25 +173,19 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     return (termin.before(new Date()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getBezeichnung()
-   */
+  @Override
   public String getBezeichnung() throws RemoteException
   {
     return (String) getAttribute("bezeichnung");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setBezeichnung(java.lang.String)
-   */
+  @Override
   public void setBezeichnung(String bezeichnung) throws RemoteException
   {
     setAttribute("bezeichnung", bezeichnung);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.Changeable#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     // Wir muessen auch alle Buchungen mitloeschen
@@ -253,9 +221,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.Changeable#store()
-   */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
@@ -267,8 +233,8 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
   /**
    * Ueberschrieben, um ein Pseudo-Attribut "buchungen" zu erzeugen, welches
    * eine String-Repraesentation der enthaltenen Buchungen enthaelt.
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("summe".equals(arg0))
@@ -317,9 +283,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     return super.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getSumme()
-   */
+  @Override
   public double getSumme() throws RemoteException
   {
     // BUGZILLA 89 http://www.willuhn.de/bugzilla/show_bug.cgi?id=89
@@ -333,9 +297,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     return sum;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#getBuchungenAsArray()
-   */
+  @Override
   public SammelTransferBuchung[] getBuchungenAsArray() throws RemoteException
   {
     ArrayList buchungen = new ArrayList();
@@ -347,9 +309,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     return (SammelTransferBuchung[]) buchungen.toArray(new SammelTransferBuchung[0]);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#hasWarnings()
-   */
+  @Override
   public boolean hasWarnings() throws RemoteException
   {
     Integer i = (Integer) getAttribute("warnungen");
@@ -358,9 +318,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     return i.intValue() == 1;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransfer#setWarning(boolean)
-   */
+  @Override
   public void setWarning(boolean b) throws RemoteException
   {
     setAttribute("warnungen", Integer.valueOf(b ? 1 : 0));

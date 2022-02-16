@@ -40,17 +40,13 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "zweck";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     try {
@@ -98,33 +94,25 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoNummer()
-   */
+  @Override
   public String getGegenkontoNummer() throws RemoteException
   {
     return (String) getAttribute("empfaenger_konto");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoBLZ()
-   */
+  @Override
   public String getGegenkontoBLZ() throws RemoteException
   {
     return (String) getAttribute("empfaenger_bic");
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("this".equals(arg0))
@@ -132,41 +120,31 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
     return super.getAttribute(arg0);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getGegenkontoName()
-   */
+  @Override
   public String getGegenkontoName() throws RemoteException
   {
     return (String) getAttribute("empfaenger_name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#setGegenkontoNummer(java.lang.String)
-   */
+  @Override
   public void setGegenkontoNummer(String kontonummer) throws RemoteException
   {
     setAttribute("empfaenger_konto",kontonummer != null ? kontonummer.toUpperCase() : null);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung#setGegenkontoBLZ(java.lang.String)
-   */
+  @Override
   public void setGegenkontoBLZ(String blz) throws RemoteException
   {
     setAttribute("empfaenger_bic",blz);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setGegenkontoName(java.lang.String)
-   */
+  @Override
   public void setGegenkontoName(String name) throws RemoteException
   {
     setAttribute("empfaenger_name",name);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
-   */
+  @Override
   public double getBetrag() throws RemoteException
   {
     Double d = (Double) getAttribute("betrag");
@@ -175,41 +153,31 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
     return d.doubleValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck()
-   */
+  @Override
   public String getZweck() throws RemoteException
   {
     return (String) getAttribute("zweck");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getZweck2()
-   */
+  @Override
   public String getZweck2() throws RemoteException
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setBetrag(double)
-   */
+  @Override
   public void setBetrag(double betrag) throws RemoteException
   {
     setAttribute("betrag", Double.valueOf(betrag));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SammelTransferBuchung#setZweck(java.lang.String)
-   */
+  @Override
   public void setZweck(String zweck) throws RemoteException
   {
     setAttribute("zweck",zweck);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
-   */
+  @Override
   public Duplicatable duplicate() throws RemoteException
   {
     SepaSammelTransferBuchung b = (SepaSammelTransferBuchung) getService().createObject(this.getClass(),null);
@@ -224,42 +192,30 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
     return (Duplicatable) b;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Transfer#getWeitereVerwendungszwecke()
-   */
+  @Override
   public String[] getWeitereVerwendungszwecke() throws RemoteException
   {
     return null;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getEndtoEndId()
-   */
+  @Override
   public String getEndtoEndId() throws RemoteException
   {
     return (String) getAttribute("endtoendid");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setEndtoEndId(java.lang.String)
-   */
+  @Override
   public void setEndtoEndId(String id) throws RemoteException
   {
     setAttribute("endtoendid",id);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#getPurposeCode()
-   */
   @Override
   public String getPurposeCode() throws RemoteException
   {
     return (String) getAttribute("purposecode");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.SepaBooking#setPurposeCode(java.lang.String)
-   */
   @Override
   public void setPurposeCode(String code) throws RemoteException
   {

@@ -35,33 +35,25 @@ public class VersionImpl extends AbstractDBObject implements Version
     super();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getPrimaryAttribute()
-   */
+  @Override
   public String getPrimaryAttribute() throws RemoteException
   {
     return "name";
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
-   */
+  @Override
   protected String getTableName()
   {
     return "version";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Version#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return (String) getAttribute("name");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Version#getVersion()
-   */
+  @Override
   public int getVersion() throws RemoteException
   {
     // Wir fangen bei 0 an mit dem zaehlen
@@ -69,9 +61,7 @@ public class VersionImpl extends AbstractDBObject implements Version
     return i == null ? 0 : i.intValue();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Version#setVersion(int)
-   */
+  @Override
   public void setVersion(int newVersion) throws RemoteException
   {
     if (newVersion < 0)
@@ -79,17 +69,13 @@ public class VersionImpl extends AbstractDBObject implements Version
     setAttribute("version", Integer.valueOf(newVersion));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.rmi.Version#setName(java.lang.String)
-   */
+  @Override
   public void setName(String name) throws RemoteException
   {
     setAttribute("name",name);
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -109,17 +95,13 @@ public class VersionImpl extends AbstractDBObject implements Version
     super.insertCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insert()
-   */
+  @Override
   public void insert() throws RemoteException, ApplicationException
   {
     setVersion(getVersion()); // speichert automatisch die Startnummer
