@@ -32,17 +32,13 @@ import de.willuhn.util.ApplicationException;
  */
 public class KontoSearchProvider implements SearchProvider
 {
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Konten");
   }
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
-   */
+  @Override
   public List search(String search) throws RemoteException,
       ApplicationException
   {
@@ -82,17 +78,13 @@ public class KontoSearchProvider implements SearchProvider
       this.konto = k;
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#execute()
-     */
+    @Override
     public void execute() throws RemoteException, ApplicationException
     {
       new KontoNew().handleAction(this.konto);
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#getName()
-     */
+    @Override
     public String getName()
     {
       try
