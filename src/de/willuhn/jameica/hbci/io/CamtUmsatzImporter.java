@@ -49,9 +49,7 @@ public class CamtUmsatzImporter implements Importer
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
 
@@ -241,63 +239,50 @@ public class CamtUmsatzImporter implements Importer
     private int error = 0;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("SEPA CAMT-Format");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (!Umsatz.class.equals(objectType))
       return null; // Wir bieten uns nur fuer Umsaetze an
     
     IOFormat fXml = new MyIOFormat() {
+      @Override
       public String getName()
       {
         return CamtUmsatzImporter.this.getName() + " (XML)";
       }
       
-      /**
-       * @see de.willuhn.jameica.hbci.io.CamtUmsatzImporter.MyIOFormat#isZip()
-       */
       @Override
       public boolean isZip()
       {
         return false;
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[] {"*.xml"};
       }
     };
     IOFormat fZip = new MyIOFormat() {
+      @Override
       public String getName()
       {
         return CamtUmsatzImporter.this.getName() + " (ZIP)";
       }
       
-      /**
-       * @see de.willuhn.jameica.hbci.io.CamtUmsatzImporter.MyIOFormat#isZip()
-       */
       @Override
       public boolean isZip()
       {
         return true;
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
       public String[] getFileExtensions()
       {
         return new String[] {"*.zip"};

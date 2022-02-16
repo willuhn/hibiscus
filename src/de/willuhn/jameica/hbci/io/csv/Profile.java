@@ -182,9 +182,6 @@ public class Profile implements Serializable, Comparable
     return builder.build();
   }
   
-  /**
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj)
   {
@@ -195,9 +192,6 @@ public class Profile implements Serializable, Comparable
     return this.getName() != null && this.getName().equals(other.getName());
   }
   
-  /**
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
-   */
   @Override
   public int compareTo(Object o)
   {
@@ -216,9 +210,6 @@ public class Profile implements Serializable, Comparable
     return this.getName().compareTo(other.getName());
   }
   
-  /**
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString()
   {

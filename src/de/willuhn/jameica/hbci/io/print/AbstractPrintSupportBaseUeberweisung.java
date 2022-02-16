@@ -45,9 +45,7 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
     this.auftrag = a;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     if (this.auftrag == null)
@@ -148,9 +146,7 @@ public abstract class AbstractPrintSupportBaseUeberweisung extends AbstractPrint
     
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#customize(net.sf.paperclips.PagePrint)
-   */
+  @Override
   void customize(PagePrint page) throws ApplicationException
   {
     // Footer mit den Seitenzahlen entfernen. Macht bei einer Einzel-Ueberweisung keinen Sinn.

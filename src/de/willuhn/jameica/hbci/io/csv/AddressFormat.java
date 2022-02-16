@@ -33,9 +33,7 @@ public class AddressFormat implements Format<HibiscusAddress>
   private ImportListener listener        = null;
   private Profile profile                = null;
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.csv.Format#getDefaultProfile()
-   */
+  @Override
   public synchronized Profile getDefaultProfile()
   {
     if (this.profile == null)
@@ -58,17 +56,13 @@ public class AddressFormat implements Format<HibiscusAddress>
     return this.profile;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.csv.Format#getType()
-   */
+  @Override
   public Class<HibiscusAddress> getType()
   {
     return HibiscusAddress.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.csv.Format#getImportListener()
-   */
+  @Override
   public ImportListener getImportListener()
   {
     if (this.listener == null)
@@ -77,9 +71,7 @@ public class AddressFormat implements Format<HibiscusAddress>
         
         private AddressbookService addressbook = null;
 
-        /**
-         * @see de.willuhn.jameica.hbci.io.csv.ImportListener#beforeStore(de.willuhn.jameica.hbci.io.csv.ImportEvent)
-         */
+        @Override
         public void beforeStore(ImportEvent event) throws OperationCanceledException
         {
           try

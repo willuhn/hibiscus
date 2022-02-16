@@ -55,9 +55,7 @@ public abstract class AbstractPrintSupport implements PrintSupport
   FontData fontTiny     = Font.SMALL.getSWTFont().getFontData()[0];
   FontData fontTinyBold = new FontData(fontTiny.getName(),fontTiny.getHeight(),SWT.BOLD);
   
-  /**
-   * @see de.willuhn.jameica.print.PrintSupport#print()
-   */
+  @Override
   public PrintJob print() throws ApplicationException
   {
     Print content = printContent();

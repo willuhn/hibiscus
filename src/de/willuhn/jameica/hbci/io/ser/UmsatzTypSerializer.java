@@ -26,9 +26,7 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
 {
   private Map<String,UmsatzTyp> cache = null;
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#serialize(java.lang.Object, java.lang.Object)
-   */
+  @Override
   public String serialize(Object context, UmsatzTyp value) throws IOException
   {
     if (value == null)
@@ -37,9 +35,7 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
     return value.getName();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#unserialize(java.lang.Object, java.lang.String)
-   */
+  @Override
   public UmsatzTyp unserialize(Object context, String value) throws IOException
   {
     if (value == null || value.length() == 0)

@@ -34,9 +34,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.MT940UmsatzExporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     OutputStreamWriter out = null;
@@ -182,9 +180,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("Swift MT940-Format (alle Buchungen in einer logischen Datei)");

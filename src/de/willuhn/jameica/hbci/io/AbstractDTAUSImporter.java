@@ -42,9 +42,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private Hashtable kontenCache = new Hashtable();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     // Wir merken uns die Konten, die der User schonmal ausgewaehlt
