@@ -135,9 +135,6 @@ public enum KontoType
     return null;
   }
   
-  /**
-   * @see java.lang.Enum#toString()
-   */
   @Override
   public String toString()
   {
