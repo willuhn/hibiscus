@@ -62,33 +62,25 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
   @Resource
   private SynchronizeEngine engine = null;
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getName()
-   */
+  @Override
   public String getName()
   {
     return "FinTS/HBCI";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#createJobGroup(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   protected de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend.JobGroup createJobGroup(Konto k)
   {
     return new HBCIJobGroup(k);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getJobProviderInterface()
-   */
+  @Override
   protected Class<HBCISynchronizeJobProvider> getJobProviderInterface()
   {
     return HBCISynchronizeJobProvider.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getSynchronizeKonten(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public List<Konto> getSynchronizeKonten(Konto k)
   {
     List<Konto> list = super.getSynchronizeKonten(k);
@@ -104,9 +96,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     return result;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#create(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public <T> T create(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
   {
     try
@@ -126,9 +116,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     return(T) super.create(type,konto);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public boolean supports(Class<? extends SynchronizeJob> type, Konto konto)
   {
     if (!this.supports(konto))
@@ -137,9 +125,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     return super.supports(type,konto);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#execute(java.util.List)
-   */
+  @Override
   public synchronized SynchronizeSession execute(List<SynchronizeJob> jobs) throws ApplicationException, OperationCanceledException
   {
     try
@@ -160,9 +146,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
     return super.execute(jobs);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
-   */
   @Override
   public List<String> getPropertyNames(Konto konto)
   {
@@ -238,9 +221,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
       super(k);
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend.JobGroup#sync()
-     */
+    @Override
     protected void sync() throws Exception
     {
       ////////////////////////////////////////////////////////////////////
@@ -448,8 +429,8 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
 
     /**
      * Schliesst die waehrend der Ausfuehrung geoeffneten Ressourcen.
-     * @see java.io.Closeable#close()
      */
+    @Override
     public void close() throws IOException
     {
       Logger.info("closing resources");
@@ -471,9 +452,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
      */
     private class TaskPassportInit extends AbstractTaskWrapper<Passport>
     {
-      /**
-       * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend.HBCIJobGroup.AbstractTaskWrapper#internalExecute()
-       */
+      @Override
       public Passport internalExecute() throws Throwable
       {
         checkInterrupted();
@@ -519,9 +498,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         this.passport = passport;
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend.HBCIJobGroup.AbstractTaskWrapper#internalExecute()
-       */
+      @Override
       public PassportHandle internalExecute() throws Throwable
       {
         checkInterrupted();
@@ -557,9 +534,7 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
         this.handle = handle;
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend.HBCIJobGroup.AbstractTaskWrapper#internalExecute()
-       */
+      @Override
       public HBCIHandler internalExecute() throws Throwable
       {
         checkInterrupted();
@@ -620,9 +595,6 @@ public class HBCISynchronizeBackend extends AbstractSynchronizeBackend<HBCISynch
        */
       protected abstract T internalExecute() throws Throwable;
 
-      /**
-       * @see java.lang.Runnable#run()
-       */
       @Override
       public void run()
       {

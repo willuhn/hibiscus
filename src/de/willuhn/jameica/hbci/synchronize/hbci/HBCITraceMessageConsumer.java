@@ -31,17 +31,13 @@ public class HBCITraceMessageConsumer implements MessageConsumer
   private Map<String,History> history = new HashMap<String,History>();
   private History current = null;
   
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{HBCITraceMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     HBCITraceMessage msg = (HBCITraceMessage) message;
@@ -103,9 +99,7 @@ public class HBCITraceMessageConsumer implements MessageConsumer
     return list;
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     return false; // per Manifest
