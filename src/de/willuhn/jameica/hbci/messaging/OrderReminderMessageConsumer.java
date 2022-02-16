@@ -34,17 +34,13 @@ import de.willuhn.util.MultipleClassLoader;
  */
 public class OrderReminderMessageConsumer implements MessageConsumer
 {
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{ReminderMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     ReminderMessage msg           = (ReminderMessage) message;
@@ -117,9 +113,7 @@ public class OrderReminderMessageConsumer implements MessageConsumer
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     // manuell via Manifest registriert.
