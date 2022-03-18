@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0972 Im Adressbuch auch die Einzelaufträge von/an diese Adresse anzeigen (um auch jene anzeigen zu können, die noch nicht ausgeführt wurden und daher noch nicht in den Umsätzen auftauchen)
   * NEW: 0971 Neue Option "Unterkategorien von Treffern anzeigen" im Dialog "Auswahl der Kategorie" - siehe https://homebanking-hilfe.de/forum/topic.php?p=162002#real162002
   * NEW: 0970 Feature INIT_FLIP_USER_INST per Default aktiv - siehe https://github.com/hbci4j/hbci4java/pull/67
   * NEW: 0969 Update auf HBCI4Java 3.1.58 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.58

@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2022 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -90,28 +90,16 @@ public class EmpfaengerNew extends AbstractView
     TabGroup tab = new TabGroup(folder,i18n.tr("Umsätze"), false,1);
     control.getUmsatzListe().paint(tab.getComposite());
 
-    // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
-    TabGroup tab2 = new TabGroup(folder,i18n.tr("Eingezogene SEPA-Sammellastschriften"));
-    control.getSammelLastListe().paint(tab2.getComposite());
+    TabGroup tab2 = new TabGroup(folder,i18n.tr("Überweisungen"));
+    control.getUeberweisungListe().paint(tab2.getComposite());
 
-    TabGroup tab3 = new TabGroup(folder,i18n.tr("SEPA-Sammelüberweisungen"));
-    control.getSammelUeberweisungListe().paint(tab3.getComposite());
+    TabGroup tab1 = new TabGroup(folder,i18n.tr("Lastschriften"));
+    control.getLastschriftListe().paint(tab1.getComposite());
+
+    TabGroup tab3 = new TabGroup(folder,i18n.tr("Sammellastschriften"));
+    control.getSammelLastListe().paint(tab3.getComposite());
+
+    TabGroup tab4 = new TabGroup(folder,i18n.tr("Sammelüberweisungen"));
+    control.getSammelUeberweisungListe().paint(tab4.getComposite());
   }
 }
-
-
-/**********************************************************************
- * $Log: EmpfaengerNew.java,v $
- * Revision 1.22  2011/08/08 11:27:56  willuhn
- * @C Bei nicht-aenderbaren Adressen Buttons zwar einblenden aber readonly machen - irritiert nicht so wie komplett fehlende Buttons
- *
- * Revision 1.21  2011-05-03 10:13:15  willuhn
- * @R Hintergrund-Farbe nicht mehr explizit setzen. Erzeugt auf Windows und insb. Mac teilweise unschoene Effekte. Besonders innerhalb von Label-Groups, die auf Windows/Mac andere Hintergrund-Farben verwenden als der Default-Hintergrund
- *
- * Revision 1.20  2011-04-08 15:19:14  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.19  2010/04/14 17:44:10  willuhn
- * @N BUGZILLA 83
- **********************************************************************/

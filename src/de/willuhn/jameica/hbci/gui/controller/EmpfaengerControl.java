@@ -47,9 +47,13 @@ import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.parts.SepaSammelTransferBuchungList;
+import de.willuhn.jameica.hbci.gui.parts.SimpleSepaLastschriftList;
+import de.willuhn.jameica.hbci.gui.parts.SimpleSepaUeberweisungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
+import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
@@ -82,8 +86,10 @@ public class EmpfaengerControl extends AbstractControl
 	private Input kommentar         = null;
 
   private Part list               = null;
-  private Part sammelList         = null;
-  private Part sammelList2        = null;
+  private Part uebList            = null;
+  private Part lastList           = null;
+  private Part sammelUebList      = null;
+  private Part sammelLastList     = null;
   private Part umsatzList         = null;
   
   private IbanListener ibanListener = new IbanListener();
@@ -175,24 +181,40 @@ public class EmpfaengerControl extends AbstractControl
     return this.umsatzList;
   }
 
-  // BUGZILLA 107 http://www.willuhn.de/bugzilla/show_bug.cgi?id=107
   /**
-   * Liefert eine Liste von allen Sammel-Lastschrift-Buchungen, die von dieser
-   * Adresse eingezogen wurden.
+   * Liefert eine Liste von allen Ueberweisung, die an diese Adresse ueberwiesen wurden.
    * @return Tabelle.
    * @throws RemoteException
    */
-  public Part getSammelLastListe() throws RemoteException
+  public Part getUeberweisungListe() throws RemoteException
   {
-    if (this.sammelList != null)
-      return this.sammelList;
+    if (this.uebList != null)
+      return this.uebList;
 
-    DBIterator list = Settings.getDBService().createList(SepaSammelLastBuchung.class);
+    DBIterator list = Settings.getDBService().createList(AuslandsUeberweisung.class);
     list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelList = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelLastBuchungNew());
-    return this.sammelList;
+    this.uebList = new SimpleSepaUeberweisungList(list);
+    return this.uebList;
+  }
+
+  /**
+   * Liefert eine Liste von allen Lastschriften, die von dieser Adresse eingezogen wurden.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getLastschriftListe() throws RemoteException
+  {
+    if (this.lastList != null)
+      return this.lastList;
+
+    DBIterator list = Settings.getDBService().createList(SepaLastschrift.class);
+    list.addFilter("empfaenger_konto = ?", getAddress().getIban());
+    list.setOrder(" ORDER BY id DESC");
+
+    this.lastList = new SimpleSepaLastschriftList(list);
+    return this.lastList;
   }
 
   /**
@@ -203,15 +225,34 @@ public class EmpfaengerControl extends AbstractControl
    */
   public Part getSammelUeberweisungListe() throws RemoteException
   {
-    if (this.sammelList2 != null)
-      return this.sammelList2;
+    if (this.sammelUebList != null)
+      return this.sammelUebList;
 
     DBIterator list = Settings.getDBService().createList(SepaSammelUeberweisungBuchung.class);
     list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelList2 = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelUeberweisungBuchungNew());
-    return this.sammelList2;
+    this.sammelUebList = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelUeberweisungBuchungNew());
+    return this.sammelUebList;
+  }
+
+  /**
+   * Liefert eine Liste von allen Sammel-Lastschrift-Buchungen, die von dieser
+   * Adresse eingezogen wurden.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Part getSammelLastListe() throws RemoteException
+  {
+    if (this.sammelLastList != null)
+      return this.sammelLastList;
+
+    DBIterator list = Settings.getDBService().createList(SepaSammelLastBuchung.class);
+    list.addFilter("empfaenger_konto = ?", getAddress().getIban());
+    list.setOrder(" ORDER BY id DESC");
+
+    this.sammelLastList = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelLastBuchungNew());
+    return this.sammelLastList;
   }
 
   /**
