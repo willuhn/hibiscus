@@ -578,6 +578,11 @@ public class Controller extends AbstractControl
       if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
         return;
 
+      // Speichern, damit sicher ist, dass wir vernuenftige Daten fuer den
+      // Test haben und die auch gespeichert sind
+      if (!handleStore())
+        return;
+
       final PinTanConfig config = this.getConfig();
       config.reload();
       new PassportSync().handleAction(new PassportHandleImpl(config));
