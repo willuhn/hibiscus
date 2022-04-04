@@ -61,6 +61,7 @@ CREATE TABLE aueberweisung (
   termin date NOT NULL,
   banktermin integer NULL,
   umbuchung integer NULL,
+  instantpayment integer NULL,
   ausgefuehrt integer NOT NULL,
   ausgefuehrt_am timestamp,
   endtoendid varchar(35) NULL,
@@ -399,4 +400,4 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',68);
+INSERT INTO version (name,version) values ('db',69);

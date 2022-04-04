@@ -109,7 +109,12 @@ public class HBCIContext
         
         if (ueb.isTerminUeberweisung())
           return i18n.tr("{0}: ({1}) {2} {3} per {4} an {5} ({6}) überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),HBCI.DATEFORMAT.format(ueb.getTermin()),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
-        
+
+        if (ueb.isUmbuchung())
+          return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen (Umbuchung)",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
+        if (ueb.isInstantPayment())
+          return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen (Echtzeitüberweisung)",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
+
         return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
       }
       

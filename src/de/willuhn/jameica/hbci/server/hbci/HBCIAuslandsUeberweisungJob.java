@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import org.kapott.hbci.GV.HBCIJob;
+import org.kapott.hbci.GV_Result.GVRInstUebSEPA;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -24,6 +25,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.InstantPaymentStatus;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -38,6 +40,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 	private AuslandsUeberweisung ueberweisung = null;
   private boolean isTermin                  = false;
   private boolean isUmb                     = false;
+  private boolean isInstant                 = false;
 	private Konto konto                       = null;
 
   /**
@@ -63,6 +66,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       this.konto        = this.ueberweisung.getKonto();
       this.isTermin     = this.ueberweisung.isTerminUeberweisung();
       this.isUmb        = this.ueberweisung.isUmbuchung();
+      this.isInstant    = this.ueberweisung.isInstantPayment();
 
       if (this.ueberweisung.getBetrag() > Settings.getUeberweisungLimit())
         throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
@@ -128,10 +132,9 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   public String getIdentifier()
   {
-    if (isTermin)
-      return "TermUebSEPA";
-    if (isUmb)
-      return "UmbSEPA";
+    if (isTermin)       return "TermUebSEPA";
+    if (isUmb)          return "UmbSEPA";
+    if (this.isInstant) return "InstUebSEPA";
     
     return "UebSEPA";
   }
@@ -151,12 +154,19 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
 
     super.setJob(job);
   }
-
+  
   /**
    * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#getName()
    */
   public String getName() throws RemoteException
   {
+    if (this.isUmb)
+      return i18n.tr("SEPA-Umbuchung an {0} (IBAN: {1})", ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer());
+    if (this.isTermin)
+      return i18n.tr("SEPA-Terminüberweisung an {0} (IBAN: {1})", ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer());
+    if (this.isInstant)
+      return i18n.tr("SEPA-Echtzeitüberweisung an {0} (IBAN: {1})", ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer());
+
     return i18n.tr("SEPA-Überweisung an {0} (IBAN: {1})", ueberweisung.getGegenkontoName(), ueberweisung.getGegenkontoNummer());
   }
 
@@ -165,6 +175,28 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   protected void markExecuted() throws RemoteException, ApplicationException
   {
+    if (this.isInstant)
+    {
+      GVRInstUebSEPA result = (GVRInstUebSEPA) getJobResult();
+      final InstantPaymentStatus status = InstantPaymentStatus.determine(result.getOrderStatus());
+      if (status != null)
+      {
+        Logger.info("received status code for sepa instant payment: " + status.getStatus() + " - " + status.getDescription());
+        if (!status.isSuccess())
+        {
+          final String s1 = ueberweisung.getGegenkontoNummer();
+          final String s2 = status.getDescription();
+          konto.addToProtokoll(i18n.tr("Bank-Antwort auf Echtzeitüberweisung an {0}: {1}",s1,s2),Protokoll.TYP_ERROR);
+          throw new ApplicationException(i18n.tr("Echtzeitüberweisung an {0} fehlgeschlagen: {1}",s1,s2));
+        }
+      }
+      else
+      {
+        // Wenn kein Status-Code uebergeben wurde, gehen wir davon aus, dass der Auftrag erfolgreich ausgefuehrt wurde, da der
+        // Status Bankseitig optional ist
+        Logger.info("received no status status code for sepa instant payment (optional) - assuming as successfully executed");
+      }
+    }
     ueberweisung.setAusgefuehrt(true);
     
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueberweisung));
