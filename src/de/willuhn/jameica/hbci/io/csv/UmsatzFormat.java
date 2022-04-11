@@ -59,9 +59,9 @@ public class UmsatzFormat implements Format<Umsatz>
                  // erzeugten CSV-Dateien 1:1 wieder importiert werden koennen, ohne
                  // dass der User das Profil anpassen muss.
       
-      list.add(new Column("gegenkontoNummer",i18n.tr("Gegenkonto"),i++,ts));
-      list.add(new Column("gegenkontoBLZ",   i18n.tr("Gegenkonto BLZ"),i++,ts));
-      list.add(new Column("gegenkontoName",  i18n.tr("Gegenkonto Inhaber"),i++,ts));
+      list.add(new Column("gegenkontoNummer",i18n.tr("Gegenkonto IBAN"),i++,ts));
+      list.add(new Column("gegenkontoBLZ",   i18n.tr("Gegenkonto BIC"),i++,ts));
+      list.add(new Column("gegenkontoName",  i18n.tr("Gegenkonto"),i++,ts));
       list.add(new Column("betrag",i18n.tr("Betrag"),i++,vs));
       list.add(new Column("valuta",i18n.tr("Valuta"),i++,ds));
       list.add(new Column("datum",i18n.tr("Datum"),i++,ds));
