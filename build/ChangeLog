@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 0976 Schönere Default-Farben für Soll- und Habenbuchungen, die auch auf Dark-Themes besser lesbar sind
   * CHG: 0975 CSV-Import: Bezeichnungen im Dialog für die Zuordnung der Spalten des Gegenkontos zu denen in der Umsatzliste angeglichen - siehe https://homebanking-hilfe.de/forum/topic.php?t=25139
   * NEW: 0974 Bei Lastschriften mit clientseitiger Wiederholung in den duplizierten Aufträgen als SEPA Zieltermin nicht morgen verwenden sondern das nächstmögliche Datum in der Zukunft basierend auf Zieldatum der Vorlage und Wiederholungsintervall 
   * NEW: 0973 Unterstützung für SEPA-Echtzeitüberweisungen (SEPA Instant Payments) - als Auftragsart bei der Erstellung einer Überweisung auswählbar
