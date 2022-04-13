@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
+import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -146,6 +147,7 @@ public class UmsatzTree extends TreePart
       }
     
     });
+    
     this.addColumn(i18n.tr("Bezeichnung"),      "name");
     if (settings.getBoolean("usage.display.all",false))
       addColumn(i18n.tr("Verwendungszweck"),    "mergedzweck");
@@ -154,6 +156,7 @@ public class UmsatzTree extends TreePart
     this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.addColumn(i18n.tr("Notiz"),            "kommentar");
+    this.addColumn(new KontoColumn());
 
     this.setContextMenu(new UmsatzList());
     
