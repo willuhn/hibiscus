@@ -13,6 +13,9 @@ package de.willuhn.jameica.hbci.gui.parts;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.jameica.hbci.rmi.TransferQueryBuilder;
+import de.willuhn.jameica.hbci.rmi.TransferQueryBuilderWithDBService;
+import de.willuhn.jameica.hbci.rmi.TransferQueryBuilderWithStatusbarMessage;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -44,19 +47,15 @@ import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
-import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
-import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.Reminder;
 import de.willuhn.jameica.reminder.ReminderStorageProvider;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 
 /**
@@ -170,58 +169,19 @@ public abstract class AbstractSammelTransferList extends AbstractFromToList
    */
   protected DBIterator getList(Object konto, Date from, Date to, String text) throws RemoteException
   {
-    int filterCount = 0;
-
-    HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    
-    DBIterator list = service.createList(getObjectType());
-    if (from != null)
-    {
-      list.addFilter("termin >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
-      filterCount++;
-    }
-    if (to != null)
-    {
-      list.addFilter("termin <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
-      filterCount++;
-    }
-    
-    if (text != null && text.length() > 0)
-    {
-      list.addFilter("LOWER(bezeichnung) like ?", "%" + text.toLowerCase() + "%");
-      filterCount++;
-    }
-
-    if (konto != null)
-    {
-      if (konto instanceof Konto)
-        list.addFilter("konto_id = " + ((Konto) konto).getID());
-      else if (konto instanceof String)
-        list.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) konto);
-      
-      filterCount++;
-    }
-
-    boolean pending = ((Boolean) this.getPending().getValue()).booleanValue();
-    if (pending)
-    {
-      list.addFilter("ausgefuehrt = 0");
-      filterCount++;
-    }
-
-    list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
-
-    if (filterCount > 0)
-    {
-      final int all = service.createList(getObjectType()).size();
-      final int size = list.size();
-      if (all != size)
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Suchkriterien: {0} - Anzeige: {1} von {2} Aufträgen",Integer.toString(filterCount), Integer.toString(size), Integer.toString(all)),StatusBarMessage.TYPE_INFO));
-      else
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Suchkriterien: {0}",Integer.toString(filterCount)),StatusBarMessage.TYPE_INFO));
-    }
-
-    return list;
+    TransferQueryBuilder builder = new TransferQueryBuilderWithStatusbarMessage(
+            new TransferQueryBuilderWithDBService(Settings.getDBService(), getObjectType()),
+            i18n
+    );
+    //@formatter:off
+    return builder.withStartDate(from)
+                  .withEndDate(to)
+                  .withTextLike(text)
+                  .withAccount(konto)
+                  .withOnlyPendingTransactions((Boolean) this.getPending().getValue())
+                  .orderedByDateDesc()
+                  .build();
+    //@formatter:on
   }
   
   /**
