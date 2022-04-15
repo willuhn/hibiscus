@@ -154,10 +154,9 @@ public class VelocityExporter implements Exporter
 
     File[] found = finder.findRecursive();
     
-    ArrayList l = new ArrayList();
-    for (int i=0;i<found.length;++i)
+    ArrayList<IOFormat> l = new ArrayList<>();
+    for (final File ef : found)
     {
-      final File ef = found[i];
       Logger.info("  found template: " + ef.getAbsolutePath());
 
       String name = ef.getName();

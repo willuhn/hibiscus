@@ -65,19 +65,19 @@ public class FlaggableChange implements Action
     try
     {
       objects[0].transactionBegin();
-      for (int i=0;i<objects.length;++i)
+      for (final Flaggable f : objects)
       {
-        final int current = objects[i].getFlags();
-        final boolean have = objects[i].hasFlag(this.flags);
+        final int current = f.getFlags();
+        final boolean have = f.hasFlag(this.flags);
         if (this.add && !have)
-          objects[i].setFlags(current | this.flags);
+          f.setFlags(current | this.flags);
         else if (!this.add && have)
-          objects[i].setFlags(current ^ this.flags);
-        
-        this.postProcess(objects[i]);
-        objects[i].store();
-        
-        Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(objects[i]));
+          f.setFlags(current ^ this.flags);
+
+        postProcess(f);
+        f.store();
+
+        Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(f));
       }
       objects[0].transactionCommit();
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Änderungen gespeichert"), StatusBarMessage.TYPE_SUCCESS));

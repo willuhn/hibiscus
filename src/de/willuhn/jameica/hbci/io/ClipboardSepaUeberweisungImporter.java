@@ -60,7 +60,7 @@ public class ClipboardSepaUeberweisungImporter
       text = PT_SPLIT.matcher(text).replaceAll(":");
 
       StringTokenizer st = new StringTokenizer(text,System.getProperty("line.separator","\n"));
-      HashMap values = new HashMap();
+      HashMap<String, String> values = new HashMap<>();
 
       while (st.hasMoreTokens())
       {
@@ -79,20 +79,18 @@ public class ClipboardSepaUeberweisungImporter
 
       AuslandsUeberweisung u = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
 
-      Iterator i = values.keySet().iterator();
-      while (i.hasNext())
+      for (String key : values.keySet())
       {
-        String s = (String) i.next();
-        String value = (String) values.get(s);
-        if (value == null || s == null)
+        String value = values.get(key);
+        if (value == null || key == null)
           continue;
-        if (PT_BLZ.matcher(s).matches())
+        if (PT_BLZ.matcher(key).matches())
           u.setGegenkontoBLZ(value.replaceAll(" ",""));
-        else if (PT_KONTO.matcher(s).matches())
+        else if (PT_KONTO.matcher(key).matches())
           u.setGegenkontoNummer(value.replaceAll(" ",""));
-        else if (PT_NAME.matcher(s).matches())
+        else if (PT_NAME.matcher(key).matches())
           u.setGegenkontoName(value);
-        else if (PT_ZWECK.matcher(s).matches())
+        else if (PT_ZWECK.matcher(key).matches())
           u.setZweck(value);
       }
       return u;

@@ -49,7 +49,7 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
     this.betrag    = 0.0d;
 
     UmsatzTree tree = t[0];
-    List list  = tree.getUmsatzTree();
+    List<UmsatzTreeNode> list  = tree.getUmsatzTree();
 
     Reporter reporter = null;
     try
@@ -63,9 +63,9 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
       reporter.createHeader();
 
       // Iteration ueber die Kategorien
-      for (int i=0; i<list.size(); ++i)
+      for (UmsatzTreeNode node : list)
       {
-        this.renderNode(reporter,(UmsatzTreeNode) list.get(i),0);
+        this.renderNode(reporter, node,0);
         reporter.setNextRecord();
       }
       
@@ -129,10 +129,9 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
       this.betrag    += db.doubleValue();
     }
 
-    List<UmsatzTreeNode> children = node.getSubGroups();
-    for (int i=0; i<children.size(); ++i)
+    for (UmsatzTreeNode child : node.getSubGroups())
     {
-      renderNode(reporter, children.get(i), level+1);
+      renderNode(reporter, child, level+1);
     }
   }
   

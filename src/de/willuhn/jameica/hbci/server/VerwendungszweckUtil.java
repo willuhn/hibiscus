@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -459,8 +460,7 @@ public class VerwendungszweckUtil
     String[] wvz = t.getWeitereVerwendungszwecke();
     if (wvz != null && wvz.length > 0)
     {
-      for (String s:wvz)
-        lines.add(s);
+      Collections.addAll(lines, wvz);
     }
 
     String[] list = lines.toArray(new String[0]);

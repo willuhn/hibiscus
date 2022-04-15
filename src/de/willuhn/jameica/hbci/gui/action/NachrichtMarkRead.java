@@ -49,15 +49,14 @@ public class NachrichtMarkRead implements Action
       list = new Nachricht[]{(Nachricht)context}; // Array mit einem Element
 
 		try {
-
-      for (int i=0;i<list.length;++i)
+      for (final Nachricht nachricht : list)
       {
-        if (list[i].isNewObject())
+        if (nachricht.isNewObject())
           continue; // muss nicht geloescht werden
 
         // ok, wir loeschen das Objekt
-        list[i].setGelesen(true);
-        list[i].store();
+        nachricht.setGelesen(true);
+        nachricht.store();
       }
       if (array)
         GUI.getStatusBar().setSuccessText(i18n.tr("{0} System-Nachrichten als gelesen markiert.",""+list.length));

@@ -162,8 +162,8 @@ public class update0012 implements Update
             
             String s = Integer.toString(currentId);
             Logger.info("copying " + sl.length + " usage lines for type: " + currentType + ", id: " + s);
-            for (int i=0;i<sl.length;++i)
-              Logger.debug("  " + sl[i]);
+            for (String value : sl)
+              Logger.debug("  " + value);
             
             boolean ausgefuehrt = false;
             

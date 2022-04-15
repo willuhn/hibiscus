@@ -325,10 +325,9 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       }
 
       String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
-
-      for (int i=0;i<list.length;++i)
+      for (String value : list)
       {
-        String test = list[i].trim();
+        String test = value.trim();
         if (zweck.indexOf(test) != -1 ||
             name.indexOf(test) != -1 ||
             name2.indexOf(test) != -1 ||

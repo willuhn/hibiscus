@@ -391,12 +391,11 @@ public class EmpfaengerList extends TablePart implements Part
           // Jetzt fragen wir das aktuelle Adressbuch nach den gesuchten Adressen
           String text = (String) EmpfaengerList.this.search.getValue();
           mySettings.setAttribute("search",text);
-          List found = EmpfaengerList.this.book.findAddresses(text);
+          List<Address> found = EmpfaengerList.this.book.findAddresses(text);
           if (found == null)
             return;
-          for (int i=0;i<found.size();++i)
+          for (Address a : found)
           {
-            Address a = (Address) found.get(i);
             if (filter == null || filter.accept(a))
               EmpfaengerList.this.addItem(a);
           }

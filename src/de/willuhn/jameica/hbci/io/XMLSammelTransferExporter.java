@@ -29,11 +29,11 @@ public class XMLSammelTransferExporter extends XMLExporter
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     SammelTransfer[] transfers = (SammelTransfer[]) objects;
-    List all = new ArrayList();
-    for (int i=0;i<transfers.length;++i)
+    List<Object> all = new ArrayList<>();
+    for (SammelTransfer transfer : transfers)
     {
-      all.add(transfers[i]);
-      DBIterator buchungen = transfers[i].getBuchungen();
+      all.add(transfer);
+      DBIterator buchungen = transfer.getBuchungen();
       while (buchungen.hasNext())
         all.add(buchungen.next());
     }

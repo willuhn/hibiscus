@@ -20,6 +20,8 @@ import de.willuhn.jameica.hbci.rmi.SammelUeberweisungBuchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
+import java.util.Arrays;
+
 /**
  * Abstrakte Basis-Klasse fuer DTAUS-Import/Export.
  */
@@ -90,13 +92,12 @@ public abstract class AbstractDTAUSIO implements IO
       return null;
 
     Class[] supported = getSupportedObjectTypes();
-    if (supported == null || supported.length == 0)
-      return null;
-    
-    for (int i=0;i<supported.length;++i)
+    if (supported != null && supported.length > 0)
     {
-      if (objectType.equals(supported[i]))
-        return new IOFormat[] { new MyIOFormat(objectType) };
+      if (Arrays.asList(supported).contains(objectType))
+      {
+        return new IOFormat[]{new MyIOFormat(objectType)};
+      }
     }
     return null;
   }

@@ -238,13 +238,12 @@ public class ImportDialog extends AbstractDialog
     Importer[] importers = IORegistry.getImporters();
 
     int size          = 0;
-    ArrayList l       = new ArrayList();
+    ArrayList<Imp> l  = new ArrayList<>();
     String lastFormat = settings.getString("lastformat",null);
     Imp selected      = null;
 
-    for (int i=0;i<importers.length;++i)
-		{
-      Importer imp = importers[i];
+    for (Importer imp : importers)
+    {
       if (imp == null)
         continue;
       IOFormat[] formats = imp.getIOFormats(type);
@@ -253,17 +252,17 @@ public class ImportDialog extends AbstractDialog
         Logger.debug("importer " + imp.getName() + " provides no import formats for " + type.getName() + ", skipping");
         continue;
       }
-      for (int j=0;j<formats.length;++j)
+      for (IOFormat format : formats)
       {
         size++;
-        Imp im = new Imp(imp,formats[j]);
+        Imp im = new Imp(imp, format);
         l.add(im);
 
         String lf = im.format.getName();
         if (lastFormat != null && lf != null && lf.equals(lastFormat))
           selected = im;
       }
-		}
+    }
 
 		if (size == 0)
 		{

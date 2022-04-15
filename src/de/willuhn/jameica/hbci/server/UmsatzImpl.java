@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
@@ -86,9 +87,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       String[] ewz = getWeitereVerwendungszwecke();
       if (ewz != null && ewz.length > 0)
       {
-        for (int i=0;i<ewz.length;++i)
+        for (String verwendungszweck : ewz)
         {
-          HBCIProperties.checkLength(ewz[i],limit);
+          HBCIProperties.checkLength(verwendungszweck,limit);
         }
       }
 
@@ -639,10 +640,9 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       return (UmsatzTyp) cache.get(i);
 
     // Nicht fest zugeordnet, dann schauen wir mal, ob's eine dynamische Zuordnung gibt
-    Iterator typen = cache.values().iterator();
-    while (typen.hasNext())
+    for (DBObject dbObject : cache.values())
     {
-      UmsatzTyp ut = (UmsatzTyp) typen.next();
+      UmsatzTyp ut = (UmsatzTyp) dbObject;
       if (ut.matches(this))
         return ut;
     }

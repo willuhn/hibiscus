@@ -358,9 +358,9 @@ public class UmsatzList extends ContextMenu implements Extendable
 
         try
         {
-          for (int i=0;i<umsaetze.length;++i)
+          for (Umsatz umsatz : umsaetze)
           {
-            if (umsaetze[i].hasFlag(Umsatz.FLAG_NOTBOOKED))
+            if (umsatz.hasFlag(Umsatz.FLAG_NOTBOOKED))
               return false;
           }
         }

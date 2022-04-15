@@ -323,11 +323,10 @@ public class HBCIProperties
   {
     if (chars == null || chars.length() == 0)
       return;
-    char[] c = chars.toCharArray();
-    for (int i=0;i<c.length;++i)
+    for (char value : chars.toCharArray())
     {
-      if (validChars.indexOf(c[i]) == -1)
-        throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf in \"{1}\" nicht verwendet werden", "" + c[i], chars));
+      if (validChars.indexOf(value) == -1)
+        throw new ApplicationException(i18n.tr("Das Zeichen \"{0}\" darf in \"{1}\" nicht verwendet werden", "" + value, chars));
     }
   }
 
@@ -851,9 +850,9 @@ public class HBCIProperties
     }
 
     // Und jetzt noch fuer die Kundenkennungen aller Konten.
-    for (int i=0;i<accounts.length;++i)
+    for (Konto account : accounts)
     {
-      String value = accounts[i].customerid;
+      String value = account.customerid;
       if (value != null)
         set.add(value);
     }
