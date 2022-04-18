@@ -11,8 +11,12 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +53,125 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   private final static transient boolean ignorewhitespace = settings.getBoolean("search.ignore.whitespace",true);
   
   private final static transient Map<String,Pattern> patternCache = new HashMap<String,Pattern>();
+
+  /**
+   * Splits up a string based on a separator while supporting a simple escaping
+   * mechanism.
+   *
+   * The escape character is hardcoded to a backslash.
+   * <p>
+   * Escape characters are only recognized <b>and</b> removed if directly
+   * preceding the given separator.
+   * <p>
+   * It does not support escaping escape characters.
+   * <p>
+   * Examples:
+   * <ul>
+   *   <li><code>split_escape("a,b,c", ",");</code> shall evaluate to
+   *       <code>["a", "b", "c"]</code>
+   *   <li><code>split_escape("a\,b,c", ",");</code> shall evaluate to
+   *       <code>["a,b", "c"]</code>
+   *   <li><code>split_escape("a,\b,c", ",");</code> shall evaluate to
+   *       <code>["a", "\b", "c"]</code>
+   *   <li><code>split_escape("a,b,c\", ",");</code> shall evaluate to
+   *       <code>["a", "b", "c\"]</code>
+   *   <li><code>split_escape("a\,", ",");</code> shall evaluate to
+   *       <code>["a,"]</code>
+   *  </ul>
+   *
+   * @param orig Original string to split up. <b>Must not</b> be null.
+   * @param separator Separator to use for string splitting. <b>Must not</b> be
+   *                  null.
+   */
+  private String[] split_escape(String orig, String separator) {
+    /*
+     * Split string as usual based on the given separator.
+     * Make sure to keep empty elements.
+     */
+    List<String> split = Arrays.asList(orig.split(separator, -1)),
+                 ret = new ArrayList<String>();
+
+    // Logger.debug("original split " + split.toString());
+
+    /* Go through split return value and try to merge escaped elements. */
+    /*
+     * Java rant: iterators in Java are HORRIBLE. You can't just "dereference"
+     * an iterator to get the current value like in any other sensible
+     * implementation. There's no get function. There's no such functionality
+     * whatsoever. Cache it or it will be lost forever.
+     */
+    ListIterator<String> ret_it = ret.listIterator();
+    String ret_elem = "";
+    boolean merge = false;
+    Iterator<String> it = split.iterator();
+    while (it.hasNext()) {
+      /* Unconditionally forward the iterator of our original split list. */
+      String elem = it.next();
+
+      /*
+       * Check if our current element will require merging later on, keep that
+       * in mind and remove the escaping character from the end.
+       *
+       * Avoid checking the very last element, since it cannot have an
+       * removable escaping character (at least not a valid one, since we know
+       * that it won't be followed by a separating character).
+       */
+      boolean new_merge = ((it.hasNext()) && (elem.endsWith("\\")));
+      if (new_merge) {
+        elem = StringUtils.chop(elem);
+      }
+
+      if (merge) {
+        /*
+         * Okay, the previous scanning determined that the string ended with an
+         * escaping character (which by now should already be removed), which
+         * means that we have to merge the current element into the currently
+         * "active" return element.
+         */
+        ret_elem = ret_elem.concat(separator).concat(elem);
+        ret_it.set(ret_elem);
+      }
+      else {
+        /*
+         * No merging required, so add a new element to our eventual return
+         * value.
+         *
+         * Fast-forward our return iterator (if possible) in order to append to
+         * it.
+         */
+        if (ret_it.hasNext()) {
+          ret_it.next();
+        }
+        ret_it.add(elem);
+
+        /*
+         * Inserting an element happens before the internal cursor, so to
+         * actually get the inserted element, you have to roll it back.
+         *
+         * This also has the side-effect of needing to fast-forward on later
+         * insertions, but we can't just do it once here, since we only insert
+         * at the back and that means that we'll never have a next element.
+         * Hopefully.
+         *
+         * Additionally, calling previous() here is crucial in case the next
+         * iteration will modify the current element (i.e., merge), since
+         * set() cannot be called after a call to add() or remove() without
+         * calling either next() or previous().
+         */
+        ret_elem = ret_it.previous();
+      }
+
+      /* Continue with tracking the current element's merge status. */
+      merge = new_merge;
+    }
+
+    /* Remove empty elements, as in the original search implementation. */
+    ret.removeIf(String::isEmpty);
+
+    // Logger.debug("returning " + Arrays.toString(ret.toArray(new String[0])));
+
+    return ret.toArray(new String[0]);
+  }
 
   /**
    * ct.
@@ -321,14 +444,26 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         zweck = StringUtils.deleteWhitespace(zweck);
         name = StringUtils.deleteWhitespace(name); // BUGZILLA 1705 - auch im Namen koennen Leerzeichen sein
         name2 = StringUtils.deleteWhitespace(name2);
-        s = StringUtils.deleteWhitespace(s);
       }
 
-      String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+      String[] list = this.split_escape(s.toLowerCase(), ","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 
       for (int i=0;i<list.length;++i)
       {
         String test = list[i].trim();
+        if (ignorewhitespace) {
+          test = StringUtils.deleteWhitespace(test);
+
+          /*
+           * While we already removed empty elements in split_escape(), this
+           * removal was only valid for actually empty elements.
+           * After whitespace removal, we might get additional empty elements
+           * (i.e., such that previously only contained whitespace).
+           */
+          if (test.isEmpty()) {
+              continue;
+          }
+        }
         if (zweck.indexOf(test) != -1 ||
             name.indexOf(test) != -1 ||
             name2.indexOf(test) != -1 ||
