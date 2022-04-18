@@ -29,7 +29,9 @@
 	<li>
 		<b>Umsatz-Kategorien:</b> Sie können auch mehrere Suchbegriffe (durch Komma getrennt)
 		eingeben. Umsätze werden dann bereits dieser Kategorie zugeordnet, wenn nur
-		einer der angegebenen Suchbegriffe gefunden wurde.
+		einer der angegebenen Suchbegriffe gefunden wurde. Soll der Suchbegriff explizit ein
+		Komma enthalten, muss dem Komma ein umgekehrter Schrägstrich (Backslash, <pre>\</pre>)
+		vorangestellt werden.
 	</li>
 
 	<li>
