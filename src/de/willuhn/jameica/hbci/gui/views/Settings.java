@@ -72,7 +72,7 @@ public class Settings extends AbstractView implements Extendable
     ui.addLabelPair(i18n.tr("Textfarbe von Habenbuchungen"),control.getBuchungHabenForeground());
     ui.addHeadline(i18n.tr("Formatierung"));
     ui.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen anzeigen"));
-    ui.addCheckbox(control.getBoldValues(),i18n.tr("Geld-Beträgen fett gedruckt anzeigen"));
+    ui.addCheckbox(control.getBoldValues(),i18n.tr("Geld-Beträge fett gedruckt anzeigen"));
 
     // Umsatz-Kategorien
     TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
