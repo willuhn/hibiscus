@@ -17,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -41,13 +43,25 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzTypUtil
 {
-  private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
+  private static I18N i18n;
+
   /**
    * Virtueller Umsatz-Typ "Nicht zugeordnet".
    */
   public final static UmsatzTyp UNASSIGNED = new UmsatzTypUnassigned();
 
+  /**
+   * Liefert das I18N on-demand.
+   * @return das I18N.
+   */
+  private static I18N getI18N()
+  {
+    if (i18n == null)
+      i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    return i18n;
+  }
+  
+  
   /**
    * Liefert einen sprechenden Namen fuer den Kategorie-Typ.
    * @param type Typ
@@ -58,7 +72,7 @@ public class UmsatzTypUtil
    */
   public static String getNameForType(int type)
   {
-    
+    final I18N i18n = getI18N();
     switch (type)
     {
       case UmsatzTyp.TYP_AUSGABE:
@@ -248,6 +262,28 @@ public class UmsatzTypUtil
     
     // Falls Nummer identisch/leer, dann nach Name
     return na1.compareTo(na2);
+  }
+  
+  /**
+   * Trennt den Suchbegriff am Separator. Escaping per "\" ist möglich.
+   * @param query der Suchbegriff. 
+   * @param separator der Separator.
+   * @return der zerlegte Suchbegriff.
+   */
+  public static String[] splitQuery(String query, String separator)
+  {
+    final List<String> result = new ArrayList<String>();
+    for (String s:query.split("(?<!\\\\)" + separator))
+    {
+      s = StringUtils.trimToNull(s);
+      if (s == null)
+        continue;
+      
+      // Escaping-Zeichen entfernen, falls vorhanden
+      s = s.replace("\\","");
+      result.add(s);
+    }
+    return result.toArray(new String[0]);
   }
   
   /**
@@ -496,7 +532,7 @@ public class UmsatzTypUtil
     @Override
     public String getName() throws RemoteException
     {
-      return "<" + i18n.tr("Nicht zugeordnet") + ">";
+      return "<" + getI18N().tr("Nicht zugeordnet") + ">";
     }
 
     /**
