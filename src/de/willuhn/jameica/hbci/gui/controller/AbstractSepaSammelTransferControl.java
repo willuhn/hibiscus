@@ -49,7 +49,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Abstrakte Basis-Implementierung des Controllers fuer die Dialog Liste der SEPA-Sammellastschriften/SEPA-Sammelüberweisungen.
- * @author willuhn
  * @param <T> der konkrete Typ des Sammel-Auftrages.
  */
 public abstract class AbstractSepaSammelTransferControl<T extends SepaSammelTransfer> extends AbstractControl

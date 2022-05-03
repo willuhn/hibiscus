@@ -38,7 +38,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Factory zum Laden, Erzeugen und Finden von PIN/TAN-Konfigurationen. 
- * @author willuhn
  */
 public class PinTanConfigFactory
 {
@@ -134,8 +133,8 @@ public class PinTanConfigFactory
       }
       
       Logger.debug("new number of configs: " + newList.size());
-      settings.setAttribute("config",(String[]) newList.toArray(new String[newList.size()]));
-      
+      settings.setAttribute("config",(String[]) newList.toArray(new String[0]));
+
       // Jetzt noch die Datei loeschen
       File f = new File(config.getFilename());
       if (f.exists() && f.isFile() && f.canWrite())
@@ -178,13 +177,9 @@ public class PinTanConfigFactory
         // Das kann passieren, wenn der Passport unvollstaendig ist
       }
     }
-    catch (ApplicationException ae)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      throw oce;
+      throw e;
     }
     catch (Exception e)
     {
@@ -298,7 +293,7 @@ public class PinTanConfigFactory
     }
     
     // Wir haben mehrere zur Auswahl. Lassen wir den User entscheiden.
-    GenericIterator list = PseudoIterator.fromArray((PinTanConfig[]) found.toArray(new PinTanConfig[found.size()]));
+    GenericIterator list = PseudoIterator.fromArray((PinTanConfig[]) found.toArray(new PinTanConfig[0]));
     SelectConfigDialog d = new SelectConfigDialog(SelectConfigDialog.POSITION_CENTER,list);
     d.setText(text);
     try
@@ -346,7 +341,7 @@ public class PinTanConfigFactory
         }
       }
     }
-    return PseudoIterator.fromArray((PinTanConfig[]) configs.toArray(new PinTanConfig[configs.size()]));
+    return PseudoIterator.fromArray((PinTanConfig[]) configs.toArray(new PinTanConfig[0]));
   }
 
   /**

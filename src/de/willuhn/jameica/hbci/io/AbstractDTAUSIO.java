@@ -27,9 +27,7 @@ public abstract class AbstractDTAUSIO implements IO
 {
   static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("DTAUS-Format");
@@ -84,9 +82,7 @@ public abstract class AbstractDTAUSIO implements IO
    */
   abstract Class[] getSupportedObjectTypes();
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     // Kein Typ angegeben?
@@ -107,7 +103,6 @@ public abstract class AbstractDTAUSIO implements IO
 
   /**
    * Hilfsklasse, damit wir uns den Objekt-Typ merken koennen.
-   * @author willuhn
    */
   class MyIOFormat implements IOFormat
   {
@@ -122,17 +117,13 @@ public abstract class AbstractDTAUSIO implements IO
       this.type = type;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-     */
+    @Override
     public String getName()
     {
       return AbstractDTAUSIO.this.getName();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-     */
+    @Override
     public String[] getFileExtensions()
     {
       return new String[] {"*.dta"};

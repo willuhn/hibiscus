@@ -120,7 +120,7 @@ public class TextSchluessel
   public static TextSchluessel[] get(String[] codes)
   {
     if (codes == null || codes.length == 0)
-      return list.toArray(new TextSchluessel[list.size()]);
+      return list.toArray(new TextSchluessel[0]);
 
     List<TextSchluessel> l = new ArrayList<TextSchluessel>();
     for (int i=0;i<codes.length;++i)
@@ -136,8 +136,8 @@ public class TextSchluessel
         }
       }
     }
-    
-    return l.toArray(new TextSchluessel[l.size()]);
+
+    return l.toArray(new TextSchluessel[0]);
   }
   
   /**
@@ -193,7 +193,7 @@ public class TextSchluessel
    */
   public String toString()
   {
-    return i18n.tr("[{0}] {1}", new String[]{this.code,this.name});
+    return i18n.tr("[{0}] {1}", this.code, this.name);
   }
   
   /**

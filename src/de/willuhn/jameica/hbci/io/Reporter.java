@@ -167,7 +167,7 @@ public class Reporter
   public void addHeaderColumn(String text, int align, int width, BaseColor color)
   {
     headers.add(getDetailCell(text, align, color));
-    widths.add(new Integer(width));
+    widths.add(Integer.valueOf(width));
   }
 
   /**
@@ -341,23 +341,17 @@ public class Reporter
     private String footer  = null;
     private int pagenumber = 0;
 
-    /**
-     * @see com.itextpdf.text.pdf.PdfPageEventHelper#onOpenDocument(com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
-     */
+    @Override
     public void onOpenDocument(PdfWriter writer, Document document)
     {
     }
 
-    /**
-     * @see com.itextpdf.text.pdf.PdfPageEventHelper#onChapter(com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document, float, com.itextpdf.text.Paragraph)
-     */
+    @Override
     public void onChapter(PdfWriter writer, Document document, float paragraphPosition, Paragraph title)
     {
     }
 
-    /**
-     * @see com.itextpdf.text.pdf.PdfPageEventHelper#onStartPage(com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
-     */
+    @Override
     public void onStartPage(PdfWriter writer, Document document)
     {
       this.pagenumber++;
@@ -372,9 +366,7 @@ public class Reporter
       this.footer = footer;
     }
 
-    /**
-     * @see com.itextpdf.text.pdf.PdfPageEventHelper#onEndPage(com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
-     */
+    @Override
     public void onEndPage(PdfWriter writer, Document document)
     {
       Rectangle rect = document.getPageSize();

@@ -34,17 +34,13 @@ import de.willuhn.util.I18N;
  */
 public class SammelUeberweisungSearchProvider implements SearchProvider
 {
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Sammel-Überweisungen");
   }
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
-   */
+  @Override
   public List search(String search) throws RemoteException,
       ApplicationException
   {
@@ -83,7 +79,7 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
       hash.put(ueb.getID(),new MyResult(ueb));
     }
 
-    return Arrays.asList(hash.values().toArray(new MyResult[hash.size()]));
+    return Arrays.asList(hash.values().toArray(new MyResult[0]));
   }
   
   /**
@@ -102,23 +98,19 @@ public class SammelUeberweisungSearchProvider implements SearchProvider
       this.u = u;
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#execute()
-     */
+    @Override
     public void execute() throws RemoteException, ApplicationException
     {
       new SammelUeberweisungNew().handleAction(this.u);
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#getName()
-     */
+    @Override
     public String getName()
     {
       try
       {
         I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        return i18n.tr("{0}: {1}",new String[] {HBCI.DATEFORMAT.format(u.getTermin()),u.getBezeichnung()});
+        return i18n.tr("{0}: {1}", HBCI.DATEFORMAT.format(u.getTermin()), u.getBezeichnung());
       }
       catch (RemoteException re)
       {

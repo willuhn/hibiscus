@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="lib/super-csv-2.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.eclipse.swtchart_0.13.0.202009151159.jar"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.eclipse.swtchart.extensions_0.13.0.202009151159.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry exported="true" kind="lib" path="lib/obantoo-bin-2.1.12.jar"/>
 	<classpathentry kind="lib" path="lib/konik/harness-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/konik/itext-carriage-0.8.0.jar"/>
@@ -20,6 +20,7 @@
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.55.jar" sourcepath="/hbci4j-core"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.59.jar" sourcepath="/hbci4j-core"/>
+	<classpathentry kind="lib" path="lib/fastqrcodegen/fastqrcodegen-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

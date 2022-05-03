@@ -69,7 +69,7 @@ public class SammelTransferBuchungList extends TablePart
           SammelTransfer s = sb.getSammelTransfer();
           if (s == null)
             return null;
-          return i18n.tr("{0}: {1}", new String[]{HBCI.DATEFORMAT.format(s.getTermin()),s.getBezeichnung()});
+          return i18n.tr("{0}: {1}", HBCI.DATEFORMAT.format(s.getTermin()), s.getBezeichnung());
         }
         catch (RemoteException e)
         {
@@ -94,7 +94,7 @@ public class SammelTransferBuchungList extends TablePart
           String curr = HBCIProperties.CURRENCY_DEFAULT_DE;
           if (s != null)
             curr = s.getKonto().getWaehrung();
-          return new CurrencyFormatter(curr,HBCI.DECIMALFORMAT).format(new Double(b.getBetrag()));
+          return new CurrencyFormatter(curr,HBCI.DECIMALFORMAT).format(Double.valueOf(b.getBetrag()));
         }
         catch (RemoteException e)
         {

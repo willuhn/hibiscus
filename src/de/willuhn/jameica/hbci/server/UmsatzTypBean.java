@@ -192,7 +192,7 @@ public class UmsatzTypBean implements GenericObjectNode
   @Override
   public GenericIterator getChildren() throws RemoteException
   {
-    return PseudoIterator.fromArray(this.children.toArray(new UmsatzTypBean[this.children.size()]));
+    return PseudoIterator.fromArray(this.children.toArray(new UmsatzTypBean[0]));
   }
 
   /**
@@ -213,8 +213,8 @@ public class UmsatzTypBean implements GenericObjectNode
       result.add(parent);
       parent = parent.getParent();
     }
-    
-    return PseudoIterator.fromArray(result.toArray(new UmsatzTypBean[result.size()]));
+
+    return PseudoIterator.fromArray(result.toArray(new UmsatzTypBean[0]));
   }
 
   /**

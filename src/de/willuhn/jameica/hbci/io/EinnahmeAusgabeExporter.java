@@ -38,9 +38,7 @@ public class EinnahmeAusgabeExporter implements Exporter
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (objects == null || !(objects instanceof EinnahmeAusgabeZeitraum[]))
@@ -121,7 +119,7 @@ public class EinnahmeAusgabeExporter implements Exporter
     }
 
     if (start != null && end != null)
-      return i18n.tr("Zeitraum {0} - {1}", new String[]{HBCI.DATEFORMAT.format(start),HBCI.DATEFORMAT.format(end)});
+      return i18n.tr("Zeitraum {0} - {1}", HBCI.DATEFORMAT.format(start), HBCI.DATEFORMAT.format(end));
     
     return "";
   }
@@ -170,18 +168,13 @@ public class EinnahmeAusgabeExporter implements Exporter
     reporter.setNextRecord();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     // Wir unterstuetzen nur Umsatz-Trees
@@ -191,14 +184,13 @@ public class EinnahmeAusgabeExporter implements Exporter
     IOFormat myFormat = new IOFormat()
     {
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-       */
+      @Override
       public String getName()
       {
         return i18n.tr("PDF-Format: Einnahmen/Ausgaben");
       }
 
+      @Override
       public String[] getFileExtensions()
       {
         return new String[] { "pdf" };
@@ -208,9 +200,7 @@ public class EinnahmeAusgabeExporter implements Exporter
     return new IOFormat[] { myFormat };
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("PDF-Format: Einnahmen/Ausgaben");

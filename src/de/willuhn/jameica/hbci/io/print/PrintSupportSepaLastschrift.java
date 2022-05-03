@@ -34,17 +34,13 @@ public class PrintSupportSepaLastschrift extends AbstractPrintSupportSepaTransfe
     super(u);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("SEPA-Lastschrift");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupportSepaTransfer#customize(net.sf.paperclips.GridPrint)
-   */
+  @Override
   void customize(GridPrint table) throws RemoteException, ApplicationException
   {
     SepaLastschrift a = this.getTransfer();

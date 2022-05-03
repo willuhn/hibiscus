@@ -48,33 +48,25 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
   @Resource
   private SynchronizeEngine engine = null;
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.SynchronizeBackend#getName()
-   */
+  @Override
   public String getName()
   {
     return "Scripting";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getJobProviderInterface()
-   */
+  @Override
   protected Class<ScriptingSynchronizeJobProvider> getJobProviderInterface()
   {
     return ScriptingSynchronizeJobProvider.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#createJobGroup(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   protected de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend.JobGroup createJobGroup(Konto k)
   {
     return new ScriptingJobGroup(k);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getSynchronizeKonten(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public List<Konto> getSynchronizeKonten(Konto k)
   {
     List<Konto> list = super.getSynchronizeKonten(k);
@@ -90,9 +82,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
     return result;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#create(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public <T> T create(Class<? extends SynchronizeJob> type, Konto konto) throws ApplicationException
   {
     // 1. Checken, ob wir ueberhaupt ein Script haben, welches diesen Job beherrscht
@@ -108,9 +98,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
     return (T) instance;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#supports(java.lang.Class, de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public boolean supports(Class<? extends SynchronizeJob> type, Konto konto)
   {
     // 1. Haben wir ein Script, welches diesen Typ unterstuetzt?
@@ -120,9 +108,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
     return super.supports(type,konto);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#execute(java.util.List)
-   */
+  @Override
   public synchronized SynchronizeSession execute(List<SynchronizeJob> jobs) throws ApplicationException, OperationCanceledException
   {
     try
@@ -166,9 +152,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
     return false;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend#getPropertyNames(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public List<String> getPropertyNames(Konto konto)
   {
     try
@@ -274,9 +258,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
       super(k);
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.synchronize.AbstractSynchronizeBackend.JobGroup#sync()
-     */
+    @Override
     protected void sync() throws Exception
     {
       ////////////////////////////////////////////////////////////////////

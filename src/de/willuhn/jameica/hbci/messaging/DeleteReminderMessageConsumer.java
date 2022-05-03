@@ -22,17 +22,13 @@ import de.willuhn.jameica.messaging.QueryMessage;
  */
 public class DeleteReminderMessageConsumer implements MessageConsumer
 {
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{QueryMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     QueryMessage msg = (QueryMessage) message;
@@ -44,9 +40,7 @@ public class DeleteReminderMessageConsumer implements MessageConsumer
     ReminderUtil.apply((HibiscusDBObject) data,null,null);
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     return false; // registriert in plugin.xml

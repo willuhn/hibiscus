@@ -69,9 +69,7 @@ public class MT940UmsatzExporter implements Exporter
    */
   public final static String CHARSET  = "iso-8859-1";
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     OutputStreamWriter out = null;
@@ -244,9 +242,6 @@ public class MT940UmsatzExporter implements Exporter
   protected void sort(List<Umsatz> list)
   {
     Collections.sort(list,new Comparator<Umsatz>() {
-      /**
-       * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-       */
       @Override
       public int compare(Umsatz o1, Umsatz o2)
       {
@@ -271,23 +266,20 @@ public class MT940UmsatzExporter implements Exporter
     });
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (!Umsatz.class.equals(objectType))
       return null;
 
     return new IOFormat[]{new IOFormat() {
+      @Override
       public String getName()
       {
         return MT940UmsatzExporter.this.getName();
       }
     
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[]{"sta"};
@@ -295,17 +287,12 @@ public class MT940UmsatzExporter implements Exporter
     }};
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("Swift MT940-Format (pro Buchung eine logische Datei)");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {
@@ -336,9 +323,7 @@ public class MT940UmsatzExporter implements Exporter
       doReplace = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings().getBoolean("export.mt940.replaceumlauts",true);
     }
 
-    /**
-     * @see java.io.Writer#write(java.lang.String)
-     */
+    @Override
     public void write(String str) throws IOException
     {
       if (doReplace)

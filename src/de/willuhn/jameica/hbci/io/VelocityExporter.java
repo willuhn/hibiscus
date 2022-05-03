@@ -46,9 +46,7 @@ public class VelocityExporter implements Exporter
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private Map<Class,IOFormat[]> formats  = new HashMap<Class,IOFormat[]>();
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (os == null)
@@ -130,17 +128,13 @@ public class VelocityExporter implements Exporter
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("Velocity-Export");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class type)
   {
     if (type == null)
@@ -187,8 +181,8 @@ public class VelocityExporter implements Exporter
       
       l.add(new VelocityFormat(ext,variant,ef));
     }
-    
-    loaded = (IOFormat[]) l.toArray(new IOFormat[l.size()]);
+
+    loaded = (IOFormat[]) l.toArray(new IOFormat[0]);
     this.formats.put(type,loaded);
     return loaded;
     
@@ -217,9 +211,7 @@ public class VelocityExporter implements Exporter
       this.template  = f;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-     */
+    @Override
     public String getName()
     {
       String name = extension.toUpperCase() + "-" + i18n.tr("Format");
@@ -228,9 +220,7 @@ public class VelocityExporter implements Exporter
       return name;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-     */
+    @Override
     public String[] getFileExtensions()
     {
       return new String[]{extension};
@@ -246,9 +236,6 @@ public class VelocityExporter implements Exporter
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {

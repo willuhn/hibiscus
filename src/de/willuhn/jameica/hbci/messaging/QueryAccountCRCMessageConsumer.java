@@ -22,26 +22,20 @@ import de.willuhn.jameica.messaging.QueryMessage;
 public class QueryAccountCRCMessageConsumer implements MessageConsumer
 {
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     // bewusst false, weil wir uns manuell auf eine konkret benannte Queue abonnieren.
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{QueryMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     if (message == null || !(message instanceof QueryMessage))
@@ -62,7 +56,7 @@ public class QueryAccountCRCMessageConsumer implements MessageConsumer
       return;
     }
     
-    qm.setData(new Boolean(HBCIProperties.checkAccountCRC(s[0],s[1])));
+    qm.setData(Boolean.valueOf(HBCIProperties.checkAccountCRC(s[0],s[1])));
   }
 
 }

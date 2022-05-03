@@ -152,10 +152,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     DBIterator list = UmsatzUtil.getUmsaetze();
 
     if (von != null)
-      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(von.getTime())});
-    
+      list.addFilter("datum >= ?", new java.sql.Date(von.getTime()));
+
     if (bis != null)
-      list.addFilter("datum <= ?", new Object[] {new java.sql.Date(bis.getTime())});
+      list.addFilter("datum <= ?", new java.sql.Date(bis.getTime()));
 
     if (this.isNewObject()) // Neuer Umsatztyp. Der hat noch keine ID
       list.addFilter("umsatztyp_id is null");
@@ -170,7 +170,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       if (u.isAssigned() || matches(u)) // entweder fest zugeordnet oder passt via Suchfilter
         result.add(u);
     }
-    return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[result.size()]));
+    return PseudoIterator.fromArray((Umsatz[]) result.toArray(new Umsatz[0]));
   }
 
   /**
@@ -321,14 +321,26 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         zweck = StringUtils.deleteWhitespace(zweck);
         name = StringUtils.deleteWhitespace(name); // BUGZILLA 1705 - auch im Namen koennen Leerzeichen sein
         name2 = StringUtils.deleteWhitespace(name2);
-        s = StringUtils.deleteWhitespace(s);
       }
 
-      String[] list = s.toLowerCase().split(","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
+      String[] list = UmsatzTypUtil.splitQuery(s.toLowerCase(), ","); // Wir beachten Gross-Kleinschreibung grundsaetzlich nicht
 
       for (int i=0;i<list.length;++i)
       {
         String test = list[i].trim();
+        if (ignorewhitespace) {
+          test = StringUtils.deleteWhitespace(test);
+
+          /*
+           * While we already removed empty elements in split_escape(), this
+           * removal was only valid for actually empty elements.
+           * After whitespace removal, we might get additional empty elements
+           * (i.e., such that previously only contained whitespace).
+           */
+          if (test.isEmpty()) {
+              continue;
+          }
+        }
         if (zweck.indexOf(test) != -1 ||
             name.indexOf(test) != -1 ||
             name2.indexOf(test) != -1 ||
@@ -385,7 +397,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     }
     catch (Exception e)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Ungültiger regulärer Ausdruck \"{0}\": {1}", new String[]{s,e.getMessage()}),StatusBarMessage.TYPE_ERROR));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Ungültiger regulärer Ausdruck \"{0}\": {1}", s, e.getMessage()), StatusBarMessage.TYPE_ERROR));
       Logger.error("invalid regex pattern: " + e.getMessage(),e);
       return false;
     }
@@ -405,7 +417,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
    */
   public void setRegex(boolean regex) throws RemoteException
   {
-    setAttribute("isregex", new Integer(regex ? 1 : 0));
+    setAttribute("isregex", Integer.valueOf(regex ? 1 : 0));
   }
 
   @Override
@@ -497,7 +509,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
         return null;
       try
       {
-        Integer i = new Integer(n);
+        Integer i = Integer.valueOf(n);
         return i;
       }
       catch (Exception e)
@@ -508,7 +520,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     }
     
     if ("umsatz".equals(arg0))
-      return new Double(getUmsatz());
+      return Double.valueOf(getUmsatz());
 
     return super.getAttribute(arg0);
   }
@@ -569,15 +581,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       super.delete();
       transactionCommit();
     }
-    catch (RemoteException e)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
       throw e;
-    }
-    catch (ApplicationException e2)
-    {
-      this.transactionRollback();
-      throw e2;
     }
   }
 
@@ -657,7 +664,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
    */
   public void setTyp(int typ) throws RemoteException
   {
-    setAttribute("umsatztyp",new Integer(typ));
+    setAttribute("umsatztyp", Integer.valueOf(typ));
   }
 
   /**
@@ -694,7 +701,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
    */
   public void setCustomColor(boolean b) throws RemoteException
   {
-    setAttribute("customcolor", new Integer(b ? 1 : 0));
+    setAttribute("customcolor", Integer.valueOf(b ? 1 : 0));
   }
 
   /**
@@ -753,7 +760,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   @Override
   public void setKonto(Konto konto) throws RemoteException
   {
-    final Integer id = (konto == null || konto.getID() == null) ? null : new Integer(konto.getID());
+    final Integer id = (konto == null || konto.getID() == null) ? null : Integer.valueOf(konto.getID());
     setAttribute("konto_id",id);
     
     // Eine Zuordnung kann nur zu Konto ODER Kategorie moeglich sein - nicht beides gleichzeitig
@@ -811,6 +818,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     if (flags < 0)
       return; // ungueltig
     
-    this.setAttribute("flags",new Integer(flags));
+    this.setAttribute("flags", Integer.valueOf(flags));
   }
 }

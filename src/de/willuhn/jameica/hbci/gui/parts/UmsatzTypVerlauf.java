@@ -237,9 +237,8 @@ public class UmsatzTypVerlauf implements Part
     private Date chartStopDate   = null;
     
     private List<Umsatz> getRecursiveUmsaetze(UmsatzTreeNode group) {
-      List<Umsatz> result = new ArrayList<Umsatz>();
-      result.addAll(group.getUmsaetze());
-      for (UmsatzTreeNode unterkategorie: group.getSubGroups()) {
+      List<Umsatz> result = new ArrayList<Umsatz>(group.getUmsaetze());
+      for (UmsatzTreeNode unterkategorie : group.getSubGroups()) {
         result.addAll(getRecursiveUmsaetze(unterkategorie));
       }
       return result;
@@ -414,7 +413,7 @@ public class UmsatzTypVerlauf implements Part
     public Object getAttribute(String name) throws RemoteException
     {
       if ("betrag".equals(name))
-        return new Double(betrag);
+        return Double.valueOf(betrag);
       if ("monat".equals(name))
         return monat;
       return null;

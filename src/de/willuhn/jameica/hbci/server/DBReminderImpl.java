@@ -95,20 +95,13 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
     if (serialized == null || serialized.length() == 0)
       return null;
 
-    XMLDecoder decoder = null;
-    try
+    try (XMLDecoder decoder = new XMLDecoder(new ByteArrayInputStream(serialized.getBytes("UTF-8"))))
     {
-      decoder = new XMLDecoder(new ByteArrayInputStream(serialized.getBytes("UTF-8")));
       return (Reminder) decoder.readObject();
     }
     catch (Exception e)
     {
       throw new RemoteException("unable to unserialize reminder",e);
-    }
-    finally
-    {
-      if (decoder != null)
-        decoder.close();
     }
   }
 

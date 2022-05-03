@@ -18,17 +18,13 @@ import java.io.IOException;
  */
 public class DefaultSerializer<T> implements Serializer<T>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.Serializer#serialize(java.lang.Object, java.lang.Object)
-   */
+  @Override
   public String serialize(Object context, T value) throws IOException
   {
     return value != null ? value.toString() : "";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.ser.Serializer#unserialize(java.lang.Object, java.lang.String)
-   */
+  @Override
   public T unserialize(Object context, String value) throws IOException
   {
     if (value == null || (value instanceof String))

@@ -36,7 +36,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Komponente, die die Umsatzverteilung grafisch anzeigt.
- * @author willuhn
  */
 public class UmsatzTypChart implements Part
 {

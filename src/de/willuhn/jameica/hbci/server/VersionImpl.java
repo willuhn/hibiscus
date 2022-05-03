@@ -76,7 +76,7 @@ public class VersionImpl extends AbstractDBObject implements Version
   {
     if (newVersion < 0)
       throw new RemoteException("version cannot be smaller than zero");
-    setAttribute("version",new Integer(newVersion));
+    setAttribute("version", Integer.valueOf(newVersion));
   }
 
   /**

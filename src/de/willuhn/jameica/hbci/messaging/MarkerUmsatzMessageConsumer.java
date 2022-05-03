@@ -25,23 +25,19 @@ import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 
 /**
- * Markiert das Navigations-Element "Auswertungen->Umsaetze", wenn neue Umsaetze vorhanden sind.
+ * Markiert das Navigations-Element "Auswertungen-&gt;Umsaetze", wenn neue Umsaetze vorhanden sind.
  */
 public class MarkerUmsatzMessageConsumer implements MessageConsumer
 {
   private DelayedListener listener = new DelayedListener(1000,new Worker());
   
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{ImportMessage.class,ObjectDeletedMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     if (Application.inServerMode())
@@ -58,9 +54,7 @@ public class MarkerUmsatzMessageConsumer implements MessageConsumer
     listener.handleEvent(null);
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     return true;
@@ -71,9 +65,7 @@ public class MarkerUmsatzMessageConsumer implements MessageConsumer
    */
   private class Worker implements Listener
   {
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
+    @Override
     public void handleEvent(Event event)
     {
       try

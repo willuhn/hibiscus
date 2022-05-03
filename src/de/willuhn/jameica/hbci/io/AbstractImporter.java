@@ -33,9 +33,6 @@ public abstract class AbstractImporter implements Importer
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
   @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
@@ -74,13 +71,9 @@ public abstract class AbstractImporter implements Importer
       this.commit(objects,format,is,monitor);
       monitor.log(i18n.tr("{0} importiert, {1} fehlerhaft",Integer.toString(success),Integer.toString(failed)));
     }
-    catch (OperationCanceledException oce)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+      throw e;
     }
     catch (Exception e)
     {
@@ -140,9 +133,6 @@ public abstract class AbstractImporter implements Importer
    */
   abstract String[] getFileExtensions();
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
   @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
@@ -164,7 +154,6 @@ public abstract class AbstractImporter implements Importer
 
   /**
    * Hilfsklasse, damit wir uns den Objekt-Typ merken koennen.
-   * @author willuhn
    */
   class MyIOFormat implements IOFormat
   {
@@ -179,17 +168,13 @@ public abstract class AbstractImporter implements Importer
       this.type = type;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-     */
+    @Override
     public String getName()
     {
       return AbstractImporter.this.getName();
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-     */
+    @Override
     public String[] getFileExtensions()
     {
       return AbstractImporter.this.getFileExtensions();

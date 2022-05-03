@@ -60,10 +60,6 @@ public class KontoKontoauszugReceipt implements Action
 	    
 	    backend.execute(Arrays.asList(job));
 		}
-		catch (ApplicationException ae)
-		{
-		  throw ae;
-		}
 		catch (RemoteException re)
 		{
 		  Logger.error("unable to send receipt",re);

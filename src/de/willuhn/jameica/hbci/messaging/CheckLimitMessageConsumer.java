@@ -31,9 +31,6 @@ public class CheckLimitMessageConsumer implements MessageConsumer
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
   @Override
   public Class[] getExpectedMessageTypes()
   {
@@ -42,7 +39,6 @@ public class CheckLimitMessageConsumer implements MessageConsumer
 
   /**
    * Erwartet ein Objekt vom Typ <code>HibiscusTransfer</code>.
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
    */
   @Override
   public void handleMessage(Message message) throws Exception
@@ -68,9 +64,6 @@ public class CheckLimitMessageConsumer implements MessageConsumer
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auftragslimit überschritten: {0} {1}", HBCI.DECIMALFORMAT.format(limit),curr),StatusBarMessage.TYPE_INFO));
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
   @Override
   public boolean autoRegister()
   {

@@ -21,9 +21,6 @@ import de.willuhn.jameica.hbci.accounts.hbci.controller.HBCIAccountNewController
  */
 public class HBCIAccountNew extends AbstractHBCIAccountView
 {
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
   @Override
   public void bind() throws Exception
   {

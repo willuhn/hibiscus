@@ -74,7 +74,7 @@ public class KontoUtil
       return null;
     
     // BUGZILLA 365
-    // Fuehrende Nullen schneiden wir ab
+    // Fuehrende Nullen abschneiden
     if (kontonummer.startsWith("0"))
       kontonummer = kontonummer.replaceAll("^0{1,}","");
 
@@ -84,37 +84,37 @@ public class KontoUtil
     
     DBService service = de.willuhn.jameica.hbci.Settings.getDBService();
     DBIterator konten = service.createList(Konto.class);
-    konten.addFilter("kontonummer like ?", new Object[]{"%" + kontonummer});
-    konten.addFilter("blz = ?", new Object[]{blz});
+    konten.addFilter("kontonummer like ?", "%" + kontonummer);
+    konten.addFilter("blz = ?", blz);
     while (konten.hasNext())
     {
-      // Fuehrende Nullen abschneiden und dann vergleichen
-      Konto test = (Konto) konten.next();
-      int current = test.getFlags();
+      final Konto konto = (Konto) konten.next();
 
       if (flag == Konto.FLAG_NONE)
       {
         // Nur Konten ohne Flags zugelassen
-        if (current != flag)
+        if (konto.getFlags() != Konto.FLAG_NONE)
           continue;
       }
       else if (flag > 0)
       {
         // Ein Flag ist angegeben. Dann kommt das Konto nur
         // in Frage, wenn es dieses Flag besitzt
-        if ((current & flag) != flag)
+        if (!konto.hasFlag(flag))
           continue;
       }
       
-      String kTest = test.getKontonummer();
+      String kTest = konto.getKontonummer();
       if (kTest == null || kTest.length() == 0)
         continue;
+
+      // Fuehrende Nullen abschneiden
       if (kTest.startsWith("0"))
         kTest = kTest.replaceAll("^0{1,}","");
       
       // Mal schauen, ob die Kontonummern jetzt uebereinstimmen
       if (kTest.equals(kontonummer))
-        return test;
+        return konto;
     }
     
     return null;
@@ -265,24 +265,23 @@ public class KontoUtil
     konten.addFilter("lower(iban) = ?", iban.toLowerCase()); // case insensitive
     while (konten.hasNext())
     {
-      Konto test = (Konto) konten.next();
-      int current = test.getFlags();
+      final Konto konto = (Konto) konten.next();
 
       if (flag == Konto.FLAG_NONE)
       {
         // Nur Konten ohne Flags zugelassen
-        if (current != flag)
+        if (konto.getFlags() != Konto.FLAG_NONE)
           continue;
       }
       else if (flag > 0)
       {
         // Ein Flag ist angegeben. Dann kommt das Konto nur
         // in Frage, wenn es dieses Flag besitzt
-        if ((current & flag) != flag)
+        if (!konto.hasFlag(flag))
           continue;
       }
       
-      return test;
+      return konto;
     }
     
     return null;
@@ -478,8 +477,8 @@ public class KontoUtil
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (rs.next())
-          return new Double(rs.getDouble(1));
-        return new Double(0.0d);
+          return Double.valueOf(rs.getDouble(1));
+        return Double.valueOf(0.0d);
       }
     };
 

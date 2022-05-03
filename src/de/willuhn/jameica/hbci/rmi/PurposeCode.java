@@ -149,9 +149,6 @@ public enum PurposeCode
     return null;
   }
 
-  /**
-   * @see java.lang.Enum#toString()
-   */
   @Override
   public String toString()
   {

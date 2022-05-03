@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.PassportProcessCode3072;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.pintan.ChipTANDialog;
+import de.willuhn.jameica.hbci.passports.pintan.FlickerToQrConverter;
 import de.willuhn.jameica.hbci.passports.pintan.PhotoTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
@@ -181,20 +182,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			handler=new HBCIHandler(hbciVersion,hbciPassport);
 			return handler;
 		}
-    catch (RemoteException re)
+    catch (ApplicationException | OperationCanceledException | RemoteException e)
     {
       close();
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      close();
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      close();
-      throw oce;
+      throw e;
     }
 		catch (Exception e)
 		{
@@ -316,7 +307,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
-			return (Konto[]) result.toArray(new Konto[result.size()]);
+			return (Konto[]) result.toArray(new Konto[0]);
 		}
 		finally
 		{
@@ -372,6 +363,28 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
           Logger.debug("got flicker code " + flicker);
           // Wir haben einen Flicker-Code. Also zeigen wir den Flicker-Dialog statt
           // dem normalen TAN-Dialog an
+          
+          // Oezguer Emir: Erzeuge QR Code nach Spezifikation
+          if (doConvertFlickerCode())
+          {
+            try
+            {
+              final String qr = FlickerToQrConverter.convert(flicker);
+              
+              // Daten im Stringbuffer ersetzen
+              retData.replace(0, retData.length(), qr);
+              return callback(passport, HBCICallback.NEED_PT_QRTAN, msg, datatype, retData);
+            }
+            catch (OperationCanceledException oce)
+            {
+              throw oce;
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable create QR Code", e);
+            }
+          }
+          
           Logger.info("using chiptan OPTIC/USB");
           dialog = new ChipTANDialog(config,flicker);
         }
@@ -483,4 +496,17 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     return null;
   }
 
+  /**
+   * Prueft, ob der Flicker-Code in einen QR-Code konvertiert werden soll.
+   * @throws RemoteException
+   */
+  private boolean doConvertFlickerCode() throws RemoteException
+  {
+    // Checken, ob wir chipTAN optisch ausgewaehlt haben
+    PtSecMech mech = config != null ? config.getCurrentSecMech() : null;
+    if (mech == null || !mech.isFlickerCode())
+      return false;
+    
+    return config.isConvertFlickerToQRCode();
+  }
 }

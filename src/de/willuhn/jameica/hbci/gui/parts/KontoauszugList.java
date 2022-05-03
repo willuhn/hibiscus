@@ -666,7 +666,7 @@ public class KontoauszugList extends UmsatzList
     if (typ != null) this.filterCount++;
 
     if (this.filterCount > 0)
-    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)),StatusBarMessage.TYPE_INFO));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Anzahl der Suchkriterien: {0}",Integer.toString(this.filterCount)),StatusBarMessage.TYPE_INFO));
     
     if (search != null)
     {
@@ -770,7 +770,7 @@ public class KontoauszugList extends UmsatzList
       Exporter.SESSION.put("pdf.start",getStart().getValue());
       Exporter.SESSION.put("pdf.end",getEnd().getValue());
 
-      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[list.size()]);
+      Umsatz[] u = (Umsatz[]) list.toArray(new Umsatz[0]);
       new UmsatzExport().handleAction(u);
     }
     catch (ApplicationException ae)
@@ -937,7 +937,6 @@ public class KontoauszugList extends UmsatzList
 
   /**
    * Hilfsklasse fuer das Suchfeld.
-   * @author willuhn
    */
   private class SearchInput extends ButtonInput
   {
@@ -970,7 +969,7 @@ public class KontoauszugList extends UmsatzList
                 
                 // Mal schauen, obs den Typ schon gibt
                 DBIterator existing = de.willuhn.jameica.hbci.Settings.getDBService().createList(UmsatzTyp.class);
-                existing.addFilter("pattern = ?", new Object[]{text});
+                existing.addFilter("pattern = ?", text);
                 UmsatzTyp typ = null; 
                 if (existing.size() > 0)
                 {

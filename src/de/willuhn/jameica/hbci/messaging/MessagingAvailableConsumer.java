@@ -26,18 +26,12 @@ public class MessagingAvailableConsumer implements MessageConsumer
 {
   private static Boolean HAVE_MESSAGING = null;
   
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
   @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{SystemMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
   @Override
   public void handleMessage(Message message) throws Exception
   {
@@ -70,9 +64,6 @@ public class MessagingAvailableConsumer implements MessageConsumer
     return HAVE_MESSAGING;
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
   @Override
   public boolean autoRegister()
   {

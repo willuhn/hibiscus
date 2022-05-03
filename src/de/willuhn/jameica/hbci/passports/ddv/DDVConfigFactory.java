@@ -144,7 +144,7 @@ public class DDVConfigFactory
       newIds.add(config.getId());
     
     // Speichern der aktualisierten Liste
-    settings.setAttribute("config",newIds.toArray(new String[newIds.size()]));
+    settings.setAttribute("config",newIds.toArray(new String[0]));
   }
   
   /**
@@ -173,7 +173,7 @@ public class DDVConfigFactory
     }
     
     // Speichern der aktualisierten Liste
-    settings.setAttribute("config",newIds.toArray(new String[newIds.size()]));
+    settings.setAttribute("config",newIds.toArray(new String[0]));
   }
   
   /**

@@ -26,9 +26,7 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     // Wir unterstuetzen nur Umsatz-Trees
@@ -37,14 +35,13 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
 
     IOFormat myFormat = new IOFormat() {
     
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-       */
+      @Override
       public String getName()
       {
         return AbstractUmsatzTreeExporter.this.getName();
       }
-    
+
+      @Override
       public String[] getFileExtensions()
       {
         return new String[]{"pdf"};
@@ -77,9 +74,6 @@ public abstract class AbstractUmsatzTreeExporter implements Exporter
     return i18n.tr("Zeitraum: {0} - {1}, {2}",st,et,tt);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {

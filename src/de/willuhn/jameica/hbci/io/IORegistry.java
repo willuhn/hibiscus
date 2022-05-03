@@ -84,7 +84,7 @@ public class IORegistry
    */
   public static Exporter[] getExporters()
   {
-    return (Exporter[]) exporters.toArray(new Exporter[exporters.size()]);
+    return (Exporter[]) exporters.toArray(new Exporter[0]);
   }
 
   /**
@@ -93,6 +93,6 @@ public class IORegistry
    */
   public static Importer[] getImporters()
   {
-    return (Importer[]) importers.toArray(new Importer[importers.size()]);
+    return (Importer[]) importers.toArray(new Importer[0]);
   }
 }

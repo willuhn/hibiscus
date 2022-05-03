@@ -41,25 +41,19 @@ import de.willuhn.util.ApplicationException;
 public class TransferLastschriftMessageConsumer implements MessageConsumer
 {
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{QueryMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     if (message == null || !(message instanceof QueryMessage))
@@ -105,8 +99,8 @@ public class TransferLastschriftMessageConsumer implements MessageConsumer
       if (konto != null && blz != null)
       {
         DBIterator list = service.createList(Konto.class);
-        list.addFilter("kontonummer = ?", new Object[]{konto});
-        list.addFilter("blz = ?",         new Object[]{blz});
+        list.addFilter("kontonummer = ?", konto);
+        list.addFilter("blz = ?", blz);
         if (list.hasNext())
         {
           // Jepp, wir haben das Konto.

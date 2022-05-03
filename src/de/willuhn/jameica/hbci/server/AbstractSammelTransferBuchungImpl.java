@@ -24,7 +24,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Implementierung einer einzelnen Buchung eines Sammel-Auftrages.
- * @author willuhn
  */
 public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscusDBObject implements SammelTransferBuchung, Duplicatable
 {
@@ -76,7 +75,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
 
       int blzLen = getGegenkontoBLZ().length();
       if (blzLen != HBCIProperties.HBCI_BLZ_LENGTH)
-        throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", new String[]{getGegenkontoBLZ(),""+HBCIProperties.HBCI_BLZ_LENGTH}));
+        throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", getGegenkontoBLZ(), ""+HBCIProperties.HBCI_BLZ_LENGTH));
 
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
@@ -202,7 +201,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
    */
   public void setBetrag(double betrag) throws RemoteException
   {
-    setAttribute("betrag", new Double(betrag));
+    setAttribute("betrag", Double.valueOf(betrag));
   }
 
   /**

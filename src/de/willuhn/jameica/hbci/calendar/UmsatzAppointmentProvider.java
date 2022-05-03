@@ -29,9 +29,7 @@ import de.willuhn.logging.Logger;
  */
 public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsatz>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
-   */
+  @Override
   AbstractHibiscusAppointment createAppointment(Schedule<Umsatz> schedule)
   {
     return new MyAppointment(schedule);
@@ -51,9 +49,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
       super(schedule);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
-     */
+    @Override
     public String getDescription()
     {
       try
@@ -76,9 +72,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
       }
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getName()
-     */
+    @Override
     public String getName()
     {
       try
@@ -111,9 +105,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
       }
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider.AbstractHibiscusAppointment#getColor()
-     */
+    @Override
     public RGB getColor()
     {
       // Ueberschrieben, weil wir die Farbe hier abhaengig von Soll/Haben machen
@@ -133,9 +125,7 @@ public class UmsatzAppointmentProvider extends AbstractAppointmentProvider<Umsat
       return Color.BLACK.getSWTColor().getRGB();
     }
     
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#hasAlarm()
-     */
+    @Override
     public boolean hasAlarm()
     {
       // Alarm brauchen wir hier generell nicht

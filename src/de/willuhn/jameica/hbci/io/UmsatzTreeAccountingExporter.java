@@ -34,9 +34,7 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
   private double ausgaben  = 0.0d;
   private double betrag    = 0.0d;
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (objects == null || !(objects instanceof UmsatzTree[]))
@@ -158,18 +156,13 @@ public class UmsatzTreeAccountingExporter extends AbstractUmsatzTreeExporter
     this.betrag    = 0.0d;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {
     return ext != null && (ExportAddSumRowExtension.KEY_SUMROW_ADD.equals(ext));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("PDF-Format: Summen aller Kategorien mit Einnahmen und Ausgaben");

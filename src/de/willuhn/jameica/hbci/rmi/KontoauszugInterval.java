@@ -119,27 +119,18 @@ public abstract class KontoauszugInterval
    */
   public static class IntervalNever extends KontoauszugInterval
   {
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getNextInterval(java.util.Date)
-     */
     @Override
     public Date getNextInterval(Date last)
     {
       return null;
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getId()
-     */
     @Override
     public String getId()
     {
       return "never";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getName()
-     */
     @Override
     public String getName()
     {
@@ -152,27 +143,18 @@ public abstract class KontoauszugInterval
    */
   public static class IntervalAlways extends KontoauszugInterval
   {
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getNextInterval(java.util.Date)
-     */
     @Override
     public Date getNextInterval(Date last)
     {
       return DateUtil.startOfDay(new Date());
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getId()
-     */
     @Override
     public String getId()
     {
       return "always";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getName()
-     */
     @Override
     public String getName()
     {
@@ -186,9 +168,6 @@ public abstract class KontoauszugInterval
   public static class IntervalWeekly extends KontoauszugInterval
   {
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getNextInterval(java.util.Date)
-     */
     @Override
     public Date getNextInterval(Date last)
     {
@@ -201,18 +180,12 @@ public abstract class KontoauszugInterval
       return DateUtil.startOfDay(cal.getTime());
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getId()
-     */
     @Override
     public String getId()
     {
       return "weekly";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getName()
-     */
     @Override
     public String getName()
     {
@@ -227,9 +200,6 @@ public abstract class KontoauszugInterval
   public static class IntervalBiWeekly extends KontoauszugInterval
   {
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getNextInterval(java.util.Date)
-     */
     @Override
     public Date getNextInterval(Date last)
     {
@@ -242,18 +212,12 @@ public abstract class KontoauszugInterval
       return DateUtil.startOfDay(cal.getTime());
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getId()
-     */
     @Override
     public String getId()
     {
       return "biweekly";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getName()
-     */
     @Override
     public String getName()
     {
@@ -268,9 +232,6 @@ public abstract class KontoauszugInterval
   public static class IntervalMonthly extends KontoauszugInterval
   {
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getNextInterval(java.util.Date)
-     */
     @Override
     public Date getNextInterval(Date last)
     {
@@ -283,18 +244,12 @@ public abstract class KontoauszugInterval
       return DateUtil.startOfDay(cal.getTime());
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getId()
-     */
     @Override
     public String getId()
     {
       return "monthly";
     }
 
-    /**
-     * @see de.willuhn.jameica.hbci.rmi.KontoauszugInterval#getName()
-     */
     @Override
     public String getName()
     {

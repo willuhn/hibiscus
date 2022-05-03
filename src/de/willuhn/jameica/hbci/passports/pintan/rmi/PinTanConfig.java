@@ -23,7 +23,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 /**
  * Interface fuer eine einzelne PIN/TAN-Konfiguration fuer eine
  * spezifische Bank.
- * @author willuhn
  */
 public interface PinTanConfig extends GenericObject, Configuration
 {
@@ -232,6 +231,22 @@ public interface PinTanConfig extends GenericObject, Configuration
    * @throws RemoteException
    */
   public void setChipTANUSB(Boolean b) throws RemoteException;
+
+  /**
+   * Liefert true, wenn statt einem Flicker-Code eine QR-Code-Abfrage erscheinen soll.
+   * @return wenn QR-Code-Abfrage erzeugt werden soll.
+   * false, wenn weiterhin ein Flicker-Code erscheinen soll.
+   * @throws RemoteException
+   */
+  public boolean isConvertFlickerToQRCode() throws RemoteException;
+
+  /**
+   * Legt fest, ob statt einem Flicker-Code eine QR-Code-Abfrage erscheinen soll.
+   * @param b true, wenn QR-Code-Abfrage erzeugt werden soll.
+   * false, wenn weiterhin ein Flicker-Code erscheinen soll.
+   * @throws RemoteException
+   */
+  public void setConvertFlickerToQRCode(boolean b) throws RemoteException;
   
   /**
    * Liefert eine optionale Bezeichnung fuer den zu nutzenden Karteleser.

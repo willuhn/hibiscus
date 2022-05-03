@@ -35,7 +35,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
- * @author willuhn
  */
 public class PinTanConfigImpl implements PinTanConfig
 {
@@ -69,7 +68,7 @@ public class PinTanConfigImpl implements PinTanConfig
     if ("url".equals(attribute))
       return getURL();
     if ("port".equals(attribute))
-      return new Integer(getPort());
+      return Integer.valueOf(getPort());
     if ("filtertype".equals(attribute))
       return getFilterType();
     if ("hbciversion".equals(attribute))
@@ -81,7 +80,7 @@ public class PinTanConfigImpl implements PinTanConfig
     if ("bezeichnung".equals(attribute))
       return getBezeichnung();
     if ("showtan".equals(attribute))
-      return new Boolean(getShowTan());
+      return Boolean.valueOf(getShowTan());
     if ("tanmedia".equals(attribute))
       return getTanMedia();
     if ("tanmedias".equals(attribute))
@@ -243,7 +242,7 @@ public class PinTanConfigImpl implements PinTanConfig
    */
   public void setPort(int port) throws RemoteException
   {
-    this.getPassport().setPort(new Integer(port));
+    this.getPassport().setPort(Integer.valueOf(port));
   }
 
   /**
@@ -357,17 +356,13 @@ public class PinTanConfigImpl implements PinTanConfig
       {
         Logger.warn("account " + ids[i] + " does not exist, removing from list");
       }
-      catch (RemoteException re)
-      {
-        throw re;
-      }
     }
     if (fixedIds.size() != ids.length)
     {
       Logger.info("fixing list of assigned accounts");
-      settings.setAttribute(getID() + ".konto",fixedIds.toArray(new String[fixedIds.size()]));
+      settings.setAttribute(getID() + ".konto",fixedIds.toArray(new String[0]));
     }
-    return konten.toArray(new Konto[konten.size()]);
+    return konten.toArray(new Konto[0]);
   }
 
   /**
@@ -501,6 +496,24 @@ public class PinTanConfigImpl implements PinTanConfig
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#isConvertFlickerToQRCode()
+   */
+  @Override
+  public boolean isConvertFlickerToQRCode() throws RemoteException
+  {
+    return settings.getBoolean(getID() + ".chiptan.flicker2qrcode.enabled",false);
+  }
+
+  /**
+   * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#setConvertFlickerToQRCode(boolean)
+   */
+  @Override
+  public void setConvertFlickerToQRCode(boolean b) throws RemoteException
+  {
+    settings.setAttribute(getID() + ".chiptan.flicker2qrcode.enabled",b);
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig#getTanMedias()
    */
   public String[] getTanMedias() throws RemoteException
@@ -573,7 +586,7 @@ public class PinTanConfigImpl implements PinTanConfig
     list.add(0,name);
 
     // Abspeichern
-    this.setTanMedias(list.toArray(new String[list.size()]));
+    this.setTanMedias(list.toArray(new String[0]));
   }
 
   /**

@@ -84,6 +84,7 @@ public class Controller extends AbstractControl
   private CheckboxInput showTan   = null;
   private SelectInput cardReaders = null;
   private CheckboxInput useUsb    = null;
+  private CheckboxInput convertQr = null;
 
   // BUGZILLA 173
   private TablePart kontoList   = null;
@@ -273,6 +274,41 @@ public class Controller extends AbstractControl
   }
   
   /**
+   * Liefert eine Checkbox, mit der festgelegt werden kann, ob der Flicker-Code on-demand in einen QR-Code konvertiert werden soll.
+   * @return die Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getConvertQr() throws RemoteException
+  {
+    if (this.convertQr != null)
+      return this.convertQr;
+
+    this.convertQr = new CheckboxInput(this.getConfig().isConvertFlickerToQRCode());
+    this.convertQr.setName(i18n.tr("Flickercode in QR-Code umwandeln"));
+    
+    final Listener l = new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          // Die Optionen In QR-Code umwandeln und USB schliessen sich gegenseitig aus
+          final Boolean enabled = (Boolean) getConvertQr().getValue();
+          getChipTANUSB().setEnabled(!enabled.booleanValue());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to update checkbox settings",e);
+        }
+      }
+    };
+    this.convertQr.addListener(l);
+    l.handleEvent(null);
+    return this.convertQr;
+  }
+  
+  /**
    * Liefert eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
    * @return eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
    * @throws RemoteException
@@ -307,10 +343,12 @@ public class Controller extends AbstractControl
             }
           }
 
-          if (event != null)
-            getCardReaders().setEnabled(newValue != null && newValue.booleanValue());
-          else
-            getCardReaders().setEnabled(b != null && b.booleanValue());
+          final boolean newState = (event != null) ? newValue != null && newValue.booleanValue() : b != null && b.booleanValue();
+          
+          getCardReaders().setEnabled(newState);
+          
+          // Die Optionen In QR-Code umwandeln und USB schliessen sich gegenseitig aus
+          getConvertQr().setEnabled(!newState);
 
           // Bei chipTAN USB wird die TAN grundsaetzlich angezeigt
           if (newValue != null && newValue.booleanValue() && (event == null || event.type == SWT.Selection))
@@ -461,6 +499,7 @@ public class Controller extends AbstractControl
       conf.setStoredSecMech(null);
       conf.setTanMedia(null);
       conf.setChipTANUSB(null);
+      conf.setConvertFlickerToQRCode(false);
       
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorauswahl der TAN-Verfahren zurückgesetzt"),StatusBarMessage.TYPE_SUCCESS));
     }
@@ -537,6 +576,11 @@ public class Controller extends AbstractControl
     try
     {
       if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
+        return;
+
+      // Speichern, damit sicher ist, dass wir vernuenftige Daten fuer den
+      // Test haben und die auch gespeichert sind
+      if (!handleStore())
         return;
 
       final PinTanConfig config = this.getConfig();
@@ -632,7 +676,7 @@ public class Controller extends AbstractControl
       Konto[] konten = null;
       List checked = getKontoAuswahl().getItems();
       if (checked != null && checked.size() > 0)
-        konten = (Konto[]) checked.toArray(new Konto[checked.size()]);
+        konten = (Konto[]) checked.toArray(new Konto[0]);
       config.setKonten(konten);
       
       String version = (String) getHBCIVersion().getValue();
@@ -644,8 +688,10 @@ public class Controller extends AbstractControl
 			config.setCardReader((String) getCardReaders().getValue());
 
       PtSecMech secMech = config.getCurrentSecMech();
-      if (secMech != null && secMech.useUSB())
+      if (secMech != null && secMech.isFlickerCode())
       {
+        config.setConvertFlickerToQRCode(((Boolean)getConvertQr().getValue()).booleanValue());
+        
         CheckboxInput check = this.getChipTANUSB();
         try
         {

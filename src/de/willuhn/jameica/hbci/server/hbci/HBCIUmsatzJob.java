@@ -131,13 +131,9 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         setJobParam("startdate", this.saldoDatum);
       }
     }
-		catch (RemoteException e)
+		catch (ApplicationException | RemoteException e)
 		{
 			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			throw e2;
 		}
 		catch (Throwable t)
 		{
@@ -374,7 +370,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
         // aktuellen Durchlauf nicht mehr uebertragen wurden.
         // Das muessen dann die vom Vortag sein
         Logger.info("clean obsolete notbooked entries");
-        GenericIterator newList = PseudoIterator.fromArray((Umsatz[]) fetched.toArray(new Umsatz[fetched.size()]));
+        GenericIterator newList = PseudoIterator.fromArray((Umsatz[]) fetched.toArray(new Umsatz[0]));
         int deleted = 0;
         existingUnbooked.begin();
         while (existingUnbooked.hasNext())

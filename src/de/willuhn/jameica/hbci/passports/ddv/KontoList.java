@@ -69,12 +69,9 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
       List<Konto> konten = config.getKonten();
       if (konten == null || konten.size() == 0)
         continue;
-      for (Konto k:konten)
-      {
-        linked.add(k);
-      }
+      linked.addAll(konten);
     }
-    GenericIterator exclude = PseudoIterator.fromArray((GenericObject[])linked.toArray(new GenericObject[linked.size()]));
+    GenericIterator exclude = PseudoIterator.fromArray((GenericObject[])linked.toArray(new GenericObject[0]));
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////
@@ -102,7 +99,7 @@ public class KontoList extends de.willuhn.jameica.hbci.gui.parts.KontoList
     {
       List<Konto> k = myConfig.getKonten();
       if (k != null && k.size() > 0)
-        checked = PseudoIterator.fromArray(k.toArray(new Konto[k.size()]));
+        checked = PseudoIterator.fromArray(k.toArray(new Konto[0]));
     }
 
     for (Konto k:konten)

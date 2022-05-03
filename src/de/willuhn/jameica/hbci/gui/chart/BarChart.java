@@ -129,7 +129,7 @@ public class BarChart extends AbstractChart
       if (list == null || list.size() == 0 || dataAttribute == null || labelAttribute == null)
       {
         Logger.debug("skipping data line, contains no data");
-        dataLine.add(new Double(0));
+        dataLine.add(Double.valueOf(0.0d));
         labelLine.add("");
       }
       else
@@ -153,7 +153,7 @@ public class BarChart extends AbstractChart
         continue; // wir haben gar keine Werte
 
       IAxis axis = getChart().getAxisSet().getXAxis(0);
-      axis.setCategorySeries(labelLine.toArray(new String[labelLine.size()]));
+      axis.setCategorySeries(labelLine.toArray(new String[0]));
       axis.enableCategory(true);
 
       IBarSeries barSeries = (IBarSeries) getChart().getSeriesSet().createSeries(SeriesType.BAR,Integer.toString(i));

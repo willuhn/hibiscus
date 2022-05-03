@@ -45,9 +45,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
   private static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     
@@ -84,12 +82,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
       T group = this.getGroup(u);
       String key = group != null ? group.getID() : null;
       groupMap.put(key,group);
-      List<Umsatz> list = umsaetze.get(key);
-      if (list == null)
-      {
-        list = new ArrayList<Umsatz>();
-        umsaetze.put(key,list);
-      }
+      List<Umsatz> list = umsaetze.computeIfAbsent(key, k -> new ArrayList<Umsatz>());
       list.add(u);
     }
 
@@ -115,7 +108,7 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
     try
     {
       // Der Export
-      String subTitle = i18n.tr("{0} - {1}", new String[]{startDate == null ? "" : HBCI.DATEFORMAT.format(startDate),endDate == null ? "" : HBCI.DATEFORMAT.format(endDate)});
+      String subTitle = i18n.tr("{0} - {1}", startDate == null ? "" : HBCI.DATEFORMAT.format(startDate), endDate == null ? "" : HBCI.DATEFORMAT.format(endDate));
       reporter = new Reporter(os,monitor,i18n.tr("Umsätze") + (filter != null && filter.booleanValue() ? (" (" + i18n.tr("gefiltert") + ")") : ""), subTitle, objects.length  );
 
       reporter.addHeaderColumn(i18n.tr("Valuta / Buchungsdatum"), Element.ALIGN_CENTER, 30, Reporter.COLOR_BG);
@@ -245,32 +238,26 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
    */
   protected abstract String toString(T t) throws RemoteException;
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#suppportsExtension(java.lang.String)
-   */
   @Override
   public boolean suppportsExtension(String ext)
   {
     return ext != null && (ExportAddSumRowExtension.KEY_SUMROW_ADD.equals(ext) || ExportSaldoExtension.KEY_SALDO_SHOW.equals(ext));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (!Umsatz.class.equals(objectType))
       return null;
     
     IOFormat format = new IOFormat() {
+      @Override
       public String getName()
       {
         return AbstractPDFUmsatzExporter.this.getName();
       }
 
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[]{"pdf"};

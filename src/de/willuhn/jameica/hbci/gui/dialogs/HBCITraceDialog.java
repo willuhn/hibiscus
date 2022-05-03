@@ -219,6 +219,7 @@ public class HBCITraceDialog extends AbstractDialog
     }
     catch (OperationCanceledException oce)
     {
+      // Export abbrechen ohne GUI-Nachricht
     }
     catch (Exception e)
     {

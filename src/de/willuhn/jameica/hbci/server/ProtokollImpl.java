@@ -157,7 +157,7 @@ public class ProtokollImpl extends AbstractHibiscusDBObject implements Protokoll
   public void setTyp(int typ) throws RemoteException {
 		if (typ != TYP_ERROR && typ != TYP_SUCCESS)
 			typ = TYP_UNKNOWN;
-		setAttribute("typ",new Integer(typ));
+		setAttribute("typ", Integer.valueOf(typ));
   }
 
 }

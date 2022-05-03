@@ -36,13 +36,9 @@ public class KontoauszugSettings implements Action
       KontoauszugSettingsDialog d = new KontoauszugSettingsDialog();
       d.open();
     }
-    catch (ApplicationException ae)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      throw oce;
+      throw e;
     }
     catch (Exception e)
     {

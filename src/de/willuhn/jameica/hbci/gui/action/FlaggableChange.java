@@ -67,8 +67,8 @@ public class FlaggableChange implements Action
       objects[0].transactionBegin();
       for (int i=0;i<objects.length;++i)
       {
-        int current = objects[i].getFlags();
-        boolean have = (current & this.flags) != 0;
+        final int current = objects[i].getFlags();
+        final boolean have = objects[i].hasFlag(this.flags);
         if (this.add && !have)
           objects[i].setFlags(current | this.flags);
         else if (!this.add && have)

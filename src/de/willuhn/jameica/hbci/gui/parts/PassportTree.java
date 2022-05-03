@@ -193,7 +193,7 @@ public class PassportTree extends TreePart
       {
         list.add(new PassportObject(p));
       }
-      return PseudoIterator.fromArray(list.toArray(new PassportObject[list.size()]));
+      return PseudoIterator.fromArray(list.toArray(new PassportObject[0]));
     }
     catch (RemoteException re)
     {
@@ -279,7 +279,7 @@ public class PassportTree extends TreePart
       {
         list.add(new ConfigObject(this.passport, c));
       }
-      this.children = PseudoIterator.fromArray(list.toArray(new ConfigObject[list.size()]));
+      this.children = PseudoIterator.fromArray(list.toArray(new ConfigObject[0]));
       return this.children;
     }
 

@@ -32,9 +32,7 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     // Wird manuell per Manifest registriert, um die Reihenfolge festzulegen. Muss NACH OfflineSaldoMessageConsumer passieren,
@@ -42,17 +40,13 @@ public class CheckOfflineUmsatzMessageConsumer implements MessageConsumer
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{ImportMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     // Wenn es keine Import-Message ist ignorieren wir die folgenden

@@ -153,20 +153,10 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       
 			return handler;
 		}
-    catch (RemoteException re)
+    catch (ApplicationException | OperationCanceledException | RemoteException e)
     {
       close();
-      throw re;
-    }
-    catch (OperationCanceledException oce)
-    {
-      close();
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      close();
-      throw ae;
+      throw e;
     }
 		catch (Exception e)
 		{
@@ -227,7 +217,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
-			return (Konto[]) result.toArray(new Konto[result.size()]);
+			return (Konto[]) result.toArray(new Konto[0]);
 		}
 		finally
 		{

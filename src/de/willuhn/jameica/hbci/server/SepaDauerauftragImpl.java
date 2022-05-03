@@ -132,7 +132,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
       // nicht vor der ersten Zahlung befindet
       // BUGZILLA 371
       if (letzteZahlung != null && letzteZahlung.before(ersteZahlung))
-        throw new ApplicationException(i18n.tr("Bei Angabe eines Datum für die letzte Zahlung ({0}) muss dieses nach der ersten Zahlung ({1}) liegen", new String[]{HBCI.DATEFORMAT.format(letzteZahlung), HBCI.DATEFORMAT.format(ersteZahlung)}));
+        throw new ApplicationException(i18n.tr("Bei Angabe eines Datum für die letzte Zahlung ({0}) muss dieses nach der ersten Zahlung ({1}) liegen", HBCI.DATEFORMAT.format(letzteZahlung), HBCI.DATEFORMAT.format(ersteZahlung)));
 
       //////////////////////////////////////
       // IBAN und BIC pruefen
@@ -235,7 +235,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
    */
   public void setChangable(boolean b) throws RemoteException
   {
-    setAttribute("canchange", new Integer(b ? 1 : 0));
+    setAttribute("canchange", Integer.valueOf(b ? 1 : 0));
   }
   
   /**
@@ -245,7 +245,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
    */
   public void setDeletable(boolean b) throws RemoteException
   {
-    setAttribute("candelete", new Integer(b ? 1 : 0));
+    setAttribute("candelete", Integer.valueOf(b ? 1 : 0));
   }
   
   /**

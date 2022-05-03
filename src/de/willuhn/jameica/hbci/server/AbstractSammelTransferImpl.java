@@ -28,7 +28,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Abstrakte Basis-Implementierung des Containers fuer Sammel-Transfers.
- * @author willuhn
  */
 public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObject implements SammelTransfer, Terminable
 {
@@ -99,7 +98,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
   public void insert() throws RemoteException, ApplicationException
   {
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
-      setAttribute("ausgefuehrt",new Integer(0));
+      setAttribute("ausgefuehrt", Integer.valueOf(0));
     super.insert();
   }
 
@@ -168,7 +167,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     try
     {
       whileStore = true;
-      setAttribute("ausgefuehrt",new Integer(b ? 1 : 0));
+      setAttribute("ausgefuehrt", Integer.valueOf(b ? 1 : 0));
       setAttribute("ausgefuehrt_am",new Date());
       store();
       Logger.info("[" + getTableName() + ":" + getID() + "] (" + BeanUtil.toString(this) + ") - executed: " + b);
@@ -247,15 +246,10 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
 
       this.transactionCommit();
     }
-    catch (RemoteException e)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
       throw e;
-    }
-    catch (ApplicationException e2)
-    {
-      this.transactionRollback();
-      throw e2;
     }
   }
 
@@ -278,19 +272,19 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("summe".equals(arg0))
-      return new Double(this.getSumme());
+      return Double.valueOf(this.getSumme());
 
     if ("anzahl".equals(arg0))
     {
       try
       {
         DBIterator l = getBuchungen();
-        return new Integer(l.size());
+        return Integer.valueOf(l.size());
       }
       catch (RemoteException e)
       {
         Logger.error("unable to determine number of buchungen",e);
-        return new Integer(0);
+        return Integer.valueOf(0);
       }
     }
     if ("buchungen".equals(arg0))
@@ -350,7 +344,7 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
     {
       buchungen.add(list.next());
     }
-    return (SammelTransferBuchung[]) buchungen.toArray(new SammelTransferBuchung[buchungen.size()]);
+    return (SammelTransferBuchung[]) buchungen.toArray(new SammelTransferBuchung[0]);
   }
 
   /**
@@ -369,6 +363,6 @@ public abstract class AbstractSammelTransferImpl extends AbstractHibiscusDBObjec
    */
   public void setWarning(boolean b) throws RemoteException
   {
-    setAttribute("warnungen",new Integer(b ? 1 : 0));
+    setAttribute("warnungen", Integer.valueOf(b ? 1 : 0));
   }
 }

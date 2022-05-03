@@ -64,9 +64,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
     return this.ctx;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object data = this.getContext();
@@ -103,12 +101,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
         }
 
         Konto k = u.getKonto();
-        List<Umsatz> list = groups.get(k.getID());
-        if (list == null)
-        {
-          list = new LinkedList<Umsatz>();
-          groups.put(k.getID(),list);
-        }
+        List<Umsatz> list = groups.computeIfAbsent(k.getID(), k1 -> new LinkedList<Umsatz>());
         list.add(u);
       }
       
@@ -196,9 +189,7 @@ public class PrintSupportUmsatzList extends AbstractPrintSupport
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#getTitle()
-   */
+  @Override
   String getTitle() throws ApplicationException
   {
     return i18n.tr("Umsätze");

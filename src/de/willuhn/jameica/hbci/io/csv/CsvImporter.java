@@ -56,9 +56,7 @@ public class CsvImporter implements Importer
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     ICsvListReader csv = null;
@@ -251,22 +249,18 @@ public class CsvImporter implements Importer
           if (!(e instanceof ApplicationException))
             Logger.error("unable to import line",e);
 
-          monitor.log("  " + i18n.tr("Fehler in Zeile {0}: {1}",new String[]{Integer.toString(csv.getLineNumber()),e.getMessage()}));
+          monitor.log("  " + i18n.tr("Fehler in Zeile {0}: {1}", Integer.toString(csv.getLineNumber()), e.getMessage()));
           error++;
         }
       }
       while ((line = csv.read()) != null);
 
       // Fertig.
-      monitor.setStatusText(i18n.tr("{0} importiert, {1} fehlerhaft, {2} übersprungen", new String[]{Integer.toString(created),Integer.toString(error),Integer.toString(skipped)}));
+      monitor.setStatusText(i18n.tr("{0} importiert, {1} fehlerhaft, {2} übersprungen", Integer.toString(created), Integer.toString(error), Integer.toString(skipped)));
     }
-    catch (OperationCanceledException oce)
+    catch (ApplicationException | OperationCanceledException e)
     {
-      throw oce;
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+      throw e;
     }
     catch (Exception e)
     {
@@ -290,9 +284,7 @@ public class CsvImporter implements Importer
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     // Wir checken, fuer welche Datentypen wir einen CSV-Treiber haben
@@ -328,12 +320,10 @@ public class CsvImporter implements Importer
       Logger.error("no csv formats found");
     }
 
-    return formats.toArray(new IOFormat[formats.size()]);
+    return formats.toArray(new IOFormat[0]);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("CSV-Format");
@@ -349,10 +339,8 @@ public class CsvImporter implements Importer
    */
   private static byte[] copy(InputStream is) throws IOException
   {
-    BufferedInputStream bis = null;
-    try
+    try (BufferedInputStream bis = new BufferedInputStream(is))
     {
-      bis = new BufferedInputStream(is);
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       
       byte[] buf = new byte[4096];
@@ -363,10 +351,6 @@ public class CsvImporter implements Importer
           bos.write(buf,0,read);
       }
       return bos.toByteArray();
-    }
-    finally
-    {
-      bis.close();
     }
   }
   
@@ -387,17 +371,13 @@ public class CsvImporter implements Importer
       this.format = f;
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getName()
-     */
+    @Override
     public String getName()
     {
       return CsvImporter.this.getName();
     }
     
-    /**
-     * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-     */
+    @Override
     public String[] getFileExtensions()
     {
       return new String[]{"*.csv","*.txt"};

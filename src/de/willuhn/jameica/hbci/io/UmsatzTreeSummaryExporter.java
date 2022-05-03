@@ -28,9 +28,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format, OutputStream os, ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     if (objects == null || !(objects instanceof UmsatzTree[]))
@@ -87,9 +85,7 @@ public class UmsatzTreeSummaryExporter extends AbstractUmsatzTreeExporter
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
+  @Override
   public String getName()
   {
     return i18n.tr("PDF-Format: Summen der Hauptkategorien");

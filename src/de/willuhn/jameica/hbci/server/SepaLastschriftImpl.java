@@ -11,16 +11,23 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
+import de.willuhn.jameica.hbci.reminder.ReminderStorageProviderHibiscus;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.reminder.Reminder;
+import de.willuhn.jameica.reminder.ReminderInterval;
+import de.willuhn.jameica.reminder.ReminderStorageProvider;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -74,17 +81,45 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     // Wenn sich das Target-Date in der Vergangenheit befindet, muessen wir ein neues erzeugen.
     // Andernfalls wuerde das Speichern fehlschlagen, weil bei insertCheck geprueft wird, ob sich
     // das Ziel-Datum in der Zukunft befindet
-    Date target = this.getTargetDate();
-    Date now = new Date();
-    if (target != null && !target.after(now))
+    try
     {
-      // Wir nehmen morgen.
-      target = DateUtil.endOfDay(new Date(now.getTime() + (24 * 60 * 60 * 1000L)));
-      u.setTargetDate(target);
+      Date target = this.getTargetDate();
+      Date now = new Date();
+      Date newTarget = null;
+      
+      if (target != null && !target.after(now))
+      {
+        // Wenn der Auftrag auf einem Auftrag mit Reminder basiert, dann berechnen wir das naechste Target-Date
+        // basierend auf dem Intervall.
+        final String uuid = MetaKey.REMINDER_UUID.get(this);
+        if (uuid != null)
+        {
+          Logger.info("calculating target date from duplication template");
+          BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+          final ReminderStorageProvider provider = service.get(ReminderStorageProviderHibiscus.class);
+          Reminder r = provider.get(uuid);
+          final ReminderInterval ri = r.getReminderInterval();
+          final List<Date> dates = ri.getDates(target,now,null);
+          if (!dates.isEmpty())
+            newTarget = dates.get(0); // Wir nehmen den ersten Treffer
+        }
+        else
+        {
+          // Ansonsten nehmen wir morgen
+          newTarget = new Date(now.getTime() + (24 * 60 * 60 * 1000L));
+        }
+
+        u.setTargetDate(DateUtil.endOfDay(newTarget));
+      }
+      else
+      {
+        u.setTargetDate(target);
+      }
+
     }
-    else
+    catch (Exception e)
     {
-      u.setTargetDate(target);
+      Logger.error("unable to apply target date",e);
     }
 
     return u;

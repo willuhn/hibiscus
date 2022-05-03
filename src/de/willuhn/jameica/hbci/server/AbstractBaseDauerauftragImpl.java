@@ -115,9 +115,9 @@ public abstract class AbstractBaseDauerauftragImpl extends AbstractHibiscusTrans
   	if (turnus == null)
   		return;
   	
-		setAttribute("zeiteinheit",	new Integer(turnus.getZeiteinheit()));
-		setAttribute("intervall",		new Integer(turnus.getIntervall()));
-		setAttribute("tag",					new Integer(turnus.getTag()));
+		setAttribute("zeiteinheit",	Integer.valueOf(turnus.getZeiteinheit()));
+		setAttribute("intervall",		Integer.valueOf(turnus.getIntervall()));
+		setAttribute("tag",					Integer.valueOf(turnus.getTag()));
   }
 
   /**

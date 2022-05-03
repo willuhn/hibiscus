@@ -19,7 +19,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Implementierung des Containers fuer Sammellastschrift-Buchungen.
- * @author willuhn
  */
 public class SammelUeberweisungImpl extends AbstractSammelTransferImpl
   implements SammelUeberweisung

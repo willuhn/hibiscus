@@ -393,15 +393,10 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       super.delete();
       this.transactionCommit();
     }
-    catch (RemoteException e)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
       throw e;
-    }
-    catch (ApplicationException e2)
-    {
-      this.transactionRollback();
-      throw e2;
     }
   }
 
@@ -498,7 +493,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     {
       long d = days * 24l * 60l * 60l * 1000l;
       Date start = DateUtil.startOfDay(new Date(System.currentTimeMillis() - d));
-      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
+      list.addFilter("datum >= ?", new java.sql.Date(start.getTime()));
     }
     return list;
   }
@@ -511,9 +506,9 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
     list.addFilter("konto_id = " + getID());
     if (start != null)
-      list.addFilter("datum >= ?", new Object[] {new java.sql.Date(DateUtil.startOfDay(start).getTime())});
+      list.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(start).getTime()));
     if (end != null)
-      list.addFilter("datum <= ?", new Object[] {new java.sql.Date(DateUtil.endOfDay(end).getTime())});
+      list.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     return list;
   }
 
@@ -737,7 +732,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("numumsaetze".equals(arg0))
-      return new Integer(getNumUmsaetze());
+      return Integer.valueOf(getNumUmsaetze());
 
     final boolean extralong = "extralongname".equals(arg0);
     if ("longname".equals(arg0) || extralong)
@@ -794,7 +789,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
    */
   public void setSaldo(double saldo) throws RemoteException
   {
-    setAttribute("saldo", Double.isNaN(saldo) ? null : new Double(saldo));
+    setAttribute("saldo", Double.isNaN(saldo) ? null : Double.valueOf(saldo));
     setAttribute("saldo_datum", new Date());
   }
 
@@ -803,7 +798,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
    */
   public void setSaldoAvailable(double saldo) throws RemoteException
   {
-    setAttribute("saldo_available", Double.isNaN(saldo) ? null : new Double(saldo));
+    setAttribute("saldo_available", Double.isNaN(saldo) ? null : Double.valueOf(saldo));
   }
   
   /**
@@ -822,8 +817,8 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (rs.next())
-          return new Integer(rs.getInt(1));
-        return new Integer(0);
+          return Integer.valueOf(rs.getInt(1));
+        return Integer.valueOf(0);
       }
     };
 
@@ -896,7 +891,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
     if (flags < 0)
       return; // ungueltig
     
-    this.setAttribute("flags",new Integer(flags));
+    this.setAttribute("flags", Integer.valueOf(flags));
   }
 
   /**

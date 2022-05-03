@@ -1,3 +1,13 @@
+/**********************************************************************
+ *
+ * Copyright (c) 2004 Olaf Willuhn
+ * All rights reserved.
+ * 
+ * This software is copyrighted work licensed under the terms of the
+ * Jameica License.  Please consult the file "LICENSE" for details. 
+ *
+ **********************************************************************/
+
 package de.willuhn.jameica.hbci.gui.chart;
 
 import java.util.ArrayList;
@@ -121,10 +131,8 @@ public class ChartFeatureTooltip implements ChartFeature
    * aktuellen Punkt mehrere Serien gefunden werden) und der Angabe des X- und Y-Wertes. Letztere koennen in 
    * Kindklassen typabhängig formatiert werden. Die Default-Implementierung geht davon aus, dass es sich um ein Line-Chart
    * mit Zeitraum auf der X-Achse und Geldbetraegen auf der Y-Achse handelt.
-   * @param data
+   * @param foundData
    * @return der Tooltip-Text.
-   * @see this.getFormattedX()
-   * @see this.getFormattedY()
    */
   protected String getTooltipText(Collection<SeriesData> foundData)
   {

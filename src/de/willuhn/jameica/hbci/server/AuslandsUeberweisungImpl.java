@@ -62,6 +62,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setTermin(isTerminUeberweisung() ? getTermin() : new Date());
     u.setUmbuchung(isUmbuchung());
     u.setPurposeCode(getPurposeCode());
+    u.setInstantPayment(isInstantPayment());
     
     return u;
   }
@@ -159,7 +160,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
    */
   public void setTerminUeberweisung(boolean termin) throws RemoteException
   {
-    setAttribute("banktermin",termin ? new Integer(1) : null);
+    setAttribute("banktermin",termin ? Integer.valueOf(1) : null);
   }
   
   /**
@@ -176,9 +177,27 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
    */
   public void setUmbuchung(boolean b) throws RemoteException
   {
-    setAttribute("umbuchung",b ? new Integer(1) : null);
+    setAttribute("umbuchung",b ? Integer.valueOf(1) : null);
   }
-
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isInstantPayment()
+   */
+  @Override
+  public boolean isInstantPayment() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("instantpayment");
+    return i != null && i.intValue() == 1;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#setInstantPayment(boolean)
+   */
+  @Override
+  public void setInstantPayment(boolean b) throws RemoteException
+  {
+    setAttribute("instantpayment",b ? Integer.valueOf(1) : null);
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.server.AbstractBaseUeberweisungImpl#ueberfaellig()

@@ -24,9 +24,7 @@ import de.willuhn.logging.Logger;
  */
 public class AuslandsUeberweisungAppointmentProvider extends AbstractAppointmentProvider<AuslandsUeberweisung>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.calendar.AbstractAppointmentProvider#createAppointment(de.willuhn.jameica.hbci.schedule.Schedule)
-   */
+  @Override
   AbstractHibiscusAppointment createAppointment(Schedule<AuslandsUeberweisung> schedule)
   {
     return new MyAppointment(schedule);
@@ -46,9 +44,7 @@ public class AuslandsUeberweisungAppointmentProvider extends AbstractAppointment
       super(schedule);
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.AbstractAppointment#getDescription()
-     */
+    @Override
     public String getDescription()
     {
       try
@@ -70,9 +66,7 @@ public class AuslandsUeberweisungAppointmentProvider extends AbstractAppointment
       }
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.calendar.Appointment#getName()
-     */
+    @Override
     public String getName()
     {
       try

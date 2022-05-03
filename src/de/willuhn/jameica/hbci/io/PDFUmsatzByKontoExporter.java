@@ -23,18 +23,12 @@ import de.willuhn.jameica.hbci.server.KontoUtil;
  */
 public class PDFUmsatzByKontoExporter extends AbstractPDFUmsatzExporter<Konto>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#getGroup(de.willuhn.jameica.hbci.rmi.Umsatz)
-   */
   @Override
   protected Konto getGroup(Umsatz u) throws RemoteException
   {
     return u.getKonto();
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractPDFUmsatzExporter#toString(de.willuhn.datasource.GenericObject)
-   */
   @Override
   protected String toString(Konto t) throws RemoteException
   {
@@ -42,9 +36,6 @@ public class PDFUmsatzByKontoExporter extends AbstractPDFUmsatzExporter<Konto>
     return KontoUtil.toString(t);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
   public String getName()
   {
     return i18n.tr("PDF-Format (gruppiert nach Konto)");

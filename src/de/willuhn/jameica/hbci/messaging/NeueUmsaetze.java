@@ -31,25 +31,19 @@ public class NeueUmsaetze implements MessageConsumer
 {
   private static String first = null;
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     return true;
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{ImportMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     // Wenn es keine Import-Message ist oder wir schon den ersten Umsatz haben,
@@ -105,7 +99,7 @@ public class NeueUmsaetze implements MessageConsumer
 
     try
     {
-      return (((Integer)u.getAttribute("id-int")).compareTo(new Integer(first)) >= 0);
+      return (((Integer)u.getAttribute("id-int")).compareTo(Integer.valueOf(first)) >= 0);
     }
     catch (Exception e)
     {

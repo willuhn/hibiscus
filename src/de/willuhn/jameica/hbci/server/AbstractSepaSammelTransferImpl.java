@@ -122,7 +122,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
   public void insert() throws RemoteException, ApplicationException
   {
     if (getAttribute("ausgefuehrt") == null) // Status noch nicht definiert
-      setAttribute("ausgefuehrt",new Integer(0));
+      setAttribute("ausgefuehrt", Integer.valueOf(0));
     super.insert();
   }
 
@@ -144,7 +144,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
    */
   public void setKonto(Konto k) throws RemoteException
   {
-    setAttribute("konto_id",(k == null || k.getID() == null) ? null : new Integer(k.getID()));
+    setAttribute("konto_id",(k == null || k.getID() == null) ? null : Integer.valueOf(k.getID()));
   }
 
   /**
@@ -195,7 +195,7 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
     try
     {
       markingExecuted = true;
-      setAttribute("ausgefuehrt",new Integer(b ? 1 : 0));
+      setAttribute("ausgefuehrt", Integer.valueOf(b ? 1 : 0));
       setAttribute("ausgefuehrt_am",new Date());
       store();
       Logger.info("[" + getTableName() + ":" + getID() + "] (" + BeanUtil.toString(this) + ") - executed: " + b);
@@ -271,15 +271,10 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
 
       this.transactionCommit();
     }
-    catch (RemoteException e)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
       throw e;
-    }
-    catch (ApplicationException e2)
-    {
-      this.transactionRollback();
-      throw e2;
     }
   }
 

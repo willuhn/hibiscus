@@ -43,6 +43,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.menus.UmsatzList;
+import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -105,7 +106,7 @@ public class UmsatzTree extends TreePart
           if (i instanceof Umsatz)
           {
             Umsatz u = (Umsatz) i;
-            if ((u.getFlags() & Umsatz.FLAG_NOTBOOKED) != 0)
+            if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
               item.setForeground(de.willuhn.jameica.gui.util.Color.COMMENT.getSWTColor());
 
             item.setFont(NeueUmsaetze.isNew(u) ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
@@ -146,14 +147,16 @@ public class UmsatzTree extends TreePart
       }
     
     });
+    
     this.addColumn(i18n.tr("Bezeichnung"),      "name");
-    if (settings.getBoolean("usage.list.all",false))
+    if (settings.getBoolean("usage.display.all",false))
       addColumn(i18n.tr("Verwendungszweck"),    "mergedzweck");
     else
       addColumn(i18n.tr("Verwendungszweck"),    Tag.SVWZ.name());
     this.addColumn(i18n.tr("Datum"),            "datum_pseudo", new DateFormatter(HBCI.DATEFORMAT));
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.addColumn(i18n.tr("Notiz"),            "kommentar");
+    this.addColumn(new KontoColumn());
 
     this.setContextMenu(new UmsatzList());
     
@@ -224,7 +227,7 @@ public class UmsatzTree extends TreePart
       }
       ////////////////////////////////////////////////////////////////
 
-      super.setList(PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[items.size()])));
+      super.setList(PseudoIterator.fromArray((GenericObject[])items.toArray(new GenericObject[0])));
       this.featureEvent(Feature.Event.REFRESH,null);
     }
     catch (RemoteException re)
@@ -314,10 +317,12 @@ public class UmsatzTree extends TreePart
       if (curr == null)
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
-      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}",new String[]{Integer.toString(this.umsatzCount),
-                                                                              Integer.toString(list.length),
-                                                                              HBCI.DECIMALFORMAT.format(sum),
-                                                                              curr});
+      //@formatter:off
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}", Integer.toString(this.umsatzCount),
+                                                                  Integer.toString(list.length),
+                                                                  HBCI.DECIMALFORMAT.format(sum),
+                                                                  curr);
+      //@formatter:on
     }
     catch (Throwable t)
     {

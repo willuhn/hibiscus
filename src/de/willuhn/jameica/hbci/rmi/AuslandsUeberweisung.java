@@ -46,4 +46,19 @@ public interface AuslandsUeberweisung extends BaseUeberweisung, Duplicatable, Se
    * @throws RemoteException
    */
   public void setUmbuchung(boolean b) throws RemoteException;
+  
+  /**
+   * Prueft, ob es eine Echtzeitueberweisung ist.
+   * @return true, wenn es eine Echtzeitueberweisung ist.
+   * @throws RemoteException
+   */
+  public boolean isInstantPayment() throws RemoteException;
+  
+  /**
+   * Legt fest, ob es eine Echtzeitueberweisung ist.
+   * @param b true, wenn es eine Echtzeitueberweisung ist.
+   * @throws RemoteException
+   */
+  public void setInstantPayment(boolean b) throws RemoteException;
+  
 }

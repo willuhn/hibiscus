@@ -65,7 +65,7 @@ public class SparQuoteExport implements Action
 			else if (context instanceof List)
 			{
 			  List l = (List) context;
-			  u = l.toArray(new UmsatzEntry[l.size()]);
+			  u = l.toArray(new UmsatzEntry[0]);
 			}
 
 			if (u == null || u.length == 0)

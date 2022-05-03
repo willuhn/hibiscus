@@ -41,9 +41,6 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-/**
- * @author willuhn
- */
 public class PassportHandleImpl extends UnicastRemoteObject implements PassportHandle
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -146,21 +143,11 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 			handler = new HBCIHandler(hbciVersion,hbciPassport);
 			return handler;
 		}
-		catch (RemoteException re)
+		catch (ApplicationException | OperationCanceledException | RemoteException e)
 		{
 			close();
-			throw re;
+			throw e;
 		}
-    catch (ApplicationException ae)
-    {
-      close();
-      throw ae;
-    }
-    catch (OperationCanceledException oce)
-    {
-      close();
-      throw oce;
-    }
 		catch (Exception e)
 		{
 			close();
@@ -250,7 +237,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 				Logger.debug("found account " + k.getKontonummer());
 				result.add(k);
 			}
-			return (Konto[]) result.toArray(new Konto[result.size()]);
+			return (Konto[]) result.toArray(new Konto[0]);
 		}
 		finally
 		{

@@ -71,7 +71,7 @@ public class AuslandsUeberweisungList extends AbstractTransferList
     if (text != null && text.length() > 0)
     {
       String s = "%" + text.toLowerCase() + "%";
-      list.addFilter("(LOWER(empfaenger_konto) like ? or LOWER(empfaenger_name) like ? or LOWER(zweck) like ?)", new Object[]{s,s,s});
+      list.addFilter("(LOWER(empfaenger_konto) like ? or LOWER(empfaenger_name) like ? or LOWER(zweck) like ?)", s, s, s);
     }
     
     return list;

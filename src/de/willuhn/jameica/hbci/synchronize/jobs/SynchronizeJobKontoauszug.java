@@ -31,9 +31,7 @@ public class SynchronizeJobKontoauszug extends AbstractSynchronizeJob
    */
   public final static String CTX_FORCE_UMSATZ = "ctx.konto.umsatz.force";
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#isRecurring()
-   */
+  @Override
   public boolean isRecurring()
   {
     return true;

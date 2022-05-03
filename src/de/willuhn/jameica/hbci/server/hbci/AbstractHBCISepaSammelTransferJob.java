@@ -121,13 +121,9 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
         
       }
 		}
-		catch (RemoteException e)
+		catch (ApplicationException | RemoteException e)
 		{
 			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			throw e2;
 		}
 		catch (Throwable t)
 		{
@@ -171,7 +167,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
    */
   protected String markFailed(String error) throws RemoteException, ApplicationException
   {
-    String msg = i18n.tr("Fehler beim Ausführen des SEPA-Sammelauftrages [Bezeichnung: {0}]: {1}",new String[]{transfer.getBezeichnung(),error});
+    String msg = i18n.tr("Fehler beim Ausführen des SEPA-Sammelauftrages [Bezeichnung: {0}]: {1}", transfer.getBezeichnung(), error);
     konto.addToProtokoll(msg,Protokoll.TYP_ERROR);
     return msg;
   }

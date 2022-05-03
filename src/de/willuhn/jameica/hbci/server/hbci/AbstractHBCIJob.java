@@ -542,7 +542,7 @@ public abstract class AbstractHBCIJob
 			Logger.warn("[job parameter] no name given");
 			return;
 		}
-		params.put(name,new Integer(i));
+		params.put(name, Integer.valueOf(i));
 	}
 
   /**

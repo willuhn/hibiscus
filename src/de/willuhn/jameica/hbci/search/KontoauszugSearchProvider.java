@@ -36,17 +36,14 @@ import de.willuhn.util.I18N;
 public class KontoauszugSearchProvider implements SearchProvider
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#getName()
-   */
+
+  @Override
   public String getName()
   {
     return i18n.tr("Elektr. Kontoauszüge");
   }
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
-   */
+  @Override
   public List search(String search) throws RemoteException, ApplicationException
   {
     if (search == null || search.length() == 0)
@@ -91,17 +88,13 @@ public class KontoauszugSearchProvider implements SearchProvider
       this.u = u;
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#execute()
-     */
+    @Override
     public void execute() throws RemoteException, ApplicationException
     {
       new Open().handleAction(this.u);
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#getName()
-     */
+    @Override
     public String getName()
     {
       try
@@ -124,8 +117,8 @@ public class KontoauszugSearchProvider implements SearchProvider
         {
           params.add(HBCI.DATEFORMAT.format(erstellt));
         }
-        
-        String[] s = params.toArray(new String[params.size()]);
+
+        String[] s = params.toArray(new String[0]);
         if (s.length == 4)
           return i18n.tr("Kontoauszug {2}-{3}, abgerufen am {0} ({1})",s);
         

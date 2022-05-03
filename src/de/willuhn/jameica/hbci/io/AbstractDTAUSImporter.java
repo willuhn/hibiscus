@@ -42,9 +42,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
   private final static Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private Hashtable kontenCache = new Hashtable();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
-   */
+  @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
     // Wir merken uns die Konten, die der User schonmal ausgewaehlt
@@ -151,7 +149,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
             sb.append("\n");
             sb.append(i18n.tr("Betrag: {0}",HBCI.DECIMALFORMAT.format(c.getBetragInEuro())));
 
-            String s = i18n.tr("Fehler beim Import eines Datensatzes\n\n{0}\n\n{1}\n\nDatensatz überspringen und Import fortsetzen?",new String[]{sb.toString(),ace.getMessage()});
+            String s = i18n.tr("Fehler beim Import eines Datensatzes\n\n{0}\n\n{1}\n\nDatensatz überspringen und Import fortsetzen?", sb.toString(), ace.getMessage());
             if (!Application.getCallback().askUser(s))
             {
               monitor.setStatusText(i18n.tr("Import abgebrochen"));
@@ -175,7 +173,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
         if (error > 0)
         {
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-          monitor.setStatusText("  " + i18n.tr("{0} Datensätze importiert, {1} wegen Fehlern übersprungen",new String[]{""+success,""+error}));
+          monitor.setStatusText("  " + i18n.tr("{0} Datensätze importiert, {1} wegen Fehlern übersprungen", ""+success, ""+error));
         }
         else
         {
@@ -242,8 +240,7 @@ public abstract class AbstractDTAUSImporter extends AbstractDTAUSIO implements I
       // User eines auswaehlen
       KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
       d.setText(i18n.tr("Konto {0} [BLZ {1}] nicht gefunden\n" +
-                        "Bitte wählen Sie das zu verwendende Konto aus.",
-                        new String[]{kontonummer == null || kontonummer.length() == 0 ? i18n.tr("<unbekannt>") : kontonummer,blz}));
+                        "Bitte wählen Sie das zu verwendende Konto aus.", kontonummer == null || kontonummer.length() == 0 ? i18n.tr("<unbekannt>") : kontonummer,blz));
 
       try
       {

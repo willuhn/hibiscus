@@ -45,27 +45,18 @@ public abstract class AbstractSepaImporter extends AbstractImporter
 {
   private Map<String,Konto> kontenCache = new HashMap<String,Konto>();
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getName()
-   */
   @Override
   public String getName()
   {
     return i18n.tr("SEPA-XML");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractExporter#getFileExtensions()
-   */
   @Override
   String[] getFileExtensions()
   {
     return new String[]{"*.xml"};
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractImporter#setup(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
-   */
   @Override
   Object[] setup(Object context, IOFormat format, InputStream is, ProgressMonitor monitor) throws Exception
   {
@@ -99,13 +90,10 @@ public abstract class AbstractSepaImporter extends AbstractImporter
     List<Properties> props = new ArrayList<Properties>();
     ISEPAParser parser = SEPAParserFactory.get(version);
     parser.parse(new ByteArrayInputStream(bos.toByteArray()),props);
-    
-    return props.toArray(new Properties[props.size()]);
+
+    return props.toArray(new Properties[0]);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.AbstractImporter#commit(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor)
-   */
   //final, damit Subklassen zukünftig nichts komisches machen können (siehe Exception-Handling in AbstractImporter#doImport)
   @Override
   final void commit(Object[] objects, IOFormat format, InputStream is, ProgressMonitor monitor) throws Exception

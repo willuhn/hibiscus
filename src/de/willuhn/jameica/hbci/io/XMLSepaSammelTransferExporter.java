@@ -24,9 +24,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class XMLSepaSammelTransferExporter extends XMLExporter
 {
-  /**
-   * @see de.willuhn.jameica.hbci.io.XMLExporter#doExport(java.lang.Object[], de.willuhn.jameica.hbci.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
-   */
+  @Override
   public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
     SepaSammelTransfer[] transfers = (SepaSammelTransfer[]) objects;
@@ -34,17 +32,12 @@ public class XMLSepaSammelTransferExporter extends XMLExporter
     for (SepaSammelTransfer t:transfers)
     {
       all.add(t);
-      for (Object b:t.getBuchungen())
-      {
-        all.add(b);
-      }
+      all.addAll(t.getBuchungen());
     }
     super.doExport(all.toArray(),format,os,monitor);
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.io.IO#getIOFormats(java.lang.Class)
-   */
+  @Override
   public IOFormat[] getIOFormats(Class objectType)
   {
     if (objectType == null)
@@ -54,14 +47,13 @@ public class XMLSepaSammelTransferExporter extends XMLExporter
       return null; // Nur fuer SEPA-Sammel-Auftraege anbieten - fuer alle anderen tut es die Basis-Implementierung
 
     return new IOFormat[]{new IOFormat() {
+      @Override
       public String getName()
       {
         return i18n.tr("Hibiscus-Format");
       }
     
-      /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
-       */
+      @Override
       public String[] getFileExtensions()
       {
         return new String[]{"xml"};

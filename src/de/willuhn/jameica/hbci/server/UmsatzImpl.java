@@ -123,7 +123,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // Anlegen des Datensatzes. Dann koennen wir anschliessend
     // beliebig aendern und muessen uns nicht mehr mit
     // "hasChangedByUser" herumschlagen
-    setAttribute("checksum",new Long(getChecksum()));
+    setAttribute("checksum", Long.valueOf(getChecksum()));
     super.insert();
   }
 
@@ -251,7 +251,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
   public void setBetrag(double d) throws RemoteException {
-		setAttribute("betrag",new Double(d));
+		setAttribute("betrag", Double.valueOf(d));
   }
 
   /**
@@ -286,7 +286,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto k) throws RemoteException {
-    setAttribute("konto_id",(k == null || k.getID() == null) ? null : new Integer(k.getID()));
+    setAttribute("konto_id",(k == null || k.getID() == null) ? null : Integer.valueOf(k.getID()));
   }
 
   /**
@@ -362,7 +362,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setSaldo(double)
    */
   public void setSaldo(double s) throws RemoteException {
-		setAttribute("saldo",new Double(s));
+		setAttribute("saldo", Double.valueOf(s));
   }
 
   /**
@@ -440,7 +440,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     // haben ja einen Saldo von 0,00. Wir nehmen daher das Flag mit auf.
     // Aber nur bei Vormerkbuchungen, damit die Checksummen der valutierten
     // Buchungen gleich bleiben
-    if ((getFlags() & FLAG_NOTBOOKED) != 0)
+    if (hasFlag(FLAG_NOTBOOKED))
       s += "notbooked";
     
 		CRC32 crc = new CRC32();
@@ -476,7 +476,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     {
       try
       {
-        return new Integer(getID());
+        return Integer.valueOf(getID());
       }
       catch (Exception e)
       {
@@ -524,7 +524,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       if (kto == null || kto.length() == 0 || blz == null || blz.length() == 0)
         return null;
 
-      return i18n.tr("Kto. {0}, BLZ {1}", new String[]{kto,blz});
+      return i18n.tr("Kto. {0}, BLZ {1}", kto, blz);
     }
 
     return super.getAttribute(arg0);
@@ -583,13 +583,13 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
           getZweck(),
           k.getWaehrung() + " " + HBCI.DECIMALFORMAT.format(getBetrag())
         };
-        if ((this.getFlags() & Umsatz.FLAG_NOTBOOKED) == 0)
+        if (!this.hasFlag(Umsatz.FLAG_NOTBOOKED))
           k.addToProtokoll(i18n.tr("Umsatz [Gegenkonto: {0}, Kto. {1} BLZ {2}], Datum {3}, Zweck: {4}] {5} gelöscht",fields),Protokoll.TYP_SUCCESS);
       }
       
       this.transactionCommit();
     }
-    catch (RemoteException re)
+    catch (ApplicationException | RemoteException e)
     {
       try
       {
@@ -599,19 +599,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       {
         Logger.error("unable to rollback transaction",e2);
       }
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw ae;
+      throw e;
     }
   }
 
@@ -666,7 +654,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    */
   public void setUmsatzTyp(UmsatzTyp ut) throws RemoteException
   {
-    setAttribute("umsatztyp_id",ut == null ? null : new Integer(ut.getID()));
+    setAttribute("umsatztyp_id",ut == null ? null : Integer.valueOf(ut.getID()));
   }
 
   /**
@@ -730,7 +718,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     if (flags < 0)
       return; // ungueltig
     
-    this.setAttribute("flags",new Integer(flags));
+    this.setAttribute("flags", Integer.valueOf(flags));
   }
 
   /**

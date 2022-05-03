@@ -176,7 +176,7 @@ public class update0012 implements Update
                   Ueberweisung tu  = (Ueberweisung) service.createObject(Ueberweisung.class,s);
                   tu.setWeitereVerwendungszwecke(sl);
                   ausgefuehrt = tu.ausgefuehrt();
-                  if (ausgefuehrt) ((AbstractDBObject)tu).setAttribute("ausgefuehrt",new Integer(0));
+                  if (ausgefuehrt) ((AbstractDBObject)tu).setAttribute("ausgefuehrt", Integer.valueOf(0));
                   tu.store();
                   if (ausgefuehrt) tu.setAusgefuehrt(true);
                   break;
@@ -184,7 +184,7 @@ public class update0012 implements Update
                   Lastschrift tl = (Lastschrift) service.createObject(Lastschrift.class,s);
                   tl.setWeitereVerwendungszwecke(sl);
                   ausgefuehrt = tl.ausgefuehrt();
-                  if (ausgefuehrt) ((AbstractDBObject)tl).setAttribute("ausgefuehrt",new Integer(0));
+                  if (ausgefuehrt) ((AbstractDBObject)tl).setAttribute("ausgefuehrt", Integer.valueOf(0));
                   tl.store();
                   if (ausgefuehrt) tl.setAusgefuehrt(true);
                   break;

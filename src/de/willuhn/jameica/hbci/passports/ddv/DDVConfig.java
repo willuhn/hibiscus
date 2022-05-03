@@ -281,15 +281,11 @@ public class DDVConfig implements Configuration
       {
         Logger.warn("account " + ids[i] + " does not exist, removing from list");
       }
-      catch (RemoteException re)
-      {
-        throw re;
-      }
     }
     if (fixedIds.size() != ids.length)
     {
       Logger.info("fixing list of assigned accounts");
-      settings.setAttribute(getPrefix() + "konto",fixedIds.toArray(new String[fixedIds.size()]));
+      settings.setAttribute(getPrefix() + "konto",fixedIds.toArray(new String[0]));
     }
     return konten;
   }

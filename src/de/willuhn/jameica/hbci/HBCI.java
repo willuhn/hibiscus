@@ -61,6 +61,11 @@ public class HBCI extends AbstractPlugin
   public static DateFormat DATEFORMAT       = new CustomDateFormat("dd.MM.yyyy");
 
   /**
+   * Datums-Format dd.MM.
+   */
+  public static DateFormat SHORTDATEFORMAT  = new CustomDateFormat("dd.MM.");
+
+  /**
    * Datums-Format ddMMyyyy.
    */
   public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
@@ -75,7 +80,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "3.1.55";
+  private final static String HBCI4JAVA_VERSION = "3.1.59";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
@@ -98,11 +103,11 @@ public class HBCI extends AbstractPlugin
     //  BUGZILLA 101 http://www.willuhn.de/bugzilla/show_bug.cgi?id=101
     DECIMALFORMAT.setGroupingUsed(Settings.getDecimalGrouping());
 
-    LOGMAPPING.put(Level.ERROR, new Integer(HBCIUtils.LOG_ERR));
-    LOGMAPPING.put(Level.WARN,  new Integer(HBCIUtils.LOG_WARN));
-    LOGMAPPING.put(Level.INFO,  new Integer(HBCIUtils.LOG_INFO));
-    LOGMAPPING.put(Level.DEBUG, new Integer(HBCIUtils.LOG_DEBUG));
-    LOGMAPPING.put(Level.TRACE, new Integer(HBCIUtils.LOG_DEBUG2));
+    LOGMAPPING.put(Level.ERROR, Integer.valueOf(HBCIUtils.LOG_ERR));
+    LOGMAPPING.put(Level.WARN,  Integer.valueOf(HBCIUtils.LOG_WARN));
+    LOGMAPPING.put(Level.INFO,  Integer.valueOf(HBCIUtils.LOG_INFO));
+    LOGMAPPING.put(Level.DEBUG, Integer.valueOf(HBCIUtils.LOG_DEBUG));
+    LOGMAPPING.put(Level.TRACE, Integer.valueOf(HBCIUtils.LOG_DEBUG2));
 
     call(new ServiceCall()
     {

@@ -45,7 +45,7 @@ public class KontoResetAuszugsdatum implements Action
 
       String q = i18n.tr("Sollen Saldo und Aktualisierungsdatum wirklich zurückgesetzt werden?");
 
-      if ((k.getFlags() & Konto.FLAG_OFFLINE) == 0)
+      if (!k.hasFlag(Konto.FLAG_OFFLINE))
       {
         q += "\n\n";
         q += i18n.tr("Bei der nächsten Synchronisierung werden alle bei der Bank verfügbaren\n" +

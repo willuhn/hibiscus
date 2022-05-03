@@ -21,9 +21,7 @@ import de.willuhn.jameica.hbci.server.Value;
  */
 public class ForecastProviderSepaLastschrift extends AbstractForecastProvider<SepaLastschrift>
 {
-  /**
-   * @see de.willuhn.jameica.hbci.forecast.AbstractForecastProvider#createValue(de.willuhn.jameica.hbci.schedule.Schedule)
-   */
+  @Override
   Value createValue(Schedule<SepaLastschrift> schedule) throws RemoteException
   {
     // Positiv-Betrag verwenden, weil wir das ja gutgeschrieben kriegen

@@ -21,7 +21,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet einen importierten oder erstellten RDH-Schluessel in Hibiscus ab. 
- * @author willuhn
  */
 public interface RDHKey extends GenericObject, Configuration
 {

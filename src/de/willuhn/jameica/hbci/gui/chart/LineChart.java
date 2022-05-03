@@ -79,7 +79,7 @@ public class LineChart extends AbstractChart<LineChartData>
       if (list == null || list.size() == 0 || dataAttribute == null || labelAttribute == null)
       {
         Logger.debug("skipping data line, contains no data");
-        dataLine.add(new Double(0));
+        dataLine.add(Double.valueOf(0.0d));
         labelLine.add(new Date());
       }
       else
@@ -102,7 +102,7 @@ public class LineChart extends AbstractChart<LineChartData>
         id += " " + cd.getLabel();
       
       ILineSeries lineSeries = (ILineSeries) getChart().getSeriesSet().createSeries(SeriesType.LINE,id);
-      lineSeries.setXDateSeries(labelLine.toArray(new Date[labelLine.size()]));
+      lineSeries.setXDateSeries(labelLine.toArray(new Date[0]));
       lineSeries.setYSeries(toArray(dataLine));
       
       

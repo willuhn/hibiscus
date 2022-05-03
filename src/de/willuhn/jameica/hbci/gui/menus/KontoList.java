@@ -253,12 +253,12 @@ public class KontoList extends ContextMenu implements Extendable
 
       try
       {
-        boolean f2 = (((Flaggable)o).getFlags() & Konto.FLAG_DISABLED) != 0;
+        final boolean f2 = ((Flaggable)o).hasFlag(Konto.FLAG_DISABLED);
 
         // Fall 1) Konto ist aktiv und soll deaktiviert werden. f1 = false, f2 = false
-        // Fall 2) Konto ist inaktiv und soll aktiviert werden. f1 = true, f1 = true
+        // Fall 2) Konto ist inaktiv und soll aktiviert werden. f1 = true, f2 = true
         // ---> umgekehrtes XOR (XNOR)
-        return !(f1 ^ f2) && super.isEnabledFor(o);
+        return !(this.f1 ^ f2) && super.isEnabledFor(o);
       }
       catch (RemoteException re)
       {

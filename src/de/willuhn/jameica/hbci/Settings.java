@@ -28,7 +28,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
- * @author willuhn
  */
 public class Settings
 {
@@ -97,7 +96,7 @@ public class Settings
 		if (buchungSollForeground != null)
 			return buchungSollForeground;
 
-		buchungSollForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.soll.fg",new RGB(147,33,33)));
+		buchungSollForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.soll.fg",new RGB(226,102,38)));
 		return buchungSollForeground;
 	}
 
@@ -110,7 +109,7 @@ public class Settings
 		if (buchungHabenForeground != null)
 			return buchungHabenForeground;
 
-		buchungHabenForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.fg",new RGB(4,13,169)));
+		buchungHabenForeground = new Color(GUI.getDisplay(),settings.getRGB("buchung.haben.fg",new RGB(29,158,33)));
 		return buchungHabenForeground;
 	}
 

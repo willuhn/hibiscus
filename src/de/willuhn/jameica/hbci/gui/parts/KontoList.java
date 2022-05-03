@@ -176,15 +176,12 @@ public class KontoList extends TablePart implements Part, Extendable
           
           item.setForeground(saldocolumn+1,ColorUtil.getForeground(k.getSaldoAvailable()));
 
-          // Checken, ob Konto deaktiviert ist
-          int flags = k.getFlags();
-
           // Deaktivierte Konten grau
-          if ((flags & Konto.FLAG_DISABLED) == Konto.FLAG_DISABLED)
+          if (k.hasFlag(Konto.FLAG_DISABLED))
             item.setForeground(Color.COMMENT.getSWTColor());
 
           // Offline-Konten blau
-          else if ((flags & Konto.FLAG_OFFLINE) == Konto.FLAG_OFFLINE)
+          else if (k.hasFlag(Konto.FLAG_OFFLINE))
             item.setForeground(Color.LINK.getSWTColor());
 
           // Sonst schwarz
@@ -431,9 +428,13 @@ public class KontoList extends TablePart implements Part, Extendable
       }
 
       if (selected)
-        return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}",new String[]{Integer.toString(items.size()),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
-      
-      return i18n.tr("Gesamt-Saldo: {0} {1}",new String[]{HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE});
+        //@formatter:off
+        return i18n.tr("{0} Konten markiert, Gesamt-Saldo: {1} {2}", Integer.toString(items.size()),
+                                                                     HBCI.DECIMALFORMAT.format(sum),
+                                                                     HBCIProperties.CURRENCY_DEFAULT_DE);
+        //@formatter:on
+
+      return i18n.tr("Gesamt-Saldo: {0} {1}", HBCI.DECIMALFORMAT.format(sum), HBCIProperties.CURRENCY_DEFAULT_DE);
     }
     catch (Exception ex)
     {

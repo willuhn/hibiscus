@@ -754,7 +754,7 @@ public class Controller extends AbstractControl
           
           int ctNumber = r.getCTNumber();
           if (ctNumber >= 0)
-            getCTNumber().setValue(new Integer(ctNumber));
+            getCTNumber().setValue(Integer.valueOf(ctNumber));
 
           getCTAPI().setValue(s);
         }
@@ -763,7 +763,7 @@ public class Controller extends AbstractControl
           getCTAPI().setValue("");
         }
         
-        getSoftPin().setValue(new Boolean(r.useSoftPin()));
+        getSoftPin().setValue(Boolean.valueOf(r.useSoftPin()));
     	}
     	catch (Exception e)
     	{

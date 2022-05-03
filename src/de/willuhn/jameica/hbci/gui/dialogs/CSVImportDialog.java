@@ -152,13 +152,9 @@ public class CSVImportDialog extends AbstractDialog
           if (!Application.getCallback().askUser(i18n.tr("Soll das Profil wirklich gelöscht werden?"),false))
             return;
         }
-        catch (ApplicationException ae)
+        catch (ApplicationException | OperationCanceledException e)
         {
-          throw ae;
-        }
-        catch (OperationCanceledException oce)
-        {
-          throw oce;
+          throw e;
         }
         catch (Exception e)
         {
@@ -297,8 +293,7 @@ public class CSVImportDialog extends AbstractDialog
         // wieder (wird fuer die naechste Zeile geleert und neu
         // befuellt. Daher koennen wir sie nicht so einfach hier
         // reinpacken sondern muessen die Werte rauskopieren
-        List<String> l = new ArrayList();
-        l.addAll(line);
+        List<String> l = new ArrayList(line);
         lines.add(l);
 
         // Wir verwenden als Basis die Zeile mit den meisten Spalten

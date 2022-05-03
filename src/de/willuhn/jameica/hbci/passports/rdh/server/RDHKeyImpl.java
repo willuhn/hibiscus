@@ -35,7 +35,6 @@ import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Implementierung eines in Hibiscus existierenden RDH-Schluessels.
- * @author willuhn
  */
 public class RDHKeyImpl implements RDHKey
 {
@@ -61,7 +60,7 @@ public class RDHKeyImpl implements RDHKey
     if ("file".equals(attribute))
       return getFilename();
 		if ("enabled".equals(attribute))
-			return new Boolean(isEnabled());
+			return Boolean.valueOf(isEnabled());
     if ("alias".equals(attribute))
       return getAlias();
     if ("format".equals(attribute))
@@ -222,12 +221,8 @@ public class RDHKeyImpl implements RDHKey
       {
         Logger.warn("konto " + ids[i] + " does not exist, skipping");
       }
-      catch (RemoteException re)
-      {
-        throw re;
-      }
     }
-    return (Konto[])konten.toArray(new Konto[konten.size()]);
+    return (Konto[])konten.toArray(new Konto[0]);
   }
 
   /**

@@ -66,7 +66,6 @@ import de.willuhn.util.I18N;
 
 /**
  * Komponente, die den Saldoverlauf eines Kontos grafisch anzeigt.
- * @author willuhn
  */
 public class SaldoChart implements Part
 {

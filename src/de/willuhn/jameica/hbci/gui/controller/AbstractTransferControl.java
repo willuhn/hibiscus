@@ -446,8 +446,8 @@ public abstract class AbstractTransferControl extends AbstractControl
             return;
           
           DBIterator list = getTransfer().getList();
-          list.addFilter("empfaenger_konto = ?",new Object[]{gegenkonto.getKontonummer()});
-          list.addFilter("empfaenger_blz = ?",  new Object[]{gegenkonto.getBlz()});
+          list.addFilter("empfaenger_konto = ?", gegenkonto.getKontonummer());
+          list.addFilter("empfaenger_blz = ?", gegenkonto.getBlz());
           list.setOrder("order by id desc");
           if (list.hasNext())
           {

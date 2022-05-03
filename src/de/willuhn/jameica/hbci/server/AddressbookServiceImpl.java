@@ -122,7 +122,7 @@ public class AddressbookServiceImpl extends UnicastRemoteObject implements Addre
             Logger.error("unable to load addressbook " + found[i] + ", skipping");
           }
         }
-        this.books = (Addressbook[]) list.toArray(new Addressbook[list.size()]);
+        this.books = (Addressbook[]) list.toArray(new Addressbook[0]);
       }
       catch (ClassNotFoundException e)
       {

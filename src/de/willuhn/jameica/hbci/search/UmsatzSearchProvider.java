@@ -34,17 +34,13 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzSearchProvider implements SearchProvider
 {
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Umsätze");
   }
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
-   */
+  @Override
   public List search(String search) throws RemoteException, ApplicationException
   {
     if (search == null || search.length() == 0)
@@ -75,17 +71,13 @@ public class UmsatzSearchProvider implements SearchProvider
       this.umsatz = u;
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#execute()
-     */
+    @Override
     public void execute() throws RemoteException, ApplicationException
     {
       new UmsatzDetail().handleAction(this.umsatz);
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#getName()
-     */
+    @Override
     public String getName()
     {
       try
@@ -102,17 +94,21 @@ public class UmsatzSearchProvider implements SearchProvider
         betrag = Math.abs(betrag);
         if (gegenkontoName == null || gegenkontoName.length() == 0)
         {
-          return i18n.tr("{0}: {1} {2} - {3}", new String[]{HBCI.DATEFORMAT.format(date),
-                                                            HBCI.DECIMALFORMAT.format(betrag), 
-                                                            konto.getWaehrung(),
-                                                            zweck});
+          //@formatter:off
+          return i18n.tr("{0}: {1} {2} - {3}", HBCI.DATEFORMAT.format(date),
+                                               HBCI.DECIMALFORMAT.format(betrag),
+                                               konto.getWaehrung(),
+                                               zweck);
+          //@formatter:on
         }
-        return i18n.tr("{0}: {1} {2} {3} {4} - {5}", new String[]{HBCI.DATEFORMAT.format(date),
-                                                                  HBCI.DECIMALFORMAT.format(betrag), 
-                                                                  konto.getWaehrung(),
-                                                                  rel,
-                                                                  gegenkontoName,
-                                                                  zweck});
+        //@formatter:off
+        return i18n.tr("{0}: {1} {2} {3} {4} - {5}", HBCI.DATEFORMAT.format(date),
+                                                     HBCI.DECIMALFORMAT.format(betrag),
+                                                     konto.getWaehrung(),
+                                                     rel,
+                                                     gegenkontoName,
+                                                     zweck);
+        //@formatter:on
       }
       catch (RemoteException re)
       {

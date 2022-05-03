@@ -118,7 +118,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
         list.addFilter("(kontonummer LIKE ? OR " +
                      " blz LIKE ? OR " +
                      " LOWER(name) LIKE ? OR " +
-                     " LOWER(kommentar) LIKE ?)",new Object[]{s,s,s,s});
+                     " LOWER(kommentar) LIKE ?)", s, s, s, s);
       }
       while (list.hasNext())
       {

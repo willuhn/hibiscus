@@ -23,26 +23,20 @@ import de.willuhn.util.ApplicationException;
 public class QueryIBANCRCMessageConsumer implements MessageConsumer
 {
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
-   */
+  @Override
   public boolean autoRegister()
   {
     // bewusst false, weil wir uns manuell auf eine konkret benannte Queue abonnieren.
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
-   */
+  @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{QueryMessage.class};
   }
 
-  /**
-   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
-   */
+  @Override
   public void handleMessage(Message message) throws Exception
   {
     if (message == null || !(message instanceof QueryMessage))

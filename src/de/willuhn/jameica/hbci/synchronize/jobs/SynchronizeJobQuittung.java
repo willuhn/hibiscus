@@ -17,9 +17,7 @@ package de.willuhn.jameica.hbci.synchronize.jobs;
  */
 public class SynchronizeJobQuittung extends AbstractSynchronizeJob
 {
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#isRecurring()
-   */
+  @Override
   public boolean isRecurring()
   {
     return false;

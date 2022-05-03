@@ -29,9 +29,7 @@ public class SynchronizeJobSepaDauerauftragDelete extends AbstractSynchronizeJob
    */
   public final static String CTX_DATE = "ctx.da.delete.date";
   
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#getName()
-   */
+  @Override
   public String getName() throws ApplicationException
   {
     SepaDauerauftrag dauer = (SepaDauerauftrag) this.getContext(CTX_ENTITY);
@@ -48,9 +46,7 @@ public class SynchronizeJobSepaDauerauftragDelete extends AbstractSynchronizeJob
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob#isRecurring()
-   */
+  @Override
   public boolean isRecurring()
   {
     return false;

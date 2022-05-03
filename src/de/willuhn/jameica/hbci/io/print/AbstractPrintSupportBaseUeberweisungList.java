@@ -57,9 +57,7 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
     return this.ctx;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.PrintSupportUeberweisung#printContent()
-   */
+  @Override
   Print printContent() throws ApplicationException
   {
     Object data = this.getContext();
@@ -119,9 +117,7 @@ public abstract class AbstractPrintSupportBaseUeberweisungList extends AbstractP
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.io.print.AbstractPrintSupport#customize(net.sf.paperclips.PagePrint)
-   */
+  @Override
   void customize(PagePrint page) throws ApplicationException
   {
     Object ctx = this.getContext();

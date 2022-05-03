@@ -108,8 +108,8 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
 
       int blzLen = getGegenkontoBLZ().length();
       if (blzLen != HBCIProperties.HBCI_BLZ_LENGTH)
-        throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", new String[]{getGegenkontoBLZ(),""+HBCIProperties.HBCI_BLZ_LENGTH}));
-      
+        throw new ApplicationException(i18n.tr("Ungültige BLZ \"{0}\". Muss {1} Stellen lang sein.", getGegenkontoBLZ(), ""+HBCIProperties.HBCI_BLZ_LENGTH));
+
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_TRANSFER_NAME_MAXLENGTH);
 
       // BUGZILLA 163
@@ -183,14 +183,14 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setKonto(de.willuhn.jameica.hbci.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException {
-    setAttribute("konto_id",(konto == null || konto.getID() == null) ? null : new Integer(konto.getID()));
+    setAttribute("konto_id",(konto == null || konto.getID() == null) ? null : Integer.valueOf(konto.getID()));
   }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.HibiscusTransfer#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException {
-		setAttribute("betrag", new Double(betrag));
+		setAttribute("betrag", Double.valueOf(betrag));
   }
 
   /**
@@ -267,15 +267,10 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       
       this.transactionCommit();
     }
-    catch (RemoteException re)
+    catch (ApplicationException | RemoteException e)
     {
       this.transactionRollback();
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      this.transactionRollback();
-      throw ae;
+      throw e;
     }
   }
 
@@ -346,7 +341,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       
       this.transactionCommit();
     }
-    catch (RemoteException re)
+    catch (ApplicationException | RemoteException e)
     {
       try
       {
@@ -356,19 +351,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       {
         Logger.error("unable to rollback transaction",e2);
       }
-      throw re;
-    }
-    catch (ApplicationException ae)
-    {
-      try
-      {
-        this.transactionRollback();
-      }
-      catch (Exception e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
-      throw ae;
+      throw e;
     }
   }
 }

@@ -15,6 +15,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -66,10 +67,12 @@ public class Detail extends AbstractView
       group.addInput(control.getBezeichnung());
       group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
 
-      PtSecMech secMech = control.getConfig().getCurrentSecMech();
-      if (secMech != null && secMech.useUSB())
+      final PtSecMech secMech = control.getConfig().getCurrentSecMech();
+      if (secMech != null && secMech.isFlickerCode())
       {
-        group.addHeadline(i18n.tr("ChipTAN USB"));
+        group.addHeadline(i18n.tr("ChipTAN"));
+        group.addText(i18n.tr("Hinweis: Die beiden Optionen zur Umwandlung des Flickercodes in einen QR-Code sowie die Verwendung eines Kartenlesers per USB schließen sich gegenseitig aus.\nSie können daher nur eine von beiden Optione wählen."),true, Color.COMMENT);
+        group.addInput(control.getConvertQr());
         
         CheckboxInput check = control.getChipTANUSB();
         group.addInput(check);

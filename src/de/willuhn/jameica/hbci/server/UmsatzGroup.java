@@ -66,7 +66,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
    */
   public GenericIterator getChildren() throws RemoteException
   {
-    return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[umsaetze.size()]));
+    return PseudoIterator.fromArray((GenericObject[])umsaetze.toArray(new GenericObject[0]));
   }
 
   /**
@@ -137,7 +137,7 @@ public class UmsatzGroup implements GenericObjectNode, Comparable
         Umsatz u = (Umsatz) this.umsaetze.get(i);
         betrag+= u.getBetrag();
       }
-      return new Double(betrag);
+      return Double.valueOf(betrag);
     }
     
     return this.typ == null ? null : this.typ.getAttribute(arg0);

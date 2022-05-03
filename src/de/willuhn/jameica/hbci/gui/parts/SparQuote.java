@@ -433,10 +433,7 @@ public class SparQuote implements Part
       cal.add(Calendar.MONTH,monate);
 
       // Der Tag, ab dem die naechste Periode beginnt
-      if (stichtag > cal.getActualMaximum(Calendar.DAY_OF_MONTH))
-        cal.set(Calendar.DATE,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-      else
-        cal.set(Calendar.DATE, stichtag);
+      cal.set(Calendar.DATE, Math.min(stichtag, cal.getActualMaximum(Calendar.DAY_OF_MONTH)));
 
       // Merken wir uns fuer den naechsten Durchlauf
       from = DateUtil.startOfDay(cal.getTime());
@@ -479,7 +476,7 @@ public class SparQuote implements Part
       umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
 
     if (start != null)
-      umsaetze.addFilter("datum >= ?", new Object[] {new java.sql.Date(start.getTime())});
+      umsaetze.addFilter("datum >= ?", new java.sql.Date(start.getTime()));
 
     while (umsaetze.hasNext())
     {

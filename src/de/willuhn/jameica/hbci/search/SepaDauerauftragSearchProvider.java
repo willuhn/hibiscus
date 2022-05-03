@@ -34,17 +34,13 @@ import de.willuhn.util.I18N;
  */
 public class SepaDauerauftragSearchProvider implements SearchProvider
 {
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("SEPA-Daueraufträge");
   }
 
-  /**
-   * @see de.willuhn.jameica.search.SearchProvider#search(java.lang.String)
-   */
+  @Override
   public List search(String search) throws RemoteException,
       ApplicationException
   {
@@ -85,17 +81,13 @@ public class SepaDauerauftragSearchProvider implements SearchProvider
       this.u = u;
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#execute()
-     */
+    @Override
     public void execute() throws RemoteException, ApplicationException
     {
       new SepaDauerauftragNew().handleAction(this.u);
     }
 
-    /**
-     * @see de.willuhn.jameica.search.Result#getName()
-     */
+    @Override
     public String getName()
     {
       try

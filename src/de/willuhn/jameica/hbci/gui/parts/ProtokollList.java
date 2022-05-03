@@ -69,6 +69,7 @@ public class ProtokollList extends AbstractFromToList
         }
         catch (RemoteException e)
         {
+          // ignorieren, falls Aufruf von getTyp() scheitert
         }
       }
     });
@@ -100,11 +101,11 @@ public class ProtokollList extends AbstractFromToList
         return null;
 
     DBIterator list = ((Konto) konto).getProtokolle();
-    if (from != null) list.addFilter("datum >= ?", new Object[]{new java.sql.Date(DateUtil.startOfDay(from).getTime())});
-    if (to   != null) list.addFilter("datum <= ?", new Object[]{new java.sql.Date(DateUtil.endOfDay(to).getTime())});
+    if (from != null) list.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
+    if (to   != null) list.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
     if (text != null && text.length() > 0)
     {
-      list.addFilter("LOWER(kommentar) like ?", new Object[]{"%" + text.toLowerCase() + "%"});
+      list.addFilter("LOWER(kommentar) like ?", "%" + text.toLowerCase() + "%");
     }
     
     return list;

@@ -108,7 +108,7 @@ public class PassportPropertyList implements Part
     if (props == null)
       return l;
 
-    String[] keys = props.keySet().toArray(new String[props.size()]);
+    String[] keys = props.keySet().toArray(new String[0]);
     // Alphabetisch sortieren
     Arrays.sort(keys);
 

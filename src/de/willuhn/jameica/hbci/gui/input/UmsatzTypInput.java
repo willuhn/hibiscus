@@ -121,6 +121,15 @@ public class UmsatzTypInput extends SelectInput
     });
   }
   
+  @Override
+  public void setPreselected(Object preselected)
+  {
+    if(preselected instanceof UmsatzTyp)
+      preselected = new UmsatzTypBean((UmsatzTyp) preselected);
+
+    super.setPreselected(preselected);
+  }
+  
   /**
    * @see de.willuhn.jameica.gui.input.SelectInput#getValue()
    */

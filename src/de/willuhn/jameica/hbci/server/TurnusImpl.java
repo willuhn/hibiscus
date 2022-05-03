@@ -129,7 +129,7 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
    */
   public void setIntervall(int intervall) throws RemoteException
   {
-  	setAttribute("intervall", new Integer(intervall));
+  	setAttribute("intervall", Integer.valueOf(intervall));
   }
 
   /**
@@ -148,7 +148,7 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
    */
   public void setZeiteinheit(int zeiteinheit) throws RemoteException
   {
-		setAttribute("zeiteinheit", new Integer(zeiteinheit));
+		setAttribute("zeiteinheit", Integer.valueOf(zeiteinheit));
   }
 
   /**
@@ -167,7 +167,7 @@ public class TurnusImpl extends AbstractHibiscusDBObject implements Turnus
    */
   public void setTag(int tag) throws RemoteException
   {
-		setAttribute("tag", new Integer(tag));
+		setAttribute("tag", Integer.valueOf(tag));
   }
 
   /**

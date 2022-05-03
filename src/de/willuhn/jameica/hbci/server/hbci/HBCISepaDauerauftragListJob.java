@@ -61,13 +61,9 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
       setJobParam("src",own);
 		}
-		catch (RemoteException e)
+		catch (ApplicationException | RemoteException e)
 		{
 			throw e;
-		}
-		catch (ApplicationException e2)
-		{
-			throw e2;
 		}
 		catch (Throwable t)
 		{

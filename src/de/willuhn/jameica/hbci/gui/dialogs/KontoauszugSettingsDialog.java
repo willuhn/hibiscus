@@ -63,7 +63,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
-        settings.setAttribute("usage.list.all",((Boolean) getDisplayAll().getValue()).booleanValue());
+        settings.setAttribute("usage.display.all",((Boolean) getDisplayAll().getValue()).booleanValue());
         close();
       }
     },null,true,"ok.png");
@@ -94,7 +94,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
     if (this.displayAll != null)
       return this.displayAll;
     
-    this.displayAll = new CheckboxInput(settings.getBoolean("usage.list.all",false));
+    this.displayAll = new CheckboxInput(settings.getBoolean("usage.display.all",false));
     this.displayAll.setName(i18n.tr("Alle Daten des Verwendungszwecks anzeigen"));
     return this.displayAll;
   }

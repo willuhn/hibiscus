@@ -1,3 +1,27 @@
+2022-05-03 Version 2.10.5
+
+  * NEW: 0978 Update auf HBCI4Java 3.1.59 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.59
+  * NEW: 0977 Anzeige des eigenen Kontos in "Umsätze nach Kategorien" - siehe https://homebanking-hilfe.de/forum/topic.php?p=162518#real162518
+  * CHG: 0976 Schönere Default-Farben für Soll- und Habenbuchungen, die auch auf Dark-Themes besser lesbar sind
+  * CHG: 0975 CSV-Import: Bezeichnungen im Dialog für die Zuordnung der Spalten des Gegenkontos zu denen in der Umsatzliste angeglichen - siehe https://homebanking-hilfe.de/forum/topic.php?t=25139
+  * NEW: 0974 Bei Lastschriften mit clientseitiger Wiederholung in den duplizierten Aufträgen als SEPA Zieltermin nicht morgen verwenden sondern das nächstmögliche Datum in der Zukunft basierend auf Zieldatum der Vorlage und Wiederholungsintervall 
+  * NEW: 0973 Unterstützung für SEPA-Echtzeitüberweisungen (SEPA Instant Payments) - als Auftragsart bei der Erstellung einer Überweisung auswählbar
+  * NEW: 0972 Im Adressbuch auch die Einzelaufträge von/an diese Adresse anzeigen (um auch jene anzeigen zu können, die noch nicht ausgeführt wurden und daher noch nicht in den Umsätzen auftauchen)
+  * NEW: 0971 Neue Option "Unterkategorien von Treffern anzeigen" im Dialog "Auswahl der Kategorie" - siehe https://homebanking-hilfe.de/forum/topic.php?p=162002#real162002
+  * NEW: 0970 Feature INIT_FLIP_USER_INST per Default aktiv - siehe https://github.com/hbci4j/hbci4java/pull/67
+  * NEW: 0969 Update auf HBCI4Java 3.1.58 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.58
+  * NEW: 0973 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 07.03.2022
+  * NEW: 0972 Hinweistext in Auftragslisten anzeigen, wenn durch Filterkriterien Aufträge ausgeblendet sind - siehe https://homebanking-hilfe.de/forum/topic.php?p=161817#real161817
+  * BUG: 0971 Parameter "usage.list.all" und "usage.display.all" zu "usage.display.all" zusammengefasst. Vorher konnte mit beiden Parametern in Detail-Ansicht und Liste zwischen gekürztem und komplettem Verwendungszweck umgeschaltet werden 
+  * NEW: 0970 Flickercode bei Bedarf in QR-Code umwandeln. Code stammt von https://github.com/oezgueremir/hibiscus/tree/feature/QRDataFromFlickerData
+  * NEW: 0969 Update auf HBCI4Java 3.1.57 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.57
+  * NEW: 0968 Update auf HBCI4Java 3.1.56 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.56
+  * NEW: 0967 Wiederherstellen der Selektion in der Liste der Synchronisierungsaufgaben
+  * BUG: 0966 Kontonummer und BLZ im Adressbuch nur noch für DE-IBANs vervollständigen
+  * NEW: 0965 Play/Pause-Button für Flicker-Code sowie Option "[x] Automatisch starten"
+  * BUG: 0964 In der Auswertung "Einnahmen/Ausgaben" konnte es fälschlicherweise zur Anzeige von Differenzen kommen
+  * NEW: 0963 Umsatzliste: Valuta-Datum in Klammern hinter Buchungsdatum anzeigen, wenn es abweicht
+
 2021-11-19 Version 2.10.4
 
   * NEW: 0962 CSV-Export von Umsätzen: Name2 mit exportieren, falls vorhanden

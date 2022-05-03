@@ -135,7 +135,7 @@ public class NachrichtImpl extends AbstractHibiscusDBObject implements Nachricht
    */
   public void setGelesen(boolean b) throws RemoteException
   {
-    this.setAttribute("gelesen",new Integer(b ? 1 : 0));
+    this.setAttribute("gelesen", Integer.valueOf(b ? 1 : 0));
   }
 
   /**

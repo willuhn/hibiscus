@@ -40,7 +40,7 @@ public class TerminableMarkExecuted implements Action
     if (context == null)
       return;
 
-    Terminable t[] = null;
+    Terminable[] t = null;
     if (context instanceof Terminable)
       t = new Terminable[]{(Terminable) context};
     else
@@ -67,7 +67,7 @@ public class TerminableMarkExecuted implements Action
           HibiscusTransfer tr = (HibiscusTransfer) t[i];
           Konto k = tr.getKonto();
           if (k != null)
-            k.addToProtokoll(i18n.tr("Auftrag \"{0}\" [Gegenkonto {1}, BLZ {2}] manuell als \"ausgeführt\" markiert",new String[]{tr.getZweck(),tr.getGegenkontoName(),tr.getGegenkontoBLZ()}),Protokoll.TYP_SUCCESS);
+            k.addToProtokoll(i18n.tr("Auftrag \"{0}\" [Gegenkonto {1}, BLZ {2}] manuell als \"ausgeführt\" markiert", tr.getZweck(), tr.getGegenkontoName(), tr.getGegenkontoBLZ()), Protokoll.TYP_SUCCESS);
           Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(tr));
         }
         else if (t[i] instanceof SammelTransfer)
