@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0978 Update auf HBCI4Java 3.1.59 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.59
   * NEW: 0977 Anzeige des eigenen Kontos in "Umsätze nach Kategorien" - siehe https://homebanking-hilfe.de/forum/topic.php?p=162518#real162518
   * CHG: 0976 Schönere Default-Farben für Soll- und Habenbuchungen, die auch auf Dark-Themes besser lesbar sind
   * CHG: 0975 CSV-Import: Bezeichnungen im Dialog für die Zuordnung der Spalten des Gegenkontos zu denen in der Umsatzliste angeglichen - siehe https://homebanking-hilfe.de/forum/topic.php?t=25139
