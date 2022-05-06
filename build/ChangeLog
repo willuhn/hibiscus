@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0980 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.06.2022
   * BUG: 0979 Hinweistext aus 0972 in Auftragslisten wieder zurückgebaut - dadurch wird der Textfilter nicht mehr angewendet - siehe https://homebanking-hilfe.de/forum/topic.php?t=25170&page=1&fup=162657#real162657
 
 2022-05-03 Version 2.10.5
