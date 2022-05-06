@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0981 Umsatzliste: Kategorie "<Nicht zugeordnet>" wurde nicht korrekt als Vorauswahl wiederhergestellt, wenn man aus der Detailansicht zurückwechselte - siehe https://homebanking-hilfe.de/forum/topic.php?t=25174&page=1&fup=162697#real162697
   * NEW: 0980 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.06.2022
   * BUG: 0979 Hinweistext aus 0972 in Auftragslisten wieder zurückgebaut - dadurch wird der Textfilter nicht mehr angewendet - siehe https://homebanking-hilfe.de/forum/topic.php?t=25170&page=1&fup=162657#real162657
 

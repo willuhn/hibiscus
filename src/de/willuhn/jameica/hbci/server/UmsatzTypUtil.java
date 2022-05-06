@@ -342,7 +342,7 @@ public class UmsatzTypUtil
     @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
-      return false;
+      return arg0 != null && (arg0 instanceof UmsatzTypUnassigned);
     }
 
     /**

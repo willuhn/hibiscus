@@ -73,6 +73,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -394,13 +395,13 @@ public class KontoauszugList extends UmsatzList
       return this.kategorie;
     
     UmsatzTyp preset = (UmsatzTyp) cache.get("kontoauszug.list.kategorie");
-    if (preset == null || preset.getID() == null)
-      preset = null; // wurde zwischenzeitlich geloescht
+    if (preset == null || (preset.getID() == null && preset != UmsatzTypUtil.UNASSIGNED)) // // ID ist NULL, wenn sie zwischenzeitlich geloescht wurde
+      preset = null; 
     this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL, true);
     this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
     this.kategorie.setComment("");
     this.kategorie.addListener(this.listener);
-    
+
     // Wenn in der Kategorie-Auswahl "<Alle Kategorien>" ausgewaehlt wurde, deaktivieren wir uns
     this.kategorie.addListener(new Listener()
     {
