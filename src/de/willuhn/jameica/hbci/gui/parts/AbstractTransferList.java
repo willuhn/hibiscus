@@ -241,14 +241,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
     list.setOrder("ORDER BY " + service.getSQLTimestamp("termin") + " DESC, id DESC");
 
     if (filterCount > 0)
-    {
-      final int all = service.createList(getObjectType()).size();
-      final int size = list.size();
-      if (all != size)
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Suchkriterien: {0} - Anzeige: {1} von {2} Aufträgen",Integer.toString(filterCount), Integer.toString(size), Integer.toString(all)),StatusBarMessage.TYPE_INFO));
-      else
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Suchkriterien: {0}",Integer.toString(filterCount)),StatusBarMessage.TYPE_INFO));
-    }
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Suchkriterien: {0}",Integer.toString(filterCount)),StatusBarMessage.TYPE_INFO));
 
     return list;
   }
