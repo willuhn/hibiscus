@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 0987 Bibliothek fastqrcodegen auf qrcodegen umgestellt - siehe https://github.com/nayuki/QR-Code-generator/pull/143
 2022-05-12 Version 2.10.6
 
   * BUG: 0986 Umsatzliste: Kategorie "<Nicht zugeordnet>" wurde nicht korrekt als Vorauswahl wiederhergestellt, wenn man aus der Detailansicht zurückwechselte - siehe https://homebanking-hilfe.de/forum/topic.php?t=25174&page=1&fup=162697#real162697
