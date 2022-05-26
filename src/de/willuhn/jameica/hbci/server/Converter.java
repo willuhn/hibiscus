@@ -493,6 +493,31 @@ public class Converter
     k.acctype    = accType != null ? accType.toString() : null;
     return k;  	
   }
+  
+  /**
+   * Konvertiert ein Hibiscus-Konto in ein HBCI4Java Konto.
+   * Spezielle Funktion für die Saldenabfrage eines Kreditkartenkonto
+   * bei der Targobank. Die 16 stellige Kartennummer wird als Pseudo-IBAN dargestellt.
+   * @param konto unser Konto.
+   * @return das HBCI4Java Konto.
+   * @throws RemoteException
+   */
+  public static Konto HibiscusKonto2HBCIKontoTargoBankKK(de.willuhn.jameica.hbci.rmi.Konto konto) throws RemoteException
+  {
+    org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto(konto.getBLZ(),konto.getKontonummer());
+    k.country    = "DE";
+    k.curr       = konto.getWaehrung();
+    k.customerid = konto.getKundennummer();
+    k.type       = konto.getBezeichnung(); // BUGZILLA 338
+    k.name       = konto.getName();
+    k.subnumber  = konto.getUnterkonto(); // BUGZILLA 355
+    k.iban       = "DE0000" + konto.getKontonummer(); // Stellt die Kreditkartennummer als IBAN dar. Ohne Prüfziffer!
+    k.bic        = konto.getBic();
+
+    Integer accType = konto.getAccountType();
+    k.acctype    = accType != null ? accType.toString() : null;
+    return k;   
+  }
 
   /**
    * Konvertiert ein HBCI4Java-Konto in ein Hibiscus Konto.

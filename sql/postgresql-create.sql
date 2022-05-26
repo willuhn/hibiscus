@@ -1,6 +1,6 @@
 CREATE TABLE konto (
   id serial primary key,
-  kontonummer varchar(15) NOT NULL,
+  kontonummer varchar(16) NOT NULL,
   unterkonto varchar(30) null,
   blz varchar(15) NOT NULL,
   name varchar(255) NOT NULL,
@@ -400,4 +400,4 @@ CREATE INDEX idx_umsatz_datum ON umsatz(datum);
 CREATE INDEX idx_umsatz_valuta ON umsatz(valuta);
 CREATE INDEX idx_umsatz_flags ON umsatz(flags);
   
-INSERT INTO version (name,version) values ('db',69);
+INSERT INTO version (name,version) values ('db',70);

@@ -157,7 +157,7 @@ public class HBCIProperties
    * VISA-Konten unterstuetzt werden, lass ich es vorerst mal auf
    * 15 Stellen stehen und deklarieren es als "weiches" Limit.
    */
-  public final static int HBCI_KTO_MAXLENGTH_SOFT = settings.getInt("hbci.kto.maxlength.soft",15);
+  public final static int HBCI_KTO_MAXLENGTH_SOFT = settings.getInt("hbci.kto.maxlength.soft",16);
   
   /**
    * Das harte Limit fuer Kontonummern, die CRC-Checks bestehen sollen
@@ -457,7 +457,7 @@ public class HBCIProperties
     // Haben wir eine gueltige Kontonummer?
     if (kontonummer == null || 
         kontonummer.length() == 0 ||
-        kontonummer.length() > HBCI_KTO_MAXLENGTH_HARD)
+        kontonummer.length() > HBCI_KTO_MAXLENGTH_SOFT)
     {
       Logger.warn("account number [" + kontonummer + "] not defined out of range, skip crc check");
       return true;

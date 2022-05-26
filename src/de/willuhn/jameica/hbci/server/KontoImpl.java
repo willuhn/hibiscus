@@ -98,7 +98,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
       // BUGZILLA 280
       HBCIProperties.checkChars(getBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
       HBCIProperties.checkChars(getKontonummer(),HBCIProperties.HBCI_KTO_VALIDCHARS);
-      HBCIProperties.checkLength(getKontonummer(), HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
+      HBCIProperties.checkLength(getKontonummer(), HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
       HBCIProperties.checkLength(getUnterkonto(), HBCIProperties.HBCI_ID_MAXLENGTH);
 
       if (getKundennummer() == null || getKundennummer().length() == 0)

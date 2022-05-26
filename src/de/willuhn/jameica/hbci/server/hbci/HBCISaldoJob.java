@@ -20,6 +20,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.KontoType;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.system.Application;
@@ -50,12 +51,23 @@ public class HBCISaldoJob extends AbstractHBCIJob {
 				konto.store();
 
 			this.konto = konto;
-
-      String curr = konto.getWaehrung();
+						
+      String curr = this.konto.getWaehrung();
       if (curr == null || curr.length() == 0)
-        konto.setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
+        this.konto.setWaehrung(HBCIProperties.CURRENCY_DEFAULT_DE);
 			
-			setJobParam("my",Converter.HibiscusKonto2HBCIKonto(konto));
+      // check if Targobank (BLZ 300 209 00) KK-Konto
+      KontoType kontoType = KontoType.find(this.konto.getAccountType());
+      if (   kontoType != null && kontoType == KontoType.KREDITKARTE  
+          && this.konto.getBLZ().equals("30020900") )
+      {
+        Logger.debug("Found Targobank Kreditkarte");
+        setJobParam("my",Converter.HibiscusKonto2HBCIKontoTargoBankKK(this.konto));
+      }
+      else 
+      {      
+        setJobParam("my",Converter.HibiscusKonto2HBCIKonto(this.konto));
+      }
     }
 		catch (ApplicationException | RemoteException e)
 		{
