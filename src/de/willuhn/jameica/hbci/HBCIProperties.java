@@ -615,10 +615,6 @@ public class HBCIProperties
     if (iban == null || iban.length() == 0)
       return null;
     
-    // BUGZILLA 1872: Wir checken selbst bei deaktivierter Pruefung wenigstens bei deutschen IBANs die Laenge
-    if (iban.toLowerCase().startsWith("de") && iban.length() != 22)
-      throw new ApplicationException(i18n.tr("Bitte prüfen Sie die Länge der IBAN"));
-
     if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
       return null;
 
@@ -654,13 +650,28 @@ public class HBCIProperties
     
     if (iban == null || iban.length() == 0)
       throw new ApplicationException(i18n.tr("Bitte geben Sie eine IBAN ein"));
-    
-    // Wir checken selbst bei deaktivierter Pruefung wenigstens bei deutschen IBANs die Laenge
-    if (iban.toLowerCase().startsWith("de") && iban.length() != 22)
-      throw new ApplicationException(i18n.tr("Bitte prüfen Sie die Länge der IBAN"));
 
     if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
       return;
+
+    // Wenn die IBAN auch im Adressbuch steht, dann auch mit ungültiger Länge tolerieren
+    if (de.willuhn.jameica.hbci.Settings.getKontoCheckExcludeAddressbook())
+    {
+      try
+      {
+        // OK, wir schauen im Adressbuch
+        DBService db = de.willuhn.jameica.hbci.Settings.getDBService();
+        HibiscusAddress address = (HibiscusAddress) db.createObject(HibiscusAddress.class,null);
+        address.setIban(iban);
+        AddressbookService service = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
+        if (service.contains(address) != null)
+          return;
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to validate iban",e);
+      }
+    }
 
     try
     {
