@@ -155,9 +155,9 @@ public class HBCIProperties
    * Sollte eigentlich 10-stellig sein, da die CRC-Pruefungen ohnehin
    * nur bis dahin gelten. Aber fuer den Fall, dass auch mal noch
    * VISA-Konten unterstuetzt werden, lass ich es vorerst mal auf
-   * 15 Stellen stehen und deklarieren es als "weiches" Limit.
+   * 16 Stellen stehen und deklarieren es als "weiches" Limit.
    */
-  public final static int HBCI_KTO_MAXLENGTH_SOFT = settings.getInt("hbci.kto.maxlength.soft",15);
+  public final static int HBCI_KTO_MAXLENGTH_SOFT = settings.getInt("hbci.kto.maxlength.soft",16);
   
   /**
    * Das harte Limit fuer Kontonummern, die CRC-Checks bestehen sollen
