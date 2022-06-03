@@ -60,10 +60,11 @@ public class SettingsControl extends AbstractControl
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
   private CheckboxInput excludeAddresses  = null;
-  private CheckboxInput boldValues        = null;
 
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
+  private CheckboxInput boldValues        = null;
+	private CheckboxInput colorValues       = null;
 
   private UmsatzTypTree umsatzTypTree     = null;
   private Map<String,RangeList> ranges    = new HashMap<String,RangeList>();
@@ -131,6 +132,20 @@ public class SettingsControl extends AbstractControl
     if (boldValues == null)
       boldValues = new CheckboxInput(Settings.getBoldValues());
     return boldValues;
+  }
+
+  /**
+   * Checkbox mit der festgelegt werden kann, dass nur der Betrag eingefärbt wird.
+   * @return Checkbox.
+   */
+  public CheckboxInput getColorValues()
+  {
+    if (colorValues == null)
+    {
+      colorValues = new CheckboxInput(Settings.getColorValues());
+      colorValues.setComment(i18n.tr("Deaktivieren, um die ganze Zeile farbig anzuzeigen"));
+    }
+    return colorValues;
   }
 
   /**
@@ -354,6 +369,7 @@ public class SettingsControl extends AbstractControl
 
     Settings.setDecimalGrouping(((Boolean)getDecimalGrouping().getValue()).booleanValue());
     Settings.setBoldValues(((Boolean)getBoldValues().getValue()).booleanValue());
+    Settings.setColorValues(((Boolean)getColorValues().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
     Settings.setKontoCheckExcludeAddressbook(((Boolean)getKontoCheckExcludeAddressbook().getValue()).booleanValue());
 

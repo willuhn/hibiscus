@@ -70,6 +70,7 @@ public class Settings extends AbstractView implements Extendable
     ui.addHeadline(i18n.tr("Farben"));
     ui.addLabelPair(i18n.tr("Textfarbe von Sollbuchungen"),control.getBuchungSollForeground());
     ui.addLabelPair(i18n.tr("Textfarbe von Habenbuchungen"),control.getBuchungHabenForeground());
+    ui.addCheckbox(control.getColorValues(),i18n.tr("Nur Geld-Beträge farbig anzeigen"));
     ui.addHeadline(i18n.tr("Formatierung"));
     ui.addCheckbox(control.getDecimalGrouping(),i18n.tr("Tausender-Trennzeichen bei Geld-Beträgen anzeigen"));
     ui.addCheckbox(control.getBoldValues(),i18n.tr("Geld-Beträge fett gedruckt anzeigen"));
