@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0990 Der Verwendungszweck darf beim MT940-Export nur 27 Zeichen lang sein. Die 65-Zeichen gelten für das ganze Tag 86
   * NEW: 0989 Feld für die Kontonummer auf 16 Zeichen verlängert - siehe https://github.com/willuhn/hibiscus/pull/133
   * NEW: 0988 Pauschale Längenprüfung deutscher IBANs auch bei deaktivierter Kontonummernprüfung wieder entfernt wegen https://github.com/willuhn/hibiscus/pull/133 - es gibt auch IBANs mit weniger als 22 Zeichen. Ausserdem Adressbuch-Ausnahme auch bei IBAN hinzugefügt
   * NEW: 0987 Upgrade von Guava von Version 25.1 auf Version 31.1 wegen Abhängigkeit zu Selenium. 31.1 erfordert jetzt auch 'failureaccess-1.0.1.jar' - sonst funktioniert hibiscus.transferwise nicht mehr
