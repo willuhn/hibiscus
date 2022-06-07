@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0992 Update auf HBCI4Java 3.1.60 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.60
   * NEW: 0991 Option, um in der Umsatzliste nur den Betrag farbig anzuzeigen sowie eine extra Box für die Starseite mit den Umsätzen (Datum-Slider funktioniert hier aber noch nicht richtig) - siehe https://homebanking-hilfe.de/forum/topic.php?t=25228
   * BUG: 0990 Der Verwendungszweck darf beim MT940-Export nur 27 Zeichen lang sein. Die 65-Zeichen gelten für das ganze Tag 86
   * NEW: 0989 Feld für die Kontonummer auf 16 Zeichen verlängert - siehe https://github.com/willuhn/hibiscus/pull/133
