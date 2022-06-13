@@ -35,7 +35,8 @@ public abstract class Range
   private final static Range ALL    = new All();
   private final static Range D_7    = new LastSevenDays();
   private final static Range D_30   = new LastThirtyDays();
-  private final static Range LY_1   = new Last356Days();
+  private final static Range D_90   = new LastNinetyDays();
+  private final static Range LY_1   = new Last365Days();
   private final static Range LY_3   = new Last3Years();
   private final static Range LY_5   = new Last5Years();
   private final static Range LY_10   = new Last10Years();
@@ -73,6 +74,7 @@ public abstract class Range
     ALL,
     D_7,
     D_30,
+    D_90,
     LY_1,
     LY_3,
     LY_5,
@@ -98,6 +100,7 @@ public abstract class Range
   private final static List<Range> DEFAULT = Arrays.asList(
       D_7,
       D_30,
+      D_90,
       W_THIS,
       W_LAST,
       W_2LAS,
@@ -348,6 +351,44 @@ public abstract class Range
   }
 
   /**
+   * Zeitraum fuer die letzten 90 Tage.
+   */
+  public static class LastNinetyDays extends Range
+  {
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    @Override
+    public Date getStart()
+    {
+      Calendar cal = this.createCalendar();
+      cal.add(Calendar.DATE,-90);
+      Date d = cal.getTime();
+      return DateUtil.startOfDay(d);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    @Override
+    public Date getEnd()
+    {
+      Calendar cal = this.createCalendar();
+      Date d = cal.getTime();
+      return DateUtil.endOfDay(d);
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return i18n.tr("Letzte 90 Tage");
+    }
+  }
+
+  /**
    * Abstrakte Basis-Implementierung der Jahres-Zeitraeume.
    */
   private abstract static class LastYears extends Range
@@ -398,8 +439,9 @@ public abstract class Range
   /**
    * Zeitraum ab heute vor einem Jahr
    * */
-  public static class Last356Days extends LastYears{
-    protected Last356Days()
+  public static class Last365Days extends LastYears
+  {
+    protected Last365Days()
     {
        super(1, "Letzte 365 Tage");
     }
