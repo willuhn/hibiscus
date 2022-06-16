@@ -115,8 +115,8 @@ public class UmsatzTypListDialog extends AbstractDialog
     group.addText(i18n.tr("Bitte wählen Sie die zu verwendende Kategorie aus."),true);
     TextInput text = this.getSearch();
     group.addInput(text);
-    group.addInput(this.getChildren());
     group.addPart(this.getTable());
+    group.addInput(this.getChildren());
 
     ////////////////
     // geht erst nach dem Paint
