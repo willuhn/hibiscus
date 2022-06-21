@@ -212,7 +212,7 @@ public class KontoControl extends AbstractControl
 	{
 		if (kontonummer != null)
 			return kontonummer;
-		kontonummer = new TextInput(getKonto().getKontonummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
+		kontonummer = new TextInput(getKonto().getKontonummer(),HBCIProperties.HBCI_KTO_MAXLENGTH_SOFT);
     // BUGZILLA 280
     kontonummer.setValidChars(HBCIProperties.HBCI_KTO_VALIDCHARS);
     kontonummer.setMandatory(true);

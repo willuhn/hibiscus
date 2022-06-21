@@ -244,6 +244,24 @@ public class Settings
   }
 
   /**
+   * Prueft, ob nur Geldbetraege farbig angezeigt werden sollen.
+   * @return true, wenn nur Geldbetraege farbig gedruckt angezeigt werden sollen.
+   */
+  public static boolean getColorValues()
+  {
+    return settings.getBoolean("colorvalues",true);
+  }
+
+  /**
+   * Legt fest, ob nur Geldbetraege farbig angezeigt werden sollen.
+   * @param color true, wenn nur Geldbetraege farbig angezeigt werden sollen.
+   */
+  public static void setColorValues(boolean color)
+  {
+    settings.setAttribute("colorvalues",color);
+  }
+
+  /**
    * Speichert, ob wir eine permanente Online-Verbindung haben und daher
    * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
    * Internetverbindung haben wollen.

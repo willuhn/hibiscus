@@ -213,6 +213,8 @@
     <echo message="Creating checksum files" />
     <checksum format="MD5SUM" algorithm="SHA" file="${project.release}/${define.zipfilename}" />
     <checksum format="MD5SUM" algorithm="SHA" file="${project.release}/${define.srcfilename}" />
+    <checksum format="MD5SUM" algorithm="SHA-256" file="${project.release}/${define.zipfilename}" />
+    <checksum format="MD5SUM" algorithm="SHA-256" file="${project.release}/${define.srcfilename}" />
     
     <echo message="Creating PGP signatures" />
     <exec executable="gpg" failonerror="true" timeout="60000">

@@ -1,3 +1,15 @@
+2022-06-21 Version 2.10.7
+
+  * CHG: 0994 Option "Unterkategorien von Treffern anzeigen" aus Changeset #0976 unter die Tabelle verschoben - siehe https://homebanking-hilfe.de/forum/topic.php?t=25248&page=1&fup=163107#real163107
+  * NEW: 0993 Neuer Preset-Zeitraum "Letzte 90 Tage"
+  * NEW: 0992 Update auf HBCI4Java 3.1.60 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.60
+  * NEW: 0991 Option, um in der Umsatzliste nur den Betrag farbig anzuzeigen sowie eine extra Box für die Starseite mit den Umsätzen (Datum-Slider funktioniert hier aber noch nicht richtig) - siehe https://homebanking-hilfe.de/forum/topic.php?t=25228
+  * BUG: 0990 Der Verwendungszweck darf beim MT940-Export nur 27 Zeichen lang sein. Die 65-Zeichen gelten für das ganze Tag 86
+  * NEW: 0989 Feld für die Kontonummer auf 16 Zeichen verlängert - siehe https://github.com/willuhn/hibiscus/pull/133
+  * NEW: 0988 Pauschale Längenprüfung deutscher IBANs auch bei deaktivierter Kontonummernprüfung wieder entfernt wegen https://github.com/willuhn/hibiscus/pull/133 - es gibt auch IBANs mit weniger als 22 Zeichen. Ausserdem Adressbuch-Ausnahme auch bei IBAN hinzugefügt
+  * NEW: 0987 Upgrade von Guava von Version 25.1 auf Version 31.1 wegen Abhängigkeit zu Selenium. 31.1 erfordert jetzt auch 'failureaccess-1.0.1.jar' - sonst funktioniert hibiscus.transferwise nicht mehr
+  * CHG: 0987 Bibliothek fastqrcodegen auf qrcodegen umgestellt - siehe https://github.com/nayuki/QR-Code-generator/pull/143
+  
 2022-05-12 Version 2.10.6
 
   * BUG: 0986 Umsatzliste: Kategorie "<Nicht zugeordnet>" wurde nicht korrekt als Vorauswahl wiederhergestellt, wenn man aus der Detailansicht zurückwechselte - siehe https://homebanking-hilfe.de/forum/topic.php?t=25174&page=1&fup=162697#real162697

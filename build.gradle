@@ -41,8 +41,8 @@ dependencies {
     // see <https://sourceforge.net/projects/obantoo/> (last update: 2015-05-10)
     // new version (Java13+) see <https://github.com/jverein/obantoo2>
     implementation urlFile('obantoo-bin-2.1.12', 'https://downloads.sourceforge.net/project/obantoo/obantoo-bin-2.1.12.jar')
-    // see <https://github.com/nayuki/QR-Code-generator/tree/master/java-fast/>
-    implementation files( "${projectDir}/lib/fastqrcodegen/fastqrcodegen-1.0.jar")
+    // see <https://github.com/nayuki/QR-Code-generator/tree/master/java/>
+    implementation files( "${projectDir}/lib/qrcodegen/qrcodegen-1.8.0.jar")
 }
 
 // solange noch die Logik des ANT-Builds benötigt wird, nutze einen Unterordner

@@ -21,8 +21,8 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.kapott.hbci.comm.Comm;
 
-import io.nayuki.fastqrcodegen.QrCode;
-import io.nayuki.fastqrcodegen.QrSegment;
+import io.nayuki.qrcodegen.QrCode;
+import io.nayuki.qrcodegen.QrSegment;
 
 /**
  * Konvertiert einen Flicker-Code in einen QR-Code.

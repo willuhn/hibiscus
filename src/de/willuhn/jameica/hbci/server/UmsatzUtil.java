@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +63,33 @@ public class UmsatzUtil
   {
     return getUmsaetze(true);
   }
-  
+
+  /**
+   * Liefert alle Umsaetze in chronologischer Reihenfolge (alte zuerst) sortiert nach Datum, ID.
+   * Weitere Filter-Kriterien wie Zeitraum und Konto muessen noch hinzugefuegt werden.
+   * Die Funktion sortiert lediglich vereinheitlicht.
+   * @param days die Anzahl der Tage.
+   * @return sortierte Liste der Umsaetze.
+   * @throws RemoteException
+   */
+  public static DBIterator getUmsaetze(int days) throws RemoteException
+  {
+    return getUmsaetze(days,false);
+  }
+
+  /**
+   * Liefert alle Umsaetze in umgekehrt chronologischer Reihenfolge (neue zuerst) sortiert nach Datum, ID.
+   * Weitere Filter-Kriterien wie Zeitraum und Konto muessen noch hinzugefuegt werden.
+   * Die Funktion sortiert lediglich vereinheitlicht.
+   * @param days die Anzahl der Tage.
+   * @return sortierte Liste der Umsaetze.
+   * @throws RemoteException
+   */
+  public static DBIterator getUmsaetzeBackwards(int days) throws RemoteException
+  {
+    return getUmsaetze(days,true);
+  }
+
   /**
    * Liefert das Datum des aeltesten Umsatzes auf dem Konto oder der Kontogruppe.
    * @param kontoOrGroup Konto oder Name einer Kontogruppe.
@@ -172,10 +199,31 @@ public class UmsatzUtil
    */
   private static DBIterator getUmsaetze(boolean backwards) throws RemoteException
   {
+    return getUmsaetze(-1,backwards);
+  }
+
+
+  /**
+   * Liefert alle Umsaetze, jedoch mit vereinheitlichter Vorsortierung.
+   * @param backwards chronologisch (alte zuerst) = false.
+   * umgekehrt chronologisch (neue zuerst) = true.
+   * @return sortierte Liste der Umsaetze.
+   * @throws RemoteException
+   */
+  private static DBIterator getUmsaetze(int days, boolean backwards) throws RemoteException
+  {
     String s = backwards ? "DESC" : "ASC";
     HBCIDBService service = (HBCIDBService) Settings.getDBService();
-    DBIterator list = service.createList(Umsatz.class);
+    final DBIterator list = service.createList(Umsatz.class);
     list.setOrder("ORDER BY " + service.getSQLTimestamp("datum") + " " + s + ", id " + s);
+
+    if (days > 0)
+    {
+      final Calendar cal = Calendar.getInstance();
+      cal.add(Calendar.DAY_OF_YEAR,-days);
+      final Date from = cal.getTime();
+      list.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(from).getTime()));
+    }
     return list;
   }
 }

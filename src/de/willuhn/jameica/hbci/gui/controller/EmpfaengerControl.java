@@ -23,6 +23,7 @@ import org.kapott.hbci.manager.HBCIUtils;
 import com.google.common.base.Objects;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
+import de.jost_net.OBanToo.SEPA.SEPAException;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
 import de.jost_net.OBanToo.SEPA.Land.SEPALand;
@@ -386,6 +387,10 @@ public class EmpfaengerControl extends AbstractControl
               if (!haveBlz)
                 getBlz().setValue(i.getBLZ());
             }
+          }
+          catch (SEPAException se)
+          {
+            Logger.debug(se.getMessage());
           }
           catch (Exception e)
           {
