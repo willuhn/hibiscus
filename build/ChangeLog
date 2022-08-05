@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 0995 Beim MT940-Export in das Tag ":20:" den Wert "STARTUMS" schreiben. Siehe https://homebanking-hilfe.de/forum/topic.php?t=25333&page=1&fup=163636#real163636
+
 2022-06-21 Version 2.10.7
 
   * CHG: 0994 Option "Unterkategorien von Treffern anzeigen" aus Changeset #0976 unter die Tabelle verschoben - siehe https://homebanking-hilfe.de/forum/topic.php?t=25248&page=1&fup=163107#real163107
