@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 0996 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.09.2022
   * CHG: 0995 Beim MT940-Export in das Tag ":20:" den Wert "STARTUMS" schreiben. Siehe https://homebanking-hilfe.de/forum/topic.php?t=25333&page=1&fup=163636#real163636
 
 2022-06-21 Version 2.10.7
