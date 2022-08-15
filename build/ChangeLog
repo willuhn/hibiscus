@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0998 Beim Import von Sammelaufträgen per SEPA-PAIN XML wurde das Batchbooking-Flag nicht berücksichtigt - siehe https://homebanking-hilfe.de/forum/topic.php?p=163721#real163721
   * NEW: 0997 Update auf HBCI4Java 3.1.61 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.61
   * NEW: 0996 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.09.2022
   * CHG: 0995 Beim MT940-Export in das Tag ":20:" den Wert "STARTUMS" schreiben. Siehe https://homebanking-hilfe.de/forum/topic.php?t=25333&page=1&fup=163636#real163636

@@ -24,8 +24,10 @@ import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.rmi.BatchBookType;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
 import de.willuhn.jameica.system.Application;
@@ -60,6 +62,10 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
         ueb.setTermin(ISO_DATE.parse(date));
       
       ueb.store();
+      
+      final BatchBookType batch = BatchBookType.byXmlValue(prop.getProperty(ISEPAParser.Names.BATCHBOOK.getValue()));
+      MetaKey.SEPA_BATCHBOOK.set(ueb,batch != null ? batch.getValue() : null);
+
       ctx.put("ueb",ueb); // und im Context speichern
       Application.getMessagingFactory().sendMessage(new ImportMessage(ueb));
     }
@@ -72,8 +78,9 @@ public class SepaSammelUeberweisungImporter extends AbstractSepaImporter
     u.setBetrag(this.parseValue(prop.getProperty(ISEPAParser.Names.VALUE.getValue())));
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));
     u.setPurposeCode(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.PURPOSECODE.getValue())));
-
+    
     u.store();
+    
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(ueb));
 
   }

@@ -24,8 +24,10 @@ import org.kapott.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.hbci.rmi.BatchBookType;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
@@ -64,6 +66,10 @@ public class SepaSammelLastschriftImporter extends AbstractSepaImporter
         ueb.setTargetDate(ISO_DATE.parse(date));
       
       ueb.store();
+
+      final BatchBookType batch = BatchBookType.byXmlValue(prop.getProperty(ISEPAParser.Names.BATCHBOOK.getValue()));
+      MetaKey.SEPA_BATCHBOOK.set(ueb,batch != null ? batch.getValue() : null);
+
       ctx.put("ueb",ueb); // und im Context speichern
       Application.getMessagingFactory().sendMessage(new ImportMessage(ueb));
     }
