@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 0999 Mögliche NPE - kann den Fehler selbst aber nicht reproduzieren - siehe Mail von Paul vom 16.08.2022
   * BUG: 0998 Beim Import von Sammelaufträgen per SEPA-PAIN XML wurde das Batchbooking-Flag nicht berücksichtigt - siehe https://homebanking-hilfe.de/forum/topic.php?p=163721#real163721
   * NEW: 0997 Update auf HBCI4Java 3.1.61 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.61
   * NEW: 0996 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.09.2022

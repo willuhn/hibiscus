@@ -480,8 +480,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       Map<String, EinnahmeAusgabe> kontoMap = getKontoDataMap(node);
       
-      final Date startDatum = (tagStart == 0 ? start : node.getStartdatum());
-      final Date endDatum = (end.before(node.getEnddatum()) ? end : node.getEnddatum());
+      final Date startDatum = (start != null && tagStart == 0 ? start : node.getStartdatum());
+      final Date endDatum = (end != null && end.before(node.getEnddatum()) ? end : node.getEnddatum());
       int tagEnde = tagStart + (int) getDifferenceDays(startDatum, endDatum) + 1;
       for (Entry<String, EinnahmeAusgabe> kontoEntry : kontoMap.entrySet())
       {
