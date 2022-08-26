@@ -62,7 +62,7 @@ public class CSVImportDialog extends AbstractDialog
 {
   private final static Settings settings = new Settings(CSVImportDialog.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static String[] CHARSETS = new String[]{"UTF-8","ISO-8859-15","ISO-8859-1"};
+  private final static String[] CHARSETS = new String[]{"UTF-8","ISO-8859-15","ISO-8859-1","UTF-16"};
 
   private SelectInput profiles      = null;
   private Profile result            = null;
