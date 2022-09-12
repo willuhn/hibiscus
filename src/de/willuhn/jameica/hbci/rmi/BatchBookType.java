@@ -106,6 +106,20 @@ public enum BatchBookType
   }
   
   /**
+   * Liefert den passenden Batchbook-Typ fuer den angegebenen Wert wie er in der XML-Datei steht.
+   * @param value der Wert.
+   * @return die zugehoerige Enum. Niemals NULL sondern in dem Fall {@link BatchBookType#NONE}.
+   */
+  public static BatchBookType byXmlValue(String value)
+  {
+    if (value == null)
+      return NONE;
+
+    final BatchBookType t = byValue(Boolean.valueOf(value));
+    return t != null ? t : NONE;
+  }
+  
+  /**
    * Liefert den passenden Batchbook-Typ fuer den angegebenen Wert.
    * @param value der Wert.
    * @return die zugehoerige Enum.

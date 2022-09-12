@@ -121,7 +121,7 @@ public class MT940UmsatzExporter implements Exporter
     		if (i > 0)
     		  out.write(NL);
     		
-        out.write(":20:Hibiscus" + NL);
+        out.write(":20:STARTUMS" + NL);
     		out.write(":25:" + k.getBLZ() + "/" + k.getKontonummer() + NL);
         out.write(":28C:1" + NL); // Auszugsnummer. Belegen wir hart mit "1", damit das Feld vorhanden ist. SAP braucht das fuer den Import
     		
