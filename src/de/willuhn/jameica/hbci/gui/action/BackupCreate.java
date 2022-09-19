@@ -111,12 +111,6 @@ public class BackupCreate implements Action
           backup(TurnusImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
-          
-          monitor.setStatusText(i18n.tr("Speichere Umsatz-Kategorien"));
-          backupTree(UmsatzTypImpl.class,writer,monitor);
-          monitor.addPercentComplete(5);
-
-
           monitor.setStatusText(i18n.tr("Speichere Adressbuch"));
           backup(HibiscusAddressImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
@@ -124,6 +118,10 @@ public class BackupCreate implements Action
           monitor.setStatusText(i18n.tr("Speichere Konten und Systemnachrichten"));
           backup(KontoImpl.class,writer,monitor);
           backup(NachrichtImpl.class,writer,monitor);
+          monitor.addPercentComplete(5);
+
+          monitor.setStatusText(i18n.tr("Speichere Umsatz-Kategorien"));
+          backupTree(UmsatzTypImpl.class,writer,monitor);
           monitor.addPercentComplete(5);
 
           monitor.setStatusText(i18n.tr("Speichere Umsätze"));

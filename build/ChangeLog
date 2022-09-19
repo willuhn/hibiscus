@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1001 Beim XML-Datenbank-Dump die Konten vor den Umsatzkategorien exportieren, da Umsätze auf Konten referenzieren können - siehe https://homebanking-hilfe.de/forum/topic.php?t=25409
+
 2022-09-12 Version 2.10.8
 
   * BUG: 1000 Update auf HBCI4Java 3.1.62 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.62 - siehe https://homebanking-hilfe.de/forum/topic.php?t=25388
