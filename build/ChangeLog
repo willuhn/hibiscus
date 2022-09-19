@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1002 Saldo im Verlauf: Summenlinie dicker anzeigen
   * BUG: 1001 Beim XML-Datenbank-Dump die Konten vor den Umsatzkategorien exportieren, da Umsätze auf Konten referenzieren können - siehe https://homebanking-hilfe.de/forum/topic.php?t=25409
 
 2022-09-12 Version 2.10.8

@@ -26,6 +26,13 @@ public interface LineChartData extends ChartData
   public boolean getCurve() throws RemoteException;
   
   /**
+   * Liefert die Linienbreite in Pixel.
+   * @return die Linienbreite in Pixel.
+   * @throws RemoteException
+   */
+  public int getLineWidth() throws RemoteException;
+  
+  /**
    * Liefert ein Array mit den Farbwerten (0-255) fuer Ror, Gruen und Blau.
    * @return Array mit den Farbwerten oder null, wenn eine zufaellige Farbe gewaehlt werden soll.
    * @throws RemoteException

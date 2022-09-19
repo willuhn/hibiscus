@@ -72,7 +72,7 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
   {
     return i18n.tr("Monatsdurchschnitt");
   }
-
+  
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoVerlauf#getCurve()
    */
