@@ -65,7 +65,7 @@ public class UeberweisungNew extends AbstractView
 	    container.addInput(control.getEmpfaengerName());
 	    container.addInput(control.getEmpfaengerKonto());    
 	    container.addInput(control.getEmpfaengerBlz());    
-	    container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+      container.addInput(control.getStoreEmpfaenger());
 		}
 		
 		// Rechte Seite

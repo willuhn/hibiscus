@@ -39,6 +39,7 @@ import de.willuhn.jameica.hbci.gui.input.IBANInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.PurposeCodeInput;
 import de.willuhn.jameica.hbci.gui.input.ReminderIntervalInput;
+import de.willuhn.jameica.hbci.gui.input.StoreAddressInput;
 import de.willuhn.jameica.hbci.gui.input.TerminInput;
 import de.willuhn.jameica.hbci.gui.input.ZweckInput;
 import de.willuhn.jameica.hbci.gui.parts.AuslandsUeberweisungList;
@@ -377,18 +378,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
     if (storeEmpfaenger != null)
       return storeEmpfaenger;
 
-    // Nur bei neuen Transfers aktivieren
-    HibiscusTransfer t = getTransfer();
-    // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
-    // noch kein Gegenkonto definiert ist.
-    boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
-    
-    // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
-    de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-    enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
-    storeEmpfaenger = new CheckboxInput(enabled);
-
-    return storeEmpfaenger;
+    this.storeEmpfaenger = new StoreAddressInput(this.getTransfer());
+    return this.storeEmpfaenger;
   }
   
   /**

@@ -59,7 +59,7 @@ public class SepaDauerauftragNew extends AbstractView
       left.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
       left.addLabelPair(i18n.tr("IBAN"),                      control.getEmpfaengerKonto());    
       left.addLabelPair(i18n.tr("BIC"),                       control.getEmpfaengerBic());
-      left.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+      left.addInput(control.getStoreEmpfaenger());
     }
     {
       // Rechts

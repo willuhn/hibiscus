@@ -52,7 +52,7 @@ public class DauerauftragNew extends AbstractView
       left.addLabelPair(i18n.tr("Name"),                      control.getEmpfaengerName());
       left.addLabelPair(i18n.tr("Kontonummer"),               control.getEmpfaengerKonto());
       left.addLabelPair(i18n.tr("BLZ"),                       control.getEmpfaengerBlz());
-      left.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+      left.addInput(control.getStoreEmpfaenger());
     }
     {
       // Rechts
