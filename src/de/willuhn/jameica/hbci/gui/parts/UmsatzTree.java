@@ -117,26 +117,21 @@ public class UmsatzTree extends TreePart
           UmsatzTyp ut = null;
           if (i instanceof UmsatzTreeNode)
             ut = ((UmsatzTreeNode)i).getUmsatzTyp();
-          else if (i instanceof Umsatz)
-            ut = ((Umsatz)i).getUmsatzTyp();
           
-          if (ut != null)
+          if (ut != null && ut.isCustomColor())
           {
-            if (ut.isCustomColor())
+            int[] color = ut.getColor();
+            if (color != null && color.length == 3)
             {
-              int[] color = ut.getColor();
-              if (color != null && color.length == 3)
+              RGB rgb = new RGB(color[0],color[1],color[2]);
+              Color c = colorCache.get(rgb.toString());
+              if (c == null)
               {
-                RGB rgb = new RGB(color[0],color[1],color[2]);
-                Color c = colorCache.get(rgb.toString());
-                if (c == null)
-                {
-                  c = new Color(GUI.getDisplay(),rgb);
-                  colorCache.put(rgb.toString(),c);
-                }
-                item.setForeground(c);
-                return;
+                c = new Color(GUI.getDisplay(),rgb);
+                colorCache.put(rgb.toString(),c);
               }
+              item.setForeground(c);
+              return;
             }
           }
           ColorUtil.setForeground(item,3,betrag.doubleValue());

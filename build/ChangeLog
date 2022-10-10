@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1005 Nur die Kategorien färben, nicht die Umsätze selbst - siehe https://homebanking-hilfe.de/forum/topic.php?t=17474
   * NEW: 1004 Checkbox "In Adressbuch übernehmen" merkt sich jetzt den vom User ausgewählten Zustand - siehe https://homebanking-hilfe.de/forum/topic.php?t=25423 
   * BUG: 1003 Umsätze nach Kategorie: Anzahl der Kategorien und Umsätze in Summenzeile war immer 0 - siehe https://homebanking-hilfe.de/forum/topic.php?t=25413
   * BUG: 1002 Saldo im Verlauf: Summenlinie dicker anzeigen
