@@ -13,21 +13,17 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
@@ -62,7 +58,6 @@ public class UmsatzTree extends TreePart
 {
   private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
   private AtomicInteger umsatzCount;
   private AtomicInteger groupCount;
@@ -118,22 +113,7 @@ public class UmsatzTree extends TreePart
           if (i instanceof UmsatzTreeNode)
             ut = ((UmsatzTreeNode)i).getUmsatzTyp();
           
-          if (ut != null && ut.isCustomColor())
-          {
-            int[] color = ut.getColor();
-            if (color != null && color.length == 3)
-            {
-              RGB rgb = new RGB(color[0],color[1],color[2]);
-              Color c = colorCache.get(rgb.toString());
-              if (c == null)
-              {
-                c = new Color(GUI.getDisplay(),rgb);
-                colorCache.put(rgb.toString(),c);
-              }
-              item.setForeground(c);
-              return;
-            }
-          }
+          ColorUtil.setForeground(item,-1,ut);
           ColorUtil.setForeground(item,3,betrag.doubleValue());
         }
         catch (Exception e)

@@ -150,6 +150,7 @@ public class UmsatzList extends TablePart implements Extendable
           else
           {
             ColorUtil.setForeground(item,5,u.getBetrag());
+            ColorUtil.setForeground(item,6,u.getUmsatzTyp());
 
             // Saldo nicht mit einfaerben, dass irritiert sonst,
             // wenn die Buchung zwar einen negativen Betrag hat,
