@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1007 Beim PDF-Export von Umsätzen auch Name2, IBAN und Bank des Gegenkontos mit ausgeben
   * NEW: 1006 Umsatzliste: Name der Kategorie in der Farbe der Kategorie anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=164418#real164418
   * BUG: 1005 Nur die Kategorien färben, nicht die Umsätze selbst - siehe https://homebanking-hilfe.de/forum/topic.php?t=17474
   * NEW: 1004 Checkbox "In Adressbuch übernehmen" merkt sich jetzt den vom User ausgewählten Zustand - siehe https://homebanking-hilfe.de/forum/topic.php?t=25423 

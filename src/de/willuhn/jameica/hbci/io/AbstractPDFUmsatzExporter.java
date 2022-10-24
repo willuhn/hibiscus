@@ -25,6 +25,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.gui.ext.ExportAddSumRowExtension;
 import de.willuhn.jameica.hbci.gui.ext.ExportSaldoExtension;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
@@ -156,8 +157,26 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
             style = Font.ITALIC;
           }
           
+          String name = u.getGegenkontoName();
+          String name2 = u.getGegenkontoName2();
+          if (name != null && name.length() > 0 && name2 != null && name2.length() > 0)
+            name = name + "\n" + name2;
+          
+          String iban = u.getGegenkontoNummer();
+          if (iban != null && iban.length() > 0)
+          {
+            name = name + "\n" + HBCIProperties.formatIban(iban);
+            String bic = u.getGegenkontoBLZ();
+            if (bic != null && bic.length() > 0)
+            {
+              bic = HBCIProperties.getNameForBank(bic);
+              if (bic != null)
+                name = name + "\n" + bic;
+            }
+          }
+          
           reporter.addColumn(reporter.getDetailCell(valuta + "\n" + datum, Element.ALIGN_LEFT,null,color,style));
-          reporter.addColumn(reporter.getDetailCell(reporter.notNull(u.getGegenkontoName()) + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT,null,color,style));
+          reporter.addColumn(reporter.getDetailCell(name + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT,null,color,style));
           String verwendungszweck = (fullUsage) ? VerwendungszweckUtil.toString(u,"\n") : VerwendungszweckUtil.getTag(u, Tag.SVWZ);
           reporter.addColumn(reporter.getDetailCell(verwendungszweck, Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
