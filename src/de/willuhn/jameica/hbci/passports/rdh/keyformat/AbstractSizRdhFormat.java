@@ -33,17 +33,13 @@ public abstract class AbstractSizRdhFormat extends AbstractKeyFormat
 {
   protected static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#createKey(java.io.File)
-   */
+  @Override
   public RDHKey createKey(File file) throws ApplicationException, OperationCanceledException
   {
     throw new ApplicationException(i18n.tr("Das Erstellen von neuen Schlüsseln wird für dieses Format nicht unterstützt"));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.rdh.keyformat.KeyFormat#hasFeature(int)
-   */
+  @Override
   public boolean hasFeature(int feature)
   {
     switch (feature)

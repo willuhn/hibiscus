@@ -104,15 +104,14 @@ public class KeyPasswordLoadDialog extends PasswordDialog
     setLabelText(i18n.tr("Ihr Passwort"));
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#extend(de.willuhn.jameica.gui.util.Container)
-   */
+  @Override
   protected void extend(Container container) throws Exception
   {
     if (this.filename == null)
       return;
     
     Part p = new Part() {
+      @Override
       public void paint(Composite parent) throws RemoteException
       {
         String text = i18n.tr("Schlüsseldatei: {0}",filename);
@@ -134,9 +133,7 @@ public class KeyPasswordLoadDialog extends PasswordDialog
     container.addPart(p);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.PasswordDialog#checkPassword(java.lang.String)
-   */
+  @Override
   protected boolean checkPassword(String password)
 	{
 		if (password == null || password.length() == 0)

@@ -41,25 +41,19 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
     super();
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getName()
-   */
+  @Override
   public String getName() throws RemoteException {
     return i18n.tr("PIN/TAN");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getInfo()
-   */
+  @Override
   public String getInfo() throws RemoteException
   {
     GenericIterator i = PinTanConfigFactory.getConfigs();
     return i18n.tr("vorhandene PIN/TAN-Konfigurationen: {0}",Integer.toString(i.size()));
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getConfigurations()
-   */
+  @Override
   public List<? extends Configuration> getConfigurations() throws RemoteException
   {
     GenericIterator i = PinTanConfigFactory.getConfigs();
@@ -69,24 +63,18 @@ public class PassportImpl extends UnicastRemoteObject implements Passport
     return configs;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getConfigDialog()
-   */
+  @Override
   public Class getConfigDialog() throws RemoteException {
     return View.class;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#init(de.willuhn.jameica.hbci.rmi.Konto)
-   */
+  @Override
   public void init(Konto konto) throws RemoteException
   {
   	this.konto = konto;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passport.Passport#getHandle()
-   */
+  @Override
   public PassportHandle getHandle() throws RemoteException
   {
     return new PassportHandleImpl(this);

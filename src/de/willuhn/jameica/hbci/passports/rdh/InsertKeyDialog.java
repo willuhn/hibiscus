@@ -35,9 +35,7 @@ public class InsertKeyDialog extends WaitDialog
     setTitle(i18n.tr("Schlüsseldatei/USB-Stick einlegen"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.WaitDialog#check()
-   */
+  @Override
   protected boolean check()
   {
     if (file.exists() && file.canRead() && file.canWrite())
@@ -56,17 +54,13 @@ public class InsertKeyDialog extends WaitDialog
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.WaitDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return Boolean.valueOf(file.exists() && file.canRead() && file.canWrite());
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.WaitDialog#getText()
-   */
+  @Override
   public String getText()
   {
     return i18n.tr("Die Schlüsseldatei wurde nicht gefunden.\n" +

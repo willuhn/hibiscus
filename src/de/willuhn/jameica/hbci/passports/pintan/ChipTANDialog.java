@@ -102,9 +102,6 @@ public class ChipTANDialog extends TANDialog
       this.setSideImage(null); // den Platz haben wir hier nicht.
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#setText(java.lang.String)
-   */
   @Override
   public void setText(String text)
   {
@@ -164,9 +161,6 @@ public class ChipTANDialog extends TANDialog
     return this.autoContinue;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void paint(Composite parent) throws Exception
   {
@@ -253,9 +247,6 @@ public class ChipTANDialog extends TANDialog
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendTop(de.willuhn.jameica.gui.util.Container)
-   */
   @Override
   protected void extendTop(Container container) throws Exception
   {
@@ -359,9 +350,6 @@ public class ChipTANDialog extends TANDialog
     
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendBottom(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void extendBottom(Container c) throws Exception
   {
@@ -396,9 +384,7 @@ public class ChipTANDialog extends TANDialog
       setFrequency(SETTINGS.getInt("freq",FlickerRenderer.FREQUENCY_DEFAULT));
     }
     
-    /**
-     * @see org.kapott.hbci.manager.FlickerRenderer#paint(boolean, boolean, boolean, boolean, boolean)
-     */
+    @Override
     public void paint(boolean b1, boolean b2, boolean b3, boolean b4, boolean b5)
     {
       this.bits[0] = b1;
@@ -425,9 +411,7 @@ public class ChipTANDialog extends TANDialog
       });
     }
 
-    /**
-     * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
-     */
+    @Override
     public void paint(final Composite parent) throws RemoteException
     {
       if (this.canvas != null)
@@ -453,9 +437,7 @@ public class ChipTANDialog extends TANDialog
         smaller.setText(" - ");
         smaller.addSelectionListener(new SelectionAdapter()
         {
-          /**
-           * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-           */
+          @Override
           public void widgetSelected(SelectionEvent e)
           {
             GridData gd = (GridData) comp.getLayoutData();
@@ -548,6 +530,7 @@ public class ChipTANDialog extends TANDialog
         // Beim Disposen stoppen wir den Flicker-Thread.
         this.comp.addDisposeListener(new DisposeListener()
         {
+          @Override
           public void widgetDisposed(DisposeEvent e)
           {
             // Wir merken uns die Groesse des Canvas.
@@ -568,12 +551,14 @@ public class ChipTANDialog extends TANDialog
       // Bei jedem Paint-Event aktualisieren wir die Balken
       this.canvas.addPaintListener(new PaintListener()
       {
+        @Override
         public void paintControl(PaintEvent e)
         {
           update(e.gc);
         }
       });
       this.canvas.addDisposeListener(new DisposeListener() {
+        @Override
         public void widgetDisposed(DisposeEvent e)
         {
           // Update-Thread stoppen

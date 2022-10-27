@@ -20,25 +20,19 @@ import de.willuhn.jameica.system.Application;
  */
 public class RDHReader extends PCSCReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("RDH-Karte via PC/SC-Kartenleser");
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getType()
-   */
+  @Override
   public Type getType()
   {
     return Type.RDH_PCSC;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
-   */
+  @Override
   public String getDefaultHBCIVersion()
   {
     return HBCIVersion.HBCI_300.getId();

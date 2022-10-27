@@ -53,9 +53,7 @@ public class SelectConfigDialog extends AbstractDialog
     setTitle(i18n.tr("Auswahl der PIN/TAN-Konfiguration"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent,true);
@@ -65,6 +63,7 @@ public class SelectConfigDialog extends AbstractDialog
       list.begin();
     
     final TablePart table = new TablePart(list != null && list.size() > 0 ? list : PinTanConfigFactory.getConfigs(), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof PinTanConfig))
@@ -83,6 +82,7 @@ public class SelectConfigDialog extends AbstractDialog
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         selected = (PinTanConfig) table.getSelection();
@@ -105,9 +105,7 @@ public class SelectConfigDialog extends AbstractDialog
     this.text = text;
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return selected;

@@ -20,17 +20,13 @@ import de.willuhn.jameica.system.Platform;
  */
 public class ReinerSCTCyberJackReader extends AbstractReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return "CTAPI: ReinerSCT cyberjack";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
     switch (Application.getPlatform().getOS())
@@ -52,9 +48,7 @@ public class ReinerSCTCyberJackReader extends AbstractReader
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     int os = Application.getPlatform().getOS();

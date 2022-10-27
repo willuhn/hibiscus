@@ -16,9 +16,7 @@ package de.willuhn.jameica.hbci.passports.ddv.server;
  */
 public class KaanStandardPlusReader extends AbstractKaanReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return "CTAPI: Kaan Standard Plus USB (Kobil)";

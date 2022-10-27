@@ -89,9 +89,7 @@ public class TanMediaDialog extends AbstractDialog
     else           setTitle(i18n.tr("Auswahl des TAN-Mediums"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container group = new SimpleContainer(parent);
@@ -106,6 +104,7 @@ public class TanMediaDialog extends AbstractDialog
     
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         try
@@ -145,6 +144,7 @@ public class TanMediaDialog extends AbstractDialog
       }
     },null,true,"ok.png");
     buttons.addButton(i18n.tr("Abbrechen"),new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -153,9 +153,7 @@ public class TanMediaDialog extends AbstractDialog
     group.addButtonArea(buttons);
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return choosen;

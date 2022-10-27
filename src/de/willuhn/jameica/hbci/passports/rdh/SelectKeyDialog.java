@@ -59,15 +59,14 @@ public class SelectKeyDialog extends AbstractDialog
     this.setTitle(i18n.tr("Schlüsselauswahl"));
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
+  @Override
   protected void paint(Composite parent) throws Exception
   {
     Container container = new SimpleContainer(parent);
     container.addText(i18n.tr("Bitte wählen Sie den zu verwendenden Schlüssel aus"),true);
 
     final Button apply = new Button(i18n.tr("Übernehmen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         new Apply().handleAction(table.getSelection());
@@ -84,12 +83,14 @@ public class SelectKeyDialog extends AbstractDialog
     }
     
     this.table = new TablePart(l, new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         new Apply().handleAction(context);
       }
     });
     table.setFormatter(new TableFormatter() {
+      @Override
       public void format(TableItem item)
       {
         if (item == null || item.getData() == null)
@@ -108,6 +109,7 @@ public class SelectKeyDialog extends AbstractDialog
     });
     
     table.addSelectionListener(new Listener() {
+      @Override
       public void handleEvent(Event event)
       {
         apply.setEnabled(table.getSelection() != null);
@@ -123,6 +125,7 @@ public class SelectKeyDialog extends AbstractDialog
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(apply);
     buttons.addButton(i18n.tr("Abbrechen"), new Action() {
+      @Override
       public void handleAction(Object context) throws ApplicationException
       {
         throw new OperationCanceledException();
@@ -136,9 +139,7 @@ public class SelectKeyDialog extends AbstractDialog
    */
   private class Apply implements Action
   {
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
+    @Override
     public void handleAction(Object context) throws ApplicationException
     {
       if (context == null || !(context instanceof KeyObject))
@@ -165,9 +166,7 @@ public class SelectKeyDialog extends AbstractDialog
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
-   */
+  @Override
   protected Object getData() throws Exception
   {
     return selected;
@@ -183,9 +182,7 @@ public class SelectKeyDialog extends AbstractDialog
       this.key = key;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
+    @Override
     public Object getAttribute(String attribute) throws RemoteException
     {
       if ("filename".equals(attribute))
@@ -195,33 +192,25 @@ public class SelectKeyDialog extends AbstractDialog
       return null;
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
+    @Override
     public String[] getAttributeNames() throws RemoteException
     {
       return new String[] {"filename","alias"};
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
+    @Override
     public String getID() throws RemoteException
     {
       return key.getFilename();
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
+    @Override
     public String getPrimaryAttribute() throws RemoteException
     {
       return "filename";
     }
 
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
+    @Override
     public boolean equals(GenericObject arg0) throws RemoteException
     {
       if (arg0 == null)

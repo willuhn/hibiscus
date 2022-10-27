@@ -20,17 +20,13 @@ import de.willuhn.jameica.system.Platform;
  */
 public class CherrySmartboardReader extends AbstractReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return "CTAPI: Cherry Smartboard";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
     switch (Application.getPlatform().getOS())
@@ -43,9 +39,7 @@ public class CherrySmartboardReader extends AbstractReader
     }
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     return Application.getPlatform().getOS() == Platform.OS_WINDOWS;

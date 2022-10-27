@@ -18,33 +18,25 @@ import de.willuhn.jameica.system.Application;
  */
 public class CustomReader extends AbstractReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("Benutzerdefinierter CTAPI-Leser");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
   	return "";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     return true;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useSoftPin()
-   */
+  @Override
   public boolean useSoftPin()
   {
     return true;

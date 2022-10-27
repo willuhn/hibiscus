@@ -20,17 +20,13 @@ import de.willuhn.jameica.system.Platform;
  */
 public class ChipDrivePinPad532Reader extends AbstractReader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return "CTAPI: Chipdrive Pinpad / SCM SPR 332";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
     if (Application.getPlatform().getOS() == Platform.OS_WINDOWS)
@@ -38,9 +34,7 @@ public class ChipDrivePinPad532Reader extends AbstractReader
     return "";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     return Application.getPlatform().getOS() == Platform.OS_WINDOWS;

@@ -99,57 +99,43 @@ public abstract class AbstractReader implements Reader
 		
 	}
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getPort()
-   */
+  @Override
   public String getPort()
   {
     return "COM2/USB2";
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTNumber()
-   */
+  @Override
   public int getCTNumber()
   {
     return 0;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useSoftPin()
-   */
+  @Override
   public boolean useSoftPin()
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getType()
-   */
+  @Override
   public Type getType()
   {
     return Type.DDV_CTAPI;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
-   */
+  @Override
   public String getDefaultHBCIVersion()
   {
     return HBCIVersion.HBCI_300.getId();
   }
 
-  /**
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString()
   {
     return this.getName();
   }
 
-  /**
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+  @Override
   public boolean equals(Object obj)
   {
     if (!(obj instanceof Reader))

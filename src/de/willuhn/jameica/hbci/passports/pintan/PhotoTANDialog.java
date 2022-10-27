@@ -75,9 +75,6 @@ public class PhotoTANDialog extends TANDialog
     this.bytes = bytes;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendTop(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void extendTop(Container container) throws Exception
   {
@@ -95,9 +92,7 @@ public class PhotoTANDialog extends TANDialog
     this.smaller.setLayoutData(new GridData());
     this.smaller.addSelectionListener(new SelectionAdapter()
     {
-      /**
-       * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-       */
+      @Override
       public void widgetSelected(SelectionEvent e)
       {
         resize(currentSize - 30);
@@ -111,9 +106,7 @@ public class PhotoTANDialog extends TANDialog
     reset.setLayoutData(new GridData());
     reset.addSelectionListener(new SelectionAdapter()
     {
-      /**
-       * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-       */
+      @Override
       public void widgetSelected(SelectionEvent e)
       {
         resize(initialSize);
@@ -126,9 +119,7 @@ public class PhotoTANDialog extends TANDialog
     this.larger.setLayoutData(new GridData());
     this.larger.addSelectionListener(new SelectionAdapter()
     {
-      /**
-       * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-       */
+      @Override
       public void widgetSelected(SelectionEvent e)
       {
         resize(currentSize + 30);
@@ -148,9 +139,6 @@ public class PhotoTANDialog extends TANDialog
     this.imageLabel.setImage(image);
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#paint(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected void paint(Composite parent) throws Exception
   {

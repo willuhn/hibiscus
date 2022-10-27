@@ -22,41 +22,31 @@ import de.willuhn.jameica.system.Platform;
  */
 public class PCSCReader implements Reader
 {
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getName()
-   */
+  @Override
   public String getName()
   {
     return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("PC/SC-Kartenleser (Kobil, ReinerSCT und andere)");
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTAPIDriver()
-   */
+  @Override
   public String getCTAPIDriver()
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getPort()
-   */
+  @Override
   public String getPort()
   {
     return null;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getCTNumber()
-   */
+  @Override
   public int getCTNumber()
   {
     return 0;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#isSupported()
-   */
+  @Override
   public boolean isSupported()
   {
     int os = Application.getPlatform().getOS();
@@ -68,41 +58,31 @@ public class PCSCReader implements Reader
            os == Platform.OS_MAC;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#useSoftPin()
-   */
+  @Override
   public boolean useSoftPin()
   {
     return false;
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getType()
-   */
+  @Override
   public Type getType()
   {
     return Type.DDV_PCSC;
   }
   
-  /**
-   * @see de.willuhn.jameica.hbci.passports.ddv.rmi.Reader#getDefaultHBCIVersion()
-   */
+  @Override
   public String getDefaultHBCIVersion()
   {
     return HBCIVersion.HBCI_300.getId();
   }
 
-  /**
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString()
   {
     return this.getName();
   }
   
-  /**
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+  @Override
   public boolean equals(Object obj)
   {
     if (!(obj instanceof Reader))

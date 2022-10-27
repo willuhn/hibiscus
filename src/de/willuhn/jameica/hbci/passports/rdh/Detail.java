@@ -32,9 +32,7 @@ public class Detail extends AbstractView
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
-   */
+  @Override
   public void bind() throws Exception
   {
     try
@@ -72,6 +70,7 @@ public class Detail extends AbstractView
         ButtonArea buttons = new ButtonArea();
         buttons.addButton(i18n.tr("Passwort ändern"),new Action()
         {
+          @Override
           public void handleAction(Object context) throws ApplicationException
           {
             control.changePassword();
@@ -79,6 +78,7 @@ public class Detail extends AbstractView
         },null,false,"stock_keyring.png");
         buttons.addButton(i18n.tr("INI-Brief anzeigen/erzeugen"),new Action()
         {
+          @Override
           public void handleAction(Object context) throws ApplicationException
           {
             control.startIniLetter();
@@ -98,6 +98,7 @@ public class Detail extends AbstractView
       ButtonArea buttons = new ButtonArea();
       buttons.addButton(i18n.tr("BPD/UPD"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleDisplayProperties();
@@ -105,6 +106,7 @@ public class Detail extends AbstractView
       },null,false,"document-properties.png");
       buttons.addButton(i18n.tr("Synchronisieren"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleSync();
@@ -112,6 +114,7 @@ public class Detail extends AbstractView
       },null,false,"view-refresh.png");
       buttons.addButton(i18n.tr("Konfiguration testen"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleTest();
@@ -119,6 +122,7 @@ public class Detail extends AbstractView
       },null,false,"dialog-information.png");
       buttons.addButton(i18n.tr("Speichern"),new Action()
       {
+        @Override
         public void handleAction(Object context) throws ApplicationException
         {
           control.handleStore();
@@ -153,9 +157,7 @@ public class Detail extends AbstractView
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#canBookmark()
-   */
+  @Override
   public boolean canBookmark()
   {
     return false;
