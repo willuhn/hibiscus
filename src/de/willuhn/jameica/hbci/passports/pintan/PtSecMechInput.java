@@ -114,10 +114,16 @@ public class PtSecMechInput extends ButtonInput
 
       if (enabled)
       {
+        final StringBuilder sb = new StringBuilder();
+        if (secMech != null)
+          sb.append(i18n.tr("Verfahren: {0}",secMech.getName()));
         if (tanMedia != null && tanMedia.length() > 0)
-          this.label.setText(i18n.tr("Verfahren: {0}, Medienbezeichnung: {1}",secMech.getName(), tanMedia));
-        else
-          this.label.setText(i18n.tr("Verfahren: {0}",secMech.getName()));
+        {
+          if (sb.length() > 0)
+            sb.append(", ");
+          sb.append(i18n.tr("Medienbezeichnung: {0}",tanMedia));
+        }
+        this.label.setText(sb.toString());
       }
     }
     catch (RemoteException re)
