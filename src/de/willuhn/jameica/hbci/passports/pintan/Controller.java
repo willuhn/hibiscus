@@ -81,6 +81,7 @@ public class Controller extends AbstractControl
   private Input customerId        = null;
   private Input userId            = null;
   private Input bezeichnung       = null;
+  private PtSecMechInput tanMech  = null;
   private CheckboxInput showTan   = null;
   private SelectInput cardReaders = null;
   private CheckboxInput useUsb    = null;
@@ -309,6 +310,21 @@ public class Controller extends AbstractControl
   }
   
   /**
+   * Liefert eine Anzeige des aktuell gespeicherten TAN-Verfahrens und TAN-Mediums mit der Möglichkeit,
+   * dieses zurückzusetzen.
+   * @return das Anzeigefeld.
+   * @throws RemoteException
+   */
+  public PtSecMechInput getTANMech() throws RemoteException
+  {
+    if (this.tanMech != null)
+      return this.tanMech;
+    
+    this.tanMech = new PtSecMechInput(this.getConfig());
+    return this.tanMech;
+  }
+  
+  /**
    * Liefert eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
    * @return eine Checkbox, mit der eingestellt werden kann, ob chipTAN USB verwendet werden soll.
    * @throws RemoteException
@@ -487,30 +503,6 @@ public class Controller extends AbstractControl
   }
 
   /**
-   * BUGZILLA 218
-   * Loescht die Vorauswahlen bei den TAN-Verfahren.
-   */
-  public void handleDeleteTanSettings()
-  {
-    try
-    {
-      PinTanConfig conf = this.getConfig();
-      conf.setCurrentSecMech(null);
-      conf.setStoredSecMech(null);
-      conf.setTanMedia(null);
-      conf.setChipTANUSB(null);
-      conf.setConvertFlickerToQRCode(false);
-      
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Vorauswahl der TAN-Verfahren zurückgesetzt"),StatusBarMessage.TYPE_SUCCESS));
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while deleting tan settings",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Zurücksetzen der TAN-Verfahren"),StatusBarMessage.TYPE_ERROR));
-    }
-  }
-  
-  /**
    * Zeigt die BPD/UPD des Passports an.
    */
   public synchronized void handleDisplayProperties()
@@ -571,8 +563,6 @@ public class Controller extends AbstractControl
    */
   public synchronized void handleSync()
   {
-    this.handleDeleteTanSettings();
-    
     try
     {
       if (!Application.getCallback().askUser(i18n.tr("Sind Sie sicher?")))
@@ -585,6 +575,8 @@ public class Controller extends AbstractControl
 
       final PinTanConfig config = this.getConfig();
       config.reload();
+      
+      new PtSecMechDeleteSettings().handleAction(config);
       new PassportSync().handleAction(new PassportHandleImpl(config));
     }
     catch (ApplicationException ae)
