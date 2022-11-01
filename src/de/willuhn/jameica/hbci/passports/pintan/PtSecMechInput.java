@@ -60,7 +60,7 @@ public class PtSecMechInput extends ButtonInput
 
     try
     {
-      final PtSecMech secMech = this.conf.getStoredSecMech();
+      final PtSecMech secMech = this.conf.getCurrentSecMech();
       final String tanMedia = this.conf.getTanMedia();
       final boolean enabled = secMech != null || (tanMedia != null && tanMedia.length() > 0);
       if (enabled)
@@ -108,7 +108,7 @@ public class PtSecMechInput extends ButtonInput
     
     try
     {
-      final PtSecMech secMech = this.conf.getStoredSecMech();
+      final PtSecMech secMech = this.conf.getCurrentSecMech();
       final String tanMedia = this.conf.getTanMedia();
       final boolean enabled = secMech != null || (tanMedia != null && tanMedia.length() > 0);
 
