@@ -44,6 +44,7 @@ public class PtSecMechInput extends ButtonInput
     this.conf = conf;
     this.setName(i18n.tr("Gespeichertes TAN-Verfahren"));
     this.setButtonText(i18n.tr("TAN-Verfahren zurücksetzen"));
+    this.disableClientControl();
     this.addButtonListener(e -> {
       try
       {
@@ -102,7 +103,6 @@ public class PtSecMechInput extends ButtonInput
       return this.label;
 
     this.label = GUI.getStyleFactory().createText(parent);
-    this.label.setEditable(false);
     this.label.setToolTipText(i18n.tr("Wird nur angezeigt, wenn mehrere TAN-Verfahren zur Auswahl stehen und eines davon gespeichert wurde"));
     this.label.setMessage("<" + i18n.tr("Kein TAN-Verfahren gespeichert") + ">");
     
