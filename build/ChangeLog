@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHH: 1009 Umsatzliste: Suche nicht mehr direkt bei Eingabe in "Suchbegriff" starten sondern bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
   * NEW: 1008 Gespeichertes TAN-Verfahren und Medienbezeichnung neben dem Button "TAN-Verfahren zurücksetzen" anzeigen, falls etwas gespeichert wurde
   * NEW: 1007 Beim PDF-Export von Umsätzen auch Name2, IBAN und Bank des Gegenkontos mit ausgeben
   * NEW: 1006 Umsatzliste: Name der Kategorie in der Farbe der Kategorie anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=164418#real164418
