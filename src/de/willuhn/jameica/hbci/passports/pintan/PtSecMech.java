@@ -188,7 +188,8 @@ public class PtSecMech
            s.contains("optisch") ||
            s.contains("flicker") ||
            s.contains("komfort") ||
-           s.contains("comfort");
+           s.contains("comfort") ||
+           s.equalsIgnoreCase("chipTAN 1.4");
   }
   
   /**
