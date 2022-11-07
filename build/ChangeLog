@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1010 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.12.2022
   * CHH: 1009 Umsatzliste: Suche nicht mehr direkt bei Eingabe in "Suchbegriff" starten sondern bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
   * NEW: 1008 Gespeichertes TAN-Verfahren und Medienbezeichnung neben dem Button "TAN-Verfahren zurücksetzen" anzeigen, falls etwas gespeichert wurde
   * NEW: 1007 Beim PDF-Export von Umsätzen auch Name2, IBAN und Bank des Gegenkontos mit ausgeben
