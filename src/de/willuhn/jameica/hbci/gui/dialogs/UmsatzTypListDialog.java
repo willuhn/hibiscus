@@ -11,7 +11,6 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,7 +20,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -30,7 +28,6 @@ import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
@@ -43,6 +40,7 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypBean;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
@@ -61,7 +59,6 @@ public class UmsatzTypListDialog extends AbstractDialog
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(UmsatzTypListDialog.class);
-  private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
   private final static int WINDOW_WIDTH = 370;
   private final static int WINDOW_HEIGHT = 500;
@@ -262,17 +259,7 @@ public class UmsatzTypListDialog extends AbstractDialog
           
           if (ut.isCustomColor())
           {
-            int[] color = ut.getColor();
-            if (color == null || color.length != 3)
-              return;
-            
-            RGB rgb = new RGB(color[0],color[1],color[2]);
-            c = colorCache.get(rgb.toString());
-            if (c == null)
-            {
-              c = new Color(GUI.getDisplay(),rgb);
-              colorCache.put(rgb.toString(),c);
-            }
+            c = ColorUtil.getColor(ut);
           }
           else
           {
@@ -284,7 +271,9 @@ public class UmsatzTypListDialog extends AbstractDialog
             else
               c = de.willuhn.jameica.gui.util.Color.FOREGROUND.getSWTColor();
           }
-          item.setForeground(c);
+          
+          if (c != null)
+            item.setForeground(c);
         }
         catch (Exception e)
         {

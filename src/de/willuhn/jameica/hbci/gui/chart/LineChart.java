@@ -113,7 +113,7 @@ public class LineChart extends AbstractChart<LineChartData>
       lineSeries.setAntialias(SWT.ON);
       lineSeries.enableStack(this.isStacked());
       lineSeries.enableStep(!cd.getCurve());
-      lineSeries.setLineWidth(1);
+      lineSeries.setLineWidth(cd.getLineWidth());
       //
       //////////////////////////////////////////////////////////////////////////
 

@@ -35,6 +35,7 @@ import de.willuhn.jameica.hbci.gui.input.AccountInput;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
+import de.willuhn.jameica.hbci.gui.input.StoreAddressInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -260,18 +261,8 @@ public abstract class AbstractTransferControl extends AbstractControl
 		if (storeEmpfaenger != null)
 			return storeEmpfaenger;
 
-		// Nur bei neuen Transfers aktivieren
-    HibiscusTransfer t = getTransfer();
-    // Checkbox nur setzen, wenn es eine neue Ueberweisung ist und
-    // noch kein Gegenkonto definiert ist.
-    boolean enabled = t.isNewObject() && t.getGegenkontoNummer() == null;
-    
-    // Per Hidden-Parameter kann die Checkbox komplett ausgeschaltet werden
-    de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-    enabled &= settings.getBoolean("transfer.addressbook.autoadd",true);
-		storeEmpfaenger = new CheckboxInput(enabled);
-
-		return storeEmpfaenger;
+    this.storeEmpfaenger = new StoreAddressInput(this.getTransfer());
+    return this.storeEmpfaenger;
 	}
 
   /**

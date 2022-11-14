@@ -684,6 +684,15 @@ public class SparQuote implements Part
     {
       return "start";
     }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getLineWidth()
+     */
+    @Override
+    public int getLineWidth() throws RemoteException
+    {
+      return 1;
+    }
 
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getCurve()

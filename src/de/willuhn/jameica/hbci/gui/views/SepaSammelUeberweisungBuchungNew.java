@@ -62,7 +62,7 @@ public class SepaSammelUeberweisungBuchungNew extends AbstractView
       container.addLabelPair(i18n.tr("Name"), control.getEmpfaengerName());
       container.addLabelPair(i18n.tr("IBAN"), control.getEmpfaengerKonto());    
       container.addLabelPair(i18n.tr("BIC"),  control.getEmpfaengerBic());
-      container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+      container.addInput(control.getStoreEmpfaenger());
     }
     
     // Rechte Seite

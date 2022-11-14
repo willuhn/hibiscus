@@ -69,7 +69,7 @@ public class SepaLastschriftNew extends AbstractView
       container.addLabelPair(i18n.tr("Name"), control.getEmpfaengerName());
       container.addLabelPair(i18n.tr("IBAN"), control.getEmpfaengerKonto());    
       container.addLabelPair(i18n.tr("BIC"),  control.getEmpfaengerBic());
-      container.addCheckbox(control.getStoreEmpfaenger(),i18n.tr("In Adressbuch übernehmen"));
+      container.addInput(control.getStoreEmpfaenger());
 
       container.addHeadline(i18n.tr("SEPA"));
       container.addText(i18n.tr("Bitte beachten Sie die Vorlauffristen."),true);

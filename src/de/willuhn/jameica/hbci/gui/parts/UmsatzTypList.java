@@ -11,12 +11,9 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.Hashtable;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 
@@ -29,6 +26,7 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
@@ -51,8 +49,6 @@ public class UmsatzTypList extends TablePart implements Part
   private I18N i18n = null;
   private MessageConsumer mc = null;
   
-  private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
-
   /**
    * ct.
    * @param action
@@ -99,21 +95,7 @@ public class UmsatzTypList extends TablePart implements Part
           else if (kat != null)
             item.setText(4,kat);
 
-          if (!ut.isCustomColor())
-            return;
-
-          int[] color = ut.getColor();
-          if (color == null || color.length != 3)
-            return;
-          
-          RGB rgb = new RGB(color[0],color[1],color[2]);
-          Color c = colorCache.get(rgb.toString());
-          if (c == null)
-          {
-            c = new Color(GUI.getDisplay(),rgb);
-            colorCache.put(rgb.toString(),c);
-          }
-          item.setForeground(c);
+          ColorUtil.setForeground(item,-1,ut);
         }
         catch (Exception e)
         {

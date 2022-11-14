@@ -13,7 +13,6 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
@@ -65,6 +64,7 @@ public class Detail extends AbstractView
 
       group.addHeadline(i18n.tr("Erweiterte Einstellungen"));
       group.addInput(control.getBezeichnung());
+      group.addInput(control.getTANMech());
       group.addCheckbox(control.getShowTan(),i18n.tr("TANs während der Eingabe anzeigen"));
 
       final PtSecMech secMech = control.getConfig().getCurrentSecMech();
@@ -87,21 +87,6 @@ public class Detail extends AbstractView
       }
     }
     
-    {
-      PtSecMech secMech = control.getConfig().getStoredSecMech();
-      ButtonArea buttons = new ButtonArea();
-      String tanMedia = control.getConfig().getTanMedia();
-      Button b = new Button(i18n.tr("TAN-Verfahren zurücksetzen"), new Action() {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleDeleteTanSettings();
-        }
-      },null,false,"edit-undo.png");
-      b.setEnabled(secMech != null || (tanMedia != null && tanMedia.length() > 0));
-      buttons.addButton(b);
-      buttons.paint(getParent());
-    }
-
     Container c = new SimpleContainer(getParent(),true);
     c.addHeadline(i18n.tr("Fest zugeordnete Konten"));
     c.addText(i18n.tr("Die folgende Liste enthält alle Konten, welche diesem Bankzugang fest zugeordnet werden können. " +

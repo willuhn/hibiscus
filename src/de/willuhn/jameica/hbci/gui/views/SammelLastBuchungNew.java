@@ -46,7 +46,7 @@ public class SammelLastBuchungNew extends AbstractView
     group.addLabelPair(i18n.tr("Name"),                       control.getGegenkontoName());
     group.addLabelPair(i18n.tr("Kontonummer"),	              control.getGegenKonto());
 		group.addLabelPair(i18n.tr("BLZ"),			                  control.getGegenkontoBLZ());
-		group.addCheckbox(control.getStoreAddress(),i18n.tr("In Adressbuch übernehmen"));
+    group.addInput(control.getStoreAddress());
 
     SimpleContainer details = new SimpleContainer(getParent());
     details.addHeadline(i18n.tr("Details"));

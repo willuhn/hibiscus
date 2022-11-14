@@ -13,20 +13,17 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
@@ -61,10 +58,9 @@ public class UmsatzTree extends TreePart
 {
   private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
-  private int umsatzCount = 0;
-  private int groupCount = 0;
+  private AtomicInteger umsatzCount;
+  private AtomicInteger groupCount;
   
   /**
    * ct.
@@ -116,28 +112,8 @@ public class UmsatzTree extends TreePart
           UmsatzTyp ut = null;
           if (i instanceof UmsatzTreeNode)
             ut = ((UmsatzTreeNode)i).getUmsatzTyp();
-          else if (i instanceof Umsatz)
-            ut = ((Umsatz)i).getUmsatzTyp();
           
-          if (ut != null)
-          {
-            if (ut.isCustomColor())
-            {
-              int[] color = ut.getColor();
-              if (color != null && color.length == 3)
-              {
-                RGB rgb = new RGB(color[0],color[1],color[2]);
-                Color c = colorCache.get(rgb.toString());
-                if (c == null)
-                {
-                  c = new Color(GUI.getDisplay(),rgb);
-                  colorCache.put(rgb.toString(),c);
-                }
-                item.setForeground(c);
-                return;
-              }
-            }
-          }
+          ColorUtil.setForeground(item,-1,ut);
           ColorUtil.setForeground(item,3,betrag.doubleValue());
         }
         catch (Exception e)
@@ -175,8 +151,8 @@ public class UmsatzTree extends TreePart
    */
   public void setList(GenericIterator list)
   {
-    this.umsatzCount = 0;
-    this.groupCount = 0;
+    this.groupCount = new AtomicInteger(0);
+    this.umsatzCount = new AtomicInteger(0);
     
     try
     {
@@ -200,7 +176,7 @@ public class UmsatzTree extends TreePart
         if (node != null)
         {
           node.add(u);
-          this.umsatzCount++;
+          this.umsatzCount.incrementAndGet();
         }
       }
       ////////////////////////////////////////////////////////////////
@@ -258,7 +234,7 @@ public class UmsatzTree extends TreePart
     
     // Neu anlegen
     node = new UmsatzTreeNode(ut);
-    this.groupCount++;
+    this.groupCount.incrementAndGet();
     lookup.put(ut.getID(),node);
     
     // Parents checken
@@ -302,7 +278,7 @@ public class UmsatzTree extends TreePart
 
       // nichts markiert, dann liefern wir nur die Anzahl der Umsaetze und Kategorien
       if (o == null || !(o instanceof Umsatz[]))
-        return i18n.tr("Kategorien: {0}, Umsätze: {1}",Integer.toString(this.groupCount),Integer.toString(this.umsatzCount));
+        return i18n.tr("Kategorien: {0}, Umsätze: {1}",Integer.toString(this.groupCount != null ? this.groupCount.intValue() : 0),Integer.toString(this.umsatzCount != null ? this.umsatzCount.intValue() : 0));
       
       // Andernfalls berechnen wir die Summe
       double sum = 0.0d;
@@ -318,7 +294,7 @@ public class UmsatzTree extends TreePart
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
 
       //@formatter:off
-      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}", Integer.toString(this.umsatzCount),
+      return i18n.tr("{0} Umsätze, {1} markiert, Summe: {2} {3}", Integer.toString(this.umsatzCount != null ? this.umsatzCount.intValue() : null),
                                                                   Integer.toString(list.length),
                                                                   HBCI.DECIMALFORMAT.format(sum),
                                                                   curr);

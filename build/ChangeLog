@@ -1,3 +1,17 @@
+2022-11-14 Version 2.10.9
+
+  * NEW: 1011 Update auf HBCI4Java 3.1.64 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.64 - siehe https://homebanking-hilfe.de/forum/topic.php?p=164595#real164595
+  * NEW: 1010 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.12.2022
+  * CHH: 1009 Umsatzliste: Suche nicht mehr direkt bei Eingabe in "Suchbegriff" starten sondern bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
+  * NEW: 1008 Gespeichertes TAN-Verfahren und Medienbezeichnung neben dem Button "TAN-Verfahren zurücksetzen" anzeigen, falls etwas gespeichert wurde
+  * NEW: 1007 Beim PDF-Export von Umsätzen auch Name2, IBAN und Bank des Gegenkontos mit ausgeben
+  * NEW: 1006 Umsatzliste: Name der Kategorie in der Farbe der Kategorie anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=164418#real164418
+  * BUG: 1005 Nur die Kategorien färben, nicht die Umsätze selbst - siehe https://homebanking-hilfe.de/forum/topic.php?t=17474
+  * NEW: 1004 Checkbox "In Adressbuch übernehmen" merkt sich jetzt den vom User ausgewählten Zustand - siehe https://homebanking-hilfe.de/forum/topic.php?t=25423 
+  * BUG: 1003 Umsätze nach Kategorie: Anzahl der Kategorien und Umsätze in Summenzeile war immer 0 - siehe https://homebanking-hilfe.de/forum/topic.php?t=25413
+  * BUG: 1002 Saldo im Verlauf: Summenlinie dicker anzeigen
+  * BUG: 1001 Beim XML-Datenbank-Dump die Konten vor den Umsatzkategorien exportieren, da Umsätze auf Konten referenzieren können - siehe https://homebanking-hilfe.de/forum/topic.php?t=25409
+
 2022-09-12 Version 2.10.8
 
   * BUG: 1000 Update auf HBCI4Java 3.1.62 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.62 - siehe https://homebanking-hilfe.de/forum/topic.php?t=25388

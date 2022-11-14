@@ -32,6 +32,15 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#getLineWidth()
+   */
+  @Override
+  public int getLineWidth() throws RemoteException
+  {
+    return 3;
+  }
+
+  /**
    * Fuegt weitere Daten hinzu.
    * @param data weitere Daten.
    */

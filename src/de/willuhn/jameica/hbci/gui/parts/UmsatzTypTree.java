@@ -11,12 +11,9 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.Hashtable;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -28,6 +25,7 @@ import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
 import de.willuhn.jameica.gui.parts.TreePart;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectDeletedMessage;
 import de.willuhn.jameica.hbci.messaging.ObjectMessage;
@@ -48,8 +46,6 @@ public class UmsatzTypTree extends TreePart
 {
 
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
-  private static Hashtable<String,Color> colorCache = new Hashtable<String,Color>();
   
   /**
    * Initialisiert die Liste der Root-Elemente.
@@ -106,21 +102,7 @@ public class UmsatzTypTree extends TreePart
           else if (kat != null)
             item.setText(4,kat);
 
-          if (!ut.isCustomColor())
-            return;
-
-          int[] color = ut.getColor();
-          if (color == null || color.length != 3)
-            return;
-          
-          RGB rgb = new RGB(color[0],color[1],color[2]);
-          Color c = colorCache.get(rgb.toString());
-          if (c == null)
-          {
-            c = new Color(GUI.getDisplay(),rgb);
-            colorCache.put(rgb.toString(),c);
-          }
-          item.setForeground(c);
+          ColorUtil.setForeground(item,-1,ut);
         }
         catch (Exception e)
         {
