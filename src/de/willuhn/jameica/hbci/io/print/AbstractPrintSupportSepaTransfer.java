@@ -15,6 +15,7 @@ import java.util.Date;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
@@ -101,12 +102,25 @@ public abstract class AbstractPrintSupportSepaTransfer<T extends BaseUeberweisun
       
       // Der Rest
       {
+        boolean bankSide = false;
+        if (a instanceof AuslandsUeberweisung)
+        {
+          AuslandsUeberweisung au = (AuslandsUeberweisung) a;
+          bankSide = au.isTerminUeberweisung();
+        }
+        
+        if (bankSide)
+        {
+          table.add(new TextPrint(i18n.tr("Auftragsart"),fontNormal));
+          table.add(new TextPrint(i18n.tr("Bankseitiger Terminauftrag"),fontNormal));
+        }
+
         Date termin = a.getTermin();
-        table.add(new TextPrint(i18n.tr("Erinnerungstermin"),fontNormal));
+        table.add(new TextPrint(i18n.tr(bankSide ? "Ausführungstermin" : "Erinnerungstermin"),fontNormal));
         table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
         
         Date ausgefuehrt = a.getAusfuehrungsdatum();
-        table.add(new TextPrint(i18n.tr("Ausgeführt"),fontNormal));
+        table.add(new TextPrint(i18n.tr(bankSide ? "Eingereicht" : "Ausgeführt"),fontNormal));
         if (ausgefuehrt != null)
           table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
         else
