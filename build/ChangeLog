@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHH: 1013 Umsatzliste: Bei Änderung des Von-/Bis-Datums ebenfalls nicht mehr sofort aktualisieren sondern erst bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
   * NEW: 1012 Beim Druck von Überweisungen deutlicher machen, ob es sich um bankseitig terminierte Aufträge handelt
   
 2022-11-14 Version 2.10.9
