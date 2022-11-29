@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2022 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -11,7 +11,9 @@
 package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.rmi.RemoteException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
@@ -312,8 +314,10 @@ public class UmsatzTypListDialog extends AbstractDialog
     final boolean children = ((Boolean) getChildren().getValue()).booleanValue();
     String text = (String) getSearch().getValue();
     text = text.trim().toLowerCase();
+    
     try
     {
+      final Set<String> lookup = children ? new HashSet<String>() : null;
       for (UmsatzTypBean t:list)
       {
         if (text.length() == 0)
@@ -325,7 +329,7 @@ public class UmsatzTypListDialog extends AbstractDialog
         if (!t.getTyp().getName().toLowerCase().contains(text))
           continue;
 
-        addItems(t,children);
+        addItems(t,lookup);
       }
     }
     catch (RemoteException re)
@@ -364,20 +368,31 @@ public class UmsatzTypListDialog extends AbstractDialog
   /**
    * Fuegt das Element zur Liste hinzu und eventuell die Kinder.
    * @param b das Element.
-   * @param recursive true, wenn auch die Kinder hinzugefuegt werden sollen.
+   * @param lookup Set mit Identifiern der bereits hinzugefügten wenn auch Kinder der Treffer angezeigt werden sollen.
    * @throws RemoteException
    */
-  private void addItems(UmsatzTypBean b, boolean recursive) throws RemoteException
+  private void addItems(UmsatzTypBean b, Set<String> lookup) throws RemoteException
   {
+    // Wenn wir auch Kinder von Treffern anzeigen, kann es sein, dass ein Element
+    // mehrfach gematcht wird. Einmal direkt über den Suchbegriff und dann nochmal
+    // als Kind einer übergeordneten Kategorie, falls deren Name ebenfalls auf den
+    // Suchbegriff passt
+    if (lookup != null)
+    {
+      if (lookup.contains(b.getID()))
+        return;
+      
+      lookup.add(b.getID());
+    }
     final TablePart table = this.getTable();
     table.addItem(b);
-    if (!recursive)
+    if (lookup == null)
       return;
-    
+
     final GenericIterator<UmsatzTypBean> children = b.getChildren();
     while (children.hasNext())
     {
-      addItems(children.next(),recursive);
+      addItems(children.next(),lookup);
     }
   }
   

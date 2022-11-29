@@ -1,13 +1,14 @@
 HEAD 2.11 (nightly)
 
-  * CHH: 1013 Umsatzliste: Bei Änderung des Von-/Bis-Datums ebenfalls nicht mehr sofort aktualisieren sondern erst bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
+  * BUG: 1014 Umsatzkategorie-Auswahl: Wenn auch Kinder von Treffern angezeigt werden, konnte es vorkommen, dass ein Element mehrfach angezeigt wird. - siehe https://homebanking-hilfe.de/forum/topic.php?t=25537
+  * CHG: 1013 Umsatzliste: Bei Änderung des Von-/Bis-Datums ebenfalls nicht mehr sofort aktualisieren sondern erst bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
   * NEW: 1012 Beim Druck von Überweisungen deutlicher machen, ob es sich um bankseitig terminierte Aufträge handelt
   
 2022-11-14 Version 2.10.9
 
   * NEW: 1011 Update auf HBCI4Java 3.1.64 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.64 - siehe https://homebanking-hilfe.de/forum/topic.php?p=164595#real164595
   * NEW: 1010 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.12.2022
-  * CHH: 1009 Umsatzliste: Suche nicht mehr direkt bei Eingabe in "Suchbegriff" starten sondern bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
+  * CHG: 1009 Umsatzliste: Suche nicht mehr direkt bei Eingabe in "Suchbegriff" starten sondern bei Klick auf "Aktualisieren"/Enter - siehe https://homebanking-hilfe.de/forum/topic.php?t=25309
   * NEW: 1008 Gespeichertes TAN-Verfahren und Medienbezeichnung neben dem Button "TAN-Verfahren zurücksetzen" anzeigen, falls etwas gespeichert wurde
   * NEW: 1007 Beim PDF-Export von Umsätzen auch Name2, IBAN und Bank des Gegenkontos mit ausgeben
   * NEW: 1006 Umsatzliste: Name der Kategorie in der Farbe der Kategorie anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?p=164418#real164418
