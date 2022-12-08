@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.8
+compileJava.options.encoding = 'ISO-8859-1'
+
+eclipse {
+  classpath {
+    downloadSources = true
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'com.fasterxml.jackson.core:jackson-databind:+'
+  compile 'org.apache.httpcomponents.client5:httpclient5:+'
+}
+
+task download(type: Copy) {
+  into "lib"
+  from configurations.runtime
+}
