@@ -23,6 +23,7 @@ import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -169,8 +170,21 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
     table.add(new TextPrint(i18n.tr("IBAN: {0}",k.getIban()),fontNormal));
 
     // Termin
+    boolean bankSide = false;
+    if (a instanceof SepaSammelUeberweisung)
+    {
+      SepaSammelUeberweisung au = (SepaSammelUeberweisung) a;
+      bankSide = au.isTerminUeberweisung();
+    }
+    
+    if (bankSide)
+    {
+      table.add(new TextPrint(i18n.tr("Auftragsart"),fontNormal));
+      table.add(new TextPrint(i18n.tr("Bankseitiger Terminauftrag"),fontNormal));
+    }
+    
     Date termin = a.getTermin();
-    table.add(new TextPrint(i18n.tr("Erinnerungstermin"),fontNormal));
+    table.add(new TextPrint(i18n.tr(bankSide ? "Ausführungstermin" : "Erinnerungstermin"),fontNormal));
     table.add(new TextPrint(termin == null ? "-" : HBCI.DATEFORMAT.format(termin),fontNormal));
 
     // Summe
@@ -179,7 +193,7 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
 
     // Ausfuehrungsstatus
     Date ausgefuehrt = a.getAusfuehrungsdatum();
-    table.add(new TextPrint(i18n.tr("Ausgeführt"),fontNormal));
+    table.add(new TextPrint(i18n.tr(bankSide ? "Eingereicht" : "Ausgeführt"),fontNormal));
     if (ausgefuehrt != null)
       table.add(new TextPrint(HBCI.DATEFORMAT.format(ausgefuehrt),fontBold));
     else

@@ -109,9 +109,9 @@ public class KontoList extends ContextMenu implements Extendable
       addItem(new CheckedContextMenuItem(i18n.tr("Konten exportieren..."),new KontoExport(),"document-save.png"));
       addItem(new ContextMenuItem(i18n.tr("Konten importieren..."),new KontoImport(),"document-open.png"));
       addItem(new ContextMenuItem(i18n.tr("Umsätze importieren..."),new UmsatzImport(),"document-open.png"));
+      addItem(ContextMenuItem.SEPARATOR);
     }
 
-    addItem(ContextMenuItem.SEPARATOR);
     addMenu(new ExtendedMenu(style));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.

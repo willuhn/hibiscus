@@ -20,6 +20,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -340,7 +342,6 @@ public class KontoauszugList extends UmsatzList
     this.start = new DateFromInput(null,"umsatzlist.filter.from");
     this.start.setName(i18n.tr("Von"));
     this.start.setComment(null);
-    this.start.addListener(this.listener);
     return this.start;
   }
   
@@ -356,7 +357,6 @@ public class KontoauszugList extends UmsatzList
     this.end = new DateToInput(null,"umsatzlist.filter.to");
     this.end.setName(i18n.tr("bis"));
     this.end.setComment(null);
-    this.end.addListener(this.listener);
     return this.end;
   }
   
@@ -1063,16 +1063,20 @@ public class KontoauszugList extends UmsatzList
       String s = (String) cache.get("kontoauszug.list.search");
       this.setValue(s);
       this.hasChanged(); // Einmal initial triggern, damit bereits die erste Text-Eingabe als Aenderung erkannt wird
-//      this.text.addKeyListener(new KeyAdapter() {
-//        /**
-//         * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-//         */
-//        @Override
-//        public void keyReleased(KeyEvent e)
-//        {
-//          listener.handleEvent(null);
-//        }
-//      });
+      
+      if (syssettings.getBoolean("usage.instantsearch",false))
+      {
+        this.text.addKeyListener(new KeyAdapter() {
+          /**
+           * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+           */
+          @Override
+          public void keyReleased(KeyEvent e)
+          {
+            listener.handleEvent(null);
+          }
+        });
+      }
       return this.text;
     }
 
