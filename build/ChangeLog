@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+2023-01-25 Version 2.10.10
+
   * NEW: 1016 Die von hibiscus.transferwise genutzten Libs (Apache HTTP-Client, Jackson und SLF4J-API) direkt in Hibiscus verschoben, damit sie von mehreren Plugins genutzt werden können
   * CHG: 1015 Umsatzliste: Nachtrag zu 1009 - Verhalten ist in den Einstellungen der Umsatzliste oben rechts jetzt mit der Option "Suche bei Eingabe eines Suchbegriffs sofort starten" konfigurierbar
   * BUG: 1014 Umsatzkategorie-Auswahl: Wenn auch Kinder von Treffern angezeigt werden, konnte es vorkommen, dass ein Element mehrfach angezeigt wird. - siehe https://homebanking-hilfe.de/forum/topic.php?t=25537
