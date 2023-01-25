@@ -2,12 +2,12 @@
 
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin https://www.willuhn.de/schema/jameica-plugin-1.2.xsd"
+        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin https://www.willuhn.de/schema/jameica-plugin-1.5.xsd"
         name="hibiscus" version="2.11.0-nightly" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
   <url>https://www.willuhn.de/products/hibiscus/releases/nightly/hibiscus-2.11.0-nightly.zip</url>
-  <homepage>https://www.willuhn.de/products/hibiscus</homepage>
+  <homepage validate="true">https://www.willuhn.de/products/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
   <icon>hibiscus-large.png</icon>
 
@@ -108,7 +108,7 @@
          aktualisiert wurde, wenn die Auto-Buchung erzeugt wird -->
     <consumer queue="" class="de.willuhn.jameica.hbci.messaging.OfflineSaldoMessageConsumer" />
     <consumer queue="" class="de.willuhn.jameica.hbci.messaging.CheckOfflineUmsatzMessageConsumer" />
-
+    
   </messaging>
   
   <extensions>
