@@ -120,5 +120,14 @@ public class Detail extends AbstractView
   {
     return false;
   }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#canAttach()
+   */
+  @Override
+  public boolean canAttach()
+  {
+    return false;
+  }
 
 }
