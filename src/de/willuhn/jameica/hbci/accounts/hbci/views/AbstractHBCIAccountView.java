@@ -62,8 +62,8 @@ public abstract class AbstractHBCIAccountView extends AbstractView
     wrap.setLayoutData(gd);
     
     GridLayout gl = new GridLayout(); 
-    gl.marginHeight=0;
-    gl.marginWidth=0;
+    gl.marginHeight = 0;
+    gl.marginWidth = 0;
     
     wrap.setLayout(gl);
     return wrap;
