@@ -713,6 +713,9 @@ public class KontoauszugList extends UmsatzList
   private boolean matches(UmsatzTyp typ, Umsatz u, boolean children) throws RemoteException
   {
     UmsatzTyp t = u.getUmsatzTyp();
+    
+    if (t == null && typ != null && typ == UmsatzTypUtil.UNASSIGNED)
+      return true;
 
     // wir suchen von unten nach oben, indem wir die Umsatzkategorien
     // des Umsatzes nach oben iterieren. Wenn wir dabei auf die gesuchte
