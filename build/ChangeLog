@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1022 Update auf HBCI4Java 3.1.67 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.67
   * BUG: 1021 Umsatzliste: Nachtrag zu 1019 - Auswahl von "<Nicht zugeordnet>" funktionierte nicht mehr 
   * NEW: 1020 Postgres-Treiber aktualisiert
   * BUG: 1019 Umsatzliste: Bei Auswahl einer Umsatzkategorie konnten auch Umsätze angezeigt werden, die eigentlich per automatischer Zuordnung einer anderen Kategorie zugewiesen wurden, zusätzlich aber auch zur ausgewählten Kategorie passen 
