@@ -666,6 +666,7 @@ public class SepaLastschriftControl extends AbstractControl
             // Verwendungszweck vervollstaendigen
             DBIterator list = getTransfer().getList();
             list.addFilter("empfaenger_konto = ?",a.getIban());
+            list.addFilter("empfaenger_name = ?",a.getName());
             list.setOrder("order by id desc");
             if (list.hasNext())
             {
