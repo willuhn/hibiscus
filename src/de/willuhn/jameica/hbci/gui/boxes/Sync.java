@@ -70,7 +70,7 @@ public class Sync extends AbstractBox implements Box
    */
   public int getHeight()
   {
-    return 200;
+    return 260;
   }
 
   /**

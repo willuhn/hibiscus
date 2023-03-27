@@ -35,13 +35,19 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.parts.table.FeatureSummary;
+import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.SynchronizeSchedulerSettings;
 import de.willuhn.jameica.hbci.gui.action.Synchronize;
+import de.willuhn.jameica.hbci.gui.action.SynchronizeSchedulerOptions;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.SynchronizeOptionsDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.rmi.SynchronizeSchedulerService;
 import de.willuhn.jameica.hbci.synchronize.Synchronization;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeBackend;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeEngine;
@@ -201,6 +207,49 @@ public class SynchronizeList extends TablePart
   }
   
   /**
+   * Liefert die Liste der auszuführenden Synchronisationsaufgaben.
+   * @return die Liste der auszuführenden Synchronisationsaufgaben.
+   */
+  public static List<Synchronization> getActiveSyncs()
+  {
+    final List<Synchronization> result = new ArrayList<>();
+    
+    // Liste der Sync-Jobs hinzufuegen
+    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    List<SynchronizeBackend> backends = service.get(SynchronizeEngine.class).getBackends();
+    for (SynchronizeBackend backend:backends)
+    {
+      List<SynchronizeJob> jobs = backend.getSynchronizeJobs(null); // fuer alle Konten
+      if (jobs == null || jobs.isEmpty())
+        continue;
+
+      final Synchronization sync = new Synchronization();
+      sync.setBackend(backend);
+
+      for (SynchronizeJob job:jobs)
+      {
+        try
+        {
+          if (!uncheckedCache.containsKey(job.getName()))
+            sync.getJobs().add(job);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to add job",e);
+        }
+
+        sync.getJobs().add(job);
+      }
+        
+      // Die Synchronisation brauchen wir nur dann zur Liste tun, wenn Jobs vorhanden sind
+      if (!sync.getJobs().isEmpty())
+        result.add(sync);
+    }
+    
+    return result;
+  }
+  
+  /**
    * Stellt die Selektierung wieder her.
    */
   private void restoreSelect()
@@ -246,17 +295,153 @@ public class SynchronizeList extends TablePart
     
     // Aktualisieren den Button-Status je nach Auswahl
     this.addSelectionListener(this.syncButtonListener);
-    
+
     super.paint(parent);
     
     // Erst nach dem paint() machen, damit der initiale Checked-State aus dem Cache beachtet wird
     this.init();
     this.restoreSelect();
-    
+
+    this.paintSynchronizeSchedulerStatus(parent);
+
     ButtonArea b = new ButtonArea();
+    b.addButton(i18n.tr("Automatische Synchronisierung einrichten..."),new SynchronizeSchedulerOptions(),null,false,"preferences-system-time.png");
     b.addButton(i18n.tr("Synchronisierungsoptionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
     b.addButton(this.syncButton);
     b.paint(parent);
+  }
+  
+  /**
+   * Liefert true, wenn der Synchronize-Scheduler manuell gestartet werden kann.
+   * @return true, wenn der Synchronize-Scheduler manuell gestartet werden kann.
+   */
+  private boolean canStart()
+  {
+    try
+    {
+      // Da brauchen wir gar nichts anzeigen
+      if (!SynchronizeSchedulerSettings.isEnabled())
+        return false;
+      
+      final SynchronizeSchedulerService scheduler = (SynchronizeSchedulerService) Application.getServiceFactory().lookup(HBCI.class,"synchronizescheduler");
+      final int status = scheduler.getStatus();
+      return status == ProgressMonitor.STATUS_ERROR && !scheduler.isStarted();
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while loading synchronize scheduler status",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Status der automatischen Synchronisierung nicht ermittelbar: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+    
+    return false;
+  }
+
+  /**
+   * Startet den Scheduler neu.
+   */
+  private void start()
+  {
+    try
+    {
+      // Da brauchen wir gar nichts anzeigen
+      if (!SynchronizeSchedulerSettings.isEnabled())
+        return;
+      
+      final SynchronizeSchedulerService scheduler = (SynchronizeSchedulerService) Application.getServiceFactory().lookup(HBCI.class,"synchronizescheduler");
+      if (!scheduler.isStarted())
+        scheduler.start();
+      
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Automatische Synchronisierung neu gestartet"),StatusBarMessage.TYPE_SUCCESS));
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while starting synchronize scheduler",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Start der automatischen Synchronisierung fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
+  }
+
+  /**
+   * Rendert den aktuellen Status des Synchronize-Schedulers.
+   * @param parent das Parent.
+   */
+  private void paintSynchronizeSchedulerStatus(Composite parent)
+  {
+    try
+    {
+      // Da brauchen wir gar nichts anzeigen
+      if (!SynchronizeSchedulerSettings.isEnabled())
+        return;
+      
+      final Container c = new LabelGroup(parent,i18n.tr("Automatischen Synchronisierung"));
+      final SynchronizeSchedulerService scheduler = (SynchronizeSchedulerService) Application.getServiceFactory().lookup(HBCI.class,"synchronizescheduler");
+      final int status = scheduler.getStatus();
+
+      String text = null;
+      Color color = null;
+      
+      if (status == ProgressMonitor.STATUS_NONE)
+      {
+        text = i18n.tr("Noch nicht gestartet");
+        color = Color.COMMENT;
+      }
+      else if (status == ProgressMonitor.STATUS_CANCEL)
+      {
+        text = i18n.tr("Abgebrochen");
+        color = Color.COMMENT;
+      }
+      else if (status == ProgressMonitor.STATUS_DONE)
+      {
+        text = i18n.tr("Erfolgreich");
+        color = Color.SUCCESS;
+      }
+      else if (status == ProgressMonitor.STATUS_ERROR)
+      {
+        text = i18n.tr("Fehler");
+        color = Color.ERROR;
+      }
+      else if (status == ProgressMonitor.STATUS_RUNNING)
+      {
+        text = i18n.tr("Läuft gerade...");
+        color = Color.LINK;
+      }
+      
+      if (text != null && color != null)
+        c.addText(i18n.tr("Letzter Status: {0}",text),true,color);
+
+      if (scheduler.isStarted())
+        c.addText(i18n.tr("Nächster Start: {0}",HBCI.XTRALONGDATEFORMAT.format(scheduler.getNextExecution())),true,Color.SUCCESS);
+      else
+      {
+        c.addText(i18n.tr("Nächster Start: die automatische Synchronisierung wurde deaktiviert"),true,Color.COMMENT);
+      }
+      
+      final ButtonArea b = new ButtonArea();
+      if (this.canStart())
+      {
+        b.addButton(i18n.tr("Synchronisierung neu starten"),e -> {
+          start();
+          GUI.getCurrentView().reload();
+        },null,false,"media-playback-start.png");
+      }
+      b.paint(c.getComposite());
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while loading synchronize scheduler status",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Status der automatischen Synchronisierung nicht ermittelbar: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+    }
   }
   
   /**

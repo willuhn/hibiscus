@@ -78,8 +78,9 @@
   </navigation>
 
   <services>
-    <service name="database"    depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.HBCIDBService" />
-    <service name="addressbook" depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.AddressbookService" />
+    <service name="database"             depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.HBCIDBService" />
+    <service name="addressbook"          depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.AddressbookService" />
+    <service name="synchronizescheduler" depends="" autostart="true" class="de.willuhn.jameica.hbci.rmi.SynchronizeSchedulerService" />
   </services>
   
   <messaging>

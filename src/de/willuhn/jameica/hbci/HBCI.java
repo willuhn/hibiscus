@@ -54,6 +54,11 @@ public class HBCI extends AbstractPlugin
    * Datums-Format dd.MM.yyyy HH:mm.
    */
   public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+  
+  /**
+   * Datums-Format dd.MM.yyyy HH:mm:ss.
+   */
+  public static DateFormat XTRALONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
   /**
    * Datums-Format dd.MM.yyyy.

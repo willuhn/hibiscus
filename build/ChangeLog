@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1024 Automatische zeitgesteuerte Konten-Synchronisierung
   * NEW: 1023 Verwendungszweck-Vervollständigung nach Addressbuch-Auswahl: Auch nach Name in vorherigen Aufträgen suchen. Ermöglicht unterschiedliche Verwendungszweck-Vorschläge je nach ausgewählter Adresse (selbst bei identischer Ziel-IBAN) 
   * NEW: 1022 Update auf HBCI4Java 3.1.67 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.67
   * BUG: 1021 Umsatzliste: Nachtrag zu 1019 - Auswahl von "<Nicht zugeordnet>" funktionierte nicht mehr 
