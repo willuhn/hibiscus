@@ -420,7 +420,7 @@ public class SynchronizeList extends TablePart
         c.addText(i18n.tr("Nächster Start: {0}",HBCI.XTRALONGDATEFORMAT.format(scheduler.getNextExecution())),true,Color.SUCCESS);
       else
       {
-        c.addText(i18n.tr("Nächster Start: die automatische Synchronisierung wurde deaktiviert"),true,Color.COMMENT);
+        c.addText(i18n.tr("Nächster Start: die automatische Synchronisierung wurde deaktiviert (ggf. Neustart erforderlich)"),true,Color.COMMENT);
       }
       
       final ButtonArea b = new ButtonArea();

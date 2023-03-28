@@ -25,13 +25,16 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeSchedulerSettings;
+import de.willuhn.jameica.services.SystrayService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -48,6 +51,7 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
   
   private CheckboxInput enabled = null;
   private CheckboxInput stopOnError = null;
+  private CheckboxInput minimizeToSystray = null;
   private List<CheckboxInput> weekdays = null;
   private SelectInput timeFrom = null;
   private SelectInput timeTo = null;
@@ -89,9 +93,20 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     final MultiInput multi = new MultiInput(this.getTimeFrom(),this.getTimeTo());
     c1.addInput(multi);
 
+    c1.addHeadline(i18n.tr("System-Tray"));
+    c1.addPart(this.getMinimizeToSystray());
+    c1.addText(i18n.tr("Sie finden diese Option auch in \"Datei->Einstellungen->Look and Feel\""),true,Color.COMMENT);
+
     final ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),a -> {
       
+      final SystrayService service = Application.getBootLoader().getBootable(SystrayService.class);
+
+      // Wir schalten hier beide Optionen gleichzeitig
+      final boolean systray = ((Boolean) getMinimizeToSystray().getValue()).booleanValue();
+      service.setEnabled(systray);
+      service.setMinimizeToSystray(systray);
+
       SynchronizeSchedulerSettings.setEnabled(((Boolean)getEnabled().getValue()).booleanValue());
       SynchronizeSchedulerSettings.setSchedulerStartTime(((Integer)getTimeFrom().getValue()));
       SynchronizeSchedulerSettings.setSchedulerEndTime(((Integer)getTimeTo().getValue()));
@@ -149,6 +164,21 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     this.enabled.addListener(l);
     l.handleEvent(null);
     return this.enabled;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der eingestellt werden kann, ob die Anwendung in das Systray minimiert werden soll.
+   * @return eine Checkbox, mit der eingestellt werden kann, ob die Anwendung in das Systray minimiert werden soll.
+   */
+  public Input getMinimizeToSystray()
+  {
+    if (this.minimizeToSystray != null)
+      return this.minimizeToSystray;
+    
+    final SystrayService service = Application.getBootLoader().getBootable(SystrayService.class);
+    this.minimizeToSystray = new CheckboxInput(service.isMinimizeToSystray());
+    this.minimizeToSystray.setName(i18n.tr("Fenster beim Minimieren in System-Tray verschieben"));
+    return this.minimizeToSystray;
   }
   
   /**
