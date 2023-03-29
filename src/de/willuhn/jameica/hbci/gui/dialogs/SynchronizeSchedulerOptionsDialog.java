@@ -34,9 +34,12 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeSchedulerSettings;
+import de.willuhn.jameica.hbci.rmi.SynchronizeSchedulerService;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.SystrayService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -107,7 +110,8 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
       service.setEnabled(systray);
       service.setMinimizeToSystray(systray);
 
-      SynchronizeSchedulerSettings.setEnabled(((Boolean)getEnabled().getValue()).booleanValue());
+      final boolean enabled = ((Boolean)getEnabled().getValue()).booleanValue();
+      SynchronizeSchedulerSettings.setEnabled(enabled);
       SynchronizeSchedulerSettings.setSchedulerStartTime(((Integer)getTimeFrom().getValue()));
       SynchronizeSchedulerSettings.setSchedulerEndTime(((Integer)getTimeTo().getValue()));
       
@@ -116,6 +120,33 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
         final Integer day = (Integer) ci.getData("day");
         SynchronizeSchedulerSettings.setSchedulerIncludeDay(day,((Boolean)ci.getValue()).booleanValue());
       }
+      
+      // Je nachdem, ob die Synchronisierung aktiviert oder deaktiviert wurde, muss der Service beendet oder gestartet werden
+      try
+      {
+        final SynchronizeSchedulerService scheduler = (SynchronizeSchedulerService) Application.getServiceFactory().lookup(HBCI.class,"synchronizescheduler");
+        if (enabled)
+        {
+          if (!scheduler.isStarted())
+            scheduler.start();
+        }
+        else
+        {
+          if (scheduler.isStarted())
+            scheduler.stop(true);
+        }
+      }
+      catch (ApplicationException ae)
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while loading synchronize scheduler status",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Status der automatischen Synchronisierung nicht ermittelbar: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+      }
+      
+      
       close();
       
       // Startseite neu laden
