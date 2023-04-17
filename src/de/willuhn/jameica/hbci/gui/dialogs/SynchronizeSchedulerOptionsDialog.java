@@ -10,6 +10,7 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.lang.reflect.Method;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,10 +34,10 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.JameicaCompat;
 import de.willuhn.jameica.hbci.SynchronizeSchedulerSettings;
 import de.willuhn.jameica.hbci.rmi.SynchronizeSchedulerService;
 import de.willuhn.jameica.messaging.StatusBarMessage;
-import de.willuhn.jameica.services.SystrayService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -96,19 +97,23 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     final MultiInput multi = new MultiInput(this.getTimeFrom(),this.getTimeTo());
     c1.addInput(multi);
 
-    c1.addHeadline(i18n.tr("System-Tray"));
-    c1.addPart(this.getMinimizeToSystray());
-    c1.addText(i18n.tr("Sie finden diese Option auch in \"Datei->Einstellungen->Look and Feel\""),true,Color.COMMENT);
+    final Input sysCheck = this.getMinimizeToSystray();
+    if (sysCheck != null)
+    {
+      c1.addHeadline(i18n.tr("System-Tray"));
+      c1.addPart(sysCheck);
+      c1.addText(i18n.tr("Sie finden diese Option auch in \"Datei->Einstellungen->Look and Feel\""),true,Color.COMMENT);
+    }
 
     final ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),a -> {
       
-      final SystrayService service = Application.getBootLoader().getBootable(SystrayService.class);
-
-      // Wir schalten hier beide Optionen gleichzeitig
-      final boolean systray = ((Boolean) getMinimizeToSystray().getValue()).booleanValue();
-      service.setEnabled(systray);
-      service.setMinimizeToSystray(systray);
+      if (sysCheck != null)
+      {
+        // Wir schalten hier beide Optionen gleichzeitig
+        setSystrayParameter("setEnabled");
+        setSystrayParameter("setMinimizeToSystray");
+      }
 
       final boolean enabled = ((Boolean)getEnabled().getValue()).booleanValue();
       SynchronizeSchedulerSettings.setEnabled(enabled);
@@ -167,6 +172,52 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
   }
   
   /**
+   * Liefert die Instanz des Systray-Service, falls die Jameica-Version hinreichend aktuell ist (mindestens 2.10.4).
+   * @return die Instanz des Systray-Service oder NULL, wenn sie nicht existiert.
+   */
+  private Object getSystrayService()
+  {
+    try
+    {
+      final Class c = Application.getClassLoader().load("de.willuhn.jameica.services.SystrayService");
+      return Application.getBootLoader().getBootable(c);
+    }
+    catch (Exception e)
+    {
+      Logger.info("systray service not found - jameica version too old");
+    }
+    return null;
+  }
+  
+  /**
+   * Setzt den Parameter im Systray-Service.
+   * Wir können das leider nicht per JameicaCompat machen, weil dort primitive Paremeter-Typen nicht unterstützt werden.
+   * @param name der Name des Parameters.
+   */
+  private void setSystrayParameter(String name)
+  {
+    if (name == null || name.length() == 0)
+      return;
+    
+    final Object systray = this.getSystrayService();
+    final Input input = this.getMinimizeToSystray();
+    if (systray == null || input == null)
+      return;
+    
+    final boolean value = ((Boolean)input.getValue()).booleanValue();
+    try
+    {
+      Method m = systray.getClass().getMethod(name,boolean.class);
+      m.invoke(systray,value);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to apply systray service settings",e);
+    }
+  }
+
+  
+  /**
    * Liefert die Checkbox, mit der das Feature aktiviert werden kann.
    * @return Checkbox, mit der das Feature aktiviert werden kann.
    */
@@ -206,10 +257,25 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     if (this.minimizeToSystray != null)
       return this.minimizeToSystray;
     
-    final SystrayService service = Application.getBootLoader().getBootable(SystrayService.class);
-    this.minimizeToSystray = new CheckboxInput(service.isMinimizeToSystray());
-    this.minimizeToSystray.setName(i18n.tr("Fenster beim Minimieren in System-Tray verschieben"));
-    return this.minimizeToSystray;
+    final Object service = this.getSystrayService();
+    if (service == null)
+      return null;
+    
+    try
+    {
+      final Boolean b = (Boolean) JameicaCompat.get(service,"isEnabled",null);
+      if (b == null)
+        return null;
+      
+      this.minimizeToSystray = new CheckboxInput(b.booleanValue());
+      this.minimizeToSystray.setName(i18n.tr("Fenster beim Minimieren in System-Tray verschieben"));
+      return this.minimizeToSystray;
+    }
+    catch (Exception e)
+    {
+      Logger.info("systray service not found - jameica version too old");
+    }
+    return null;
   }
   
   /**
