@@ -1,0 +1,6 @@
+<info>
+  <name>pgJDBC</name>
+  <description>JDBC-Treiber für Postgres</description>
+  <url>https://jdbc.postgresql.org/download/</url>
+  <license>BSD-2-Clause License - https://jdbc.postgresql.org/license/</license>
+</info>

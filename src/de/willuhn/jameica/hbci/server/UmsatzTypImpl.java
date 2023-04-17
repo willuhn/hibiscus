@@ -303,6 +303,10 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String mid   = StringUtils.trimToEmpty(umsatz.getMandateId());
     String id    = StringUtils.trimToEmpty(umsatz.getID());
     
+    // Im Suchbegriff können wir nicht nach Betrag suchen, da wir das Komma "," bereits als Trennzeichen
+    // für mehrere Suchbegriffe verwenden. Es wäre also nicht möglich, nach "50,00" zu suchen, weil dann
+    // auch alles gefunden werden würde, wo "00" oder "50" drin steht.
+    
     if (!isRegex())
     {
       zweck = zweck.toLowerCase();

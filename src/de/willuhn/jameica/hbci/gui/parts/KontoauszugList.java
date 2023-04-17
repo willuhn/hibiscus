@@ -712,17 +712,14 @@ public class KontoauszugList extends UmsatzList
    */
   private boolean matches(UmsatzTyp typ, Umsatz u, boolean children) throws RemoteException
   {
-    // Keine rekursive Suche
-    if (!children)
-      return typ.matches(u);
+    UmsatzTyp t = u.getUmsatzTyp();
+    
+    if (t == null && typ != null && typ == UmsatzTypUtil.UNASSIGNED)
+      return true;
 
     // wir suchen von unten nach oben, indem wir die Umsatzkategorien
     // des Umsatzes nach oben iterieren. Wenn wir dabei auf die gesuchte
     // Kategorie stossen, passts.
-    UmsatzTyp t = u.getUmsatzTyp();
-    
-    if (t == null)
-      return false; // nichts zum Suchen da
     
     for (int i=0;i<100;++i) // maximal 100 Iterationen - fuer den (eigentlich unmoeglichen Fall), dass eine Rekursion existiert
     {
@@ -731,6 +728,10 @@ public class KontoauszugList extends UmsatzList
       
       if (t.equals(typ))
         return true; // passt!
+
+      // Keine rekursive Suche
+      if (!children)
+        break;
       
       t = (UmsatzTyp) t.getParent(); // weiter nach oben gehen
     }

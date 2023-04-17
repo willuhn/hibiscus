@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.Action;
@@ -32,6 +31,7 @@ import de.willuhn.util.I18N;
 public class DebugDialog extends AbstractDialog
 {
   private final static int WINDOW_WIDTH = 550;
+  private final static int WINDOW_HEIGHT = 250;
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   /**
@@ -42,7 +42,7 @@ public class DebugDialog extends AbstractDialog
   {
     super(position);
     this.setTitle(i18n.tr("Datenbank-Informationen"));
-    setSize(WINDOW_WIDTH,SWT.DEFAULT);
+    setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
   }
 
   /**
@@ -67,7 +67,7 @@ public class DebugDialog extends AbstractDialog
     sb.append(i18n.tr("JDBC-Username: {0}\n",driver.getJdbcUsername()));
     sb.append(i18n.tr("JDBC-Passwort: {0}\n",driver.getJdbcPassword()));
     
-    Container container = new SimpleContainer(parent);
+    Container container = new SimpleContainer(parent,true);
     container.addHeadline(i18n.tr("Datenbank-Einstellungen"));
     TextAreaInput text = new TextAreaInput(sb.toString());
     container.addPart(text);
@@ -81,18 +81,7 @@ public class DebugDialog extends AbstractDialog
     },null,true,"window-close.png");
     container.addButtonArea(buttons);
     
-    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
+    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,WINDOW_HEIGHT));
   }
 
 }
-
-
-/*********************************************************************
- * $Log: DebugDialog.java,v $
- * Revision 1.2  2011/03/30 08:19:37  willuhn
- * @C Code-Cleanup
- *
- * Revision 1.1  2008/05/06 10:10:56  willuhn
- * @N Diagnose-Dialog, mit dem man die JDBC-Verbindungsdaten (u.a. auch das JDBC-Passwort) ausgeben kann
- *
- **********************************************************************/

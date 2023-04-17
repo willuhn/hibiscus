@@ -3,7 +3,12 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-bin" path="test"/>
 	<classpathentry including="*.java" kind="src" output="updates" path="updates"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="limit-modules" value="java.se,jdk.accessibility,jdk.httpserver,jdk.jartool,jdk.javadoc,jdk.jconsole,jdk.jshell,jdk.jsobject,jdk.management.jfr,jdk.naming.ldap,jdk.net,jdk.scripting.nashorn,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,java.smartcardio"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="src" path="/jameica"/>
 	<classpathentry kind="lib" path="lib/super-csv-2.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/swtchart/org.eclipse.swtchart_0.13.0.202009151159.jar"/>
@@ -20,7 +25,7 @@
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.64.jar" sourcepath="/hbci4j-core"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.67.jar" sourcepath="/hbci4j-core"/>
 	<classpathentry exported="true" kind="lib" path="lib/qrcodegen/qrcodegen-1.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpclient5-5.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpcore5-5.2.jar"/>

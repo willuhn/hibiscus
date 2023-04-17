@@ -49,10 +49,8 @@ public class StoreAddressInput extends CheckboxInput
         if ((t instanceof Transfer) && (t instanceof Changeable))
         {
           enabled &= (((Changeable)t).isNewObject()) && (((Transfer)t).getGegenkontoNummer() == null);
-          System.out.println("drin");
         }
       }
-      System.out.println(enabled);
       this.setValue(enabled);
     }
     catch (Exception e)
@@ -66,7 +64,6 @@ public class StoreAddressInput extends CheckboxInput
       {
         final Boolean b = (Boolean) getValue();
         settings.setAttribute("transfer.addressbook.autoadd",b != null ? b.booleanValue() : true);
-        System.out.println("changed: " + b);
       }
       catch (Exception ex)
       {

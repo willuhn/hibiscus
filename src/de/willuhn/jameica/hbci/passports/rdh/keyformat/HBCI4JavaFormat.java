@@ -51,7 +51,7 @@ public class HBCI4JavaFormat extends AbstractKeyFormat
    */
   public String getName()
   {
-    return i18n.tr("HBCI4Java/Hibiscus-Format");
+    return i18n.tr("HBCI4Java/Hibiscus-Format (RDH)");
   }
   
   /**

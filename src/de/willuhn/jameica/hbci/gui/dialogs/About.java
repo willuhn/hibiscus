@@ -142,7 +142,7 @@ public class About extends AbstractDialog
     
     container.addButtonArea(buttons);
     
-    this.setSize(SWT.DEFAULT,530);
+    this.setSize(SWT.DEFAULT,600);
   }
 
   /**

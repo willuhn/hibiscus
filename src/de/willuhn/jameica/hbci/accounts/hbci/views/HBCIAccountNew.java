@@ -15,6 +15,7 @@ import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.accounts.hbci.controller.HBCIAccountNewController;
+import de.willuhn.util.ApplicationException;
 
 /**
  * View zum Erstellen eines neuen HBCI-Bankzugangs.
@@ -35,6 +36,15 @@ public class HBCIAccountNew extends AbstractHBCIAccountView
     {
       c.addPart(panel);
     }
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#reload()
+   */
+  @Override
+  public void reload() throws ApplicationException
+  {
+    // Kein Reloead
   }
 
 }

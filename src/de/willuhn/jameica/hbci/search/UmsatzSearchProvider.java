@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
@@ -88,27 +90,23 @@ public class UmsatzSearchProvider implements SearchProvider
         Date date             = umsatz.getDatum();
         double betrag         = umsatz.getBetrag();
         String rel            = i18n.tr(betrag > 0 ? "von" : "an");
-        String zweck          = umsatz.getZweck();
+        String zweck          = StringUtils.trimToEmpty(umsatz.getZweck());
         String gegenkontoName = umsatz.getGegenkontoName();
 
         betrag = Math.abs(betrag);
         if (gegenkontoName == null || gegenkontoName.length() == 0)
         {
-          //@formatter:off
           return i18n.tr("{0}: {1} {2} - {3}", HBCI.DATEFORMAT.format(date),
                                                HBCI.DECIMALFORMAT.format(betrag),
                                                konto.getWaehrung(),
                                                zweck);
-          //@formatter:on
         }
-        //@formatter:off
         return i18n.tr("{0}: {1} {2} {3} {4} - {5}", HBCI.DATEFORMAT.format(date),
                                                      HBCI.DECIMALFORMAT.format(betrag),
                                                      konto.getWaehrung(),
                                                      rel,
                                                      gegenkontoName,
                                                      zweck);
-        //@formatter:on
       }
       catch (RemoteException re)
       {
@@ -116,30 +114,5 @@ public class UmsatzSearchProvider implements SearchProvider
         return null;
       }
     }
-    
   }
-
 }
-
-
-/**********************************************************************
- * $Log: UmsatzSearchProvider.java,v $
- * Revision 1.6  2012/04/05 21:44:18  willuhn
- * @B BUGZILLA 1219
- *
- * Revision 1.5  2010-09-10 11:57:24  willuhn
- * @C Allgemeine Suche nach Umsaetzen anhand Suchbegriff in UmsatzUtil verschoben - kann dort besser wiederverwendet werden
- *
- * Revision 1.4  2009/08/25 22:32:10  willuhn
- * @B Parameter-Index falsch bei Buchungen, deren Gegenkontoname leer ist
- *
- * Revision 1.3  2008/12/14 23:18:35  willuhn
- * @N BUGZILLA 188 - REFACTORING
- *
- * Revision 1.2  2008/09/03 11:13:51  willuhn
- * @N Mehr Suchprovider
- *
- * Revision 1.1  2008/09/03 00:12:06  willuhn
- * @N Erster Code fuer Searchprovider in Hibiscus
- *
- **********************************************************************/

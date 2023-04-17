@@ -17,12 +17,14 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.InfoPanel;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.accounts.hbci.HBCIVariantPinTan;
 import de.willuhn.jameica.hbci.accounts.hbci.controller.HBCIVariantPinTanController;
+import de.willuhn.util.ApplicationException;
 
 /**
  * View zum Bearbeiten der neuen PIN/TAN-Config.
@@ -65,8 +67,18 @@ public class HBCIVariantPinTanStep2 extends AbstractHBCIAccountView
     customer.getControl().addListener(SWT.KeyUp,control.getStep2Listener());
     
     ButtonArea buttons = new ButtonArea();
+    buttons.addButton(new Back());
     buttons.addButton(control.getStep2Button());
     buttons.paint(comp);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#reload()
+   */
+  @Override
+  public void reload() throws ApplicationException
+  {
+    // Kein Reload
   }
 }
 

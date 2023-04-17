@@ -1,3 +1,15 @@
+2023-04-17 Version 2.10.11
+
+  * NEW: 1025 System-Tray auch in den Einstellungen der automatischen Synchronisierung aktivierbar
+  * NEW: 1024 Automatische zeitgesteuerte Konten-Synchronisierung
+  * NEW: 1023 Verwendungszweck-Vervollständigung nach Addressbuch-Auswahl: Auch nach Name in vorherigen Aufträgen suchen. Ermöglicht unterschiedliche Verwendungszweck-Vorschläge je nach ausgewählter Adresse (selbst bei identischer Ziel-IBAN) 
+  * NEW: 1022 Update auf HBCI4Java 3.1.67 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.67
+  * BUG: 1021 Umsatzliste: Nachtrag zu 1019 - Auswahl von "<Nicht zugeordnet>" funktionierte nicht mehr 
+  * NEW: 1020 Postgres-Treiber aktualisiert
+  * BUG: 1019 Umsatzliste: Bei Auswahl einer Umsatzkategorie konnten auch Umsätze angezeigt werden, die eigentlich per automatischer Zuordnung einer anderen Kategorie zugewiesen wurden, zusätzlich aber auch zur ausgewählten Kategorie passen 
+  * NEW: 1018 Update auf HBCI4Java 3.1.66 - RAH-10 Support
+  * NEW: 1017 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 06.03.2023
+
 2023-01-25 Version 2.10.10
 
   * NEW: 1016 Die von hibiscus.transferwise genutzten Libs (Apache HTTP-Client, Jackson und SLF4J-API) direkt in Hibiscus verschoben, damit sie von mehreren Plugins genutzt werden können

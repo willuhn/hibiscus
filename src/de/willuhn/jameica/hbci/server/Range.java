@@ -71,7 +71,6 @@ public abstract class Range
    * Bekannte Zeitraeume.
    */
   public final static List<Range> KNOWN = Arrays.asList(
-    ALL,
     D_7,
     D_30,
     D_90,
@@ -91,7 +90,8 @@ public abstract class Range
     Q_2LAS,
     Y_THIS,
     Y_LAST,
-    Y_2LAS
+    Y_2LAS,
+    ALL
   );
 
   /**
@@ -113,7 +113,8 @@ public abstract class Range
       Q_2LAS,
       Y_THIS,
       Y_LAST,
-      Y_2LAS
+      Y_2LAS,
+      ALL
     );
 
   /**

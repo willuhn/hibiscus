@@ -38,6 +38,7 @@ import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Platform;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -74,7 +75,12 @@ public class AddressInput implements Input
     this.filter = filter;
     this.input = new SuggestInput(name);
 
-    this.button = new Button("...",new Action()
+    String s = "...";
+    final int os = Application.getPlatform().getOS();
+    if (os == Platform.OS_WINDOWS || os == Platform.OS_WINDOWS_64)
+      s = (" ... ");
+
+    this.button = new Button(s,new Action()
     {
       /**
        * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)

@@ -54,6 +54,11 @@ public class HBCI extends AbstractPlugin
    * Datums-Format dd.MM.yyyy HH:mm.
    */
   public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+  
+  /**
+   * Datums-Format dd.MM.yyyy HH:mm:ss.
+   */
+  public static DateFormat XTRALONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
   /**
    * Datums-Format dd.MM.yyyy.
@@ -80,7 +85,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "3.1.64";
+  private final static String HBCI4JAVA_VERSION = "3.1.67";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
