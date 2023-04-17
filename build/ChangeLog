@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+2023-04-17 Version 2.10.11
+
   * NEW: 1025 System-Tray auch in den Einstellungen der automatischen Synchronisierung aktivierbar
   * NEW: 1024 Automatische zeitgesteuerte Konten-Synchronisierung
   * NEW: 1023 Verwendungszweck-Vervollständigung nach Addressbuch-Auswahl: Auch nach Name in vorherigen Aufträgen suchen. Ermöglicht unterschiedliche Verwendungszweck-Vorschläge je nach ausgewählter Adresse (selbst bei identischer Ziel-IBAN) 
