@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1026 Intervall der automatischen Konten-Synchronisierung konfigurierbar
+
 2023-04-17 Version 2.10.11
 
   * NEW: 1025 System-Tray auch in den Einstellungen der automatischen Synchronisierung aktivierbar
