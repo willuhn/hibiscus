@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+2023-04-18 Version 2.10.12
+
   * NEW: 1026 Intervall der automatischen Konten-Synchronisierung konfigurierbar
 
 2023-04-17 Version 2.10.11
