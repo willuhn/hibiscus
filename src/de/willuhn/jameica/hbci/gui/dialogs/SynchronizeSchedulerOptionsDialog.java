@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -33,7 +34,6 @@ import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.ScrolledContainer;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.JameicaCompat;
@@ -78,7 +78,7 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
   @Override
   protected void paint(Composite parent) throws Exception
   {
-    final Container c1 = new ScrolledContainer(parent);
+    final Container c1 = new SimpleContainer(parent);
     
     c1.addPart(this.getEnabled());
     c1.addPart(this.getStopOnError());
@@ -166,11 +166,10 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     },null,true,"ok.png");
     buttons.addButton(new Cancel());
     
-    final Container c3 = new SimpleContainer(parent);
-    c3.addButtonArea(buttons);
+    c1.addButtonArea(buttons);
     
-    getShell().setMinimumSize(WINDOW_WIDTH,300);
-    final Point size = getShell().computeSize(WINDOW_WIDTH,500);
+    final Point size = getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT);
+    getShell().setMinimumSize(size);
     this.setSize(size.x,size.y);
   }
   
