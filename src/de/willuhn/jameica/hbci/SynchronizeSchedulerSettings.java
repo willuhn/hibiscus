@@ -23,7 +23,7 @@ public class SynchronizeSchedulerSettings
    */
   public static boolean isEnabled()
   {
-    return settings.getBoolean("enabled",true);
+    return settings.getBoolean("enabled",false);
   }
   
   /**

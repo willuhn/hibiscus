@@ -18,17 +18,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.MultiInput;
+import de.willuhn.jameica.gui.input.ScaleInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
@@ -39,7 +41,6 @@ import de.willuhn.jameica.hbci.SynchronizeSchedulerSettings;
 import de.willuhn.jameica.hbci.rmi.SynchronizeSchedulerService;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -56,6 +57,7 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
   private CheckboxInput enabled = null;
   private CheckboxInput stopOnError = null;
   private CheckboxInput minimizeToSystray = null;
+  private ScaleInput interval = null;
   private List<CheckboxInput> weekdays = null;
   private SelectInput timeFrom = null;
   private SelectInput timeTo = null;
@@ -68,7 +70,6 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
   {
     super(position);
     this.setTitle(i18n.tr("Automatische Synchronisierung konfigurieren"));
-    this.setSize(WINDOW_WIDTH,SWT.DEFAULT);
   }
 
   /**
@@ -82,9 +83,13 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     c1.addPart(this.getEnabled());
     c1.addPart(this.getStopOnError());
 
+    c1.addInput(this.getInterval());
+    c1.addText(i18n.tr("Mehr als 4 Synchronisierungen pro Tag können dazu führen, dass die Bank eine TAN verlangt."),true,Color.COMMENT);
+
     c1.addHeadline(i18n.tr("Wochentage einschränken"));
     c1.addText(i18n.tr("Die automatische Synchronisierung wird nur an den angegebenen Wochentagen ausgeführt. " +
-                       "An den nicht ausgewählten Tagen wird sie pausiert."),true);
+                       "An den nicht ausgewählten Tagen wird sie pausiert."),true,Color.COMMENT);
+    
     for (CheckboxInput c:this.getWeekdays())
     {
       c1.addPart(c);
@@ -92,7 +97,7 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     
     c1.addHeadline(i18n.tr("Uhrzeit einschränken"));
     c1.addText(i18n.tr("Die automatische Synchronisierung wird nur im angegebenen Zeitfenster ausgeführt. " +
-                       "In der übrigen Zeit wird sie pausiert."),true);
+                       "In der übrigen Zeit wird sie pausiert."),true,Color.COMMENT);
     
     final MultiInput multi = new MultiInput(this.getTimeFrom(),this.getTimeTo());
     c1.addInput(multi);
@@ -104,7 +109,7 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
       c1.addPart(sysCheck);
       c1.addText(i18n.tr("Sie finden diese Option auch in \"Datei->Einstellungen->Look and Feel\""),true,Color.COMMENT);
     }
-
+    
     final ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Übernehmen"),a -> {
       
@@ -117,6 +122,7 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
 
       final boolean enabled = ((Boolean)getEnabled().getValue()).booleanValue();
       SynchronizeSchedulerSettings.setEnabled(enabled);
+      SynchronizeSchedulerSettings.setSchedulerInterval(((Integer)getInterval().getValue()));
       SynchronizeSchedulerSettings.setSchedulerStartTime(((Integer)getTimeFrom().getValue()));
       SynchronizeSchedulerSettings.setSchedulerEndTime(((Integer)getTimeTo().getValue()));
       
@@ -158,17 +164,13 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
       GUI.getCurrentView().reload();
       
     },null,true,"ok.png");
-    buttons.addButton(i18n.tr("Abbrechen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        throw new OperationCanceledException();
-      }
-    },null,false,"process-stop.png");
+    buttons.addButton(new Cancel());
     
     c1.addButtonArea(buttons);
     
-    getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
+    final Point size = getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT);
+    getShell().setMinimumSize(size);
+    this.setSize(size.x,size.y);
   }
   
   /**
@@ -234,6 +236,7 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
       public void handleEvent(Event event)
       {
         final boolean b = ((Boolean)getEnabled().getValue()).booleanValue();
+        getInterval().setEnabled(b);
         getStopOnError().setEnabled(b);
         getTimeFrom().setEnabled(b);
         getTimeTo().setEnabled(b);
@@ -246,6 +249,43 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
     this.enabled.addListener(l);
     l.handleEvent(null);
     return this.enabled;
+  }
+  
+  /**
+   * Liefert den Schieberegler für das Intervall.
+   * @return der Schieberegler.
+   */
+  public ScaleInput getInterval()
+  {
+    if (this.interval != null)
+      return this.interval;
+    
+    this.interval = new ScaleInput(SynchronizeSchedulerSettings.getSchedulerInterval());
+    this.interval.setScaling(60,1440,60,60);
+    this.interval.setName(i18n.tr("Ausführungsintervall"));
+    this.interval.setComment("");
+    final Listener l = new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        final int i = ((Integer) interval.getValue()).intValue();
+        if (i % 60 == 0)
+        {
+          if (i == 60)
+            interval.setComment(i18n.tr("1 Stunde"));
+          else
+            interval.setComment(i18n.tr("{0} Stunden",Integer.toString(i / 60)));
+        }
+        else
+        {
+          interval.setComment(i18n.tr("{0} Minuten",Integer.toString(i)));
+        }
+      }
+    };
+    this.interval.addListener(l);
+    l.handleEvent(null);
+    return this.interval;
   }
   
   /**
