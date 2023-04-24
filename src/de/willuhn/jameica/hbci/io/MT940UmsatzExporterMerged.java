@@ -125,18 +125,19 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
     		
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
     		
-    		//Verwendungszweck
-    		String[] lines = VerwendungszweckUtil.rewrap(27,VerwendungszweckUtil.toArray(u));
+    		// Verwendungszweck
+    		final String s = VerwendungszweckUtil.getTag(u,VerwendungszweckUtil.Tag.SVWZ);
+    		String[] lines = VerwendungszweckUtil.rewrap(27,s);
     		int m=0;
-    		for (m=0;m<lines.length;++m)
-    		{
-      		// in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
-    		  // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
-    		  // (Seite 179, strukturierte Belegung des Feldes 86)
-    		  if (m > 9)
-    		    break;
-          out.write("?2" + Integer.toString(m) + lines[m]);
-    		}
+        for (int l=0;l<lines.length;++l)
+        {
+          // in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
+          // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
+          // (Seite 179, strukturierte Belegung des Feldes 86)
+          if (l > 9)
+            break;
+          m = addRef(out,m,VerwendungszweckUtil.Tag.SVWZ,lines[l]);
+        }
 
         m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
         m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());
