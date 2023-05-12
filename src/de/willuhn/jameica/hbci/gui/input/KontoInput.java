@@ -240,7 +240,7 @@ public class KontoInput extends SelectInput
     boolean haveGroups = groups.size() > 0;
 
     DBIterator it = Settings.getDBService().createList(Konto.class);
-    it.setOrder("ORDER BY LOWER(kategorie), blz, kontonummer, bezeichnung");
+    it.setOrder("ORDER BY LOWER(kategorie), blz, bezeichnung, kontonummer");
     List l = new ArrayList();
 
     String current = null;
@@ -307,10 +307,7 @@ public class KontoInput extends SelectInput
       if (disabled)
         sb.append("[");
 
-      sb.append(i18n.tr("Kto. {0}",k.getKontonummer()));
-
       String blz = k.getBLZ();
-      sb.append(" [");
       String bankName = HBCIProperties.getNameForBank(blz);
       if (bankName != null && bankName.length() > 0)
       {
@@ -321,8 +318,7 @@ public class KontoInput extends SelectInput
         sb.append("BLZ ");
         sb.append(blz);
       }
-      sb.append("] ");
-      sb.append(k.getName());
+      sb.append(": " + k.getName());
 
       String bez = k.getBezeichnung();
       if (bez != null && bez.length() > 0)
@@ -331,9 +327,12 @@ public class KontoInput extends SelectInput
         sb.append(bez);
       }
 
+      sb.append(" [" + i18n.tr("Kto. {0}",k.getKontonummer()) + "]");
+
+
       if (k.getSaldoDatum() != null)
       {
-        sb.append(", ");
+        sb.append(" - ");
         sb.append(i18n.tr("Saldo: {0} {1}", HBCI.DECIMALFORMAT.format(k.getSaldo()), k.getWaehrung()));
       }
 

@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 1030 Reihenfolge (Sortierung erst nach Name, dann nach Kontonummer) und Anzeige der Konten in der Kontoauswahl leicht geändert
   * NEW: 1029 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.06.2023
   * BUG: 1028 Automatische Synchronisierung: Synchronisationsaufgaben, die in der Liste der Synchronisationsaufgaben abgewählt sind, wurden bei der automatischen Ausführung dennoch ausgeführt
   * NEW: 1027 Verwendungszweck im MT940-Export nach Bedarf mit SVWZ-Tag versehen - siehe https://homebanking-hilfe.de/forum/topic.php?t=25786
