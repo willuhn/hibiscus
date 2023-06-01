@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1031 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.06.2023 (Update vom 25.05.2023)
   * CHG: 1030 Reihenfolge (Sortierung erst nach Name, dann nach Kontonummer) und Anzeige der Konten in der Kontoauswahl leicht geändert
   * NEW: 1029 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.06.2023
   * BUG: 1028 Automatische Synchronisierung: Synchronisationsaufgaben, die in der Liste der Synchronisationsaufgaben abgewählt sind, wurden bei der automatischen Ausführung dennoch ausgeführt
