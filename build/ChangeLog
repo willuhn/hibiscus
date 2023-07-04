@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1032 Update auf HBCI4Java 3.1.68 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.68
   * NEW: 1031 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.06.2023 (Update vom 25.05.2023)
   * CHG: 1030 Reihenfolge (Sortierung erst nach Name, dann nach Kontonummer) und Anzeige der Konten in der Kontoauswahl leicht geändert
   * NEW: 1029 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 05.06.2023

@@ -25,7 +25,7 @@
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.67.jar" sourcepath="/hbci4j-core"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.68.jar" sourcepath="/hbci4j-core"/>
 	<classpathentry exported="true" kind="lib" path="lib/qrcodegen/qrcodegen-1.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpclient5-5.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpcore5-5.2.jar"/>
