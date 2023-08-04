@@ -33,7 +33,16 @@ public class AusgefuehrtColumn extends Column
    */
   public AusgefuehrtColumn()
   {
-    super("ausgefuehrt_am",i18n.tr("Ausgeführt?"),null,false,Column.ALIGN_RIGHT);
+    this("ausgefuehrt_am");
+  }
+
+  /**
+   * ct.
+   * @param name der Name das Attributs mit dem Ausführungsdatum.
+   */
+  public AusgefuehrtColumn(String name)
+  {
+    super(name,i18n.tr("Ausgeführt?"),null,false,Column.ALIGN_RIGHT);
   }
 
   /**

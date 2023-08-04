@@ -37,18 +37,18 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
-import de.willuhn.jameica.hbci.gui.action.SepaSammelLastBuchungNew;
-import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
-import de.willuhn.jameica.hbci.gui.parts.SepaSammelTransferBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.SimpleSepaLastschriftList;
+import de.willuhn.jameica.hbci.gui.parts.SimpleSepaSammelLastBuchungList;
+import de.willuhn.jameica.hbci.gui.parts.SimpleSepaSammelUeberweisungBuchungList;
 import de.willuhn.jameica.hbci.gui.parts.SimpleSepaUeberweisungList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzList;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -71,27 +71,26 @@ public class EmpfaengerControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
-  // Fach-Objekte
-	private Address address         = null;
-	// Eingabe-Felder
-	private TextInput kontonummer   = null;
-	private TextInput blz					  = null;
-	private Input name				      = null;
+	private Address address          = null;
+	
+	private TextInput kontonummer    = null;
+	private TextInput blz					   = null;
+	private Input name				       = null;
 
-	private TextInput bic           = null;
-	private TextInput iban          = null;
-  private TextInput bank          = null;
+	private TextInput bic            = null;
+	private TextInput iban           = null;
+  private TextInput bank           = null;
 
-  private SelectInput kategorie   = null;
+  private SelectInput kategorie    = null;
   
-	private Input kommentar         = null;
+	private Input kommentar          = null;
 
-  private Part list               = null;
-  private Part uebList            = null;
-  private Part lastList           = null;
-  private Part sammelUebList      = null;
-  private Part sammelLastList     = null;
-  private Part umsatzList         = null;
+  private Part list                = null;
+  private Part uebList             = null;
+  private Part lastList            = null;
+  private TablePart sammelUebList  = null;
+  private TablePart sammelLastList = null;
+  private Part umsatzList          = null;
   
   private IbanListener ibanListener = new IbanListener();
   
@@ -229,11 +228,11 @@ public class EmpfaengerControl extends AbstractControl
     if (this.sammelUebList != null)
       return this.sammelUebList;
 
-    DBIterator list = Settings.getDBService().createList(SepaSammelUeberweisungBuchung.class);
+    DBIterator<SepaSammelUeberweisungBuchung> list = Settings.getDBService().createList(SepaSammelUeberweisungBuchung.class);
     list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelUebList = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelUeberweisungBuchungNew());
+    this.sammelUebList = new SimpleSepaSammelUeberweisungBuchungList(PseudoIterator.asList(list));
     return this.sammelUebList;
   }
 
@@ -248,11 +247,11 @@ public class EmpfaengerControl extends AbstractControl
     if (this.sammelLastList != null)
       return this.sammelLastList;
 
-    DBIterator list = Settings.getDBService().createList(SepaSammelLastBuchung.class);
+    DBIterator<SepaSammelLastBuchung> list = Settings.getDBService().createList(SepaSammelLastBuchung.class);
     list.addFilter("empfaenger_konto = ?", getAddress().getIban());
     list.setOrder(" ORDER BY id DESC");
 
-    this.sammelLastList = new SepaSammelTransferBuchungList(PseudoIterator.asList(list),new SepaSammelLastBuchungNew());
+    this.sammelLastList = new SimpleSepaSammelLastBuchungList(PseudoIterator.asList(list));
     return this.sammelLastList;
   }
 

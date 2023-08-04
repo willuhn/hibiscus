@@ -70,7 +70,7 @@ public class SepaSammelTransferBuchungList extends TablePart
    * @param action Aktion, die beim Klick ausgefuehrt werden soll.
    * @throws RemoteException
    */
-  public SepaSammelTransferBuchungList(final List<SepaSammelTransfer> list, Action action) throws RemoteException
+  public SepaSammelTransferBuchungList(final List<? extends SepaSammelTransferBuchung> list, Action action) throws RemoteException
   {
     super(list,action);
     
