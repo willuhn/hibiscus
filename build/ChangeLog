@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1035 Beim CSV-Export von Umsätzen auch den kompletten Pfad der Kategorien in einer neuen Spalte "Kategorie-Pfad" exportieren
   * NEW: 1034 Adressbuch: In der Liste der Sammelauftragsbuchungen zu einer Adresse auch die Termine der korrespondierenden Sammelaufträge mit anzeigen
   * NEW: 1033 Update auf HBCI4Java 3.1.69 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.69
   * NEW: 1032 Update auf HBCI4Java 3.1.68 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.68

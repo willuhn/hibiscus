@@ -301,4 +301,12 @@ public interface UmsatzTyp extends DBObjectNode
    * @throws RemoteException
    */
   public boolean hasFlag(int flag) throws RemoteException;
+  
+  /**
+   * Liefert einen Pfad mit den Namen der Kategorien bis zur obersten Ebene.
+   * @param sep das Trennzeichen.
+   * @return der Pfad.
+   * @throws RemoteException
+   */
+  public String getPath(String sep) throws RemoteException;
 }
