@@ -35,8 +35,10 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzMarkChecked;
 import de.willuhn.jameica.hbci.gui.action.UmsatzMarkUnChecked;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzSetAllReadContextMenuItem;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzSetReadContextMenuItem;
+import de.willuhn.jameica.hbci.gui.parts.UmsatzSetUnreadContextMenuItem;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
-import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -163,24 +165,9 @@ public class UmsatzList extends ContextMenu implements Extendable
     },"text-x-generic.png"));
 
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new ContextMenuItem(i18n.tr("Alle als gelesen markieren"), new Action() {
-      
-      @Override
-      public void handleAction(Object context) throws ApplicationException
-      {
-        // Counter resetten
-        NeueUmsaetze.reset();
-      }
-    },"ok.png")
-    {
-      /**
-       * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-       */
-      public boolean isEnabledFor(Object o)
-      {
-        return NeueUmsaetze.getID() != null;
-      }
-    });
+    addItem(new UmsatzSetAllReadContextMenuItem());
+    addItem(new UmsatzSetReadContextMenuItem());
+    addItem(new UmsatzSetUnreadContextMenuItem());
 
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);

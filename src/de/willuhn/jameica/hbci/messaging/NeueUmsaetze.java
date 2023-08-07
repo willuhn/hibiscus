@@ -11,6 +11,14 @@
 package de.willuhn.jameica.hbci.messaging;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -21,6 +29,7 @@ import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 
 /**
@@ -29,26 +38,33 @@ import de.willuhn.logging.Logger;
  */
 public class NeueUmsaetze implements MessageConsumer
 {
-  private static String first = null;
+  private static Set<String> unread = new HashSet<>();
 
+  /**
+   * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+   */
   @Override
   public boolean autoRegister()
   {
     return true;
   }
 
+  /**
+   * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+   */
   @Override
   public Class[] getExpectedMessageTypes()
   {
     return new Class[]{ImportMessage.class};
   }
 
+  /**
+   * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+   */
   @Override
   public void handleMessage(Message message) throws Exception
   {
-    // Wenn es keine Import-Message ist oder wir schon den ersten Umsatz haben,
-    // ignorieren wir die folgenden
-    if (first != null || message == null || !(message instanceof ImportMessage))
+    if (!(message instanceof ImportMessage))
       return;
     
     GenericObject o = ((ImportMessage)message).getObject();
@@ -56,8 +72,7 @@ public class NeueUmsaetze implements MessageConsumer
     if (o == null || !(o instanceof Umsatz) || o.getID() == null)
       return; // interessiert uns nicht
     
-    
-    first = o.getID();
+    unread.add(o.getID());
   }
   
   /**
@@ -65,26 +80,95 @@ public class NeueUmsaetze implements MessageConsumer
    * @return Liste der neuen Umsaetze.
    * @throws RemoteException
    */
-  public static GenericIterator getNeueUmsaetze() throws RemoteException
+  public static GenericIterator<Umsatz> getNeueUmsaetze() throws RemoteException
   {
-    if (first == null)
+    if (unread.size() == 0)
       return PseudoIterator.fromArray(new Umsatz[0]);
-
+    
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
-    list.addFilter("id >= " + first);
+    list.addFilter("id in (" + StringUtils.join(unread,",") + ")");
     if (list.size() == 0)
-      first = null; // Wenn nichts gefunden wurde, resetten wir uns
+      unread.clear(); // Wenn nichts gefunden wurde, resetten wir uns
     return list;
   }
   
   /**
-   * Liefert die ID des ersten in der aktuellen Sitzung eingetroffenen
-   * Umsatzes oder <code>null</code>, wenn noch keine neuen Umsaetze hinzugekommen sind.
-   * @return die ID des ersten neuen Umsatzes (alle Folge-Umsaetze haben groessere IDs) oder <code>null</code>.
+   * Markiert einen oder mehrere Umsaetze als ungelesen.
+   * @param umsaetze der oder die als ungelesen zu markierende Umsatz.
    */
-  public static String getID()
+  public static void setUnread(Object umsaetze)
   {
-    return first;
+    update(id -> unread.add(id),umsaetze);
+  }
+  
+  /**
+   * Markiert einen oder mehrere Umsaetze als gelesen.
+   * @param umsaetze der oder die als gelesen zu markierende Umsatz.
+   */
+  public static void setRead(Object umsaetze)
+  {
+    update(id -> unread.remove(id),umsaetze);
+  }
+  
+  /**
+   * Markiert einen oder mehrere Umsaetze als ungelesen.
+   * @param umsaetze der oder die als ungelesen zu markierende Umsatz.
+   */
+  private static void update(Function<String,Boolean> action, Object umsaetze)
+  {
+    try
+    {
+      if (umsaetze == null)
+        return;
+      
+      List list = new ArrayList();
+      
+      if (umsaetze instanceof Umsatz)
+        list.add((Umsatz) umsaetze);
+      if (umsaetze instanceof List)
+        list = (List) umsaetze;
+      if (umsaetze instanceof Object[])
+        list = Arrays.asList((Object[])umsaetze);
+      
+      for (Object o:list)
+      {
+        if (!(o instanceof Umsatz))
+          continue;
+        
+        final Umsatz u = (Umsatz) o;
+        
+        if (u.isNewObject())
+          continue;
+        
+        action.apply(u.getID());
+        Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(u));
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to mark as read/unread",e);
+    }
+    finally
+    {
+      update();
+    }
+  }
+  
+  /**
+   * Aktualisiert die Anzeige der ungelesenen Umsätze.
+   */
+  public static void update()
+  {
+    GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
+  }
+
+  /**
+   * Liefert die Anzahl neuer Umsätze.
+   * @return die Anzahl neuer Umsätze.
+   */
+  public static int size()
+  {
+    return unread.size();
   }
 
   /**
@@ -94,12 +178,12 @@ public class NeueUmsaetze implements MessageConsumer
    */
   public static boolean isNew(Umsatz u)
   {
-    if (first == null || u == null)
-      return false;
-
     try
     {
-      return (((Integer)u.getAttribute("id-int")).compareTo(Integer.valueOf(first)) >= 0);
+      if (u == null || u.isNewObject())
+        return false;
+      
+      return unread.contains(u.getID());
     }
     catch (Exception e)
     {
@@ -113,12 +197,12 @@ public class NeueUmsaetze implements MessageConsumer
    */
   public static void reset()
   {
-    if (first == null)
+    if (unread.size() == 0)
       return;
 
     try
     {
-      first = null;
+      unread.clear();
       
       // Anzeige aktualisieren
       // Im Prinzip koennten wir fuer jeden Umsatz, der vorher als neu galt, eine ObjectChangedMessage schicken
@@ -142,7 +226,7 @@ public class NeueUmsaetze implements MessageConsumer
     }
     finally
     {
-      GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",0);
+      update();
     }
   }
   

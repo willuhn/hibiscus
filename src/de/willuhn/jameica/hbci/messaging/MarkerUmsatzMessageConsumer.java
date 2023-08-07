@@ -13,16 +13,12 @@ package de.willuhn.jameica.hbci.messaging;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Level;
-import de.willuhn.logging.Logger;
 
 /**
  * Markiert das Navigations-Element "Auswertungen-&gt;Umsaetze", wenn neue Umsaetze vorhanden sind.
@@ -68,16 +64,7 @@ public class MarkerUmsatzMessageConsumer implements MessageConsumer
     @Override
     public void handleEvent(Event event)
     {
-      try
-      {
-        GenericIterator i = NeueUmsaetze.getNeueUmsaetze();
-        final int size = i.size();
-        GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size);
-      }
-      catch (Throwable t) // wir fangen hier alles - fuer den Fall, dass die Jameica-Version noch kein "setUnreadCount" hat
-      {
-        Logger.write(Level.DEBUG,"unable to update navigation",t);
-      }
+      NeueUmsaetze.update();
     }
     
   }
