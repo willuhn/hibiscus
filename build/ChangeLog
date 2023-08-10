@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1038 Tippfehler in SEPA-Purpose-Code "GOWT". Muss "GOVT" heissen. Siehe https://homebanking-hilfe.de/forum/topic.php?p=167894#real167894
   * NEW: 1037 Bei "Umsätze nach Kategorie" ebenfalls "Name 2" der Gegenkonten anzeigen (wurde in Umsatzliste bereits so angezeigt, fehlte hier aber noch)
   * NEW: 1036 Gelesen/Ungelesen-Information für jeden Umsatz einzeln speichern und änderbar machen
   * NEW: 1035 Beim CSV-Export von Umsätzen auch den kompletten Pfad der Kategorien in einer neuen Spalte "Kategorie-Pfad" exportieren

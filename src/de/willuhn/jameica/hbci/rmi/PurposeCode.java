@@ -57,7 +57,7 @@ public enum PurposeCode
   /**
    * Zahlung an öffentl. Kassen
    */
-  GOWT("GOWT","Zahlung an öffentl. Kassen"),
+  GOVT("GOVT","Zahlung an öffentl. Kassen"),
   
   /**
    * Vermögenswirksame Leistungen
