@@ -17,22 +17,26 @@ import de.willuhn.datasource.GenericObject;
  */
 public class ObjectDeletedMessage extends ObjectMessage
 {
+  private String id = null;
 
   /**
    * ct.
    * @param object
+   * @param id die ID, die das Objekt hatte.
    */
-  public ObjectDeletedMessage(GenericObject object)
+  public ObjectDeletedMessage(GenericObject object, String id)
   {
     super(object);
+    this.id = id;
+  }
+  
+  /**
+   * Liefert die ID, die das gelöschte Objekt hatte.
+   * @return die ID, die das gelöschte Objekt hatte.
+   */
+  public String getID()
+  {
+    return this.id;
   }
 
 }
-
-
-/*********************************************************************
- * $Log: ObjectDeletedMessage.java,v $
- * Revision 1.1  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- **********************************************************************/

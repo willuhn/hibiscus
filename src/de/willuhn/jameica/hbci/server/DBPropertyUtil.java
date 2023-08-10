@@ -89,6 +89,11 @@ public class DBPropertyUtil
      */
     META("meta",null),
     
+    /**
+     * Prefix für Ungelesen-Markierungen.
+     */
+    UNREAD("unread",null),
+    
     ;
     
     private String value = null;

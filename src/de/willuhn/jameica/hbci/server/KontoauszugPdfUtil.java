@@ -690,8 +690,9 @@ public class KontoauszugPdfUtil
         
         Konto konto = k.getKonto();
         konto.addToProtokoll(i18n.tr("Elektronischen Kontoauszug gelöscht"),Protokoll.TYP_SUCCESS);
+        final String id = k.getID();
         k.delete();
-        Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(k));
+        Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(k,id));
         count++;
       }
       

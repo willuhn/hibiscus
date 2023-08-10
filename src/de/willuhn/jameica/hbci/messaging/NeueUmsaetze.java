@@ -19,17 +19,25 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil;
+import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
+import de.willuhn.jameica.messaging.SystemMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 
 /**
@@ -38,6 +46,7 @@ import de.willuhn.logging.Logger;
  */
 public class NeueUmsaetze implements MessageConsumer
 {
+  private static DelayedListener listener = new DelayedListener(1000,new Worker());
   private static Set<String> unread = new HashSet<>();
 
   /**
@@ -55,7 +64,7 @@ public class NeueUmsaetze implements MessageConsumer
   @Override
   public Class[] getExpectedMessageTypes()
   {
-    return new Class[]{ImportMessage.class};
+    return new Class[]{ImportMessage.class,ObjectDeletedMessage.class,SystemMessage.class};
   }
 
   /**
@@ -64,15 +73,44 @@ public class NeueUmsaetze implements MessageConsumer
   @Override
   public void handleMessage(Message message) throws Exception
   {
-    if (!(message instanceof ImportMessage))
-      return;
+    if (message instanceof SystemMessage)
+    {
+      final SystemMessage msg = (SystemMessage) message;
+      if (msg.getStatusCode() == SystemMessage.SYSTEM_STARTED)
+      {
+        load();
+        GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
+      }
+      else if (msg.getStatusCode() == SystemMessage.SYSTEM_SHUTDOWN)
+      {
+        store();
+      }
+    }
     
-    GenericObject o = ((ImportMessage)message).getObject();
+    if (message instanceof ImportMessage)
+    {
+      GenericObject o = ((ImportMessage)message).getObject();
+      
+      if (o == null || !(o instanceof Umsatz) || o.getID() == null)
+        return; // interessiert uns nicht
+      
+      unread.add(o.getID());
+      
+      if (Settings.getStoreUnreadFlag())
+        listener.handleEvent(null);
+    }
     
-    if (o == null || !(o instanceof Umsatz) || o.getID() == null)
-      return; // interessiert uns nicht
-    
-    unread.add(o.getID());
+    if (message instanceof ObjectDeletedMessage)
+    {
+      final ObjectDeletedMessage msg = (ObjectDeletedMessage) message;
+      final GenericObject o = msg.getObject();
+      
+      if (!(o instanceof Umsatz))
+        return; // interessiert uns nicht
+      
+      if (unread.remove(msg.getID()) && Settings.getStoreUnreadFlag())
+        listener.handleEvent(null);
+    }
   }
   
   /**
@@ -160,6 +198,7 @@ public class NeueUmsaetze implements MessageConsumer
   public static void update()
   {
     GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
+    store();
   }
 
   /**
@@ -230,4 +269,81 @@ public class NeueUmsaetze implements MessageConsumer
     }
   }
   
+  /**
+   * Speichert die Ungelesen-Meldungen in der Datenbank.
+   */
+  private static void store()
+  {
+    if (!Settings.getStoreUnreadFlag())
+      return;
+    
+    try
+    {
+      Logger.info("store umsatz unread count");
+      DBPropertyUtil.set(Prefix.UNREAD,"umsatz",null,"unread",StringUtils.join(unread,","));
+      Logger.info("umsatz unread count: " + unread.size());
+    }
+    catch (Throwable t)
+    {
+      Logger.write(Level.DEBUG,"unable to store umsatz unread count",t);
+    }
+  }
+  
+  /**
+   * Laedt die Ungelesen-Meldungen aus der Datenbank.
+   */
+  private static synchronized void load()
+  {
+    if (!Settings.getStoreUnreadFlag())
+      return;
+    
+    try
+    {
+      Logger.info("load umsatz unread count");
+      final String s = DBPropertyUtil.get(Prefix.UNREAD,"umsatz",null,"unread",null);
+      if (s != null)
+      {
+        final String[] ids = StringUtils.split(s,",");
+        unread.addAll(Arrays.asList(ids));
+        
+        final Set<String> existing = new HashSet<String>();
+        
+        // Wir müssen für jeden einzelnen Umsatz checken, ob er existiert
+        // Andernfalls würden sich hier IDs von Umsätzen sammeln, die anderweitig gelöscht wurden.
+        // Es bleiben nur noch die übrig, die in der Datenbank existieren
+        final GenericIterator<Umsatz> fromDb = getNeueUmsaetze();
+        while (fromDb.hasNext())
+        {
+          final Umsatz u = fromDb.next();
+          existing.add(u.getID());
+          unread.remove(u.getID());
+        }
+        
+        // Wenn jetzt noch welche in unread drin sind, dann sind das genau die,
+        // die inzwischen nicht mehr existieren
+        if (unread.size() > 0)
+          Logger.info("removed entries that no longer exist in database: " + StringUtils.join(unread,","));
+        
+        unread = existing;
+      }
+      Logger.info("umsatz unread count: " + unread.size());
+    }
+    catch (Throwable t)
+    {
+      Logger.write(Level.DEBUG,"unable to load umsatz unread count",t);
+    }
+
+  }
+  
+  /**
+   * Der Worker zum zeitverzögerten Speichern der Ungelesen-Zähler beim Eintreffen neuer Umsätze.
+   */
+  private static class Worker implements Listener
+  {
+    @Override
+    public void handleEvent(Event event)
+    {
+      update();
+    }
+  }
 }

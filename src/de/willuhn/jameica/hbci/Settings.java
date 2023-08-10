@@ -309,6 +309,24 @@ public class Settings
   }
 
   /**
+   * Liefert true, wenn die Ungelesen-Markierungen in der Datenbank gespeichert werden soll.
+   * @return true, wenn die Ungelesen-Markierungen in der Datenbank gespeichert werden soll.
+   */
+  public static boolean getStoreUnreadFlag()
+  {
+    return settings.getBoolean("unread.store",true);
+  }
+
+  /**
+   * Legt fest, ob die Ungelesen-Markierungen in der Datenbank gespeichert werden sollen.
+   * @param store true, wenn die Ungelesen-Markierungen in der Datenbank gespeichert werden sollen.
+   */
+  public static void setStoreUnreadFfag(boolean store)
+  {
+    settings.setAttribute("unread.store",store);
+  }
+
+  /**
    * Prueft, ob wir eine permanente Online-Verbindung haben und daher
    * vom HBCI-Kernel nicht dauernd gefragt werden muessen, ob wir eine
    * Internetverbindung haben wollen.

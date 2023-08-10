@@ -155,8 +155,9 @@ public class DBObjectDelete implements Action
             continue; // muss nicht geloescht werden
 
           // ok, wir loeschen das Objekt
+          final String id = list[i].getID();
           list[i].delete();
-          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(list[i]));
+          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(list[i],id));
         }
         
         if (monitor != null)

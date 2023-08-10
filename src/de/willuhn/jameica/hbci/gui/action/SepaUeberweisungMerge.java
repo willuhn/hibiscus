@@ -138,8 +138,9 @@ public class SepaUeberweisungMerge implements Action
         
         if (delete && !l.isNewObject())
         {
+          final String id = l.getID();
           l.delete();
-          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l));
+          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l,id));
         }
       }
       
