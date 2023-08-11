@@ -241,6 +241,7 @@ public class NeueUmsaetze implements MessageConsumer
     try
     {
       unread.clear();
+      store();
       
       // Anzeige aktualisieren
       // Im Prinzip koennten wir fuer jeden Umsatz, der vorher als neu galt, eine ObjectChangedMessage schicken
@@ -261,10 +262,6 @@ public class NeueUmsaetze implements MessageConsumer
     catch (Exception e)
     {
       Logger.error("unable to refresh view",e);
-    }
-    finally
-    {
-      store();
     }
   }
   
