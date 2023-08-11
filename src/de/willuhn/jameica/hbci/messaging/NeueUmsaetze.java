@@ -79,7 +79,9 @@ public class NeueUmsaetze implements MessageConsumer
       if (msg.getStatusCode() == SystemMessage.SYSTEM_STARTED)
       {
         load();
-        GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
+        
+        if (!Application.inServerMode())
+          GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
       }
       else if (msg.getStatusCode() == SystemMessage.SYSTEM_SHUTDOWN)
       {
@@ -197,8 +199,10 @@ public class NeueUmsaetze implements MessageConsumer
    */
   public static void update()
   {
-    GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
     store();
+    
+    if (!Application.inServerMode())
+      GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
   }
 
   /**
