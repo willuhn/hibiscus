@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +48,8 @@ import de.willuhn.logging.Logger;
  */
 public class NeueUmsaetze implements MessageConsumer
 {
+  private static Timer timer        = null;
+  private static SchedulerTask task = null;
   private static DelayedListener listener = new DelayedListener(1000,new Worker());
   private static Set<String> unread = new HashSet<>();
 
@@ -64,6 +68,8 @@ public class NeueUmsaetze implements MessageConsumer
   @Override
   public Class[] getExpectedMessageTypes()
   {
+    // Die ObjectChangedMessage ist hier nicht dabei. Das wäre auch gefährlich, weil
+    // wir die weiter unten selbst schicken und damit eine Rekursion auslösen könnten.
     return new Class[]{ImportMessage.class,ObjectDeletedMessage.class,SystemMessage.class};
   }
 
@@ -78,10 +84,10 @@ public class NeueUmsaetze implements MessageConsumer
       final SystemMessage msg = (SystemMessage) message;
       if (msg.getStatusCode() == SystemMessage.SYSTEM_STARTED)
       {
-        load();
-        
-        if (!Application.inServerMode())
-          GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
+        load(false);
+        timer  = new Timer();
+        task   = new SchedulerTask();
+        timer.schedule(task,60 * 1000L,60 * 1000L);
       }
       else if (msg.getStatusCode() == SystemMessage.SYSTEM_SHUTDOWN)
       {
@@ -190,21 +196,10 @@ public class NeueUmsaetze implements MessageConsumer
     }
     finally
     {
-      update();
+      store();
     }
   }
   
-  /**
-   * Aktualisiert die Anzeige der ungelesenen Umsätze.
-   */
-  public static void update()
-  {
-    store();
-    
-    if (!Application.inServerMode())
-      GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
-  }
-
   /**
    * Liefert die Anzahl neuer Umsätze.
    * @return die Anzahl neuer Umsätze.
@@ -236,9 +231,9 @@ public class NeueUmsaetze implements MessageConsumer
   }
   
   /**
-   * Setzt den Ungelesen-Zaehler der Umsaetze zurueck.
+   * Setzt den Ungelesen-Zaehler der Umsaetze auf 0.
    */
-  public static void reset()
+  public static void setAllRead()
   {
     if (unread.size() == 0)
       return;
@@ -269,52 +264,62 @@ public class NeueUmsaetze implements MessageConsumer
     }
     finally
     {
-      update();
+      store();
     }
+  }
+  
+  /**
+   * Lädt die Ungelesen-Infos der Umsätze aus der Datenbank neu.
+   */
+  public static void reload()
+  {
+    load(true);
   }
   
   /**
    * Speichert die Ungelesen-Meldungen in der Datenbank.
    */
-  private static void store()
+  private static synchronized void store()
   {
-    if (!Settings.getStoreUnreadFlag())
-      return;
+    if (Settings.getStoreUnreadFlag())
+    {
+      try
+      {
+        Logger.info("store umsatz unread count");
+        DBPropertyUtil.set(Prefix.UNREAD,"umsatz",null,"count",StringUtils.join(unread,","));
+        Logger.info("umsatz unread count: " + unread.size());
+      }
+      catch (Throwable t)
+      {
+        Logger.error("unable to store umsatz unread count",t);
+      }
+    }
     
-    try
-    {
-      Logger.info("store umsatz unread count");
-      DBPropertyUtil.set(Prefix.UNREAD,"umsatz",null,"unread",StringUtils.join(unread,","));
-      Logger.info("umsatz unread count: " + unread.size());
-    }
-    catch (Throwable t)
-    {
-      Logger.write(Level.DEBUG,"unable to store umsatz unread count",t);
-    }
+    updateUI();
   }
   
   /**
    * Laedt die Ungelesen-Meldungen aus der Datenbank.
+   * @param reload true, wenn es sich um ein Reload handelt. In dem Fall wird das Loglevel auf DEBUG gesetzt.
    */
-  private static synchronized void load()
+  private static synchronized void load(boolean reload)
   {
-    if (!Settings.getStoreUnreadFlag())
-      return;
-    
-    try
+    if (Settings.getStoreUnreadFlag())
     {
-      Logger.info("load umsatz unread count");
-      final String s = DBPropertyUtil.get(Prefix.UNREAD,"umsatz",null,"unread",null);
-      if (s != null)
+      final Level level = reload ? Level.DEBUG : Level.INFO;
+      try
       {
-        final String[] ids = StringUtils.split(s,",");
-        unread.addAll(Arrays.asList(ids));
+        Logger.write(level,"load umsatz unread count");
         
-        final Set<String> existing = new HashSet<String>();
+        // Die neuen IDs laden
+        final String[] ids = StringUtils.split(DBPropertyUtil.get(Prefix.UNREAD,"umsatz",null,"count",""),",");
+        unread.clear();
+        unread.addAll(Arrays.asList(ids));
         
         // Wir müssen für jeden einzelnen Umsatz checken, ob er existiert
         // Andernfalls würden sich hier IDs von Umsätzen sammeln, die anderweitig gelöscht wurden.
         // Es bleiben nur noch die übrig, die in der Datenbank existieren
+        final Set<String> existing = new HashSet<String>();
         final GenericIterator<Umsatz> fromDb = getNeueUmsaetze();
         while (fromDb.hasNext())
         {
@@ -326,17 +331,35 @@ public class NeueUmsaetze implements MessageConsumer
         // Wenn jetzt noch welche in unread drin sind, dann sind das genau die,
         // die inzwischen nicht mehr existieren
         if (unread.size() > 0)
-          Logger.info("removed entries that no longer exist in database: " + StringUtils.join(unread,","));
+          Logger.info("removed unread entries that no longer exist in database: " + StringUtils.join(unread,","));
         
         unread = existing;
+        Logger.write(level,"umsatz unread count: " + unread.size());
       }
-      Logger.info("umsatz unread count: " + unread.size());
-    }
-    catch (Throwable t)
-    {
-      Logger.write(Level.DEBUG,"unable to load umsatz unread count",t);
+      catch (Throwable t)
+      {
+        Logger.error("unable to load umsatz unread count",t);
+      }
     }
 
+    updateUI();
+  }
+  
+  /**
+   * Aktualisiert den Ungelesen-Zähler in der UI.
+   */
+  private static void updateUI()
+  {
+    if (Application.inServerMode())
+      return;
+    
+    GUI.getDisplay().asyncExec(new Runnable() {
+      @Override
+      public void run()
+      {
+        GUI.getNavigation().setUnreadCount("hibiscus.navi.umsatz",size());
+      }
+    });
   }
   
   /**
@@ -347,7 +370,21 @@ public class NeueUmsaetze implements MessageConsumer
     @Override
     public void handleEvent(Event event)
     {
-      update();
+      store();
+    }
+  }
+  
+  /**
+   * Implementierung des Timer-Tasks.
+   */
+  private static class SchedulerTask extends TimerTask
+  {
+    /**
+     * @see java.lang.Runnable#run()
+     */
+    public void run()
+    {
+      reload();
     }
   }
 }

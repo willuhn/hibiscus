@@ -28,7 +28,7 @@ public class UmsatzSetAllReadContextMenuItem extends ContextMenuItem
    */
   public UmsatzSetAllReadContextMenuItem()
   {
-    super(i18n.tr("Alle als gelesen markieren"), e -> NeueUmsaetze.reset(),"ok.png");
+    super(i18n.tr("Alle als gelesen markieren"), e -> NeueUmsaetze.setAllRead(),"ok.png");
   }
   
   /**
