@@ -14,8 +14,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
@@ -47,6 +49,13 @@ public class MarkerKontoauszugMessageConsumer implements MessageConsumer
     {
       SystemMessage msg = (SystemMessage) message;
       if (msg.getStatusCode() != SystemMessage.SYSTEM_STARTED)
+        return;
+    }
+    
+    if (message instanceof ObjectMessage)
+    {
+      GenericObject o = ((ObjectMessage)message).getObject();
+      if (!(o instanceof Kontoauszug))
         return;
     }
 
