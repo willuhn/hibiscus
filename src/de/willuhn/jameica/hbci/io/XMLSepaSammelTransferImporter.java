@@ -73,23 +73,6 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
       if (monitor != null)
         monitor.setStatusText(i18n.tr("Lese Datei ein"));
 
-
-      Konto konto = null;
-      try
-      {
-        // Wir fragen das Konto grundsaetzlich manuell ab. Siehe BUGZILLA 700
-        KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
-        konto = (Konto) d.open();
-      }
-      catch (OperationCanceledException oce)
-      {
-        Logger.info("import cancelled");
-        return;
-      }
-      
-      if (konto == null)
-        throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
-      
       int created = 0;
       int error   = 0;
 
@@ -110,10 +93,29 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
 
         try
         {
-          // Ist noetig, damit die Buchungen die neue ID des Transfers kriegen
           if (object instanceof SepaSammelTransfer)
           {
             currentTransfer = (SepaSammelTransfer) object;
+            
+            Konto konto = currentTransfer.getKonto();
+            if (konto == null)
+            {
+              try
+              {
+                // Wir fragen das Konto grundsaetzlich manuell ab. Siehe BUGZILLA 700
+                KontoAuswahlDialog d = new KontoAuswahlDialog(KontoAuswahlDialog.POSITION_CENTER);
+                konto = (Konto) d.open();
+              }
+              catch (OperationCanceledException oce)
+              {
+                Logger.info("import cancelled");
+                return;
+              }
+            }
+            
+            if (konto == null)
+              throw new ApplicationException(i18n.tr("Kein Konto ausgewählt"));
+
             currentTransfer.setKonto(konto);
           }
           else

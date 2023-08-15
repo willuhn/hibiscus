@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1040 Import von Sammelaufträgen im "Hibiscus-Format": Konto nur dann erfragen, wenn keines in der XML-Datei angegeben ist
   * NEW: 1039 Ungelesen-Information der Umsätze auch in Datenbank speichern
   * BUG: 1038 Tippfehler in SEPA-Purpose-Code "GOWT". Muss "GOVT" heissen. Siehe https://homebanking-hilfe.de/forum/topic.php?p=167894#real167894
   * NEW: 1037 Bei "Umsätze nach Kategorie" ebenfalls "Name 2" der Gegenkonten anzeigen (wurde in Umsatzliste bereits so angezeigt, fehlte hier aber noch)
