@@ -26,7 +26,7 @@ import de.willuhn.util.I18N;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 {
-  private final static String DRIVER = "com.mysql.jdbc.Driver";
+  private final static String DRIVER = "org.mariadb.jdbc.Driver";
   
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
@@ -49,7 +49,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getJdbcUrl()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcurl","jdbc:mysql://localhost:3306/hibiscus?useUnicode=Yes&characterEncoding=ISO8859_1&serverTimezone=Europe/Paris");
+    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcurl","jdbc:mariadb://localhost:3306/hibiscus?useUnicode=Yes&characterEncoding=ISO8859_1&serverTimezone=Europe/Paris");
   }
 
   /**
