@@ -303,7 +303,10 @@ public class SynchronizeList extends TablePart
     this.paintSynchronizeSchedulerStatus(parent);
 
     ButtonArea b = new ButtonArea();
-    b.addButton(i18n.tr("Automatische Synchronisierung einrichten..."),new SynchronizeSchedulerOptions(),null,false,"preferences-system-time.png");
+    b.addButton(i18n.tr("Automatische Synchronisierung einrichten..."),c -> {
+      cacheState();
+      new SynchronizeSchedulerOptions().handleAction(c);
+    },null,false,"preferences-system-time.png");
     b.addButton(i18n.tr("Synchronisierungsoptionen..."),new Options(),null,false,"document-properties.png"); // BUGZILLA 226
     b.addButton(this.syncButton);
     b.paint(parent);

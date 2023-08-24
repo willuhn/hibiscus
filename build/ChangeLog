@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1043 Markierte Synchronisierungsaufgaben auch bereits beim Klick auf "Automatische Synchronisierung einrichten..." zwischenspeichern
   * NEW: 1042 Update auf HBCI4Java 3.1.70 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.70
   * NEW: 1041 Umstellung von MySQL auf MariaDB
 
