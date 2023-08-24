@@ -1,5 +1,8 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1042 Update auf HBCI4Java 3.1.70 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.70
+  * NEW: 1041 Umstellung von MySQL auf MariaDB
+
 2023-08-24 Version 2.10.13
 
   * NEW: 1040 Import von Sammelaufträgen im "Hibiscus-Format": Konto nur dann erfragen, wenn keines in der XML-Datei angegeben ist
