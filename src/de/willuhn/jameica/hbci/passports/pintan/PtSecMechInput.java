@@ -43,7 +43,7 @@ public class PtSecMechInput extends ButtonInput
   {
     this.conf = conf;
     this.setName(i18n.tr("Gespeichertes TAN-Verfahren"));
-    this.setButtonText(i18n.tr("TAN-Verfahren zurücksetzen"));
+    this.setButtonText(i18n.tr("TAN-Verfahren zurücksetzen") + " ");
     this.disableClientControl();
     this.addButtonListener(e -> {
       try
@@ -116,7 +116,12 @@ public class PtSecMechInput extends ButtonInput
       {
         final StringBuilder sb = new StringBuilder();
         if (secMech != null)
-          sb.append(i18n.tr("Verfahren: {0}",secMech.getName()));
+        {
+          if (tanMedia != null && tanMedia.length() > 0)
+            sb.append(i18n.tr("Verfahren: {0}",secMech.getName()));
+          else
+            sb.append(secMech.getName());
+        }
         if (tanMedia != null && tanMedia.length() > 0)
         {
           if (sb.length() > 0)
