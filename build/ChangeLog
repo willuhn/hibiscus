@@ -1,3 +1,7 @@
+2023-09-01 Version 2.10.14
+
+  * BUG: 1041 Markierte Synchronisierungsaufgaben auch bereits beim Klick auf "Automatische Synchronisierung einrichten..." zwischenspeichern
+
 2023-08-24 Version 2.10.13
 
   * NEW: 1040 Import von Sammelaufträgen im "Hibiscus-Format": Konto nur dann erfragen, wenn keines in der XML-Datei angegeben ist
