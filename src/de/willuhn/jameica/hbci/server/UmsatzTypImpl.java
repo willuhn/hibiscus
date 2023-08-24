@@ -11,8 +11,10 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +23,7 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -721,6 +724,25 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     di.setOrder("order by COALESCE(nummer,''),name");
     return di;
   }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObjectNode#getParent()
+   */
+  @Override
+  public GenericObjectNode getParent() throws RemoteException
+  {
+    Cache cache = Cache.get(UmsatzTyp.class, new Cache.ObjectFactory() {
+      public DBIterator load() throws RemoteException
+      {
+        return UmsatzTypUtil.getAll();
+      }
+    },true);
+    
+    final Object i = this.getAttribute(this.getNodeField());
+    if (i instanceof UmsatzTyp)
+      return (UmsatzTyp) i;
+    return (UmsatzTyp) cache.get(i);
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.Duplicatable#duplicate()
@@ -823,5 +845,30 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       return; // ungueltig
     
     this.setAttribute("flags", Integer.valueOf(flags));
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getPath(java.lang.String)
+   */
+  @Override
+  public String getPath(String sep) throws RemoteException
+  {
+    final List<String> names = new ArrayList<>();
+    
+    UmsatzTyp current = this;
+    for (int i=0;i<20;++i)
+    {
+      if (current == null)
+        break;
+      names.add(current.getName());
+      
+      current = (UmsatzTyp) current.getParent();
+    }
+
+    if (sep == null)
+      sep = "|";
+    
+    Collections.reverse(names);
+    return StringUtils.join(names,sep);
   }
 }

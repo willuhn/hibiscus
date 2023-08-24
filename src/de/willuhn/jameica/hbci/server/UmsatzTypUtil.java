@@ -816,5 +816,14 @@ public class UmsatzTypUtil
     {
       return false;
     };
+    
+    /**
+     * @see de.willuhn.jameica.hbci.rmi.UmsatzTyp#getPath(java.lang.String)
+     */
+    @Override
+    public String getPath(String sep) throws RemoteException
+    {
+      return "";
+    }
   }
 }

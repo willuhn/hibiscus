@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -124,19 +125,38 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
       		gvcode = betrag >= 0.0d? "051" : "020";
     		
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));
-    		
-    		//Verwendungszweck
-    		String[] lines = VerwendungszweckUtil.rewrap(27,VerwendungszweckUtil.toArray(u));
-    		int m=0;
-    		for (m=0;m<lines.length;++m)
-    		{
-      		// in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
-    		  // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
-    		  // (Seite 179, strukturierte Belegung des Feldes 86)
-    		  if (m > 9)
-    		    break;
-          out.write("?2" + Integer.toString(m) + lines[m]);
-    		}
+
+        int m = 0;
+
+        // Verwendungszweck
+        // Nur dann mit dem Tag versehen, wenn das nicht bereits der Fall ist
+        final String parsed = VerwendungszweckUtil.getTag(u,VerwendungszweckUtil.Tag.SVWZ);
+        final String raw    = VerwendungszweckUtil.toString(u);
+        final boolean hasTags = !Objects.equals(parsed,raw) && raw.contains(VerwendungszweckUtil.Tag.SVWZ.name());
+        
+        // in MT940 sind nur max. 10 Zeilen zugelassen. Die restlichen muessen wir
+        // ignorieren. Siehe FinTS_3.0_Messages_Finanzdatenformate_2010-08-06_final_version.pdf
+        // (Seite 179, strukturierte Belegung des Feldes 86)
+        if (hasTags) // Tags sind schon im Verwendungszweck - dann übernehmen wir das so
+        {
+          String[] lines = VerwendungszweckUtil.rewrap(27,VerwendungszweckUtil.toArray(u));
+          for (m=0;m<lines.length;++m)
+          {
+            if (m > 9)
+              break;
+            out.write("?2" + Integer.toString(m) + lines[m]);
+          }
+        }
+        else // Keine Tags. Dann schreiben wir sie selbst rein
+        {
+          String[] lines = VerwendungszweckUtil.rewrap(27,parsed);
+          for (int l=0;l<lines.length;++l)
+          {
+            if (l > 9)
+              break;
+            m = addRef(out,m,VerwendungszweckUtil.Tag.SVWZ,lines[l]);
+          }
+        }
 
         m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
         m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());

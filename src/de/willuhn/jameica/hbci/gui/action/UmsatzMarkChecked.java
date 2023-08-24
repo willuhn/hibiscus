@@ -10,6 +10,7 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
+import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Flaggable;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -56,6 +57,7 @@ public class UmsatzMarkChecked extends FlaggableChange
     Application.getMessagingFactory().getMessagingQueue("hibiscus.umsatz.markchecked").sendMessage(new QueryMessage(Boolean.TRUE.toString(),o));
     
     Umsatz u = (Umsatz) o;
+    NeueUmsaetze.setRead(u);
     UmsatzTyp ut = u.getUmsatzTyp();
     
     // Wir haben gar keine Kategorie - dann eruebrigt sich die Frage.

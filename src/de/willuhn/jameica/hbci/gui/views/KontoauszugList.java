@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.parts.PanelButton;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugSettings;
 import de.willuhn.jameica.hbci.io.print.PrintSupportUmsatzList;
+import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -40,6 +41,7 @@ public class KontoauszugList extends AbstractView
    */
   public void bind() throws Exception
   {
+    NeueUmsaetze.reload();
     GUI.getView().setTitle(i18n.tr("Umsätze"));
 
     final de.willuhn.jameica.hbci.gui.parts.KontoauszugList list = new de.willuhn.jameica.hbci.gui.parts.KontoauszugList();

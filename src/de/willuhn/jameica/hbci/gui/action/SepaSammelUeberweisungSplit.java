@@ -122,8 +122,9 @@ public class SepaSammelUeberweisungSplit implements Action
           if (s.isNewObject())
             continue;
 
+          final String id = s.getID();
           s.delete();
-          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(s));
+          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(s,id));
         }
       }
 

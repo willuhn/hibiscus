@@ -55,22 +55,3 @@ public class UmsatzDetail implements Action
   }
 
 }
-
-
-/**********************************************************************
- * $Log: UmsatzDetail.java,v $
- * Revision 1.4  2011/02/10 16:43:56  willuhn
- * @N automatisch in die Edit-View wechseln, wenn der Umsatz in einem Offline-Konto geoeffnet wird - siehe BUGZILLA 989
- *
- * Revision 1.3  2007/03/22 22:36:42  willuhn
- * @N Contextmenu in Trees
- * @C Kategorie-Baum in separates TreePart ausgelagert
- *
- * Revision 1.2  2005/01/19 00:16:04  willuhn
- * @N Lastschriften
- *
- * Revision 1.1  2004/10/18 23:38:17  willuhn
- * @C Refactoring
- * @C Aufloesung der Listener und Ersatz gegen Actions
- *
- **********************************************************************/

@@ -462,7 +462,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     
     // Fuer Kategoriebaum
     if ("name".equals(arg0))
-      return getGegenkontoName();
+      arg0 = "empfaenger";
 
     if ("valuta_pseudo".equals(arg0))
       return getPseudoDate(getValuta());

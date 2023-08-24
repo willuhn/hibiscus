@@ -2,10 +2,10 @@
 #set($hideSaldo = $!hs.booleanValue())
 #set($uda       = $session.get("usage.display.all"))
 #set($fullUsage = $!uda.booleanValue())
-"#";"IBAN";"BIC";"Konto";"Gegenkonto";"Gegenkonto BLZ";"Gegenkonto Inhaber";"Betrag";"Valuta";"Datum";"Verwendungszweck";"Verwendungszweck 2";#if(!$hideSaldo)"Zwischensumme";#end"Primanota";"Kundenreferenz";"Kategorie";"Notiz";"Weitere Verwendungszwecke";"Art";"Vormerkbuchung";"End-to-End ID"
+"#";"IBAN";"BIC";"Konto";"Gegenkonto";"Gegenkonto BLZ";"Gegenkonto Inhaber";"Betrag";"Valuta";"Datum";"Verwendungszweck";"Verwendungszweck 2";#if(!$hideSaldo)"Zwischensumme";#end"Primanota";"Kundenreferenz";"Kategorie";"Notiz";"Weitere Verwendungszwecke";"Art";"Vormerkbuchung";"End-to-End ID";"Kategorie-Pfad"
 #foreach($umsatz in $objects)
 #set($konto = $umsatz.Konto)
-#set($kat = "")
 #set($kat = $!{umsatz.UmsatzTyp.Name})
-"$!{umsatz.ID}";"$!{konto.Iban}";"$!{konto.Bic}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{umsatz.getAttribute('empfaenger')}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";#if($fullUsage)"$!{filter.escape($!{umsatz.Zweck})}"#else"$!{filter.escape($!{umsatz.getAttribute("SVWZ")})}"#end;"#if($fullUsage)$!{filter.escape($!{umsatz.Zweck2})}#end";#if(!$hideSaldo)"$!{decimalformat.format(${umsatz.Saldo})}";#end"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{filter.escape($!{umsatz.Kommentar})}";"#if($fullUsage)#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{filter.escape($!{ewz})} #end#end";"$!{umsatz.Art}";#if($umsatz.hasFlag(2))"ja"#end;"$!{umsatz.endToEndId}"
+#set($path = $!{umsatz.getUmsatzTyp().getPath("/")})
+"$!{umsatz.ID}";"$!{konto.Iban}";"$!{konto.Bic}";"$!{konto.Bezeichnung}";"$!{umsatz.GegenkontoNummer}";"$!{umsatz.GegenkontoBLZ}";"$!{umsatz.getAttribute('empfaenger')}";"$!{decimalformat.format(${umsatz.Betrag})}";"$!{dateformat.format(${umsatz.Valuta})}";"$!{dateformat.format(${umsatz.Datum})}";#if($fullUsage)"$!{filter.escape($!{umsatz.Zweck})}"#else"$!{filter.escape($!{umsatz.getAttribute("SVWZ")})}"#end;"#if($fullUsage)$!{filter.escape($!{umsatz.Zweck2})}#end";#if(!$hideSaldo)"$!{decimalformat.format(${umsatz.Saldo})}";#end"$!{umsatz.Primanota}";"$!{umsatz.CustomerRef}";"$!{kat}";"$!{filter.escape($!{umsatz.Kommentar})}";"#if($fullUsage)#foreach($ewz in $umsatz.WeitereVerwendungszwecke)$!{filter.escape($!{ewz})} #end#end";"$!{umsatz.Art}";#if($umsatz.hasFlag(2))"ja"#end;"$!{umsatz.endToEndId}";"$!{path}"
 #end

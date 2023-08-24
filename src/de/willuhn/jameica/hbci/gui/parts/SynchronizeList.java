@@ -237,8 +237,6 @@ public class SynchronizeList extends TablePart
         {
           Logger.error("unable to add job",e);
         }
-
-        sync.getJobs().add(job);
       }
         
       // Die Synchronisation brauchen wir nur dann zur Liste tun, wenn Jobs vorhanden sind
