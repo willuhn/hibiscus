@@ -1,5 +1,6 @@
 2023-09-01 Version 2.10.14
 
+  * NEW: 1042 Wildcards im Kartenleser-Namen erlaubt. Für den Fall, dass der SmartCard-Service abhängig von Lade-/Port-Reihenfolge variierende Bezeichnungen liefert
   * BUG: 1041 Markierte Synchronisierungsaufgaben auch bereits beim Klick auf "Automatische Synchronisierung einrichten..." zwischenspeichern
 
 2023-08-24 Version 2.10.13
