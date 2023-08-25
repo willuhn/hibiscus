@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.kapott.hbci.manager.FlickerRenderer;
 import org.kapott.hbci.smartcardio.ChipTanCardService;
-import org.kapott.hbci.smartcardio.SmartCardService;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -225,7 +224,7 @@ public class ChipTANDialog extends TANDialog
     {
       Logger.info("searching for smartcards, please wait...");
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie bitte die Chipkarte ein."),StatusBarMessage.TYPE_INFO));
-      this.service = SmartCardService.createInstance(ChipTanCardService.class,this.config != null ? StringUtils.trimToNull(this.config.getCardReader()) : null);
+      this.service = SmartCardUtil.getService(this.config != null ? this.config.getCardReader() : null);
 
       // Wir haben grundsaetzlich einen Kartenleser.
       if (this.service != null && this.config != null)

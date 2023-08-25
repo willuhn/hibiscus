@@ -10,15 +10,9 @@
 package de.willuhn.jameica.hbci.passports.pintan;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.smartcardio.CardTerminal;
-import javax.smartcardio.CardTerminals;
-import javax.smartcardio.TerminalFactory;
-
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
@@ -54,7 +48,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -236,40 +229,17 @@ public class Controller extends AbstractControl
     if (this.cardReaders != null)
       return this.cardReaders;
     
-    List<String> available = new ArrayList<String>();
+    final List<String> available = SmartCardUtil.getAvailable();
     
     // Erste Zeile Leerer Eintrag.
     // Damit das Feld auch dann leer bleiben kann, wenn der User nur einen
     // Kartenleser hat. Der sollte dann nicht automatisch vorselektiert
     // werden, da dessen Bezeichnung sonst unnoetigerweise hart gespeichert wird
-    available.add("");
-    try
-    {
-      TerminalFactory terminalFactory = TerminalFactory.getDefault();
-      CardTerminals terminals = terminalFactory.terminals();
-      if (terminals != null)
-      {
-        List<CardTerminal> list = terminals.list();
-        if (list != null && list.size() > 0)
-        {
-          for (CardTerminal t:list)
-          {
-            String name = StringUtils.trimToNull(t.getName());
-            if (name != null)
-            available.add(name);
-          }
-        }
-      }
-    }
-    catch (Throwable t)
-    {
-      Logger.info("unable to determine card reader list: " + t.getMessage());
-      Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
-    }
+    available.add(0,"");
     
     this.cardReaders = new SelectInput(available,this.getConfig().getCardReader());
     this.cardReaders.setEditable(true);
-    this.cardReaders.setComment(i18n.tr("nur nötig, wenn mehrere Leser vorhanden"));
+    this.cardReaders.setComment(i18n.tr("nur nötig, wenn mehrere Leser vorhanden (\"*\" am Anfang/Ende erlaubt)"));
     this.cardReaders.setName(i18n.tr("Identifier des PC/SC-Kartenlesers"));
     return this.cardReaders;
   }
