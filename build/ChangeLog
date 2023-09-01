@@ -1,11 +1,13 @@
-
 HEAD 2.11 (nightly)
 
-  * BUG: 1045 Beim CSV-Export von Umsätzen wurde bei Umsätzen ohne Kategorie fälschlicherweise die Kategorie des vorherigen Umsatzes angezeigt
-  * NEW: 1044 Wildcards im Kartenleser-Namen erlaubt. Für den Fall, dass der SmartCard-Service abhängig von Lade-/Port-Reihenfolge variierende Bezeichnungen liefert
-  * BUG: 1043 Markierte Synchronisierungsaufgaben auch bereits beim Klick auf "Automatische Synchronisierung einrichten..." zwischenspeichern
-  * NEW: 1042 Update auf HBCI4Java 3.1.70 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.70
-  * NEW: 1041 Umstellung von MySQL auf MariaDB
+  * NEW: 1045 Update auf HBCI4Java 3.1.70 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.70
+  * NEW: 1044 Umstellung von MySQL auf MariaDB
+
+2023-09-01 Version 2.10.14
+
+  * BUG: 1043 Beim CSV-Export von Umsätzen wurde bei Umsätzen ohne Kategorie fälschlicherweise die Kategorie des vorherigen Umsatzes angezeigt
+  * NEW: 1042 Wildcards im Kartenleser-Namen erlaubt. Für den Fall, dass der SmartCard-Service abhängig von Lade-/Port-Reihenfolge variierende Bezeichnungen liefert
+  * BUG: 1041 Markierte Synchronisierungsaufgaben auch bereits beim Klick auf "Automatische Synchronisierung einrichten..." zwischenspeichern
 
 2023-08-24 Version 2.10.13
 
