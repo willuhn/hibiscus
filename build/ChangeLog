@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1046 Option "Im Fehlerfall anhalten" in den Einstellungen der automatischen Synchronisierung wurde nicht gespeichert
   * NEW: 1045 Update auf HBCI4Java 3.1.70 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.70
   * NEW: 1044 Umstellung von MySQL auf MariaDB
 
