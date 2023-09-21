@@ -91,6 +91,12 @@ public class NeueUmsaetze implements MessageConsumer
       }
       else if (msg.getStatusCode() == SystemMessage.SYSTEM_SHUTDOWN)
       {
+        if (Settings.getMarkReadOnExit())
+        {
+          Logger.info("clear unread mark for bookings");
+          unread.clear();
+        }
+        
         store();
       }
     }
@@ -257,7 +263,8 @@ public class NeueUmsaetze implements MessageConsumer
       // Achtung: Nicht die Instanz der View wiederverwenden. Bringt keinen Vorteil. Verlangt aber, dass die View
       // alle Resourcen sauber disposed und neu erstellt. KontoNew macht das z.Bsp. nicht, weil es den Controller
       // als Member haelt.
-      GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
+      if (!Application.inServerMode())
+        GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
     }
     catch (Exception e)
     {
