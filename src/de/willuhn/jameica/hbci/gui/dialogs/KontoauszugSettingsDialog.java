@@ -129,7 +129,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
       return this.markReadOnExit;
     
     this.markReadOnExit = new CheckboxInput(de.willuhn.jameica.hbci.Settings.getMarkReadOnExit());
-    this.markReadOnExit.setName(i18n.tr("Umsätze beim Beenden als Gelesen markieren"));
+    this.markReadOnExit.setName(i18n.tr("Umsätze beim Beenden als gelesen markieren"));
     return this.markReadOnExit;
   }
 
