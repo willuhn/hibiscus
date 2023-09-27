@@ -39,8 +39,8 @@ public class ChartFeatureTooltip implements ChartFeature
   private int highlightX;
   private int highlightY;
   private int seriesIndex;
-  protected boolean highlight;
-
+  private String tooltip;
+  
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartFeature#onEvent(de.willuhn.jameica.hbci.gui.chart.ChartFeature.Event)
    */
@@ -67,46 +67,33 @@ public class ChartFeatureTooltip implements ChartFeature
       @Override
       public void mouseHover(MouseEvent event)
       {
-        IAxis xAxis = c.getAxisSet().getXAxis(0);
-        IAxis yAxis = c.getAxisSet().getYAxis(0);
+        final IAxis xAxis = c.getAxisSet().getXAxis(0);
+        final IAxis yAxis = c.getAxisSet().getYAxis(0);
 
-        Collection<SeriesData> foundSeries = findClosestSeries(c, event, xAxis, yAxis);
+        final Collection<SeriesData> foundSeries = findClosestSeries(c, event, xAxis, yAxis);
 
         if (foundSeries.isEmpty())
           return;
         
-        // set tooltip of closest data point
-        c.getPlotArea().setToolTipText(getTooltipText(foundSeries));
+        tooltip = getTooltipText(foundSeries);
 
-        // remember closest data point
-        SeriesData data = foundSeries.iterator().next();
+        final SeriesData data = foundSeries.iterator().next();
         highlightX = xAxis.getPixelCoordinate(data.closestX);
         highlightY = yAxis.getPixelCoordinate(data.closestY);
         seriesIndex = data.seriesIndex;
-        highlight = true;
-        
-        // trigger repaint (paint highlight)
-        c.getPlotArea().getControl().redraw();
+        control.redraw();
       }
     });
 
     control.addMouseMoveListener(new MouseMoveListener() {
-
       @Override
       public void mouseMove(MouseEvent e)
       {
-        try
+        if (tooltip != null)
         {
-          if (highlight)
-          {
-            // Tooltip ausblenden
-            control.setToolTipText(null);
-            control.redraw();
-          }
-        }
-        finally
-        {
-          highlight = false;
+          tooltip = null;
+          c.getPlotArea().setToolTipText(null);
+          control.redraw();
         }
       }
     });
@@ -116,10 +103,12 @@ public class ChartFeatureTooltip implements ChartFeature
       @Override
       public void paintControl(PaintEvent event)
       {
-        if (highlight)
+        if (tooltip != null)
         {
-          ISeries[] series = c.getSeriesSet().getSeries();
+          final ISeries[] series = c.getSeriesSet().getSeries();
+          c.getPlotArea().setToolTipText(tooltip);
           paintChartPoint(event.gc, highlightX, highlightY, series[seriesIndex]);
+          c.layout(true);
         }
       }
     });
