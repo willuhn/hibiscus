@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -22,8 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
-
-import com.google.common.base.Objects;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.Part;
@@ -359,7 +358,7 @@ public class SaldoChart implements Part
       List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
       for (Konto k : konten)
       {
-        if (group == null || Objects.equal(group, k.getKategorie()))
+        if (group == null || Objects.equals(group, k.getKategorie()))
         {
           result.add(k);
         }
@@ -396,8 +395,8 @@ public class SaldoChart implements Part
         final Date start = getStartDate();
         final Date end = getEndDate();
 
-        final boolean changed = !Objects.equal(start, startPrev) ||
-                                !Objects.equal(end, endPrev) ||
+        final boolean changed = !Objects.equals(start, startPrev) ||
+                                !Objects.equals(end, endPrev) ||
                                 getActiveOnly().hasChanged() ||
                                 o != oPrev;
 

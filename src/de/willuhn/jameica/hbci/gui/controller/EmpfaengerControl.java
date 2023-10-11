@@ -14,13 +14,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.kapott.hbci.manager.HBCIUtils;
-
-import com.google.common.base.Objects;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.jost_net.OBanToo.SEPA.SEPAException;
@@ -372,7 +371,7 @@ public class EmpfaengerControl extends AbstractControl
             {
               IBAN i = new IBAN(iban);
               SEPALand land = i.getLand();
-              if (land == null || !Objects.equal(land.getKennzeichen(),"DE"))
+              if (land == null || !Objects.equals(land.getKennzeichen(),"DE"))
               {
                 Logger.info("no auto completion of national account information for this country");
                 return;
