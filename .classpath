@@ -25,12 +25,12 @@
 	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.72.jar" sourcepath="/hbci4j-core"/>
 	<classpathentry kind="lib" path="lib/qrcodegen/qrcodegen-1.8.0.jar"/>
-	<classpathentry kind="lib" path="lib/apache_httpclient/httpclient5-5.2.jar"/>
-	<classpathentry kind="lib" path="lib/apache_httpclient/httpcore5-5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpclient5-5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpcore5-5.2.jar"/>
 	<classpathentry kind="lib" path="lib/apache_httpclient/httpcore5-h2-5.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson/jackson-annotations-2.14.1.jar"/>
-	<classpathentry kind="lib" path="lib/jackson/jackson-core-2.14.1.jar"/>
-	<classpathentry kind="lib" path="lib/jackson/jackson-databind-2.14.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson/jackson-annotations-2.14.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson/jackson-core-2.14.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson/jackson-databind-2.14.1.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j/slf4j-api-1.7.36.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/swtchart/org.eclipse.swtchart_0.14.0.202301260747.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/swtchart/org.eclipse.swtchart.extensions_0.14.0.202301260747.jar"/>
