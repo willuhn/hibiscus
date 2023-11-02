@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 1052 Dialog für Erinnerungstermine etwas größer
   * NEW: 1051 Einheitliche Schreibweise des Kontos auch in der Liste der elektronischen Kontoauszüge
   * NEW: 1050 Update auf HBCI4Java 3.1.72 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.72
   * NEW: 1049 Update auf SWT-Chart 0.14

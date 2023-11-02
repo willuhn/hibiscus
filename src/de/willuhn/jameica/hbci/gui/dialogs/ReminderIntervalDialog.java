@@ -74,7 +74,7 @@ public class ReminderIntervalDialog extends AbstractDialog<ReminderInterval>
     this.setDate(start);
     
     this.setTitle(i18n.tr("Auswahl des Intervalls"));
-    this.setSize(370,460);
+    this.setSize(480,650);
   }
   
   /**
