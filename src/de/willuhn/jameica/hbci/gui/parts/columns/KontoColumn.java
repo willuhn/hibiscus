@@ -43,11 +43,7 @@ public class KontoColumn extends Column
         Konto k = (Konto) o;
         try
         {
-          String s = k.getKontonummer();
-          String name = k.getBezeichnung();
-          if (name != null && name.length() > 0)
-            s += " [" + name + "]";
-          return s;
+          return k.getLongName();
         }
         catch (RemoteException r)
         {

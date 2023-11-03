@@ -17,13 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -54,6 +53,7 @@ import de.willuhn.jameica.hbci.report.balance.AccountBalanceService;
 import de.willuhn.jameica.hbci.rmi.EinnahmeAusgabeZeitraum;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
 import de.willuhn.jameica.hbci.server.KontoUtil;
@@ -380,12 +380,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
 
   private List<Umsatz> getUmsaetze(List<Konto> konten, Date start, Date end) throws RemoteException
   {
-    List<String> kontoIds = new ArrayList<String>();
-    for (Konto konto : konten)
-    {
-      kontoIds.add(konto.getID());
-    }
-    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
+    final DBIterator umsaetze = UmsatzUtil.getUmsaetze();
     if (start != null)
     {
       umsaetze.addFilter("datum >= ?", new java.sql.Date(DateUtil.startOfDay(start).getTime()));
@@ -394,16 +389,25 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       umsaetze.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(end).getTime()));
     }
-    // TODO funktioniert das mit allen unterstützten Datenbankversionen?
-    umsaetze.addFilter("konto_id in (" + Joiner.on(",").join(kontoIds) + ")");
-    List<Umsatz> umsatzList = new ArrayList<Umsatz>();
+
+    if (konten != null && !konten.isEmpty())
+    {
+      final List<String> kontoIds = new ArrayList<String>();
+      for (Konto konto : konten)
+      {
+        kontoIds.add(konto.getID());
+      }
+      umsaetze.addFilter("konto_id in (" + StringUtils.join(kontoIds,",") + ")");
+    }
+
+    final List<Umsatz> umsatzList = new ArrayList<Umsatz>();
     while (umsaetze.hasNext())
     {
-      Umsatz u = (Umsatz) umsaetze.next();
-      if (!u.hasFlag(Umsatz.FLAG_NOTBOOKED))
-      {
-        umsatzList.add(u);
-      }
+      final Umsatz u = (Umsatz) umsaetze.next();
+      if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+        continue;
+
+      umsatzList.add(u);
     }
     return umsatzList;
   }
@@ -584,7 +588,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
       for (Konto k : konten)
       {
-        if (group == null || Objects.equal(group, k.getKategorie()))
+        if (group == null || Objects.equals(group, k.getKategorie()))
         {
           result.add(k);
         }

@@ -1,3 +1,15 @@
+2023-11-03 Version 2.10.15
+
+  * NEW: 1052 Beim erstmaligen Markieren von Umsätzen als gelesen eine Auswahl anzeigen, ob dies beim Beenden automatisch geschehen soll
+  * CHG: 1051 Dialog für Erinnerungstermine etwas größer
+  * NEW: 1050 Einheitliche Schreibweise des Kontos auch in der Liste der elektronischen Kontoauszüge
+  * NEW: 1049 Update auf HBCI4Java 3.1.72 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.72
+  * NEW: 1048 Update auf SWT-Chart 0.14
+  * BUG: 1047 Tooltip in Line-Charts wurde nicht zuverlässig angezeigt - siehe https://homebanking-hilfe.de/forum/topic.php?t=25998
+  * NEW: 1046 Neue Option "[x] Umsätze beim Beenden als Gelesen markieren" in den Anzeigeoptionen der Umsätze
+  * BUG: 1045 Option "Im Fehlerfall anhalten" in den Einstellungen der automatischen Synchronisierung wurde nicht gespeichert
+  * NEW: 1044 Update auf HBCI4Java 3.1.70 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.70
+
 2023-09-01 Version 2.10.14
 
   * BUG: 1043 Beim CSV-Export von Umsätzen wurde bei Umsätzen ohne Kategorie fälschlicherweise die Kategorie des vorherigen Umsatzes angezeigt

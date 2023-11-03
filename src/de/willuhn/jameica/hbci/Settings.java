@@ -321,9 +321,27 @@ public class Settings
    * Legt fest, ob die Ungelesen-Markierungen in der Datenbank gespeichert werden sollen.
    * @param store true, wenn die Ungelesen-Markierungen in der Datenbank gespeichert werden sollen.
    */
-  public static void setStoreUnreadFfag(boolean store)
+  public static void setStoreUnreadFlag(boolean store)
   {
     settings.setAttribute("unread.store",store);
+  }
+
+  /**
+   * Liefert true, wenn die Ungelesen-Markierungen beim Beenden zurückgesetzt werden soll.
+   * @return true, wenn die Ungelesen-Markierungen beim Beenden zurückgesetzt werden soll.
+   */
+  public static boolean getMarkReadOnExit()
+  {
+    return settings.getBoolean("unread.markreadonexit",true);
+  }
+
+  /**
+   * Legt fest, ob die Ungelesen-Markierungen beim Beenden zurückgesetzt werden soll.
+   * @param b true, wenn die Ungelesen-Markierungen beim Beenden zurückgesetzt werden soll.
+   */
+  public static void setMarkReadOnExit(boolean b)
+  {
+    settings.setAttribute("unread.markreadonexit",b);
   }
 
   /**

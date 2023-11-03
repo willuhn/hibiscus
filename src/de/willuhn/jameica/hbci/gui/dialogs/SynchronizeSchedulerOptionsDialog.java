@@ -125,7 +125,10 @@ public class SynchronizeSchedulerOptionsDialog extends AbstractDialog<Void>
       SynchronizeSchedulerSettings.setSchedulerInterval(((Integer)getInterval().getValue()));
       SynchronizeSchedulerSettings.setSchedulerStartTime(((Integer)getTimeFrom().getValue()));
       SynchronizeSchedulerSettings.setSchedulerEndTime(((Integer)getTimeTo().getValue()));
-      
+
+      final boolean stop = ((Boolean)getStopOnError().getValue()).booleanValue();
+      SynchronizeSchedulerSettings.setStopSchedulerOnError(stop);
+
       for (CheckboxInput ci:getWeekdays())
       {
         final Integer day = (Integer) ci.getData("day");
