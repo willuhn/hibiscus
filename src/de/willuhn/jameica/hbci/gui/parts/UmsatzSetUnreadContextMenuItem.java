@@ -10,19 +10,13 @@
 
 package de.willuhn.jameica.hbci.gui.parts;
 
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
  * Vorkonfigurierter Context-Menu-Eintrag für Umsätze "Als ungelesen markieren".
  */
-public class UmsatzSetUnreadContextMenuItem extends CheckedContextMenuItem
+public class UmsatzSetUnreadContextMenuItem extends AbstractUmsatzReadContextMenuItem
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
    * ct.
    */

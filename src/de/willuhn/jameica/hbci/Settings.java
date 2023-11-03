@@ -332,7 +332,7 @@ public class Settings
    */
   public static boolean getMarkReadOnExit()
   {
-    return settings.getBoolean("unread.markreadonexit",false);
+    return settings.getBoolean("unread.markreadonexit",true);
   }
 
   /**

@@ -10,25 +10,23 @@
 
 package de.willuhn.jameica.hbci.gui.parts;
 
-import de.willuhn.jameica.gui.parts.ContextMenuItem;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
  * Vorkonfigurierter Context-Menu-Eintrag für Umsätze "Alle als gelesen markieren".
  */
-public class UmsatzSetAllReadContextMenuItem extends ContextMenuItem
+public class UmsatzSetAllReadContextMenuItem extends AbstractUmsatzReadContextMenuItem
 {
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  
   /**
    * ct.
    */
   public UmsatzSetAllReadContextMenuItem()
   {
-    super(i18n.tr("Alle als gelesen markieren"), e -> NeueUmsaetze.setAllRead(),"ok.png");
+    super(i18n.tr("Alle als gelesen markieren"), e -> 
+    {
+      askMarkReadOnExit();
+      NeueUmsaetze.setAllRead();
+    },"ok.png");
   }
   
   /**
