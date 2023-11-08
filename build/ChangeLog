@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1054 Wenn der Rechner in Standby versetzt wird, kann es vorkommen, dass die nächste automatische Synchronisierung nicht zum angezeigten Zeitpunkt stattfindet 
   * NEW: 1053 Umstellung von MySQL auf MariaDB
 
 2023-11-03 Version 2.10.15
