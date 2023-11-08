@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 1055 Das fehlgeschlagene Laden eines Datensatzes per ObjectNotFoundException sollte nicht dazu führen, dass das Backup übersprungen wird
   * BUG: 1054 Wenn der Rechner in Standby versetzt wird, kann es vorkommen, dass die nächste automatische Synchronisierung nicht zum angezeigten Zeitpunkt stattfindet 
   * NEW: 1053 Umstellung von MySQL auf MariaDB
 
