@@ -158,6 +158,16 @@ public class Converter
         if (mid != null && mid.length() > 0 && mid.length() <= 100)
           umsatz.setMandateId(mid);
       }
+      
+      //Wir checken mal, ob wir eine GläubigerID haben. Falls ja, tragen wir die gleich
+      //in das dedizierte Feld ein. Aber nur, wenn wir noch keine haben
+      String creditorId = umsatz.getCreditorId();
+      if (creditorId == null || creditorId.length() == 0)
+      {
+         creditorId = cleanSepaId(VerwendungszweckUtil.getTag(umsatz, Tag.CRED));
+         if (creditorId != null && creditorId.length() > 0 && creditorId.length() <= 35)
+           umsatz.setCreditorId(creditorId);
+      }
 
     }
     //
