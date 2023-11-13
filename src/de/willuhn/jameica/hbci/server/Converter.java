@@ -170,7 +170,10 @@ public class Converter
     {
       umsatz.setGegenkonto(HBCIKonto2Address(u.other,u.isCamt));
       if (u.isCamt)
+      {
         umsatz.setGegenkontoName2(u.other.name2);
+        umsatz.setCreditorId(u.other.creditorid);
+      }
     }
 
     if (!HBCIProperties.HBCI_SEPA_PARSE_TAGS)
