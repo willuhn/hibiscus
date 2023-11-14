@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1057 Update auf HBCI4Java 3.1.73 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.73
   * NEW: 1056 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2023
   * CHG: 1055 Das fehlgeschlagene Laden eines Datensatzes per ObjectNotFoundException sollte nicht dazu führen, dass das Backup übersprungen wird
   * BUG: 1054 Wenn der Rechner in Standby versetzt wird, kann es vorkommen, dass die nächste automatische Synchronisierung nicht zum angezeigten Zeitpunkt stattfindet 
