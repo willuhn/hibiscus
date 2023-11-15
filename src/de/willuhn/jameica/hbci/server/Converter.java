@@ -159,14 +159,27 @@ public class Converter
           umsatz.setMandateId(mid);
       }
       
-      //Wir checken mal, ob wir eine GläubigerID haben. Falls ja, tragen wir die gleich
-      //in das dedizierte Feld ein. Aber nur, wenn wir noch keine haben
+      // Wir checken mal, ob wir eine GläubigerID haben. Falls ja, tragen wir die gleich
+      // in das dedizierte Feld ein. Aber nur, wenn wir noch keine haben
       String creditorId = umsatz.getCreditorId();
       if (creditorId == null || creditorId.length() == 0)
       {
-         creditorId = cleanSepaId(VerwendungszweckUtil.getTag(umsatz, Tag.CRED));
-         if (creditorId != null && creditorId.length() > 0 && creditorId.length() <= 35)
-           umsatz.setCreditorId(creditorId);
+        // Wir checken erst, ob wir die ID direkt im passenden Feld haben. Das ist nur
+        // dann der Fall, wenn der Umsatz per CAMT empfangen wurde. Bei MT940 findet er sich
+        // im Verwendungszweck
+        
+        if (u.other != null && u.other.creditorid != null && u.other.creditorid.length() > 0)
+        {
+          // CAMT
+          umsatz.setCreditorId(u.other.creditorid);
+        }
+        else
+        {
+          // MT940
+          creditorId = cleanSepaId(VerwendungszweckUtil.getTag(umsatz, Tag.CRED));
+          if (creditorId != null && creditorId.length() > 0 && creditorId.length() <= HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH)
+            umsatz.setCreditorId(creditorId);
+        }
       }
 
     }
@@ -180,10 +193,7 @@ public class Converter
     {
       umsatz.setGegenkonto(HBCIKonto2Address(u.other,u.isCamt));
       if (u.isCamt)
-      {
         umsatz.setGegenkontoName2(u.other.name2);
-        umsatz.setCreditorId(u.other.creditorid);
-      }
     }
 
     if (!HBCIProperties.HBCI_SEPA_PARSE_TAGS)
