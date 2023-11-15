@@ -311,6 +311,7 @@ CREATE TABLE umsatz (
      , endtoendid varchar(100)
      , mandateid varchar(100)
      , empfaenger_name2 varchar(255)
+     , creditorid varchar(35)
      , UNIQUE (id)
      , PRIMARY KEY (id)
 ) ENGINE=InnoDB;

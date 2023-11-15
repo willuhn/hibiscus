@@ -99,6 +99,8 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
       // Und die kommen schema-validiert im XML-Format. Hier extra nochmal zu pruefen, waere redundant.
       // Zumal die korrespondierenden Datebank-Felder vorsorglich ohnehin deutlich laenger definiert
       // sind als es das Schema zulaesst
+      
+      HBCIProperties.checkLength(getCreditorId(), HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
 		}
 		catch (RemoteException e)
 		{
@@ -781,6 +783,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     copy.setPurposeCode(this.getPurposeCode());
     copy.setEndToEndId(this.getEndToEndId());
     copy.setMandateId(this.getMandateId());
+    copy.setCreditorId(this.getCreditorId());
 
     // Das Duplizieren von Umsatzbuchungen machen wir z.Bsp. dann, wenn ein User
     // per Hand eine Gegenbuchung erzeugt (per Kontextmenu-Eintrag "Gegenbuchung erzeugen auf...").
@@ -880,4 +883,23 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     this.setAttribute("empfaenger_name2",name);
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#getCreditorId()
+   */
+  @Override
+  public String getCreditorId() throws RemoteException
+  {
+    return (String) this.getAttribute("creditorid");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.Umsatz#setCreditorId(java.lang.String)
+   */
+  @Override
+  public void setCreditorId(String name) throws RemoteException
+  {
+    this.setAttribute("creditorid",name);
+  }
+  
 }

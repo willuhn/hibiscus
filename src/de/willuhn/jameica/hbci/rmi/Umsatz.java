@@ -268,4 +268,19 @@ public interface Umsatz extends HibiscusTransfer, HibiscusDBObject, Checksum, Fl
    */
   public void setGegenkontoName2(String name) throws RemoteException;
 
+  /**
+   * Liefert die Gläubiger-ID des Gegenkontos.
+   * Nur bei Umsaetzen vorhanden, die per CAMT abgerufen werden.
+   * @return Gläubiger-ID des Gegenkontos
+   * @throws RemoteException
+   */
+  public String getCreditorId() throws RemoteException;
+
+  
+  /**
+   * Setzt die Gläubiger-ID des Gegenkontos.
+   * @param id Gläubiger-ID des Gegenkontos
+   * @throws RemoteException
+   */
+  public void setCreditorId(String id) throws RemoteException;
 }

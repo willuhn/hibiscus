@@ -178,7 +178,8 @@ CREATE TABLE umsatz (
   purposecode varchar(10),
   endtoendid varchar(100),
   mandateid varchar(100),
-  empfaenger_name2 varchar(255)
+  empfaenger_name2 varchar(255),
+  creditorid varchar(35)
 );
 
 CREATE TABLE umsatztyp (
