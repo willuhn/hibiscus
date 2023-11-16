@@ -89,9 +89,10 @@ public abstract class AbstractUmsatzDetail extends AbstractView
     right.addHeadline(i18n.tr("Sonstige Informationen"));
     right.addLabelPair(i18n.tr("Art der Buchung"),              control.getArt());
     right.addInput(control.getEndToEndId());
+    right.addInput(control.getCreditorId());
     right.addLabelPair(i18n.tr("Kunden-/Mandatsreferenz"),      new MultiInput(control.getCustomerRef(),control.getMandateId()));
     right.addLabelPair(i18n.tr("Primanota/GV-Code"),new MultiInput(control.getPrimanota(),control.getGvCode()));
-
+    
     right.addHeadline(i18n.tr("Notizen"));
     right.addPart(control.getKommentar());
 

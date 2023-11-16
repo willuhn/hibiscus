@@ -267,6 +267,18 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       input.setEnabled(true);
     return input;
 	}
+	
+	/**
+	 * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getCreditorId()
+	 */
+	@Override
+	public Input getCreditorId() throws RemoteException
+	{
+	  Input input = super.getCreditorId();
+	  if (!input.isEnabled())
+	    input.setEnabled(true);
+	  return input;
+	}
 
   /**
    * @see de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl#getGvCode()
@@ -364,6 +376,7 @@ public class UmsatzDetailEditControl extends UmsatzDetailControl
       u.setPrimanota((String)getPrimanota().getValue());
       u.setEndToEndId((String)getEndToEndId().getValue());
       u.setMandateId((String)getMandateId().getValue());
+      u.setCreditorId((String)getCreditorId().getValue());
       
       Date valuta = (Date) getValuta().getValue();
       Date datum  = (Date) getDatum().getValue();
