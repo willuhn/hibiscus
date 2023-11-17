@@ -67,7 +67,8 @@ public class Converter
     umsatz.setPurposeCode(u.purposecode);
     umsatz.setEndToEndId(u.endToEndId);
     umsatz.setMandateId(u.mandateId);
-
+    umsatz.setCreditorId(u.other.creditorid);
+    
     //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
     Saldo s = u.saldo;
     if (s != null)
@@ -164,6 +165,7 @@ public class Converter
       String creditorId = umsatz.getCreditorId();
       if (creditorId == null || creditorId.length() == 0)
       {
+        
         // Wir checken erst, ob wir die ID direkt im passenden Feld haben. Das ist nur
         // dann der Fall, wenn der Umsatz per CAMT empfangen wurde. Bei MT940 findet er sich
         // im Verwendungszweck
