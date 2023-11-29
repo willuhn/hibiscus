@@ -161,6 +161,7 @@ public class MT940UmsatzExporterMerged extends MT940UmsatzExporter
         m = addRef(out,m,VerwendungszweckUtil.Tag.EREF,u.getEndToEndId());
         m = addRef(out,m,VerwendungszweckUtil.Tag.KREF,u.getCustomerRef());
         m = addRef(out,m,VerwendungszweckUtil.Tag.MREF,u.getMandateId());
+        m = addRef(out,m,VerwendungszweckUtil.Tag.CRED,u.getCreditorId());
         
         String blz = StringUtils.trimToNull(u.getGegenkontoBLZ());
         String kto = StringUtils.trimToNull(u.getGegenkontoNummer());

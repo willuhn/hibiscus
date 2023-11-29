@@ -181,6 +181,8 @@
         <th>Primanota</th>
         <th>Referenz</th>
         <th>Vormerkbuchung</th>
+        <th>Mandatsreferenz</th>
+        <th>Gläubiger ID</th>
       </tr>
       
       #foreach($t in $objects)
@@ -209,6 +211,8 @@
           <td>$!t.primanota</td>
           <td>$!t.customerRef</td>
           <td>#if(!$umsatz.hasFlag(2))ja#end</td>
+          <td>$!t.mandateId</td>
+          <td>$!t.creditorId</td>
         </tr>
       #end
     </table>
