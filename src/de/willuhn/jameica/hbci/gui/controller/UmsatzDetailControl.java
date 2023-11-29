@@ -444,12 +444,12 @@ public class UmsatzDetailControl extends AbstractControl
     {
       String credId = StringUtils.trimToNull(getUmsatz().getCreditorId());
       
-      // Fuer die Abwaertskompatibilitaet (TODO: ist dies notwendig?)
+      // Fuer die Abwaertskompatibilitaet
       if (credId == null)
         credId = VerwendungszweckUtil.getTag(getUmsatz(), Tag.CRED);
       
       this.creditorId = new TextInput(credId, HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
-      this.creditorId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS); //TODO: korrekt?
+      this.creditorId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
       this.creditorId.setName(i18n.tr("Gläubiger ID"));
       this.creditorId.setEnabled(false);
     }
