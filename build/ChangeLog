@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1059 Beim PDF-Export von Umsätzen die Notiz im Verwendungszweck mit ausgeben
   * NEW: 1058 Counter für Ungelesen/Überfällig links in der Navigation auch bei Inaktivität stündlich aktualisieren (z.B. wenn eine Überweisung fällig wird und Hibiscus über den Tageswechsel durchlief)
   * NEW: 1057 Update auf HBCI4Java 3.1.73 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.73
   * NEW: 1056 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2023
