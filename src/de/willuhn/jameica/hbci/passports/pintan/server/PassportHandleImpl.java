@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.action.PassportProcessCode3072;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.pintan.ChipTANDialog;
+import de.willuhn.jameica.hbci.passports.pintan.DecoupledTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.FlickerToQrConverter;
 import de.willuhn.jameica.hbci.passports.pintan.PhotoTANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
@@ -352,6 +353,20 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         retData.replace(0,retData.length(),(String)dialog.open());
         return true;
       }
+      
+      case HBCICallback.NEED_PT_DECOUPLED:
+      {
+        Logger.debug("got decoupled tan code, using pushtan 2.0 dialog");
+        TANDialog dialog = new DecoupledTANDialog(config);
+        dialog.setContext(this.getContext(passport));
+        dialog.setText(msg);
+        
+        // Die Antwort brauchen wir nicht
+        dialog.open();
+        
+        return true;
+      }
+
 
       case HBCICallback.NEED_PT_TAN:
       {
