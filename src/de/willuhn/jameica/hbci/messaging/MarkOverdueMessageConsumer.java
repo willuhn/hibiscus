@@ -109,6 +109,10 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
     // Wir erstellen noch einen Worker, der einmal pro Stunde die Counter aktualisiert -
     // unabhängig davon, ob etwas geändert wurde. Dadurch werden die Counter auch dann
     // korrekt aktualisiert, wenn man das Programm über Nacht durchlaufen lässt
+    
+    if (Application.inServerMode())
+      return;
+
     Logger.info("init mark-overdue message consumer");
     worker.scheduleAtFixedRate(() -> updateAll(),1,60,TimeUnit.MINUTES);
   }
