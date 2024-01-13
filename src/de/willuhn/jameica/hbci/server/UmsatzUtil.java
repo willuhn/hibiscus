@@ -157,10 +157,11 @@ public class UmsatzUtil
                       "LOWER(kommentar) LIKE ? OR " +
                       "LOWER(endtoendid) LIKE ? OR " +
                       "LOWER(mandateid) LIKE ? OR " +
+                      "LOWER(creditorid) LIKE ? OR " +
                       "LOWER(empfaenger_name2) LIKE ? OR " +
                       "LOWER(art) LIKE ?)";
 
-      List<String> params = new ArrayList<String>(Arrays.asList(text,text,text,text,text,text,text,text,text,text,text,text,text));
+      List<String> params = new ArrayList<String>(Arrays.asList(text,text,text,text,text,text,text,text,text,text,text,text,text,text));
       if (query.matches("^[0-9]{1,10}$"))
       {
         search = "(id = ? or " + search + ")";

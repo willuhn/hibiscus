@@ -175,9 +175,17 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
             }
           }
           
+          String art = u.getArt();
+          if (art != null && art.length() > 0)
+            name = name + "\n" + art;
+          
           reporter.addColumn(reporter.getDetailCell(valuta + "\n" + datum, Element.ALIGN_LEFT,null,color,style));
-          reporter.addColumn(reporter.getDetailCell(name + "\n" + reporter.notNull(u.getArt()), Element.ALIGN_LEFT,null,color,style));
+          reporter.addColumn(reporter.getDetailCell(reporter.notNull(name), Element.ALIGN_LEFT,null,color,style));
           String verwendungszweck = (fullUsage) ? VerwendungszweckUtil.toString(u,"\n") : VerwendungszweckUtil.getTag(u, Tag.SVWZ);
+          
+          final String comment = u.getKommentar();
+          if (comment != null && comment.length() > 0)
+            verwendungszweck += "\n" + i18n.tr("Notiz") + ": " + comment;
           reporter.addColumn(reporter.getDetailCell(verwendungszweck, Element.ALIGN_LEFT,null,color,style));
           reporter.addColumn(reporter.getDetailCell(u.getBetrag()));
           sumRow += u.getBetrag();

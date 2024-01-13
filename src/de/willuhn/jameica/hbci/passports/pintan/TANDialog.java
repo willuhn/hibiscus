@@ -75,6 +75,7 @@ public class TANDialog extends AbstractDialog
 
   private boolean showTan = true;
   private String tan = null;
+  private boolean needTan = true;
   
   /**
    * ct.
@@ -86,7 +87,7 @@ public class TANDialog extends AbstractDialog
     super(TANDialog.POSITION_CENTER);
     
     this.config = config;
-    this.setTitle(i18n.tr("TAN-Eingabe"));
+    this.setTitle(this.needTan ? i18n.tr("TAN-Eingabe") : i18n.tr("Auftrag freigeben"));
     this.setText(null); // Fuer die Generierung des Default-Textes
 		this.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
 
@@ -112,7 +113,7 @@ public class TANDialog extends AbstractDialog
         if (name != null && name.length() > 0)
           this.konto += " [" + name + "]";
 
-        this.setTitle(i18n.tr("TAN-Eingabe - Konto {0}",this.konto));
+        this.setTitle(i18n.tr(this.needTan ? "TAN-Eingabe - Konto {0}" : "Auftrag freigeben - Konto {0}",this.konto));
       }
       
       if (session != null)
@@ -193,7 +194,7 @@ public class TANDialog extends AbstractDialog
         close();
       }
     },null,true,"ok.png");
-    this.okButton.setEnabled(false);
+    this.okButton.setEnabled(!this.needTan);
     return this.okButton;
   }
   
@@ -207,7 +208,11 @@ public class TANDialog extends AbstractDialog
     {
       final Container c = new SimpleContainer(parent);
       c.addPart(this.getPanel());
-      setInfoText(Type.INFO,i18n.tr("Bitte geben Sie die TAN ein."));
+      
+      if (this.needTan)
+        setInfoText(Type.INFO,i18n.tr("Bitte geben Sie die TAN ein."));
+      else
+        setInfoText(Type.INFO,i18n.tr("Bitte geben Sie den Auftrag auf Ihrem Smartphone frei."));
       
       final String auftrag = this.context != null ? HBCIContext.toString(this.context) : null;
       final boolean haveAuftrag = StringUtils.trimToNull(auftrag) != null;
@@ -236,19 +241,23 @@ public class TANDialog extends AbstractDialog
     }
 
     final Container c = new SimpleContainer(parent);
-    final PasswordInput tan = this.getTANInput();
-    c.addInput(tan);
     
-    tan.getControl().addKeyListener(new KeyAdapter() {
-      /**
-       * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-       */
-      @Override
-      public void keyReleased(KeyEvent e)
-      {
-        getOkButton().setEnabled(StringUtils.trimToNull((String) tan.getValue()) != null);
-      }
-    });
+    if (this.needTan)
+    {
+      final PasswordInput tan = this.getTANInput();
+      c.addInput(tan);
+      
+      tan.getControl().addKeyListener(new KeyAdapter() {
+        /**
+         * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+         */
+        @Override
+        public void keyReleased(KeyEvent e)
+        {
+          getOkButton().setEnabled(StringUtils.trimToNull((String) tan.getValue()) != null);
+        }
+      });
+    }
     
     // Unterer Erweiterungsbereich
     this.extendBottom(new SimpleContainer(parent,false,1));
@@ -299,7 +308,7 @@ public class TANDialog extends AbstractDialog
   {
     this.tan = tan;
     getTANInput().setValue(tan);
-    getOkButton().setEnabled(StringUtils.trimToNull(tan) != null);
+    getOkButton().setEnabled(StringUtils.trimToNull(tan) != null || !this.needTan);
   }
   
   /**
@@ -309,6 +318,15 @@ public class TANDialog extends AbstractDialog
   public void setShowTAN(boolean show)
   {
     this.showTan = show;
+  }
+  
+  /**
+   * Legt fest, ob überhaupt eine TAN benötigt wird.
+   * @param t true, wenn eine benötigt wird (default=true).
+   */
+  public void setNeedTAN(boolean t)
+  {
+    this.needTan = t;
   }
 
   /**

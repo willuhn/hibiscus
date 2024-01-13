@@ -67,15 +67,16 @@ public class Converter
     umsatz.setPurposeCode(u.purposecode);
     umsatz.setEndToEndId(u.endToEndId);
     umsatz.setMandateId(u.mandateId);
-
-    //BUGZILLA 67 http://www.willuhn.de/bugzilla/show_bug.cgi?id=67
+    
+    if (u.other != null)
+      umsatz.setCreditorId(u.other.creditorid);
+    
     Saldo s = u.saldo;
     if (s != null)
     {
       Value v = s.value;
       if (v != null)
       {
-        // BUGZILLA 318
         double saldo = v.getDoubleValue();
         String curr  = v.getCurr();
         if (curr != null && "DEM".equals(curr))
@@ -88,7 +89,6 @@ public class Converter
     double betrag = v.getDoubleValue();
     String curr = v.getCurr();
 
-    // BUGZILLA 318
     if (curr != null && "DEM".equals(curr))
       betrag /= KURS_EUR;
 
@@ -107,14 +107,6 @@ public class Converter
 
     ////////////////////////////////////////////////////////////////////////////
     // Verwendungszweck
-
-    // BUGZILLA 146
-    // Aus einer Mail von Stefan Palme
-    //    Es geht noch besser. Wenn in "umsline.gvcode" nicht der Wert "999"
-    //    drinsteht, sind die Variablen "text", "primanota", "usage", "other"
-    //    und "addkey" irgendwie sinnvoll gefüllt.  Steht in "gvcode" der Wert
-    //    "999" drin, dann sind diese Variablen alle null, und der ungeparste 
-    //    Inhalt des Feldes :86: steht komplett in "additional".
 
     String[] lines = (String[]) u.usage.toArray(new String[0]);
 
@@ -157,6 +149,17 @@ public class Converter
         mid = cleanSepaId(VerwendungszweckUtil.getTag(umsatz,Tag.MREF));
         if (mid != null && mid.length() > 0 && mid.length() <= 100)
           umsatz.setMandateId(mid);
+      }
+      
+      // Wir checken mal, ob wir eine GläubigerID haben. Falls ja, tragen wir die gleich
+      // in das dedizierte Feld ein. Aber nur, wenn wir noch keine haben
+      String creditorId = umsatz.getCreditorId();
+      if (creditorId == null || creditorId.length() == 0)
+      {
+        // MT940
+        creditorId = cleanSepaId(VerwendungszweckUtil.getTag(umsatz, Tag.CRED));
+        if (creditorId != null && creditorId.length() > 0 && creditorId.length() <= HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH)
+          umsatz.setCreditorId(creditorId);
       }
 
     }

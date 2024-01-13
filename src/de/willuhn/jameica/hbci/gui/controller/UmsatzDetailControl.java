@@ -79,6 +79,7 @@ public class UmsatzDetailControl extends AbstractControl
 	private TextInput endToEndId  = null;
   private TextInput mandateId   = null;
 	private TextInput gvcode      = null;
+	private TextInput creditorId  = null;
   
   private Input kommentar       = null;
   
@@ -428,10 +429,33 @@ public class UmsatzDetailControl extends AbstractControl
      this.mandateId = new TextInput(mref,HBCIProperties.HBCI_SEPA_MANDATEID_MAXLENGTH);
      this.mandateId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
      this.mandateId.setEnabled(false);
-
    }
    return this.mandateId;
  }
+ 
+  /**
+   * Liefert ein Eingabe-Feld für die Gläubiger-ID.
+   * @return Eingabe-Feld
+   * @throws RemoteException
+   */
+  public Input getCreditorId() throws RemoteException
+  {
+    if (this.creditorId == null)
+    {
+      String credId = StringUtils.trimToNull(getUmsatz().getCreditorId());
+      
+      // Fuer die Abwaertskompatibilitaet
+      if (credId == null)
+        credId = VerwendungszweckUtil.getTag(getUmsatz(), Tag.CRED);
+      
+      this.creditorId = new TextInput(credId, HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);
+      this.creditorId.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
+      this.creditorId.setName(i18n.tr("Gläubiger ID"));
+      this.creditorId.setEnabled(false);
+    }
+    return this.creditorId;
+  }
+ 
 
 	/**
 	 * Liefert ein Eingabe-Feld fuer den GV-Code.

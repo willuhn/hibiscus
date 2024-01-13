@@ -20,6 +20,7 @@ import java.sql.Types;
 import de.willuhn.datasource.db.DBServiceImpl;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
@@ -299,6 +300,11 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     try
     {
       return super.createObject(arg0, arg1);
+    }
+    catch (ObjectNotFoundException ofe)
+    {
+      // Das kann durchaus mal passieren. Das sollte kein Backup verhindern
+      throw ofe;
     }
     catch (RemoteException re)
     {

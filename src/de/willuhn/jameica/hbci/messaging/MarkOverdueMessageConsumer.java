@@ -18,6 +18,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.PostConstruct;
+
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.datasource.GenericObject;
@@ -97,6 +99,23 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
       }
     },300,TimeUnit.MILLISECONDS);
   }
+  
+  /**
+   * Initialisiert den Message-Consumer.
+   */
+  @PostConstruct
+  private void init()
+  {
+    // Wir erstellen noch einen Worker, der einmal pro Stunde die Counter aktualisiert -
+    // unabhängig davon, ob etwas geändert wurde. Dadurch werden die Counter auch dann
+    // korrekt aktualisiert, wenn man das Programm über Nacht durchlaufen lässt
+    
+    if (Application.inServerMode())
+      return;
+
+    Logger.info("init mark-overdue message consumer");
+    worker.scheduleAtFixedRate(() -> updateAll(),1,60,TimeUnit.MINUTES);
+  }
 
   /**
    * Liefert den aktuellen Zaehlerstand fuer den Objekttyp.
@@ -140,6 +159,7 @@ public class MarkOverdueMessageConsumer implements MessageConsumer
    */
   void updateAll()
   {
+    Logger.info("update all unread counters");
     for (Entry<Class,String> e:types.entrySet())
     {
       update(e.getKey(),e.getValue());

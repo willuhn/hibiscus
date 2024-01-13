@@ -47,6 +47,8 @@ public class SynchronizeSchedulerServiceImpl extends UnicastRemoteObject impleme
   private SchedulerTask task = null;
   private long period        = 1;
   private int status         = ProgressMonitor.STATUS_NONE;
+  private long lastStart     = 0;
+  private long lastFinish    = 0;
   private MessageConsumer mc = new MyMessageConsumer();
 
   /**
@@ -157,14 +159,18 @@ public class SynchronizeSchedulerServiceImpl extends UnicastRemoteObject impleme
       return null;
 
     long current = this.task.scheduledExecutionTime();
+    Logger.info("calculating next execution [scheduled execution: " + new Date(current) + ", last start: " + (this.lastStart <= 0 ? "<never>" : new Date(this.lastStart)) + ", last finish: " + (this.lastFinish <= 0 ? "<never>" : new Date(this.lastFinish)) + "]");
     Date d = null;
     // Wir suchen nach der naechsten Ausfuehrungszeit
     for (int i=0;i<10000;++i)
     {
       current += this.period;
       d = new Date(current);
-      if (this.canRun(d))
+      if (this.canRun(d) && current > System.currentTimeMillis())
+      {
+        Logger.info("next execution: " + d);
         return d;
+      }
     }
     Logger.error("exclude window too large, scheduler will ne run");
     Application.getMessagingFactory().sendMessage(new StatusBarMessage("Zeitfenster für Ausschluss zu groß, Synchronisierung würde nie starten", StatusBarMessage.TYPE_ERROR));
@@ -256,12 +262,17 @@ public class SynchronizeSchedulerServiceImpl extends UnicastRemoteObject impleme
           Logger.info("skip synchronize, not inside execution time [hours: " + SynchronizeSchedulerSettings.getSchedulerStartTime() + " - " + SynchronizeSchedulerSettings.getSchedulerEndTime() + "]");
           return;
         }
-        
+
+        lastStart = System.currentTimeMillis();
         doSync();
       }
       catch (Exception e)
       {
         Logger.error("error while executing scheduler task: " + e.getMessage(),e);
+      }
+      finally
+      {
+        lastFinish = System.currentTimeMillis();
       }
     }
   }

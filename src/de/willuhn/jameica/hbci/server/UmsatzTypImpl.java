@@ -304,6 +304,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
     String ref   = StringUtils.trimToEmpty(umsatz.getCustomerRef());
     String e2eid = StringUtils.trimToEmpty(umsatz.getEndToEndId());
     String mid   = StringUtils.trimToEmpty(umsatz.getMandateId());
+    String cid   = StringUtils.trimToEmpty(umsatz.getCreditorId());
     String id    = StringUtils.trimToEmpty(umsatz.getID());
     
     // Im Suchbegriff können wir nicht nach Betrag suchen, da wir das Komma "," bereits als Trennzeichen
@@ -322,6 +323,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       ref   = ref.toLowerCase();
       e2eid = e2eid.toLowerCase();
       mid   = mid.toLowerCase();
+      cid   = cid.toLowerCase();
 
       if (ignorewhitespace)
       {
@@ -358,6 +360,7 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
             ref.indexOf(test) != -1 ||
             e2eid.indexOf(test) != -1 ||
             mid.indexOf(test) != -1 ||
+            cid.indexOf(test) != -1 ||
             id.equals(test))
         {
           return true;
@@ -387,7 +390,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       Matcher mRef = pattern.matcher(ref);
       Matcher mE2eid = pattern.matcher(e2eid);
       Matcher mMid = pattern.matcher(mid);
-      Matcher mAll = pattern.matcher(name + " " + name2 + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid + " " + mid + " " + ref);
+      Matcher mCid = pattern.matcher(cid);
+      Matcher mAll = pattern.matcher(name + " " + name2 + " " + kto + " " + zweck + " " + kom + " " + art + " " + purp + " " + e2eid + " " + mid + " " + cid + " " + ref);
 
       return (mAll.matches()    ||
               mZweck.matches()  ||
@@ -399,7 +403,8 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
               mPurp.matches()   ||
               mRef.matches()    ||
               mE2eid.matches()  ||
-              mMid.matches()
+              mMid.matches()    ||
+              mCid.matches()
              );
     }
     catch (Exception e)
