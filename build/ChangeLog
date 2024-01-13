@@ -1,14 +1,13 @@
 2024-01-13 Version 2.10.16
 
-  * NEW: 1061 Update auf HBCI4Java 3.1.74 (PushTAN Decoupled) - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.74
-  * BUG: 1060 Beim PDF-Export nicht "null" ausgeben, wenn kein Gegenkontoname vorhanden ist
-  * NEW: 1059 Beim PDF-Export von Umsätzen die Notiz im Verwendungszweck mit ausgeben
-  * NEW: 1058 Counter für Ungelesen/Überfällig links in der Navigation auch bei Inaktivität stündlich aktualisieren (z.B. wenn eine Überweisung fällig wird und Hibiscus über den Tageswechsel durchlief)
-  * NEW: 1057 Update auf HBCI4Java 3.1.73 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.73
-  * NEW: 1056 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2023
-  * CHG: 1055 Das fehlgeschlagene Laden eines Datensatzes per ObjectNotFoundException sollte nicht dazu führen, dass das Backup übersprungen wird
-  * BUG: 1054 Wenn der Rechner in Standby versetzt wird, kann es vorkommen, dass die nächste automatische Synchronisierung nicht zum angezeigten Zeitpunkt stattfindet 
-  * NEW: 1053 Umstellung von MySQL auf MariaDB
+  * NEW: 1060 Update auf HBCI4Java 3.1.74 (PushTAN Decoupled) - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.74
+  * BUG: 1059 Beim PDF-Export nicht "null" ausgeben, wenn kein Gegenkontoname vorhanden ist
+  * NEW: 1058 Beim PDF-Export von Umsätzen die Notiz im Verwendungszweck mit ausgeben
+  * NEW: 1057 Counter für Ungelesen/Überfällig links in der Navigation auch bei Inaktivität stündlich aktualisieren (z.B. wenn eine Überweisung fällig wird und Hibiscus über den Tageswechsel durchlief)
+  * NEW: 1056 Update auf HBCI4Java 3.1.73 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.73
+  * NEW: 1055 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.12.2023
+  * CHG: 1054 Das fehlgeschlagene Laden eines Datensatzes per ObjectNotFoundException sollte nicht dazu führen, dass das Backup übersprungen wird
+  * BUG: 1053 Wenn der Rechner in Standby versetzt wird, kann es vorkommen, dass die nächste automatische Synchronisierung nicht zum angezeigten Zeitpunkt stattfindet 
 
 2023-11-03 Version 2.10.15
 
