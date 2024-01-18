@@ -25,6 +25,6 @@ public class UmsatzSetReadContextMenuItem extends AbstractUmsatzReadContextMenuI
     super(i18n.tr("Als gelesen markieren"), e -> {
       askMarkReadOnExit();
       NeueUmsaetze.setRead(e);
-    },"list-remove.png");
+    },"list-remove.png","ALT+L");
   }
 }

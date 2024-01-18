@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1062 Shortcuts ALT+L, CTRL+ALT+L und SHIFT+ALT+L zum Gelesen/Ungelesen-Markieren von Umsätzen
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-01-13 Version 2.10.16

@@ -22,6 +22,6 @@ public class UmsatzSetUnreadContextMenuItem extends AbstractUmsatzReadContextMen
    */
   public UmsatzSetUnreadContextMenuItem()
   {
-    super(i18n.tr("Als ungelesen markieren"), e -> NeueUmsaetze.setUnread(e),"list-add.png");
+    super(i18n.tr("Als ungelesen markieren"), e -> NeueUmsaetze.setUnread(e),"list-add.png","CTRL+ALT+L");
   }
 }
