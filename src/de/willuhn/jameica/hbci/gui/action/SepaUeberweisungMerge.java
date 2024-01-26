@@ -64,8 +64,9 @@ public class SepaUeberweisungMerge implements Action
     try
     {
       HBCIDBService service = Settings.getDBService();
-      Map<String,SepaSammelUeberweisung> map = new HashMap<String,SepaSammelUeberweisung>();
+      final Map<String,SepaSammelUeberweisung> map = new HashMap<String,SepaSammelUeberweisung>();
       boolean inDb = false;
+      boolean foundDate = false;
       ////////////////////////////////////////
       // 1. Iterieren ueber die Auftraege, um herauszufinden, wieviele Sammel-Auftraege es werden
       for (AuslandsUeberweisung l:source)
@@ -80,6 +81,8 @@ public class SepaUeberweisungMerge implements Action
           s.setBezeichnung(i18n.tr("SEPA-Sammelüberweisung vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
           map.put(key,s);
         }
+
+        foundDate |= l.isTerminUeberweisung();
       }
       
       // Abfrage anzeigen, ob die Einzelauftraege geloescht werden sollen
@@ -145,16 +148,17 @@ public class SepaUeberweisungMerge implements Action
       }
       
       tx.transactionCommit();
+      
+      String text = count > 1 ? i18n.tr("{0} Sammelaufträge erzeugt",String.valueOf(count)) : i18n.tr("Sammelauftrag erzeugt");
+      if (foundDate)
+        text += i18n.tr("Einer der enthaltenen Aufträge war bankseitig terminiert. Das Datum wurde ignoriert.");
 
-      if (count > 1)
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("{0} Sammelaufträge erzeugt",String.valueOf(count)), StatusBarMessage.TYPE_SUCCESS));
-      else
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sammelauftrag erzeugt"), StatusBarMessage.TYPE_SUCCESS));
-		}
-		catch (Exception e)
-		{
-		  if (tx != null)
-		  {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(text, foundDate ? StatusBarMessage.TYPE_INFO : StatusBarMessage.TYPE_SUCCESS));
+    }
+    catch (Exception e)
+    {
+      if (tx != null)
+      {
         try
         {
           tx.transactionRollback();
@@ -163,17 +167,17 @@ public class SepaUeberweisungMerge implements Action
         {
           Logger.error("unable to rollback transaction",e);
         }
-		  }
-		  
-		  if (e instanceof OperationCanceledException)
-		    throw (OperationCanceledException) e;
-		  
-		  if (e instanceof ApplicationException)
-		    throw (ApplicationException) e;
-		  
+      }
+      
+      if (e instanceof OperationCanceledException)
+        throw (OperationCanceledException) e;
+      
+      if (e instanceof ApplicationException)
+        throw (ApplicationException) e;
+      
       Logger.error("error while merging jobs",e);
       throw new ApplicationException(i18n.tr("Zusammenfassen der Überweisungen fehlgeschlagen: {0}",e.getMessage()));
-		}
+    }
   }
   
   /**

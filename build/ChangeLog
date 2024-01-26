@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1064 Warnhinweis anzeigen, wenn beim Zusammenführen von Überweisungen bankseitige Terminaufträge enthalten waren
   * NEW: 1063 Bessere Erkennung von Kontoinhaber beim Erstellen einer neuen Überweisung aus der Zwischenablage
   * NEW: 1062 Shortcuts ALT+L, CTRL+ALT+L und SHIFT+ALT+L zum Gelesen/Ungelesen-Markieren von Umsätzen
   * NEW: 1061 Umstellung von MySQL auf MariaDB
