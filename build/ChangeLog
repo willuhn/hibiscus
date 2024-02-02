@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1067 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.03.2024
   * NEW: 1066 Shortcut "ALT+S" für "Neue Sammelüberweisung..." geändert in "ALT+A" - kollidierte mit "Speichern"-Button
   * NEW: 1065 In der Vorschlagsliste aus dem Adressbuch auch Teile der IBAN mit anzeigen (für gleichnamige Treffer im Adressbuch)
   * NEW: 1064 Warnhinweis anzeigen, wenn beim Zusammenführen von Überweisungen bankseitige Terminaufträge enthalten waren
