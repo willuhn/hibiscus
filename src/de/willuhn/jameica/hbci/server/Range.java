@@ -298,9 +298,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
@@ -336,9 +334,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
@@ -374,9 +370,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
@@ -422,9 +416,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
