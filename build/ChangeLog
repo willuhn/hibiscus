@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1069 Spalte "Kunden-/Mandatsreferenz" bei CSV-Import von Umsätzen hinzugefügt
   * CHG: 1068 Bei Zeitraum "Letzte 7/30/90 Tage" und "Letzte ...Jahre" das Bis-Datum frei lassen, um auch Buchungen der nächsten Tage anzuzeigen
   * NEW: 1067 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.03.2024
   * NEW: 1066 Shortcut "ALT+S" für "Neue Sammelüberweisung..." geändert in "ALT+A" - kollidierte mit "Speichern"-Button
