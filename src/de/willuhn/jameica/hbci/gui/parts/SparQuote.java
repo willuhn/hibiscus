@@ -50,6 +50,7 @@ import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.SparQuoteExport;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
+import de.willuhn.jameica.hbci.gui.chart.LineStyle;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -249,8 +250,12 @@ public class SparQuote implements Part
       }
       else
       {
+        Date end = r.getEnd();
+        if (end == null)
+          end = DateUtil.endOfDay(new Date());
+
         // Wir ueberschlagen das nur grob
-        long diff = r.getEnd().getTime() - r.getStart().getTime();
+        long diff = end.getTime() - r.getStart().getTime();
         if (diff > (2 * 30 * 24 * 60 * 60 * 1000L))
           ranges.add(r);
       }
@@ -700,6 +705,15 @@ public class SparQuote implements Part
     public boolean getCurve()
     {
       return false;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getLineStyle()
+     */
+    @Override
+    public LineStyle getLineStyle() throws RemoteException
+    {
+      return null;
     }
 
     /**
