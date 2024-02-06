@@ -50,6 +50,7 @@ import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.SparQuoteExport;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
+import de.willuhn.jameica.hbci.gui.chart.LineStyle;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -706,6 +707,24 @@ public class SparQuote implements Part
       return false;
     }
     
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getLineStyle()
+     */
+    @Override
+    public LineStyle getLineStyle() throws RemoteException
+    {
+      return null;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isLegendEnabled()
+     */
+    @Override
+    public boolean isLegendEnabled() throws RemoteException
+    {
+      return true;
+    }
+
     /**
      * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
      */

@@ -32,6 +32,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
+import de.willuhn.jameica.hbci.gui.chart.LineStyle;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
@@ -363,6 +364,24 @@ public class UmsatzTypVerlauf implements Part
     public int getLineWidth() throws RemoteException
     {
       return 1;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getLineStyle()
+     */
+    @Override
+    public LineStyle getLineStyle() throws RemoteException
+    {
+      return null;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isLegendEnabled()
+     */
+    @Override
+    public boolean isLegendEnabled() throws RemoteException
+    {
+      return true;
     }
 
     /**

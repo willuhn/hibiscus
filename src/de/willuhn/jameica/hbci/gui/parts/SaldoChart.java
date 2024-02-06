@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,9 +40,13 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoForecast;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSummeForecast;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrendForecast;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
@@ -61,6 +66,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ColorGenerator;
 import de.willuhn.util.I18N;
 
 /**
@@ -394,6 +400,9 @@ public class SaldoChart implements Part
         
         final Date start = getStartDate();
         final Date end = getEndDate();
+        final Date today = DateUtil.endOfDay(new Date());
+        
+        final boolean haveForecast = end != null && DateUtil.endOfDay(end).after(today);
 
         final boolean changed = !Objects.equals(start, startPrev) ||
                                 !Objects.equals(end, endPrev) ||
@@ -415,22 +424,56 @@ public class SaldoChart implements Part
         
         final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
         final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);       
+        
         final ChartDataSaldoSumme sum = new ChartDataSaldoSumme();
+        sum.setColor(ColorGenerator.create(ColorGenerator.PALETTE_OFFICE));
+        
+        final ChartDataSaldoSummeForecast sumForecast = haveForecast ? new ChartDataSaldoSummeForecast(sum) : null;
+        
+        int i = 1;
         for (Konto konto : konten)
         {
           AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(konto);
-          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, end);
+          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, today);
+          balance.setColor(ColorGenerator.create(ColorGenerator.PALETTE_OFFICE + i));
           chart.addData(balance);
           sum.add(balance.getData());
+
+          i++;
+
+          if (haveForecast)
+          {
+            final ChartDataSaldoForecast forecast = new ChartDataSaldoForecast(konto,end);
+            forecast.setColor(ColorUtil.brighter(balance.getColor()));
+            chart.addData(forecast);
+            sumForecast.add(forecast.getData());
+          }
         }
         
         // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
         if (konten.size() > 1)
+        {
           chart.addData(sum);
+          if (sumForecast != null)
+            chart.addData(sumForecast);
+        }
 
         ChartDataSaldoTrend trend = new ChartDataSaldoTrend();
+        trend.setColor(ColorGenerator.create(ColorGenerator.PALETTE_RICH + 1));
         trend.add(sum.getData());
         chart.addData(trend);
+        
+        if (sumForecast != null)
+        {
+          ChartDataSaldoTrendForecast trendForecast = new ChartDataSaldoTrendForecast(trend);
+          
+          // Wir brauchen hier alle Werte, weil sonst ein Bruch zwischen vorhandenen Werten und Prognose entsteht
+          final LinkedList all = new LinkedList();
+          all.addAll(sum.getData());
+          all.addAll(sumForecast.getData());
+          trendForecast.add(all);
+          chart.addData(trendForecast);
+        }
         
         if (event != null)
         {

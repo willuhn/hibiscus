@@ -154,4 +154,36 @@ public class ColorUtil
       return null;
     }
   }
+
+  
+  /**
+   * Hellt die Farbe auf.
+   * @param color die Farbe.
+   * @return die hellere Version davon.
+   */
+  public static int[] brighter(int[] color)
+  {
+    // Das Aufhellen intensiert die Farbe.
+    final java.awt.Color c = new java.awt.Color(color[0],color[1],color[2]).brighter().brighter();
+    
+    final int r = c.getRed();
+    final int g = c.getGreen();
+    final int b = c.getBlue();
+
+    // Wir desaturieren daher anschliessend noch etwas
+    final float f = 0.61f;
+    final float L = (0.3f * r) +
+                    (0.6f * g) +
+                    (0.1f * b);
+
+    final int[] result = new int[]{
+      (int) (r + f * (L - r)),
+      (int) (g + f * (L - g)),
+      (int) (b + f * (L - b)),
+    };
+
+    return result;
+  }
+
+
 }

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -66,6 +67,7 @@ public class LineChart extends AbstractChart<LineChartData>
     ////////////////////////////////////////////////////////////////////////////
     // Neu zeichnen
     List<LineChartData> data = getData();
+    int num = 1;
     for (int i=0;i<data.size();++i)
     {
       final List<Date> labelLine   = new LinkedList<Date>();
@@ -97,23 +99,29 @@ public class LineChart extends AbstractChart<LineChartData>
         }
       }
 
-      String id = Integer.toString(i+1) + ". ";
-      if (cd.getLabel() != null)
-        id += " " + cd.getLabel();
+      String name = StringUtils.trimToEmpty(cd.getLabel());
+      if (name.length() == 0)
+      {
+        name = num + ".";
+        num++;
+      }
       
-      ILineSeries lineSeries = (ILineSeries) getChart().getSeriesSet().createSeries(SeriesType.LINE,id);
+      ILineSeries lineSeries = (ILineSeries) getChart().getSeriesSet().createSeries(SeriesType.LINE,name);
       lineSeries.setXDateSeries(labelLine.toArray(new Date[0]));
       lineSeries.setYSeries(toArray(dataLine));
       
       
       //////////////////////////////////////////////////////////////////////////
       // Layout
+      final de.willuhn.jameica.hbci.gui.chart.LineStyle style = cd.getLineStyle();
+      lineSeries.setLineStyle(style != null ? style.getSwtStyle() : LineStyle.SOLID);
       lineSeries.setSymbolType(PlotSymbolType.NONE);
       lineSeries.enableArea(true); // Flaeche ausmalen
       lineSeries.setAntialias(SWT.ON);
       lineSeries.enableStack(this.isStacked());
       lineSeries.enableStep(!cd.getCurve());
       lineSeries.setLineWidth(cd.getLineWidth());
+      lineSeries.setVisibleInLegend(cd.isLegendEnabled());
       //
       //////////////////////////////////////////////////////////////////////////
 

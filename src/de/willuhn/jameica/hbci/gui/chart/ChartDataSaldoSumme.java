@@ -87,4 +87,3 @@ public class ChartDataSaldoSumme extends AbstractChartDataSaldo
     return false;
   }
 }
-
