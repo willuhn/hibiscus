@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
-import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.eclipse.swt.events.DisposeEvent;
@@ -43,9 +42,8 @@ public class UmsatzDaysInput extends ScaleInput
 
   /**
    * ct.
-   * @throws RemoteException
    */
-  public UmsatzDaysInput() throws RemoteException
+  public UmsatzDaysInput()
   {
     // BUGZILLA 258
     super(getDefaultDays() == -1 ? 1000 : getDefaultDays()); // wir muessen das "-1" wieder zurueck auf 1000 mappen
@@ -122,7 +120,17 @@ public class UmsatzDaysInput extends ScaleInput
   {
     return settings.getInt(TOKEN_DEFAULT,HBCIProperties.UMSATZ_DEFAULT_DAYS);
   }
-
+  
+  /**
+   * @see de.willuhn.jameica.gui.input.ScaleInput#setValue(java.lang.Object)
+   */
+  @Override
+  public void setValue(Object value)
+  {
+    super.setValue(value);
+    this.listener.handleEvent(null);
+  }
+  
   /**
    * Hilfsklasse zum Aktualisieren des Kommentars hinter dem Zeitraum.
    */

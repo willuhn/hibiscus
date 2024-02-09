@@ -11,22 +11,29 @@
 package de.willuhn.jameica.hbci.forecast;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
+import de.willuhn.jameica.hbci.messaging.SaldoLimitsMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Value;
 import de.willuhn.jameica.hbci.util.SaldoFinder;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 import de.willuhn.util.MultipleClassLoader;
 
 /**
@@ -35,8 +42,12 @@ import de.willuhn.util.MultipleClassLoader;
  */
 public class ForecastCreator
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private final static Settings settings = new Settings(ForecastCreator.class);
   private static List<Class<ForecastProvider>> providers = null;
+
+  private static List<SaldoLimit> limits = new ArrayList<>();
+
   
   /**
    * Liefert die Liste aller Forecast-Provider - unabhaengig davon, ob sie
@@ -80,7 +91,171 @@ public class ForecastCreator
     }
     return result;
   }
+
+  /**
+   * Liefert das Limit für das Konto, falls vorhanden.
+   * @param k das Konto.
+   * @param type die Art des Limits.
+   * @return das Limit. Nie NULL sondern hoechtens ein deaktiviertes Limit ohne Werte.
+   */
+  public static SaldoLimit getLimit(Konto k, SaldoLimit.Type type)
+  {
+    if (k == null || type == null)
+      return null;
+
+    final SaldoLimit limit = new SaldoLimit(k,type);
+    
+    try
+    {
+      final String prefix = "limit." + type.name().toLowerCase();
+      
+      final String saldo    = StringUtils.trimToNull(k.getMeta(prefix + ".saldo",null));
+      final String days     = StringUtils.trimToNull(k.getMeta(prefix + ".days",null));
+      final boolean enabled = Boolean.valueOf(k.getMeta(prefix + ".enabled","false"));
+      final boolean notify  = Boolean.valueOf(k.getMeta(prefix + ".notify","false"));
+      
+      limit.setEnabled(enabled);
+      limit.setNotify(notify);
+      
+      if (saldo == null || days == null)
+        return limit;
+      
+      final double value = HBCI.DECIMALFORMAT.parse(saldo).doubleValue();
+      final int d = Integer.parseInt(days);
+      
+      if (d < 0)
+      {
+        Logger.warn("invalid days: " + d);
+        return limit;
+      }
+      
+      limit.setDays(d);
+      limit.setValue(value);
+    }
+    catch (Exception re)
+    {
+      Logger.error("unable to load " + type + " limit for account",re);
+    }
+    return limit;
+  }
+
+  /**
+   * Speichert das Limit für das Konto.
+   * @param limit das Limit.
+   */
+  public static void setLimit(SaldoLimit limit)
+  {
+    try
+    {
+      final Konto k = limit.getKonto();
+      final String prefix = "limit." + limit.getType().name().toLowerCase();
+      k.setMeta(prefix + ".saldo",HBCI.DECIMALFORMAT.format(limit.getValue()));
+      k.setMeta(prefix + ".days",Integer.toString(limit.getDays()));
+      k.setMeta(prefix + ".enabled",Boolean.toString(limit.isEnabled()));
+      k.setMeta(prefix + ".notify",Boolean.toString(limit.isNotify()));
+      Application.getMessagingFactory().sendMessage(new SaldoLimitsMessage());
+    }
+    catch (Exception re)
+    {
+      Logger.error("unable to save limit for account",re);
+    }
+  }
+
+  /**
+   * Prüft, ob das Limit des Kontos in der angegebenen Anzahl Tage erreicht wird.
+   * @param k das Konto.
+   * @param type die Art des Limits.
+   * @return das Saldo-Limit oder NULL, wenn es nicht erreicht wird. Das Saldo-Limit
+   * enthält den Tag, an dem das Limit erreicht wurde.
+   */
+  private static SaldoLimit checkLimit(Konto k, SaldoLimit.Type type)
+  {
+    // Checken, ob wir ueberhaupt ein Limit haben
+    final SaldoLimit limit = getLimit(k,type);
+    if (!limit.isEnabled())
+      return null;
+    
+    // Saldo-Verlauf für die angegebene Zeit ermitteln
+    final Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DATE,limit.getDays());
+    try
+    {
+      final Date today = DateUtil.startOfDay(new Date());
+      final List<Value> values = create(k,today,DateUtil.endOfDay(cal.getTime()));
+      
+      // Wir haben keine einzige Buchung. Dann entscheiden wir basierend auf dem aktuellen Saldo
+      if (values == null || values.isEmpty())
+      {
+        if (type.reached(k.getSaldo(),limit.getValue()))
+        {
+          // Das ist dann heute bereits der Fall
+          limit.setDate(today);
+          return limit;
+        }
+      }
+      
+      for (Value v:values)
+      {
+        if (type.reached(k.getSaldo(),v.getValue()))
+        {
+          // Wir sind unter den Saldo gefallen.
+          limit.setDate(v.getDate());
+          return limit;
+        }
+      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to check saldo limit",re);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Prüfen des Saldolimits fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
+    }
+    return null;
+  }
   
+  /**
+   * Liefert die aktuellen Saldo-Limits.
+   * @return die aktuellen Saldo-Limits.
+   */
+  public static List<SaldoLimit> getLimits()
+  {
+    return limits;
+  }
+  
+  /**
+   * Berechnet die Saldo-Limits neu.
+   */
+  public static synchronized void updateLimits()
+  {
+    limits.clear();
+
+    try
+    {
+      final long started = System.currentTimeMillis();
+      
+      for (Konto k:KontoUtil.getKonten(KontoFilter.ACTIVE))
+      {
+        final SaldoLimit l = ForecastCreator.checkLimit(k,SaldoLimit.Type.LOWER);
+        if (l != null)
+          limits.add(l);
+        
+        final SaldoLimit u = ForecastCreator.checkLimit(k,SaldoLimit.Type.UPPER);
+        if (u != null)
+          limits.add(u);
+      }
+      
+      final long used = System.currentTimeMillis() - started;
+      final String msg = "recalculated saldo limits, found " + limits.size() + " limits, took " + used + " millis";
+      if (used > 800)
+        Logger.info(msg);
+      else
+        Logger.debug(msg);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to check for saldo limits",e);
+    }
+  }
+
   /**
    * Erzeugt eine Liste von Salden fuer das angegebene Konto im angegebenen Zeitraum.
    * Die Liste enthaelt hierbei fuer jeden Tag einen Wert (auch wenn an diesem Tag
@@ -216,19 +391,3 @@ public class ForecastCreator
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: ForecastCreator.java,v $
- * Revision 1.3  2012/03/28 22:47:18  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.2  2012/02/20 17:03:50  willuhn
- * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
- *
- * Revision 1.1  2011/10/27 17:10:02  willuhn
- * @N Erster Code fuer die Forecast-API - Konto-Prognose
- *
- **********************************************************************/

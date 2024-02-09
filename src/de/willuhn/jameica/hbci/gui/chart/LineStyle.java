@@ -24,7 +24,12 @@ public enum LineStyle
    * Gepunktete Linie.
    */
   DOT(org.eclipse.swtchart.LineStyle.DOT),
-  
+
+  /**
+   * Gestrichtelte Linie.
+   */
+  DASH(org.eclipse.swtchart.LineStyle.DASH),
+
   ;
   
   private org.eclipse.swtchart.LineStyle swtStyle = null;

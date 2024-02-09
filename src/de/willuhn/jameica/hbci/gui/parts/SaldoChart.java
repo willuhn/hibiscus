@@ -40,9 +40,12 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.forecast.SaldoLimit;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
+import de.willuhn.jameica.hbci.gui.action.KontoLimitsConfigure;
 import de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoForecast;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoLimit;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSummeForecast;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
@@ -262,7 +265,26 @@ public class SaldoChart implements Part
           MultiInput range = new MultiInput(getStart(),getEnd());
           right.addInput(range);
 
-          ButtonArea buttons = new ButtonArea();
+          final ButtonArea buttons = new ButtonArea();
+          buttons.addButton(i18n.tr("Limits konfigurieren") + "...",new Action() {
+            
+            @Override
+            public void handleAction(Object context) throws ApplicationException
+            {
+              try
+              {
+                new KontoLimitsConfigure().handleAction(getKontoAuswahl().getValue());
+                final Event e = new Event();
+                e.data = FORCE;
+                reloadListener.handleEvent(e);
+              }
+              catch (RemoteException re)
+              {
+                Logger.error("unable to configurie account limits",re);
+                throw new ApplicationException(i18n.tr("Konfigurieren der Konto-Limits fehlgeschlagen"));
+              }
+            }
+          },null,false,"office-chart-area.png");
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
           {
           
@@ -440,9 +462,15 @@ public class SaldoChart implements Part
           sum.add(balance.getData());
 
           i++;
-
+          
           if (haveForecast)
           {
+            if (konten.size() == 1)
+            {
+              chart.addData(new ChartDataSaldoLimit(konto,start,SaldoLimit.Type.UPPER));
+              chart.addData(new ChartDataSaldoLimit(konto,start,SaldoLimit.Type.LOWER));
+            }
+
             final ChartDataSaldoForecast forecast = new ChartDataSaldoForecast(konto,end);
             forecast.setColor(ColorUtil.brighter(balance.getColor()));
             chart.addData(forecast);
