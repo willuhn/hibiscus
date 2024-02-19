@@ -233,7 +233,7 @@ public class UmsatzTypTreeControl extends AbstractControl
       return this.tree;
     
     this.tree = new UmsatzTree(getUmsaetze());
-    this.tree.setExpanded(this.expanded);
+    //this.tree.setExpanded(this.expanded);
     return this.tree;
   }
   

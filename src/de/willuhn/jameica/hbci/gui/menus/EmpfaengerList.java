@@ -9,6 +9,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.menus;
 
+import java.rmi.RemoteException;
+
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -28,6 +32,7 @@ import de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -55,7 +60,7 @@ public class EmpfaengerList extends ContextMenu implements Extendable
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new EmpfaengerExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new EmpfaengerImport(),"document-open.png"));
     addItem(ContextMenuItem.SEPARATOR);
-    addItem(new CheckedHibiscusAddressContextMenuItem(i18n.tr("Nach SEPA konvertieren..."), new SepaConvertAddress(),"internet-web-browser.png"));
+    addItem(new SEPAConvertContextMenuItem(i18n.tr("Nach SEPA konvertieren..."), new SepaConvertAddress(),"internet-web-browser.png"));
     
     // Wir geben das Context-Menu jetzt noch zur Erweiterung frei.
     ExtensionRegistry.extend(this);
@@ -67,6 +72,52 @@ public class EmpfaengerList extends ContextMenu implements Extendable
   public String getExtendableID()
   {
     return this.getClass().getName();
+  }
+  
+  private class SEPAConvertContextMenuItem extends CheckedHibiscusAddressContextMenuItem
+  {
+    private SEPAConvertContextMenuItem(String text, Action action, String icon)
+    {
+      super(text,action,icon);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.menus.EmpfaengerList.CheckedHibiscusAddressContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    @Override
+    public boolean isEnabledFor(Object o)
+    {
+      if (!super.isEnabledFor(o))
+        return false;
+
+      try
+      {
+        if (o instanceof HibiscusAddress)
+        {
+          final HibiscusAddress a = (HibiscusAddress) o;
+          final String iban = StringUtils.deleteWhitespace(a.getIban());
+          return (iban == null || iban.length() == 0);
+        }
+        
+        // Wir lassen die Aktion zu, wenn wenigstens eine noch keine IBAN hat
+        if (o instanceof HibiscusAddress[])
+        {
+          final HibiscusAddress[] list = (HibiscusAddress[]) o;
+          for (HibiscusAddress a:list)
+          {
+            final String iban = StringUtils.deleteWhitespace(a.getIban());
+            if (iban == null || iban.length() == 0)
+              return true;
+          }
+          return false;
+        }
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to check for sepa readyness",re);
+      }
+      return true;
+    }
   }
   
   /**
