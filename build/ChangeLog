@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1072 IBAN aus Konto-Kontext-Menü kopieren
   * NEW: 1071 Konfigurierbarkeit von oberen und unteren Saldo-Limits bei Konten
   * NEW: 1070 Auswertungen/Saldo im Verlauf: Anzeige einer Saldoprognose basierend auf den bereits bekannten noch fälligen Aufträgen
   * NEW: 1069 Spalte "Kunden-/Mandatsreferenz" bei CSV-Import von Umsätzen hinzugefügt
