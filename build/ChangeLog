@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1074 Saldo-Limits als Unread-Counter auf der Startseite markieren
   * NEW: 1073 Beim Zusammenfassen zu Sammelaufträgen die Einzelaufträge nicht löschen, wenn sie Wiederholungsvorlagen sind
   * NEW: 1072 IBAN aus Konto-Kontext-Menü kopieren
   * NEW: 1071 Konfigurierbarkeit von oberen und unteren Saldo-Limits bei Konten

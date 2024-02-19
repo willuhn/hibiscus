@@ -11,19 +11,25 @@
 package de.willuhn.jameica.hbci.gui.boxes;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.boxes.Box;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.parts.table.FeatureSummary;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -76,10 +82,15 @@ public class SaldoLimits extends AbstractBox implements Box
    */
   public void paint(Composite parent) throws RemoteException
   {
-    final Container c = new SimpleContainer(parent);
-    c.addText(i18n.tr("Bei den folgenden Konten werden die Salden voraussichtlich die angegebenen Limits erreichen."),true);
+    final List<SaldoLimit> limits = ForecastCreator.getLimits();
     
-    final TablePart table = new TablePart(ForecastCreator.getLimits(),new Action() {
+    if (limits.isEmpty())
+      return;
+    
+    final Container c = new SimpleContainer(parent);
+    c.addText(i18n.tr("Bei den folgenden Konten werden die Salden voraussichtlich die angegebenen Limits erreichen."),true,Color.ERROR);
+    
+    final TablePart table = new TablePart(limits,new Action() {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -99,6 +110,14 @@ public class SaldoLimits extends AbstractBox implements Box
     table.addColumn(i18n.tr("Limit"),"value",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Voraussichtlich erreicht am"),"date", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     
+    table.setFormatter(new TableFormatter() {
+      
+      @Override
+      public void format(TableItem item)
+      {
+        item.setFont(Font.BOLD.getSWTFont());
+      }
+    });
     table.paint(parent);
 
     final ButtonArea buttons = new ButtonArea();
@@ -125,6 +144,8 @@ public class SaldoLimits extends AbstractBox implements Box
     },null,false,"view-refresh.png");
     buttons.addButton(i18n.tr("Limits konfigurieren") + "...",new KontoLimitsConfigure(),null,false,"office-chart-area.png");
     buttons.paint(parent);
+    
+    GUI.getNavigation().setUnreadCount("jameica.start",limits.size());
   }
 
   /**
