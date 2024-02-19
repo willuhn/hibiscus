@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1076 Saldo-Prognose auch basierend auf vergangenen Umsätzen (per Default deaktiviert)
   * NEW: 1075 Kontextmenü-Eintrag "Nach SEPA konvertieren..." im Adressbuch nur anzeigen, wenn Adressen ohne IBAN markiert sind
   * NEW: 1074 Saldo-Limits als Unread-Counter auf der Startseite markieren
   * NEW: 1073 Beim Zusammenfassen zu Sammelaufträgen die Einzelaufträge nicht löschen, wenn sie Wiederholungsvorlagen sind

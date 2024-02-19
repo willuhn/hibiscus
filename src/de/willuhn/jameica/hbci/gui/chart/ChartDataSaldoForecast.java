@@ -17,7 +17,6 @@ import java.util.List;
 import de.willuhn.jameica.hbci.forecast.ForecastCreator;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Value;
-import de.willuhn.jameica.util.DateUtil;
 
 /**
  * Implementierung eines Datensatzes fuer die Darstellung der Saldo-Prognose.
@@ -47,7 +46,7 @@ public class ChartDataSaldoForecast extends AbstractChartDataSaldo
     if (this.data != null)
       return this.data;
     
-    this.data = ForecastCreator.create(this.konto,DateUtil.endOfDay(new Date()),this.end);
+    this.data = ForecastCreator.create(this.konto,this.end);
     return this.data;
   }
   

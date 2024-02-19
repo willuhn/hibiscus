@@ -181,7 +181,7 @@ public class ForecastCreator
     try
     {
       final Date today = DateUtil.startOfDay(new Date());
-      final List<Value> values = create(k,today,DateUtil.endOfDay(cal.getTime()));
+      final List<Value> values = create(k,DateUtil.endOfDay(cal.getTime()));
       
       // Wir haben keine einzige Buchung. Dann entscheiden wir basierend auf dem aktuellen Saldo
       if (values == null || values.isEmpty())
@@ -257,25 +257,22 @@ public class ForecastCreator
   }
 
   /**
-   * Erzeugt eine Liste von Salden fuer das angegebene Konto im angegebenen Zeitraum.
+   * Erzeugt eine Liste von Salden fuer das angegebene Konto von heute bis zum angegebenen Zieldatum.
    * Die Liste enthaelt hierbei fuer jeden Tag einen Wert (auch wenn an diesem Tag
    * keine Zahlungsvorgaenge stattfanden - in dem Fall besitzt der Wert den Saldo des Vortages),
    * kann daher also 1:1 auf eine Chart-Grafik gemappt werden.
    * @param k das Konto. Optional. Ist keines angegeben, wird eine Prognose ueber
    * alle Konten erstellt.
-   * @param from Beginn des Zeitraumes. Ist keiner angegeben, beginnt die
-   * Auswertung beim heutigen Tag.
    * @param to Ende des Zeitraumes. Ist keines angegeben, endet die Auswertung 1 Jahr nach Beginn
    * des Zeitraumes.
    * @return die Liste der Salden.
    * @throws RemoteException
    */
-  public static List<Value> create(Konto k, Date from, Date to) throws RemoteException
+  public static List<Value> create(Konto k, Date to) throws RemoteException
   {
     ////////////////////////////////////////////////////////////////////////////
     // Start- und End-Datum vorbereiten
-    if (from == null)
-      from = new Date();
+    Date from = DateUtil.startOfDay(new Date());
     
     if (to == null)
     {
@@ -285,8 +282,7 @@ public class ForecastCreator
       to = cal.getTime();
     }
     
-    from = DateUtil.startOfDay(from);
-    to   = DateUtil.endOfDay(to);
+    to = DateUtil.endOfDay(to);
     //
     ////////////////////////////////////////////////////////////////////////////
 
@@ -302,7 +298,10 @@ public class ForecastCreator
 
       try
       {
-        List<Value> values = p.getData(k,from,to);
+        List<Value> values = p.getData(k,to);
+        if (values == null || values.isEmpty())
+          continue;
+        
         for (Value v:values)
         {
           // Haben wir den Tag schon?
