@@ -17,6 +17,7 @@ import java.util.Map;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.SepaTransferMergeDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -114,6 +115,8 @@ public class SepaUeberweisungMerge implements Action
         Application.getMessagingFactory().sendMessage(new ImportMessage(s));
       }
       
+      int skipCount = 0;
+      
       // jetzt iterieren wir nochmal ueber die Einzelauftraege und ordnen sie den
       // Sammelauftraegen zu
       for (AuslandsUeberweisung l:source)
@@ -141,9 +144,16 @@ public class SepaUeberweisungMerge implements Action
         
         if (delete && !l.isNewObject())
         {
-          final String id = l.getID();
-          l.delete();
-          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l,id));
+          if (MetaKey.REMINDER_UUID.get(l) != null)
+          {
+            skipCount++;
+          }
+          else
+          {
+            final String id = l.getID();
+            l.delete();
+            Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l,id));
+          }
         }
       }
       
@@ -152,6 +162,8 @@ public class SepaUeberweisungMerge implements Action
       String text = count > 1 ? i18n.tr("{0} Sammelaufträge erzeugt",String.valueOf(count)) : i18n.tr("Sammelauftrag erzeugt");
       if (foundDate)
         text += i18n.tr("Einer der enthaltenen Aufträge war bankseitig terminiert. Das Datum wurde ignoriert.");
+      if (skipCount > 0)
+        text += i18n.tr("Aufträge mit Wiederholung wurden nicht gelöscht.");
 
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(text, foundDate ? StatusBarMessage.TYPE_INFO : StatusBarMessage.TYPE_SUCCESS));
     }

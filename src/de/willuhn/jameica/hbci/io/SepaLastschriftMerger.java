@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.SepaTransferMergeDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -141,9 +142,12 @@ public class SepaLastschriftMerger
         
         if (delete && !l.isNewObject())
         {
-          final String id = l.getID();
-          l.delete();
-          Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l,id));
+          if (MetaKey.REMINDER_UUID.get(l) == null)
+          {
+            final String id = l.getID();
+            l.delete();
+            Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(l,id));
+          }
         }
       }
       
