@@ -42,6 +42,8 @@ public class SepaLastschriftMerger
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
+  private int skipCount = 0;
+  
   /**
    * Merged die Liste der Einzellastschriften zu ein oder mehreren sorten-reinen Sammellastschriften zusammen.
    * @param lastschriften die Liste der Einzellastschriften.
@@ -142,7 +144,11 @@ public class SepaLastschriftMerger
         
         if (delete && !l.isNewObject())
         {
-          if (MetaKey.REMINDER_UUID.get(l) == null)
+          if (MetaKey.REMINDER_UUID.get(l) != null)
+          {
+            skipCount++;
+          }
+          else
           {
             final String id = l.getID();
             l.delete();
@@ -178,6 +184,15 @@ public class SepaLastschriftMerger
       Logger.error("error while merging jobs",e);
       throw new ApplicationException(i18n.tr("Zusammenfassen der Lastschriften fehlgeschlagen: {0}",e.getMessage()));
 		}
+  }
+  
+  /**
+   * Liefert die Anzahl der beim Löschen übersprungenden Aufträge, weil sie Wiederholungsvorlagen sind.
+   * @return die Anzahl der beim Löschen übersprungenden Aufträge.
+   */
+  public int getSkipCount()
+  {
+    return skipCount;
   }
   
   /**

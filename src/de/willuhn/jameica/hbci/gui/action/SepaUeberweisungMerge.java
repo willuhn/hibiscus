@@ -161,11 +161,11 @@ public class SepaUeberweisungMerge implements Action
       
       String text = count > 1 ? i18n.tr("{0} Sammelaufträge erzeugt",String.valueOf(count)) : i18n.tr("Sammelauftrag erzeugt");
       if (foundDate)
-        text += i18n.tr("Einer der enthaltenen Aufträge war bankseitig terminiert. Das Datum wurde ignoriert.");
+        text += i18n.tr("Einer der Aufträge war bankseitig terminiert. Das Datum wurde ignoriert.");
       if (skipCount > 0)
         text += i18n.tr("Aufträge mit Wiederholung wurden nicht gelöscht.");
 
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(text, foundDate ? StatusBarMessage.TYPE_INFO : StatusBarMessage.TYPE_SUCCESS));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(text, foundDate || skipCount> 0 ? StatusBarMessage.TYPE_INFO : StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
     {
