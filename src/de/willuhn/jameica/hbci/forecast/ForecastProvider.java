@@ -38,13 +38,10 @@ public interface ForecastProvider
    * @throws Exception
    */
   public List<Value> getData(Konto k, Date to) throws Exception;
+  
+  /**
+   * Liefert true, wenn der Provider per Default aktiv sein soll.
+   * @return true, wenn der Provider per Default aktiv sein soll.
+   */
+  public boolean isDefaultEnabled();
 }
-
-
-
-/**********************************************************************
- * $Log: ForecastProvider.java,v $
- * Revision 1.1  2011/10/27 17:10:02  willuhn
- * @N Erster Code fuer die Forecast-API - Konto-Prognose
- *
- **********************************************************************/

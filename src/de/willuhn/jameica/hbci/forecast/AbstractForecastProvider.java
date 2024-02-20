@@ -83,14 +83,13 @@ public abstract class AbstractForecastProvider<T extends HibiscusDBObject> imple
       this.provider = ScheduleProviderFactory.getScheduleProvider(BeanUtil.getType(this.getClass()));
     return this.provider;
   }
-
+  
+  /**
+   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#isDefaultEnabled()
+   */
+  @Override
+  public boolean isDefaultEnabled()
+  {
+    return true;
+  }
 }
-
-
-
-/**********************************************************************
- * $Log: AbstractForecastProvider.java,v $
- * Revision 1.1  2012/02/20 17:03:50  willuhn
- * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
- *
- **********************************************************************/

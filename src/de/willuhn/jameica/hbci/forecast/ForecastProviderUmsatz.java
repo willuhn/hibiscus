@@ -35,7 +35,6 @@ import de.willuhn.util.I18N;
 public class ForecastProviderUmsatz implements ForecastProvider
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(ForecastProvider.class);
 
   /**
    * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#getName()
@@ -45,6 +44,15 @@ public class ForecastProviderUmsatz implements ForecastProvider
   {
     return i18n.tr("Umsätze");
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#isDefaultEnabled()
+   */
+  @Override
+  public boolean isDefaultEnabled()
+  {
+    return false;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#getData(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date)
@@ -52,9 +60,6 @@ public class ForecastProviderUmsatz implements ForecastProvider
   @Override
   public List<Value> getData(Konto k, Date to) throws Exception
   {
-    if (!settings.getBoolean("forecast.umsatz",false))
-      return null;
-    
     // Wir holen uns erstmal eine Liste der Umsätze aus den letzten 6 Monaten
     final Date end = DateUtil.endOfDay(new Date());
     final Calendar cal = Calendar.getInstance();

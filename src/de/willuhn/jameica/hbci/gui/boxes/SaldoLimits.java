@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.gui.boxes;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
@@ -86,7 +87,7 @@ public class SaldoLimits extends AbstractBox implements Box
     
     if (limits.isEmpty())
       return;
-    
+
     final Container c = new SimpleContainer(parent);
     c.addText(i18n.tr("Bei den folgenden Konten werden die Salden voraussichtlich die angegebenen Limits erreichen."),true,Color.ERROR);
     
@@ -109,13 +110,20 @@ public class SaldoLimits extends AbstractBox implements Box
     table.addColumn(i18n.tr("Art des Limits"),"type",t -> ((Type)t).getDescription());
     table.addColumn(i18n.tr("Limit"),"value",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     table.addColumn(i18n.tr("Voraussichtlich erreicht am"),"date", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
-    
+
+    final AtomicInteger notify = new AtomicInteger();
+
     table.setFormatter(new TableFormatter() {
       
       @Override
       public void format(TableItem item)
       {
-        item.setFont(Font.BOLD.getSWTFont());
+        final SaldoLimit limit = (SaldoLimit) item.getData();
+        if (limit.isNotify())
+        {
+          item.setFont(Font.BOLD.getSWTFont());
+          notify.incrementAndGet();
+        }
       }
     });
     table.paint(parent);
@@ -130,10 +138,12 @@ public class SaldoLimits extends AbstractBox implements Box
         {
           ForecastCreator.updateLimits();
           table.removeAll();
+          notify.set(0);
           for (SaldoLimit l:ForecastCreator.getLimits())
           {
             table.addItem(l);
           }
+          GUI.getNavigation().setUnreadCount("jameica.start",notify.get());
         }
         catch (RemoteException re)
         {
@@ -145,7 +155,7 @@ public class SaldoLimits extends AbstractBox implements Box
     buttons.addButton(i18n.tr("Limits konfigurieren") + "...",new KontoLimitsConfigure(),null,false,"office-chart-area.png");
     buttons.paint(parent);
     
-    GUI.getNavigation().setUnreadCount("jameica.start",limits.size());
+    GUI.getNavigation().setUnreadCount("jameica.start",notify.get());
   }
 
   /**

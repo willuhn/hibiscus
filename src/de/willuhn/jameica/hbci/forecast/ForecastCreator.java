@@ -376,7 +376,7 @@ public class ForecastCreator
    */
   public static boolean isEnabled(ForecastProvider provider)
   {
-    return settings.getBoolean(provider.getClass().getName() + ".enabled",true);
+    return settings.getBoolean(provider.getClass().getName() + ".enabled",provider.isDefaultEnabled());
   }
   
   /**
