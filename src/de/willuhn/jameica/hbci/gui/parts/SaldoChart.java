@@ -61,7 +61,7 @@ import de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider;
 import de.willuhn.jameica.hbci.report.balance.AccountBalanceService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
-import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
@@ -170,7 +170,7 @@ public class SaldoChart implements Part
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),Range.CATEGORY_AUSWERTUNG, "auswertungen.saldochart.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(),Category.AUSWERTUNG, "auswertungen.saldochart.filter.range");
     this.range.addListener(this.reloadListener);
     return this.range;
   }

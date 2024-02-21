@@ -59,6 +59,7 @@ import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -241,7 +242,7 @@ public class SparQuote implements Part
     
     // Wir wollen hier nur die Zeitraume haben, die mindestens 2 Monate umfassen
     List<Range> ranges = new ArrayList<Range>();
-    for (Range r:Range.getActiveRanges(Range.CATEGORY_AUSWERTUNG))
+    for (Range r:Range.getActiveRanges(Category.AUSWERTUNG))
     {
       // Zeitraeume ohne Startdatum sind immer lang genug
       if (r.getStart() == null)

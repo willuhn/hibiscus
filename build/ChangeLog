@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1080 Unter Hibiscus->Einstellungen->Zeiträume können jetzt eigene Zeiträume definiert werden
   * BUG: 1079 Nachtrag zu 1070: Bugfixing der Saldo-Limits
   * NEW: 1078 Nachtrag zu 1073: Hinweistext bei Wiederholungsaufträgen auch bei Sammellastschriften anzeigen
   * NEW: 1077 Nachtrag zu 1066: Shortcut "ALT+A" für "Neue Sammelüberweisung..." geändert in "ALT+W" - kollidierte mit "Aktualisieren" auf Umsatzliste

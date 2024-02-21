@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.NotificationPanel;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
@@ -47,17 +48,17 @@ public class RangeInput extends SelectInput
    */
   public RangeInput(final Input from, final Input to)
   {
-    this(from, to, Range.CATEGORY_ZAHLUNGSVERKEHR, null);
+    this(from, to, Category.ZAHLUNGSVERKEHR, null);
   }
 
   /**
    * ct.
    * @param from Input-Feld, in das das Start-Datum nach der Auswahl uebernommen werden soll.
    * @param to Input-Feld, in das das End-Datum nach der Auswahl uebernommen werden soll.
-   * @param category Kategorie der anzuzeigenden Zeiträume (Range.CATEGORY_ZAHLUNGSVERKEHR oder Range.CATEGORY_AUSWERTUNG)
+   * @param category Kategorie.
    * @param parameter Schluessel-Name, unter dem die Auswahl gespeichert wird.
    */
-  public RangeInput(final Input from, final Input to, final String category, final String parameter)
+  public RangeInput(final Input from, final Input to, final Category category, final String parameter)
   {
     this(Range.getActiveRanges(category),from,to,parameter);
   }

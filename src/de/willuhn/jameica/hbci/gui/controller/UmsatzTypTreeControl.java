@@ -42,7 +42,7 @@ import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTree;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypVerlauf;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -154,7 +154,7 @@ public class UmsatzTypTreeControl extends AbstractControl
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(), Range.CATEGORY_AUSWERTUNG, "auswertungen.umsatztree.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(), Category.AUSWERTUNG, "auswertungen.umsatztree.filter.range");
     this.range.addListener(this.changedListener(this.range));
     
     return this.range;
