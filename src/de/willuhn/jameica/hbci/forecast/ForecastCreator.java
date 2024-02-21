@@ -196,7 +196,7 @@ public class ForecastCreator
       
       for (Value v:values)
       {
-        if (type.reached(k.getSaldo(),v.getValue()))
+        if (type.reached(v.getValue(),limit.getValue()))
         {
           // Wir sind unter den Saldo gefallen.
           limit.setDate(v.getDate());

@@ -41,9 +41,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoLimitsConfigure;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -134,25 +132,20 @@ public class SaldoLimits extends AbstractBox implements Box
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
-        try
-        {
-          ForecastCreator.updateLimits();
-          table.removeAll();
-          notify.set(0);
-          for (SaldoLimit l:ForecastCreator.getLimits())
-          {
-            table.addItem(l);
-          }
-          GUI.getNavigation().setUnreadCount("jameica.start",notify.get());
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("unable to reload limits",re);
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Aktualisieren der Limits fehlgeschlagen"),StatusBarMessage.TYPE_ERROR));
-        }
+        ForecastCreator.updateLimits();
+        GUI.getCurrentView().reload();
       }
     },null,false,"view-refresh.png");
-    buttons.addButton(i18n.tr("Limits konfigurieren") + "...",new KontoLimitsConfigure(),null,false,"office-chart-area.png");
+    buttons.addButton(i18n.tr("Limits konfigurieren") + "...",new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new KontoLimitsConfigure().handleAction(context);
+        ForecastCreator.updateLimits();
+        GUI.getCurrentView().reload();
+      }
+    },null,false,"office-chart-area.png");
     buttons.paint(parent);
     
     GUI.getNavigation().setUnreadCount("jameica.start",notify.get());

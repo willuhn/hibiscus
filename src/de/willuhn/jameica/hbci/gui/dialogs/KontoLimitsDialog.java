@@ -15,18 +15,21 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.parts.NotificationPanel;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -39,6 +42,7 @@ import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -49,6 +53,7 @@ import de.willuhn.util.I18N;
  */
 public class KontoLimitsDialog extends AbstractDialog
 {
+  private final static Settings settings = new Settings(KontoLimitsDialog.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private final static int WINDOW_WIDTH = 500;
@@ -59,7 +64,7 @@ public class KontoLimitsDialog extends AbstractDialog
   private SaldoLimit lower = null;
   
   private KontoInput kontoAuswahl = null;
-  private LabelInput hinweise = null;
+  private NotificationPanel hinweise = null;
   private Button apply = null;
   
   private CheckboxInput upperEnabled = null;
@@ -88,7 +93,7 @@ public class KontoLimitsDialog extends AbstractDialog
     super(POSITION_CENTER);
     this.konto = konto;
     this.setTitle(i18n.tr("Konto-Limits konfigurieren"));
-    setSize(WINDOW_WIDTH,SWT.DEFAULT);
+    setSize(settings.getInt("window.width",WINDOW_WIDTH),settings.getInt("window.height",SWT.DEFAULT));
   }
 
   /**
@@ -98,13 +103,13 @@ public class KontoLimitsDialog extends AbstractDialog
   protected void paint(Composite parent) throws Exception
   {
     final Container c = new SimpleContainer(parent);
+    
     c.addText(i18n.tr("Nach Auswahl des Kontos können Sie ein oberes bzw. unteres Limit für den Saldo festlegen. " + 
       "Sobald dieser den Wert innerhalb der angegebenen Tage über- bzw. unterschreitet, " +
       "erhalten Sie eine Benachrichtigung."
     ),true);
     
     c.addInput(this.getKontoAuswahl());
-    c.addInput(this.getHinweise());
     
     c.addHeadline(SaldoLimit.Type.UPPER.getDescription());
     c.addInput(this.getUpperEnabled());
@@ -117,7 +122,9 @@ public class KontoLimitsDialog extends AbstractDialog
     c.addInput(this.getLowerValue());
     c.addInput(this.getLowerDays());
     c.addInput(this.getLowerNotify());
-    
+
+    c.addPart(this.getHinweise());
+
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(this.getApply());
     buttons.addButton(i18n.tr("Abbrechen"), new Action()
@@ -129,10 +136,26 @@ public class KontoLimitsDialog extends AbstractDialog
     },null,false,"window-close.png");
     
     c.addButtonArea(buttons);
-    // getShell().pack();
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
-  }
     
+    getShell().addDisposeListener(new DisposeListener() {
+      
+      @Override
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Shell shell = getShell();
+        if (shell == null || shell.isDisposed())
+          return;
+        
+        Point size = shell.getSize();
+        Logger.debug("saving window size: " + size.x + "x" + size.y);
+        settings.setAttribute("window.width",size.x);
+        settings.setAttribute("window.height",size.y);
+      }
+    });
+
+  }
+  
   /**
    * Liefert den Apply-Button.
    * @return der Apply-Button.
@@ -146,8 +169,8 @@ public class KontoLimitsDialog extends AbstractDialog
     {
       public void handleAction(Object context) throws ApplicationException
       {
-        handleStore();
-        close();
+        if (handleStore())
+          close();
       }
     },null,true,"ok.png");
     
@@ -243,8 +266,10 @@ public class KontoLimitsDialog extends AbstractDialog
       return this.lowerValue;
     
     this.lowerValue = new DecimalInput(HBCI.DECIMALFORMAT);
+    this.lowerValue.setMandatory(true);
     this.lowerValue.setName(i18n.tr("Mindestsaldo"));
     this.lowerValue.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
+    this.lowerValue.addListener(this.statusListener);
     return this.lowerValue;
   }
   
@@ -258,8 +283,10 @@ public class KontoLimitsDialog extends AbstractDialog
       return this.upperValue;
     
     this.upperValue = new DecimalInput(HBCI.DECIMALFORMAT);
+    this.upperValue.setMandatory(true);
     this.upperValue.setName(i18n.tr("Höchstsaldo"));
     this.upperValue.setComment(HBCIProperties.CURRENCY_DEFAULT_DE);
+    this.upperValue.addListener(this.statusListener);
     return this.upperValue;
   }
   
@@ -273,6 +300,7 @@ public class KontoLimitsDialog extends AbstractDialog
       return this.lowerDays;
     
     this.lowerDays = new MyUmsatzDaysInput();
+    this.lowerDays.setMandatory(true);
     this.lowerDays.setRememberSelection("limit.lower");
     this.lowerDays.setName(i18n.tr("Erreicht"));
     return this.lowerDays;
@@ -288,6 +316,7 @@ public class KontoLimitsDialog extends AbstractDialog
       return this.upperDays;
     
     this.upperDays = new MyUmsatzDaysInput();
+    this.upperDays.setMandatory(true);
     this.upperDays.setRememberSelection("limit.upper");
     this.upperDays.setName(i18n.tr("Erreicht"));
     return this.upperDays;
@@ -298,14 +327,12 @@ public class KontoLimitsDialog extends AbstractDialog
    * @return Label.
    * @throws RemoteException
    */
-  private LabelInput getHinweise()
+  private NotificationPanel getHinweise()
   {
     if (this.hinweise != null)
       return this.hinweise;
     
-    this.hinweise = new LabelInput("");
-    this.hinweise.setColor(Color.COMMENT);
-    this.hinweise.setName("");
+    this.hinweise = new NotificationPanel();
     return this.hinweise;
   }
 
@@ -379,7 +406,7 @@ public class KontoLimitsDialog extends AbstractDialog
         
         if (!haveKonto)
         {
-          getHinweise().setValue(i18n.tr("Bitte wählen Sie ein Konto aus"));
+          getHinweise().setText(NotificationPanel.Type.INFO,i18n.tr("Bitte wählen Sie ein Konto aus"));
           getUpperEnabled().setValue(false);
           getLowerEnabled().setValue(false);
           getLowerValue().setValue(null);
@@ -390,8 +417,6 @@ public class KontoLimitsDialog extends AbstractDialog
           getLowerNotify().setValue(false);
           return;
         }
-
-        getHinweise().setValue("");
 
         konto = (Konto) o;
         upper = ForecastCreator.getLimit(konto,SaldoLimit.Type.UPPER);
@@ -435,40 +460,62 @@ public class KontoLimitsDialog extends AbstractDialog
       getLowerDays().setEnabled(haveLower);
       getUpperNotify().setEnabled(haveUpper);
       getLowerNotify().setEnabled(haveLower);
+      
+      final Double vu  = (Double) getUpperValue().getValue();
+      final Double vl  = (Double) getLowerValue().getValue();
+      getApply().setEnabled(vu != null && vl != null);
     }
   }
 
   /**
    * Speichert die vorgenommenen Einstellungen.
+   * @return true, wenn die Einstellungen korrekt gespeichert wurden.
    */
-  private void handleStore()
+  private boolean handleStore()
   {
     try
     {
       final Konto k = (Konto) this.getKontoAuswahl().getValue();
       if (k == null)
       {
-        getHinweise().setValue(i18n.tr("Bitte wählen Sie ein Konto aus"));
-        return;
+        getHinweise().setText(NotificationPanel.Type.INFO,i18n.tr("Bitte wählen Sie ein Konto aus"));
+        return false;
+      }
+
+      final Boolean eu = (Boolean) this.getUpperEnabled().getValue();
+      final Boolean el = (Boolean) this.getLowerEnabled().getValue();
+      final Double vu  = (Double) this.getUpperValue().getValue();
+      final Double vl  = (Double) this.getLowerValue().getValue();
+      
+      if (eu && el)
+      {
+        if (vu != null && vl != null && vu.compareTo(vl) <= 0)
+        {
+          getHinweise().setText(NotificationPanel.Type.ERROR,i18n.tr("Das obere Limit muss größer als das untere Limit sein."));
+          return false;
+        }
       }
       
-      upper.setEnabled((Boolean) this.getUpperEnabled().getValue());
+      upper.setEnabled(eu);
       upper.setDays((Integer) this.getUpperDays().getValue());
-      upper.setValue((Double) this.getUpperValue().getValue());
+      upper.setValue(vu);
       upper.setNotify(((Boolean)this.getUpperNotify().getValue()));
       ForecastCreator.setLimit(upper);
       
-      lower.setEnabled((Boolean) this.getLowerEnabled().getValue());
+      lower.setEnabled(el);
       lower.setDays((Integer) this.getLowerDays().getValue());
-      lower.setValue((Double) this.getLowerValue().getValue());
+      lower.setValue(vl);
       lower.setNotify(((Boolean)this.getLowerNotify().getValue()));
       ForecastCreator.setLimit(lower);
       
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+      return true;
     }
-    catch (RemoteException re)
+    catch (Exception e)
     {
-      Logger.error("error while saving settings",re);
+      Logger.error("error while saving settings",e);
+      getHinweise().setText(NotificationPanel.Type.ERROR,e.getMessage());
+      return false;
     }
   }
 }
