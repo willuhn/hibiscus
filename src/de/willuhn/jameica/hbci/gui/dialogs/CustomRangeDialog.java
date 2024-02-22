@@ -192,7 +192,16 @@ public class CustomRangeDialog extends AbstractDialog
       super();
       this.future = future;
       
-      this.setScaling(1,999,1,7);
+      this.setScaling(1,getUndefinedMax()-1,1,7);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput#getUndefinedMax()
+     */
+    @Override
+    protected int getUndefinedMax()
+    {
+      return (10 * 365) + 1;
     }
     
     /**

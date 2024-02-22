@@ -45,12 +45,21 @@ public class UmsatzDaysInput extends ScaleInput
    */
   public UmsatzDaysInput()
   {
-    // BUGZILLA 258
-    super(getDefaultDays() == -1 ? 1000 : getDefaultDays()); // wir muessen das "-1" wieder zurueck auf 1000 mappen
+    super(0); 
+    this.setValue(getDefaultDays() == -1 ? getUndefinedMax() : getDefaultDays()); // wir muessen das "-1" wieder zurueck auf 1000 mappen
     this.setName(i18n.tr("Zeitraum"));
     this.setComment(""); // Damit wir das Datum noch hinzufuegen koennen
-    this.setScaling(1,1000,1,10);
+    this.setScaling(1,getUndefinedMax(),1,10);
     this.addListener(this.listener);
+  }
+  
+  /**
+   * Liefert den Max-Wert, ab dem ein Wert von -1 angenommen wird.
+   * @return der Max-Wert.
+   */
+  protected int getUndefinedMax()
+  {
+    return 1000;
   }
   
   /**
@@ -88,7 +97,7 @@ public class UmsatzDaysInput extends ScaleInput
   {
     this.token = s;
     int value = settings.getInt(this.token,HBCIProperties.UMSATZ_DEFAULT_DAYS);
-    this.setValue(value == -1 ? 1000 : value);
+    this.setValue(value == -1 ? getUndefinedMax() : value);
   }
   
   /**
@@ -107,7 +116,7 @@ public class UmsatzDaysInput extends ScaleInput
   public Object getValue()
   {
     int i = (Integer) super.getValue();
-    if (i > 999)
+    if (i >= getUndefinedMax())
       return -1;
     return i;
   }
@@ -167,14 +176,3 @@ public class UmsatzDaysInput extends ScaleInput
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: UmsatzDaysInput.java,v $
- * Revision 1.7  2011/05/04 12:04:40  willuhn
- * @N Zeitraum in Umsatzliste und Saldo-Chart kann jetzt freier und bequemer ueber einen Schieberegler eingestellt werden
- * @B Dispose-Checks in Umsatzliste
- *
- * Revision 1.6  2010-08-11 16:06:04  willuhn
- * @N BUGZILLA 783 - Saldo-Chart ueber alle Konten
- *********************************************************************/
