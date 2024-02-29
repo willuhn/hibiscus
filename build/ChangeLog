@@ -1,6 +1,11 @@
 HEAD 2.11 (nightly)
 
-  * NEW: 1082 Migrationsassistent für geänderte PIN/TAN-URLs
+  * NEW: 1061 Umstellung von MySQL auf MariaDB
+
+2024-02-29 Version 2.10.17
+
+  * NEW: 1084 Update auf HBCI4Java 3.1.75 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.75
+  * NEW: 1083 Migrationsassistent für geänderte PIN/TAN-URLs
   * NEW: 1082 PIN/TAN-URL in Bankzugang bearbeitbar (u.a. für Atruvia-Migration hilfreich)
   * NEW: 1081 Benutzerspezifische Zeiträume mit bis zu +/- 10 Jahren zulassen 
   * NEW: 1080 Unter Hibiscus->Einstellungen->Zeiträume können jetzt eigene Zeiträume definiert werden
@@ -22,7 +27,6 @@ HEAD 2.11 (nightly)
   * NEW: 1064 Warnhinweis anzeigen, wenn beim Zusammenführen von Überweisungen bankseitige Terminaufträge enthalten waren
   * NEW: 1063 Bessere Erkennung von Kontoinhaber beim Erstellen einer neuen Überweisung aus der Zwischenablage
   * NEW: 1062 Shortcuts ALT+L, CTRL+ALT+L und SHIFT+ALT+L zum Gelesen/Ungelesen-Markieren von Umsätzen
-  * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-01-13 Version 2.10.16
 
