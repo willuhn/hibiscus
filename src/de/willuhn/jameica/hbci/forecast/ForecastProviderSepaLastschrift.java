@@ -25,6 +25,6 @@ public class ForecastProviderSepaLastschrift extends AbstractForecastProvider<Se
   Value createValue(Schedule<SepaLastschrift> schedule) throws RemoteException
   {
     // Positiv-Betrag verwenden, weil wir das ja gutgeschrieben kriegen
-    return new Value(schedule.getDate(),schedule.getContext().getBetrag());
+    return new Value(schedule.getContext().getTargetDate(),schedule.getContext().getBetrag());
   }
 }

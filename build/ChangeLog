@@ -1,3 +1,29 @@
+2024-02-29 Version 2.10.17
+
+  * NEW: 1084 Update auf HBCI4Java 3.1.75 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.75
+  * NEW: 1083 Migrationsassistent für geänderte PIN/TAN-URLs
+  * NEW: 1082 PIN/TAN-URL in Bankzugang bearbeitbar (u.a. für Atruvia-Migration hilfreich)
+  * NEW: 1081 Benutzerspezifische Zeiträume mit bis zu +/- 10 Jahren zulassen 
+  * NEW: 1080 Unter Hibiscus->Einstellungen->Zeiträume können jetzt eigene Zeiträume definiert werden
+  * BUG: 1079 Nachtrag zu 1070: Bugfixing der Saldo-Limits
+  * NEW: 1078 Nachtrag zu 1073: Hinweistext bei Wiederholungsaufträgen auch bei Sammellastschriften anzeigen
+  * NEW: 1077 Nachtrag zu 1066: Shortcut "ALT+A" für "Neue Sammelüberweisung..." geändert in "ALT+W" - kollidierte mit "Aktualisieren" auf Umsatzliste
+  * NEW: 1076 Saldo-Prognose auch basierend auf vergangenen Umsätzen (per Default deaktiviert)
+  * NEW: 1075 Kontextmenü-Eintrag "Nach SEPA konvertieren..." im Adressbuch nur anzeigen, wenn Adressen ohne IBAN markiert sind
+  * NEW: 1074 Saldo-Limits als Unread-Counter auf der Startseite markieren
+  * NEW: 1073 Beim Zusammenfassen zu Sammelaufträgen die Einzelaufträge nicht löschen, wenn sie Wiederholungsvorlagen sind
+  * NEW: 1072 IBAN aus Konto-Kontext-Menü kopieren
+  * NEW: 1071 Konfigurierbarkeit von oberen und unteren Saldo-Limits bei Konten
+  * NEW: 1070 Auswertungen/Saldo im Verlauf: Anzeige einer Saldoprognose basierend auf den bereits bekannten noch fälligen Aufträgen
+  * NEW: 1069 Spalte "Kunden-/Mandatsreferenz" bei CSV-Import von Umsätzen hinzugefügt
+  * CHG: 1068 Bei Zeitraum "Letzte 7/30/90 Tage" und "Letzte ...Jahre" das Bis-Datum frei lassen, um auch Buchungen der nächsten Tage anzuzeigen
+  * NEW: 1067 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 04.03.2024
+  * NEW: 1066 Shortcut "ALT+S" für "Neue Sammelüberweisung..." geändert in "ALT+A" - kollidierte mit "Speichern"-Button
+  * NEW: 1065 In der Vorschlagsliste aus dem Adressbuch auch Teile der IBAN mit anzeigen (für gleichnamige Treffer im Adressbuch)
+  * NEW: 1064 Warnhinweis anzeigen, wenn beim Zusammenführen von Überweisungen bankseitige Terminaufträge enthalten waren
+  * NEW: 1063 Bessere Erkennung von Kontoinhaber beim Erstellen einer neuen Überweisung aus der Zwischenablage
+  * NEW: 1062 Shortcuts ALT+L, CTRL+ALT+L und SHIFT+ALT+L zum Gelesen/Ungelesen-Markieren von Umsätzen
+
 2024-01-13 Version 2.10.16
 
   * NEW: 1060 Update auf HBCI4Java 3.1.74 (PushTAN Decoupled) - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.74

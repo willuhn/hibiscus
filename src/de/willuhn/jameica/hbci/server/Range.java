@@ -16,11 +16,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.UUID;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -59,18 +62,59 @@ public abstract class Range
   private final static Range Y_2LAS = new SecondLastYear();
 
   /**
-   * Parameterpräfix für Zahlungverkehrs-Zeiträume
-   * */
-  public final static String CATEGORY_ZAHLUNGSVERKEHR = "zahlungsverkehr";
-  /**
-   * Parameterpräfix für Auswertungs-Zeiträume
-   * */
-  public final static String CATEGORY_AUSWERTUNG = "auswertung";
+   * Enum mit den Kategorien.
+   */
+  public static enum Category
+  {
+    /**
+     * Kategorie für Zahlungsverkehr.
+     */
+    ZAHLUNGSVERKEHR("zahlungsverkehr",i18n.tr("Zahlungsverkehr")),
+    
+    /**
+     * Kategorie für Auswertungen.
+     */
+    AUSWERTUNG("auswertung",i18n.tr("Auswertungen, Umsatzlisten und Kontoauszüge")),
+    
+    ;
+    
+    private String id = null;
+    private String name = null;
+    
+    /**
+     * ct.
+     * @param id
+     * @param name
+     */
+    private Category(String id, String name)
+    {
+      this.id = id;
+      this.name = name;
+    }
+    
+    /**
+     * Liefert die ID der Kategorie.
+     * @return id die ID der Kategorie.
+     */
+    public String getId()
+    {
+      return id;
+    }
+    
+    /**
+     * Liefert den Namen der Kategorie.
+     * @return der Name der Kategorie.
+     */
+    public String getName()
+    {
+      return name;
+    }
+  }
 
   /**
    * Bekannte Zeitraeume.
    */
-  public final static List<Range> KNOWN = Arrays.asList(
+  private final static List<Range> KNOWN = Arrays.asList(
     D_7,
     D_30,
     D_90,
@@ -118,46 +162,120 @@ public abstract class Range
     );
 
   /**
-   * Liefert die aktiven Zeitraeume fuer die angegebene Kategorie.
-   * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
-   * @return Liste der anzuzeigenden Zeiträume für die gegebene Kategorie. 
-   * */
-  public final static List<Range> getActiveRanges(final String category)
+   * Liefert alle Zeitraeme fuer die angegebene Kategorie.
+   * @param category Kategorie.
+   * @return Liste der Zeitraeume.
+   */
+  public static List<Range> getAllRanges(final Category category)
   {
     final List<Range> result = new ArrayList<Range>();
+    result.addAll(getCustomRanges(category));
+    result.addAll(KNOWN);
+    
+    return result;
+  }
+  
+  /**
+   * Liefert die aktiven Zeitraeume fuer die angegebene Kategorie.
+   * @param category Kategorie.
+   * @return Liste der anzuzeigenden Zeiträume für die gegebene Kategorie. 
+   * */
+  public static List<Range> getActiveRanges(final Category category)
+  {
+    final List<Range> result = new ArrayList<Range>();
+    
+    for (Range range:getCustomRanges(category))
+    {
+      if (settings.getBoolean(category.getId() + "." + range.getId(), true))
+        result.add(range);
+    }
+
     for (Range range : KNOWN)
     {
-      if (settings.getBoolean(category + "." + range.getId(), DEFAULT.contains(range)))
+      if (settings.getBoolean(category.getId() + "." + range.getId(), DEFAULT.contains(range)))
         result.add(range);
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Liefert die Liste der benutzerspezifischen Zeiträume.
+   * @param category Kategorie.
+   * @return Liste der benutzerspezifischen Zeiträume. Nie NULL sondern höchstens eine leere Liste.
+   */
+  private static List<Range> getCustomRanges(final Category category)
+  {
+    final List<Range> result = new ArrayList<Range>();
+    for (String uuid:settings.getList(category.getId() + ".custom",new String[0]))
+    {
+      result.add(new CustomRange(uuid));
     }
     return result;
   }
   
   /**
+   * Löscht einen benutzerspezifischen Zeitraum.
+   * @param category die Kategorie.
+   * @param range der Zeitraum.
+   */
+  public static void deleteCustomRange(final Category category, CustomRange range)
+  {
+    final List<String> result = new ArrayList<>();
+    for (String uuid:settings.getList(category.getId() + ".custom",new String[0]))
+    {
+      if (Objects.equals(uuid,range.uuid))
+      {
+        range.delete();
+        continue;
+      }
+      result.add(uuid);
+    }
+    settings.setAttribute(category.getId() + "." + range.getId(), (String) null);
+    settings.setAttribute(category.getId() + ".custom",result.toArray(new String[result.size()]));
+  }
+
+  /**
+   * Speichert einen benutzerspezifischen Zeitraum.
+   * @param category die Kategorie.
+   * @param range der Zeitraum.
+   */
+  public static void saveCustomRange(final Category category, CustomRange range)
+  {
+    final List<String> result = new ArrayList<>();
+    result.addAll(Arrays.asList(settings.getList(category.getId() + ".custom",new String[0])));
+    if (!result.contains(range.uuid))
+      result.add(range.uuid);
+
+    range.save();
+    settings.setAttribute(category.getId() + ".custom",result.toArray(new String[result.size()]));
+  }
+
+  /**
    * Speichert die fuer die Kategorie zu verwendenden Zeitraeume.
-   * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
+   * @param category Kategorie.
    * @param ranges Liste der anzuzeigenden Zeiträume für die gegebene Kategorie. 
    */
-  public final static void setActiveRanges(final String category, List<Range> ranges)
+  public static void setActiveRanges(final Category category, List<Range> ranges)
   {
-    for (Range range : KNOWN)
+    for (Range range : getAllRanges(category))
     {
-      settings.setAttribute(category + "." + range.getId(), ranges.contains(range));
+      settings.setAttribute(category.getId() + "." + range.getId(), ranges.contains(range));
     }
   }
   
   /**
    * Setzte die aktiven Zeitraeume auf die System-Vorgabe zurueck.
-   * @param category Kategorie (sinnvollerweise CATEGORY_ZAHLUNGSVERKEHR oder CATEGORY_AUSWERTUNG)
+   * @param category Kategorie.
    */
-  public final static void resetActiveRanges(final String category)
+  public static void resetActiveRanges(final Category category)
   {
-    for (Range range : KNOWN)
+    for (Range range : getAllRanges(category))
     {
-      settings.setAttribute(category + "." + range.getId(), DEFAULT.contains(range));
+      settings.setAttribute(category.getId() + "." + range.getId(), DEFAULT.contains(range));
     }
   }
-
+  
 
   /**
    * Versucht den Range anhand des Identifiers zu ermitteln.
@@ -298,9 +416,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
@@ -336,9 +452,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
@@ -374,9 +488,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
@@ -422,9 +534,7 @@ public abstract class Range
     @Override
     public Date getEnd()
     {
-      Calendar cal = this.createCalendar();
-      Date d = cal.getTime();
-      return DateUtil.endOfDay(d);
+      return null;
     }
     
     /**
@@ -915,6 +1025,155 @@ public abstract class Range
       return i18n.tr("Jahr: Vorletztes");
     }
   }
+  
+  /**
+   * Ein benutzerdefinierter Zeitraum.
+   */
+  public static class CustomRange extends Range
+  {
+    private String uuid = null;
+    private int daysPast = 30;
+    private int daysFuture = 30;
+    private String name = i18n.tr("Benutzerdefinierter Zeitraum");
+    
+    /**
+     * Erzeugt einen neuen benutzerspezfischen Zeitraum.
+     * @return der neue benutzerspezifische Zeitraum.
+     */
+    public static CustomRange create()
+    {
+      return new CustomRange(UUID.randomUUID().toString());
+    }
+    
+    /**
+     * ct.
+     * @param uuid die UUID des Zeitraumes.
+     */
+    private CustomRange(String uuid)
+    {
+      this.uuid = uuid;
+      this.daysPast = settings.getInt(this.uuid + ".days.past",this.daysPast);
+      this.daysFuture = settings.getInt(this.uuid + ".days.future",this.daysFuture);
+      this.name = settings.getString(this.uuid + ".name",this.name);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getId()
+     */
+    @Override
+    public String getId()
+    {
+      return this.uuid;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getStart()
+     */
+    @Override
+    public Date getStart()
+    {
+      final Calendar cal = Calendar.getInstance();
+      cal.add(Calendar.DATE,-this.getDaysPast());
+      return DateUtil.startOfDay(cal.getTime());
+    }
+    
+    /**
+     * Liefert die Anzahl der Tage in der Vergangenheit.
+     * @return die Anzahl der Tage in der Vergangenheit.
+     */
+    public int getDaysPast()
+    {
+      return this.daysPast;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.server.Range#getEnd()
+     */
+    @Override
+    public Date getEnd()
+    {
+      final Calendar cal = Calendar.getInstance();
+      cal.add(Calendar.DATE,this.getDaysFuture());
+      return DateUtil.endOfDay(cal.getTime());
+    }
+    
+    /**
+     * Liefert die Anzahl der Tage in der Zukunft.
+     * @return die Anzahl der Tage in der Zukunft.
+     */
+    public int getDaysFuture()
+    {
+      return this.daysFuture;
+    }
+    
+    /**
+     * Speichert die Anzahl der Tage in der Vergangenheit.
+     * @param days die Anzahl der Tage.
+     */
+    public void setDaysPast(int days)
+    {
+      this.daysPast = days;
+    }
+    
+    /**
+     * Speichert die Anzahl der Tage in der Zukunft.
+     * @param days die Anzahl der Tage.
+     */
+    public void setDaysFuture(int days)
+    {
+      this.daysFuture = days;
+    }
+    
+    /**
+     * Speichert den Namen des Zeitraumes.
+     * @param name der Name des Zeitraumes.
+     */
+    public void setName(String name)
+    {
+      this.name = name;
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+      return this.name;
+    }
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (!(obj instanceof CustomRange))
+        return false;
+      
+      return Objects.equals(this.uuid,((CustomRange)obj).uuid);
+    }
+    
+    /**
+     * Löscht die Einstellungen des benutzerspezifischen Zeitraumes.
+     */
+    private void delete()
+    {
+      Logger.info("deleting custom range [name: " + this.name + "]");
+      settings.setAttribute(this.uuid + ".days.past",(String)null);
+      settings.setAttribute(this.uuid + ".days.future",(String)null);
+      settings.setAttribute(this.uuid + ".days.name",(String)null);
+    }
+    
+    /**
+     * Speichert die Einstellungen des Zeitraumes.
+     */
+    private void save()
+    {
+      Logger.info("saving custom range [name: " + this.name + "]");
+      settings.setAttribute(this.uuid + ".days.past",this.daysPast);
+      settings.setAttribute(this.uuid + ".days.future",this.daysFuture);
+      settings.setAttribute(this.uuid + ".name",this.name);
+    }
+  }
 }
-
-

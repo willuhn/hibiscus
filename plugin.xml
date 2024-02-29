@@ -18,7 +18,7 @@
       <item id="hibiscus.menu.transfer"                  name="&amp;Zahlungsverkehr">
         <item id="hibiscus.menu.transfer.sepaueb"        name="Neue Überweisung..."       shortcut="ALT+U"    icon="ueberweisung.png"                action="de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew" />
         <item id="hibiscus.menu.transfer.sepalast"       name="Neue Lastschrift..."       shortcut="ALT+T"    icon="lastschrift.png"                 action="de.willuhn.jameica.hbci.gui.action.SepaLastschriftNew" />
-        <item id="hibiscus.menu.transfer.sepasammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+S"    icon="sueberweisung.png"               action="de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew" />
+        <item id="hibiscus.menu.transfer.sepasammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+W"    icon="sueberweisung.png"               action="de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew" />
         <item id="hibiscus.menu.transfer.sepasammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    icon="slastschrift.png"                action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftNew" />
       </item>
       <item id="hibiscus.menu.ibancalculator"            name="IBAN-Rechner"                                  icon="accessories-calculator.png"      action="de.willuhn.jameica.hbci.gui.action.IbanCalc" />

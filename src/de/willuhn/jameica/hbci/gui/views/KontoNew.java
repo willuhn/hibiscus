@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.Button;
@@ -31,6 +30,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
+import de.willuhn.jameica.hbci.gui.action.KontoLimitsConfigure;
 import de.willuhn.jameica.hbci.gui.action.KontoSyncViaScripting;
 import de.willuhn.jameica.hbci.gui.action.KontoauszugList;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
@@ -160,16 +160,10 @@ public class KontoNew extends AbstractView
     // und noch die Abschicken-Knoepfe
 		ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(control.getSynchronizeOptions());
-    
+    buttonArea.addButton(i18n.tr("Limits konfigurieren") + "...",new KontoLimitsConfigure(),k,false,"office-chart-area.png");
     buttonArea.addButton(control.getProtoButton());
 		buttonArea.addButton(control.getDelButton());
-		buttonArea.addButton(i18n.tr("&Speichern"),new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-      	control.handleStore();
-      }
-    },null,false,"document-save.png");
+		buttonArea.addButton(i18n.tr("&Speichern"),o -> control.handleStore(),null,false,"document-save.png");
 		buttonArea.paint(getParent());
 
     

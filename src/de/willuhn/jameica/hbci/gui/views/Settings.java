@@ -22,9 +22,10 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.action.CustomRangeEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.controller.SettingsControl;
-import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -86,11 +87,15 @@ public class Settings extends AbstractView implements Extendable
     TabGroup ranges = new TabGroup(getTabFolder(),i18n.tr("Zeiträume"), true,1);
     ranges.addText(i18n.tr("Wählen Sie für die verschiedenen Bereiche der Anwendung aus, welche Zeitraum-Vorauswahlen angezeigt werden sollen."),true);
     
-    ranges.addHeadline(i18n.tr("Für Zahlungsverkehr"));
-    ranges.addPart(control.getRanges(Range.CATEGORY_ZAHLUNGSVERKEHR));
-    ranges.addHeadline(i18n.tr("Für Auswertungen, Umsatzlisten und Kontoauszüge"));
-    ranges.addPart(control.getRanges(Range.CATEGORY_AUSWERTUNG));
-
+    for (Category cat:Category.values())
+    {
+      ranges.addHeadline(cat.getName());
+      ranges.addPart(control.getRanges(cat));
+      ButtonArea rb = new ButtonArea();
+      rb.addButton(i18n.tr("Neuer Zeitraum..."),new CustomRangeEdit(cat),null,false,"document-new.png");
+      rb.paint(ranges.getComposite());
+    }
+    
     TabGroup extended = new TabGroup(getTabFolder(),"Erweitert",true);
     extended.addHeadline(i18n.tr("Experimentelle Funktionen"));
     extended.addText(i18n.tr("Wenn die experimentellen Funktionen nicht aktiviert sind, gelten die Vorgabewerte.") + "\n",true);

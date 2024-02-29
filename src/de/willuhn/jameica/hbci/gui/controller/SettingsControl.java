@@ -40,6 +40,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
 import de.willuhn.jameica.hbci.gui.parts.RangeList;
 import de.willuhn.jameica.hbci.gui.parts.UmsatzTypTree;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
@@ -67,7 +68,7 @@ public class SettingsControl extends AbstractControl
 	private CheckboxInput colorValues       = null;
 
   private UmsatzTypTree umsatzTypTree     = null;
-  private Map<String,RangeList> ranges    = new HashMap<String,RangeList>();
+  private Map<Category,RangeList> ranges  = new HashMap<Category,RangeList>();
 
   private Input ueberweisungLimit         = null;
 
@@ -96,11 +97,11 @@ public class SettingsControl extends AbstractControl
 
   /**
    * Liefert eine Liste mit den verfuegbaren Zeitraum-Auswahlen fuer die angegebene Kategorie.
-   * @param category Zeitraumkagegorie (Range.CATEGORY_ZAHLUNGSVERKEHR oder Range.CATEGORY_AUSWERTUNG)
+   * @param category Zeitraumkagegorie.
    * @return Liste mit den Zeiträumen der gegebenen Kategorie.
    * @throws RemoteException 
    * */
-  public RangeList getRanges(final String category) throws RemoteException
+  public RangeList getRanges(final Category category) throws RemoteException
   {
     RangeList list = this.ranges.get(category);
     if (list != null)
@@ -410,11 +411,11 @@ public class SettingsControl extends AbstractControl
 		  }
 		}
 		
-    for (Entry<String,RangeList> n:this.ranges.entrySet())
+    for (Entry<Category,RangeList> n:this.ranges.entrySet())
     {
       try
       {
-        final String cat = n.getKey();
+        final Category cat = n.getKey();
         final RangeList table = n.getValue();
         Range.setActiveRanges(cat,table.getItems(true));
       }

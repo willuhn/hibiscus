@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.schedule.Schedule;
 import de.willuhn.jameica.hbci.schedule.ScheduleProvider;
 import de.willuhn.jameica.hbci.schedule.ScheduleProviderFactory;
 import de.willuhn.jameica.hbci.server.Value;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 
 /**
@@ -39,8 +40,11 @@ public abstract class AbstractForecastProvider<T extends HibiscusDBObject> imple
     return provider != null ? provider.getName() : "<unknown provider>";
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#getData(de.willuhn.jameica.hbci.rmi.Konto, java.util.Date)
+   */
   @Override
-  public List<Value> getData(Konto k, Date from, Date to) throws Exception
+  public List<Value> getData(Konto k, Date to) throws Exception
   {
     List<Value> result = new LinkedList<Value>();
 
@@ -51,7 +55,7 @@ public abstract class AbstractForecastProvider<T extends HibiscusDBObject> imple
       return result;
     }
     
-    List<Schedule<T>> list = provider.getSchedules(k,from,to);
+    List<Schedule<T>> list = provider.getSchedules(k,DateUtil.startOfDay(new Date()),to);
 
     // In Values kopieren
     for (Schedule<T> schedule:list)
@@ -79,14 +83,13 @@ public abstract class AbstractForecastProvider<T extends HibiscusDBObject> imple
       this.provider = ScheduleProviderFactory.getScheduleProvider(BeanUtil.getType(this.getClass()));
     return this.provider;
   }
-
+  
+  /**
+   * @see de.willuhn.jameica.hbci.forecast.ForecastProvider#isDefaultEnabled()
+   */
+  @Override
+  public boolean isDefaultEnabled()
+  {
+    return true;
+  }
 }
-
-
-
-/**********************************************************************
- * $Log: AbstractForecastProvider.java,v $
- * Revision 1.1  2012/02/20 17:03:50  willuhn
- * @N Umstellung auf neues Schedule-Framework, welches generisch geplante und tatsaechliche Termine fuer Auftraege und Umsaetze ermitteln kann und kuenftig auch vom Forecast verwendet wird
- *
- **********************************************************************/

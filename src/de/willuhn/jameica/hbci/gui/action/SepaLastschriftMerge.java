@@ -52,9 +52,12 @@ public class SepaLastschriftMerge implements Action
     List<SepaSammelLastschrift> result = merger.merge(lastschriften);
 
     int count = result.size();
-    if (count > 1)
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("{0} Sammelaufträge erzeugt",String.valueOf(count)), StatusBarMessage.TYPE_SUCCESS));
-    else
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Sammelauftrag erzeugt"), StatusBarMessage.TYPE_SUCCESS));
+    String text = count > 1 ? i18n.tr("{0} Sammelaufträge erzeugt",String.valueOf(count)) : i18n.tr("Sammelauftrag erzeugt");
+
+    final boolean skip = merger.getSkipCount() > 0;
+    if (skip)
+      text += i18n.tr("Aufträge mit Wiederholung wurden nicht gelöscht.");
+
+    Application.getMessagingFactory().sendMessage(new StatusBarMessage(text, skip ? StatusBarMessage.TYPE_INFO : StatusBarMessage.TYPE_SUCCESS));
   }
 }

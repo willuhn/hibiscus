@@ -75,6 +75,7 @@ public class UmsatzFormat implements Format<Umsatz>
       list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,new ExtendedUsageSerializer()));
       list.add(new Column("art",i18n.tr("Art der Buchung"),i++,ts));
       list.add(new Column("endToEndId",i18n.tr("End-to-End ID"),i++,ts));
+      list.add(new Column("mandateid",i18n.tr("Kunden-/Mandatsreferenz"),i++,ts));
     
     }
     return this.profile;

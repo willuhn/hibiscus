@@ -6,6 +6,13 @@
 	<p>
 	  Diese Auswertung stellt den Saldo im zeitlichen Verlauf dar.
 	</p>
+	
+	<p>
+	  Klicken Sie auf <b>Limits konfigurieren...</b>, um für ein Konto ein
+	  oberes und/oder unteres Saldo-Limit zu definieren. Wenn der
+	  prognostizierte Saldo den Wert innerhalb der angegebenen Anzahl von
+    Tagen erreicht, wird auf der Startseite ein Hinweis-Text angezeigt.
+	</p>
 
   <p>
     <b>Tipp:</b> Durch Doppelklick auf einen Eintrag in der Legende kann

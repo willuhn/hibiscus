@@ -24,6 +24,7 @@ import de.willuhn.logging.Logger;
 public class ChartDataSaldoTrend extends AbstractChartDataSaldo
 {
   private List<Value> data = null;
+  private String label = null;
   
   /**
    * Fuegt weitere Daten hinzu.
@@ -70,7 +71,16 @@ public class ChartDataSaldoTrend extends AbstractChartDataSaldo
    */
   public String getLabel() throws RemoteException
   {
-    return i18n.tr("Monatsdurchschnitt");
+    return this.label != null ? this.label : i18n.tr("Monatsdurchschnitt");
+  }
+  
+  /**
+   * Speichert das Label.
+   * @param label das Label.
+   */
+  public void setLabel(String label)
+  {
+    this.label = label;
   }
   
   /**

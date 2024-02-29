@@ -22,6 +22,9 @@ import de.willuhn.util.I18N;
 public abstract class AbstractChartDataSaldo implements LineChartData
 {
   protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  private int[] color = null;
+  private boolean legend = true;
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.ChartData#getDataAttribute()
@@ -55,13 +58,50 @@ public abstract class AbstractChartDataSaldo implements LineChartData
   {
     return 1;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getLineStyle()
+   */
+  @Override
+  public LineStyle getLineStyle() throws RemoteException
+  {
+    return null;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isLegendEnabled()
+   */
+  @Override
+  public boolean isLegendEnabled() throws RemoteException
+  {
+    return this.legend;
+  }
+  
+  /**
+   * Legt fest, ob die Legende angezeigt werden soll.
+   * @param legend true, wenn die Legende angezeigt werden soll.
+   */
+  public void setLegendEnabled(boolean legend)
+  {
+    this.legend = legend;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getColor()
    */
   public int[] getColor() throws RemoteException
   {
-    return null;
+    return this.color;
+  }
+  
+  /**
+   * Speichert die zu verwendende Farbe.
+   * @param color die zu verwendende Farbe.
+   * @throws RemoteException
+   */
+  public void setColor(int[] color) throws RemoteException
+  {
+    this.color = color;
   }
   
   /**

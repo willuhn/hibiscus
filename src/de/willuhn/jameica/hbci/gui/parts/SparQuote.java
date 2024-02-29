@@ -50,6 +50,7 @@ import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.gui.action.SparQuoteExport;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.chart.LineChartData;
+import de.willuhn.jameica.hbci.gui.chart.LineStyle;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
 import de.willuhn.jameica.hbci.gui.input.DateToInput;
@@ -58,6 +59,7 @@ import de.willuhn.jameica.hbci.gui.input.RangeInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -240,7 +242,7 @@ public class SparQuote implements Part
     
     // Wir wollen hier nur die Zeitraume haben, die mindestens 2 Monate umfassen
     List<Range> ranges = new ArrayList<Range>();
-    for (Range r:Range.getActiveRanges(Range.CATEGORY_AUSWERTUNG))
+    for (Range r:Range.getActiveRanges(Category.AUSWERTUNG))
     {
       // Zeitraeume ohne Startdatum sind immer lang genug
       if (r.getStart() == null)
@@ -249,8 +251,12 @@ public class SparQuote implements Part
       }
       else
       {
+        Date end = r.getEnd();
+        if (end == null)
+          end = DateUtil.endOfDay(new Date());
+
         // Wir ueberschlagen das nur grob
-        long diff = r.getEnd().getTime() - r.getStart().getTime();
+        long diff = end.getTime() - r.getStart().getTime();
         if (diff > (2 * 30 * 24 * 60 * 60 * 1000L))
           ranges.add(r);
       }
@@ -700,6 +706,24 @@ public class SparQuote implements Part
     public boolean getCurve()
     {
       return false;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#getLineStyle()
+     */
+    @Override
+    public LineStyle getLineStyle() throws RemoteException
+    {
+      return null;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.hbci.gui.chart.LineChartData#isLegendEnabled()
+     */
+    @Override
+    public boolean isLegendEnabled() throws RemoteException
+    {
+      return true;
     }
 
     /**

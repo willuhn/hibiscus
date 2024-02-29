@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,9 +40,16 @@ import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.forecast.SaldoLimit;
+import de.willuhn.jameica.hbci.gui.ColorUtil;
+import de.willuhn.jameica.hbci.gui.action.KontoLimitsConfigure;
 import de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoForecast;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoLimit;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSumme;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoSummeForecast;
 import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrend;
+import de.willuhn.jameica.hbci.gui.chart.ChartDataSaldoTrendForecast;
 import de.willuhn.jameica.hbci.gui.chart.LineChart;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.DateFromInput;
@@ -53,7 +61,7 @@ import de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider;
 import de.willuhn.jameica.hbci.report.balance.AccountBalanceService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
-import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
@@ -61,6 +69,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ColorGenerator;
 import de.willuhn.util.I18N;
 
 /**
@@ -161,7 +170,7 @@ public class SaldoChart implements Part
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),Range.CATEGORY_AUSWERTUNG, "auswertungen.saldochart.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(),Category.AUSWERTUNG, "auswertungen.saldochart.filter.range");
     this.range.addListener(this.reloadListener);
     return this.range;
   }
@@ -256,7 +265,26 @@ public class SaldoChart implements Part
           MultiInput range = new MultiInput(getStart(),getEnd());
           right.addInput(range);
 
-          ButtonArea buttons = new ButtonArea();
+          final ButtonArea buttons = new ButtonArea();
+          buttons.addButton(i18n.tr("Limits konfigurieren") + "...",new Action() {
+            
+            @Override
+            public void handleAction(Object context) throws ApplicationException
+            {
+              try
+              {
+                new KontoLimitsConfigure().handleAction(getKontoAuswahl().getValue());
+                final Event e = new Event();
+                e.data = FORCE;
+                reloadListener.handleEvent(e);
+              }
+              catch (RemoteException re)
+              {
+                Logger.error("unable to configurie account limits",re);
+                throw new ApplicationException(i18n.tr("Konfigurieren der Konto-Limits fehlgeschlagen"));
+              }
+            }
+          },null,false,"office-chart-area.png");
           buttons.addButton(i18n.tr("Aktualisieren"), new Action()
           {
           
@@ -394,6 +422,9 @@ public class SaldoChart implements Part
         
         final Date start = getStartDate();
         final Date end = getEndDate();
+        final Date today = DateUtil.endOfDay(new Date());
+        
+        final boolean haveForecast = end != null && DateUtil.endOfDay(end).after(today);
 
         final boolean changed = !Objects.equals(start, startPrev) ||
                                 !Objects.equals(end, endPrev) ||
@@ -415,22 +446,62 @@ public class SaldoChart implements Part
         
         final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
         final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);       
+        
         final ChartDataSaldoSumme sum = new ChartDataSaldoSumme();
+        sum.setColor(ColorGenerator.create(ColorGenerator.PALETTE_OFFICE));
+        
+        final ChartDataSaldoSummeForecast sumForecast = haveForecast ? new ChartDataSaldoSummeForecast(sum) : null;
+        
+        int i = 1;
         for (Konto konto : konten)
         {
           AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(konto);
-          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, end);
+          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, today);
+          balance.setColor(ColorGenerator.create(ColorGenerator.PALETTE_OFFICE + i));
           chart.addData(balance);
           sum.add(balance.getData());
+
+          i++;
+          
+          if (haveForecast)
+          {
+            if (konten.size() == 1)
+            {
+              chart.addData(new ChartDataSaldoLimit(konto,start,SaldoLimit.Type.UPPER));
+              chart.addData(new ChartDataSaldoLimit(konto,start,SaldoLimit.Type.LOWER));
+            }
+
+            final ChartDataSaldoForecast forecast = new ChartDataSaldoForecast(konto,end);
+            forecast.setColor(ColorUtil.brighter(balance.getColor()));
+            chart.addData(forecast);
+            sumForecast.add(forecast.getData());
+          }
         }
         
         // Mehr als 1 Konto. Dann zeigen wir auch eine Summe ueber alle an
         if (konten.size() > 1)
+        {
           chart.addData(sum);
+          if (sumForecast != null)
+            chart.addData(sumForecast);
+        }
 
         ChartDataSaldoTrend trend = new ChartDataSaldoTrend();
+        trend.setColor(ColorGenerator.create(ColorGenerator.PALETTE_RICH + 1));
         trend.add(sum.getData());
         chart.addData(trend);
+        
+        if (sumForecast != null)
+        {
+          ChartDataSaldoTrendForecast trendForecast = new ChartDataSaldoTrendForecast(trend);
+          
+          // Wir brauchen hier alle Werte, weil sonst ein Bruch zwischen vorhandenen Werten und Prognose entsteht
+          final LinkedList all = new LinkedList();
+          all.addAll(sum.getData());
+          all.addAll(sumForecast.getData());
+          trendForecast.add(all);
+          chart.addData(trendForecast);
+        }
         
         if (event != null)
         {

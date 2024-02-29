@@ -79,6 +79,8 @@ public class PinTanConfigImpl implements PinTanConfig
       return getUserId();
     if ("bezeichnung".equals(attribute))
       return getBezeichnung();
+    if ("description".equals(attribute))
+      return getDescription();
     if ("showtan".equals(attribute))
       return Boolean.valueOf(getShowTan());
     if ("tanmedia".equals(attribute))

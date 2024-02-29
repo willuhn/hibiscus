@@ -73,6 +73,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -369,7 +370,7 @@ public class KontoauszugList extends UmsatzList
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getStart(),this.getEnd(),Range.CATEGORY_AUSWERTUNG,"umsatzlist.filter.range");
+    this.range = new RangeInput(this.getStart(),this.getEnd(),Category.AUSWERTUNG,"umsatzlist.filter.range");
     this.range.addListener(new Listener()
     {
       public void handleEvent(Event event)

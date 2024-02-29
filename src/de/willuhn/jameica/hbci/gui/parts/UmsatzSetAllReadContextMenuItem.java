@@ -26,7 +26,7 @@ public class UmsatzSetAllReadContextMenuItem extends AbstractUmsatzReadContextMe
     {
       askMarkReadOnExit();
       NeueUmsaetze.setAllRead();
-    },"ok.png");
+    },"ok.png","SHIFT+ALT+L");
   }
   
   /**

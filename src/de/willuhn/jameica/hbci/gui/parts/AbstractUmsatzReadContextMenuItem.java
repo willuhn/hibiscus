@@ -33,7 +33,20 @@ public class AbstractUmsatzReadContextMenuItem extends ContextMenuItem
    */
   public AbstractUmsatzReadContextMenuItem(String text, Action a, String icon)
   {
+    this(text,a,icon,null);
+  }
+  
+  /**
+   * ct.
+   * @param text Anzuzeigender Text.
+   * @param a Action, die beim Klick ausgefuehrt werden soll.
+   * @param icon optionale Angabe eines Icons.
+   * @param shortcut Tastenkombination.
+   */
+  public AbstractUmsatzReadContextMenuItem(String text, Action a, String icon, String shortcut)
+  {
     super(text,a,icon);
+    this.setShortcut(shortcut);
   }
   
   /**

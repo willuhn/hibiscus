@@ -513,11 +513,18 @@ public class KontoUtil
    * Sie enthaelt Name, IBAN und BIC.
    * @param k das Konto.
    * @return die ausfuehrliche String-Repraesentation. 
-   * @throws RemoteException
    */
-  public static String toString(Konto k) throws RemoteException
+  public static String toString(Konto k)
   {
-    return k != null ? (String) k.getAttribute("extralongname") : "";
+    try
+    {
+      return k != null ? (String) k.getAttribute("extralongname") : "";
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("cannot format account name",re);
+      return "";
+    }
   }
 
 }

@@ -60,7 +60,7 @@ import de.willuhn.jameica.hbci.messaging.ObjectMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
-import de.willuhn.jameica.hbci.server.Range;
+import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -287,7 +287,7 @@ public class KontoauszugPdfList extends TablePart
     if (this.range != null)
       return this.range;
     
-    this.range = new RangeInput(this.getFrom(),this.getTo(),Range.CATEGORY_AUSWERTUNG,"kontoauszuege.filter.range");
+    this.range = new RangeInput(this.getFrom(),this.getTo(),Category.AUSWERTUNG,"kontoauszuege.filter.range");
     this.range.addListener(new Listener()
     {
       public void handleEvent(Event event)

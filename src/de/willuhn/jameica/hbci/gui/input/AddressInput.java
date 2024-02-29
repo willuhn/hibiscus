@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -400,6 +401,15 @@ public class AddressInput implements Input
           sb.append(comment);
           sb.append(")");
         }
+        else
+        {
+          String iban = a.getIban();
+          if (iban != null && iban.length() > 0)
+          {
+            sb.append(" - IBAN " + StringUtils.abbreviateMiddle(iban,"...",10));
+          }
+        }
+        
         return sb.toString();
       }
       catch (RemoteException re)

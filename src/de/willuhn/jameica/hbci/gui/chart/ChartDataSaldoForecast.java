@@ -46,8 +46,35 @@ public class ChartDataSaldoForecast extends AbstractChartDataSaldo
     if (this.data != null)
       return this.data;
     
-    this.data = ForecastCreator.create(this.konto,new Date(),this.end);
+    this.data = ForecastCreator.create(this.konto,this.end);
     return this.data;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#getLineStyle()
+   */
+  @Override
+  public LineStyle getLineStyle() throws RemoteException
+  {
+    return LineStyle.DOT;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isFilled()
+   */
+  @Override
+  public boolean isFilled() throws RemoteException
+  {
+    return true;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.gui.chart.AbstractChartDataSaldo#isLegendEnabled()
+   */
+  @Override
+  public boolean isLegendEnabled() throws RemoteException
+  {
+    return false;
   }
 
   /**
@@ -55,8 +82,7 @@ public class ChartDataSaldoForecast extends AbstractChartDataSaldo
    */
   public String getLabel() throws RemoteException
   {
-    if (this.konto != null)
-      return this.konto.getBezeichnung();
-    return i18n.tr("Alle Konten");
+    final String s = (this.konto != null) ? this.konto.getBezeichnung() : i18n.tr("Alle Konten");
+    return s + ": " + i18n.tr("Prognose");
   }
 }

@@ -11,6 +11,8 @@ package de.willuhn.jameica.hbci.gui.menus;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -22,6 +24,7 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.FlaggableChange;
+import de.willuhn.jameica.hbci.gui.action.KontoCopyIBAN;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoDisable;
 import de.willuhn.jameica.hbci.gui.action.KontoExport;
@@ -96,6 +99,7 @@ public class KontoList extends ContextMenu implements Extendable
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedSingleContextMenuItem(i18n.tr("Umsätze anzeigen..."),new KontoauszugList(),"text-x-generic.png"));
     addItem(new AccountItem(i18n.tr("Saldo/Umsätze abrufen..."),new KontoFetchUmsaetze(),"mail-send-receive.png"));
+    addItem(new CopyIBANContextMenuItem(i18n.tr("IBAN in Zwischenablage kopieren"),new KontoCopyIBAN(),"edit-copy.png"));
     addItem(ContextMenuItem.SEPARATOR);
 
     if (!shortMenu)
@@ -267,6 +271,42 @@ public class KontoList extends ContextMenu implements Extendable
       }
     }
 
+  }
+  
+  /**
+   * Action für das Kopieren der IBAN.
+   */
+  private class CopyIBANContextMenuItem extends CheckedSingleContextMenuItem
+  {
+    private CopyIBANContextMenuItem(String name, Action a, String icon)
+    {
+      super(name,a,icon);
+    }
+    
+    /**
+     * @see de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    @Override
+    public boolean isEnabledFor(Object o)
+    {
+      if (!super.isEnabledFor(o))
+        return false;
+      
+      if (!(o instanceof Konto))
+        return false;
+      
+      try
+      {
+        final Konto k = (Konto) o;
+        final String iban = StringUtils.deleteWhitespace(k.getIban());
+        return iban != null && iban.length() > 0;
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to check account",re);
+        return false;
+      }
+    }
   }
 
 }
