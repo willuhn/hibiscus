@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.passports.pintan;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,35 +68,43 @@ public class PinTanMigrationService
       while (it.hasNext())
       {
         final PinTanConfig conf = it.next();
-        final String url = prepareUrl(conf.getURL());
-        final String blz = conf.getBLZ();
-        if (StringUtils.trimToNull(url) == null || StringUtils.trimToNull(blz) == null)
+        
+        try
         {
-          Logger.warn("missing url/blz in pin/tan config - skipping " + conf.getFilename());
-          continue;
+          final String url = prepareUrl(conf.getURL());
+          final String blz = conf.getBLZ();
+          if (StringUtils.trimToNull(url) == null || StringUtils.trimToNull(blz) == null)
+          {
+            Logger.warn("missing url/blz in pin/tan config - skipping " + conf.getFilename());
+            continue;
+          }
+          
+          // Checken, wie die URL lauten sollte
+          final BankInfo info = HBCIUtils.getBankInfo(blz);
+          if (info == null)
+            continue;
+          
+          final String newUrl = prepareUrl(info.getPinTanAddress());
+          if (StringUtils.trimToNull(newUrl) == null)
+            continue; // Wir haben keine URL für die Bank
+          
+          if (!url.equals(newUrl))
+          {
+            final VerificationEntry e = new VerificationEntry();
+            e.config = conf;
+            e.newUrl = newUrl;
+            this.entries.add(e);
+          }
         }
-        
-        // Checken, wie die URL lauten sollte
-        final BankInfo info = HBCIUtils.getBankInfo(blz);
-        if (info == null)
-          continue;
-        
-        final String newUrl = prepareUrl(info.getPinTanAddress());
-        if (StringUtils.trimToNull(newUrl) == null)
-          continue; // Wir haben keine URL für die Bank
-        
-        if (!url.equals(newUrl))
+        catch (Exception e)
         {
-          final VerificationEntry e = new VerificationEntry();
-          e.config = conf;
-          e.newUrl = newUrl;
-          this.entries.add(e);
+          Logger.error("unable to load passport",e);
         }
       }
     }
-    catch (RemoteException re)
+    catch (Exception e2)
     {
-      Logger.error("unable to load passport migration list",re);
+      Logger.error("unable to load passport migration list",e2);
     }
     
     final long used = System.currentTimeMillis() - started;
@@ -115,6 +122,7 @@ public class PinTanMigrationService
     if (list == null || list.isEmpty())
       return count;
     
+    Logger.info("BEGIN migration of " + list.size() + " pin/tan passports");
     for (VerificationEntry e:list)
     {
       try
@@ -130,7 +138,7 @@ public class PinTanMigrationService
         Logger.error("unable to migrate pin/tan passport",ex);
       }
     }
-    Logger.info("migrated pin/tan passports: " + count);
+    Logger.info("END migration of pin/tan passports: " + count);
     
     refresh();
     return count;
