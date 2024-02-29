@@ -10,18 +10,21 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
-import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 
-import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Kopiert die IBAN des Kontos in die Zwischenablage.
+ * Kopiert den übergebenen Text in die Zwischenablage.
  */
-public class KontoCopyIBAN extends CopyClipboard
+public class CopyClipboard implements Action
 {
 
   /**
@@ -30,14 +33,19 @@ public class KontoCopyIBAN extends CopyClipboard
   @Override
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!(context instanceof Konto))
+    if (context == null)
       return;
+
+    final String s = context.toString();
     
-    final Konto k = (Konto) context;
+    if (s == null)
+      return;
     
     try
     {
-      super.handleAction(StringUtils.deleteWhitespace(k.getIban()));
+      final Clipboard cb = new Clipboard(GUI.getDisplay());
+      cb.setContents(new Object[]{s}, new Transfer[]{TextTransfer.getInstance()});
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(Application.getI18n().tr("In Zwischenablage kopiert."),StatusBarMessage.TYPE_SUCCESS));
     }
     catch (Exception e)
     {
@@ -46,5 +54,4 @@ public class KontoCopyIBAN extends CopyClipboard
     }
 
   }
-
 }

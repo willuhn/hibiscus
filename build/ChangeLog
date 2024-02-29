@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1082 Migrationsassistent für geänderte PIN/TAN-URLs
   * NEW: 1082 PIN/TAN-URL in Bankzugang bearbeitbar (u.a. für Atruvia-Migration hilfreich)
   * NEW: 1081 Benutzerspezifische Zeiträume mit bis zu +/- 10 Jahren zulassen 
   * NEW: 1080 Unter Hibiscus->Einstellungen->Zeiträume können jetzt eigene Zeiträume definiert werden

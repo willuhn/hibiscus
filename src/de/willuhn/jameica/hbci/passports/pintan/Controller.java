@@ -46,6 +46,7 @@ import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.passports.pintan.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.messaging.StatusBarMessage;
+import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -698,6 +699,11 @@ public class Controller extends AbstractControl
       this.passport = null; // force reload
 
       GUI.getStatusBar().setSuccessText(i18n.tr("Konfiguration gespeichert"));
+      
+      final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+      final PinTanMigrationService ps = bs.get(PinTanMigrationService.class);
+      ps.refresh();
+      
       return true;
     }
     catch (ApplicationException e)
