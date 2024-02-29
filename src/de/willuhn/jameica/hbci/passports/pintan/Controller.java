@@ -200,7 +200,6 @@ public class Controller extends AbstractControl
     if (url != null)
       return url;
     url = new TextInput(getConfig().getURL());
-    url.setEnabled(false);
     url.setName(i18n.tr("URL des Bank-Servers"));
     url.setMandatory(true);
     return url;
@@ -646,6 +645,7 @@ public class Controller extends AbstractControl
       config.setBezeichnung((String) getBezeichnung().getValue());
       config.setShowTan(((Boolean)getShowTan().getValue()).booleanValue());
 			config.setHBCIVersion(version);
+			config.setURL((String)getURL().getValue());
 			config.setPort((Integer)getPort().getValue());
 			config.setCardReader((String) getCardReaders().getValue());
 
