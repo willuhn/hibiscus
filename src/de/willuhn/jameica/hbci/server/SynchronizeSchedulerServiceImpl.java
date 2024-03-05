@@ -149,6 +149,17 @@ public class SynchronizeSchedulerServiceImpl extends UnicastRemoteObject impleme
       this.timer = null;
     }
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.SynchronizeSchedulerService#getLastExecution()
+   */
+  @Override
+  public Date getLastExecution() throws RemoteException
+  {
+    if (this.lastStart <= 0)
+      return null;
+    return new Date(this.lastStart);
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.rmi.SynchronizeSchedulerService#getNextExecution()

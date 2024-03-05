@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -415,7 +416,13 @@ public class SynchronizeList extends TablePart
       }
       
       if (text != null && color != null)
-        c.addText(i18n.tr("Letzter Status: {0}",text),true,color);
+      {
+        final Date last = scheduler.getLastExecution();
+        if (last != null)
+          c.addText(i18n.tr("Letzter Status: {0} ({1})",text,HBCI.XTRALONGDATEFORMAT.format(last)),true,color);
+        else
+          c.addText(i18n.tr("Letzter Status: {0}",text),true,color);
+      }
 
       if (scheduler.isStarted())
         c.addText(i18n.tr("Nächster Start: {0}",HBCI.XTRALONGDATEFORMAT.format(scheduler.getNextExecution())),true,Color.SUCCESS);

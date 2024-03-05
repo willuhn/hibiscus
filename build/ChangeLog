@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1085 Startdatum der letzten automatischen Synchronisierung mit anzeigen
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-02-29 Version 2.10.17
