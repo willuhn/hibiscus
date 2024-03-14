@@ -188,17 +188,13 @@ public class TextSchluessel
     return this.name;
   }
   
-  /**
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString()
   {
     return i18n.tr("[{0}] {1}", this.code, this.name);
   }
   
-  /**
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+  @Override
   public boolean equals(Object other)
   {
     if (this == other)

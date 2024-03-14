@@ -62,9 +62,6 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
    */
   protected abstract void status(String text);
   
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
-   */
   @Override
   public void status(HBCIPassport passport, int statusTag, Object[] o)
   {
