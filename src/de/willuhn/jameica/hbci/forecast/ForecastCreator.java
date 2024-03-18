@@ -23,6 +23,8 @@ import org.apache.commons.lang.StringUtils;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.messaging.SaldoLimitsMessage;
+import de.willuhn.jameica.hbci.report.balance.AccountBalanceProvider;
+import de.willuhn.jameica.hbci.report.balance.AccountBalanceService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Value;
@@ -327,8 +329,14 @@ public class ForecastCreator
     ////////////////////////////////////////////////////////////////////////////
     // Schritt 2: Start-Saldo ermitteln
     double startSaldo = 0.0d;
-    if (k != null)
-      startSaldo = k.getNumUmsaetze() > 0 ? KontoUtil.getEndSaldo(k,from) : k.getSaldo();
+    if (k != null) {
+      final BeanService bs = Application.getBootLoader().getBootable(BeanService.class);
+      final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);
+      AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(k);
+      List<Value> balance = balanceProvider.getBalanceData(k, from, from); // Saldo für heute
+      startSaldo = balance.get(0).getValue();
+    }
+    
     //
     ////////////////////////////////////////////////////////////////////////////
 
