@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1086 Update auf HBCI4Java 3.1.76 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.76
   * NEW: 1085 Startdatum der letzten automatischen Synchronisierung mit anzeigen
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
