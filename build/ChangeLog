@@ -1,3 +1,8 @@
+2024-03-20 Version 2.10.18
+
+  * NEW: 1086 Update auf HBCI4Java 3.1.76 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.76 (Fehler "Das gesendete SEPA-Dokument ist nicht valide.")
+  * NEW: 1085 Startdatum der letzten automatischen Synchronisierung mit anzeigen
+
 2024-02-29 Version 2.10.17
 
   * NEW: 1084 Update auf HBCI4Java 3.1.75 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.75

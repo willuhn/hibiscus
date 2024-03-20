@@ -21,6 +21,13 @@ import de.willuhn.datasource.Service;
 public interface SynchronizeSchedulerService extends Service
 {
   /**
+   * Liefert Datum und Uhrzeit der letzten Ausfuehrung.
+   * @return Datum und Uhrzeit der letzten Ausfuehrung.
+   * @throws RemoteException
+   */
+  public Date getLastExecution() throws RemoteException;
+  
+  /**
    * Liefert Datum und Uhrzeit der naechsten Ausfuehrung.
    * @return Datum und Uhrzeit der naechsten Ausfuehrung.
    * @throws RemoteException
