@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: PDF-Export de Umsätze - wenn kein Name des Gegenkontoinhabers angegeben wurde, konnte "null" angezeigt werden
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-03-20 Version 2.10.18

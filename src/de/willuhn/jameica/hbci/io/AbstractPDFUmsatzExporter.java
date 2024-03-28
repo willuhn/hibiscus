@@ -157,9 +157,9 @@ public abstract class AbstractPDFUmsatzExporter<T extends GenericObject> impleme
             style = Font.ITALIC;
           }
           
-          String name = u.getGegenkontoName();
-          String name2 = u.getGegenkontoName2();
-          if (name != null && name.length() > 0 && name2 != null && name2.length() > 0)
+          String name = reporter.notNull(u.getGegenkontoName());
+          String name2 = reporter.notNull(u.getGegenkontoName2());
+          if (name.length() > 0 && name2.length() > 0)
             name = name + "\n" + name2;
           
           String iban = u.getGegenkontoNummer();
