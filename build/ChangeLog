@@ -1,11 +1,9 @@
 HEAD 2.11 (nightly)
 
-  * NEW: 1061 Umstellung von MySQL auf MariaDB
-
-2024-04-03 Version 2.10.19
-
+  * NEW: 1088 Update auf HBCI4Java 3.1.78 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.78 (siehe https://homebanking-hilfe.de/forum/topic.php?p=170785#real170785)
   * NEW: 1088 Update auf HBCI4Java 3.1.77 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.77 (siehe https://homebanking-hilfe.de/forum/topic.php?p=170785#real170785)
   * BUG: 1087 PDF-Export der Umsätze - wenn kein Name des Gegenkontoinhabers angegeben wurde, konnte "null" angezeigt werden
+  * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-03-20 Version 2.10.18
 
