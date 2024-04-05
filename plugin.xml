@@ -3,10 +3,10 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin https://www.willuhn.de/schema/jameica-plugin-1.5.xsd"
-        name="hibiscus" version="2.10.19" class="de.willuhn.jameica.hbci.HBCI">
+        name="hibiscus" version="2.10.20" class="de.willuhn.jameica.hbci.HBCI">
 
   <description>HBCI-Onlinebanking-Plugin für Jameica</description>
-  <url>https://www.willuhn.de/products/hibiscus/releases/2.10/hibiscus-2.10.19.zip</url>
+  <url>https://www.willuhn.de/products/hibiscus/releases/2.10/hibiscus-2.10.20.zip</url>
   <homepage validate="true">https://www.willuhn.de/products/hibiscus</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
   <icon>hibiscus-large.png</icon>
