@@ -328,7 +328,7 @@ public class ForecastCreator
     // Schritt 2: Start-Saldo ermitteln
     double startSaldo = 0.0d;
     if (k != null)
-      startSaldo = k.getNumUmsaetze() > 0 ? KontoUtil.getAnfangsSaldo(k,from) : k.getSaldo();
+      startSaldo = k.getNumUmsaetze() > 0 ? KontoUtil.getEndSaldo(k,from) : k.getSaldo();
     //
     ////////////////////////////////////////////////////////////////////////////
 

@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1091 Bei der Saldoprognose wurde als Startsaldo der Anfangssaldo von heute verwendet. Richtig ist aber der Endsaldo. Andernfalls gibt es einen Bruch am Übergang von realen Daten zur Prognose
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-04-05 Version 2.10.20
