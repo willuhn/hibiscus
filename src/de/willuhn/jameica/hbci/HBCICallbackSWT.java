@@ -59,9 +59,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   
   @Resource private HBCISynchronizeBackend backend = null;
   
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
-   */
+  @Override
   public void log(String msg, int level, Date date, StackTraceElement trace)
   {
     SynchronizeSession session = this.backend.getCurrentSession();
@@ -137,9 +135,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     }
   }
 
-  /**
-   * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
-   */
+  @Override
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData)
   {
     this.updateProgress();
@@ -353,9 +349,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 		}
   }
 
-  /**
-   * @see de.willuhn.jameica.hbci.AbstractHibiscusHBCICallback#status(java.lang.String)
-   */
+  @Override
   protected void status(String text)
 	{
     Logger.info(text);
