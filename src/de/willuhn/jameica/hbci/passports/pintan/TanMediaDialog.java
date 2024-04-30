@@ -193,6 +193,8 @@ public class TanMediaDialog extends AbstractDialog
       String[] names = this.options.split("\\|");
       for (String s:names)
       {
+        if (s == null || s.length() == 0)
+          continue;
         set.add(s);
       }
     }
@@ -205,6 +207,8 @@ public class TanMediaDialog extends AbstractDialog
         String[] names = this.config.getTanMedias();
         for (String s:names)
         {
+          if (s == null || s.length() == 0)
+            continue;
           set.add(s);
         }
       }
