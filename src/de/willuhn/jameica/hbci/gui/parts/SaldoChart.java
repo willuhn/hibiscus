@@ -456,7 +456,7 @@ public class SaldoChart implements Part
         for (Konto konto : konten)
         {
           AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(konto);
-          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, today);
+          AbstractChartDataSaldo balance = balanceProvider.getBalanceChartData(konto, start, haveForecast ? today : end);
           balance.setColor(ColorGenerator.create(ColorGenerator.PALETTE_OFFICE + i));
           chart.addData(balance);
           sum.add(balance.getData());
