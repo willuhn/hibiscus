@@ -18,6 +18,7 @@ import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -82,7 +83,7 @@ public class IBANInput extends TextInput
       if (iban == null) // Keine IBAN
         return;
 
-      if (this.bicInput == null)
+      if (this.bicInput == null || !Settings.getBicAutocomplete())
         return;
       
       // 2. Wenn wir ein BICInput haben, dann gleich noch die BIC ermitteln und

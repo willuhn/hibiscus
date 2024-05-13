@@ -309,6 +309,24 @@ public class Settings
   }
 
   /**
+   * Liefert true, wenn die BIC nach Eingabe der IBAN automatisch vervollständigt werden soll.
+   * @return true, wenn die BIC nach Eingabe der IBAN automatisch vervollständigt werden soll.
+   */
+  public static boolean getBicAutocomplete()
+  {
+    return settings.getBoolean("bic.autocomplete",false);
+  }
+
+  /**
+   * Legt fest, ob die BIC nach Eingabe der IBAN automatisch vervollständigt werden soll.
+   * @param complete true, wenn die BIC nach Eingabe der IBAN automatisch vervollständigt werden soll.
+   */
+  public static void setBicAutocomplete(boolean complete)
+  {
+    settings.setAttribute("bic.autocomplete",complete);
+  }
+
+  /**
    * Liefert true, wenn die Ungelesen-Markierungen in der Datenbank gespeichert werden soll.
    * @return true, wenn die Ungelesen-Markierungen in der Datenbank gespeichert werden soll.
    */

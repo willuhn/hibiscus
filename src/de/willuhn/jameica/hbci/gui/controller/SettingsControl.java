@@ -61,6 +61,7 @@ public class SettingsControl extends AbstractControl
   private CheckboxInput decimalGrouping   = null;
   private CheckboxInput kontoCheck        = null;
   private CheckboxInput excludeAddresses  = null;
+  private CheckboxInput bicAutocomplete   = null;
 
 	private Input buchungSollFg     				= null;
 	private Input buchungHabenFg    				= null;
@@ -161,7 +162,9 @@ public class SettingsControl extends AbstractControl
       Listener l = new Listener() {
         public void handleEvent(Event event)
         {
-          getKontoCheckExcludeAddressbook().setEnabled(((Boolean)kontoCheck.getValue()).booleanValue());
+          final boolean b = ((Boolean)kontoCheck.getValue()).booleanValue();
+          getKontoCheckExcludeAddressbook().setEnabled(b);
+          getBicAutocomplete().setEnabled(b);
         }
       };
       kontoCheck.addListener(l);
@@ -181,6 +184,17 @@ public class SettingsControl extends AbstractControl
     if (this.excludeAddresses == null)
       this.excludeAddresses = new CheckboxInput(Settings.getKontoCheckExcludeAddressbook());
     return this.excludeAddresses;
+  }
+
+  /**
+   * Checkbox, mit der festgelegt werden kann, ob die BIC bei Eingabe der IBAN automatisch vervollständigt werden soll.
+   * @return Checkbox.
+   */
+  public CheckboxInput getBicAutocomplete()
+  {
+    if (this.bicAutocomplete == null)
+      this.bicAutocomplete = new CheckboxInput(Settings.getBicAutocomplete());
+    return this.bicAutocomplete;
   }
 
   /**
@@ -373,6 +387,7 @@ public class SettingsControl extends AbstractControl
     Settings.setColorValues(((Boolean)getColorValues().getValue()).booleanValue());
     Settings.setKontoCheck(((Boolean)getKontoCheck().getValue()).booleanValue());
     Settings.setKontoCheckExcludeAddressbook(((Boolean)getKontoCheckExcludeAddressbook().getValue()).booleanValue());
+    Settings.setBicAutocomplete(((Boolean)getBicAutocomplete().getValue()).booleanValue());
 
     boolean storeEnabled = ((Boolean)getStorePin().getValue()).booleanValue();
     boolean cacheEnabled = ((Boolean)getCachePin().getValue()).booleanValue();
