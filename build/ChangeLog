@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1095 Update auf HBCI4Java 3.1.80 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.80 - INIT_FLIP_USER_INST auch dann aktivieren, wenn experimentelle Funktionen nicht aktiviert sind
   * NEW: 1094 Neue Option "BIC nach Eingabe der IBAN automatisch vervollständigen", um die Vervollständigung auch dann deaktivieren zu können, wenn "Kontonummern und Bankleitzahlen mittels Prüfsumme testen" aktiviert ist
   * NEW: 1093 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.06.2024
   * BUG: 1092 Saldo-Chart: Ende-Datum wurde nicht berücksichtigt, wenn es in der Vergangenheit lag

@@ -26,15 +26,6 @@ public class HBCI4JavaFeatureInitFlipUserInst extends AbstractHBCI4JavaFeature
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDefault()
-   */
-  @Override
-  public boolean getDefault()
-  {
-    return true;
-  }
-  
-  /**
    * @see de.willuhn.jameica.hbci.experiments.AbstractHBCI4JavaFeature#getDescription()
    */
   @Override
