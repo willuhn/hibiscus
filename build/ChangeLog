@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1097 Unterstützung für den Import von XRechnung per PDF. Konik sowie die alte ZUGFeRD-Implementierung entfernt
   * NEW: 1096 Bei Rückmeldecode "3956 - Starke Kundenauthentifizierung noch ausstehend" den Rückmeldecode nicht als ausgeführt betrachten - auch dann nicht, wenn keine Fehlermeldung geliefert wurde. Siehe Mail von Axel vom 15.05.2024
   * NEW: 1095 Update auf HBCI4Java 3.1.80 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.80 - INIT_FLIP_USER_INST auch dann aktivieren, wenn experimentelle Funktionen nicht aktiviert sind
   * NEW: 1094 Neue Option "BIC nach Eingabe der IBAN automatisch vervollständigen", um die Vervollständigung auch dann deaktivieren zu können, wenn "Kontonummern und Bankleitzahlen mittels Prüfsumme testen" aktiviert ist
