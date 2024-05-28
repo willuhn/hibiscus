@@ -355,11 +355,10 @@ public class AddressInput implements Input
      */
     public void setText(String s)
     {
-      String before = s;
-      String after = HBCIProperties.clean(s,validChars);
       // Alle Zeichen rauswerfen, die nicht zulaessig sind.
-      super.setText(after);
-      if (before != null && !before.equals(after))
+      String cleaned = HBCIProperties.clean(s,validChars);
+      super.setText(cleaned);
+      if (s != null && !s.equals(cleaned))
         GUI.getView().setErrorText(i18n.tr("Im Namen wurden nicht zulässige Zeichen entfernt"));
     }
 
