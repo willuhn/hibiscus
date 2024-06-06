@@ -331,60 +331,9 @@ public class AccountContainerDialog extends AbstractDialog
       url = url.replaceFirst("https://","");
     
     url = url.replaceFirst(":[0-9]{1,5}/","/"); // BUGZILLA 1159
+    
+    // Entfernt Leerzeichen in der URL - siehe https://homebanking-hilfe.de/forum/topic.php?p=171637#real171637
+    url = StringUtils.deleteWhitespace(url);
     return url;
 	}
-
 }
-
-
-/**********************************************************************
- * $Log: AccountContainerDialog.java,v $
- * Revision 1.16  2012/03/13 22:09:10  willuhn
- * @B BUGZILLA 1207
- *
- * Revision 1.15  2011/12/09 23:16:43  willuhn
- * @N BUGZILLA 1159
- *
- * Revision 1.14  2011-04-29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.13  2010-07-13 10:55:29  willuhn
- * @N Erster Code zum Aendern der Bank-Daten direkt auf der Karte. Muss dringend noch getestet werden - das will ich aber nicht mit meiner Karte machen, weil ich mir schonmal meine Karte mit Tests zerschossen hatte und die aber taeglich brauche ;)
- *
- * Revision 1.12  2009/09/28 13:02:05  willuhn
- * @N Pflichtfeld-Check in Account-Container-Dialog
- *
- * Revision 1.11  2009/03/02 13:43:19  willuhn
- * @B Trotz Auswahl von "None" als Filter wurde anschliessend wieder "Base64" angezeigt - lag lediglich daran, dass die Combobox mehrfach initialisiert wurde
- *
- * Revision 1.10  2007/04/10 13:25:14  willuhn
- * @B Bug 381
- *
- * Revision 1.9  2007/04/09 22:45:12  willuhn
- * @N Bug 380
- *
- * Revision 1.8  2005/06/24 14:55:49  web0
- * *** empty log message ***
- *
- * Revision 1.7  2005/06/13 09:18:21  web0
- * @N url autodetection while creating a new passport
- *
- * Revision 1.6  2005/05/25 00:42:04  web0
- * @N Dialoge fuer OP-Verwaltung
- *
- * Revision 1.5  2005/04/05 21:51:54  web0
- * @B Begrenzung aller BLZ-Eingaben auf 8 Zeichen
- *
- * Revision 1.4  2005/03/23 00:05:46  web0
- * @C RDH fixes
- *
- * Revision 1.3  2005/03/11 02:44:42  web0
- * @N added pin/tan support
- *
- * Revision 1.2  2005/03/09 01:07:02  web0
- * @D javadoc fixes
- *
- * Revision 1.1  2005/02/02 16:15:52  willuhn
- * @N Neue Dialoge fuer RDH
- *
- **********************************************************************/
