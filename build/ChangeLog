@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 1099 Such-Provider der Vor-SEPA-Auftragsarten entfernt
   * BUG: 1098 Automatisch Whitespaces aus Bank-URL entfernen (siehe https://homebanking-hilfe.de/forum/topic.php?p=171637#real171637)
   * NEW: 1097 Unterstützung für den Import von XRechnung per PDF. Konik sowie die alte ZUGFeRD-Implementierung entfernt
   * NEW: 1096 Bei Rückmeldecode "3956 - Starke Kundenauthentifizierung noch ausstehend" den Rückmeldecode nicht als ausgeführt betrachten - auch dann nicht, wenn keine Fehlermeldung geliefert wurde. Siehe Mail von Axel vom 15.05.2024
