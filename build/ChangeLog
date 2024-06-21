@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1101 Import von Umsatz-Kategorien im Banking4-Format (*.tre)
   * NEW: 1100 Löschen aller Umsatz-Kategorien ermöglichen
   * CHG: 1099 Such-Provider der Vor-SEPA-Auftragsarten entfernt
   * BUG: 1098 Automatisch Whitespaces aus Bank-URL entfernen (siehe https://homebanking-hilfe.de/forum/topic.php?p=171637#real171637)
