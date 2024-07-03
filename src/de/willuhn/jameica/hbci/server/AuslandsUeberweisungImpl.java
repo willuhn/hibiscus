@@ -147,6 +147,18 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
   }
   
   /**
+   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getAttribute(java.lang.String)
+   */
+  @Override
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("auftragstyp".equals(arg0))
+      return AuslandsUeberweisungTyp.determine(this);
+    
+    return super.getAttribute(arg0);
+  }
+  
+  /**
    * @see de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung#isTerminUeberweisung()
    */
   public boolean isTerminUeberweisung() throws RemoteException

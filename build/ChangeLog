@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1103 Spalte "Auftragstyp" in der Liste der Überweisungen mit anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?t=26596
   * NEW: 1102 Neue obantoo-Version mit PR #1 und #2
   * NEW: 1101 Import von Umsatz-Kategorien im Banking4-Format (*.tre)
   * NEW: 1100 Löschen aller Umsatz-Kategorien ermöglichen
