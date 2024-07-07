@@ -90,9 +90,14 @@ public class VerwendungszweckUtil
     BIC,
     
     /**
-     * TAN1 des Gegenkontos.
+     * TAN1.
      */
     TAN1,
+    
+    /**
+     * TAN.
+     */
+    TAN,
     
     ;
     
