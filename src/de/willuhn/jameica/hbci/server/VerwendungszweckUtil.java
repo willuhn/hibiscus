@@ -89,6 +89,16 @@ public class VerwendungszweckUtil
      */
     BIC,
     
+    /**
+     * TAN1.
+     */
+    TAN1,
+    
+    /**
+     * TAN.
+     */
+    TAN,
+    
     ;
     
     /**
@@ -210,7 +220,7 @@ public class VerwendungszweckUtil
     // Jetzt schauen wir, ob wir den Verwendungszweck per ":" noch weiter zerlegen koennen
     String svwz = result.get(Tag.SVWZ);
     if (StringUtils.trimToNull(svwz) != null)
-      result.putAll(parse(false,':',svwz));
+      result.putAll(parse(true,':',svwz));
     
     return result;
   }
