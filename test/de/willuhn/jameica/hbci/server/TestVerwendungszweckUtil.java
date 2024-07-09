@@ -44,9 +44,9 @@ public class TestVerwendungszweckUtil
     String[] result = VerwendungszweckUtil.rewrap(27,test);
     
     assertArrayEquals(new String[]{"123456789012345678901234567",
-                                                 "890123456789012345678901234",
-                                                 "567890d12345678901234567890",
-                                                 "1234567"},
+                                   "890123456789012345678901234",
+                                   "567890d12345678901234567890",
+                                   "1234567"},
                                     result);
   }
   
