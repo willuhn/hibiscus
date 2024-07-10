@@ -11,14 +11,15 @@
 package de.willuhn.jameica.hbci.search;
 
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungBuchungNew;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew;
+import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
 import de.willuhn.jameica.search.Result;
@@ -34,23 +35,23 @@ import de.willuhn.util.I18N;
  */
 public class SepaSammelUeberweisungSearchProvider implements SearchProvider
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
   @Override
   public String getName()
   {
-    return Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N().tr("SEPA-Sammelüberweisungen");
+    return i18n.tr("SEPA-Sammelüberweisungen");
   }
 
   @Override
-  public List search(String search) throws RemoteException,
-      ApplicationException
+  public List search(String search) throws RemoteException, ApplicationException
   {
     if (search == null || search.length() == 0)
       return null;
     
+    final List<MyResult> result = new ArrayList<>();
+
     String text = "%" + search.toLowerCase() + "%";
-    
-    // Wir speichern die Daten erstmal in einem Hash, damit wir Duplikate rausfischen koennen
-    Hashtable hash = new Hashtable();
     
     // Schritt 1: Die Buchungen von Sammel-Auftraegen
     DBIterator list = Settings.getDBService().createList(SepaSammelUeberweisungBuchung.class);
@@ -65,7 +66,7 @@ public class SepaSammelUeberweisungSearchProvider implements SearchProvider
     {
       SepaSammelUeberweisungBuchung buchung = (SepaSammelUeberweisungBuchung) list.next();
       SepaSammelUeberweisung ueb = (SepaSammelUeberweisung) buchung.getSammelTransfer();
-      hash.put(ueb.getID(),new MyResult(ueb));
+      result.add(new MyResult(ueb,buchung));
     }
     
     // Schritt 2: Sammel-Auftraege selbst
@@ -75,10 +76,10 @@ public class SepaSammelUeberweisungSearchProvider implements SearchProvider
     while (list.hasNext())
     {
       SepaSammelUeberweisung ueb = (SepaSammelUeberweisung) list.next();
-      hash.put(ueb.getID(),new MyResult(ueb));
+      result.add(new MyResult(ueb,null));
     }
 
-    return Arrays.asList(hash.values().toArray(new MyResult[0]));
+    return result;
   }
   
   /**
@@ -87,20 +88,25 @@ public class SepaSammelUeberweisungSearchProvider implements SearchProvider
   private class MyResult implements Result
   {
     private SepaSammelUeberweisung u = null;
+    private SepaSammelUeberweisungBuchung buchung = null;
     
     /**
      * ct.
      * @param u
      */
-    private MyResult(SepaSammelUeberweisung u)
+    private MyResult(SepaSammelUeberweisung u, SepaSammelUeberweisungBuchung buchung)
     {
       this.u = u;
+      this.buchung = buchung;
     }
 
     @Override
     public void execute() throws RemoteException, ApplicationException
     {
-      new SepaSammelUeberweisungNew().handleAction(this.u);
+      if (this.buchung != null)
+        new SepaSammelUeberweisungBuchungNew().handleAction(this.buchung);
+      else
+        new SepaSammelUeberweisungNew().handleAction(this.u);
     }
 
     @Override
@@ -108,8 +114,24 @@ public class SepaSammelUeberweisungSearchProvider implements SearchProvider
     {
       try
       {
-        I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-        return i18n.tr("{0}: {1}", HBCI.DATEFORMAT.format(u.getTermin()), u.getBezeichnung());
+        if (buchung != null)
+        {
+          Konto k = u.getKonto();
+          String[] params = new String[] {
+              HBCI.DATEFORMAT.format(u.getTermin()),
+              HBCI.DECIMALFORMAT.format(buchung.getBetrag()),
+              k.getWaehrung(),
+              buchung.getGegenkontoName(),
+              buchung.getZweck(),
+              k.getLongName(),
+          };
+          I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+          return i18n.tr("{0}: {1} {2} an {3} - {4} (via {5})",params);
+        }
+        else
+        {
+          return i18n.tr("{0}: {1}", HBCI.DATEFORMAT.format(u.getTermin()), u.getBezeichnung());
+        }
       }
       catch (RemoteException re)
       {
