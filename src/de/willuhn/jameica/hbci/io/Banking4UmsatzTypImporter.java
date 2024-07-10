@@ -23,26 +23,22 @@ import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.io.IOUtil;
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
  * Importer fuer Umsatzkategorien im Banking4-Format.
  */
-public class Banking4UmsatzTypImporter implements Importer
+public class Banking4UmsatzTypImporter extends AbstractBanking4UmsatzTypIO implements Importer
 {
-  private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getSettings();
-
-  private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-
+  /**
+   * @see de.willuhn.jameica.hbci.io.Importer#doImport(java.lang.Object, de.willuhn.jameica.hbci.io.IOFormat, java.io.InputStream, de.willuhn.util.ProgressMonitor, de.willuhn.jameica.system.BackgroundTask)
+   */
   @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
   {
@@ -95,7 +91,7 @@ public class Banking4UmsatzTypImporter implements Importer
 
         try
         {
-          final String[] cols = lines.get(i).split(":");
+          final String[] cols = lines.get(i).split(SEP);
           if (cols == null || cols.length == 0)
             continue;
           
@@ -159,33 +155,5 @@ public class Banking4UmsatzTypImporter implements Importer
     {
       IOUtil.close(reader);
     }
-  }
-  
-  @Override
-  public String getName()
-  {
-    return i18n.tr("Banking4-Format");
-  }
-
-  @Override
-  public IOFormat[] getIOFormats(Class objectType)
-  {
-    if (!UmsatzTyp.class.equals(objectType))
-      return null;
-    
-    IOFormat f = new IOFormat() {
-      @Override
-      public String getName()
-      {
-        return Banking4UmsatzTypImporter.this.getName();
-      }
-
-      @Override
-      public String[] getFileExtensions()
-      {
-        return new String[] {"*.tre"};
-      }
-    };
-    return new IOFormat[] { f };
   }
 }
