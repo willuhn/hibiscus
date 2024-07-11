@@ -12,6 +12,8 @@ package de.willuhn.jameica.hbci.search;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -81,13 +83,14 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
       result.add(new MyResult(ueb,null));
     }
 
+    Collections.sort(result);
     return result;
   }
   
   /**
    * Hilfsklasse fuer die formatierte Anzeige der Ergebnisse.
    */
-  private class MyResult implements Result
+  private class MyResult implements Result, Comparable<MyResult>
   {
     private SepaSammelLastschrift u = null;
     private SepaSammelLastBuchung buchung = null;
@@ -142,7 +145,25 @@ public class SepaSammelLastschriftSearchProvider implements SearchProvider
         return null;
       }
     }
-    
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(MyResult o)
+    {
+      try
+      {
+        final Date d1 = this.u.getTermin();
+        final Date d2 = o.u.getTermin();
+        return d2.compareTo(d1);
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to determine termin",re);
+        return 0;
+      }
+    }
   }
 
 }
