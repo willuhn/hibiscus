@@ -40,8 +40,8 @@ public class SimpleSepaSammelUeberweisungBuchungList extends SepaSammelTransferB
     this.addColumn(i18n.tr("Termin"),"sepasueb_id.termin", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     this.addColumn(new AusgefuehrtColumn("sepasueb_id.ausgefuehrt"));
     this.setRememberColWidths(true);
-    this.setRememberColWidths(true);
     this.setRememberState(true);
+    this.setMulti(true);
   }
 
 }

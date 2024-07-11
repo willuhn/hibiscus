@@ -41,8 +41,8 @@ public class SimpleSepaSammelLastBuchungList extends SepaSammelTransferBuchungLi
     this.addColumn(i18n.tr("Zieltermin"),"sepaslast_id.targetdate", new DateFormatter(HBCI.DATEFORMAT),false,Column.ALIGN_RIGHT);
     this.addColumn(new AusgefuehrtColumn("sepaslast_id.ausgefuehrt"));
     this.setRememberColWidths(true);
-    this.setRememberColWidths(true);
     this.setRememberState(true);
+    this.setMulti(true);
   }
 
 }
