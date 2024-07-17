@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 1106 Prüfung auf Vorhandensein der BIC im Konto beim Speichern eines Auftrages entfernt
   * NEW: 1105 Globale Suche: Buchungen aus Sammelaufträgen nach Termin sortieren
   * NEW: 1104 Globale Suche: Buchungen aus Sammelaufträgen in Ergebnisliste aufschlüsseln und beim Klick direkt in Buchung wechseln
   * NEW: 1103 Export von Umsatz-Kategorien im Banking4-Format (*.tre)
