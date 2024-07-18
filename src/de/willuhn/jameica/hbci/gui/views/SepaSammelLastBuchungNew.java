@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.gui.views;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.PanelButton;
@@ -22,6 +23,8 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftNew;
 import de.willuhn.jameica.hbci.gui.controller.SepaSammelLastBuchungControl;
+import de.willuhn.jameica.hbci.io.print.PrintSupportSepaSammelLastBuchung;
+import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -41,11 +44,12 @@ public class SepaSammelLastBuchungNew extends AbstractView
   public void bind() throws Exception
   {
 		final SepaSammelLastBuchungControl control = new SepaSammelLastBuchungControl(this);
-    final SepaSammelTransfer l = control.getBuchung().getSammelTransfer();
+		final SepaSammelLastBuchung b = control.getBuchung();
+    final SepaSammelTransfer l = b.getSammelTransfer();
     
-    GUI.getView().setTitle(i18n.tr("SEPA-Sammellastschrift {0}: Buchung bearbeiten",l.getBezeichnung()));
+    GUI.getView().setTitle(i18n.tr("{0}: Buchung bearbeiten",l.getBezeichnung()));
 
-    // Zusaetzlicher Back-Button, um zurueck zum Auftrag zu kommen
+    GUI.getView().addPanelButton(new PanelButtonPrint(new PrintSupportSepaSammelLastBuchung(b)));
     GUI.getView().addPanelButton(new PanelButton("slastschrift.png",new SepaSammelLastschriftNew(){
       public void handleAction(Object context) throws ApplicationException
       {

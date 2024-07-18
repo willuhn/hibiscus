@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1107 Drucken von einzelnen Buchungen in Sammelaufträgen - siehe https://homebanking-hilfe.de/forum/topic.php?p=172122#real172122
   * CHG: 1106 Prüfung auf Vorhandensein der BIC im Konto beim Speichern eines Auftrages entfernt
   * NEW: 1105 Globale Suche: Buchungen aus Sammelaufträgen nach Termin sortieren
   * NEW: 1104 Globale Suche: Buchungen aus Sammelaufträgen in Ergebnisliste aufschlüsseln und beim Klick direkt in Buchung wechseln
