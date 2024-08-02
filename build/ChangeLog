@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1109 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.09.2024
   * NEW: 1108 Kontogruppe sowie Kontobezeichnung in den virtuellen Konto-Adressen mit anzeigen
   * NEW: 1107 Drucken von einzelnen Buchungen in Sammelaufträgen - siehe https://homebanking-hilfe.de/forum/topic.php?p=172122#real172122
   * CHG: 1106 Prüfung auf Vorhandensein der BIC im Konto beim Speichern eines Auftrages entfernt
