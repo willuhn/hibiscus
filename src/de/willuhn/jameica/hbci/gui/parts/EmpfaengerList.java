@@ -146,9 +146,9 @@ public class EmpfaengerList extends TablePart implements Part
 
         s = s.replaceAll("\\n|\\r",", ");
 
-        if (s.length() < 30)
+        if (s.length() < 50)
           return s;
-        return s.substring(0,29) + "...";
+        return s.substring(0,49) + "...";
       }
     });
     
