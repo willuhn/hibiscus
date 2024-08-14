@@ -133,6 +133,7 @@ public class UmsatzTree extends TreePart
     this.addColumn(i18n.tr("Betrag"),           "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
     this.addColumn(i18n.tr("Notiz"),            "kommentar");
     this.addColumn(new KontoColumn());
+    this.addColumn("#","id-int");
 
     this.setContextMenu(new UmsatzList());
     
