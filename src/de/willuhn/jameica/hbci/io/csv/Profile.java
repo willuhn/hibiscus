@@ -28,6 +28,7 @@ public class Profile implements Serializable, Comparable
   private String separatorChar = ";";
   private String quotingChar   = "\"";
   private int skipLines        = 0;
+  private boolean invert       = false;
   private String fileEncoding  = System.getProperty("file.encoding");
   
   /**
@@ -162,6 +163,24 @@ public class Profile implements Serializable, Comparable
   }
   
   /**
+   * Liefert true, wenn die Beträge invertiert werden sollen.
+   * @return invert true, wenn die Beträge invertiert werden sollen.
+   */
+  public boolean isInvert()
+  {
+    return invert;
+  }
+  
+  /**
+   * Speichert, ob die Beträge invertiert werden sollen.
+   * @param invert true, wenn die Beträge invertiert werden sollen.
+   */
+  public void setInvert(boolean invert)
+  {
+    this.invert = invert;
+  }
+  
+  /**
    * Erzeugt die passenden CSV-Preferences.
    * @return die passenden CSV-Preferences.
    */
@@ -213,6 +232,6 @@ public class Profile implements Serializable, Comparable
   @Override
   public String toString()
   {
-    return this.getName() + ", encoding: " + this.getFileEncoding() + ", separator: " + this.getSeparatorChar() + ", quoting char: " + this.getQuotingChar() + ", skip lines: " + this.getSkipLines();
+    return this.getName() + ", encoding: " + this.getFileEncoding() + ", separator: " + this.getSeparatorChar() + ", quoting char: " + this.getQuotingChar() + ", skip lines: " + this.getSkipLines() + ", invert: " + this.isInvert();
   }
 }

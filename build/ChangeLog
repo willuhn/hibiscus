@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1111 Neue Option "[x] Vorzeichen von Beträgen umkehren" beim CSV-Import
   * NEW: 1110 Spalte "#" auch in "Umsätze nach Kategorien" anzeigen
   * NEW: 1109 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.09.2024
   * NEW: 1108 Kontogruppe sowie Kontobezeichnung in den virtuellen Konto-Adressen mit anzeigen

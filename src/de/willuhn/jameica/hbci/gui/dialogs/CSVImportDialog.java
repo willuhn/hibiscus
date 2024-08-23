@@ -32,6 +32,7 @@ import org.supercsv.prefs.CsvPreference;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.SpinnerInput;
@@ -73,6 +74,7 @@ public class CSVImportDialog extends AbstractDialog
   private TextInput quoteChar       = null;
   private SelectInput encoding      = null;
   private SpinnerInput skipLines    = null;
+  private CheckboxInput invert      = null;
   private LabelInput error          = null;
   
   private List<SelectInput> selects = new ArrayList<SelectInput>();
@@ -130,6 +132,7 @@ public class CSVImportDialog extends AbstractDialog
         p.setSystem(false);
         p.setFileEncoding((String)getFileEncoding().getValue());
         p.setQuotingChar((String)getQuoteChar().getValue());
+        p.setInvert(((Boolean)getInvert().getValue()).booleanValue());
         p.setSeparatorChar((String)getSeparatorChar().getValue());
         p.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
         
@@ -186,6 +189,7 @@ public class CSVImportDialog extends AbstractDialog
     options.addInput(this.getSeparatorChar());
     options.addInput(this.getQuoteChar());
     options.addInput(this.getSkipLines());
+    options.addInput(this.getInvert());
     
     options.addText("",false);
     // BUGZILLA 412
@@ -211,6 +215,7 @@ public class CSVImportDialog extends AbstractDialog
         result.setQuotingChar((String)getQuoteChar().getValue());
         result.setSeparatorChar((String)getSeparatorChar().getValue());
         result.setSkipLines(((Integer)getSkipLines().getValue()).intValue());
+        result.setInvert(((Boolean)getInvert().getValue()).booleanValue());
         result.setColumns(getColumns());
         
         settings.setAttribute(format.getType().getSimpleName() + ".defaultprofile",result.getName());
@@ -418,6 +423,20 @@ public class CSVImportDialog extends AbstractDialog
     this.error.setColor(Color.ERROR);
     return this.error;
   }
+  
+  /**
+   * Liefert eine Checkbox zum Umkehren der Vorzeichen.
+   * @return Checkbox zum Umkehren der Vorzeichen.
+   */
+  private CheckboxInput getInvert()
+  {
+    if (this.invert != null)
+      return this.invert;
+    
+    this.invert = new CheckboxInput(this.getProfile().isInvert());
+    this.invert.setName(i18n.tr("Vorzeichen von Beträgen umkehren"));
+    return this.invert;
+  }
 
   /**
    * Liefert ein Eingabe-Feld fuer das Quoting-Zeichen.
@@ -532,6 +551,7 @@ public class CSVImportDialog extends AbstractDialog
     this.getQuoteChar().setValue(p.getQuotingChar());
     this.getSeparatorChar().setValue(p.getSeparatorChar());
     this.getSkipLines().setValue(Integer.valueOf(p.getSkipLines()));
+    this.getInvert().setValue(Boolean.valueOf(p.isInvert()));
     
     // Datei mit den neuen Einstellungen laden
     reload();

@@ -119,6 +119,10 @@ public class UmsatzFormat implements Format<Umsatz>
             Object context = event.context;
             if (context != null && (context instanceof Konto))
               u.setKonto((Konto)context);
+            
+            // Beträge ggf. umkehren
+            if (event.profile.isInvert())
+              u.setBetrag(-u.getBetrag());
           }
           catch (Exception e)
           {
