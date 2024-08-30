@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.callback.HBCICallbackConsole;
+import org.kapott.hbci.manager.Feature;
 import org.kapott.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.hbci.gui.CustomDateFormat;
@@ -85,7 +86,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "3.1.80";
+  private final static String HBCI4JAVA_VERSION = "3.1.81";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;
@@ -300,6 +301,7 @@ public class HBCI extends AbstractPlugin
       //////////////////////////////////
 
       HBCIUtils.init(this.hbciProps,this.callback);
+      Feature.PINTAN_DECOUPLED_REFRESH.setEnabled(false); // Wir machen kein automatisches Refresh. Dafür haben wir ja den PushTAN-Dialog
       
       final String version = HBCIUtils.version();
       if (version != null && !HBCI4JAVA_VERSION.equals(version))
