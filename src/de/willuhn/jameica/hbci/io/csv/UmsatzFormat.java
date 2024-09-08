@@ -75,7 +75,7 @@ public class UmsatzFormat implements Format<Umsatz>
       list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,new ExtendedUsageSerializer()));
       list.add(new Column("art",i18n.tr("Art der Buchung"),i++,ts));
       list.add(new Column("endToEndId",i18n.tr("End-to-End ID"),i++,ts));
-      list.add(new Column("mandateid",i18n.tr("Kunden-/Mandatsreferenz"),i++,ts));
+      list.add(new Column("mandateId",i18n.tr("Kunden-/Mandatsreferenz"),i++,ts));
     
     }
     return this.profile;
@@ -120,7 +120,7 @@ public class UmsatzFormat implements Format<Umsatz>
             if (context != null && (context instanceof Konto))
               u.setKonto((Konto)context);
             
-            // Betr‰ge ggf. umkehren
+            // Betr√§ge ggf. umkehren
             if (event.profile.isInvert())
               u.setBetrag(-u.getBetrag());
           }
