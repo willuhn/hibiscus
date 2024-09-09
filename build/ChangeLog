@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1114 Spalte "Kunden-/Mandatsreferenz" wurde beim CSV-Import von Umsätze nicht beachtet - https://github.com/willuhn/hibiscus/pull/144
   * NEW: 1113 Update auf HBCI4Java 3.1.82 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.82
   * NEW: 1112 Update auf HBCI4Java 3.1.81 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.81
   * NEW: 1111 Neue Option "[x] Vorzeichen von Beträgen umkehren" beim CSV-Import
