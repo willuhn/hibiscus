@@ -120,7 +120,7 @@ public class UmsatzFormat implements Format<Umsatz>
             if (context != null && (context instanceof Konto))
               u.setKonto((Konto)context);
             
-            // Betr√§ge ggf. umkehren
+            // Betr‰ge ggf. umkehren
             if (event.profile.isInvert())
               u.setBetrag(-u.getBetrag());
           }
