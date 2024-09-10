@@ -84,10 +84,6 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
       
-      String bic = k.getBic();
-      if (bic == null || bic.length() == 0)
-        throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
-
       double betrag = getBetrag();
       if (betrag == 0.0 || Double.isNaN(betrag))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
@@ -144,6 +140,18 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       
       Logger.warn(ae.getMessage());
     }
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl#getAttribute(java.lang.String)
+   */
+  @Override
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("auftragstyp".equals(arg0))
+      return AuslandsUeberweisungTyp.determine(this);
+    
+    return super.getAttribute(arg0);
   }
   
   /**

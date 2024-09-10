@@ -10,8 +10,10 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -146,6 +148,20 @@ public class DBObjectDelete implements Action
 
         double factor = 100d / list.length;
         
+        // Wenn es eine Liste von Node-Objekten ist, sortieren wir sie nach
+        // Einrückungstiefe - unten beginnend. Das stellt sicher, dass wir
+        // zuerst die Kinder löschen, bevor die Eltern gelöscht werden.
+        if (list instanceof DBObjectNode[])
+        {
+          Arrays.sort((DBObjectNode[])list,(o1,o2) -> {
+            try {
+              return Integer.compare(o2.getPath().size(),o1.getPath().size());
+            }
+            catch (RemoteException re) {}
+            return 0;
+          });
+        }
+        
         for (int i=0;i<list.length;++i)
         {
           if (monitor != null && i % 4 == 0)
@@ -156,6 +172,9 @@ public class DBObjectDelete implements Action
 
           // ok, wir loeschen das Objekt
           final String id = list[i].getID();
+          if (id == null)
+            continue;
+          
           list[i].delete();
           Application.getMessagingFactory().sendMessage(new ObjectDeletedMessage(list[i],id));
         }
@@ -197,38 +216,5 @@ public class DBObjectDelete implements Action
         throw ae;
       }
     }
-    
   }
-
 }
-
-
-/**********************************************************************
- * $Log: DBObjectDelete.java,v $
- * Revision 1.7  2011/05/11 10:20:28  willuhn
- * @N OCE fangen
- *
- * Revision 1.6  2011-03-22 12:23:35  willuhn
- * @R Loeschen in separatem Thread entfernt
- *
- * Revision 1.5  2010/03/05 15:24:53  willuhn
- * @N BUGZILLA 686
- *
- * Revision 1.4  2007/07/16 12:51:15  willuhn
- * @D javadoc
- *
- * Revision 1.3  2007/04/25 14:07:26  willuhn
- * @N Loeschen von mehr als 100 Datensaetzen gleichzeitig im Hintergrund ausfuehren
- *
- * Revision 1.2  2007/04/23 18:07:14  willuhn
- * @C Redesign: "Adresse" nach "HibiscusAddress" umbenannt
- * @C Redesign: "Transfer" nach "HibiscusTransfer" umbenannt
- * @C Redesign: Neues Interface "Transfer", welches von Ueberweisungen, Lastschriften UND Umsaetzen implementiert wird
- * @N Anbindung externer Adressbuecher
- *
- * Revision 1.1  2006/06/06 22:41:26  willuhn
- * @N Generische Loesch-Action fuer DBObjects (DBObjectDelete)
- * @N Live-Aktualisierung der Tabelle mit den importierten Ueberweisungen
- * @B Korrekte Berechnung des Fortschrittsbalken bei Import
- *
- **********************************************************************/

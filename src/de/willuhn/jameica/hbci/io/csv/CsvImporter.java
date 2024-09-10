@@ -89,7 +89,7 @@ public class CsvImporter implements Importer
         throw new ApplicationException(i18n.tr("CSV-Datei enthält keine Daten"));
 
       CSVImportDialog d = new CSVImportDialog(data,f,CSVImportDialog.POSITION_CENTER);
-      Profile p = (Profile) d.open();
+      final Profile p = (Profile) d.open();
 
       CsvPreference prefs = p.createCsvPreference();
       
@@ -183,6 +183,7 @@ public class CsvImporter implements Importer
             ImportEvent e = new ImportEvent();
             e.context = context;
             e.data = values;
+            e.profile = p;
             try
             {
               l.beforeSet(e);
@@ -226,6 +227,7 @@ public class CsvImporter implements Importer
             ImportEvent e = new ImportEvent();
             e.context = context;
             e.data = object;
+            e.profile = p;
             try
             {
               l.beforeStore(e);

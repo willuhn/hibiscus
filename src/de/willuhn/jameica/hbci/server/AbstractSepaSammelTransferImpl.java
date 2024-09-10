@@ -71,10 +71,6 @@ public abstract class AbstractSepaSammelTransferImpl<T extends SepaSammelTransfe
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
       
-      String bic = k.getBic();
-      if (bic == null || bic.length() == 0)
-        throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
-
       if (getBezeichnung() == null || getBezeichnung().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein."));
       

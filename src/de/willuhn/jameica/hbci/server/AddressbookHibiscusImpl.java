@@ -255,7 +255,14 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
      */
     public String getKommentar() throws RemoteException
     {
-      return this.konto.getKommentar();
+      final StringBuilder sb = new StringBuilder(this.konto.getBezeichnung());
+      final String s = this.konto.getKommentar();
+      if (s != null && s.length() > 0)
+      {
+        sb.append(" / ");
+        sb.append(s);
+      }
+      return sb.toString();
     }
 
     /**
@@ -295,7 +302,17 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
      */
     public String getKategorie() throws RemoteException
     {
-      return i18n.tr("Eigenes Konto");
+      final StringBuilder sb = new StringBuilder(i18n.tr("Eigenes Konto"));
+      
+      // Wenn das Konto ebenfalls eine Gruppe besitzt, dann diese noch anhängen
+      final String g = this.konto.getKategorie();
+      if (g != null && g.length() > 0)
+      {
+        sb.append(" / ");
+        sb.append(g);
+      }
+      return sb.toString();
+      
     }
 
 

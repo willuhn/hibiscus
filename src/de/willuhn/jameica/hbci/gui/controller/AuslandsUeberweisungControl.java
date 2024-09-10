@@ -50,6 +50,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Terminable;
+import de.willuhn.jameica.hbci.server.AuslandsUeberweisungTyp;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaUeberweisung;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;
@@ -328,8 +329,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
           // Wenn das Datum eine Woche in der Zukunft liegt, fragen wir den User, ob es vielleicht
           // eine Terminueberweisung werden soll. Muessen wir aber nicht fragen, wenn
           // der User nicht ohnehin schon eine Termin-Ueberweisung ausgewaehlt hat
-          Typ typ = (Typ) getTyp().getValue();
-          if (typ == null || typ == Typ.TERMIN)
+          AuslandsUeberweisungTyp typ = (AuslandsUeberweisungTyp) getTyp().getValue();
+          if (typ == null || typ == AuslandsUeberweisungTyp.TERMIN)
             return;
 
           Calendar cal = Calendar.getInstance();
@@ -339,7 +340,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
           {
             String q = i18n.tr("Soll der Auftrag als bankseitig geführte SEPA-Terminüberweisung ausgeführt werden?");
             if (Application.getCallback().askUser(q))
-              getTyp().setValue(Typ.TERMIN);
+              getTyp().setValue(AuslandsUeberweisungTyp.TERMIN);
           }
         }
         catch (Exception e)
@@ -394,7 +395,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       return this.typ;
     final AuslandsUeberweisung u = getTransfer();
     
-    this.typ = new SelectInput(Typ.values(),Typ.determine(u));
+    this.typ = new SelectInput(AuslandsUeberweisungTyp.values(),AuslandsUeberweisungTyp.determine(u));
     this.typ.setName(i18n.tr("Auftragstyp"));
     this.typ.setAttribute("description");
     this.typ.setEnabled(!u.ausgefuehrt());
@@ -406,8 +407,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
         // "getTermin()" gebraucht, um zu erkennen, ob der Auftrag faellig ist
         try
         {
-          Typ t = (Typ) getTyp().getValue();
-          u.setTerminUeberweisung(t != null && t == Typ.TERMIN);
+          AuslandsUeberweisungTyp t = (AuslandsUeberweisungTyp) getTyp().getValue();
+          u.setTerminUeberweisung(t != null && t == AuslandsUeberweisungTyp.TERMIN);
         }
         catch (Exception e)
         {
@@ -447,7 +448,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
       t.setPmtInfId((String) getPmtInfId().getValue());
       t.setPurposeCode((String)getPurposeCode().getValue());
 
-      Typ typ = (Typ) getTyp().getValue();
+      AuslandsUeberweisungTyp typ = (AuslandsUeberweisungTyp) getTyp().getValue();
       if (typ != null)
         typ.apply(t);
 
@@ -637,8 +638,8 @@ public class AuslandsUeberweisungControl extends AbstractControl
           try
           {
             TerminInput input = getTermin();
-            Typ typ = (Typ) getTyp().getValue();
-            if (typ != null && typ == Typ.TERMIN)
+            AuslandsUeberweisungTyp typ = (AuslandsUeberweisungTyp) getTyp().getValue();
+            if (typ != null && typ == AuslandsUeberweisungTyp.TERMIN)
             {
               input.setName(i18n.tr("Ausführungstermin"));
               
@@ -667,85 +668,4 @@ public class AuslandsUeberweisungControl extends AbstractControl
       });
     }
   }
-  
-  /**
-   * Hilfsklasse fuer den Auftragstyp.
-   */
-  public enum Typ
-  {
-    /**
-     * Ueberweisung
-     */
-    UEBERWEISUNG("Überweisung"),
-    
-    /**
-     * Terminueberweisung
-     */
-    TERMIN("Bankseitige SEPA-Terminüberweisung"),
-
-    /**
-     * Umbuchung
-     */
-    UMBUCHUNG("Interne Umbuchung (Übertrag)"),
-    
-    /**
-     * Echtzeitueberweisung
-     */
-    INSTANT("Echtzeitüberweisung (SEPA Instant-Payment)"),
-    
-    ;
-    
-    private String description = null;
-    
-    /**
-     * ct.
-     * @param description der Beschreibungstext.
-     */
-    private Typ(String description)
-    {
-      this.description = description;
-    }
-    
-    /**
-     * Liefert den Beschreibungstext.
-     * @return description
-     */
-    public String getDescription()
-    {
-      return i18n.tr(description);
-    }
-    
-    /**
-     * Ermittelt den Typ anhand des Auftrages.
-     * @param u der Auftrag.
-     * @return der Typ.
-     * @throws RemoteException
-     */
-    public static Typ determine(AuslandsUeberweisung u) throws RemoteException
-    {
-      if (u.isInstantPayment())
-        return INSTANT;
-      
-      if (u.isTerminUeberweisung())
-        return TERMIN;
-      
-      if (u.isUmbuchung())
-        return UMBUCHUNG;
-      
-      return UEBERWEISUNG;
-    }
-    
-    /**
-     * Uebernimmt den Typ in den Auftrag.
-     * @param u der Auftrag.
-     * @throws RemoteException
-     */
-    public void apply(AuslandsUeberweisung u) throws RemoteException
-    {
-      u.setInstantPayment(this == INSTANT);
-      u.setUmbuchung(this == UMBUCHUNG);
-      u.setTerminUeberweisung(this == TERMIN);
-    }
-  }
-
 }

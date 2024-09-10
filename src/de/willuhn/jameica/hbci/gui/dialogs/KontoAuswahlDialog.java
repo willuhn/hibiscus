@@ -57,6 +57,8 @@ public class KontoAuswahlDialog extends AbstractDialog
   private LabelInput name     = null;
 	private LabelInput saldo    = null;
 	
+	private Listener listener = null;
+	
   
   /**
    * ct.
@@ -97,6 +99,27 @@ public class KontoAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
+    this.listener = new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          preselected = (Konto) getKontoAuswahl().getValue();
+          getApplyButton().setEnabled(preselected != null);
+          updateInstitute();
+          updateName();
+          updateSaldo();
+        }
+        catch (Exception e)
+        {
+          // Nicht weiter wild - daher nur loggen
+          Logger.error("unable to update account information",e);
+        }
+      }
+    };
+
     Container group = new SimpleContainer(parent);
     group.addText(text != null && text.length() > 0 ? text : i18n.tr("Bitte wählen Sie das gewünschte Konto aus."),true);
     group.addInput(getKontoAuswahl());
@@ -119,6 +142,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 		
     getShell().setMinimumSize(getShell().computeSize(WINDOW_WIDTH,SWT.DEFAULT));
     getKontoAuswahl().focus(); // damit wir direkt mit dem Cursor die Auswahl treffen koennen
+    
+    // Listener einmal initial auslösen
+    this.listener.handleEvent(null);
   }
 
   /**
@@ -143,24 +169,7 @@ public class KontoAuswahlDialog extends AbstractDialog
 
     this.auswahl = new KontoInput(this.preselected,this.filter);
     this.auswahl.setComment(null);
-    auswahl.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        preselected = (Konto) auswahl.getValue();
-        getApplyButton().setEnabled(preselected != null);
-        try
-        {
-          updateInstitute();
-          updateName();
-          updateSaldo();
-        }
-        catch (Exception e)
-        {
-          // Nicht weiter wild - daher nur loggen
-          Logger.error("unable to update account information",e);
-        }
-      }
-    });
+    auswahl.addListener(this.listener);
     return this.auswahl;
   }
   

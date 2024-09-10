@@ -64,6 +64,7 @@ public class Settings extends AbstractView implements Extendable
     system.addHeadline(i18n.tr("Kontrolle"));
     system.addCheckbox(control.getKontoCheck(),i18n.tr("Kontonummern und Bankleitzahlen mittels Prüfsumme testen"));
     system.addCheckbox(control.getKontoCheckExcludeAddressbook(),i18n.tr("Außer Bankverbindungen des Adressbuches"));
+    system.addCheckbox(control.getBicAutocomplete(),i18n.tr("BIC nach Eingabe der IBAN automatisch vervollständigen"));
     system.addLabelPair(i18n.tr("Limit für Aufträge"), control.getUeberweisungLimit());
 
     // Farb-Einstellungen

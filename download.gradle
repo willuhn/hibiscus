@@ -17,9 +17,10 @@ repositories {
 dependencies {
   compile 'com.fasterxml.jackson.core:jackson-databind:+'
   compile 'org.apache.httpcomponents.client5:httpclient5:+'
+   compile 'org.apache.pdfbox:pdfbox:3.+'
 }
 
 task download(type: Copy) {
-  into "lib"
+  into "lib/download"
   from configurations.runtime
 }

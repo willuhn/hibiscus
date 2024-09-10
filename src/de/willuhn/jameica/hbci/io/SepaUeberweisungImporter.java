@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.io;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
@@ -53,7 +54,8 @@ public class SepaUeberweisungImporter extends AbstractSepaImporter
     if (date != null && !SepaUtil.DATE_UNDEFINED.equals(date))
     {
       u.setTermin(ISO_DATE.parse(date));
-      u.setTerminUeberweisung(true);
+      if(ISO_DATE.parse(date).after(new Date())) //Only TerminUeberweiung when date later
+        u.setTerminUeberweisung(true);
     }
 
     u.setEndtoEndId(StringUtils.trimToNull(prop.getProperty(ISEPAParser.Names.ENDTOENDID.getValue())));

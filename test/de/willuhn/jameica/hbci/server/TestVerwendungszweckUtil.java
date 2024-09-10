@@ -10,13 +10,14 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import java.util.Map;
-
-import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 
 /**
  * Testet die Klasse "VerwendungszweckUtil".
@@ -43,9 +44,9 @@ public class TestVerwendungszweckUtil
     String[] result = VerwendungszweckUtil.rewrap(27,test);
     
     assertArrayEquals(new String[]{"123456789012345678901234567",
-                                                 "890123456789012345678901234",
-                                                 "567890d12345678901234567890",
-                                                 "1234567"},
+                                   "890123456789012345678901234",
+                                   "567890d12345678901234567890",
+                                   "1234567"},
                                     result);
   }
   
@@ -228,7 +229,7 @@ public class TestVerwendungszweckUtil
     };
 
     Map<Tag,String> map = VerwendungszweckUtil.parse(test);
-    assertEquals("Das geht sogar gemischt IBAN: DE1234567890",map.get(Tag.SVWZ),"SVWZ falsch");
+    assertEquals("Das geht sogar gemischt",map.get(Tag.SVWZ),"SVWZ falsch");
     assertEquals("DE1234567890",map.get(Tag.IBAN),"IBAN falsch");
   }
 

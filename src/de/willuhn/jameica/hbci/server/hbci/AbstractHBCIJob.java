@@ -268,7 +268,7 @@ public abstract class AbstractHBCIJob
         boolean b = true;
         for (HBCIRetVal v:warnings)
         {
-          b &= v.code.startsWith("3");
+          b &= v.code.startsWith("3") && !v.code.equals("3956"); // Ausser "Starke Kundenauthentifizierung noch ausstehend"
         }
         if (b) // Bank hat nur mit einer Warnung geantwortet
         {

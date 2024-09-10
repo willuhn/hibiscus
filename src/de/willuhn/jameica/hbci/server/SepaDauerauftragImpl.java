@@ -110,10 +110,6 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
       if (kiban == null || kiban.length() == 0)
         throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine IBAN"));
       
-      String bic = k.getBic();
-      if (bic == null || bic.length() == 0)
-        throw new ApplicationException(i18n.tr("Das ausgewählte Konto besitzt keine BIC"));
-
       Date ersteZahlung = getErsteZahlung();
       Date letzteZahlung = getLetzteZahlung();
       

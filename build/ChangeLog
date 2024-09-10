@@ -1,3 +1,32 @@
+2024-09-10 Version 2.10.21
+
+  * BUG: 1115 Kontoauswahl-Dialog: Darstellungsfehler wenn nur ein Konto vorhanden ist und dieses automatisch selektiert wurde 
+  * BUG: 1114 Spalte "Kunden-/Mandatsreferenz" wurde beim CSV-Import von Umsätze nicht beachtet - https://github.com/willuhn/hibiscus/pull/144
+  * NEW: 1113 Update auf HBCI4Java 3.1.82 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.82
+  * NEW: 1112 Update auf HBCI4Java 3.1.81 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.81
+  * NEW: 1111 Neue Option "[x] Vorzeichen von Beträgen umkehren" beim CSV-Import
+  * NEW: 1110 Spalte "#" auch in "Umsätze nach Kategorien" anzeigen
+  * NEW: 1109 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.09.2024
+  * NEW: 1108 Kontogruppe sowie Kontobezeichnung in den virtuellen Konto-Adressen mit anzeigen
+  * NEW: 1107 Drucken von einzelnen Buchungen in Sammelaufträgen - siehe https://homebanking-hilfe.de/forum/topic.php?p=172122#real172122
+  * CHG: 1106 Prüfung auf Vorhandensein der BIC im Konto beim Speichern eines Auftrages entfernt
+  * NEW: 1105 Globale Suche: Buchungen aus Sammelaufträgen nach Termin sortieren
+  * NEW: 1104 Globale Suche: Buchungen aus Sammelaufträgen in Ergebnisliste aufschlüsseln und beim Klick direkt in Buchung wechseln
+  * NEW: 1103 Export von Umsatz-Kategorien im Banking4-Format (*.tre)
+  * NEW: 1103 Spalte "Auftragstyp" in der Liste der Überweisungen mit anzeigen - siehe https://homebanking-hilfe.de/forum/topic.php?t=26596
+  * NEW: 1102 Neue obantoo-Version mit PR #1 und #2
+  * NEW: 1101 Import von Umsatz-Kategorien im Banking4-Format (*.tre)
+  * NEW: 1100 Löschen aller Umsatz-Kategorien ermöglichen
+  * CHG: 1099 Such-Provider der Vor-SEPA-Auftragsarten entfernt
+  * BUG: 1098 Automatisch Whitespaces aus Bank-URL entfernen (siehe https://homebanking-hilfe.de/forum/topic.php?p=171637#real171637)
+  * NEW: 1097 Unterstützung für den Import von XRechnung per PDF. Konik sowie die alte ZUGFeRD-Implementierung entfernt
+  * NEW: 1096 Bei Rückmeldecode "3956 - Starke Kundenauthentifizierung noch ausstehend" den Rückmeldecode nicht als ausgeführt betrachten - auch dann nicht, wenn keine Fehlermeldung geliefert wurde. Siehe Mail von Axel vom 15.05.2024
+  * NEW: 1095 Update auf HBCI4Java 3.1.80 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.80 - INIT_FLIP_USER_INST auch dann aktivieren, wenn experimentelle Funktionen nicht aktiviert sind
+  * NEW: 1094 Neue Option "BIC nach Eingabe der IBAN automatisch vervollständigen", um die Vervollständigung auch dann deaktivieren zu können, wenn "Kontonummern und Bankleitzahlen mittels Prüfsumme testen" aktiviert ist
+  * NEW: 1093 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.06.2024
+  * BUG: 1092 Saldo-Chart: Ende-Datum wurde nicht berücksichtigt, wenn es in der Vergangenheit lag
+  * BUG: 1091 Bei der Saldoprognose wurde als Startsaldo der Anfangssaldo von heute verwendet. Richtig ist aber der Endsaldo. Andernfalls gibt es einen Bruch am Übergang von realen Daten zur Prognose
+
 2024-04-05 Version 2.10.20
 
   * NEW: 1090 Update auf HBCI4Java 3.1.79 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.79 (siehe https://homebanking-hilfe.de/forum/topic.php?p=170837#real170837)

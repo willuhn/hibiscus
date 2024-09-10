@@ -89,6 +89,16 @@ public class VerwendungszweckUtil
      */
     BIC,
     
+    /**
+     * TAN1.
+     */
+    TAN1,
+    
+    /**
+     * TAN.
+     */
+    TAN,
+    
     ;
     
     /**
@@ -200,30 +210,29 @@ public class VerwendungszweckUtil
   public static Map<Tag,String> parse(String... lines) throws RemoteException
   {
     // Wir parsen erstmal alles mit "+".
-    Map<Tag,String> result = parse(true,'+',lines);
+    Map<Tag,String> result = parse('+',lines);
     if (result == null || result.size() == 0)
     {
       // Vielleicht enthaelt es ja nur Tags mit Doppelpunkt?
-      return parse(true,':',lines);
+      return parse(':',lines);
     }
     
     // Jetzt schauen wir, ob wir den Verwendungszweck per ":" noch weiter zerlegen koennen
     String svwz = result.get(Tag.SVWZ);
     if (StringUtils.trimToNull(svwz) != null)
-      result.putAll(parse(false,':',svwz));
+      result.putAll(parse(':',svwz));
     
     return result;
   }
   
   /**
    * Parst die SEPA-Tags aus den Verwendungszweck-Zeilen.
-   * @param leadingSvwz true, wenn ein fuehrerender Verwendungszweck ohne dediziertes Tag beachtet werden soll.
    * @param sep das zu verwendende Trennzeichen.
    * @param lines die Verwendungszweck-Zeilen.
    * @return Map mit den geparsten Infos. Niemals NULL sondern hoechstens eine leere Map.
    * @throws RemoteException
    */
-  private static Map<Tag,String> parse(boolean leadingSvwz, char sep, String... lines) throws RemoteException
+  private static Map<Tag,String> parse(char sep, String... lines) throws RemoteException
   {
     Map<Tag,String> result = new HashMap<Tag,String>();
 
@@ -288,7 +297,7 @@ public class VerwendungszweckUtil
       // Sprich: Der Verwendungszweck enthaelt zwar Tags, der Verwendungszweck selbst hat aber keines
       // sondern steht nur vorn dran.
       // Wenn wir Tags haben, SVWZ aber fehlt, nehmen wir als SVWZ den Text bis zum ersten Tag
-      if (leadingSvwz && result.size() > 0 && !result.containsKey(Tag.SVWZ) && first > 0)
+      if (result.size() > 0 && !result.containsKey(Tag.SVWZ) && first > 0)
       {
         result.put(Tag.SVWZ,StringUtils.trimToEmpty(line.substring(0,first).replace("\n","")));
       }

@@ -13,26 +13,22 @@
 	<classpathentry kind="lib" path="lib/super-csv-2.4.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/obantoo-bin-2.1.12.jar"/>
-	<classpathentry kind="lib" path="lib/konik/harness-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/konik/itext-carriage-0.8.0.jar"/>
-	<classpathentry kind="lib" path="lib/konik/bval-core-1.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/konik/bval-jsr-1.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/konik/konik-1.3.2.jar"/>
-	<classpathentry kind="lib" path="lib/konik/nv-i18n-1.22.jar"/>
 	<classpathentry kind="lib" path="lib/guava-31.1-jre.jar"/>
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/konik/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.79.jar" sourcepath="/hbci4j-core"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbci4j-core-3.1.82.jar" sourcepath="/hbci4java"/>
 	<classpathentry kind="lib" path="lib/qrcodegen/qrcodegen-1.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpclient5-5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/apache_httpclient/httpcore5-5.2.jar"/>
+	<classpathentry kind="lib" path="lib/apache_httpclient/httpclient5-5.2.jar"/>
+	<classpathentry kind="lib" path="lib/apache_httpclient/httpcore5-5.2.jar"/>
 	<classpathentry kind="lib" path="lib/apache_httpclient/httpcore5-h2-5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson/jackson-annotations-2.14.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson/jackson-core-2.14.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson/jackson-databind-2.14.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson/jackson-annotations-2.14.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson/jackson-core-2.14.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson/jackson-databind-2.14.1.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j/slf4j-api-1.7.36.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/swtchart/org.eclipse.swtchart_0.14.0.202301260747.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/swtchart/org.eclipse.swtchart.extensions_0.14.0.202301260747.jar"/>
+	<classpathentry kind="lib" path="lib/swtchart/org.eclipse.swtchart_0.14.0.202301260747.jar"/>
+	<classpathentry kind="lib" path="lib/swtchart/org.eclipse.swtchart.extensions_0.14.0.202301260747.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox/fontbox-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox/pdfbox-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox/pdfbox-io-3.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
