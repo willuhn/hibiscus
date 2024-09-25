@@ -36,7 +36,8 @@ public class update0070 extends AbstractUpdate
 
     // Update fuer PostGres
     put(DBSupportPostgreSQLImpl.class,Arrays.asList(
-        "ALTER TABLE konto ALTER COLUMN kontonummer TYPE varchar(16) NOT NULL;"
+        "ALTER TABLE konto ALTER COLUMN kontonummer TYPE varchar(16);",
+        "ALTER TABLE konto ALTER COLUMN kontonummer SET NOT NULL;"
     ));
   }};
 
