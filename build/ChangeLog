@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: 1116 Postbank verwendet Kundenkennungen mit "@"
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-09-10 Version 2.10.21
