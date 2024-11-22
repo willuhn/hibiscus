@@ -1,3 +1,9 @@
+2024-11-22 Version 2.10.22
+
+  * NEW: 1118 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.12.2024
+  * NEW: 1117 Update auf HBCI4Java 3.1.84 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.84
+  * CHG: 1116 Postbank verwendet Kundenkennungen mit "@"
+
 2024-09-10 Version 2.10.21
 
   * BUG: 1115 Kontoauswahl-Dialog: Darstellungsfehler wenn nur ein Konto vorhanden ist und dieses automatisch selektiert wurde 

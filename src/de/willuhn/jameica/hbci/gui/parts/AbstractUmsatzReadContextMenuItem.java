@@ -57,7 +57,7 @@ public class AbstractUmsatzReadContextMenuItem extends ContextMenuItem
     try
     {
       final String s =  i18n.tr("Sollen die Umsätze beim Beenden des Programms automatisch als gelesen markiert werden?");
-      final String s2 = i18n.tr("Sie können dies später in den Einstellungen der Umsatzliste (Wekzeug-Symbol oben rechts) ändern.");
+      final String s2 = i18n.tr("Sie können dies später in den Einstellungen der Umsatzliste (Werkzeug-Symbol oben rechts) ändern.");
       final boolean yes = Application.getCallback().askUser(s + " " + s2);
       Settings.setMarkReadOnExit(yes);
     }

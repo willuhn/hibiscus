@@ -195,7 +195,7 @@ public class BPDUtil
     {
       // Kundennummer korrekt?
       String kd = konto.getKundennummer();
-      if (kd == null || kd.length() == 0 || !kd.trim().matches("[0-9a-zA-Z]{1,30}"))
+      if (kd == null || kd.trim().length() == 0)
         return null;
       
       Support support = new Support();
