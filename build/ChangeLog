@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1119 Update auf HBCI4Java 3.1.85 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.85 - siehe https://homebanking-hilfe.de/forum/topic.php?p=174231#real174231
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-11-22 Version 2.10.22
