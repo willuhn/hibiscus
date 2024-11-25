@@ -1,3 +1,7 @@
+2024-11-25 Version 2.10.23
+
+  * NEW: 1119 Update auf HBCI4Java 3.1.85 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.85 - siehe https://homebanking-hilfe.de/forum/topic.php?p=174231#real174231
+
 2024-11-22 Version 2.10.22
 
   * NEW: 1118 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.12.2024
