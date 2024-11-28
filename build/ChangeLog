@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1120 Neue obantoo-Version mit https://github.com/willuhn/obantoo/pull/4
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 
 2024-11-25 Version 2.10.23
