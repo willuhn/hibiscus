@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1121 XRechnung: Alternativ "ExchangedDocument/ID" als Verwendungszweck verwenden - siehe https://homebanking-hilfe.de/forum/topic.php?p=174533#real174533
   * NEW: 1120 Neue obantoo-Version mit https://github.com/willuhn/obantoo/pull/4
   * NEW: 1061 Umstellung von MySQL auf MariaDB
 

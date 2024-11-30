@@ -138,6 +138,8 @@ public class XRechnungImporter implements Importer
         String ref = this.xpath(doc,xpath,"//*[local-name() = 'ApplicableHeaderTradeSettlement']/*[local-name() = 'PaymentReference']");
         if (ref == null || ref.isBlank())
           ref = this.xpath(doc,xpath,"//*[local-name() = 'ApplicableSupplyChainTradeSettlement']/*[local-name() = 'PaymentReference']");
+        if (ref == null || ref.isBlank())
+          ref = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'ID']");
 
         if (ref != null && !ref.isBlank())
         {
