@@ -221,7 +221,10 @@ public class XRechnungImporter implements Importer
         if (iban != null && !iban.isBlank())
           u.setGegenkontoNummer(iban.replace(" ", ""));
         
-        final String bic = this.xpath(doc,xpath,"//*[local-name() = 'PayeeSpecifiedCreditorFinancialInstitution']/*[local-name() = 'BICID']");
+        String bic = this.xpath(doc,xpath,"//*[local-name() = 'PayeeSpecifiedCreditorFinancialInstitution']/*[local-name() = 'BICID']");
+        if (bic == null || bic.isBlank())
+          bic = this.xpath(doc,xpath,"//*[local-name() = 'PaymentMeans']/*[local-name() = 'PayeeFinancialAccount']/*[local-name() = 'FinancialInstitutionBranch']/*[local-name() = 'ID']");
+          
         if (bic != null && !bic.isBlank())
           u.setGegenkontoBLZ(bic.replace(" ", ""));
       }
