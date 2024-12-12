@@ -179,15 +179,20 @@ public class XRechnungImporter implements Importer
       ////////////////////////////////////////////////////////////
       // Zieldatum
       {
-        final Date due    = this.parseDate(this.xpath(doc,xpath,"//*[local-name() = 'SpecifiedTradePaymentTerms']/*[local-name() = 'DueDateDateTime']/*[local-name() = 'DateTimeString']"));
+        Date due = this.parseDate(this.xpath(doc,xpath,"//*[local-name() = 'SpecifiedTradePaymentTerms']/*[local-name() = 'DueDateDateTime']/*[local-name() = 'DateTimeString']"));
+        if (due == null)
+          due = this.parseDate(this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'DueDate']"));
         
         Date issued = this.parseDate(this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'IssueDateTime']/*[local-name() = 'DateTimeString']"));
         if (issued == null)
           issued = this.parseDate(this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'IssueDate']"));
 
-        if (due != null && due.after(new Date())) // Fälligkeit muss noch in der Zukunft liegen
+        if (due != null)
         {
-          u.setTermin(due);
+          if (due.after(new Date()))
+            u.setTermin(due);
+          else // Fälligkeit muss noch in der Zukunft liegen
+            Logger.info("due date in the past - will be ignored: " + due);
         }
         else if (issued != null)
         {
@@ -199,6 +204,8 @@ public class XRechnungImporter implements Importer
 
           if (d.after(new Date())) // Fälligkeit muss noch in der Zukunft liegen
             u.setTermin(d);
+          else
+            Logger.info("issue date too far in the past - will be ignored: " + issued);
         }
       }
       //
