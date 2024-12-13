@@ -40,6 +40,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
   private CheckboxInput displayAll     = null;
   private CheckboxInput instantSearch  = null;
   private CheckboxInput markReadOnExit = null;
+  private CheckboxInput typPath        = null;
 
   /**
    * ct.
@@ -59,6 +60,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
   {
     final Container c = new SimpleContainer(parent);
     c.addInput(this.getDisplayAll());
+    c.addInput(this.getTypPath());
     c.addInput(this.getInstantSearch());
     c.addInput(this.getMarkReadOnExit());
     
@@ -69,6 +71,7 @@ public class KontoauszugSettingsDialog extends AbstractDialog
       {
         settings.setAttribute("usage.display.all",((Boolean) getDisplayAll().getValue()).booleanValue());
         settings.setAttribute("usage.instantsearch",((Boolean) getInstantSearch().getValue()).booleanValue());
+        settings.setAttribute("umsatztyp.showpath",((Boolean) getTypPath().getValue()).booleanValue());
         de.willuhn.jameica.hbci.Settings.setMarkReadOnExit(((Boolean) getMarkReadOnExit().getValue()).booleanValue());
         close();
       }
@@ -131,6 +134,20 @@ public class KontoauszugSettingsDialog extends AbstractDialog
     this.markReadOnExit = new CheckboxInput(de.willuhn.jameica.hbci.Settings.getMarkReadOnExit());
     this.markReadOnExit.setName(i18n.tr("Umsätze beim Beenden als gelesen markieren"));
     return this.markReadOnExit;
+  }
+
+  /**
+   * Liefert die Checkbox, mit der eingestellt werden kann, ob bei der Umsatzkategorie der ganze Pfad angezeigt werden soll.
+   * @return Checkbox.
+   */
+  private CheckboxInput getTypPath()
+  {
+    if (this.typPath != null)
+      return this.typPath;
+    
+    this.typPath = new CheckboxInput(settings.getBoolean("umsatztyp.showpath",false));
+    this.typPath.setName(i18n.tr("Gesamten Pfad der Umsatzkategorie anzeigen"));
+    return this.typPath;
   }
 
 }

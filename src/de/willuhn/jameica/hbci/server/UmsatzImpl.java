@@ -458,7 +458,14 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
   {
     if ("umsatztyp".equals(arg0))
       return getUmsatzTyp();
-    
+
+    if ("umsatztyppath".equals(arg0))
+    {
+      final UmsatzTyp t = this.getUmsatzTyp();
+      final String s = t != null ? t.getPath(" | ") : "";
+      return StringUtils.abbreviateMiddle(s,"..",50);
+    }
+
     if ("konto_id".equals(arg0))
       return getKonto();
     
@@ -650,7 +657,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
     }
     return null;
   }
-
+  
   /**
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#setUmsatzTyp(de.willuhn.jameica.hbci.rmi.UmsatzTyp)
    */
