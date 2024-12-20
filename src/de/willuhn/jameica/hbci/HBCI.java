@@ -333,7 +333,7 @@ public class HBCI extends AbstractPlugin
    * Liefert die Properties, mit denen HBCI4Java initialisiert wurde.
    * @return die Properties, mit denen HBCI4Java initialisiert wurde.
    */
-  public Properties getHBCIPropetries()
+  public Properties getHBCIProperties()
   {
     return this.hbciProps;
   }

@@ -494,7 +494,7 @@ public class HBCIProperties
           {
             Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
             HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-            HBCIUtils.initThread(plugin.getHBCIPropetries(),plugin.getHBCICallback());
+            HBCIUtils.initThread(plugin.getHBCIProperties(),plugin.getHBCICallback());
             
             continue; // ok, nochmal versuchen
           }
@@ -588,7 +588,7 @@ public class HBCIProperties
       {
         Logger.warn("HBCI4Java subsystem seems to be not initialized for this thread group, adding thread group");
         HBCI plugin = (HBCI) Application.getPluginLoader().getPlugin(HBCI.class);
-        HBCIUtils.initThread(plugin.getHBCIPropetries(),plugin.getHBCICallback());
+        HBCIUtils.initThread(plugin.getHBCIProperties(),plugin.getHBCICallback());
         return HBCIUtils.checkCredtitorIdCRC(creditorId);
       }
       catch (Exception e2)
