@@ -226,6 +226,16 @@ public class ChipTANDialog extends TANDialog
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Legen Sie bitte die Chipkarte ein."),StatusBarMessage.TYPE_INFO));
       this.service = SmartCardUtil.getService(this.config != null ? this.config.getCardReader() : null);
 
+      // User hat explizit entschieden, einen Kartenleser zu nutzen, wir haben aber keinen gefunden.
+      // Wir bitten ihn, den Kartenleser anzuschliessen.
+      if (this.service == null && use != null && use.booleanValue())
+      {
+        Application.getCallback().notifyUser(i18n.tr("Bitte schlieﬂen Sie den Kartenleser an und legen Sie die Chipkarte ein."));
+        
+        // Wir versuchen es nochmal
+        this.service = SmartCardUtil.getService(this.config != null ? this.config.getCardReader() : null);
+      }
+
       // Wir haben grundsaetzlich einen Kartenleser.
       if (this.service != null && this.config != null)
       {

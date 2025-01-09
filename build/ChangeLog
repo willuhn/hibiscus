@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1124 Wenn unmittelbar vor dem Anzeigen des ChipTAN-USB-Dialogs der Kartenleser nicht gefunden wird, den User bitten, den Leser anzuschliessen und die Karte einzulegen
   * NEW: 1123 Neue Option "Gesamten Pfad der Umsatzkategorie anzeigen" in den Einstellungen der Umsatzliste - siehe https://homebanking-hilfe.de/forum/topic.php?p=174818#real174818
   * NEW: 1122 XRechnung: Import auch direkt im XML-Format, außerdem eine Reihe weiterer XML-Varianten unterstützen
   * NEW: 1121 XRechnung: Alternativ "ExchangedDocument/ID" als Verwendungszweck verwenden - siehe https://homebanking-hilfe.de/forum/topic.php?p=174533#real174533
