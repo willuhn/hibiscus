@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+2025-02-04 Version 2.10.24
+
   * NEW: 1127 Passenden MariaDB/MySQL-Treiber automatisch ermitteln
   * BUG: 1126 Casts auf Double aus dem Resultset vermeiden
   * NEW: 1125 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.03.2025
