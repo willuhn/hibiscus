@@ -169,7 +169,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    * @see de.willuhn.jameica.hbci.rmi.Transfer#getBetrag()
    */
   public double getBetrag() throws RemoteException {
-		Double d = (Double) getAttribute("betrag");
+    Number d = (Number) getAttribute("betrag");
 		if (d == null)
 			return 0;
 		return d.doubleValue();
@@ -333,7 +333,7 @@ public class UmsatzImpl extends AbstractHibiscusDBObject implements Umsatz
    * @see de.willuhn.jameica.hbci.rmi.Umsatz#getSaldo()
    */
   public double getSaldo() throws RemoteException {
-		Double d = (Double) getAttribute("saldo");
+		Number d = (Number) getAttribute("saldo");
 		if (d == null)
 			return 0;
 		return d.doubleValue();

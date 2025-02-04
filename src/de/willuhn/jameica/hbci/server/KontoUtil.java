@@ -482,7 +482,7 @@ public class KontoUtil
       }
     };
 
-    Double d = (Double) service.execute(sql, params.toArray(), rs);
+    Number d = (Number) service.execute(sql, params.toArray(), rs);
     return d == null ? 0.0d : Math.abs(d.doubleValue());
   }
   

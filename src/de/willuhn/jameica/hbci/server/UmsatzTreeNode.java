@@ -223,14 +223,14 @@ public class UmsatzTreeNode implements GenericObjectNode, Comparable
     {
       UmsatzTreeNode ug  = (UmsatzTreeNode) this.children.get(i);
       
-      Double d = (Double) ug.getAttribute("betrag");
-      betrag += d.doubleValue();
+      Number d = (Number) ug.getAttribute("betrag");
+      betrag += (d != null ? d.doubleValue() : 0.0d);
       
-      d = (Double) ug.getAttribute("einnahmen");
-      einnahmen += d.doubleValue();
+      d = (Number) ug.getAttribute("einnahmen");
+      einnahmen += (d != null ? d.doubleValue() : 0.0d);
 
-      d = (Double) ug.getAttribute("ausgaben");
-      ausgaben += d.doubleValue();
+      d = (Number) ug.getAttribute("ausgaben");
+      ausgaben += (d != null ? d.doubleValue() : 0.0d);
     }
     
     this.betrag    = betrag;
