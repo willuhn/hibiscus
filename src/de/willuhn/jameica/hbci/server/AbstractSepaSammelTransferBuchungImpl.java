@@ -169,7 +169,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
    */
   public double getBetrag() throws RemoteException
   {
-    Double d = (Double) getAttribute("betrag");
+    Number d = (Number) getAttribute("betrag");
     if (d == null)
       return 0;
     return d.doubleValue();

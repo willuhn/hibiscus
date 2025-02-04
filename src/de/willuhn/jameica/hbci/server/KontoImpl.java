@@ -437,7 +437,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
    */
   public double getSaldo() throws RemoteException
   {
-    Double d = (Double) getAttribute("saldo");
+    Number d = (Number) getAttribute("saldo");
     if (d == null)
       return 0;
     return d.doubleValue();
@@ -448,7 +448,7 @@ public class KontoImpl extends AbstractHibiscusDBObject implements Konto
    */
   public double getSaldoAvailable() throws RemoteException
   {
-    Double d = (Double) getAttribute("saldo_available");
+    Number d = (Number) getAttribute("saldo_available");
     if (d == null)
       return Double.NaN;
     return d.doubleValue();

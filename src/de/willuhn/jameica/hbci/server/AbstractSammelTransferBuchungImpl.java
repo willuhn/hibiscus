@@ -174,7 +174,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
    */
   public double getBetrag() throws RemoteException
   {
-    Double d = (Double) getAttribute("betrag");
+    Number d = (Number) getAttribute("betrag");
     if (d == null)
       return 0;
     return d.doubleValue();

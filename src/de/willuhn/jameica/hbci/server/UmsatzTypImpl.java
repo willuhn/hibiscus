@@ -860,14 +860,29 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
   {
     final List<String> names = new ArrayList<>();
     
+    final Cache cache = Cache.get(UmsatzTyp.class, new Cache.ObjectFactory() {
+      public DBIterator load() throws RemoteException
+      {
+        return UmsatzTypUtil.getAll();
+      }
+    },true);
+
+    
     UmsatzTyp current = this;
     for (int i=0;i<20;++i)
     {
       if (current == null)
         break;
       names.add(current.getName());
+
+      final Object parent = (Object) current.getAttribute(this.getNodeField());
+      if (parent == null)
+        break;
       
-      current = (UmsatzTyp) current.getParent();
+      if (parent instanceof UmsatzTyp)
+        current = (UmsatzTyp) parent;
+      else
+        current = (UmsatzTyp) cache.get(parent);
     }
 
     if (sep == null)

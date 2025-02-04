@@ -19,6 +19,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -26,14 +27,50 @@ import de.willuhn.util.I18N;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 {
-  private final static String DRIVER = "com.mysql.jdbc.Driver";
+  private final static String DRIVER_MARIADB   = "org.mariadb.jdbc.Driver";
+  private final static String DRIVER_MYSQL     = "com.mysql.cj.jdbc.Driver";
+  private final static String DRIVER_MYSQL_OLD = "com.mysql.jdbc.Driver";
   
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
   public String getJdbcDriver()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver",DRIVER);
+    // Checken, ob explizit ein Treiber angegeben ist:
+    String s = HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcdriver",null);
+    if (s != null && s.length() > 0)
+    {
+      Logger.info("using user-configured JDBC driver: " + s);
+      return s;
+    }
+
+    Logger.info("try to determine JDBC driver");
+    
+    // Wir versuchen, den passenden Treiber automatisch zu ermitteln.
+    final String url = this.getJdbcUrl();
+    String driver = null;
+    if (url.startsWith("jdbc:mariadb"))
+    {
+      driver = DRIVER_MARIADB;
+    }
+    else
+    {
+      // Checken, welchen von beiden Treibern wir haben
+      try
+      {
+        // Können wir den neuen laden?
+        Class.forName(DRIVER_MYSQL);
+        driver = DRIVER_MYSQL;
+      }
+      catch (Throwable t)
+      {
+        // OK, dann den alten Treiber
+        driver = DRIVER_MYSQL_OLD;
+      }
+    }
+    
+    Logger.info("auto-detected JDBC driver: " + driver);
+    return driver;
   }
 
   /**
@@ -49,7 +86,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    */
   public String getJdbcUrl()
   {
-    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcurl","jdbc:mysql://localhost:3306/hibiscus?useUnicode=Yes&characterEncoding=ISO8859_1&serverTimezone=Europe/Paris");
+    return HBCIDBService.SETTINGS.getString("database.driver.mysql.jdbcurl","jdbc:mariadb://localhost:3306/hibiscus?useUnicode=Yes&characterEncoding=ISO8859_1&serverTimezone=Europe/Paris");
   }
 
   /**

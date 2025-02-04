@@ -185,7 +185,12 @@ public class UmsatzList extends TablePart implements Extendable
     
     addColumn(i18n.tr("Datum"),                     "datum_pseudo", df);
     addColumn(i18n.tr("Betrag"),                    "betrag",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
-    addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);
+    
+    if (settings.getBoolean("umsatztyp.showpath",false))
+      addColumn(i18n.tr("Kategorie"),                 "umsatztyppath",null,false);
+    else
+      addColumn(i18n.tr("Kategorie"),                 "umsatztyp",null,false);
+    
     // BUGZILLA 66 http://www.willuhn.de/bugzilla/show_bug.cgi?id=66
     addColumn(i18n.tr("Zwischensumme"),             "saldo",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Notiz"),                     "kommentar",null,true);

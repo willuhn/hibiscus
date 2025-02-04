@@ -1,3 +1,15 @@
+2025-02-04 Version 2.10.24
+
+  * NEW: 1127 Passenden MariaDB/MySQL-Treiber automatisch ermitteln
+  * BUG: 1126 Casts auf Double aus dem Resultset vermeiden
+  * NEW: 1125 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 03.03.2025
+  * NEW: 1124 Wenn unmittelbar vor dem Anzeigen des ChipTAN-USB-Dialogs der Kartenleser nicht gefunden wird, den User bitten, den Leser anzuschliessen und die Karte einzulegen
+  * NEW: 1123 Neue Option "Gesamten Pfad der Umsatzkategorie anzeigen" in den Einstellungen der Umsatzliste - siehe https://homebanking-hilfe.de/forum/topic.php?p=174818#real174818
+  * NEW: 1122 XRechnung: Import auch direkt im XML-Format, außerdem eine Reihe weiterer XML-Varianten unterstützen
+  * NEW: 1121 XRechnung: Alternativ "ExchangedDocument/ID" als Verwendungszweck verwenden - siehe https://homebanking-hilfe.de/forum/topic.php?p=174533#real174533
+  * NEW: 1120 Neue obantoo-Version mit https://github.com/willuhn/obantoo/pull/4
+  * NEW: 1061 Umstellung von MySQL auf MariaDB
+
 2024-11-25 Version 2.10.23
 
   * NEW: 1119 Update auf HBCI4Java 3.1.85 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.85 - siehe https://homebanking-hilfe.de/forum/topic.php?p=174231#real174231
