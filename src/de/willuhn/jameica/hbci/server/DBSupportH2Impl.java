@@ -28,6 +28,9 @@ import de.willuhn.util.Base64;
  */
 public class DBSupportH2Impl extends AbstractDBSupportImpl
 {
+  private final static String DRIVER_FORK = "org.h14199.Driver";
+  private final static String DRIVER      = "org.h2.Driver";
+
   /**
    * ct.
    */
@@ -39,12 +42,32 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     
     try
     {
+      
+      Method m = Class.forName("org.h14199.engine.Constants").getMethod("getVersion",(Class[]) null);
+      Logger.info("h2 (1.4.199-fork) version: " + m.invoke(null,(Object[])null));
+    }
+    catch (Throwable t)
+    {
+      Logger.info("h2 1.4.199-fork not present");
+    }
+
+    try
+    {
       Method m = Class.forName("org.h2.engine.Constants").getMethod("getVersion",(Class[]) null);
       Logger.info("h2 version: " + m.invoke(null,(Object[])null));
     }
     catch (Throwable t)
     {
-      Logger.warn("unable to determine h2 version");
+      try
+      {
+        // Neuere H2-Versionen haben keine Methode "getVersion" mehr sondern ein Feld "VERSION"
+        final Object o = Class.forName("org.h2.engine.Constants").getField("VERSION").get(null);
+        Logger.info("h2 version: " + o);
+      }
+      catch (Throwable t2)
+      {
+        Logger.info("h2 not present");
+      }
     }
   }
   
@@ -53,7 +76,36 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
    */
   public String getJdbcDriver()
   {
-    return "org.h2.Driver";
+    // Wir sind migriert und können auf jeden Fall den neuen Treiber liefern
+    if (this.getH2Migration())
+    {
+      Logger.info("hibiscus already migrated to new h2 version");
+      return DRIVER;
+    }
+    
+    // Wir sind noch nicht migriert. Checken, ob wir auf einer Jameica-Version laufen,
+    // welche schon beide H2-Treiber-Versionen enthält
+    
+    try
+    {
+      Class.forName(DRIVER_FORK);
+      Logger.info("hibiscus not yet migrated to new h2 version, using fork-driver");
+      return DRIVER_FORK;
+    }
+    catch (Throwable t)
+    {
+    }
+    Logger.info("running in jameica version, that does not contain fork-driver");
+    return DRIVER;
+  }
+  
+  /**
+   * Liefert das Datum, an dem die H2-Datenbank-Migration stattfand.
+   * @return das Datum, an dem die H2-Datenbank-Migration stattfand oder NULL, wenn sie noch nicht stattfand.
+   */
+  private boolean getH2Migration()
+  {
+    return HBCIDBService.SETTINGS.getString("h2.migration",null) != null;
   }
 
   /**
