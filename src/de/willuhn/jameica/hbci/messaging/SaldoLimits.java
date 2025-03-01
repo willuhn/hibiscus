@@ -22,6 +22,7 @@ import de.willuhn.jameica.hbci.forecast.SaldoLimit;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.SystemMessage;
+import de.willuhn.jameica.system.Application;
 
 /**
  * Aktualisiert automatisch die Saldo-Limits bei Bedarf.
@@ -38,7 +39,7 @@ public class SaldoLimits implements MessageConsumer
   @Override
   public boolean autoRegister()
   {
-    return true;
+    return !Application.inServerMode();
   }
 
   /**
