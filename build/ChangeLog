@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1128 Update auf HBCI4Java 3.1.86 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.86 - siehe https://homebanking-hilfe.de/forum/topic.php?p=176073#real176073
+
 2025-02-04 Version 2.10.24
 
   * NEW: 1127 Passenden MariaDB/MySQL-Treiber automatisch ermitteln
