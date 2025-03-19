@@ -30,6 +30,9 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
 {
   private final static String DRIVER_FORK = "org.h14199.Driver";
   private final static String DRIVER      = "org.h2.Driver";
+  
+  private boolean haveFork = false;
+  private boolean haveNew  = false;
 
   /**
    * ct.
@@ -45,6 +48,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       
       Method m = Class.forName("org.h14199.engine.Constants").getMethod("getVersion",(Class[]) null);
       Logger.info("h2 (1.4.199-fork) version: " + m.invoke(null,(Object[])null));
+      this.haveFork = true;
     }
     catch (Throwable t)
     {
@@ -54,7 +58,8 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     try
     {
       Method m = Class.forName("org.h2.engine.Constants").getMethod("getVersion",(Class[]) null);
-      Logger.info("h2 version: " + m.invoke(null,(Object[])null));
+      final Object version = m.invoke(null,(Object[])null);
+      Logger.info("h2 version: " + version);
     }
     catch (Throwable t)
     {
@@ -62,13 +67,17 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
       {
         // Neuere H2-Versionen haben keine Methode "getVersion" mehr sondern ein Feld "VERSION"
         final Object o = Class.forName("org.h2.engine.Constants").getField("VERSION").get(null);
-        Logger.info("h2 version: " + o);
+        final String version = o != null ? o.toString() : null;
+        this.haveNew = version != null && version.startsWith("2");
+        Logger.info("h2 version: " + version);
       }
       catch (Throwable t2)
       {
         Logger.info("h2 not present");
       }
     }
+    
+    Logger.info("have h2 fork: " + this.haveFork + ", have new h2: " + this.haveNew);
   }
   
   /**
@@ -76,10 +85,9 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
    */
   public String getJdbcDriver()
   {
-    // Wir sind migriert und können auf jeden Fall den neuen Treiber liefern
-    if (this.getH2Migration())
+    if (this.isNewH2())
     {
-      Logger.info("hibiscus already migrated to new h2 version");
+      Logger.info("hibiscus migrated to new h2 version (2.x)");
       return DRIVER;
     }
     
@@ -99,10 +107,10 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
   }
   
   /**
-   * Liefert das Datum, an dem die H2-Datenbank-Migration stattfand.
-   * @return das Datum, an dem die H2-Datenbank-Migration stattfand oder NULL, wenn sie noch nicht stattfand.
+   * Liefert true, wenn die neue H2-Version verwendet werden soll.
+   * @return true, wenn die neue H2-Version verwendet werden soll.
    */
-  private boolean getH2Migration()
+  private boolean isNewH2()
   {
     return HBCIDBService.SETTINGS.getString("h2.migration",null) != null;
   }
@@ -161,7 +169,8 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
    */
   public String getJdbcUrl()
   {
-    String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/h2db/hibiscus";
+    final String dbname = this.isNewH2() ? "hibiscus2" : "hibiscus";
+    String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/h2db/" + dbname;
 
     if (HBCIDBService.SETTINGS.getBoolean("database.driver.h2.encryption",true))
     {
@@ -198,7 +207,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
    */
   public String getScriptPrefix() throws RemoteException
   {
-    return "h2-";
+    return this.isNewH2() ? "h2new-" : "h2-";
   }
 
   /**
