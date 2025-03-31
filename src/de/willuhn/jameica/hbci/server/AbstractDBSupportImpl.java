@@ -23,12 +23,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.willuhn.io.IOUtil;
+import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.ScriptExecutor;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Base64;
+import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Abstrakte Basisklasse fuer den Datenbank-Support.
@@ -38,31 +44,39 @@ public abstract class AbstractDBSupportImpl implements DBSupport
   private final static String PREFIX_ENC = "encrypted:";
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#execute(java.sql.Connection, java.io.File)
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getCreateScript()
    */
-  public void execute(Connection conn, File sqlScript) throws RemoteException
+  @Override
+  public File getCreateScript() throws RemoteException
   {
-    if (sqlScript == null)
-      return;
-
-    // Wir schreiben unseren Prefix davor.
-    sqlScript = new File(sqlScript.getParent(),getScriptPrefix() + sqlScript.getName());
-    if (!sqlScript.exists())
+    Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
+    final File f = new File(mf.getPluginDir() + File.separator + "sql","create.sql");
+    if (!f.exists() || !f.canRead())
     {
-      Logger.debug("file " + sqlScript + " does not exist, skipping");
-      return;
+      Logger.warn("sql create script unreadable: " + f);
+      return null;
     }
     
-    if (!sqlScript.canRead() || !sqlScript.exists())
-      return;
-
-    Logger.info("executing sql script: " + sqlScript.getAbsolutePath());
+    return f;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#install(java.sql.Connection)
+   */
+  public void install(Connection conn) throws RemoteException
+  {
+    final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+    final ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
+    monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
+    
+    final File file = this.getCreateScript();
+    Logger.info("executing sql create script: " + file.getAbsolutePath());
     
     Reader reader = null;
 
     try
     {
-      reader  = new InputStreamReader(new BufferedInputStream(new FileInputStream(sqlScript)),"iso-8859-1");
+      reader  = new InputStreamReader(new BufferedInputStream(new FileInputStream(file)),"iso-8859-1");
       ScriptExecutor.execute(reader,conn);
     }
     catch (RemoteException re)
@@ -71,20 +85,20 @@ public abstract class AbstractDBSupportImpl implements DBSupport
     }
     catch (Exception e)
     {
-      throw new RemoteException("error while executing sql script " + sqlScript,e);
+      throw new RemoteException("error while executing sql create script " + file,e);
     }
     finally
     {
-      try
-      {
-        if (reader != null)
-          reader.close();
-      }
-      catch (Exception e3)
-      {
-        Logger.error("error while closing file " + sqlScript,e3);
-      }
+      IOUtil.close(reader);
     }
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.rmi.DBSupport#checkConsistency()
+   */
+  @Override
+  public void checkConsistency() throws RemoteException, ApplicationException
+  {
   }
 
   /**

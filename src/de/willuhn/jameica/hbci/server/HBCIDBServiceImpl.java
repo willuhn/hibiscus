@@ -10,7 +10,6 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +26,6 @@ import de.willuhn.jameica.hbci.rmi.DBSupport;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Version;
 import de.willuhn.jameica.messaging.QueryMessage;
-import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
@@ -134,6 +132,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
    */
   public void checkConsistency() throws RemoteException, ApplicationException
   {
+    this.driver.checkConsistency();
     Logger.info("determine current database version");
     Version version = null;
     try
@@ -341,14 +340,7 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
     monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
-    
-    // Bei Neu-Installationen verwenden wir jetzt AES statt XTEA
-    HBCIDBService.SETTINGS.setAttribute("database.driver.h2.encryption.algorithm","AES");
-    Logger.info("creating new hibiscus database, cipher: " + HBCIDBService.SETTINGS.getString("database.driver.h2.encryption.algorithm","XTEA"));
-    
-    Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
-    File file = new File(mf.getPluginDir() + File.separator + "sql","create.sql");
-    this.driver.execute(getConnection(),file);
+    this.driver.install(getConnection());
   }
 
   /**

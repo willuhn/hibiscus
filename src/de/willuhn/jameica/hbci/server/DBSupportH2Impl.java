@@ -12,20 +12,30 @@ package de.willuhn.jameica.hbci.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.security.SecureRandom;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import de.willuhn.annotation.Lifecycle;
+import de.willuhn.annotation.Lifecycle.Type;
+import de.willuhn.datasource.rmi.ResultSetExtractor;
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Base64;
 
 /**
  * Implementierung des Datenbank-Supports fuer H2-Database (http://www.h2database.com).
  */
+@Lifecycle(Type.CONTEXT)
 public class DBSupportH2Impl extends AbstractDBSupportImpl
 {
   private final static String DRIVER_FORK = "org.h14199.Driver";
@@ -85,7 +95,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
    */
   public String getJdbcDriver()
   {
-    if (this.isNewH2())
+    if (this.isMigrated())
     {
       Logger.info("hibiscus migrated to new h2 version (2.x)");
       return DRIVER;
@@ -107,12 +117,21 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
   }
   
   /**
-   * Liefert true, wenn die neue H2-Version verwendet werden soll.
-   * @return true, wenn die neue H2-Version verwendet werden soll.
+   * Liefert true, wenn die H2-Migration durchgefuehrt wurde.
+   * @return true, wenn die H2-Migration durchgefuehrt wurde.
    */
-  private boolean isNewH2()
+  public boolean isMigrated()
   {
     return HBCIDBService.SETTINGS.getString("h2.migration",null) != null;
+  }
+  
+  /**
+   * Liefert true, wenn die H2-Migration starten kann.
+   * @return true, wenn die H2-Migration starten kann.
+   */
+  public boolean canMigrate()
+  {
+    return this.haveFork && this.haveNew && !this.isMigrated();
   }
 
   /**
@@ -169,7 +188,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
    */
   public String getJdbcUrl()
   {
-    final String dbname = this.isNewH2() ? "hibiscus2" : "hibiscus";
+    final String dbname = this.isMigrated() ? "hibiscus2" : "hibiscus";
     String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/h2db/" + dbname;
 
     if (HBCIDBService.SETTINGS.getBoolean("database.driver.h2.encryption",true))
@@ -203,13 +222,74 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getScriptPrefix()
+   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#getCreateScript()
    */
-  public String getScriptPrefix() throws RemoteException
+  @Override
+  public File getCreateScript() throws RemoteException
   {
-    return this.isNewH2() ? "h2new-" : "h2-";
+    final File f = super.getCreateScript();
+    final String prefix = this.isMigrated() ? "h2new-" : "h2-";
+    return new File(f.getParent(),prefix + f.getName());
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#checkConsistency()
+   */
+  @Override
+  public void checkConsistency() throws RemoteException, ApplicationException
+  {
+    super.checkConsistency();
+    
+    if (!this.haveNew)
+      return;
+    
+    // Checken, ob der Datenbank-Dump bereit liegt.
+    final File file = new File(Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/h2db/h2-migration.sql");
+    if (!file.exists() || !file.canRead())
+      return;
+    
+    Logger.info("found database-dump " + file + ". performing import into new database");
+    
+    String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/h2db/hibiscus2";
+    
+    // Bei der Migration stellen wir gleich auf AES um
+    if (HBCIDBService.SETTINGS.getBoolean("database.driver.h2.encryption",true))
+      url += ";CIPHER=" + HBCIDBService.SETTINGS.getString("database.driver.h2.encryption.algorithm","AES");
 
+    Connection conn = null;
+    try
+    {
+      conn = DriverManager.getConnection(url,this.getJdbcUsername(),this.getJdbcPassword());
+      stat = conn.createStatement();
+      String sql = "RUNSCRIPT FROM '" + fileName + "' " + options;
+      stat.execute(sql);
+
+      db.execute("RUNSCRIPT FROM ?",new Object[]{file},new ResultSetExtractor() {
+    }
+    finally
+    {
+      IOUtil.close(conn);
+    }
+    
+      
+      @Override
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        return null;
+      }
+    });
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#install(java.sql.Connection)
+   */
+  @Override
+  public void install(Connection conn) throws RemoteException
+  {
+    // Bei Neu-Installationen verwenden wir jetzt AES statt XTEA
+    HBCIDBService.SETTINGS.setAttribute("database.driver.h2.encryption.algorithm","AES");
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getSQLTimestamp(java.lang.String)
    */

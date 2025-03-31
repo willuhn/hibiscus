@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
+import de.willuhn.util.ApplicationException;
+
 /**
  * Interface fuer eine unterstuetzte Datenbank.
  * Fuer den Suppoert einer neuen Datenbank (z.Bsp. MySQL)
@@ -54,19 +56,25 @@ public interface DBSupport extends Serializable
   public void checkConnection(Connection conn) throws RemoteException;
 
   /**
-   * Fuehrt ein SQL-Update-Script auf der Datenbank aus.
-   * @param conn die Datenbank-Connection.
-   * @param sqlScript das SQL-Script.
+   * Führt die Installation der Datenbank durch.
+   * @param conn die Connection.
    * @throws RemoteException
    */
-  public void execute(Connection conn, File sqlScript) throws RemoteException;
+  public void install(Connection conn) throws RemoteException;
   
   /**
-   * Liefert einen Dateinamens-Prefix, der SQL-Scripts vorangestellt werden soll.
-   * @return Dateinamens-Prefix.
+   * Prüft die Datenbank-Konsistenz.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public void checkConsistency() throws RemoteException, ApplicationException;
+  
+  /**
+   * Liefert das SQL-Script, welches für die Erstellun der Datenbank verwendet werden soll.
+   * @return das SQL-Script, welches für die Erstellun der Datenbank verwendet werden soll.
    * @throws RemoteException
    */
-  public String getScriptPrefix() throws RemoteException;
+  public File getCreateScript() throws RemoteException;
 
   /**
    * Liefert den Namen der SQL-Funktion, mit der die Datenbank aus einem DATE-Feld einen UNIX-Timestamp macht.

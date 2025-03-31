@@ -102,19 +102,16 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
    * Andernfalls wuerde jeder Hibiscus-Client beim ersten Start versuchen, diese anzulegen.
    * Das soll der Admin sicherheitshalber manuell durchfuehren. Wir hinterlassen stattdessen
    * nur einen Hinweistext mit den auszufuehrenden SQL-Scripts.
-   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#execute(java.sql.Connection, java.io.File)
+   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#install(java.sql.Connection)
    */
-  public void execute(Connection conn, File sqlScript) throws RemoteException
+  public void install(Connection conn) throws RemoteException
   {
-    if (sqlScript == null)
-      return; // Ignore
-
-    File f = new File(sqlScript.getParent(),getScriptPrefix() + sqlScript.getName());
+    final File f = this.getCreateScript();
     if (f.exists())
     {
-      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      final I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
       
-      String text = i18n.tr("Bei der Verwendung von MySQL wird die Datenbank " +
+      final String text = i18n.tr("Bei der Verwendung von MySQL wird die Datenbank " +
           "nicht automatisch angelegt. Bitte führen Sie das folgende SQL-Script " +
           "manuell aus, falls Sie dies nicht bereits getan haben:\n{0}",f.getAbsolutePath());
       
@@ -123,13 +120,15 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
       Application.getMessagingFactory().getMessagingQueue("jameica.boot").queueMessage(msg);
     }
   }
-
+  
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBSupport#getScriptPrefix()
+   * @see de.willuhn.jameica.hbci.server.AbstractDBSupportImpl#getCreateScript()
    */
-  public String getScriptPrefix() throws RemoteException
+  @Override
+  public File getCreateScript() throws RemoteException
   {
-    return "mysql-";
+    final File f = super.getCreateScript();
+    return new File(f.getParent(),"mysql-" + f.getName());
   }
 
   /**
