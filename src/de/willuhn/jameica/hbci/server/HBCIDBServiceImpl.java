@@ -344,7 +344,6 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     
     // Bei Neu-Installationen verwenden wir jetzt AES statt XTEA
     HBCIDBService.SETTINGS.setAttribute("database.driver.h2.encryption.algorithm","AES");
-    Logger.info("creating new hibiscus database, cipher: " + HBCIDBService.SETTINGS.getString("database.driver.h2.encryption.algorithm","XTEA"));
     
     Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
     File file = new File(mf.getPluginDir() + File.separator + "sql","create.sql");
