@@ -39,6 +39,9 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.MultipleClassLoader;
 import de.willuhn.util.ProgressMonitor;
 
+/**
+ * Implementierung des Datenbank-Service.
+ */
 public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 {
   private DBSupport driver = null;
@@ -338,6 +341,9 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
     I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
     ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
     monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
+    
+    // Bei Neu-Installationen verwenden wir jetzt AES statt XTEA
+    HBCIDBService.SETTINGS.setAttribute("database.driver.h2.encryption.algorithm","AES");
     
     Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
     File file = new File(mf.getPluginDir() + File.separator + "sql","create.sql");

@@ -1,3 +1,11 @@
+2025-04-02 Version 2.10.25
+
+  * NEW: 1132 Update auf HBCI4Java 3.1.88 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.88 - mit neuen Sparda-URLs (Hessen und München)
+  * NEW: 1131 itext-Update auf 5.5.13.4
+  * NEW: 1130 Default-Cipher der H2-Datenbank bei neuen Datenbanken von XTEA auf AES umgestellt
+  * NEW: 1129 Update auf HBCI4Java 3.1.87 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.87 - siehe https://homebanking-hilfe.de/forum/topic.php?p=176201#real176201
+  * NEW: 1128 Update auf HBCI4Java 3.1.86 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.86 - siehe https://homebanking-hilfe.de/forum/topic.php?p=176073#real176073
+
 2025-02-04 Version 2.10.24
 
   * NEW: 1127 Passenden MariaDB/MySQL-Treiber automatisch ermitteln

@@ -20,7 +20,7 @@ public class RAH10Format extends HBCI4JavaFormat
    */
   public String getName()
   {
-    return i18n.tr("HBCI4Java/Hibiscus-Format (RAH) (Commerzbank)");
+    return i18n.tr("HBCI4Java/Hibiscus-Format (RAH)");
   }
   
   /**

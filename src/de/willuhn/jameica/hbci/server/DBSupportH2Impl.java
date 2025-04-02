@@ -113,7 +113,12 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(HBCI.class).getResources().getWorkPath() + "/h2db/hibiscus";
 
     if (HBCIDBService.SETTINGS.getBoolean("database.driver.h2.encryption",true))
-      url += ";CIPHER=" + HBCIDBService.SETTINGS.getString("database.driver.h2.encryption.algorithm","XTEA");
+    {
+      final String cipher = HBCIDBService.SETTINGS.getString("database.driver.h2.encryption.algorithm","XTEA");
+      Logger.info("database encryption: " + cipher);
+      url += ";CIPHER=" + cipher;
+      Logger.info("jdbc url: " + url);
+    }
     if (HBCIDBService.SETTINGS.getBoolean("database.driver.h2.recover",false))
     {
       Logger.warn("#############################################################");
@@ -171,44 +176,3 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
     // brauchen wir bei nicht, da Embedded
   }
 }
-
-
-/*********************************************************************
- * $Log: DBSupportH2Impl.java,v $
- * Revision 1.12  2010/11/02 12:02:19  willuhn
- * @R Support fuer McKoi entfernt. User, die noch dieses alte DB-Format nutzen, sollen erst auf Jameica 1.6/Hibiscus 1.8 (oder maximal Jameica 1.9/Hibiscus 1.11) wechseln, dort die Migration auf H2 durchfuehren und dann erst auf Hibiscus 1.12 updaten
- *
- * Revision 1.11  2009/06/02 15:49:41  willuhn
- * @N method to display h2 database version
- *
- * Revision 1.10  2009/05/28 22:39:01  willuhn
- * @N Option zum Aktivieren des Recover-Modus. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=57830#57830
- *
- * Revision 1.9  2009/04/05 21:40:56  willuhn
- * @C checkConnection() nur noch alle hoechstens 10 Sekunden ausfuehren
- *
- * Revision 1.8  2008/12/30 15:21:40  willuhn
- * @N Umstellung auf neue Versionierung
- *
- * Revision 1.7  2007/12/06 17:57:21  willuhn
- * @N Erster Code fuer das neue Versionierungs-System
- *
- * Revision 1.6  2007/10/27 13:31:41  willuhn
- * @C Checksummen-Pruefung temporaer deaktiviert
- *
- * Revision 1.5  2007/10/02 16:08:55  willuhn
- * @C Bugfix mit dem falschen Spaltentyp nochmal ueberarbeitet
- *
- * Revision 1.4  2007/10/01 09:37:42  willuhn
- * @B H2: Felder vom Typ "TEXT" werden von H2 als InputStreamReader geliefert. Felder umsatz.kommentar und protokoll.nachricht auf "VARCHAR(1000)" geaendert und fuer Migration in den Gettern beides beruecksichtigt
- *
- * Revision 1.3  2007/08/23 13:07:38  willuhn
- * @C Uppercase-Verhalten nicht global sondern pro DBService konfigurierbar. Verhindert Fehler, wenn mehrere Plugins installiert sind
- *
- * Revision 1.2  2007/07/18 09:45:18  willuhn
- * @B Neue Version 1.8 in DB-Checks nachgezogen
- *
- * Revision 1.1  2007/06/25 11:21:19  willuhn
- * @N Support fuer H2-Datenbank (http://www.h2database.com/)
- *
- **********************************************************************/
