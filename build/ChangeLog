@@ -1,6 +1,6 @@
 HEAD 2.11 (nightly)
 
-  * NEW: 1133 XRechnung: Beachten von Gutschriftsmerkmalen in ExchangedDocument/TypeCode
+  * NEW: 1134 XRechnung: Beachten von Gutschriftsmerkmalen in ExchangedDocument/TypeCode
   * NEW: 1133 XRechnung: Unterstützung weiterer Dialekte. Außerdem Warnung anzeigen, wenn Betrag negativ ist
 
 2025-04-02 Version 2.10.25
