@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -100,6 +101,8 @@ public class XRechnungImporter implements Importer
 
     try
     {
+      boolean gutschrift = false;
+      
       final Document doc = this.getDocument(is);
       if (doc == null)
         throw new ApplicationException(i18n.tr("Datei enthält keine XRechnung-konformen Daten"));
@@ -139,19 +142,27 @@ public class XRechnungImporter implements Importer
         if (d != null)
         {
           d = d.setScale(2);
-          
-          if (d.compareTo(BigDecimal.ZERO) < 0)
-          {
-            final boolean ok = Application.getCallback().askUser(i18n.tr("Die Rechnung enthält einen negativen Betrag (vermutlich eine Gutschrift).\nSoll dennoch eine Überweisung erstellt werden?"));
-            if (!ok)
-              throw new OperationCanceledException();
-          }
+          gutschrift = (d.compareTo(BigDecimal.ZERO) < 0);
           u.setBetrag(d.doubleValue());
         }
       }
       //
       ////////////////////////////////////////////////////////////
-      
+
+      ////////////////////////////////////////////////////////////
+      // Art der Rechnung
+      {
+        String type = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'TypeCode']");
+        if (type != null)
+        {
+          gutschrift |= Objects.equals(type,"381"); // credit note (Kaufmännische Gutschrift)
+          gutschrift |= Objects.equals(type,"384"); // corrected invoice (Rechnungsberichtigung)
+          gutschrift |= Objects.equals(type,"389"); // Self-billed invoice (Vom Leistungsempfänger selbst erstellte Gutschrift)
+        }
+      }
+      //
+      ////////////////////////////////////////////////////////////
+
       ////////////////////////////////////////////////////////////
       // Referenz
       {
@@ -248,6 +259,13 @@ public class XRechnungImporter implements Importer
       }
       //
       ////////////////////////////////////////////////////////////
+
+      if (gutschrift)
+      {
+        final boolean ok = Application.getCallback().askUser(i18n.tr("Die Rechnung enthält einen negativen Betrag oder ein Gutschriftsmerkmal.\nSoll dennoch eine Überweisung erstellt werden?"));
+        if (!ok)
+          throw new OperationCanceledException();
+      }
 
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setPercentComplete(100);
