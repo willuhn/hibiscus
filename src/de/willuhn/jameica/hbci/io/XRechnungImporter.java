@@ -119,6 +119,10 @@ public class XRechnungImporter implements Importer
         if (betrag == null || betrag.isBlank())
           betrag = this.xpath(doc,xpath,"//*[local-name() = 'GrandTotalAmount']");
         if (betrag == null || betrag.isBlank())
+          betrag = this.xpath(doc,xpath,"//*[local-name() = 'InvoiceTotalAmount']");
+        if (betrag == null || betrag.isBlank())
+          betrag = this.xpath(doc,xpath,"//*[local-name() = 'TotalAmount']");
+        if (betrag == null || betrag.isBlank())
           betrag = this.xpath(doc,xpath,"//*[local-name() = 'LegalMonetaryTotal']/*[local-name() = 'PayableAmount']");
         
         BigDecimal d = null;
@@ -133,7 +137,17 @@ public class XRechnungImporter implements Importer
         }
         
         if (d != null)
-          u.setBetrag(d.setScale(2).doubleValue());
+        {
+          d = d.setScale(2);
+          
+          if (d.compareTo(BigDecimal.ZERO) < 0)
+          {
+            final boolean ok = Application.getCallback().askUser(i18n.tr("Die Rechnung enthält einen negativen Betrag (vermutlich eine Gutschrift).\nSoll dennoch eine Überweisung erstellt werden?"));
+            if (!ok)
+              throw new OperationCanceledException();
+          }
+          u.setBetrag(d.doubleValue());
+        }
       }
       //
       ////////////////////////////////////////////////////////////
@@ -148,6 +162,8 @@ public class XRechnungImporter implements Importer
           ref = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'ID']");
         if (ref == null || ref.isBlank())
           ref = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'ID']");
+        if (ref == null || ref.isBlank())
+          ref = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'InvoiceNumber']");
         if (ref == null || ref.isBlank())
           ref = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'BuyerReference']");
 
@@ -169,6 +185,8 @@ public class XRechnungImporter implements Importer
           name = this.xpath(doc,xpath,"//*[local-name() = 'AccountingSupplierParty']/*[local-name() = 'Party']/*[local-name() = 'PartyName']/*[local-name() = 'Name']");
         if (name == null || name.isBlank())
           name = this.xpath(doc,xpath,"//*[local-name() = 'AccountingSupplierParty']/*[local-name() = 'Party']/*[local-name() = 'PartyLegalEntity']/*[local-name() = 'RegistrationName']");
+        if (name == null || name.isBlank())
+          name = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'Seller']/*[local-name() = 'Name']");
         
         if (name != null && !name.isBlank())
           u.setGegenkontoName(name); 

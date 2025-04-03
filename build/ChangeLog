@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1133 XRechnung: Unterstützung weiterer Dialekte. Außerdem Warnung anzeigen, wenn Betrag negativ ist
+
 2025-04-02 Version 2.10.25
 
   * NEW: 1132 Update auf HBCI4Java 3.1.88 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.88 - mit neuen Sparda-URLs (Hessen und München)
