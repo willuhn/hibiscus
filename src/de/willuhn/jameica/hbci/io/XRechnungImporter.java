@@ -153,6 +153,8 @@ public class XRechnungImporter implements Importer
       // Art der Rechnung
       {
         String type = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'TypeCode']");
+        if (type == null || type.isBlank())
+          type = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'InvoiceTypeCode']");
         if (type != null)
         {
           gutschrift |= Objects.equals(type,"381"); // credit note (Kaufmännische Gutschrift)
