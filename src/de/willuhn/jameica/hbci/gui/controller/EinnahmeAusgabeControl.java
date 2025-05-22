@@ -474,6 +474,11 @@ public class EinnahmeAusgabeControl extends AbstractControl
       }
 
       EinnahmeAusgabe ea = kontoData.get(umsatz.getKonto().getID());
+      if (ea == null)
+      {
+        Logger.warn("ea not found for account id " + umsatz.getKonto().getID());
+        continue;
+      }
       ea.addUmsatz(umsatz);
     }
     
