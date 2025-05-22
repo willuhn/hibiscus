@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
@@ -267,6 +268,58 @@ public class KontoInput extends SelectInput
       }
     }
     return l;
+  }
+  
+  /**
+   * Aktualisiert die Kontoliste basierend auf dem Filter.
+   * @param filter der Filter.
+   * @throws RemoteException
+   */
+  public void update(KontoFilter filter) throws RemoteException
+  {
+    // Die aktuelle Auswahl
+    final Object v = this.getValue();
+    
+    final List list = init(filter);
+    this.setList(list);
+    
+    // Checken, ob wir eine Vorauswahl hatten. Wenn ja, prüfen, ob sie noch in der Liste enthalten ist
+    // Falls nicht, dann die Preselction entfernen
+    this.setPreselected(this.contains(list,v) ? v: null);
+  }
+  
+  /**
+   * Prüft, ob das Element in der Liste enthalten ist.
+   * @param list die Liste.
+   * @param o das Objekt.
+   * @return true, wenn es enthalten ist.
+   * @throws RemoteException
+   */
+  private boolean contains(List list, Object o) throws RemoteException
+  {
+    if (o == null)
+      return false;
+    
+    boolean isSelGroup = (o instanceof String);
+    for (Object l:list)
+    {
+      boolean isGroup = (l instanceof String);
+      if (isSelGroup != isGroup)
+        continue;
+      
+      if (isGroup)
+      {
+        if (Objects.equals(o,l))
+          return true;
+      }
+      else
+      {
+        if (BeanUtil.equals(o,l))
+          return true;
+      }
+    }
+    
+    return false;
   }
 
   /**

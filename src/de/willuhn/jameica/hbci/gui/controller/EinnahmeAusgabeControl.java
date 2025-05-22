@@ -143,12 +143,12 @@ public class EinnahmeAusgabeControl extends AbstractControl
    * @return Auswahlbox.
    * @throws RemoteException
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public KontoInput getKontoAuswahl() throws RemoteException
   {
     if (this.kontoAuswahl != null)
       return this.kontoAuswahl;
 
-    this.kontoAuswahl = new KontoInput(null,KontoFilter.ALL);
+    this.kontoAuswahl = new KontoInput(null,settings.getBoolean("auswertungen.einnahmeausgabe.filter.active",false) ? KontoFilter.ACTIVE : KontoFilter.ALL);
     this.kontoAuswahl.setPleaseChoose(i18n.tr("<Alle Konten>"));
     this.kontoAuswahl.setSupportGroups(true);
     this.kontoAuswahl.setComment(null);
@@ -189,6 +189,17 @@ public class EinnahmeAusgabeControl extends AbstractControl
       public void handleEvent(Event event)
       {
         settings.setAttribute("auswertungen.einnahmeausgabe.filter.active", (Boolean) onlyActive.getValue());
+        
+        // Auswahlbox der Konten ggf. angpassen
+        try
+        {
+          boolean onlyActive = ((Boolean) getActiveOnly().getValue()).booleanValue();
+          getKontoAuswahl().update(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to update account list",re);
+        }
       }
     });
     return this.onlyActive;
@@ -364,6 +375,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       Logger.warn("no nodes created between range starts on " + start + " and range ends on " + end);
       return this.werte;
     }
+    
     addData(nodes, umsatzList, saldenProKonto, start, end);
 
     if (interval == Interval.ALL)
@@ -473,12 +485,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
         kontoData = getKontoDataMap(currentNode);
       }
 
-      EinnahmeAusgabe ea = kontoData.get(umsatz.getKonto().getID());
-      if (ea == null)
-      {
-        Logger.warn("ea not found for account id " + umsatz.getKonto().getID());
-        continue;
-      }
+      final EinnahmeAusgabe ea = kontoData.get(umsatz.getKonto().getID());
       ea.addUmsatz(umsatz);
     }
     
@@ -577,25 +584,30 @@ public class EinnahmeAusgabeControl extends AbstractControl
     return result;
   }
 
+  /**
+   * Liefert die Liste der ausgewählten Konten.
+   * @return die Liste der ausgewählten Konten.
+   * @throws RemoteException
+   */
   private List<Konto> getSelectedAccounts() throws RemoteException
   {
-    List<Konto> result = new ArrayList<>();
-    Object o = getKontoAuswahl().getValue();
+    final List<Konto> result = new ArrayList<>();
+    final Object o = getKontoAuswahl().getValue();
+    
     if (o instanceof Konto)
     {
       result.add((Konto) o);
-    } else if (o == null || (o instanceof String))
+    }
+    else if (o == null || (o instanceof String))
     {
       boolean onlyActive = ((Boolean) this.getActiveOnly().getValue()).booleanValue();
-      String group = o != null && (o instanceof String) ? (String) o : null;
+      final String group = o != null && (o instanceof String) ? (String) o : null;
 
-      List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
+      final List<Konto> konten = KontoUtil.getKonten(onlyActive ? KontoFilter.ACTIVE : KontoFilter.ALL);
       for (Konto k : konten)
       {
         if (group == null || Objects.equals(group, k.getKategorie()))
-        {
           result.add(k);
-        }
       }
     }
     return result;
