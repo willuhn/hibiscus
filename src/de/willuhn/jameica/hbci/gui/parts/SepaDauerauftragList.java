@@ -164,7 +164,6 @@ public class SepaDauerauftragList extends TablePart implements Part
       // nichts markiert oder nur einer, dann muss nichts berechnet werden
       if (o == null || size == 1 || !(o instanceof Object[]))
       {
-        System.out.println("1");
         return super.getSummary();
       }
       
