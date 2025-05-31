@@ -17,8 +17,6 @@ import java.util.Date;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericObject;
@@ -118,15 +116,8 @@ public class SepaDauerauftragList extends TablePart implements Part
     setRememberColWidths(true);
 
     setMulti(true);
-    this.setSummary(true);
-    
-    this.addSelectionListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        refreshSummary();
-      }
-    });
+    setSummary(true);
+    addSelectionListener(event -> refreshSummary());
 
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SepaDauerauftragList());
     
