@@ -10,6 +10,7 @@
 
 package de.willuhn.jameica.hbci.gui.parts;
 
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -114,6 +115,10 @@ public class SepaDauerauftragList extends TablePart implements Part
     // BUGZILLA 233 http://www.willuhn.de/bugzilla/show_bug.cgi?id=233
     setRememberColWidths(true);
 
+    setMulti(true);
+    setSummary(true);
+    addSelectionListener(event -> refreshSummary());
+
     setContextMenu(new de.willuhn.jameica.hbci.gui.menus.SepaDauerauftragList());
     
     // Wir erstellen noch einen Message-Consumer, damit wir ueber neu eintreffende und geaenderte Dauerauftraege
@@ -134,6 +139,58 @@ public class SepaDauerauftragList extends TablePart implements Part
       }
     });
     super.paint(parent);
+  }
+  /**
+   * Ueberschrieben, um die Summe zu berechnen.
+   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
+   */
+  @Override
+  protected String getSummary()
+  {
+    try
+    {
+      Object o = this.getSelection();
+      int size = this.size();
+
+      // nichts markiert oder nur einer, dann muss nichts berechnet werden
+      if (o == null || size == 1 || !(o instanceof Object[]))
+      {
+        return super.getSummary();
+      }
+      
+      // Andernfalls berechnen wir die Summe
+      Object[] list = (Object[]) o;
+      BigDecimal sum = this.calculateSum(list);
+      if (sum == null)
+        return super.getSummary();
+      
+      return i18n.tr("{0} Aufträge, {1} markiert, Summe: {2} {3}",Integer.toString(size),Integer.toString(list.length),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE);
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while updating summary",e);
+    }
+    return super.getSummary();
+  }
+  /**
+   * Liefert die Summe der angegebenen Auftraege.
+   * @param selected die angegebenen Auftraege.
+   * @return die Summe oder NULL, wenn nicht bekannt ist, wie die Summe berechnet werden kann.
+   */
+  protected BigDecimal calculateSum(Object[] selected) throws RemoteException
+  {
+    // Keine Ahnung, wie das zu berechnen ist
+    if (!(selected instanceof SepaDauerauftrag[]))
+      return null;
+    
+    BigDecimal sum = new BigDecimal(0);
+    
+    SepaDauerauftrag[] list = (SepaDauerauftrag[]) selected;
+    for (SepaDauerauftrag u:list)
+    {
+      sum = sum.add(BigDecimal.valueOf(u.getBetrag()));
+    }
+    return sum;
   }
 
   /**
