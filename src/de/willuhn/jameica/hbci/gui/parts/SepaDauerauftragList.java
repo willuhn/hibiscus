@@ -140,6 +140,7 @@ public class SepaDauerauftragList extends TablePart implements Part
     });
     super.paint(parent);
   }
+  
   /**
    * Ueberschrieben, um die Summe zu berechnen.
    * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
@@ -147,42 +148,36 @@ public class SepaDauerauftragList extends TablePart implements Part
   @Override
   protected String getSummary()
   {
+    final String fallback = super.getSummary();
+    
     try
     {
-      Object o = this.getSelection();
-      int size = this.size();
+      final Object o = this.getSelection();
+      final int size = this.size();
 
       // nichts markiert oder nur einer, dann muss nichts berechnet werden
-      if (o == null || size == 1 || !(o instanceof Object[]))
-      {
-        return super.getSummary();
-      }
+      if (o == null || size == 1 || !(o instanceof SepaDauerauftrag[]))
+        return fallback;
       
       // Andernfalls berechnen wir die Summe
-      Object[] list = (Object[]) o;
-      BigDecimal sum = this.calculateSum(list);
-      if (sum == null)
-        return super.getSummary();
-      
+      final SepaDauerauftrag[] list = (SepaDauerauftrag[]) o;
+      final BigDecimal sum = this.calculateSum(list);
       return i18n.tr("{0} Aufträge, {1} markiert, Summe: {2} {3}",Integer.toString(size),Integer.toString(list.length),HBCI.DECIMALFORMAT.format(sum),HBCIProperties.CURRENCY_DEFAULT_DE);
     }
     catch (Exception e)
     {
       Logger.error("error while updating summary",e);
     }
-    return super.getSummary();
+    return fallback;
   }
+  
   /**
    * Liefert die Summe der angegebenen Auftraege.
    * @param selected die angegebenen Auftraege.
-   * @return die Summe oder NULL, wenn nicht bekannt ist, wie die Summe berechnet werden kann.
+   * @return die Summe.
    */
-  protected BigDecimal calculateSum(Object[] selected) throws RemoteException
+  protected BigDecimal calculateSum(SepaDauerauftrag[] selected) throws RemoteException
   {
-    // Keine Ahnung, wie das zu berechnen ist
-    if (!(selected instanceof SepaDauerauftrag[]))
-      return null;
-    
     BigDecimal sum = new BigDecimal(0);
     
     SepaDauerauftrag[] list = (SepaDauerauftrag[]) selected;
