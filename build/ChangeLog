@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1138 Neue obantoo-Version mit aktualisierter BLZ-Datei für Österreich
   * BUG: 1137 Box "Erster Start" unter Linux nicht mehr explizit mit weissem Hintergrund darstellen
   * NEW: 1136 Liste der Daueraufträge: Bei Auswahl mehrerer Daueraufträge Anzahl und Summe anzeigen
   * BUG: 1135 Einnahmen/Ausgaben: Wenn ein deaktiviertes Konto ausgewählt aber anschließend die Option "Nur aktive Konten" aktiviert wurde, kam es zu einem Fehler
