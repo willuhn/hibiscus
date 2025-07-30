@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1140 Update auf HBCI4Java 3.1.89 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.89 - mit neuen Sparda-URLs
   * NEW: 1139 In der Umsatzliste bei "Name des Kontoinhabers enthält" auch in Name 2 suchen
   * NEW: 1138 Neue obantoo-Version mit aktualisierter BLZ-Datei für Österreich
   * BUG: 1137 Box "Erster Start" unter Linux nicht mehr explizit mit weissem Hintergrund darstellen
