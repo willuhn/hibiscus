@@ -163,6 +163,12 @@ public class KontoauszugPdfSettingsDialog extends AbstractDialog
     c2.addInput(this.getExample());
     c2.addInput(new LabelInput("")); // Unten noch etwas Platzhalter
     
+    c2.addHeadline(i18n.tr("Sicherheitshinweis"));
+    c2.addText(i18n.tr("Die elektronischen Kontoauszüge werden unverschlüsselt in dem konfigurierten Ordner gespeichert, damit sie auch dann noch zugänglich sind, " +
+                       "wenn Hibiscus nicht mehr verwendet wird (analog zum Download der Kontoauszüge von der Webseite der Bank - auch hier werden diese nicht verschlüsselt). " +
+                       "Nutzen Sie bei Bedarf eigene Tools, wenn Sie die Dokumente verschlüsselt abspeichern möchten."),true, Color.COMMENT);
+    
+    
     Container c3 = new SimpleContainer(parent);
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Hilfe") + "  ",new Program(),"http://www.willuhn.de/wiki/doku.php?id=handbuch:kontoauszug",false,"gtk-info.png");

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -100,6 +101,8 @@ public class XRechnungImporter implements Importer
 
     try
     {
+      boolean gutschrift = false;
+      
       final Document doc = this.getDocument(is);
       if (doc == null)
         throw new ApplicationException(i18n.tr("Datei enthält keine XRechnung-konformen Daten"));
@@ -119,6 +122,10 @@ public class XRechnungImporter implements Importer
         if (betrag == null || betrag.isBlank())
           betrag = this.xpath(doc,xpath,"//*[local-name() = 'GrandTotalAmount']");
         if (betrag == null || betrag.isBlank())
+          betrag = this.xpath(doc,xpath,"//*[local-name() = 'InvoiceTotalAmount']");
+        if (betrag == null || betrag.isBlank())
+          betrag = this.xpath(doc,xpath,"//*[local-name() = 'TotalAmount']");
+        if (betrag == null || betrag.isBlank())
           betrag = this.xpath(doc,xpath,"//*[local-name() = 'LegalMonetaryTotal']/*[local-name() = 'PayableAmount']");
         
         BigDecimal d = null;
@@ -133,11 +140,31 @@ public class XRechnungImporter implements Importer
         }
         
         if (d != null)
-          u.setBetrag(d.setScale(2).doubleValue());
+        {
+          d = d.setScale(2);
+          gutschrift = (d.compareTo(BigDecimal.ZERO) < 0);
+          u.setBetrag(d.doubleValue());
+        }
       }
       //
       ////////////////////////////////////////////////////////////
-      
+
+      ////////////////////////////////////////////////////////////
+      // Art der Rechnung
+      {
+        String type = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'TypeCode']");
+        if (type == null || type.isBlank())
+          type = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'InvoiceTypeCode']");
+        if (type != null)
+        {
+          gutschrift |= Objects.equals(type,"381"); // credit note (Kaufmännische Gutschrift)
+          gutschrift |= Objects.equals(type,"384"); // corrected invoice (Rechnungsberichtigung)
+          gutschrift |= Objects.equals(type,"389"); // Self-billed invoice (Vom Leistungsempfänger selbst erstellte Gutschrift)
+        }
+      }
+      //
+      ////////////////////////////////////////////////////////////
+
       ////////////////////////////////////////////////////////////
       // Referenz
       {
@@ -148,6 +175,8 @@ public class XRechnungImporter implements Importer
           ref = this.xpath(doc,xpath,"//*[local-name() = 'ExchangedDocument']/*[local-name() = 'ID']");
         if (ref == null || ref.isBlank())
           ref = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'ID']");
+        if (ref == null || ref.isBlank())
+          ref = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'InvoiceNumber']");
         if (ref == null || ref.isBlank())
           ref = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'BuyerReference']");
 
@@ -169,6 +198,8 @@ public class XRechnungImporter implements Importer
           name = this.xpath(doc,xpath,"//*[local-name() = 'AccountingSupplierParty']/*[local-name() = 'Party']/*[local-name() = 'PartyName']/*[local-name() = 'Name']");
         if (name == null || name.isBlank())
           name = this.xpath(doc,xpath,"//*[local-name() = 'AccountingSupplierParty']/*[local-name() = 'Party']/*[local-name() = 'PartyLegalEntity']/*[local-name() = 'RegistrationName']");
+        if (name == null || name.isBlank())
+          name = this.xpath(doc,xpath,"//*[local-name() = 'Invoice']/*[local-name() = 'Seller']/*[local-name() = 'Name']");
         
         if (name != null && !name.isBlank())
           u.setGegenkontoName(name); 
@@ -230,6 +261,13 @@ public class XRechnungImporter implements Importer
       }
       //
       ////////////////////////////////////////////////////////////
+
+      if (gutschrift)
+      {
+        final boolean ok = Application.getCallback().askUser(i18n.tr("Die Rechnung enthält einen negativen Betrag oder ein Gutschriftsmerkmal.\nSoll dennoch eine Überweisung erstellt werden?"));
+        if (!ok)
+          throw new OperationCanceledException();
+      }
 
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setPercentComplete(100);

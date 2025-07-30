@@ -613,7 +613,12 @@ public class KontoauszugList extends UmsatzList
     // Gegenkonto
     if (gkBLZ    != null && gkBLZ.length() > 0)    {umsaetze.addFilter("LOWER(empfaenger_blz) like ?","%" + gkBLZ.toLowerCase() + "%");this.filterCount++;}
     if (gkNummer != null && gkNummer.length() > 0) {umsaetze.addFilter("LOWER(empfaenger_konto) like ?","%" + gkNummer.toLowerCase() + "%");this.filterCount++;}
-    if (gkName   != null && gkName.length() > 0)   {umsaetze.addFilter("LOWER(empfaenger_name) like ?","%" + gkName.toLowerCase() + "%");this.filterCount++;}
+    if (gkName   != null && gkName.length() > 0)
+    {
+      final String q = "%" + gkName.toLowerCase() + "%";
+      umsaetze.addFilter("(LOWER(empfaenger_name) like ? OR LOWER(empfaenger_name2) like ?)",q,q);
+      this.filterCount++;
+    }
     /////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////

@@ -1,3 +1,14 @@
+2025-07-30 Version 2.10.26
+
+  * NEW: 1140 Update auf HBCI4Java 3.1.89 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.89 - mit neuen Sparda-URLs
+  * NEW: 1139 In der Umsatzliste bei "Name des Kontoinhabers enthält" auch in Name 2 suchen
+  * NEW: 1138 Neue obantoo-Version mit aktualisierter BLZ-Datei für Österreich
+  * BUG: 1137 Box "Erster Start" unter Linux nicht mehr explizit mit weissem Hintergrund darstellen
+  * NEW: 1136 Liste der Daueraufträge: Bei Auswahl mehrerer Daueraufträge Anzahl und Summe anzeigen
+  * BUG: 1135 Einnahmen/Ausgaben: Wenn ein deaktiviertes Konto ausgewählt aber anschließend die Option "Nur aktive Konten" aktiviert wurde, kam es zu einem Fehler
+  * NEW: 1134 XRechnung: Beachten von Gutschriftsmerkmalen in ExchangedDocument/TypeCode
+  * NEW: 1133 XRechnung: Unterstützung weiterer Dialekte. Außerdem Warnung anzeigen, wenn Betrag negativ ist
+
 2025-04-02 Version 2.10.25
 
   * NEW: 1132 Update auf HBCI4Java 3.1.88 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.88 - mit neuen Sparda-URLs (Hessen und München)
