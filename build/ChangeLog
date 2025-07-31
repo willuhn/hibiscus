@@ -1,3 +1,7 @@
+2025-07-31 Version 2.10.27
+
+  * NEW: 1140 Update auf HBCI4Java 3.1.90 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.90 - mit einem Bugfix beim Lesen von FinTS-Antwort-Nachrichten
+
 2025-07-30 Version 2.10.26
 
   * NEW: 1140 Update auf HBCI4Java 3.1.89 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.89 - mit neuen Sparda-URLs
