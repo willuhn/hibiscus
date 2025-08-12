@@ -50,7 +50,7 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
   {
     if (value == null || value.length() == 0)
       return null;
-    
+
     final UmsatzTyp t = this.getCache().get(value.toLowerCase());
     
     // Haben wir im Cache
@@ -78,7 +78,7 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
       final DBIterator<UmsatzTyp> i = Settings.getDBService().createList(UmsatzTyp.class);
       while (i.hasNext())
       {
-        this.addTocache(i.next());
+        this.addToCache(i.next());
       }
       Logger.info("category cache initialized");
     }
@@ -95,15 +95,18 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
    * @param t die Kategorie.
    * @throws RemoteException
    */
-  private void addTocache(UmsatzTyp t) throws RemoteException
+  private void addToCache(UmsatzTyp t) throws RemoteException
   {
-    final String key = this.createSearchKey(t);
+    final LinkedList<String> kategorien = new LinkedList<>();
     
-    // Einmal unter dem kompletten Pfad speichern
-    this.cache.put(key.toLowerCase(),t);
+    UmsatzTyp current = t;
+    while (current != null)
+    {
+      kategorien.addFirst(current.getName());
+      current = (UmsatzTyp) current.getParent();
+    }
 
-    // Abwaertskompatibilaet: und dann nochmal unter dem Namen
-    this.cache.put(t.getName().toLowerCase(),t);
+    this.cache.put(String.join(SEP, kategorien).toLowerCase(),t);
   }
   
   /**
@@ -145,7 +148,7 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
         typ.store();     
 
         Logger.info("auto-created category " + path);
-        this.addTocache(typ);
+        this.addToCache(typ);
         
         // Typ als Parten für nächsten Typ setzen
         parent = typ;
@@ -157,29 +160,5 @@ public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
     }
     
     return typ;
-  }
-  
-  /**
-   * Erzeugt einen SearchKey für den UmsatzTyp.
-   *  Bsp. für einen SearchKey 
-   *      
-   *      Hauptkategorie/Unterkategorie/Kategorie
-   *         
-   * @param typ UmsatzTyp, für den der SearchKey erzeugt werden soll.
-   * @return SearchKey des UmsatzTyps
-   * @throws RemoteException 
-   */
-  private String createSearchKey(UmsatzTyp typ) throws RemoteException
-  {
-    final LinkedList<String> kategorien = new LinkedList<>();
-    
-    UmsatzTyp current = typ;
-    while (current != null)
-    {
-      kategorien.addFirst(current.getName());
-      current = (UmsatzTyp) current.getParent();
-    }
-
-    return String.join(SEP, kategorien);
   }
 }
