@@ -144,6 +144,11 @@ public class AuslandsUeberweisungNew implements Action
         ClipboardSepaUeberweisungImporter i = new ClipboardSepaUeberweisungImporter();
         u = i.getUeberweisung();
       }
+
+      // Bei neu angelegten Aufträgen per Default als Echtzeitüberweisung anlegen
+      if (u.isNewObject())
+        u.setInstantPayment(true);
+
     }
     catch (ApplicationException | OperationCanceledException e)
     {
@@ -153,7 +158,7 @@ public class AuslandsUeberweisungNew implements Action
     {
       Logger.error("error while creating transfer",e);
     }
-
+    
     GUI.startView(de.willuhn.jameica.hbci.gui.views.AuslandsUeberweisungNew.class,u);
   }
 

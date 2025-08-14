@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1143 Neue Überweisungen per Default als Echtzeitüberweisungen erstellen
   * NEW: 1142 Beim Import von Umsätzen im CSV-Format auch Kategoriebäume unterstützen. Die Kategorien müssen in der Form "Oberkategorie/Unterkategorie/Kategorie" (beliebige Verschachtelungstiefe) angegeben sein
   * NEW: 1141 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.09.2025
 
