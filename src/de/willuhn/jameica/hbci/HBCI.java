@@ -99,9 +99,7 @@ public class HBCI extends AbstractPlugin
     super();
   }
 
-  /**
-   * @see de.willuhn.jameica.plugin.AbstractPlugin#init()
-   */
+  @Override
   public void init() throws ApplicationException
   {
 		Logger.info("starting init process for hibiscus");
@@ -135,9 +133,7 @@ public class HBCI extends AbstractPlugin
     Application.getCallback().getStartupMonitor().addPercentComplete(5);
   }
 
-  /**
-   * @see de.willuhn.jameica.plugin.AbstractPlugin#install()
-   */
+  @Override
   public void install() throws ApplicationException
   {
     call(new ServiceCall() {
@@ -149,9 +145,7 @@ public class HBCI extends AbstractPlugin
     });
   }
   
-  /**
-   * @see de.willuhn.jameica.plugin.AbstractPlugin#uninstall(boolean)
-   */
+  @Override
   public void uninstall(boolean deleteUserData) throws ApplicationException
   {
     if (!deleteUserData)
