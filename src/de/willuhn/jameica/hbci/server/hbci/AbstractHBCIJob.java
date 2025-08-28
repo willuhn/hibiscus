@@ -498,6 +498,10 @@ public abstract class AbstractHBCIJob
       Logger.warn("[job parameter] no name or value given");
       return;
     }
+    
+    // Leerzeichen am Anfang und Ende trimmen
+    if (value != null)
+      value = value.trim();
     params.put(new AbstractMap.SimpleEntry(name,index),value);
   }
 
