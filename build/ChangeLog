@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1145 Update auf HBCI4Java 4.0.1 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.0.1
   * NEW: 1144 Update auf HBCI4Java 3.1.91 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.91 - mit neuen Sparda-URLs (Sparda-Bank West)
   * NEW: 1143 Neue Überweisungen per Default als Echtzeitüberweisungen erstellen
   * NEW: 1142 Beim Import von Umsätzen im CSV-Format auch Kategoriebäume unterstützen. Die Kategorien müssen in der Form "Oberkategorie/Unterkategorie/Kategorie" (beliebige Verschachtelungstiefe) angegeben sein
