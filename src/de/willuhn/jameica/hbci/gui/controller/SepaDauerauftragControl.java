@@ -444,7 +444,6 @@ public class SepaDauerauftragControl extends AbstractControl
     
     SepaDauerauftrag t = getTransfer();
     zweck = new ZweckInput(getTransfer().getZweck());
-    zweck.setMandatory(true);
     if (t.isActive())
       zweck.setEnabled(getBPD().getBoolean("usageeditable",true));
     return zweck;
