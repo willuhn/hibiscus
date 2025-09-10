@@ -86,7 +86,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "4.0.1";
+  private final static String HBCI4JAVA_VERSION = "4.0.2";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;

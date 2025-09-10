@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1147 Update auf HBCI4Java 4.0.2 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.0.2
   * BUG: 1146 Bei der Synchronisierung über mehrere Plugins konnte es zu einem Fehler kommen, dass die Synchronisierung bereits läuft
   * NEW: 1145 Update auf HBCI4Java 4.0.1 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.0.1
   * NEW: 1144 Update auf HBCI4Java 3.1.91 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-3.1.91 - mit neuen Sparda-URLs (Sparda-Bank West)
