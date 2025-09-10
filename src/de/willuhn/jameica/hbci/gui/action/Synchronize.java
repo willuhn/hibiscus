@@ -40,6 +40,7 @@ public class Synchronize implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   private MessageConsumer mc = new MyMessageConsumer();
+  private MessageConsumer mcNext = new MyNextMessageConsumer();
   private Iterator<Synchronization> list = null;
 
   /**
@@ -84,8 +85,9 @@ public class Synchronize implements Action
     this.list = result.iterator();
     
     MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_RUNNING);
-    // Auf die Events registrieren, um die Folge-Backends zu starten
+    // Auf die Events registrieren
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).registerMessageConsumer(this.mc);
+    Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_NEXT).registerMessageConsumer(this.mcNext);
     this.sync();
   }
   
@@ -148,12 +150,14 @@ public class Synchronize implements Action
     catch (ApplicationException ae)
     {
       Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
+      Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_NEXT).unRegisterMessageConsumer(this.mcNext);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
       MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_ERROR);
     }
     catch (OperationCanceledException oce)
     {
       Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
+      Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_NEXT).unRegisterMessageConsumer(this.mcNext);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Synchronisierung abgebrochen"),StatusBarMessage.TYPE_ERROR));
       MessageBus.send(SynchronizeEngine.STATUS,ProgressMonitor.STATUS_CANCEL);
     }
@@ -167,10 +171,11 @@ public class Synchronize implements Action
   {
     MessageBus.send(SynchronizeEngine.STATUS,status);
     Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_STATUS).unRegisterMessageConsumer(this.mc);
+    Application.getMessagingFactory().getMessagingQueue(SynchronizeBackend.QUEUE_NEXT).unRegisterMessageConsumer(this.mcNext);
   }
   
   /**
-   * Wird ueber die Status-Events der Backends benachrichtigt und startet dann das naechste
+   * Wird ueber die Status-Events der Backends benachrichtigt.
    */
   private class MyMessageConsumer implements MessageConsumer
   {
@@ -196,14 +201,9 @@ public class Synchronize implements Action
       }
       
       int status = ((Integer) data).intValue();
-      if (status == ProgressMonitor.STATUS_DONE)
-      {
-        sync();
-      }
-      else if (status == ProgressMonitor.STATUS_ERROR || status == ProgressMonitor.STATUS_CANCEL)
-      {
+      
+      if (status == ProgressMonitor.STATUS_ERROR || status == ProgressMonitor.STATUS_CANCEL)
         finish(status);
-      }
     }
 
     /**
@@ -214,4 +214,35 @@ public class Synchronize implements Action
       return false;
     }
   }
+  
+  /**
+   * Startet das nächste Backend.
+   */
+  private class MyNextMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{QueryMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      sync();
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+  }
+
 }

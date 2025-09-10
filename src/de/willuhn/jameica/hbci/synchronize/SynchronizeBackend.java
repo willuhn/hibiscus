@@ -29,7 +29,12 @@ public interface SynchronizeBackend
    * Queue, an die der aktuelle Prozess-Status der Synchronisierung (RUNNING, ERROR, DONE, CANCEL) geschickt wird.
    */
   public final static String QUEUE_STATUS = "hibiscus.sync.status";
-  
+
+  /**
+   * Queue, die benachrichtigt wird, um das nächste Backend zu starten.
+   */
+  public final static String QUEUE_NEXT = "hibiscus.sync.next";
+
   /**
    * Queue, die im Fehlerfall benachrichtigt wird. Die Message wird synchron als QueryMessage
    * geschickt. Enthaelt sie in getData() als Rueckgabe-Wert TRUE, wird die Synchronisierung

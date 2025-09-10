@@ -381,6 +381,8 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
     {
       this.monitor = monitor;
       
+      boolean done = false;
+      
       try
       {
         this.updateStatus(ProgressMonitor.STATUS_RUNNING,i18n.tr("Synchronisierung via {0} läuft",getName()));
@@ -449,7 +451,9 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
           }
         }
         
-        if (session.getStatus() == ProgressMonitor.STATUS_RUNNING) // Nur, wenn kein Fehler und nicht abgebrochen
+        done = (session.getStatus() == ProgressMonitor.STATUS_RUNNING); // Nur, wenn kein Fehler und nicht abgebrochen
+        
+        if (done)
           this.updateStatus(ProgressMonitor.STATUS_DONE,i18n.tr("Synchronisierung via {0} erfolgreich beendet",getName()));
       }
       finally
@@ -462,6 +466,10 @@ public abstract class AbstractSynchronizeBackend<T extends SynchronizeJobProvide
         session = null;
         this.monitor.setPercentComplete(100);
         Logger.info("finished");
+        
+        // Sicherstellen, dass wir das nächste Backend erst ganz zum Schluss starten, nachdem der Status des aktuellen Tasks auf DONE gestellt wurde
+        if (done)
+          Application.getMessagingFactory().getMessagingQueue(QUEUE_NEXT).sendMessage(new QueryMessage());
       }
     }
     
