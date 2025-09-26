@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.eclipse.swt.SWTException;
+import org.kapott.hbci.GV_Result.GVRVoP.VoPResult;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.exceptions.NeedKeyAckException;
 import org.kapott.hbci.manager.HBCIUtils;
@@ -29,6 +30,7 @@ import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.gui.DialogFactory;
 import de.willuhn.jameica.hbci.gui.dialogs.NewInstKeysDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.NewKeysDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.VoPResultDialog;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -299,6 +301,14 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
         case USERID_CHANGED:
           Logger.info("got changed user/account data (code 3072) - saving in persistent data for later handling");
           ((AbstractHBCIPassport)passport).setPersistentData(PassportHandle.CONTEXT_USERID_CHANGED,retData.toString());
+          break;
+          
+        case HAVE_VOP_RESULT:
+          Logger.info("got VoP result - asking user what to do");
+          final VoPResult result = (VoPResult) ((AbstractHBCIPassport)passport).getPersistentData(AbstractHBCIPassport.KEY_VOP_RESULT);
+          final VoPResultDialog d = new VoPResultDialog(msg,result);
+          final Boolean doit = d.open();
+          retData.replace(0,retData.length(),doit != null ? doit.toString() : "");
           break;
 
 				case HAVE_ERROR:
