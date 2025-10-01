@@ -91,7 +91,6 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
     list.add(new Typ(false,false));
     list.add(new Typ(true,false));
     list.add(new Typ(false,true));
-    // TODO: Bei BZU- oder Spenden-Ueberweisung muss die Box deaktiviert werden und beide Flags duerfen nicht gesetzt sein
     this.typ = new SelectInput(list,new Typ(u.isTerminUeberweisung(),u.isUmbuchung()));
     this.typ.setName(i18n.tr("Auftragstyp"));
     this.typ.setAttribute("name");
@@ -237,7 +236,6 @@ public class UeberweisungControl extends AbstractBaseUeberweisungControl
       }
       else if (code != null && code.equals(TextSchluessel.TS_SPENDE))
       {
-        // TODO: Eingabefelder fuer die Spenden-Ueberweisung fehlen noch
       }
       else
       {

@@ -155,7 +155,7 @@ public class SynchronizeEngine
     {
       
       // Checken, ob das Backend den Geschaeftsvorfall ueberhaupt unterstuetzt
-      // TODO: Ich bin mir nicht sicher, ob auch bei einem explizit gewaehlten Backend geprueft
+      // Ich bin mir nicht sicher, ob auch bei einem explizit gewaehlten Backend geprueft
       // werden sollte, ob das Backend den Geschaeftsvorfall unterstuetzt.
 //      if (!bk.supports(type,konto))
 //        throw new ApplicationException(i18n.tr("Das Zugangsverfahren des Kontos unterstützt diesen Geschäftsvorfall nicht"));

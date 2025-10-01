@@ -495,11 +495,6 @@ public class KontoInput extends SelectInput
             if (listener != null)
               listener.handleEvent(null);
           }
-          catch (NoSuchMethodError e)
-          {
-            // TODO "getList" hab ich erst am 15.04. eingebaut. Das catch kann hier also mal irgendwann weg
-            Logger.warn(e.getMessage() + " - update your jameica installation");
-          }
           catch (Exception e)
           {
             Logger.error("unable to refresh konto",e);

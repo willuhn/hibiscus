@@ -431,10 +431,3 @@ public class MoneyplexUmsatzImporter implements Importer
     return new IOFormat[] { f };
   }
 }
-
-/*******************************************************************************
- * $Log: MoneyplexUmsatzImporter.java,v $
- * Revision 1.1  2010/06/02 17:33:33  willuhn
- * @N TICKET #61 - Moneyplex-Import
- *
- ******************************************************************************/

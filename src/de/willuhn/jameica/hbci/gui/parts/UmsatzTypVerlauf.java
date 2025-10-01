@@ -145,7 +145,7 @@ public class UmsatzTypVerlauf implements Part
     try
     {
       this.chart = new LineChart();
-      this.chart.setStacked(false); // TODO Stacked Graph für "Umsätze nach Kategorieren" BUGZILLA 749
+      this.chart.setStacked(false);
       this.chart.setTitle(i18n.tr("Umsätze der Kategorien im Verlauf (gruppiert nach {0})", this.interval.toString()));
       for (int i=0;i<this.data.size();++i)
       {

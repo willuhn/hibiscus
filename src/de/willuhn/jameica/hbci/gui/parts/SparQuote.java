@@ -467,7 +467,7 @@ public class SparQuote implements Part
 
     if (this.data.size() < 2)
     {
-      //TODO diese Validierung hat auch angeschlagen, wenn man "letztes Jahr" und 12 Monate pro Periode gewählt hat
+      // diese Validierung hat auch angeschlagen, wenn man "letztes Jahr" und 12 Monate pro Periode gewählt hat
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Bitte wählen Sie einen Zeitraum, der mindestens 2 Monate umfasst"),StatusBarMessage.TYPE_INFO));
       return false;
     }

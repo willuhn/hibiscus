@@ -47,8 +47,6 @@ public class HBCIVariantChipcard implements HBCIVariant
   @Override
   public void create() throws ApplicationException
   {
-    // TODO Auto-generated
-
   }
 
 }

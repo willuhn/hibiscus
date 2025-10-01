@@ -58,7 +58,7 @@ public class UmsatzTypChart implements Part
   {
     try
     {
-      // TODO: Hier werden die benutzerdefinierten Farben von Kategorien noch nicht genutzt
+      // Hier werden die benutzerdefinierten Farben von Kategorien noch nicht genutzt
       final Container group = new SimpleContainer(parent,true);
       final ChartData eData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_EINNAHME,start);
       final ChartData aData = new ChartDataUmsatzTyp(UmsatzTyp.TYP_AUSGABE,start);

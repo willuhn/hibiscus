@@ -309,7 +309,7 @@ public class ScriptingSynchronizeBackend extends AbstractSynchronizeBackend<Scri
       }
       finally
       {
-        // TODO: PIN-Cache leeren geht hier noch nicht, weil der nur mit HBCIHandlern umgehen kann
+        // PIN-Cache leeren geht hier noch nicht, weil der nur mit HBCIHandlern umgehen kann
         // Das sollte ohnehin besser ueber den ApplicationCallback gehen - damit ist das auch
         // gleich Server-tauglich
 //        if (haveError || ScriptingSynchronizeBackend.this.worker.isInterrupted())
