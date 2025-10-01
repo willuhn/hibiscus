@@ -22,10 +22,12 @@ import org.kapott.hbci.GV_Result.GVRVoP.VoPStatus;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.parts.table.FeatureSummary;
@@ -35,6 +37,7 @@ import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -159,6 +162,8 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     this.entries.addColumn(i18n.tr("Name laut Bank"),"name");
     this.entries.addColumn(i18n.tr("Bemerkung"),"text");
     this.entries.addColumn(i18n.tr("IBAN"),"iban");
+    this.entries.addColumn(i18n.tr("Betrag"),"amount",new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT),false,Column.ALIGN_RIGHT);
+    this.entries.addColumn(i18n.tr("Verwendungszweck"),"usage");
     
     this.entries.setFormatter(new TableFormatter() {
       
