@@ -382,7 +382,7 @@ public class SynchronizeList extends TablePart
       if (!SynchronizeSchedulerSettings.isEnabled())
         return;
       
-      final Container c = new LabelGroup(parent,i18n.tr("Automatischen Synchronisierung"));
+      final Container c = new LabelGroup(parent,i18n.tr("Automatische Synchronisierung"));
       final SynchronizeSchedulerService scheduler = (SynchronizeSchedulerService) Application.getServiceFactory().lookup(HBCI.class,"synchronizescheduler");
       final int status = scheduler.getStatus();
 
