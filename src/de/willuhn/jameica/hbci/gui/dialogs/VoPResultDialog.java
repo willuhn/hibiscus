@@ -136,7 +136,6 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
         close();
       }
     },null,false,"ok.png");
-    this.apply.setEnabled(false);
     
     return this.apply;
   }
