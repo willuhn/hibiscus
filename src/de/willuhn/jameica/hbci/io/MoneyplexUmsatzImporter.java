@@ -91,6 +91,13 @@ public class MoneyplexUmsatzImporter implements Importer
       Vector<IXMLElement> lines = root.getChildrenNamed("BUCHUNG");
       
       if (lines == null || lines.size() == 0)
+      {
+        IXMLElement kontobuch = root.getFirstChildNamed("KONTOBUCH");
+        if (kontobuch != null) 
+          lines = kontobuch.getChildrenNamed("BUCHUNG");
+      }
+      
+      if (lines == null || lines.size() == 0)
         throw new ApplicationException(i18n.tr("Datei enthält keine Buchungen"));
       
       double factor = 100d / (double) lines.size();
