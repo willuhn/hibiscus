@@ -58,7 +58,13 @@ public class SmartCardUtil
     }
     catch (Throwable t)
     {
-      Logger.info("unable to determine card reader list: " + t.getMessage());
+      String msg = t.getMessage();
+      
+      Throwable cause = t.getCause();
+      if (cause != null && cause != t)
+        msg += (", " + cause.getMessage());
+      
+      Logger.info("unable to determine card reader list: " + msg);
       Logger.write(Level.DEBUG,"stacktrace for debugging purpose",t);
     }
     return available;
