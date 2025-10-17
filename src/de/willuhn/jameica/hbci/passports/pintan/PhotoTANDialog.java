@@ -76,7 +76,7 @@ public class PhotoTANDialog extends TANDialog
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendTop(org.eclipse.swt.widgets.Composite)
+   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendTop(de.willuhn.jameica.gui.util.Container)
    */
   @Override
   protected void extendTop(Container container) throws Exception

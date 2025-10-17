@@ -369,7 +369,7 @@ public class ChipTANDialog extends TANDialog
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendBottom(org.eclipse.swt.widgets.Composite)
+   * @see de.willuhn.jameica.hbci.passports.pintan.TANDialog#extendBottom(de.willuhn.jameica.gui.util.Container)
    */
   @Override
   protected void extendBottom(Container c) throws Exception
