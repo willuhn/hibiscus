@@ -11,6 +11,9 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
@@ -23,6 +26,9 @@ import de.willuhn.util.ApplicationException;
  */
 public abstract class AbstractHibiscusDBObject extends AbstractDBObject implements HibiscusDBObject
 {
+  // Hier speichern wir die Meta-Daten zwischen, die gesetzt wurden, bevor das Objekt eine ID hatte
+  private Map<String,String> cachedMeta = new HashMap<>();
+  
   /**
    * ct.
    * @throws RemoteException
@@ -42,7 +48,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
 
     String id = this.getID();
     if (id == null)
-      return defaultValue;
+      return this.cachedMeta.getOrDefault(name,defaultValue);
 
     return DBPropertyUtil.get(DBPropertyUtil.Prefix.META,this.getTableName(),id,name,defaultValue);
   }
@@ -57,7 +63,10 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
 
     String id = this.getID();
     if (id == null)
-      throw new RemoteException("entity has no id");
+    {
+      this.cachedMeta.put(name,value);
+      return;
+    }
 
     DBPropertyUtil.set(DBPropertyUtil.Prefix.META,this.getTableName(),id,name,value);
   }
@@ -82,6 +91,7 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
 
       super.delete();
       this.transactionCommit();
+      this.cachedMeta.clear();
     }
     catch (ApplicationException | RemoteException e)
     {
@@ -97,6 +107,22 @@ public abstract class AbstractHibiscusDBObject extends AbstractDBObject implemen
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
+
+    if (!this.cachedMeta.isEmpty())
+    {
+      try
+      {
+        final String id = this.getID();
+        for (Entry<String,String> s:this.cachedMeta.entrySet())
+        {
+          DBPropertyUtil.set(DBPropertyUtil.Prefix.META,this.getTableName(),id,s.getKey(),s.getValue());
+        }
+      }
+      finally
+      {
+        this.cachedMeta.clear();
+      }
+    }
     
     // Store-Message schicken
     // Das wird asynchron gemacht, damit es das speichern nicht bremst
