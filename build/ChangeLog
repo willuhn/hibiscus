@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: 1151 Reguläre Überweisungen wurden beim Duplizieren zu Echtzeit-Überweisungen 
   * NEW: 1150 Update auf HBCI4Java 4.1.0 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.0
   * NEW: 1149 Erste experimentelle Version mit VoP
   * NEW: 1148 Neuer Extra-toleranter Datums-Parser beim Import von CSV-Dateien. Akzeptiert quasi alle bekannten Datumsformate.

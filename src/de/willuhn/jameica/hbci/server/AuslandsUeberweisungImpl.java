@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -63,6 +64,7 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
     u.setUmbuchung(isUmbuchung());
     u.setPurposeCode(getPurposeCode());
     u.setInstantPayment(isInstantPayment());
+    MetaKey.DUPLICATE_ID.set(u,this.getID());
     
     return u;
   }

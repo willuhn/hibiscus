@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.io.ClipboardSepaUeberweisungImporter;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -145,8 +146,8 @@ public class AuslandsUeberweisungNew implements Action
         u = i.getUeberweisung();
       }
 
-      // Bei neu angelegten Aufträgen per Default als Echtzeitüberweisung anlegen
-      if (u.isNewObject())
+      // Bei neu angelegten Aufträgen per Default als Echtzeitüberweisung anlegen - nicht aber bei duplizierten Aufträgen
+      if (u.isNewObject() && MetaKey.DUPLICATE_ID.get(u) == null)
         u.setInstantPayment(true);
 
     }

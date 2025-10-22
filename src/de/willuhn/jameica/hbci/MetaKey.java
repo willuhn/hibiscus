@@ -106,6 +106,12 @@ public enum MetaKey
    * TAN-Eingabe abgebrochen
    */
   TAN_CANCEL("sync.tan-cancel","TAN-Eingabe abgebrochen",null),
+  
+  /**
+   * ID der Duplizierungsvorlage.
+   */
+  DUPLICATE_ID("duplicate.id","Duplizierungsvorlage",null),
+
 
   ;
 
