@@ -42,7 +42,9 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TableChangeListener;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.parts.table.Feature.Context;
 import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
@@ -93,6 +95,8 @@ public class UmsatzList extends TablePart implements Extendable
   private boolean disposed          = false;
   
   private List<Umsatz> umsaetze     = null;
+  
+  private Listener summaryUpdate    = new DelayedListener((e) -> updateSummary(e));
   
   /**
    * @param konto
@@ -254,10 +258,10 @@ public class UmsatzList extends TablePart implements Extendable
   }
   
   /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#getSummary()
+   * Erzeugt den Summen-Text.
+   * @return der neue Summen-Text.
    */
-  @Override
-  protected String getSummary()
+  private String createSummary()
   {
     try
     {
@@ -310,6 +314,42 @@ public class UmsatzList extends TablePart implements Extendable
       Logger.error("error while updating summary",e);
     }
     return super.getSummary();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.parts.TablePart#createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event, java.lang.Object)
+   */
+  @Override
+  protected Context createFeatureEventContext(de.willuhn.jameica.gui.parts.table.Feature.Event e, Object data)
+  {
+    Context ctx = super.createFeatureEventContext(e, data);
+    if (this.hasEvent(FeatureSummary.class,e))
+    {
+      // Wir machen das Update verzögert und gebündelt
+      final Event event = new Event();
+      event.data = ctx;
+      event.text = e.name();
+      this.summaryUpdate.handleEvent(event);
+    }
+    return ctx;
+  }
+  
+  /**
+   * Aktualisiert die Summenzeile.
+   * @param e das Event.
+   */
+  private void updateSummary(Event e)
+  {
+    final Context ctx = (Context) e.data;
+    if (ctx == null)
+      return;
+
+    final FeatureSummary f = this.getFeature(FeatureSummary.class);
+    if (f == null)
+      return;
+
+    ctx.addon.put(FeatureSummary.CTX_KEY_TEXT,this.createSummary());
+    f.handleEvent(de.willuhn.jameica.gui.parts.table.Feature.Event.valueOf(e.text),ctx);
   }
   
   /**
@@ -697,6 +737,5 @@ public class UmsatzList extends TablePart implements Extendable
   {
     return UmsatzList.class.getName();
   }
-  
-  
+
 }
