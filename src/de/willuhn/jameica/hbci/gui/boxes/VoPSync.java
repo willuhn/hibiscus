@@ -125,7 +125,7 @@ public class VoPSync extends AbstractBox
 
     panel.setText(i18n.tr("Mit der Einführung der Empfängerprüfung ist es ggf. notwendig, den Bank-Zugang einmalig neu zu synchronisieren."));
     panel.setComment(i18n.tr("Klicken Sie auf \"Bank-Zugänge öffnen...\" und öffnen Sie diese anschließend durch Doppelklick. " +
-                             "Klicken Sie anschließend ind der Detailansicht des Bank-Zugangs unten rechts auf \"Synchronisieren\"."));
+                             "Klicken Sie anschließend in der Detailansicht des Bank-Zugangs unten rechts auf \"Synchronisieren\"."));
     panel.setUrl("https://www.willuhn.de/wiki/doku.php?id=vop");
     
     panel.addButton(new Button(i18n.tr("Bank-Zugänge öffnen..."),new PassportList(),null,false,"system-users.png"));
