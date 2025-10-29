@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: 1156 Update auf HBCI4Java 4.1.3 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.3
   * NEW: 1155 Hinweis-Box zu VoP
   * NEW: 1154 Update auf HBCI4Java 4.1.2 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.2
   * NEW: 1153 Support für die neue Segment-Version 2 beim Abrufen und Löschen von SEPA-Daueraufträgen
