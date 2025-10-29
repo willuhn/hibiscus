@@ -6,23 +6,11 @@
 
     <property environment="env" />
     <property name="build.dir" value="build" />
-    <buildnumber file="${build.dir}/BUILD" />
     <xmlproperty file="plugin.xml" collapseattributes="true"/>
-
-    <!-- create tag -->
-    <propertyfile file="${build.dir}/TAG">
-      <entry key="mytag" value="${plugin.version}" />
-    </propertyfile>
-    <replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
-    <loadproperties srcFile="${build.dir}/TAG"/>
-    <delete file="${build.dir}/TAG" />
-    <property name="tag" value="V_${mytag}_BUILD_${build.number}" />
 
     <loadproperties srcFile="${build.dir}/build.properties"/>
 
   	<echo message="VERSION: ${plugin.version}" />
-    <echo message="Tag    : ${tag}" />
-    <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
 
     <path id="compilepath">
@@ -93,7 +81,6 @@
         <attribute name="Built-Date" value="${DSTAMP}" />
         <attribute name="Implementation-Title" value="${plugin.name}" />
         <attribute name="Implementation-Version" value="${plugin.version}" />
-        <attribute name="Implementation-Buildnumber" value="${build.number}" />
         <attribute name="Class-Path" value="lang help" />
       </manifest>
       <fileset dir="${class.dir}" />
@@ -176,7 +163,6 @@
         <include name="${icon.dir}/**" />
         <include name="${sql.dir}/**" />
         <include name="${build.dir}/**" />
-        <exclude name="${build.dir}/BUILD" />
       </fileset>
     </copy>
     <zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
@@ -242,7 +228,7 @@
 
 
 
-  <target depends="init,compile,tag,signzip,javadoc,src,sign,clean" description="build an official release" name="all" />
+  <target depends="init,compile,signzip,javadoc,src,sign,clean" description="build an official release" name="all" />
 
   <target depends="init,compile,zip,src,clean" description="build inofficial release" name="fast" />
 
