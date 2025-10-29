@@ -55,20 +55,6 @@
 
   </target>
 
-
-
-  <target depends="compile" name="tag" description="tags the source in the scm">
-
-    <exec executable="git" failonerror="true" dir="${basedir}">
-      <arg line="tag -m ${tag} ${tag}" />
-    </exec>
-    <exec executable="git" failonerror="true" dir="${basedir}">
-      <arg line="push origin ${tag}" />
-    </exec>
-
-  </target>
-
-
   <target depends="compile" name="jar" description="generates the jar file">
 
     <mkdir dir="${project.release}" />
