@@ -81,6 +81,7 @@ public class SepaSammelUeberweisungBuchungNew extends AbstractView
     container.addHeadline(i18n.tr("Details"));
     container.addLabelPair(i18n.tr("Verwendungszweck"), control.getZweck());
     container.addLabelPair(i18n.tr("Betrag"),           control.getBetrag());
+    container.addInput(control.getZweckPreview());
     
 		ButtonArea buttonArea = new ButtonArea();
     Button delete = new Button(i18n.tr("Löschen"), new DBObjectDelete(),control.getBuchung(),false,"user-trash-full.png");

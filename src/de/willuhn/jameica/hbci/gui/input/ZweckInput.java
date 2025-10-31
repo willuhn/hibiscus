@@ -10,16 +10,22 @@
 
 package de.willuhn.jameica.hbci.gui.input;
 
+import java.util.Objects;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -31,16 +37,46 @@ public class ZweckInput extends TextInput
   private final static String VALID = HBCIProperties.HBCI_SEPA_VALIDCHARS;
   
   private Control control = null;
+  private Input preview = null;
 
   /**
    * ct.
    * @param value der Verwendungszweck.
+   * @param preview optionale Angabe der Preview.
    */
-  public ZweckInput(String value)
+  public ZweckInput(String value, Input preview)
   {
     super(value,HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
     this.setValidChars(VALID);
     this.setName(i18n.tr("Verwendungszweck"));
+    this.preview = preview;
+    
+    if (this.preview != null)
+    {
+      this.addListener(e -> {
+        try
+        {
+          final String text = (String) this.getValue();
+          if (StringUtils.trimToNull(text) == null)
+          {
+            this.preview.setValue("");
+            return;
+          }
+          
+          final String r = VerwendungszweckUtil.evaluate(text);
+          if (Objects.equals(text,r))
+          {
+            this.preview.setValue("");
+            return;
+          }
+          this.preview.setValue(i18n.tr("Vorschau") + ": " + r);
+        }
+        catch (Exception ex)
+        {
+          Logger.error("unable to evaluate usage",ex);
+        }
+      });
+    }
   }
   
   /**

@@ -97,6 +97,7 @@ public class SepaLastschriftNew extends AbstractView
     container.addHeadline(i18n.tr("Details"));
     container.addLabelPair(i18n.tr("Verwendungszweck"),	control.getZweck());
     container.addLabelPair(i18n.tr("Betrag"),           control.getBetrag());
+    container.addInput(control.getZweckPreview());
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new DBObjectDelete(),transfer,false,"user-trash-full.png");

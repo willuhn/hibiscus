@@ -26,6 +26,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.InstantPaymentStatus;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -92,7 +93,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
       
       String zweck = ueberweisung.getZweck();
       if (zweck != null && zweck.length() > 0)
-			  setJobParam("usage",zweck);
+			  setJobParam("usage",VerwendungszweckUtil.evaluate(zweck));
 			
       String endToEndId = ueberweisung.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)

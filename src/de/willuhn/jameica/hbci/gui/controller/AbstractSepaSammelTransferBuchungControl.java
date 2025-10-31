@@ -21,6 +21,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -56,6 +57,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
   // Eingabe-Felder
   private Input betrag                       = null;
   private ZweckInput zweck                   = null;
+  private LabelInput preview                 = null;
 
   private AddressInput empfName              = null;
   private TextInput empfkto                  = null;
@@ -190,9 +192,24 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
 
     SepaSammelTransferBuchung s = this.getBuchung();
 
-    zweck = new ZweckInput(s.getZweck());
+    zweck = new ZweckInput(s.getZweck(),this.getZweckPreview());
     zweck.setEnabled(!s.getSammelTransfer().ausgefuehrt());
     return zweck;
+  }
+  
+  /**
+   * Liefert die Vorschau auf den Verwendungszweck
+   * @return die Vorschau auf den Verwendungszweck.
+   * @throws RemoteException
+   */
+  public Input getZweckPreview() throws RemoteException
+  {
+    if (this.preview != null)
+      return this.preview;
+  
+    this.preview = new LabelInput("");
+    this.preview.setName("");
+    return this.preview;
   }
 
   /**

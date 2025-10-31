@@ -29,6 +29,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -89,7 +90,7 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
       
       String zweck = lastschrift.getZweck();
       if (zweck != null && zweck.length() > 0)
-			  setJobParam("usage",zweck);
+			  setJobParam("usage",VerwendungszweckUtil.evaluate(zweck));
 			
       String endToEndId = lastschrift.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)

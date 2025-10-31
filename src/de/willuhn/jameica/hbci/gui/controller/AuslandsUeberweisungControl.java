@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
@@ -75,6 +76,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
   private KontoInput kontoAuswahl            = null;
   private Input betrag                       = null;
   private ZweckInput zweck                   = null;
+  private LabelInput preview                 = null;
 
   private AddressInput empfName              = null;
   private TextInput empfkto                  = null;
@@ -273,9 +275,23 @@ public class AuslandsUeberweisungControl extends AbstractControl
   {
     if (zweck != null)
       return zweck;
-    zweck = new ZweckInput(getTransfer().getZweck());
+    zweck = new ZweckInput(getTransfer().getZweck(),this.getZweckPreview());
     zweck.setEnabled(!getTransfer().ausgefuehrt());
     return zweck;
+  }
+  
+  /**
+   * Liefert die Vorschau auf den Verwendungszweck
+   * @return die Vorschau auf den Verwendungszweck.
+   * @throws RemoteException
+   */
+  public Input getZweckPreview() throws RemoteException
+  {
+    if (this.preview != null)
+      return this.preview;
+  
+    this.preview = new LabelInput("");
+    return this.preview;
   }
 
   /**

@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -109,7 +110,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
         
         String zweck = b.getZweck();
         if (zweck != null && zweck.length() > 0)
-          setJobParam("usage", idx ,zweck);
+          setJobParam("usage", idx ,VerwendungszweckUtil.evaluate(zweck));
         
         String endToEndId = b.getEndtoEndId();
         if (endToEndId != null && endToEndId.trim().length() > 0)

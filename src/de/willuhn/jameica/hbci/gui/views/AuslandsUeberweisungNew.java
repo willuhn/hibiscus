@@ -89,9 +89,11 @@ public class AuslandsUeberweisungNew extends AbstractView
     }
 
     Container container = new SimpleContainer(getParent());
+    
     container.addHeadline(i18n.tr("Details"));
     container.addLabelPair(i18n.tr("Verwendungszweck"),					control.getZweck());
     container.addLabelPair(i18n.tr("Betrag"),                   control.getBetrag());
+    container.addInput(control.getZweckPreview());
 
 		ButtonArea buttonArea = new ButtonArea();
 		buttonArea.addButton(i18n.tr("Löschen"),new AuslandsUeberweisungDelete(),transfer,false,"user-trash-full.png");

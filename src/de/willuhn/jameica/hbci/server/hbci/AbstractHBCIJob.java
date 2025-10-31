@@ -633,7 +633,7 @@ public abstract class AbstractHBCIJob
 	  String[] lines = VerwendungszweckUtil.toArray(t);
 	  for (int i=0;i<lines.length;++i)
 	  {
-	    setJobParam(HBCIUtilsInternal.withCounter("usage",i),lines[i]);
+	    setJobParam(HBCIUtilsInternal.withCounter("usage",i),VerwendungszweckUtil.evaluate(lines[i]));
 	  }
 	}
   

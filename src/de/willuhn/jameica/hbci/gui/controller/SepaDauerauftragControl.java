@@ -77,6 +77,7 @@ public class SepaDauerauftragControl extends AbstractControl
   private KontoInput kontoAuswahl    = null;
   private DecimalInput betrag        = null;
   private ZweckInput zweck           = null;
+  private LabelInput preview         = null;
   private AddressInput empfName      = null;
   private TextInput empfkto          = null;
   private TextInput bic              = null;
@@ -443,12 +444,26 @@ public class SepaDauerauftragControl extends AbstractControl
       return zweck;
     
     SepaDauerauftrag t = getTransfer();
-    zweck = new ZweckInput(getTransfer().getZweck());
+    zweck = new ZweckInput(getTransfer().getZweck(),this.getZweckPreview());
     if (t.isActive())
       zweck.setEnabled(getBPD().getBoolean("usageeditable",true));
     return zweck;
   }
+
+  /**
+   * Liefert die Vorschau auf den Verwendungszweck
+   * @return die Vorschau auf den Verwendungszweck.
+   * @throws RemoteException
+   */
+  public Input getZweckPreview() throws RemoteException
+  {
+    if (this.preview != null)
+      return this.preview;
   
+    this.preview = new LabelInput("");
+    return this.preview;
+  }
+
   /**
    * Fuehrt den Dauerauftrag aus.
    */
