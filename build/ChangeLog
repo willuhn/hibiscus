@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1159 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.12.2025
   * NEW: 1158 Update auf HBCI4Java 4.1.4 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.4
   * NEW: 1157 Unterstützung für Platzhalter im Verwendungszweck ($jjjj,$mm,$tt)
  
