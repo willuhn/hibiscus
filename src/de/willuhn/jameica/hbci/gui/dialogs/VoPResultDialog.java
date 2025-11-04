@@ -22,7 +22,9 @@ import org.kapott.hbci.GV_Result.GVRVoP.VoPStatus;
 
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.internal.buttons.Cancel;
@@ -45,6 +47,7 @@ import de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl;
 import de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -124,7 +127,16 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(getApply());
-    buttons.addButton(getSaveChanges());
+    
+    //Save Button nur anzeigen, wenn mindestens ein CloseMatch existiert
+    for(VoPResultItem item:this.result.getItems())
+    {
+      if(item.getStatus().equals(VoPStatus.CLOSE_MATCH))
+      {
+        buttons.addButton(getSaveChanges());
+        break;
+      }
+    }
     buttons.addButton(new Cancel());
     container.addButtonArea(buttons);
     
@@ -154,21 +166,31 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
   }
 
   /**
-   * Liefert den Apply-Button.
-   * @return der Apply-Button.
+   * Liefert den Änderungen-Übernehmen-Button.
+   * @return der Änderungen-Übernehmen-Button.
    */
   private Button getSaveChanges()
   {
     if (this.save != null)
       return this.save;
     
-    this.save = new Button(i18n.tr("Änderungen in Auftrag speichern"),new Action() {
+    this.save = new Button(i18n.tr("Änderungen übernehmen und Abbrechen"),new Action() {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
       {
         try
         {
+          YesNoDialog yesNoDialog = new YesNoDialog(POSITION_CENTER);
+          yesNoDialog.setTitle("Änderungen speichern");
+          yesNoDialog.setText(
+              "Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen\n"
+              + "und die Ausführung anschließend abbrechen möchten?\n"
+              + "Der Auftrag muss anschließend erneut an die Bank gesendet werden.");
+          if(!(boolean) yesNoDialog.open())
+          {
+            return;
+          }
           Object o = Settings.getDBService().createObject((Class<? extends DBObject>) Class.forName(typ), id);
           if (o instanceof AbstractHibiscusTransferImpl)
           {
@@ -204,9 +226,15 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
               }
             }
           }
-          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Aufträge gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Änderungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+          GUI.getCurrentView().reload();
+          throw new OperationCanceledException();
         } 
-        catch (RemoteException | ClassNotFoundException e)
+        catch(OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (Exception e)
         {
           Logger.error("unable to get task object", e);
         }

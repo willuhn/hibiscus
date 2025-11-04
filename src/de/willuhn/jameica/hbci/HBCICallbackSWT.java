@@ -306,7 +306,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
         case HAVE_VOP_RESULT:
           Logger.info("got VoP result - asking user what to do");
           final VoPResult result = (VoPResult) ((AbstractHBCIPassport)passport).getPersistentData(AbstractHBCIPassport.KEY_VOP_RESULT);
-          final String externalId = (String) ((AbstractHBCIPassport)passport).getPersistentData(AbstractHBCIPassport.KEY_VOP_TASK_ID);
+          final String externalId = (String) ((AbstractHBCIPassport)passport).getPersistentData(AbstractHBCIPassport.KEY_EXTERNAL_ID);
           final VoPResultDialog d = new VoPResultDialog(msg,result,externalId);
           final Boolean doit = d.open();
           retData.replace(0,retData.length(),doit != null ? doit.toString() : "");
