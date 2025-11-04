@@ -20,6 +20,7 @@ import org.kapott.hbci.GV_Result.GVRVoP.VoPResult;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPResultItem;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPStatus;
 
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -38,6 +39,11 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
+import de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl;
+import de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -57,18 +63,24 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
   private VoPResult result       = null;
   private TablePart entries      = null;
   private Button apply           = null;
+  private Button save           = null;
   private Boolean choice         = Boolean.FALSE;
+  private String id              = null;
+  private String typ             = null;
 
   /**
    * ct.
    * @param text der von der Bank gemeldete Text.
    * @param result das Ergebnis der VoP-Prüfung.
+   * @param indentifyer typ und id des Jobs 
    */
-  public VoPResultDialog(String text, VoPResult result)
+  public VoPResultDialog(String text, VoPResult result, String indentifyer)
   {
     super(VoPResultDialog.POSITION_CENTER);
     this.text = text != null && text.length() > 0 ? text : result.getText();
     this.result = result;
+    typ = indentifyer.substring(0,indentifyer.indexOf(":"));
+    id = indentifyer.substring(indentifyer.indexOf(":")+1);
     this.setTitle(i18n.tr(this.result.getItems().size() > 1 ? "Namensabgleich der Empfänger" : "Namensabgleich des Empfängers"));
     this.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
   }
@@ -112,6 +124,7 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(getApply());
+    buttons.addButton(getSaveChanges());
     buttons.addButton(new Cancel());
     container.addButtonArea(buttons);
     
@@ -140,6 +153,69 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     return this.apply;
   }
 
+  /**
+   * Liefert den Apply-Button.
+   * @return der Apply-Button.
+   */
+  private Button getSaveChanges()
+  {
+    if (this.save != null)
+      return this.save;
+    
+    this.save = new Button(i18n.tr("Änderungen in Auftrag speichern"),new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          Object o = Settings.getDBService().createObject((Class<? extends DBObject>) Class.forName(typ), id);
+          if (o instanceof AbstractHibiscusTransferImpl)
+          {
+            AbstractHibiscusTransferImpl job = (AbstractHibiscusTransferImpl) o;
+
+            VoPResultItem item = result.getItems().get(0);
+            if (!item.getName().isBlank()
+                && job.getGegenkontoNummer().equals(item.getIban()) 
+                && job.getGegenkontoName().equals(item.getOriginal()) 
+                && job.getBetrag() == item.getAmount().doubleValue())
+            {
+              job.setGegenkontoName(item.getName());
+              job.store();
+            }
+          } 
+          else if (o instanceof AbstractSepaSammelTransferImpl)
+          {
+            AbstractSepaSammelTransferImpl job = (AbstractSepaSammelTransferImpl) o;
+            for ( Object b : job.getBuchungen())
+            {
+              SepaSammelTransferBuchung sammelJob = (SepaSammelTransferBuchung) b;
+              for (VoPResultItem item : result.getItems())
+              {
+                if (!item.getName().isBlank()
+                    && sammelJob.getGegenkontoNummer().equals(item.getIban()) 
+                    && sammelJob.getGegenkontoName().equals(item.getOriginal()) 
+                    && sammelJob.getBetrag() == item.getAmount().doubleValue())
+                {
+                  sammelJob.setGegenkontoName(item.getName());
+                  sammelJob.store();
+                  break;
+                }
+              }
+            }
+          }
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Aufträge gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+        } 
+        catch (RemoteException | ClassNotFoundException e)
+        {
+          Logger.error("unable to get task object", e);
+        }
+      }
+    },null,false,"document-save.png");
+    
+    return this.save;
+  }
+  
   /**
    * Liefert die Liste der Namen.
    * @return Liste der abhaengigen Daten.
