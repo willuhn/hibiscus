@@ -82,7 +82,7 @@ public class About extends AbstractDialog
       "<p>Software-Version: " + plugin.getManifest().getVersion() + "<br/>" +
       "HBCI4Java-Version: " + HBCIUtils.version() + "<br/>" +
       "Datenbank-Version: " + version.getVersion() + "<br/>" +
-      "Build: " + plugin.getManifest().getBuildnumber() + " [Datum " + plugin.getManifest().getBuildDate() + "]</p>" +
+      "[Datum " + plugin.getManifest().getBuildDate() + "]</p>" +
       "</form>");
 
     container.addPart(text);

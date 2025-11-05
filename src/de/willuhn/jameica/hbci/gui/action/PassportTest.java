@@ -59,7 +59,7 @@ public class PassportTest implements Action
           monitor.setStatusText(i18n.tr("Teste Bank-Zugang..."));
           
           final Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
-          monitor.log("  " + i18n.tr("Hibiscus-Version {0}, Build {1}, Datum {2}",mf.getVersion().toString(),mf.getBuildnumber(),mf.getBuildDate()));
+          monitor.log("  " + i18n.tr("Hibiscus-Version {0}, Datum {1}",mf.getVersion().toString(),mf.getBuildDate()));
           monitor.log("  " + i18n.tr("HBCI4Java-Version {0}",HBCIUtils.version()));
 
           // Log-Ausgaben temporaer auch mit im Progressbar-Fenster
