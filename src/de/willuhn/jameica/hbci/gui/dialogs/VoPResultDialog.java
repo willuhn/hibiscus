@@ -10,9 +10,12 @@
 
 package de.willuhn.jameica.hbci.gui.dialogs;
 
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
@@ -20,7 +23,6 @@ import org.kapott.hbci.GV_Result.GVRVoP.VoPResult;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPResultItem;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPStatus;
 
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -41,8 +43,9 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
+import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl;
 import de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -68,24 +71,38 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
   private Button apply           = null;
   private Button save           = null;
   private Boolean choice         = Boolean.FALSE;
-  private String id              = null;
-  private String typ             = null;
+  private HibiscusDBObject context = null;
 
   /**
    * ct.
    * @param text der von der Bank gemeldete Text.
    * @param result das Ergebnis der VoP-Prüfung.
-   * @param indentifyer typ und id des Jobs 
    */
-  public VoPResultDialog(String text, VoPResult result, String indentifyer)
+  public VoPResultDialog(String text, VoPResult result)
   {
     super(VoPResultDialog.POSITION_CENTER);
     this.text = text != null && text.length() > 0 ? text : result.getText();
     this.result = result;
-    typ = indentifyer.substring(0,indentifyer.indexOf(":"));
-    id = indentifyer.substring(indentifyer.indexOf(":")+1);
     this.setTitle(i18n.tr(this.result.getItems().size() > 1 ? "Namensabgleich der Empfänger" : "Namensabgleich des Empfängers"));
     this.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
+  }
+  
+  /**
+   * Speichert den zugehoerigen Auftrag, insofern ermittelbar.
+   * @param context der zugehoerige Auftrag.
+   */
+  public void setContext(HibiscusDBObject context)
+  {
+    this.context = context;
+  }
+  
+  /**
+   * Liefert den zugehoerigen Auftrag, insofern ermittelbar.
+   * @return transfer der zugehoerige Auftrag.
+   */
+  public HibiscusDBObject getContext()
+  {
+    return context;
   }
 
   /**
@@ -128,15 +145,11 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(getApply());
     
-    //Save Button nur anzeigen, wenn mindestens ein CloseMatch existiert
-    for(VoPResultItem item:this.result.getItems())
-    {
-      if(item.getStatus().equals(VoPStatus.CLOSE_MATCH))
-      {
-        buttons.addButton(getSaveChanges());
-        break;
-      }
-    }
+    // Save Button nur anzeigen, wenn mindestens ein CloseMatch existiert - und wir einen Context haben
+    final boolean offerSave = this.context != null && this.result.getItems().stream().anyMatch(i -> Objects.equals(i.getStatus(),VoPStatus.CLOSE_MATCH));
+    if (offerSave)
+      buttons.addButton(getSaveChanges());
+    
     buttons.addButton(new Cancel());
     container.addButtonArea(buttons);
     
@@ -174,54 +187,44 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     if (this.save != null)
       return this.save;
     
-    this.save = new Button(i18n.tr("Änderungen übernehmen und Abbrechen"),new Action() {
+    this.save = new Button(i18n.tr("Änderungen übernehmen und abbrechen"),new Action() {
       
       @Override
-      public void handleAction(Object context) throws ApplicationException
+      public void handleAction(Object c) throws ApplicationException
       {
         try
         {
-          YesNoDialog yesNoDialog = new YesNoDialog(POSITION_CENTER);
-          yesNoDialog.setTitle("Änderungen speichern");
-          yesNoDialog.setText(
-              "Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen\n"
-              + "und die Ausführung anschließend abbrechen möchten?\n"
-              + "Der Auftrag muss anschließend erneut an die Bank gesendet werden.");
-          if(!(boolean) yesNoDialog.open())
-          {
+          final YesNoDialog yesNoDialog = new YesNoDialog(POSITION_CENTER);
+          yesNoDialog.setTitle(i18n.tr("Änderungen speichern"));
+          yesNoDialog.setText(i18n.tr("Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen und die Ausführung anschließend abbrechen möchten?\n" +
+                                      "Der Auftrag muss anschließend erneut an die Bank gesendet werden."));
+          if(!((Boolean) yesNoDialog.open()).booleanValue())
             return;
-          }
-          Object o = Settings.getDBService().createObject((Class<? extends DBObject>) Class.forName(typ), id);
-          if (o instanceof AbstractHibiscusTransferImpl)
+          
+          if (context instanceof AbstractHibiscusTransferImpl)
           {
-            AbstractHibiscusTransferImpl job = (AbstractHibiscusTransferImpl) o;
-
-            VoPResultItem item = result.getItems().get(0);
-            if (!item.getName().isBlank()
-                && job.getGegenkontoNummer().equals(item.getIban()) 
-                && job.getGegenkontoName().equals(item.getOriginal()) 
-                && job.getBetrag() == item.getAmount().doubleValue())
+            final AbstractHibiscusTransferImpl job = (AbstractHibiscusTransferImpl) context;
+            // Einzel-Auftrag. Dann kann es auch nur einen Namensvorschlag geben
+            final VoPResultItem item = result.getItems().get(0);
+            if (matches(job,item))
             {
               job.setGegenkontoName(item.getName());
+              Logger.info("apply name suggestion to job [id: " + job.getID() + "]");
               job.store();
             }
           } 
-          else if (o instanceof AbstractSepaSammelTransferImpl)
+          else if (context instanceof AbstractSepaSammelTransferImpl)
           {
-            AbstractSepaSammelTransferImpl job = (AbstractSepaSammelTransferImpl) o;
-            for ( Object b : job.getBuchungen())
+            final AbstractSepaSammelTransferImpl<SepaSammelTransferBuchung> job = (AbstractSepaSammelTransferImpl) context;
+            for (SepaSammelTransferBuchung b:job.getBuchungen())
             {
-              SepaSammelTransferBuchung sammelJob = (SepaSammelTransferBuchung) b;
-              for (VoPResultItem item : result.getItems())
+              for (VoPResultItem item:result.getItems())
               {
-                if (!item.getName().isBlank()
-                    && sammelJob.getGegenkontoNummer().equals(item.getIban()) 
-                    && sammelJob.getGegenkontoName().equals(item.getOriginal()) 
-                    && sammelJob.getBetrag() == item.getAmount().doubleValue())
+                if (matches(b,item))
                 {
-                  sammelJob.setGegenkontoName(item.getName());
-                  sammelJob.store();
-                  break;
+                  b.setGegenkontoName(item.getName());
+                  Logger.info("apply name suggestion to batch booking entry [id: " + b.getID() + "]");
+                  b.store();
                 }
               }
             }
@@ -236,12 +239,55 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
         }
         catch (Exception e)
         {
-          Logger.error("unable to get task object", e);
+          Logger.error("unable to apply job data", e);
         }
       }
     },null,false,"document-save.png");
     
     return this.save;
+  }
+  
+  /**
+   * Prüft, ob der Auftrag zu diesem Namensvorschlag gehört.
+   * @param t der Auftrag.
+   * @param i der Namensvorschlag.
+   * @return true, wenn er passt.
+   */
+  private boolean matches(Transfer t, VoPResultItem i)
+  {
+    try
+    {
+      if (t == null || i == null)
+        return false;
+      
+      final String name = i.getName();
+      
+      // Wir haben gar keinen Namensvorschlag
+      if (name == null || name.isBlank())
+        return false;
+      
+      final String iban1 = StringUtils.trimToNull(t.getGegenkontoNummer());
+      final String iban2 = StringUtils.trimToNull(i.getIban());
+
+      final double d1 = t.getBetrag();
+      final BigDecimal d2 = i.getAmount();
+
+      // IBAN fehlt
+      if (iban1 == null || iban2 == null)
+        return false;
+
+      // Beträge ungültig
+      if (Double.isNaN(d1) || d2 == null)
+        return false;
+
+      final boolean ibanMatch = iban1.replace(" ","").equalsIgnoreCase(iban2.replace(" ",""));
+      return ibanMatch && (d2.compareTo(BigDecimal.valueOf(d1)) == 0);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to compare job with vop item",e);
+      return false;
+    }
   }
   
   /**

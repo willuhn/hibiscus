@@ -25,11 +25,15 @@ import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.callback.HBCICallbackConsole;
 import org.kapott.hbci.manager.Feature;
 import org.kapott.hbci.manager.HBCIUtils;
+import org.kapott.hbci.passport.AbstractHBCIPassport;
+import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.gui.CustomDateFormat;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
+import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.server.DBSupportH2Impl;
 import de.willuhn.jameica.hbci.server.HBCIDBServiceImpl;
+import de.willuhn.jameica.hbci.server.hbci.HBCIContext;
 import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Version;
@@ -407,6 +411,31 @@ public class HBCI extends AbstractPlugin
         }
       }
     }
+  }
+  
+  /**
+   * Versucht den zugehoerigen Auftrag zu ermitteln.
+   * @param passport der Passport.
+   * @return der Auftrag oder NULL, wenn er nicht ermittelbar war.
+   */
+  public static HibiscusDBObject getContext(HBCIPassport passport)
+  {
+    String externalId = null;
+    
+    try
+    {
+      if (!(passport instanceof AbstractHBCIPassport))
+        return null;
+      
+      externalId = (String) ((AbstractHBCIPassport)passport).getPersistentData(AbstractHBCIPassport.KEY_EXTERNAL_ID);
+      return HBCIContext.unserialize(externalId);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to load transfer for external id: " + externalId,e);
+    }
+    
+    return null;
   }
   
 }

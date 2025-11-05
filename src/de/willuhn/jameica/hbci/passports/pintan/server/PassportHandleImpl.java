@@ -40,10 +40,8 @@ import de.willuhn.jameica.hbci.passports.pintan.SelectConfigDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TANDialog;
 import de.willuhn.jameica.hbci.passports.pintan.TanMediaDialog;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
-import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
-import de.willuhn.jameica.hbci.server.hbci.HBCIContext;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
@@ -337,7 +335,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         Logger.debug("got phototan code, using phototan dialog");
         final MatrixCode code = new MatrixCode(retData.toString());
         TANDialog dialog = new PhotoTANDialog(config,code.getImage());
-        dialog.setContext(this.getContext(passport));
+        dialog.setContext(HBCI.getContext(passport));
         dialog.setText(msg);
         retData.replace(0,retData.length(),(String)dialog.open());
         return true;
@@ -348,7 +346,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
         Logger.debug("got QR tan code, using qrtan dialog");
         final QRCode code = new QRCode(retData.toString(),msg);
         TANDialog dialog = new PhotoTANDialog(config,code.getImage());
-        dialog.setContext(this.getContext(passport));
+        dialog.setContext(HBCI.getContext(passport));
         dialog.setText(code.getMessage());
         retData.replace(0,retData.length(),(String)dialog.open());
         return true;
@@ -358,7 +356,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
       {
         Logger.debug("got decoupled tan code, using pushtan 2.0 dialog");
         TANDialog dialog = new DecoupledTANDialog(config);
-        dialog.setContext(this.getContext(passport));
+        dialog.setContext(HBCI.getContext(passport));
         dialog.setText(msg);
         
         // Die Antwort brauchen wir nicht
@@ -412,7 +410,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
           dialog = new TANDialog(config);
         }
         
-        dialog.setContext(this.getContext(passport));
+        dialog.setContext(HBCI.getContext(passport));
         dialog.setText(msg);
         retData.replace(0,retData.length(),(String)dialog.open());
         return true;
@@ -486,31 +484,6 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
     return false;
   }
   
-  /**
-   * Versucht den zugehoerigen Auftrag zu ermitteln.
-   * @param passport der Passport.
-   * @return der Auftrag oder NULL, wenn er nicht ermittelbar war.
-   */
-  private HibiscusDBObject getContext(HBCIPassport passport)
-  {
-    String externalId = null;
-    
-    try
-    {
-      if (!(passport instanceof AbstractHBCIPassport))
-        return null;
-      
-      externalId = (String) ((AbstractHBCIPassport)passport).getPersistentData("externalid");
-      return HBCIContext.unserialize(externalId);
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load transfer for external id: " + externalId,e);
-    }
-    
-    return null;
-  }
-
   /**
    * Prueft, ob der Flicker-Code in einen QR-Code konvertiert werden soll.
    * @throws RemoteException
