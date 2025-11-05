@@ -20,8 +20,11 @@ import org.kapott.hbci.GV_Result.GVRVoP.VoPResult;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPResultItem;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPStatus;
 
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.internal.buttons.Cancel;
@@ -38,7 +41,13 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
+import de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl;
+import de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -57,18 +66,24 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
   private VoPResult result       = null;
   private TablePart entries      = null;
   private Button apply           = null;
+  private Button save           = null;
   private Boolean choice         = Boolean.FALSE;
+  private String id              = null;
+  private String typ             = null;
 
   /**
    * ct.
    * @param text der von der Bank gemeldete Text.
    * @param result das Ergebnis der VoP-Prüfung.
+   * @param indentifyer typ und id des Jobs 
    */
-  public VoPResultDialog(String text, VoPResult result)
+  public VoPResultDialog(String text, VoPResult result, String indentifyer)
   {
     super(VoPResultDialog.POSITION_CENTER);
     this.text = text != null && text.length() > 0 ? text : result.getText();
     this.result = result;
+    typ = indentifyer.substring(0,indentifyer.indexOf(":"));
+    id = indentifyer.substring(indentifyer.indexOf(":")+1);
     this.setTitle(i18n.tr(this.result.getItems().size() > 1 ? "Namensabgleich der Empfänger" : "Namensabgleich des Empfängers"));
     this.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
   }
@@ -112,6 +127,16 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
 
     ButtonArea buttons = new ButtonArea();
     buttons.addButton(getApply());
+    
+    //Save Button nur anzeigen, wenn mindestens ein CloseMatch existiert
+    for(VoPResultItem item:this.result.getItems())
+    {
+      if(item.getStatus().equals(VoPStatus.CLOSE_MATCH))
+      {
+        buttons.addButton(getSaveChanges());
+        break;
+      }
+    }
     buttons.addButton(new Cancel());
     container.addButtonArea(buttons);
     
@@ -140,6 +165,85 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     return this.apply;
   }
 
+  /**
+   * Liefert den Änderungen-Übernehmen-Button.
+   * @return der Änderungen-Übernehmen-Button.
+   */
+  private Button getSaveChanges()
+  {
+    if (this.save != null)
+      return this.save;
+    
+    this.save = new Button(i18n.tr("Änderungen übernehmen und Abbrechen"),new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          YesNoDialog yesNoDialog = new YesNoDialog(POSITION_CENTER);
+          yesNoDialog.setTitle("Änderungen speichern");
+          yesNoDialog.setText(
+              "Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen\n"
+              + "und die Ausführung anschließend abbrechen möchten?\n"
+              + "Der Auftrag muss anschließend erneut an die Bank gesendet werden.");
+          if(!(boolean) yesNoDialog.open())
+          {
+            return;
+          }
+          Object o = Settings.getDBService().createObject((Class<? extends DBObject>) Class.forName(typ), id);
+          if (o instanceof AbstractHibiscusTransferImpl)
+          {
+            AbstractHibiscusTransferImpl job = (AbstractHibiscusTransferImpl) o;
+
+            VoPResultItem item = result.getItems().get(0);
+            if (!item.getName().isBlank()
+                && job.getGegenkontoNummer().equals(item.getIban()) 
+                && job.getGegenkontoName().equals(item.getOriginal()) 
+                && job.getBetrag() == item.getAmount().doubleValue())
+            {
+              job.setGegenkontoName(item.getName());
+              job.store();
+            }
+          } 
+          else if (o instanceof AbstractSepaSammelTransferImpl)
+          {
+            AbstractSepaSammelTransferImpl job = (AbstractSepaSammelTransferImpl) o;
+            for ( Object b : job.getBuchungen())
+            {
+              SepaSammelTransferBuchung sammelJob = (SepaSammelTransferBuchung) b;
+              for (VoPResultItem item : result.getItems())
+              {
+                if (!item.getName().isBlank()
+                    && sammelJob.getGegenkontoNummer().equals(item.getIban()) 
+                    && sammelJob.getGegenkontoName().equals(item.getOriginal()) 
+                    && sammelJob.getBetrag() == item.getAmount().doubleValue())
+                {
+                  sammelJob.setGegenkontoName(item.getName());
+                  sammelJob.store();
+                  break;
+                }
+              }
+            }
+          }
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Änderungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+          GUI.getCurrentView().reload();
+          throw new OperationCanceledException();
+        } 
+        catch(OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to get task object", e);
+        }
+      }
+    },null,false,"document-save.png");
+    
+    return this.save;
+  }
+  
   /**
    * Liefert die Liste der Namen.
    * @return Liste der abhaengigen Daten.
