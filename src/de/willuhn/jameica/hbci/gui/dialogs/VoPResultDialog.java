@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
@@ -23,12 +24,13 @@ import org.kapott.hbci.GV_Result.GVRVoP.VoPResult;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPResultItem;
 import org.kapott.hbci.GV_Result.GVRVoP.VoPStatus;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.internal.buttons.Cancel;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
@@ -43,11 +45,14 @@ import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Transfer;
 import de.willuhn.jameica.hbci.server.AbstractHibiscusTransferImpl;
 import de.willuhn.jameica.hbci.server.AbstractSepaSammelTransferImpl;
+import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -194,13 +199,11 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
       {
         try
         {
-          final YesNoDialog yesNoDialog = new YesNoDialog(POSITION_CENTER);
-          yesNoDialog.setTitle(i18n.tr("Änderungen speichern"));
-          yesNoDialog.setText(i18n.tr("Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen und die Ausführung anschließend abbrechen möchten?\n" +
-                                      "Der Auftrag muss anschließend erneut an die Bank gesendet werden."));
-          if(!((Boolean) yesNoDialog.open()).booleanValue())
+          final UpdateDialog updateDialog = new UpdateDialog(POSITION_CENTER);
+         
+          if(!((Boolean) updateDialog.open()).booleanValue())
             return;
-          
+                    
           if (context instanceof AbstractHibiscusTransferImpl)
           {
             final AbstractHibiscusTransferImpl job = (AbstractHibiscusTransferImpl) context;
@@ -211,6 +214,9 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
               job.setGegenkontoName(item.getName());
               Logger.info("apply name suggestion to job [id: " + job.getID() + "]");
               job.store();
+              
+              if(updateDialog.getChangeAdressbuch())
+                changeAdressbook(item);
             }
           } 
           else if (context instanceof AbstractSepaSammelTransferImpl)
@@ -225,6 +231,9 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
                   b.setGegenkontoName(item.getName());
                   Logger.info("apply name suggestion to batch booking entry [id: " + b.getID() + "]");
                   b.store();
+                  
+                  if(updateDialog.getChangeAdressbuch())
+                    changeAdressbook(item);
                 }
               }
             }
@@ -247,6 +256,25 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     return this.save;
   }
   
+  private void changeAdressbook(VoPResultItem item) throws RemoteException, ApplicationException
+  {
+    DBIterator<HibiscusAddress> it = Settings.getDBService().createList(HibiscusAddress.class);
+    it.addFilter("lower(replace(iban,' ','')) = ?", item.getIban().replace(" ", "").toLowerCase());
+    if (it.hasNext())
+    {
+      HibiscusAddress adress = it.next();
+      adress.setName(item.getName());
+      adress.store();
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Name im Adressbuch aktuallisiert"),StatusBarMessage.TYPE_INFO));
+    }
+    else
+    {
+      Logger.error("Keine Adresse mit IBAN '"+item.getIban()+"' im Adressbuch gefunden");
+    }
+    //Message senden, damit andere Plugins ggf. den Namen aktualisieren können
+    Application.getMessagingFactory().getMessagingQueue("hibiscus.vop.updateaddress").sendMessage(new QueryMessage(item.getIban(),item.getName()));
+  }
+
   /**
    * Prüft, ob der Auftrag zu diesem Namensvorschlag gehört.
    * @param t der Auftrag.
@@ -443,5 +471,69 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
   protected Boolean getData() throws Exception
   {
     return choice;
+  }
+
+  private class UpdateDialog extends AbstractDialog
+  {
+    private boolean choice = false;
+    private boolean changeAdressbuch = false;
+    private CheckboxInput adressbuch;
+
+    public UpdateDialog(int position)
+    {
+      super(position);
+    }
+
+    private CheckboxInput getAdressbuch()
+    {
+      if (adressbuch != null)
+        return adressbuch;
+
+      adressbuch = new CheckboxInput(false);
+      return adressbuch;
+    }
+    
+    public boolean getChangeAdressbuch() {
+      return changeAdressbuch;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#paint(org.eclipse.swt.widgets.Composite)
+     */
+    protected void paint(Composite parent) throws Exception
+    {
+      Container container = new SimpleContainer(parent);
+      setTitle(i18n.tr("Änderungen speichern"));
+      container
+          .addText(i18n.tr("Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen und die Ausführung anschließend abbrechen möchten?\n"
+              + "Der Auftrag muss anschließend erneut an die Bank gesendet werden."), true);
+      container.addLabelPair(i18n.tr("Änderungen auch in Adressbuch übernehmen"), getAdressbuch());
+
+      ButtonArea buttons = new ButtonArea();
+
+      buttons.addButton("   " + i18n.tr("Ja") + "   ", context -> {
+        choice = true;
+        changeAdressbuch = (boolean) getAdressbuch().getValue();
+        close();
+      }, null, false, "ok.png");
+
+      buttons.addButton("   " + i18n.tr("Nein") + "   ", context -> {
+        choice = false;
+        close();
+      }, null, false, "process-stop.png");
+
+      container.addButtonArea(buttons);
+
+      getShell().setMinimumSize(400, SWT.DEFAULT);
+      getShell().setSize(getShell().computeSize(400, SWT.DEFAULT));
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.dialogs.AbstractDialog#getData()
+     */
+    protected Object getData() throws Exception
+    {
+      return Boolean.valueOf(choice);
+    }
   }
 }
