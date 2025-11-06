@@ -262,17 +262,17 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     
     DBIterator<HibiscusAddress> it = Settings.getDBService().createList(HibiscusAddress.class);
     it.addFilter("lower(replace(iban,' ','')) = ?", iban.replace(" ", "").toLowerCase());
-    if (!it.hasNext())
+    if (it.hasNext())
+    {
+      HibiscusAddress adress = it.next();
+      adress.setName(item.getName());
+      adress.store();
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Name im Adressbuch aktualisiert"),StatusBarMessage.TYPE_INFO));
+    }
+    else
     {
       Logger.info("no address book entry found with IBAN '" + iban);
-      return;
-      
     }
-    
-    HibiscusAddress adress = it.next();
-    adress.setName(item.getName());
-    adress.store();
-    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Name im Adressbuch aktualisiert"),StatusBarMessage.TYPE_INFO));
     
     // Message senden, damit andere Plugins ggf. den Namen aktualisieren können
     Application.getMessagingFactory().getMessagingQueue("hibiscus.vop.updateaddress").sendMessage(new QueryMessage(iban,item.getName()));
