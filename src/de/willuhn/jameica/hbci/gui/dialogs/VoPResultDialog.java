@@ -258,21 +258,24 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
   
   private void changeAdressbook(VoPResultItem item) throws RemoteException, ApplicationException
   {
+    final String iban = item.getIban();
+    
     DBIterator<HibiscusAddress> it = Settings.getDBService().createList(HibiscusAddress.class);
-    it.addFilter("lower(replace(iban,' ','')) = ?", item.getIban().replace(" ", "").toLowerCase());
-    if (it.hasNext())
+    it.addFilter("lower(replace(iban,' ','')) = ?", iban.replace(" ", "").toLowerCase());
+    if (!it.hasNext())
     {
-      HibiscusAddress adress = it.next();
-      adress.setName(item.getName());
-      adress.store();
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Name im Adressbuch aktuallisiert"),StatusBarMessage.TYPE_INFO));
+      Logger.info("no address book entry found with IBAN '" + iban);
+      return;
+      
     }
-    else
-    {
-      Logger.error("Keine Adresse mit IBAN '"+item.getIban()+"' im Adressbuch gefunden");
-    }
-    //Message senden, damit andere Plugins ggf. den Namen aktualisieren können
-    Application.getMessagingFactory().getMessagingQueue("hibiscus.vop.updateaddress").sendMessage(new QueryMessage(item.getIban(),item.getName()));
+    
+    HibiscusAddress adress = it.next();
+    adress.setName(item.getName());
+    adress.store();
+    Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Name im Adressbuch aktualisiert"),StatusBarMessage.TYPE_INFO));
+    
+    // Message senden, damit andere Plugins ggf. den Namen aktualisieren können
+    Application.getMessagingFactory().getMessagingQueue("hibiscus.vop.updateaddress").sendMessage(new QueryMessage(iban,item.getName()));
   }
 
   /**
