@@ -84,7 +84,6 @@ public class VersionUtil
     if (name == null || name.length() == 0)
       throw new RemoteException("no name given");
 
-    int i = service.executeUpdate("delete from version where name = ?",name);
-    return i;
+    return service.executeUpdate("delete from version where name = ?",name);
   }
 }
