@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -207,7 +208,7 @@ public class MoneyplexUmsatzImporter implements Importer
       {
         Umsatz copy = umsatz.duplicate();
         String usage = getContent(p.getFirstChildNamed("ZWECK"));
-        if (usage != null) VerwendungszweckUtil.apply(copy,usage.split("@")); // Moneyplex scheint das "@" als Trennzeichen zu nehmen
+        if (usage != null) VerwendungszweckUtil.applyCamt(copy, Arrays.asList(usage.split("@"))); // Moneyplex scheint das "@" als Trennzeichen zu nehmen
         copy.setUmsatzTyp(createTyp(p.getFirstChildNamed("KATEGORIE")));
         copy.setBetrag(parseBetrag(p.getFirstChildNamed("BETRAG")));
         copy.store();
@@ -227,7 +228,7 @@ public class MoneyplexUmsatzImporter implements Importer
     
     // Ne, ist eine Einzel-Buchung
     String usage = getContent(line.getFirstChildNamed("ZWECK"));
-    if (usage != null) VerwendungszweckUtil.apply(umsatz,usage.split("@"));
+    if (usage != null) VerwendungszweckUtil.applyCamt(umsatz, Arrays.asList(usage.split("@")));
     umsatz.setUmsatzTyp(createTyp(line.getFirstChildNamed("KATEGORIE")));
     umsatz.setBetrag(parseBetrag(line.getFirstChildNamed("BETRAG")));
     umsatz.store();
