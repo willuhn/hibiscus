@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.gui.parts.columns.AusgefuehrtColumn;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
@@ -47,6 +48,7 @@ public class SepaLastschriftList extends AbstractTransferList
   {
     addColumn(new KontoColumn());
     addColumn(i18n.tr("Gegenkonto Inhaber"),"empfaenger_name");
+    addColumn(i18n.tr("Gegenkonto IBAN"),"empfaenger_konto",new IbanFormatter());
     addColumn(i18n.tr("Gegenkonto BIC"),"empfaenger_bic");
     addColumn(i18n.tr("Verwendungszweck"),"zweck");
     addColumn(i18n.tr("Betrag"),"betrag", new CurrencyFormatter(HBCIProperties.CURRENCY_DEFAULT_DE,HBCI.DECIMALFORMAT));
