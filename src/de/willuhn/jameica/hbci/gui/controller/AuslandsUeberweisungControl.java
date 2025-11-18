@@ -13,6 +13,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -29,6 +30,7 @@ import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.HibiscusAddressUpdate;
@@ -87,6 +89,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
 
   private TerminInput termin                 = null;
   private SelectInput typ                    = null;
+  private CheckboxInput saveTyp              = null;
   private ReminderIntervalInput interval     = null;
 
   private CheckboxInput storeEmpfaenger      = null;
@@ -311,12 +314,10 @@ public class AuslandsUeberweisungControl extends AbstractControl
     betrag = new DecimalInput(d,HBCI.DECIMALFORMAT);
 
     Konto k = t.getKonto();
-    betrag.setComment(k == null ? "" : k.getWaehrung());
+    betrag.setComment(k == null ? HBCIProperties.CURRENCY_DEFAULT_DE : k.getWaehrung());
     betrag.setMandatory(true);
     betrag.setEnabled(!getTransfer().ausgefuehrt());
     
-    new KontoListener().handleEvent(null);
-
     return betrag;
   }
 
@@ -439,7 +440,22 @@ public class AuslandsUeberweisungControl extends AbstractControl
     this.terminListener.handleEvent(null); // einmal initial ausloesen
     return this.typ;
   }
-
+  
+  /**
+   * Liefert eine Checkbox, mit der eingestellt werden kann, ob die Vorauswahl des Auftragstyps gespeichert werden soll.
+   * @return Checkbox.
+   * @throws RemoteException
+   */
+  public CheckboxInput getSaveTyp() throws RemoteException
+  {
+    if (this.saveTyp != null)
+      return this.saveTyp;
+    
+    this.saveTyp = new CheckboxInput(Boolean.parseBoolean(MetaKey.UEBERWEISUNG_TYP_SAVE.get((Konto) this.getKontoAuswahl().getValue())));
+    this.saveTyp.setName(i18n.tr("Als Vorauswahl für das Konto speichern"));
+    return this.saveTyp;
+  }
+  
   /**
    * Speichert den Geld-Transfer.
    * @return true, wenn das Speichern erfolgreich war, sonst false.
@@ -456,17 +472,18 @@ public class AuslandsUeberweisungControl extends AbstractControl
       
       t.transactionBegin();
 
-      Double d = (Double) getBetrag().getValue();
-      t.setBetrag(d == null ? Double.NaN : d.doubleValue());
+      final Konto k = (Konto) getKontoAuswahl().getValue();
+      final Double d = (Double) getBetrag().getValue();
+      final AuslandsUeberweisungTyp typ = (AuslandsUeberweisungTyp) getTyp().getValue();
       
-      t.setKonto((Konto)getKontoAuswahl().getValue());
+      t.setBetrag(d == null ? Double.NaN : d.doubleValue());
+      t.setKonto(k);
       t.setZweck((String)getZweck().getValue());
       t.setTermin((Date) getTermin().getValue());
       t.setEndtoEndId((String) getEndToEndId().getValue());
       t.setPmtInfId((String) getPmtInfId().getValue());
       t.setPurposeCode((String)getPurposeCode().getValue());
 
-      AuslandsUeberweisungTyp typ = (AuslandsUeberweisungTyp) getTyp().getValue();
       if (typ != null)
         typ.apply(t);
 
@@ -480,11 +497,16 @@ public class AuslandsUeberweisungControl extends AbstractControl
       
       t.store();
 
+      //////////////////////////////////////////////////////////////////
       // Reminder-Intervall speichern
       ReminderIntervalInput input = this.getReminderInterval();
       if (input.containsInterval())
         ReminderUtil.apply(t,(ReminderInterval) input.getValue(), input.getEnd());
+      //
+      //////////////////////////////////////////////////////////////////
 
+      //////////////////////////////////////////////////////////////////
+      // Adresse übernehmen
       {
         final Boolean store = (Boolean) getStoreEmpfaenger().getValue();
         this.aUpdate.setCreate(store.booleanValue());
@@ -494,6 +516,23 @@ public class AuslandsUeberweisungControl extends AbstractControl
         e.setBic(bic);
         this.aUpdate.handleAction(e);
       }
+      //
+      //////////////////////////////////////////////////////////////////
+      
+      //////////////////////////////////////////////////////////////////
+      // Vorauswahl des Auftragstyps
+      final boolean save = ((Boolean) getSaveTyp().getValue()).booleanValue();
+      MetaKey.UEBERWEISUNG_TYP_SAVE.set(k,Boolean.toString(save));
+      if (save)
+      {
+        final String ct = MetaKey.UEBERWEISUNG_TYP.get(k);
+        if (typ != null && !Objects.equals(ct,typ.name()))
+        {
+          MetaKey.UEBERWEISUNG_TYP.set(k,typ.name());
+          Logger.info("task preset type changed for konto " + k.getID() + ": " + typ + " (was: " + ct + ")");
+        }
+      }
+
       GUI.getStatusBar().setSuccessText(i18n.tr("Auftrag gespeichert"));
       t.transactionCommit();
 
@@ -548,32 +587,49 @@ public class AuslandsUeberweisungControl extends AbstractControl
   }
 
   /**
-   * Listener, der die Auswahl des Kontos ueberwacht und die Waehrungsbezeichnung
-   * hinter dem Betrag abhaengig vom ausgewaehlten Konto anpasst.
+   * Listener, der die Auswahl des Kontos ueberwacht. 
    */
   private class KontoListener implements Listener
   {
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
-    public void handleEvent(Event event) {
-
-      try {
-        Object o = getKontoAuswahl().getValue();
-        if (o == null || !(o instanceof Konto))
-        {
-          getBetrag().setComment("");
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        final Konto k = (Konto) getKontoAuswahl().getValue();
+        final AuslandsUeberweisung t = getTransfer();
+        getBetrag().setComment(k != null ? k.getWaehrung() : HBCIProperties.CURRENCY_DEFAULT_DE);
+        if (k == null)
           return;
-        }
 
-        Konto konto = (Konto) o;
-        getBetrag().setComment(konto.getWaehrung());
-        getTransfer().setKonto(konto);
+        t.setKonto(k);
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Automatische Auswahl der Auftragsart
+        
+        final boolean save = Boolean.parseBoolean(MetaKey.UEBERWEISUNG_TYP_SAVE.get(k));
+        getSaveTyp().setValue(save);
+        
+        if (!save)
+          return;
+        
+        final AuslandsUeberweisungTyp ct = (AuslandsUeberweisungTyp) getTyp().getValue();
+        final AuslandsUeberweisungTyp nt = AuslandsUeberweisungTyp.byName(MetaKey.UEBERWEISUNG_TYP.get(k));
+        if (ct == nt)
+          return;
+        
+        getTyp().setValue(nt);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Auftragstyp geändert in: {0}",nt.getDescription()),StatusBarMessage.TYPE_INFO));
+
+        //
+        ///////////////////////////////////////////////////////////////////////
+        
       }
       catch (RemoteException er)
       {
-        Logger.error("error while updating currency",er);
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei Ermittlung der Währung"));
+        Logger.error("error while updating account info",er);
       }
     }
   }

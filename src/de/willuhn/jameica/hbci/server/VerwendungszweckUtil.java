@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -27,7 +28,6 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -637,38 +637,42 @@ public class VerwendungszweckUtil
     try
     {
       // Map mit den Ersetzungen erstellen
-      final Map<String,Object> ctx = new HashMap<>();
+      final Map<String,String> replace = new HashMap<>();
       final Calendar cal = Calendar.getInstance();
       final String year = Integer.toString(cal.get(Calendar.YEAR));
       final String month = String.format("%02d",cal.get(Calendar.MONTH) + 1);
       final String day = String.format("%02d",cal.get(Calendar.DATE));
 
       // Wir erlauben verschiedene Schreibweisen
-      ctx.put("jahr",year);
-      ctx.put("Jahr",year);
-      ctx.put("year",year);
-      ctx.put("Year",year);
-      ctx.put("yyyy",year);
-      ctx.put("jjjj",year);
-      ctx.put("YYYY",year);
-      ctx.put("JJJJ",year);
-      ctx.put("monat",month);
-      ctx.put("Monat",month);
-      ctx.put("month",month);
-      ctx.put("Month",month);
-      ctx.put("mm",month);
-      ctx.put("MM",month);
-      ctx.put("tag",day);
-      ctx.put("Tag",day);
-      ctx.put("day",day);
-      ctx.put("Day",day);
-      ctx.put("dd",day);
-      ctx.put("DD",day);
-      ctx.put("tt",day);
-      ctx.put("TT",day);
+      replace.put("$jahr",year);
+      replace.put("$Jahr",year);
+      replace.put("$year",year);
+      replace.put("$Year",year);
+      replace.put("$yyyy",year);
+      replace.put("$jjjj",year);
+      replace.put("$YYYY",year);
+      replace.put("$JJJJ",year);
+      replace.put("$monat",month);
+      replace.put("$Monat",month);
+      replace.put("$month",month);
+      replace.put("$Month",month);
+      replace.put("$mm",month);
+      replace.put("$MM",month);
+      replace.put("$tag",day);
+      replace.put("$Tag",day);
+      replace.put("$day",day);
+      replace.put("$Day",day);
+      replace.put("$dd",day);
+      replace.put("$DD",day);
+      replace.put("$tt",day);
+      replace.put("$TT",day);
+
+      for (Entry<String,String> e:replace.entrySet())
+      {
+        text = text.replace(e.getKey(),e.getValue());
+      }
       
-      final VelocityService velocity = Application.getBootLoader().getBootable(VelocityService.class);
-      return velocity.merge(text,ctx);
+      return text;
     }
     catch (Exception e)
     {

@@ -12,6 +12,8 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.system.Application;
@@ -84,6 +86,26 @@ public enum AuslandsUeberweisungTyp
       return UMBUCHUNG;
     
     return UEBERWEISUNG;
+  }
+  
+  /**
+   * Liefert die Enum für den Namen.
+   * @param name der Name.
+   * @return der Typ oder NULL, wenn keiner oder ein ungültiger angegeben ist.
+   */
+  public static AuslandsUeberweisungTyp byName(String name)
+  {
+    name = StringUtils.trimToNull(name);
+    if (name == null)
+      return null;
+
+    for (AuslandsUeberweisungTyp t:values())
+    {
+      if (t.name().equalsIgnoreCase(name))
+        return t;
+    }
+    
+    return null;
   }
   
   /**

@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.KontoauszugInterval;
+import de.willuhn.jameica.hbci.server.AuslandsUeberweisungTyp;
 import de.willuhn.jameica.system.Application;
 
 /**
@@ -111,6 +112,16 @@ public enum MetaKey
    * ID der Duplizierungsvorlage.
    */
   DUPLICATE_ID("duplicate.id","Duplizierungsvorlage",null),
+  
+  /**
+   * True, wenn die Vorauswahl des Auftragstyps im Konto gespeichert werden soll.
+   */
+  UEBERWEISUNG_TYP_SAVE("ueberweisung.typ.save","Vorauswahl des Auftragstyps speichern",null),
+
+  /**
+   * Vorauswahl des Auftragstyps.
+   */
+  UEBERWEISUNG_TYP("ueberweisung.typ","Vorauswahl des Auftragstyps",AuslandsUeberweisungTyp.INSTANT.name()),
 
 
   ;
@@ -193,7 +204,7 @@ public enum MetaKey
     String key = this.name;
     if (suffix != null)
       key = key + "." + suffix;
-    return o.getMeta(key,this.defaultValue);
+    return o != null ? o.getMeta(key,this.defaultValue) : this.defaultValue;
   }
   
   /**

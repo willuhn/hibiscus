@@ -85,6 +85,8 @@ public class AuslandsUeberweisungNew extends AbstractView
       container.addInput(control.getPurposeCode());
       container.addHeadline(i18n.tr("Sonstige Informationen"));
       container.addInput(control.getTyp());
+      
+      container.addLabelPair("",control.getSaveTyp());
       container.addInput(control.getTermin());
     }
 
