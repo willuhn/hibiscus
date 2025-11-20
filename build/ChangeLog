@@ -1,5 +1,7 @@
 HEAD 2.13 (nightly)
 
+2025-11-20 Version 2.12.1
+
   * NEW: 1162 Vorgabewert für Auftragsart pro Konto speichern (pro Konto per Option aktivierbar)
   * NEW: 1161 In den Auftragslisten auch die IBAN des Gegenkontos mit anzeigen
   * NEW: 1160 Option zum Übernehmen des VoP-Namensvorschlages in den Auftrag und in das Adressbuch
