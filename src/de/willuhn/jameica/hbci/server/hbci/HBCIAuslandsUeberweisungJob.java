@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRInstUebSEPA;
+import org.kapott.hbci.GV_Result.HBCIJobResult;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -176,9 +177,10 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
    */
   protected void markExecuted() throws RemoteException, ApplicationException
   {
-    if (this.isInstant)
+    final HBCIJobResult r = this.getJobResult();
+    if (this.isInstant && (r instanceof GVRInstUebSEPA))
     {
-      GVRInstUebSEPA result = (GVRInstUebSEPA) getJobResult();
+      GVRInstUebSEPA result = (GVRInstUebSEPA) r;
       final InstantPaymentStatus status = InstantPaymentStatus.determine(result.getOrderStatus());
       if (status != null)
       {
