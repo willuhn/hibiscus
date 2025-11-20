@@ -1,5 +1,7 @@
 HEAD 2.13 (nightly)
 
+  * CHG: 1163 VoP nicht mehr über Einstellungen abschaltbar
+
 2025-11-20 Version 2.12.1
 
   * NEW: 1162 Vorgabewert für Auftragsart pro Konto speichern (pro Konto per Option aktivierbar)
