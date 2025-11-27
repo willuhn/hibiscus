@@ -32,6 +32,7 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.NotificationPanel;
 import de.willuhn.jameica.gui.parts.NotificationPanel.Type;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
@@ -212,7 +213,7 @@ public class TANDialog extends AbstractDialog
       if (this.needTan)
         setInfoText(Type.INFO,i18n.tr("Bitte geben Sie die TAN ein."));
       else
-        setInfoText(Type.INFO,i18n.tr("Bitte geben Sie den Auftrag auf Ihrem Smartphone frei."));
+        setInfoText(Type.INFO,i18n.tr("Bitte geben Sie den Auftrag erst auf Ihrem Smartphone frei."));
       
       final String auftrag = this.context != null ? HBCIContext.toString(this.context) : null;
       final boolean haveAuftrag = StringUtils.trimToNull(auftrag) != null;
@@ -257,6 +258,11 @@ public class TANDialog extends AbstractDialog
           getOkButton().setEnabled(StringUtils.trimToNull((String) tan.getValue()) != null);
         }
       });
+    }
+    else
+    {
+      final String text = i18n.tr("Achtung: Klicken Sie erst dann auf \"OK\", wenn Sie den Auftrag auf Ihrem Smartphone freigegeben haben.");
+      c.addText(text,true,Color.LINK);
     }
     
     // Unterer Erweiterungsbereich
