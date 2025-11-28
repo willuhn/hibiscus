@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * BUG: 1164 VoP: Beim Übernehmen der Namensänderung in den Auftrag wurde die Anzeige nicht korrekt aktualisiert
   * CHG: 1163 VoP nicht mehr über Einstellungen abschaltbar
 
 2025-11-20 Version 2.12.1

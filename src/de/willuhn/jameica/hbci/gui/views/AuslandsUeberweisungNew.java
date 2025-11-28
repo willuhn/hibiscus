@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungExecute;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
@@ -167,9 +168,14 @@ public class AuslandsUeberweisungNew extends AbstractView
       if (o == null)
         return;
       
+      if (!transfer.equals(o))
+        return;
+      
       // View neu laden
-      if (transfer.equals(o))
-        GUI.startView(AuslandsUeberweisungNew.this,transfer);
+      // Auftrag neu aus der Datenbank laden, weil im VoP-Dialog ein ggf. geänderter Name nur in der Datenbank
+      // aktualisiert wird - nicht aber hier im Objekt.
+      final AuslandsUeberweisung ueb = Settings.getDBService().createObject(AuslandsUeberweisung.class,transfer.getID());
+      GUI.startView(AuslandsUeberweisungNew.this,ueb);
     }
   
     /**

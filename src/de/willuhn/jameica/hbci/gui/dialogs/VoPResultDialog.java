@@ -46,6 +46,7 @@ import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
@@ -214,6 +215,7 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
               job.setGegenkontoName(item.getName());
               Logger.info("apply name suggestion to job [id: " + job.getID() + "]");
               job.store();
+              Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(job));
               
               if(updateDialog.getChangeAdressbuch())
                 changeAdressbook(item);
@@ -231,6 +233,7 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
                   b.setGegenkontoName(item.getName());
                   Logger.info("apply name suggestion to batch booking entry [id: " + b.getID() + "]");
                   b.store();
+                  Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(b));
                   
                   if(updateDialog.getChangeAdressbuch())
                     changeAdressbook(item);
@@ -476,28 +479,45 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     return choice;
   }
 
+  /**
+   * Bestätigungsdialog zur Übernahme der Änderungen in den Auftrag und ins Adressbuch.
+   */
   private class UpdateDialog extends AbstractDialog
   {
     private boolean choice = false;
     private boolean changeAdressbuch = false;
     private CheckboxInput adressbuch;
 
+    /**
+     * ct.
+     * @param position
+     */
     public UpdateDialog(int position)
     {
       super(position);
     }
 
+    /**
+     * Liefert die Checkbox, mit der festgelegt werden kann, ob auch das Adressbuch aktualisiert wird.
+     * @return die Checkbox.
+     */
     private CheckboxInput getAdressbuch()
     {
-      if (adressbuch != null)
-        return adressbuch;
+      if (this.adressbuch != null)
+        return this.adressbuch;
 
-      adressbuch = new CheckboxInput(false);
+      this.adressbuch = new CheckboxInput(false);
+      this.adressbuch.setName(i18n.tr("Änderungen auch in Adressbuch übernehmen"));
       return adressbuch;
     }
     
-    public boolean getChangeAdressbuch() {
-      return changeAdressbuch;
+    /**
+     * Liefert true, wenn auch das Adressbuch aktualisiert werden soll. 
+     * @return true, wenn auch das Adressbuch aktualisiert werden soll.
+     */
+    public boolean getChangeAdressbuch()
+    {
+      return this.changeAdressbuch;
     }
 
     /**
@@ -507,10 +527,9 @@ public class VoPResultDialog extends AbstractDialog<Boolean>
     {
       Container container = new SimpleContainer(parent);
       setTitle(i18n.tr("Änderungen speichern"));
-      container
-          .addText(i18n.tr("Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen und die Ausführung anschließend abbrechen möchten?\n"
-              + "Der Auftrag muss anschließend erneut an die Bank gesendet werden."), true);
-      container.addLabelPair(i18n.tr("Änderungen auch in Adressbuch übernehmen"), getAdressbuch());
+      container.addText(i18n.tr("Sind Sie sicher, dass sie den Änderungsvorschlag in den Auftrag übernehmen und die Ausführung anschließend abbrechen möchten?\n" +
+                                "Der Auftrag muss anschließend erneut an die Bank gesendet werden."), true);
+      container.addInput(getAdressbuch());
 
       ButtonArea buttons = new ButtonArea();
 

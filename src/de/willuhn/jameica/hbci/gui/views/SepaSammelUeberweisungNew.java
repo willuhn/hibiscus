@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.Duplicate;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungDelete;
 import de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungExecute;
@@ -183,10 +184,15 @@ public class SepaSammelUeberweisungNew extends AbstractView
       GenericObject o = ((ObjectChangedMessage) message).getObject();
       if (o == null)
         return;
+
+      if (!transfer.equals(o))
+        return;
       
       // View neu laden
-      if (transfer.equals(o))
-        GUI.startView(SepaSammelUeberweisungNew.this,transfer);
+      // Auftrag neu aus der Datenbank laden, weil im VoP-Dialog ein ggf. geänderter Name nur in der Datenbank
+      // aktualisiert wird - nicht aber hier im Objekt.
+      final SepaSammelUeberweisung ueb = Settings.getDBService().createObject(SepaSammelUeberweisung.class,transfer.getID());
+      GUI.startView(SepaSammelUeberweisungNew.this,ueb);
     }
   
     /**
