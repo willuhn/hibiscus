@@ -277,7 +277,7 @@ public class BPDUtil
 
     // Checken, ob wir fuer die UPD ueberhaupt eine Aussage treffen koennen
     {
-      String q = Prefix.UPD.value() + DBPropertyUtil.SEP + k.getKundennummer() + DBPropertyUtil.SEP + "UPA.usage";
+      String q = Prefix.UPD.value() + DBPropertyUtil.SEP + k.getKundennummer().trim() + DBPropertyUtil.SEP + "UPA.usage";
       final Boolean ignoreUpd = (Boolean) service.execute("select name,content from property where name = ?",new String[] {q},new ResultSetExtractor()
       {
         public Object extract(ResultSet rs) throws RemoteException, SQLException
@@ -296,7 +296,7 @@ public class BPDUtil
         return true;
     }
 
-    String q = Prefix.UPD.value() + DBPropertyUtil.SEP + "%" + DBPropertyUtil.SEP + "KInfo%";
+    String q = Prefix.UPD.value() + DBPropertyUtil.SEP + k.getKundennummer().trim() + DBPropertyUtil.SEP + "KInfo%";
     String segment = (String) service.execute("select name,content from property where name like ?",new String[] {q},new ResultSetExtractor()
     {
       public Object extract(ResultSet rs) throws RemoteException, SQLException
