@@ -71,7 +71,7 @@ public class Detail extends AbstractView
       if (secMech != null && secMech.isFlickerCode())
       {
         group.addHeadline(i18n.tr("ChipTAN"));
-        group.addText(i18n.tr("Hinweis: Die beiden Optionen zur Umwandlung des Flickercodes in einen QR-Code sowie die Verwendung eines Kartenlesers per USB schließen sich gegenseitig aus.\nSie können daher nur eine von beiden Optione wählen."),true, Color.COMMENT);
+        group.addText(i18n.tr("Hinweis: Die beiden Optionen zur Umwandlung des Flickercodes in einen QR-Code sowie die Verwendung eines Kartenlesers per USB schließen sich gegenseitig aus.\nSie können daher nur eine von beiden Optionen wählen."),true, Color.COMMENT);
         group.addInput(control.getConvertQr());
         
         CheckboxInput check = control.getChipTANUSB();
