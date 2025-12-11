@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * BUG: 1166 Durch neue Spalten in den Auftragslisten waren Fett-Formatierungen und Infos zum Intervall falsch in der falschen Spalte - siehe https://homebanking-hilfe.de/forum/topic.php?t=27950
   * BUG: 1165 CAMT-Support wurde u.U. nicht korrekt erkannt, wenn sich die Kundenkennung des Kontos früher mal geändert hatte
   * BUG: 1164 VoP: Beim Übernehmen der Namensänderung in den Auftrag wurde die Anzeige nicht korrekt aktualisiert
   * CHG: 1163 VoP nicht mehr über Einstellungen abschaltbar

@@ -88,8 +88,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
 
         try
         {
-          if (bold)
-            item.setFont(4,Font.BOLD.getSWTFont());
+          item.setFont(5,bold ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
 
           Date termin = l.getTermin();
           boolean faellig = l.ueberfaellig() && !l.ausgefuehrt();
@@ -105,12 +104,12 @@ public abstract class AbstractTransferList extends AbstractFromToList
             try
             {
               Reminder r = provider.get(uuid);
-              item.setImage(5,SWTUtil.getImage("preferences-system-time.png"));
+              item.setImage(6,SWTUtil.getImage("preferences-system-time.png"));
               Date end = r.getEnd();
               if (end != null)
-                item.setText(5,i18n.tr("{0} - {1} \n{2}",HBCI.DATEFORMAT.format(termin),HBCI.DATEFORMAT.format(end),r.getReminderInterval().toString()));
+                item.setText(6,i18n.tr("{0} - {1} \n{2}",HBCI.DATEFORMAT.format(termin),HBCI.DATEFORMAT.format(end),r.getReminderInterval().toString()));
               else
-                item.setText(5,i18n.tr("ab {0} \n{1}",HBCI.DATEFORMAT.format(termin),r.getReminderInterval().toString()));
+                item.setText(6,i18n.tr("ab {0} \n{1}",HBCI.DATEFORMAT.format(termin),r.getReminderInterval().toString()));
             }
             catch (Exception e)
             {
@@ -119,7 +118,7 @@ public abstract class AbstractTransferList extends AbstractFromToList
           }
           else if (MetaKey.REMINDER_TEMPLATE.get(o) != null)
           {
-            item.setImage(5,SWTUtil.getImage("edit-copy.png"));
+            item.setImage(6,SWTUtil.getImage("edit-copy.png"));
           }
         }
         catch (RemoteException e)

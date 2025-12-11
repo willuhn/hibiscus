@@ -74,9 +74,7 @@ public class SimpleSepaLastschriftList extends TablePart
 
         try
         {
-          if (bold)
-            item.setFont(4,Font.BOLD.getSWTFont());
-
+          item.setFont(5,bold ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           boolean faellig = l.ueberfaellig() && !l.ausgefuehrt();
           item.setFont(faellig ? Font.BOLD.getSWTFont() : Font.DEFAULT.getSWTFont());
           if (l.ausgefuehrt())
