@@ -642,6 +642,7 @@ public class VerwendungszweckUtil
       final String year = Integer.toString(cal.get(Calendar.YEAR));
       final String month = String.format("%02d",cal.get(Calendar.MONTH) + 1);
       final String day = String.format("%02d",cal.get(Calendar.DATE));
+      final String quarter = Integer.toString((cal.get(Calendar.MONTH) / 3) + 1);
 
       // Wir erlauben verschiedene Schreibweisen
       replace.put("$jahr",year);
@@ -666,6 +667,10 @@ public class VerwendungszweckUtil
       replace.put("$DD",day);
       replace.put("$tt",day);
       replace.put("$TT",day);
+      replace.put("$Quartal",quarter);
+      replace.put("$quartal",quarter);
+      replace.put("$Quarter",quarter);
+      replace.put("$quarter",quarter);
 
       for (Entry<String,String> e:replace.entrySet())
       {

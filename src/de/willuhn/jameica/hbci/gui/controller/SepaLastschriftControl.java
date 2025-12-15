@@ -413,7 +413,7 @@ public class SepaLastschriftControl extends AbstractControl
       return this.preview;
   
     this.preview = new LabelInput("");
-    this.preview.setValue(i18n.tr("Platzhalter im Verwendungszweck: $jahr, $monat, $tag"));
+    this.preview.setValue(i18n.tr("Platzhalter im Verwendungszweck: $jahr, $monat, $tag, $quartal"));
     this.preview.setName("");
     return this.preview;
   }

@@ -59,14 +59,14 @@ public class ZweckInput extends TextInput
           final String text = (String) this.getValue();
           if (StringUtils.trimToNull(text) == null)
           {
-            this.preview.setValue(i18n.tr("Platzhalter im Verwendungszweck: $jahr, $monat, $tag"));
+            this.preview.setValue(i18n.tr("Platzhalter im Verwendungszweck: $jahr, $monat, $tag, $quartal"));
             return;
           }
           
           final String r = VerwendungszweckUtil.evaluate(text);
           if (Objects.equals(text,r))
           {
-            this.preview.setValue(i18n.tr("Platzhalter im Verwendungszweck: $jahr, $monat, $tag"));
+            this.preview.setValue(i18n.tr("Platzhalter im Verwendungszweck: $jahr, $monat, $tag, $quartal"));
             return;
           }
           this.preview.setValue(i18n.tr("Vorschau") + ": " + r);
