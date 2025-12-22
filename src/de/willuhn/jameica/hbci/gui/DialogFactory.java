@@ -65,7 +65,7 @@ public class DialogFactory
     }
     lastTry = 0;
 
-    PINDialog dialog = new PINDialog(pin);
+    PINDialog dialog = new PINDialog(passport,pin);
     pin = (String) dialog.open();
     setCachedPIN(passport,pin); // Das entfernt auch gleich die Dirty-Markierung
     return pin;

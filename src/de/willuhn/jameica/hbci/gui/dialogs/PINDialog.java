@@ -11,6 +11,8 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.kapott.hbci.passport.AbstractPinTanPassport;
+import org.kapott.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
@@ -32,6 +34,8 @@ import de.willuhn.util.I18N;
 public class PINDialog extends PasswordDialog
 {
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+	
+	private HBCIPassport passport = null;
 
   /**
    * ct.
@@ -39,7 +43,18 @@ public class PINDialog extends PasswordDialog
    */
   public PINDialog(String pin)
   {
+    this(null,pin);
+  }
+
+	/**
+   * ct.
+   * @param passport der Passport.
+   * @param pin die Vorgabe-PIN.
+   */
+  public PINDialog(HBCIPassport passport, String pin)
+  {
     super(PINDialog.POSITION_CENTER);
+    this.passport = passport;
     this.setSize(550,SWT.DEFAULT);
     this.setLabelText(i18n.tr("Ihre PIN"));
 
@@ -104,16 +119,47 @@ public class PINDialog extends PasswordDialog
    */
   protected boolean checkPassword(String password)
 	{
-    // BUGZILLA 28 http://www.willuhn.de/bugzilla/show_bug.cgi?id=28
-		if (password == null || password.length() < HBCIProperties.HBCI_PIN_MINLENGTH || password.length() > HBCIProperties.HBCI_PIN_MAXLENGTH)
+    final int min = this.getPinLengthMin();
+    final int max = this.getPinLengthMax();
+    
+    Logger.info("PIN length limits [min: " + min + ", max: " + max + "]");
+		if (password == null || password.length() < min || password.length() > max)
 		{
-			setErrorText(i18n.tr("Länge der PIN ungültig ({0}-{1} Zeichen)",Integer.toString(HBCIProperties.HBCI_PIN_MINLENGTH),Integer.toString(HBCIProperties.HBCI_PIN_MAXLENGTH)) + " " + getRetryString());
+			setErrorText(i18n.tr("Länge der PIN ungültig ({0}-{1} Zeichen)",Integer.toString(min),Integer.toString(max)) + " " + getRetryString());
 			return false;
 		}
 
     return true;
 	}
   
+  /**
+   * Liefert die Mindest-Länge der PIN.
+   * @return die Mindest-Länge der PIN.
+   */
+  private int getPinLengthMin()
+  {
+    final int defaultLen = HBCIProperties.HBCI_PIN_MINLENGTH;
+    if (this.passport == null || !(this.passport instanceof AbstractPinTanPassport))
+      return defaultLen;
+    
+    final Integer i = ((AbstractPinTanPassport)this.passport).getPinLengthMin();
+    return i != null ? i.intValue() : defaultLen;
+  }
+
+  /**
+   * Liefert die Höchst-Länge der PIN.
+   * @return die Höchst-Länge der PIN.
+   */
+  private int getPinLengthMax()
+  {
+    final int defaultLen = HBCIProperties.HBCI_PIN_MAXLENGTH;
+    if (this.passport == null || !(this.passport instanceof AbstractPinTanPassport))
+      return defaultLen;
+    
+    final Integer i = ((AbstractPinTanPassport)this.passport).getPinLengthMax();
+    return i != null ? i.intValue() : defaultLen;
+  }
+
 	/**
 	 * Liefert einen locale String mit der Anzahl der Restversuche.
 	 * z.Bsp.: "Noch 2 Versuche.".

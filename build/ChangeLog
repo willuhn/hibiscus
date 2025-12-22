@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1168 PIN-Längen-Limits aus HIPINS anwenden
   * NEW: 1167 Neuer Platzhalter "$quartal" im Verwendungszweck
   * BUG: 1166 Durch neue Spalten in den Auftragslisten waren Fett-Formatierungen und Infos zum Intervall falsch in der falschen Spalte - siehe https://homebanking-hilfe.de/forum/topic.php?t=27950
   * BUG: 1165 CAMT-Support wurde u.U. nicht korrekt erkannt, wenn sich die Kundenkennung des Kontos früher mal geändert hatte
