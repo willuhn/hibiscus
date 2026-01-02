@@ -25,6 +25,7 @@ import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -108,14 +109,14 @@ public class HBCIContext
         Konto k = ueb.getKonto();
         
         if (ueb.isTerminUeberweisung())
-          return i18n.tr("{0}: ({1}) {2} {3} per {4} an {5} ({6}) überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),HBCI.DATEFORMAT.format(ueb.getTermin()),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
+          return i18n.tr("{0}: ({1}) {2} {3} per {4} an {5} ({6}) überweisen",k.getLongName(),VerwendungszweckUtil.evaluate(ueb.getZweck()),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),HBCI.DATEFORMAT.format(ueb.getTermin()),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
 
         if (ueb.isUmbuchung())
-          return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen (Umbuchung)",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
+          return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen (Umbuchung)",k.getLongName(),VerwendungszweckUtil.evaluate(ueb.getZweck()),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
         if (ueb.isInstantPayment())
-          return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen (Echtzeitüberweisung)",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
+          return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen (Echtzeitüberweisung)",k.getLongName(),VerwendungszweckUtil.evaluate(ueb.getZweck()),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
 
-        return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen",k.getLongName(),ueb.getZweck(),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
+        return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}) überweisen",k.getLongName(),VerwendungszweckUtil.evaluate(ueb.getZweck()),HBCI.DECIMALFORMAT.format(ueb.getBetrag()),k.getWaehrung(),ueb.getGegenkontoName(),HBCIProperties.formatIban(ueb.getGegenkontoNummer()));
       }
       
       if (object instanceof SepaSammelUeberweisung)
@@ -134,14 +135,14 @@ public class HBCIContext
         SepaDauerauftrag dauer = (SepaDauerauftrag) object;
         Konto k = dauer.getKonto();
         
-        return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}), Turnus: {6}",k.getLongName(),dauer.getZweck(),HBCI.DECIMALFORMAT.format(dauer.getBetrag()),k.getWaehrung(),dauer.getGegenkontoName(),HBCIProperties.formatIban(dauer.getGegenkontoNummer()),dauer.getTurnus().getBezeichnung());
+        return i18n.tr("{0}: ({1}) {2} {3} an {4} ({5}), Turnus: {6}",k.getLongName(),VerwendungszweckUtil.evaluate(dauer.getZweck()),HBCI.DECIMALFORMAT.format(dauer.getBetrag()),k.getWaehrung(),dauer.getGegenkontoName(),HBCIProperties.formatIban(dauer.getGegenkontoNummer()),dauer.getTurnus().getBezeichnung());
       }
       
       if (object instanceof SepaLastschrift)
       {
         SepaLastschrift last = (SepaLastschrift) object;
         Konto k = last.getKonto();
-        return i18n.tr("{0}: ({1}) {2} {3} von {4} ({5}) einziehen",k.getLongName(),last.getZweck(),HBCI.DECIMALFORMAT.format(last.getBetrag()),k.getWaehrung(),last.getGegenkontoName(),HBCIProperties.formatIban(last.getGegenkontoNummer()));
+        return i18n.tr("{0}: ({1}) {2} {3} von {4} ({5}) einziehen",k.getLongName(),VerwendungszweckUtil.evaluate(last.getZweck()),HBCI.DECIMALFORMAT.format(last.getBetrag()),k.getWaehrung(),last.getGegenkontoName(),HBCIProperties.formatIban(last.getGegenkontoNummer()));
       }
       
       if (object instanceof SepaSammelLastschrift)

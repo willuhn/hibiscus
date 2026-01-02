@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1169 Verwendungszweck-Platzhalter in der Liste der Synchronisierungsaufgaben sowie im Ausführungsdialog evaluieren
   * NEW: 1168 PIN-Längen-Limits aus HIPINS anwenden
   * NEW: 1167 Neuer Platzhalter "$quartal" im Verwendungszweck
   * BUG: 1166 Durch neue Spalten in den Auftragslisten waren Fett-Formatierungen und Infos zum Intervall falsch in der falschen Spalte - siehe https://homebanking-hilfe.de/forum/topic.php?t=27950

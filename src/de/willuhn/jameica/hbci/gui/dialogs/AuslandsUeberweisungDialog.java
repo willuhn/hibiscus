@@ -73,7 +73,7 @@ public class AuslandsUeberweisungDialog extends AbstractExecuteDialog
     }
 
     group.addHeadline(i18n.tr("Verwendungszweck"));
-    group.addText(VerwendungszweckUtil.toString(ueb,"\n"),false);
+    group.addText(VerwendungszweckUtil.evaluate(VerwendungszweckUtil.toString(ueb,"\n")),false);
     
     super.paint(parent);
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));

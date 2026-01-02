@@ -86,7 +86,7 @@ public class SepaDauerauftragDialog extends AbstractExecuteDialog
     group.addLabelPair(i18n.tr("Zahlungsturnus"),turnus);
 
     group.addHeadline(i18n.tr("Verwendungszweck"));
-    group.addText(VerwendungszweckUtil.toString(auftrag,"\n"),false);
+    group.addText(VerwendungszweckUtil.evaluate(VerwendungszweckUtil.toString(auftrag,"\n")),false);
 
     group.addSeparator();
     

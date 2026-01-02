@@ -38,6 +38,7 @@ import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -52,6 +53,8 @@ public class SepaSammelTransferBuchungList extends TablePart
   private I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private MessageConsumer mc = null;
+  
+  private boolean evaluateUsage = false;
 
   /**
    * ct.
@@ -94,7 +97,17 @@ public class SepaSammelTransferBuchungList extends TablePart
         }
       }
     });
-    addColumn(i18n.tr("Verwendungszweck"),"zweck");
+    addColumn(i18n.tr("Verwendungszweck"),"zweck", new Formatter() {
+      @Override
+      public String format(Object o)
+      {
+        if (o == null)
+          return "";
+        
+        String s = o.toString();
+        return evaluateUsage ? VerwendungszweckUtil.evaluate(s) : s;
+      }
+    });
     addColumn(i18n.tr("Kontoinhaber"),"empfaenger_name");
     addColumn(i18n.tr("IBAN"),"empfaenger_konto", new IbanFormatter());
     addColumn(i18n.tr("BIC"),"empfaenger_bic");
@@ -127,6 +140,15 @@ public class SepaSammelTransferBuchungList extends TablePart
         refreshSummary();
       }
     });
+  }
+  
+  /**
+   * Legt fest, ob die Verwendungszwecke bereits evaluiert werden sollen. 
+   * @param evaluateUsage true, wenn die Verwendungszwecke evaluiert werden sollen.
+   */
+  public void setEvaluateUsage(boolean evaluateUsage)
+  {
+    this.evaluateUsage = evaluateUsage;
   }
  
   /**

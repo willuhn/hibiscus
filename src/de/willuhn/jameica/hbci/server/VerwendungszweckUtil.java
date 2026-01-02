@@ -634,6 +634,9 @@ public class VerwendungszweckUtil
    */
   public static String evaluate(String text)
   {
+    if (text == null || text.length() == 0)
+      return text;
+    
     try
     {
       // Map mit den Ersetzungen erstellen

@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -72,7 +71,8 @@ public class SepaSammelTransferDialog extends AbstractExecuteDialog
     }
 
     group.addHeadline(i18n.tr("Enthaltene Buchungen"));
-    TablePart buchungen = new SepaSammelTransferBuchungList(this.st,null);
+    SepaSammelTransferBuchungList buchungen = new SepaSammelTransferBuchungList(this.st,null);
+    buchungen.setEvaluateUsage(true);
     buchungen.setMulti(false);
     buchungen.setSummary(false);
     buchungen.paint(parent);

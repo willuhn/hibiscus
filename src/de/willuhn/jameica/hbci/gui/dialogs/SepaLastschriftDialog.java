@@ -69,7 +69,7 @@ public class SepaLastschriftDialog extends AbstractExecuteDialog
     group.addLabelPair(i18n.tr("Betrag"),betrag);
 
     group.addHeadline(i18n.tr("Verwendungszweck"));
-    group.addText(VerwendungszweckUtil.toString(last,"\n"),false);
+    group.addText(VerwendungszweckUtil.evaluate(VerwendungszweckUtil.toString(last,"\n")),false);
     
     super.paint(parent);
     getShell().setMinimumSize(getShell().computeSize(SWT.DEFAULT,SWT.DEFAULT));
