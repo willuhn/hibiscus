@@ -9,9 +9,7 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.server;
 
-import java.math.BigDecimal;
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -19,7 +17,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
-import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
 import org.kapott.hbci.structures.Konto;
@@ -267,56 +264,6 @@ public class Converter
       text = text.substring(0,100);
     
     return text;
-  }
-
-  /**
-   * Konvertiert einen einzelnen Umsatz von Hibiscus nach HBCI4Java.
-   * @param u der zu convertierende Umsatz.
-   * @return das neu erzeugte Umsatz-Objekt.
-   * @throws RemoteException
-   */
-  public static UmsLine HibiscusUmsatz2HBCIUmsatz(Umsatz u) throws RemoteException
-  {
-    final UmsLine line = new UmsLine();
-    
-    final de.willuhn.jameica.hbci.rmi.Konto k = u.getKonto();
-    
-    final String iban = u.getGegenkontoNummer();
-    final String bic  = u.getGegenkontoBLZ();
-    final boolean isSepa = iban != null && iban.length() > HBCIProperties.HBCI_KTO_MAXLENGTH_HARD;
-    final Konto other = new Konto();
-    other.name = u.getGegenkontoName();
-    if (isSepa)
-    {
-      other.iban = iban;
-      other.bic = bic;
-    }
-    else
-    {
-      other.number = iban;
-      other.blz = bic;
-    }
-    
-    line.addkey = u.getAddKey();
-    line.bdate = u.getDatum();
-    line.customerref = u.getCustomerRef();
-    line.gvcode = u.getGvCode();
-    line.id = u.getTransactionId();
-    line.isCamt = line.id != null && line.id.length() > 0;
-    line.isSepa = isSepa;
-    line.isStorno = false;
-    line.other = other;
-    line.primanota = u.getPrimanota();
-    line.purposecode = u.getPurposeCode();
-    line.saldo = new Saldo();
-    line.saldo.timestamp = u.getDatum();
-    line.saldo.value = new Value(new BigDecimal(u.getSaldo()),k.getWaehrung());
-    line.text = u.getArt();
-    line.usage = Arrays.asList(VerwendungszweckUtil.toArray(u));
-    line.value = new Value(new BigDecimal(u.getBetrag()),k.getWaehrung());
-    line.valuta = u.getValuta();
-    
-    return line;
   }
 
   /**
