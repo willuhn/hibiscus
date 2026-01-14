@@ -334,7 +334,11 @@ public class ForecastCreator
       final AccountBalanceService balanceService = bs.get(AccountBalanceService.class);
       AccountBalanceProvider balanceProvider = balanceService.getBalanceProviderForAccount(k);
       List<Value> balance = balanceProvider.getBalanceData(k, from, from); // Saldo für heute
-      startSaldo = balance.get(0).getValue();
+      if (!balance.isEmpty()) {
+        startSaldo = balance.get(0).getValue();
+      } else {
+        startSaldo = KontoUtil.getAnfangsSaldo(k, from); // Fallback, falls der BalanceProvider nichts liefert.
+      }
     }
     
     //
