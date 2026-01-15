@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1170 Update auf HBCI4Java 4.1.6 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.6
   * NEW: 1169 Verwendungszweck-Platzhalter in der Liste der Synchronisierungsaufgaben sowie im Ausführungsdialog evaluieren
   * NEW: 1168 PIN-Längen-Limits aus HIPINS anwenden
   * NEW: 1167 Neuer Platzhalter "$quartal" im Verwendungszweck
