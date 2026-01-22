@@ -163,26 +163,52 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
 			  // im PassportHandle verarbeitet
 				case NEED_PASSPHRASE_LOAD:
 				case NEED_PASSPHRASE_SAVE:
+				  
+          final String prefix = "hbci.passport.password.";
+          boolean migrate = false;
+				  
+				  // Migration fuer HBCI4Java 5. Dort wurden die Packages von "org.kapott" in "org.hbci4java" umbenannt
+          final String cName = passport.getClass().getName();
+				  final String newName = cName;
+				  final String oldName = cName.replace("org.hbci4java.","org.kapott.");
           
           // Passwort aus dem Wallet laden
-          Wallet w = Settings.getWallet();
-          String pw = (String) w.get("hbci.passport.password." + passport.getClass().getName());
+          final Wallet w = Settings.getWallet();
+          
+          // 1. Checken, ob wir es schon unter dem neuen Namen haben
+          String pw = (String) w.get(prefix + newName);
+
+          // 2. Fallback auf den alten Namen
+          if (pw == null || pw.length() == 0)
+          {
+            pw = (String) w.get(prefix + oldName);
+            migrate = true;
+          }
+          
           if (pw != null && pw.length() > 0)
           {
-            Logger.debug("using passport key from wallet, passport: " + passport.getClass().getName());
+            Logger.debug("using passport key from wallet, passport: " + newName);
             retData.replace(0,retData.length(),pw);
+            
+            // Migrieren auf den neuen Namen
+            if (migrate)
+            {
+              w.set(prefix + newName,pw);
+              // w.delete(prefix + oldName); Mit dem Löschen des alten Alias warten wir sicherheitshalber mal noch
+            }
+            
             break;
           }
             
           // noch kein Passwort definiert. Dann erzeugen wir ein zufaelliges.
-          Logger.debug("creating new random passport key, passport: " + passport.getClass().getName());
+          Logger.debug("creating new random passport key, passport: " + newName);
           byte[] pass = new byte[8];
           SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
           random.nextBytes(pass);
           pw = Base64.encode(pass);
 
-          // Und speichern es im Wallet.
-          w.set("hbci.passport.password." + passport.getClass().getName(),pw);
+          // Und speichern es im Wallet. Hier aber direkt mit dem neuen Namen
+          w.set(prefix + newName,pw);
           retData.replace(0,retData.length(),pw);
           break;
 
