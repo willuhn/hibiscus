@@ -14,7 +14,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;

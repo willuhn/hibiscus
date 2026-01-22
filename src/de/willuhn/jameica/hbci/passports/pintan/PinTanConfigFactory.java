@@ -15,9 +15,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;

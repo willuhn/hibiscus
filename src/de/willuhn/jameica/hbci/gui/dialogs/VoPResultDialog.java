@@ -20,9 +20,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
-import org.kapott.hbci.GV_Result.GVRVoP.VoPResult;
-import org.kapott.hbci.GV_Result.GVRVoP.VoPResultItem;
-import org.kapott.hbci.GV_Result.GVRVoP.VoPStatus;
+import org.hbci4java.hbci.GV_Result.GVRVoP.VoPResult;
+import org.hbci4java.hbci.GV_Result.GVRVoP.VoPResultItem;
+import org.hbci4java.hbci.GV_Result.GVRVoP.VoPStatus;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;

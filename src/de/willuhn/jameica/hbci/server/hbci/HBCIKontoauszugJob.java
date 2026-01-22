@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.kapott.hbci.GV.GVKontoauszug;
-import org.kapott.hbci.GV.GVKontoauszugPdf;
-import org.kapott.hbci.GV_Result.GVRKontoauszug;
-import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
-import org.kapott.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
+import org.hbci4java.hbci.GV.GVKontoauszug;
+import org.hbci4java.hbci.GV.GVKontoauszugPdf;
+import org.hbci4java.hbci.GV_Result.GVRKontoauszug;
+import org.hbci4java.hbci.GV_Result.GVRKontoauszug.Format;
+import org.hbci4java.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;

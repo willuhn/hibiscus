@@ -12,9 +12,9 @@ package de.willuhn.jameica.hbci.accounts.hbci.action;
 
 import java.io.File;
 
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
@@ -264,7 +264,7 @@ public class HBCIVariantPinTanTest implements Action
         if (ks.matches("HBCI4Java Exception END ---"))
           continue;
         ks = ks.replaceAll("HBCI4Java Exception BEGIN ---","");
-        ks = ks.replaceAll("HBCI4Java stacktrace BEGIN ---org.kapott.hbci.exceptions.HBCI_Exception: ","");
+        ks = ks.replaceAll("HBCI4Java stacktrace BEGIN ---org.hbci4java.hbci.exceptions.HBCI_Exception: ","");
         ks = ks.replaceAll("Caused by: ","");
         ks = ks.replaceAll(".*?Exception:","");
         if (ks.length() == 0)

@@ -13,7 +13,7 @@ package de.willuhn.jameica.hbci.passports.pintan.rmi;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.passport.Configuration;

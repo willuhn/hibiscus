@@ -16,8 +16,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.BankInfo;
-import org.kapott.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.manager.BankInfo;
+import org.hbci4java.hbci.manager.HBCIUtils;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;

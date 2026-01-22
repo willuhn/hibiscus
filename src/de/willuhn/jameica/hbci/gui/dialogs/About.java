@@ -12,7 +12,7 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.kapott.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.manager.HBCIUtils;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;

@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.GV_Result.AbstractGVRLastSEPA;
+import org.hbci4java.hbci.GV_Result.AbstractGVRLastSEPA;
 
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.HBCI;
@@ -71,13 +71,13 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
         throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
           HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
 
-      org.kapott.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
+      org.hbci4java.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
       // Deutsche Umlaute im eigenen Namen noch ersetzen
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
 			setJobParam("src",own);
 			
-      org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
+      org.hbci4java.hbci.structures.Konto k = new org.hbci4java.hbci.structures.Konto();
       k.bic = lastschrift.getGegenkontoBLZ();
       k.iban = lastschrift.getGegenkontoNummer();
       k.name = lastschrift.getGegenkontoName();

@@ -16,9 +16,9 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TableItem;
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;

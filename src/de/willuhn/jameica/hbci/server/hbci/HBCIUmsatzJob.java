@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.GV_Result.GVRKUms;
-import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
-import org.kapott.hbci.comm.Comm;
+import org.hbci4java.hbci.GV_Result.GVRKUms;
+import org.hbci4java.hbci.GV_Result.GVRKUms.UmsLine;
+import org.hbci4java.hbci.comm.Comm;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;

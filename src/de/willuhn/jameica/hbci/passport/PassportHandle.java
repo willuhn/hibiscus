@@ -12,8 +12,8 @@ package de.willuhn.jameica.hbci.passport;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -81,7 +81,7 @@ public interface PassportHandle extends Remote
    * Hinweis: Die Konten-Objekte duerfen nicht in der Datenbank gespeichert
    * werden. Diese Entscheidung bleibt dem Anwender ueberlassen.
    * Da der HBCIHandler von HBCI4Java ja Konto-Objekte vom Typ
-   * <i>org.kapott.hbci.structures.Konto</i> liefert, koennen diese
+   * <i>org.hbci4java.hbci.structures.Konto</i> liefert, koennen diese
    * via <i>de.willuhn.jameica.hbci.server.util.Converter.HBCIKonto2JameicaKonto(Konto)</i>
    * in Fachobjekte des HBCI-Plugins konvertiert werden.
    * @return Array mit Konten, die dieser Passport anbietet.
@@ -101,7 +101,7 @@ public interface PassportHandle extends Remote
    * @param msg
    * @param datatype
    * @param retData
-   * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
+   * @see org.hbci4java.hbci.callback.HBCICallback#callback(org.hbci4java.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    * @return true, wenn der Handler den Callback behandeln konnte.
    * @throws Exception
    */

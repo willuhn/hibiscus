@@ -14,10 +14,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kapott.hbci.passport.FileBasedPassport;
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.passport.HBCIPassportChipcard;
-import org.kapott.hbci.passport.HBCIPassportPinTan;
+import org.hbci4java.hbci.passport.FileBasedPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassportChipcard;
+import org.hbci4java.hbci.passport.HBCIPassportPinTan;
 
 import de.willuhn.jameica.hbci.AccountContainer;
 import de.willuhn.jameica.hbci.HBCI;

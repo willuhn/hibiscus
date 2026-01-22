@@ -129,10 +129,10 @@ public class PassportChange implements Action
       // 3) Kundenkennung in zugeordneten Konten aktualisieren
       {
         int count = 0;
-        org.kapott.hbci.structures.Konto[] konten = pcr.passport.getAccounts();
+        org.hbci4java.hbci.structures.Konto[] konten = pcr.passport.getAccounts();
         if (konten != null && konten.length > 0)
         {
-          for (org.kapott.hbci.structures.Konto konto:konten)
+          for (org.hbci4java.hbci.structures.Konto konto:konten)
           {
             Konto k = Converter.HBCIKonto2HibiscusKonto(konto, PassportImpl.class);
             if (!k.isNewObject())

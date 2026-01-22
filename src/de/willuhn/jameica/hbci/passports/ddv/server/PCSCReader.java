@@ -10,7 +10,7 @@
 
 package de.willuhn.jameica.hbci.passports.ddv.server;
 
-import org.kapott.hbci.manager.HBCIVersion;
+import org.hbci4java.hbci.manager.HBCIVersion;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader;

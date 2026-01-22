@@ -18,8 +18,8 @@ import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.smartcardio.ChipTanCardService;
-import org.kapott.hbci.smartcardio.SmartCardService;
+import org.hbci4java.hbci.smartcardio.ChipTanCardService;
+import org.hbci4java.hbci.smartcardio.SmartCardService;
 
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;

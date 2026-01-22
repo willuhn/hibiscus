@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.hbci.HBCI;
@@ -33,12 +33,12 @@ public class HBCIVersionInput extends SelectInput
 
   private final static List<HBCIVersion> VERSIONS = Collections.unmodifiableList(new ArrayList<HBCIVersion>()
   {{
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_300,true));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_PLUS,true));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_220,false));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_210,true));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_201,true));
-    add(new HBCIVersion(org.kapott.hbci.manager.HBCIVersion.HBCI_400,false));
+    add(new HBCIVersion(org.hbci4java.hbci.manager.HBCIVersion.HBCI_300,true));
+    add(new HBCIVersion(org.hbci4java.hbci.manager.HBCIVersion.HBCI_PLUS,true));
+    add(new HBCIVersion(org.hbci4java.hbci.manager.HBCIVersion.HBCI_220,false));
+    add(new HBCIVersion(org.hbci4java.hbci.manager.HBCIVersion.HBCI_210,true));
+    add(new HBCIVersion(org.hbci4java.hbci.manager.HBCIVersion.HBCI_201,true));
+    add(new HBCIVersion(org.hbci4java.hbci.manager.HBCIVersion.HBCI_400,false));
   }});
 
   /**
@@ -190,7 +190,7 @@ public class HBCIVersionInput extends SelectInput
    */
   private static class HBCIVersion
   {
-    private org.kapott.hbci.manager.HBCIVersion version = null;
+    private org.hbci4java.hbci.manager.HBCIVersion version = null;
     private boolean active = true;
 
     /**
@@ -198,7 +198,7 @@ public class HBCIVersionInput extends SelectInput
      * @param version die HBCI-Version.
      * @param active legt fest, ob die Version aktiv ist und angeboten werden soll.
      */
-    private HBCIVersion(org.kapott.hbci.manager.HBCIVersion version, boolean active)
+    private HBCIVersion(org.hbci4java.hbci.manager.HBCIVersion version, boolean active)
     {
       this.version = version;
       this.active = active;

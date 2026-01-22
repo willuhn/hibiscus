@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.GV_Result.GVRDauerList;
-import org.kapott.hbci.GV_Result.GVRDauerList.Dauer;
+import org.hbci4java.hbci.GV_Result.GVRDauerList;
+import org.hbci4java.hbci.GV_Result.GVRDauerList.Dauer;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -55,7 +55,7 @@ public class HBCISepaDauerauftragListJob extends AbstractHBCIJob
 
 			this.konto = konto;
 
-      org.kapott.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
+      org.hbci4java.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
       // Deutsche Umlaute im eigenen Namen noch ersetzen
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);

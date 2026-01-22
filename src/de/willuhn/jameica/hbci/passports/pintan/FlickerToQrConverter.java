@@ -19,7 +19,7 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.kapott.hbci.comm.Comm;
+import org.hbci4java.hbci.comm.Comm;
 
 import io.nayuki.qrcodegen.QrCode;
 import io.nayuki.qrcodegen.QrSegment;

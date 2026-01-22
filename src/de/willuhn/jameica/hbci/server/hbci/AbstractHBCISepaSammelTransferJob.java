@@ -74,7 +74,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
             HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
       }
       
-      org.kapott.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
+      org.hbci4java.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
       // Deutsche Umlaute im eigenen Namen noch ersetzen
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
@@ -100,7 +100,7 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
         // wir nicht durch Autoboxing die falsche Signatur erwischen
         Integer idx = Integer.valueOf(i);
         
-        org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
+        org.hbci4java.hbci.structures.Konto k = new org.hbci4java.hbci.structures.Konto();
         k.bic  = b.getGegenkontoBLZ();
         k.iban = b.getGegenkontoNummer();
         k.name = b.getGegenkontoName();

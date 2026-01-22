@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
-import org.kapott.hbci.manager.FlickerRenderer;
-import org.kapott.hbci.smartcardio.ChipTanCardService;
+import org.hbci4java.hbci.manager.FlickerRenderer;
+import org.hbci4java.hbci.smartcardio.ChipTanCardService;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -406,7 +406,7 @@ public class ChipTANDialog extends TANDialog
     }
     
     /**
-     * @see org.kapott.hbci.manager.FlickerRenderer#paint(boolean, boolean, boolean, boolean, boolean)
+     * @see org.hbci4java.hbci.manager.FlickerRenderer#paint(boolean, boolean, boolean, boolean, boolean)
      */
     public void paint(boolean b1, boolean b2, boolean b3, boolean b4, boolean b5)
     {

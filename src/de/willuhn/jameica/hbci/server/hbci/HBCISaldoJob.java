@@ -11,10 +11,10 @@ package de.willuhn.jameica.hbci.server.hbci;
 
 import java.rmi.RemoteException;
 
-import org.kapott.hbci.GV_Result.GVRSaldoReq;
-import org.kapott.hbci.GV_Result.GVRSaldoReq.Info;
-import org.kapott.hbci.structures.Saldo;
-import org.kapott.hbci.structures.Value;
+import org.hbci4java.hbci.GV_Result.GVRSaldoReq;
+import org.hbci4java.hbci.GV_Result.GVRSaldoReq.Info;
+import org.hbci4java.hbci.structures.Saldo;
+import org.hbci4java.hbci.structures.Value;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.messaging.SaldoMessage;

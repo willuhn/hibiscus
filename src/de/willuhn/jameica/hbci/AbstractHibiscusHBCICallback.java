@@ -10,10 +10,10 @@
 
 package de.willuhn.jameica.hbci;
 
-import org.kapott.hbci.GV.HBCIJob;
-import org.kapott.hbci.callback.AbstractHBCICallback;
-import org.kapott.hbci.manager.HBCIUtilsInternal;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.GV.HBCIJob;
+import org.hbci4java.hbci.callback.AbstractHBCICallback;
+import org.hbci4java.hbci.manager.HBCIUtilsInternal;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.server.BPDUtil;
 import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
@@ -63,7 +63,7 @@ public abstract class AbstractHibiscusHBCICallback extends AbstractHBCICallback
   protected abstract void status(String text);
   
   /**
-   * @see org.kapott.hbci.callback.HBCICallback#status(org.kapott.hbci.passport.HBCIPassport, int, java.lang.Object[])
+   * @see org.hbci4java.hbci.callback.HBCICallback#status(org.hbci4java.hbci.passport.HBCIPassport, int, java.lang.Object[])
    */
   @Override
   public void status(HBCIPassport passport, int statusTag, Object[] o)

@@ -15,13 +15,13 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.GV_Result.GVRDauerList;
-import org.kapott.hbci.GV_Result.GVRKUms;
-import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
-import org.kapott.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
-import org.kapott.hbci.structures.Konto;
-import org.kapott.hbci.structures.Saldo;
-import org.kapott.hbci.structures.Value;
+import org.hbci4java.hbci.GV_Result.GVRDauerList;
+import org.hbci4java.hbci.GV_Result.GVRKUms;
+import org.hbci4java.hbci.GV_Result.GVRKontoauszug.Format;
+import org.hbci4java.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
+import org.hbci4java.hbci.structures.Konto;
+import org.hbci4java.hbci.structures.Saldo;
+import org.hbci4java.hbci.structures.Value;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -429,7 +429,7 @@ public class Converter
    */
   public static Konto HibiscusKonto2HBCIKonto(de.willuhn.jameica.hbci.rmi.Konto konto) throws RemoteException
   {
-    org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto(konto.getBLZ(),konto.getKontonummer());
+    org.hbci4java.hbci.structures.Konto k = new org.hbci4java.hbci.structures.Konto(konto.getBLZ(),konto.getKontonummer());
     k.country    = "DE";
     k.curr       = konto.getWaehrung();
     k.customerid = konto.getKundennummer();

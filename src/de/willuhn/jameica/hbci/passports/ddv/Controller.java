@@ -21,9 +21,9 @@ import javax.smartcardio.TerminalFactory;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.passport.HBCIPassportChipcard;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassportChipcard;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -348,96 +348,6 @@ public class Controller extends AbstractControl
     return this.useSoftPin;
   }
   
-  /**
-   * Versucht, den Kartenleser automatisch zu ermitteln.
-   */
-  public void handleScan()
-  {
-    try
-    {
-      String ask = i18n.tr("Legen Sie Ihre HBCI-Chipkarte vor dem Test in das Lesegerät.\nDie Suche kann einige Minuten in Anspruch nehmen. Vorgang fortsetzen?");
-      if (!Application.getCallback().askUser(ask))
-        return;
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to open confirm dialog",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Suchen des Kartenlesers: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
-      return;
-    }
-    
-
-    BackgroundTask task = new BackgroundTask()
-    {
-      private boolean stop = false;
-      
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
-       */
-      public void run(final ProgressMonitor monitor) throws ApplicationException
-      {
-        final DDVConfig config = DDVConfigFactory.scan(monitor,this);
-        
-        if (getConfig() == null)
-        {
-          // Wir sind nicht in der Detail-Ansicht sondern in der Liste.
-          // Daher starten wir die List-View einfach neu, damit die Liste
-          // aktualisiert wird.
-          DDVConfigFactory.store(config);
-          GUI.startView(GUI.getCurrentView().getClass(),null);
-          return;
-        }
-
-        if (config != null)
-        {
-          // wenn wir einen gefunden haben, uebernehmen wir die Daten.
-          GUI.getDisplay().asyncExec(new Runnable() {
-            public void run()
-            {
-              Reader reader = config.getReaderPreset();
-              getReaderPresets().setValue(reader);
-  
-              getBezeichnung().setValue(config.getName());
-              getPCSCName().setValue(config.getPCSCName());
-              getCTAPI().setValue(config.getCTAPIDriver());
-              getPort().setValue(config.getPort());
-              getCTNumber().setValue(config.getCTNumber());
-              getEntryIndex().setValue(config.getEntryIndex());
-              getSoftPin().setValue(config.useSoftPin());
-              
-              try
-              {
-                getHBCIVersion().setValue(config.getHBCIVersion());
-              }
-              catch (RemoteException re)
-              {
-                Logger.error("unable to apply hbci version",re);
-                // Den Fehler koennen wir tolerieren
-              }
-            }
-          });
-        }
-      }
-
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
-       */
-      public void interrupt()
-      {
-        this.stop = true;
-      }
-
-      /**
-       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
-       */
-      public boolean isInterrupted()
-      {
-        return this.stop;
-      }
-    };
-    Application.getController().start(task);
-  }
-
   /**
    * Zeigt die BPD/UPD des Passports an.
    */

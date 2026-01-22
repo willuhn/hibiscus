@@ -10,7 +10,7 @@
 
 package de.willuhn.jameica.hbci;
 
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 /**
  * Erlaubt das verzoegerte Laden von Passports on-demand.

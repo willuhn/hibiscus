@@ -20,7 +20,7 @@ import javax.imageio.ImageIO;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kapott.hbci.manager.QRCode;
+import org.hbci4java.hbci.manager.QRCode;
 
 /**
  * Testet die Konvertierung des Flicker-Codes in den QR-Code.

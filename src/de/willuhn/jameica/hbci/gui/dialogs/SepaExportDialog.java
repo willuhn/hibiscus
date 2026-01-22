@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.sepa.SepaVersion;
-import org.kapott.hbci.sepa.SepaVersion.Type;
+import org.hbci4java.hbci.sepa.SepaVersion;
+import org.hbci4java.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;

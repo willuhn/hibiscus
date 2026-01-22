@@ -11,7 +11,7 @@ package de.willuhn.jameica.hbci.passports.rdh.rmi;
 
 import java.rmi.RemoteException;
 
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.hbci.passport.Configuration;

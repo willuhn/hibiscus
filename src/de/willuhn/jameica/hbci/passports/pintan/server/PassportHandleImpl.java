@@ -14,14 +14,14 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.manager.HBCIVersion;
-import org.kapott.hbci.manager.MatrixCode;
-import org.kapott.hbci.manager.QRCode;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.AbstractPinTanPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.manager.HBCIVersion;
+import org.hbci4java.hbci.manager.MatrixCode;
+import org.hbci4java.hbci.manager.QRCode;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.AbstractPinTanPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.HBCI;
@@ -291,7 +291,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   	Logger.info("reading accounts from pin/tan passport");
 		try {
 			open();
-			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
+			org.hbci4java.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
 			if (konten == null || konten.length == 0)
 			{
 				Logger.info("no accounts found");
@@ -318,7 +318,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
+   * @see de.willuhn.jameica.hbci.passport.PassportHandle#callback(org.hbci4java.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
   public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
   {

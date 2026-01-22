@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.BankInfo;
-import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.structures.Konto;
+import org.hbci4java.hbci.manager.BankInfo;
+import org.hbci4java.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.structures.Konto;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.jost_net.OBanToo.SEPA.IBANCode;

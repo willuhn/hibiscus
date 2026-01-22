@@ -16,8 +16,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.kapott.hbci.GV.GVReceipt;
-import org.kapott.hbci.comm.Comm;
+import org.hbci4java.hbci.GV.GVReceipt;
+import org.hbci4java.hbci.comm.Comm;
 
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;

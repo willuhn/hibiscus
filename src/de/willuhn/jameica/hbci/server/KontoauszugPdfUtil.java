@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
+import org.hbci4java.hbci.GV_Result.GVRKontoauszug.Format;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;

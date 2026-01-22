@@ -14,10 +14,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.hbci.HBCI;
@@ -28,7 +28,6 @@ import de.willuhn.jameica.hbci.passport.PassportHandle;
 import de.willuhn.jameica.hbci.passports.rdh.InsertKeyDialog;
 import de.willuhn.jameica.hbci.passports.rdh.KeyPasswordSaveDialog;
 import de.willuhn.jameica.hbci.passports.rdh.RDHKeyFactory;
-import de.willuhn.jameica.hbci.passports.rdh.SelectSizEntryDialog;
 import de.willuhn.jameica.hbci.passports.rdh.rmi.RDHKey;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
@@ -41,6 +40,9 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
+/**
+ * Basis-Implementierung eines Passport.
+ */
 public class PassportHandleImpl extends UnicastRemoteObject implements PassportHandle
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
@@ -222,7 +224,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
 		Logger.info("reading accounts from rdh passport");
 		try {
 			open();
-			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
+			org.hbci4java.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
 			if (konten == null || konten.length == 0)
 			{
 				Logger.info("no accounts found");
@@ -249,19 +251,12 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
+   * @see de.willuhn.jameica.hbci.passport.PassportHandle#callback(org.hbci4java.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
   public boolean callback(HBCIPassport p, int reason, String msg, int datatype, StringBuffer retData) throws Exception
   {
     switch (reason)
     {
-      case HBCICallback.NEED_SIZENTRY_SELECT:
-      {
-        SelectSizEntryDialog e = new SelectSizEntryDialog(SelectSizEntryDialog.POSITION_CENTER,retData.toString());
-        retData.replace(0,retData.length(),(String)e.open());
-        return true;
-      }
-
       case HBCICallback.NEED_PASSPHRASE_LOAD:
       {
         retData.replace(0,retData.length(),DialogFactory.getKeyPassword(p));

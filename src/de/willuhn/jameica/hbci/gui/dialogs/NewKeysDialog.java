@@ -28,9 +28,9 @@ import javax.print.attribute.standard.MediaSizeName;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
-import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.passport.INILetter;
+import org.hbci4java.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.INILetter;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.Action;

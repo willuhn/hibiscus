@@ -10,7 +10,7 @@
 
 package de.willuhn.jameica.hbci.passport;
 
-import org.kapott.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
 
 /**
  * Container, der die Kunden- und User-Daten-Aenderungen fuer einen Passport haelt.

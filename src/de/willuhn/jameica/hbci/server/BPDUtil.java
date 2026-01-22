@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;

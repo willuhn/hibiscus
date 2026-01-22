@@ -13,13 +13,13 @@ package de.willuhn.jameica.hbci.passports.rdh.keyformat;
 import java.io.File;
 import java.rmi.RemoteException;
 
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.exceptions.InvalidPassphraseException;
-import org.kapott.hbci.exceptions.NeedKeyAckException;
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.exceptions.InvalidPassphraseException;
+import org.hbci4java.hbci.exceptions.NeedKeyAckException;
+import org.hbci4java.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;

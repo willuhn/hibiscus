@@ -21,12 +21,12 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.callback.HBCICallbackConsole;
-import org.kapott.hbci.manager.Feature;
-import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.callback.HBCICallbackConsole;
+import org.hbci4java.hbci.manager.Feature;
+import org.hbci4java.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.gui.CustomDateFormat;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
@@ -90,7 +90,7 @@ public class HBCI extends AbstractPlugin
    */
   public final static HashMap LOGMAPPING = new HashMap();
   
-  private final static String HBCI4JAVA_VERSION = "4.1.6";
+  private final static String HBCI4JAVA_VERSION = "5.0.0";
 
   private HBCICallback callback = null;
   private Properties hbciProps  = null;

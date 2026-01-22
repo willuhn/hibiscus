@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.kapott.hbci.GV.parsers.ISEPAParser;
-import org.kapott.hbci.GV.parsers.SEPAParserFactory;
-import org.kapott.hbci.sepa.SepaVersion;
-import org.kapott.hbci.sepa.SepaVersion.Type;
+import org.hbci4java.hbci.GV.parsers.ISEPAParser;
+import org.hbci4java.hbci.GV.parsers.SEPAParserFactory;
+import org.hbci4java.hbci.sepa.SepaVersion;
+import org.hbci4java.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;

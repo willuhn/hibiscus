@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.kapott.hbci.GV_Result.GVRDauerList;
+import org.hbci4java.hbci.GV_Result.GVRDauerList;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;

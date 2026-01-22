@@ -38,19 +38,10 @@ public class View extends AbstractView
     final Controller control = new Controller(this);
 
     Container c = new SimpleContainer(getParent());
-    c.addText(i18n.tr("Starten Sie zunächst die automatische Suche nach dem Kartenleser. " +
-    		              "Falls sie nicht erfolgreich verläuft, dann konfigurieren Sie den " +
-    		              "Kartenleser bitte manuell."),true);
+    c.addText(i18n.tr("Klicken Sie bitte auf \"Neue Kartenleser-Konfiguration anlegen\" um einen neuen Kartenleser-basierten Bankzugang anzulegen."),true);
     
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(i18n.tr("Kartenleser suchen..."), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleScan();
-      }
-    },null,false,"system-search.png");
-    buttons.addButton(i18n.tr("Kartenleser manuell anlegen"),new Action()
+    buttons.addButton(i18n.tr("Neue Kartenleser-Konfiguration anlegen"),new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -64,19 +55,3 @@ public class View extends AbstractView
     
   }
 }
-
-
-
-/**********************************************************************
- * $Log: View.java,v $
- * Revision 1.8  2011/04/29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.7  2011-04-08 15:19:15  willuhn
- * @R Alle Zurueck-Buttons entfernt - es gibt jetzt einen globalen Zurueck-Button oben rechts
- * @C Code-Cleanup
- *
- * Revision 1.6  2010-09-07 15:28:05  willuhn
- * @N BUGZILLA 391 - Kartenleser-Konfiguration komplett umgebaut. Damit lassen sich jetzt beliebig viele Kartenleser und Konfigurationen parellel einrichten
- *
- **********************************************************************/

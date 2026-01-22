@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.kapott.hbci.GV.parsers.ISEPAParser;
-import org.kapott.hbci.GV.parsers.SEPAParserFactory;
-import org.kapott.hbci.GV_Result.GVRKUms;
-import org.kapott.hbci.GV_Result.GVRKUms.BTag;
-import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
-import org.kapott.hbci.sepa.SepaVersion;
+import org.hbci4java.hbci.GV.parsers.ISEPAParser;
+import org.hbci4java.hbci.GV.parsers.SEPAParserFactory;
+import org.hbci4java.hbci.GV_Result.GVRKUms;
+import org.hbci4java.hbci.GV_Result.GVRKUms.BTag;
+import org.hbci4java.hbci.GV_Result.GVRKUms.UmsLine;
+import org.hbci4java.hbci.sepa.SepaVersion;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;

@@ -11,8 +11,8 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.kapott.hbci.passport.AbstractPinTanPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.AbstractPinTanPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;

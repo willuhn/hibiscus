@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Properties;
 import java.util.Set;
 
-import org.kapott.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;

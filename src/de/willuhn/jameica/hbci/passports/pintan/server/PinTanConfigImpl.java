@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIVersion;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.manager.HBCIVersion;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;

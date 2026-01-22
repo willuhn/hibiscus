@@ -18,12 +18,12 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.eclipse.swt.SWTException;
-import org.kapott.hbci.GV_Result.GVRVoP.VoPResult;
-import org.kapott.hbci.exceptions.HBCI_Exception;
-import org.kapott.hbci.exceptions.NeedKeyAckException;
-import org.kapott.hbci.manager.HBCIUtils;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.GV_Result.GVRVoP.VoPResult;
+import org.hbci4java.hbci.exceptions.HBCI_Exception;
+import org.hbci4java.hbci.exceptions.NeedKeyAckException;
+import org.hbci4java.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
@@ -62,7 +62,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   @Resource private HBCISynchronizeBackend backend = null;
   
   /**
-   * @see org.kapott.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
+   * @see org.hbci4java.hbci.callback.HBCICallback#log(java.lang.String, int, java.util.Date, java.lang.StackTraceElement)
    */
   public void log(String msg, int level, Date date, StackTraceElement trace)
   {
@@ -140,7 +140,7 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
   }
 
   /**
-   * @see org.kapott.hbci.callback.HBCICallback#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
+   * @see org.hbci4java.hbci.callback.HBCICallback#callback(org.hbci4java.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
   public void callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData)
   {

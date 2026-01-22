@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
+import org.hbci4java.hbci.GV_Result.GVRKontoauszug.Format;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.SynchronizeOptions;

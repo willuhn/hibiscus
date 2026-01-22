@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.GV.SepaUtil;
-import org.kapott.hbci.GV.parsers.ISEPAParser;
-import org.kapott.hbci.sepa.SepaVersion;
-import org.kapott.hbci.sepa.SepaVersion.Type;
+import org.hbci4java.hbci.GV.SepaUtil;
+import org.hbci4java.hbci.GV.parsers.ISEPAParser;
+import org.hbci4java.hbci.sepa.SepaVersion;
+import org.hbci4java.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.HBCI;

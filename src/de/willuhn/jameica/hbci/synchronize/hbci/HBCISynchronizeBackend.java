@@ -21,8 +21,8 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.kapott.hbci.GV.HBCIJob;
-import org.kapott.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.GV.HBCIJob;
+import org.hbci4java.hbci.manager.HBCIHandler;
 
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;

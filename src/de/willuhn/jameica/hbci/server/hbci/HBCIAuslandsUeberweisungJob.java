@@ -13,9 +13,9 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Properties;
 
-import org.kapott.hbci.GV.HBCIJob;
-import org.kapott.hbci.GV_Result.GVRInstUebSEPA;
-import org.kapott.hbci.GV_Result.HBCIJobResult;
+import org.hbci4java.hbci.GV.HBCIJob;
+import org.hbci4java.hbci.GV_Result.GVRInstUebSEPA;
+import org.hbci4java.hbci.GV_Result.HBCIJobResult;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -74,13 +74,13 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
         throw new ApplicationException(i18n.tr("Auftragslimit überschritten: {0} ", 
           HBCI.DECIMALFORMAT.format(Settings.getUeberweisungLimit()) + " " + this.konto.getWaehrung()));
 
-      org.kapott.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
+      org.hbci4java.hbci.structures.Konto own = Converter.HibiscusKonto2HBCIKonto(konto);
       // Deutsche Umlaute im eigenen Namen noch ersetzen
       // siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?t=16052
       own.name = HBCIProperties.replace(own.name,HBCIProperties.TEXT_REPLACEMENTS_SEPA);
 			setJobParam("src",own);
 			
-      org.kapott.hbci.structures.Konto k = new org.kapott.hbci.structures.Konto();
+      org.hbci4java.hbci.structures.Konto k = new org.hbci4java.hbci.structures.Konto();
       k.bic = ueberweisung.getGegenkontoBLZ();
       k.iban = ueberweisung.getGegenkontoNummer();
       k.name = ueberweisung.getGegenkontoName();
@@ -142,7 +142,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.hbci4java.hbci.GV.HBCIJob)
    */
   public void setJob(HBCIJob job) throws RemoteException, ApplicationException
   {

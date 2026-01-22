@@ -10,7 +10,7 @@
 
 package de.willuhn.jameica.hbci.experiments;
 
-import org.kapott.hbci.manager.Feature;
+import org.hbci4java.hbci.manager.Feature;
 
 /**
  * Implementierung fuer ein HBCI4Java-Feature.

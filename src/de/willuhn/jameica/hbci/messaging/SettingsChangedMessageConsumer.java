@@ -10,7 +10,7 @@
 
 package de.willuhn.jameica.hbci.messaging;
 
-import org.kapott.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.messaging.Message;

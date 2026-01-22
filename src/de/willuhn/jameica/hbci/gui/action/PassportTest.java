@@ -9,8 +9,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.gui.action;
 
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -223,7 +223,7 @@ public class PassportTest implements Action
         if (ks.matches("HBCI4Java Exception END ---"))
           continue;
         ks = ks.replaceAll("HBCI4Java Exception BEGIN ---","");
-        ks = ks.replaceAll("HBCI4Java stacktrace BEGIN ---org.kapott.hbci.exceptions.HBCI_Exception: ","");
+        ks = ks.replaceAll("HBCI4Java stacktrace BEGIN ---org.hbci4java.hbci.exceptions.HBCI_Exception: ","");
         ks = ks.replaceAll("Caused by: ","");
         ks = ks.replaceAll(".*?Exception:","");
         if (ks.length() == 0)

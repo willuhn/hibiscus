@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Properties;
 
-import org.kapott.hbci.GV.HBCIJob;
+import org.hbci4java.hbci.GV.HBCIJob;
 
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
@@ -50,7 +50,7 @@ public class HBCISepaSammelUeberweisungJob extends AbstractHBCISepaSammelTransfe
   }
   
   /**
-   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.kapott.hbci.GV.HBCIJob)
+   * @see de.willuhn.jameica.hbci.server.hbci.AbstractHBCIJob#setJob(org.hbci4java.hbci.GV.HBCIJob)
    */
   @Override
   public void setJob(HBCIJob job) throws RemoteException, ApplicationException

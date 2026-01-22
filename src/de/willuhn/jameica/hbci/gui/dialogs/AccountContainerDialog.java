@@ -14,9 +14,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.BankInfo;
-import org.kapott.hbci.passport.AbstractPinTanPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.manager.BankInfo;
+import org.hbci4java.hbci.passport.AbstractPinTanPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;

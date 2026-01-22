@@ -19,10 +19,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.GV.generators.ISEPAGenerator;
-import org.kapott.hbci.GV.generators.SEPAGeneratorFactory;
-import org.kapott.hbci.sepa.SepaVersion;
-import org.kapott.hbci.sepa.SepaVersion.Type;
+import org.hbci4java.hbci.GV.generators.ISEPAGenerator;
+import org.hbci4java.hbci.GV.generators.SEPAGeneratorFactory;
+import org.hbci4java.hbci.sepa.SepaVersion;
+import org.hbci4java.hbci.sepa.SepaVersion.Type;
 
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.PainVersionDialog;

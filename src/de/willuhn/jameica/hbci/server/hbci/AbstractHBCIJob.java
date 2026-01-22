@@ -19,12 +19,12 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import org.kapott.hbci.GV_Result.HBCIJobResult;
-import org.kapott.hbci.manager.HBCIUtilsInternal;
-import org.kapott.hbci.status.HBCIRetVal;
-import org.kapott.hbci.status.HBCIStatus;
-import org.kapott.hbci.structures.Konto;
-import org.kapott.hbci.structures.Value;
+import org.hbci4java.hbci.GV_Result.HBCIJobResult;
+import org.hbci4java.hbci.manager.HBCIUtilsInternal;
+import org.hbci4java.hbci.status.HBCIRetVal;
+import org.hbci4java.hbci.status.HBCIStatus;
+import org.hbci4java.hbci.structures.Konto;
+import org.hbci4java.hbci.structures.Value;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.MetaKey;
@@ -57,7 +57,7 @@ public abstract class AbstractHBCIJob
   // Das sind Warnungen, die im Wesentlichen nur dafuer stehen, dass beim Datenabruf keine neuen Daten bei der Bank vorhanden waren
   private final static List<String> IGNORE_WARNINGS = Arrays.asList("3010","3040","3072","3076","3290","3300","3920");
 
-	private org.kapott.hbci.GV.HBCIJob job = null;
+	private org.hbci4java.hbci.GV.HBCIJob job = null;
   private boolean exclusive              = false;
 	private Hashtable params 			         = new Hashtable();
 
@@ -131,7 +131,7 @@ public abstract class AbstractHBCIJob
    * @throws RemoteException
    * @throws ApplicationException
 	 */
-  public void setJob(org.kapott.hbci.GV.HBCIJob job) throws RemoteException, ApplicationException
+  public void setJob(org.hbci4java.hbci.GV.HBCIJob job) throws RemoteException, ApplicationException
   {
   	this.job = job;
   	
@@ -510,7 +510,7 @@ public abstract class AbstractHBCIJob
 	 * @param name Name des Parameters.
 	 * @param konto das Konto.
 	 */
-	protected final void setJobParam(String name, org.kapott.hbci.structures.Konto konto)
+	protected final void setJobParam(String name, org.hbci4java.hbci.structures.Konto konto)
 	{
 	  this.setJobParam(name,null,konto);
 	}
@@ -521,7 +521,7 @@ public abstract class AbstractHBCIJob
    * @param index optionaler Index des Parameters.
    * @param konto das Konto.
    */
-  protected final void setJobParam(String name, Integer index, org.kapott.hbci.structures.Konto konto)
+  protected final void setJobParam(String name, Integer index, org.hbci4java.hbci.structures.Konto konto)
   {
     if (name == null || konto == null)
     {

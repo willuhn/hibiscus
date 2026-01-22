@@ -16,11 +16,11 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Properties;
 
-import org.kapott.hbci.GV_Result.GVRKUms;
-import org.kapott.hbci.manager.HBCIKey;
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.structures.Konto;
-import org.kapott.hbci.swift.Swift;
+import org.hbci4java.hbci.GV_Result.GVRKUms;
+import org.hbci4java.hbci.manager.HBCIKey;
+import org.hbci4java.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.structures.Konto;
+import org.hbci4java.hbci.swift.Swift;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;

@@ -14,10 +14,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kapott.hbci.callback.HBCICallback;
-import org.kapott.hbci.manager.HBCIHandler;
-import org.kapott.hbci.passport.AbstractHBCIPassport;
-import org.kapott.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.callback.HBCICallback;
+import org.hbci4java.hbci.manager.HBCIHandler;
+import org.hbci4java.hbci.passport.AbstractHBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassport;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCICallbackSWT;
@@ -202,7 +202,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   	Logger.info("reading accounts from ddv passport");
 		try {
 			open();
-			org.kapott.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
+			org.hbci4java.hbci.structures.Konto[] konten = hbciPassport.getAccounts();
 			if (konten == null || konten.length == 0)
 			{
 				Logger.info("no accounts found");
@@ -229,7 +229,7 @@ public class PassportHandleImpl extends UnicastRemoteObject implements PassportH
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.passport.PassportHandle#callback(org.kapott.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
+   * @see de.willuhn.jameica.hbci.passport.PassportHandle#callback(org.hbci4java.hbci.passport.HBCIPassport, int, java.lang.String, int, java.lang.StringBuffer)
    */
   public boolean callback(HBCIPassport passport, int reason, String msg, int datatype, StringBuffer retData) throws Exception
   {

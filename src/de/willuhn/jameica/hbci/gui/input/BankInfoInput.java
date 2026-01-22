@@ -12,7 +12,7 @@ package de.willuhn.jameica.hbci.gui.input;
 
 import java.util.List;
 
-import org.kapott.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.manager.HBCIUtils;
 
 import de.willuhn.jameica.gui.input.SearchInput;
 import de.willuhn.jameica.hbci.HBCI;

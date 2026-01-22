@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIUtils;
+import org.hbci4java.hbci.manager.HBCIUtils;
 
 import de.jost_net.OBanToo.SEPA.IBAN;
 import de.willuhn.jameica.gui.Action;

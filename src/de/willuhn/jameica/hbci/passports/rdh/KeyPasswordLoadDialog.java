@@ -17,8 +17,8 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.passport.HBCIPassportRDHNew;
+import org.hbci4java.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassportRDHNew;
 
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.dialogs.PasswordDialog;

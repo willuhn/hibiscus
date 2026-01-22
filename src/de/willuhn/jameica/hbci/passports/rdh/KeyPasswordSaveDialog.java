@@ -9,8 +9,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci.passports.rdh;
 
-import org.kapott.hbci.passport.HBCIPassport;
-import org.kapott.hbci.passport.HBCIPassportRDHXFile;
+import org.hbci4java.hbci.passport.HBCIPassport;
+import org.hbci4java.hbci.passport.HBCIPassportRDHXFile;
 
 import de.willuhn.jameica.gui.dialogs.NewPasswordDialog;
 import de.willuhn.jameica.hbci.HBCI;
