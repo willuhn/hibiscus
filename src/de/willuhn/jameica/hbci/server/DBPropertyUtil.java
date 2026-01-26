@@ -365,7 +365,7 @@ public class DBPropertyUtil
         @Override
         public Map<String, DBProperty> call() throws Exception
         {
-          logCache("loaded scope " + localPrefix);
+          logCache("loading scope " + localPrefix);
           return getScope(prefix,scope);
         }
       });
@@ -459,11 +459,6 @@ public class DBPropertyUtil
     {
       DBProperty prop = list.next();
       String name = prop.getName();
-
-      // Den internen Key nicht mit liefern.
-      if (ObjectUtils.equals(name,createIdentifier(prefix,scope,null,KEY_CACHE_UPDATE)))
-        continue;
-      
       result.put(name,prop);
     }
     return result;

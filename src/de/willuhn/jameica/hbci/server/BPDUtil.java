@@ -614,10 +614,10 @@ public class BPDUtil
       
       // Migrieren
       final HBCIDBService service = Settings.getDBService();
-      Logger.info("migrating BPD/UPD cache from key=customer to key=blz.customer");
-      int bpdCount = service.executeUpdate("update property set name = REPLACE(name,?,?) where name like ?",Prefix.BPD.value() + DBPropertyUtil.SEP + kd,Prefix.BPD.value() + DBPropertyUtil.SEP + blz + DBPropertyUtil.SEP + kd,Prefix.BPD.value() + DBPropertyUtil.SEP + kd + DBPropertyUtil.SEP + "%");
-      int updCount = service.executeUpdate("update property set name = REPLACE(name,?,?) where name like ?",Prefix.UPD.value() + DBPropertyUtil.SEP + kd,Prefix.UPD.value() + DBPropertyUtil.SEP + blz + DBPropertyUtil.SEP + kd,Prefix.UPD.value() + DBPropertyUtil.SEP + kd + DBPropertyUtil.SEP + "%");
-      Logger.info("BPD/UPD cache migrated [bpd entries: " + bpdCount + ", upd entries: " + updCount + "]");
+      int bpdCount = service.executeUpdate("update property set name = REPLACE(name,?,?) where name like ?",Prefix.BPD.value() + DBPropertyUtil.SEP + kd,Prefix.BPD.value() + DBPropertyUtil.SEP + scope,Prefix.BPD.value() + DBPropertyUtil.SEP + kd + DBPropertyUtil.SEP + "%");
+      int updCount = service.executeUpdate("update property set name = REPLACE(name,?,?) where name like ?",Prefix.UPD.value() + DBPropertyUtil.SEP + kd,Prefix.UPD.value() + DBPropertyUtil.SEP + scope,Prefix.UPD.value() + DBPropertyUtil.SEP + kd + DBPropertyUtil.SEP + "%");
+      if (bpdCount > 0 || updCount > 0)
+        Logger.info("BPD/UPD cache migrated [bpd entries: " + bpdCount + ", upd entries: " + updCount + "]");
     }
     catch (Exception e)
     {
