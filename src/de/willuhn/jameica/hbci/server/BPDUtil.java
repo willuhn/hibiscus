@@ -193,16 +193,21 @@ public class BPDUtil
     
     try
     {
-      // Kundennummer korrekt?
+      // Kundennummer vorhanden?
       String kd = konto.getKundennummer();
-      if (kd == null || kd.trim().length() == 0)
+      if (kd == null || kd.isBlank())
+        return null;
+      
+      // BLZ vorhanden?
+      String blz = konto.getBLZ();
+      if (blz == null || blz.isBlank())
         return null;
       
       Support support = new Support();
       support.konto = konto;
       support.query = query;
 
-      support.maxVersion = getMaxVersion(kd,query);
+      support.maxVersion = getMaxVersion(konto,query);
       
       // Wenn keine maxVersion ermittelbar ist, dann wird der Job per BPD gar nicht
       // unterstuetzt. Die restlichen Abfragen koennen wir uns dann schenken.
@@ -213,7 +218,7 @@ public class BPDUtil
       support.bpdSupport = true;
 
       // Die BPD selbst ermitteln
-      support.bpd = getBPD(kd,query,support.maxVersion);
+      support.bpd = getBPD(konto,query,support.maxVersion);
       
       // Support laut UPD pruefen
       support.updSupport = getUPDSupport(konto,query);
@@ -229,20 +234,20 @@ public class BPDUtil
   
   /**
    * Liefert die hoechste verfuegbare Version des Geschaeftsvorfalls.
-   * @param kd die Kundennummer.
+   * @param k das Konto.
    * @param query die Abfrage.
    * @return die Versionsnummer oder NULL, wenn der Geschaeftsvorfall fuer das Konto nicht unterstuetzt wird.
    * @throws RemoteException
    */
-  private static Integer getMaxVersion(final String kd, final Query query) throws RemoteException
+  private static Integer getMaxVersion(final Konto k, final Query query) throws RemoteException
   {
     final HBCIDBService service = Settings.getDBService();
     
-    // Wir haengen noch unseren Prefix mit BPD und Kundennummer vorn dran. Das wurde vom Callback so erfasst
-    final String prefix = Prefix.BPD.value() + DBPropertyUtil.SEP + kd.trim() + DBPropertyUtil.SEP;
+    // Wir haengen noch unseren Prefix mit BPD und BLZ/Kundennummer vorn dran. Das wurde vom Callback so erfasst
+    final String prefix = Prefix.BPD.value() + DBPropertyUtil.SEP + createScope(k.getBLZ(),k.getKundennummer()) + DBPropertyUtil.SEP;
     
     // Wir ermitteln die hoechste Segment-Version des Geschaeftsvorfalls
-    String q = prefix + "Params%." + query.query + "Par%.SegHead.version";
+    final String q = prefix + "Params%." + query.query + "Par%.SegHead.version";
     final String version = (String) service.execute("select max(content) from property where name like ?",new String[] {q},new ResultSetExtractor()
     {
       public Object extract(ResultSet rs) throws RemoteException, SQLException
@@ -276,8 +281,10 @@ public class BPDUtil
     final HBCIDBService service = Settings.getDBService();
 
     // Checken, ob wir fuer die UPD ueberhaupt eine Aussage treffen koennen
+    final String prefix = Prefix.UPD.value() + DBPropertyUtil.SEP + createScope(k.getBLZ(),k.getKundennummer()) + DBPropertyUtil.SEP;
+
     {
-      String q = Prefix.UPD.value() + DBPropertyUtil.SEP + k.getKundennummer().trim() + DBPropertyUtil.SEP + "UPA.usage";
+      final String q = prefix + "UPA.usage";
       final Boolean ignoreUpd = (Boolean) service.execute("select name,content from property where name = ?",new String[] {q},new ResultSetExtractor()
       {
         public Object extract(ResultSet rs) throws RemoteException, SQLException
@@ -288,40 +295,44 @@ public class BPDUtil
           return Boolean.FALSE;
         }
       });
-
+      
       // 2020-06-08: In den UPD steht "UPA.usage = 1". Heisst. Anhand der UPD kann keine Aussage darueber getroffen werden, ob der GV unterstuetzt
       // wird. Daher zaehlen dann nur die BPD und updSupport liefert immer true.
       // Noetig fuer die Apo-Bank - siehe https://homebanking-hilfe.de/forum/topic.php?t=24018&page=8
-      if (ignoreUpd != null && ignoreUpd.booleanValue())
+      if (ignoreUpd.booleanValue())
         return true;
     }
 
-    String q = Prefix.UPD.value() + DBPropertyUtil.SEP + k.getKundennummer().trim() + DBPropertyUtil.SEP + "KInfo%";
-    String segment = (String) service.execute("select name,content from property where name like ?",new String[] {q},new ResultSetExtractor()
-    {
-      public Object extract(ResultSet rs) throws RemoteException, SQLException
-      {
-        while (rs.next())
-        {
-          String name  = rs.getString("name");
-          String value = rs.getString("content");
-
-          if (name == null || name.length() == 0 || value == null || value.length() == 0)
-            continue;
-
-          if (name.endsWith(".iban") && value.equals(k.getIban()))
-            return name;
-
-          if (name.endsWith(".KTV.number") && value.equals(k.getKontonummer()))
-            return name;
-        }
-        
-        return null;
-      }
-    });
+    String segment = null;
     
-    if (segment == null || segment.length() == 0)
-      return false;
+    {
+      final String q = prefix + "KInfo%";
+      segment = (String) service.execute("select name,content from property where name like ?",new String[] {q},new ResultSetExtractor()
+      {
+        public Object extract(ResultSet rs) throws RemoteException, SQLException
+        {
+          while (rs.next())
+          {
+            String name  = rs.getString("name");
+            String value = rs.getString("content");
+
+            if (name == null || name.length() == 0 || value == null || value.length() == 0)
+              continue;
+
+            if (name.endsWith(".iban") && value.equals(k.getIban()))
+              return name;
+
+            if (name.endsWith(".KTV.number") && value.equals(k.getKontonummer()))
+              return name;
+          }
+          
+          return null;
+        }
+      });
+      
+      if (segment == null || segment.isBlank())
+        return false;
+    }
     
     // Den Namen des KInfo-Elements ermitteln
     // Das Format des Segments ist ungefaehr so: "upd.<customernumber>.KInfo_<Nr>....
@@ -330,7 +341,7 @@ public class BPDUtil
     int offset = segment.substring(pos + 1).indexOf(DBPropertyUtil.SEP);
     segment    = segment.substring(0,pos + offset + 1);
 
-    q = segment + ".AllowedGV%.code";
+    String q = segment + ".AllowedGV%.code";
     final Boolean support = (Boolean) service.execute("select content from property where name like ? order by content",new String[] {q},new ResultSetExtractor()
     {
       public Object extract(ResultSet rs) throws RemoteException, SQLException
@@ -355,22 +366,22 @@ public class BPDUtil
 
   /**
    * Liefert die BPD fuer das Konto und den angegebenen Suchfilter.
-   * @param kd die Kundennummer.
+   * @param k das Konto.
    * @param query die Abfrage.
    * @param version die Segment-Version des Geschaeftsvorfalls.
    * @return Liste der Properties mit den BPD-Parametern.
    * Die Funktion liefert nie NULL sondern hoechstens leere Properties.
    * @throws RemoteException
    */
-  private static TypedProperties getBPD(final String kd, final Query query, final Integer version) throws RemoteException
+  private static TypedProperties getBPD(final Konto k, final Query query, final Integer version) throws RemoteException
   {
-    final TypedProperties props = new HBCITypedProperties();
-
     final HBCIDBService service = Settings.getDBService();
 
-    // Wir haengen noch unseren Prefix mit BPD und Kundennummer vorn dran. Das wurde vom Callback so erfasst
-    final String prefix = Prefix.BPD.value() + DBPropertyUtil.SEP + kd.trim() + DBPropertyUtil.SEP;
-    String q = prefix + "Params%." + query.query + "Par" + (version != null ? version : "%") + ".Par" + query.query + "%";
+    // Wir haengen noch unseren Prefix mit BPD und BLZ/Kundennummer vorn dran. Das wurde vom Callback so erfasst
+    final String prefix = Prefix.BPD.value() + DBPropertyUtil.SEP + createScope(k.getBLZ(),k.getKundennummer()) + DBPropertyUtil.SEP;
+    
+    final TypedProperties props = new HBCITypedProperties();
+    final String q = prefix + "Params%." + query.query + "Par" + (version != null ? version : "%") + ".Par" + query.query + "%";
     service.execute("select name,content from property where name like ? order by name",new String[] {q},new ResultSetExtractor()
     {
       public Object extract(ResultSet rs) throws RemoteException, SQLException
@@ -409,12 +420,18 @@ public class BPDUtil
       final Properties data = prefix == Prefix.BPD ? passport.getBPD() : passport.getUPD();
       final String version  = prefix == Prefix.BPD ? passport.getBPDVersion() : passport.getUPDVersion();
       final String user     = passport.getUserId();
+      final String blz      = passport.getBLZ();
       
-      if (version == null || version.length() == 0 || user == null || user.length() == 0 || data == null || data.size() == 0)
+      if (version == null || version.isBlank() ||
+          blz == null || blz.isBlank() ||
+          user == null || user.isBlank() || 
+          data == null || data.size() == 0)
       {
-        Logger.debug("[" + prefix + "] no version, no userid or no data found, skipping update");
+        Logger.debug("[" + prefix + "] no version, no blz/userid or no data found, skipping update");
         return false;
       }
+      
+      final String scope = createScope(blz,user);
 
       // Wir machen das Update nicht jedesmal sondern periodisch. Denn unter
       // Umstaenden koennen hierbei mehrere 100 Datensaetze angelegt werden.
@@ -428,7 +445,7 @@ public class BPDUtil
       
       try
       {
-        long timestamp = Long.parseLong(DBPropertyUtil.get(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,"0"));
+        final long timestamp = Long.parseLong(DBPropertyUtil.get(prefix,scope,null,DBPropertyUtil.KEY_CACHE_UPDATE,"0"));
         expired = (timestamp == 0L || timestamp < (now - CACHE_MAX_AGE));
       }
       catch (Exception e)
@@ -444,7 +461,7 @@ public class BPDUtil
       
       try
       {
-        v = VersionUtil.getVersion(Settings.getDBService(),prefix.value() + "." + user);
+        v = VersionUtil.getVersion(Settings.getDBService(),prefix.value() + "." + scope);
         
         int nv = Integer.parseInt(version);
         int cv = v.getVersion();
@@ -468,20 +485,19 @@ public class BPDUtil
       if (!expired && !newVersion)
         return false;
       
-      BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-      SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
-      ProgressMonitor monitor = session != null ? session.getProgressMonitor() : null;
+      final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+      final SynchronizeSession session = service.get(HBCISynchronizeBackend.class).getCurrentSession();
+      final ProgressMonitor monitor = session != null ? session.getProgressMonitor() : null;
 
       if (monitor != null)
         monitor.log(i18n.tr("Aktualisiere " + prefix.name()));
       
       Logger.info("updating " + prefix + " cache");
-      Set<String> customerIDs = HBCIProperties.getCustomerIDs(passport);
       
       int count = 1;
-      for (String customerId:customerIDs)
+      for (String customerId:HBCIProperties.getCustomerIDs(passport))
       {
-        Update update = DBPropertyUtil.updateScope(prefix,customerId,data);
+        Update update = DBPropertyUtil.updateScope(prefix,createScope(blz,customerId),data);
         Logger.info("customer " + count + ": updated " + prefix + "- inserts: " + update.inserts + ", updates: " + update.updates + ", deletions: " + update.deletes);
         if (monitor != null)
           monitor.log(i18n.tr("  Kennung {0} - {1}-Parameter neu: {2}, geändert: {3}, gelöscht: {4}",Integer.toString(count),prefix.name(),Integer.toString(update.inserts),Integer.toString(update.updates),Integer.toString(update.deletes)));
@@ -493,7 +509,7 @@ public class BPDUtil
       v.store();
       
       // Datum des letzten Abrufs speichern
-      DBPropertyUtil.set(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,Long.toString(now));
+      DBPropertyUtil.set(prefix,scope,null,DBPropertyUtil.KEY_CACHE_UPDATE,Long.toString(now));
       return true;
     }
     catch (Exception e)
@@ -510,21 +526,84 @@ public class BPDUtil
    */
   public static void expireCache(HBCIPassport passport, Prefix prefix)
   {
-    final String user = passport.getUserId();
-    if (user == null || user.length() == 0)
+    final String blz = passport.getBLZ();
+    if (blz == null || blz.isBlank())
     {
-      Logger.debug("[" + prefix + "] no userid found, skipping cache expiry");
+      Logger.debug("[" + prefix + "] no blz found, skipping cache expiry");
       return;
     }
     
-    try
+    Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
+    for (String customerId:customerIds)
     {
-      Logger.info("expire " + prefix.name() + " cache");
-      DBPropertyUtil.set(prefix,user,null,DBPropertyUtil.KEY_CACHE_UPDATE,"0");
+      try
+      {
+        Logger.info("expire " + prefix.name() + " cache");
+        DBPropertyUtil.set(prefix,customerId,null,DBPropertyUtil.KEY_CACHE_UPDATE,null); // Alten Key ohne BLZ bei der Gelegenheit löschen
+        DBPropertyUtil.set(prefix,createScope(blz,customerId),null,DBPropertyUtil.KEY_CACHE_UPDATE,"0");
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while expiring " + prefix + " cache",e);
+      }
     }
-    catch (Exception e)
+  }
+  
+  /**
+   * Löscht den Cache.
+   * @param passport der Passport.
+   */
+  public static void deleteCache(HBCIPassport passport)
+  {
+    final String blz = passport.getBLZ();
+    if (blz == null || blz.isBlank())
     {
-      Logger.error("error while expiring " + prefix + " cache",e);
+      Logger.debug("no blz found, skipping bpd/upd cache deletion");
+      return;
     }
+    
+    Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
+    for (String customerId:customerIds)
+    {
+      final String scope = createScope(blz,customerId);
+      try
+      {
+        Logger.info("deleting bpd/upd cache");
+
+        // Migration: Wir haben als Key früher nur die Customer-ID verwendet. Daher basierend auf der ebenfalls löschen
+        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
+        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
+
+        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,scope);
+        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,scope);
+        
+        // Versionsnummer Caches loeschen, um das Neubefuellen des Cache zu forcieren
+        Logger.info("deleting stored bpd/upd version numbers");
+        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + customerId);
+        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + customerId);
+        
+        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + scope);
+        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + scope);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while clearing BPD/UPD cache",e);
+      }
+    }
+    
+    Logger.info("mark upd/bpd caches expired");
+    expireCache(passport,Prefix.BPD);
+    expireCache(passport,Prefix.UPD);
+  }
+  
+  /**
+   * Erzeugt den Scope-Wert.
+   * @param blz die BLZ.
+   * @param user der User.
+   * @return der Scope.
+   */
+  private static String createScope(String blz, String user)
+  {
+    return blz.trim() + DBPropertyUtil.SEP + user.trim();
   }
 }
