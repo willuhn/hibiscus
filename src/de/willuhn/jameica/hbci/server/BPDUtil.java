@@ -573,19 +573,11 @@ public class BPDUtil
       try
       {
         Logger.info("deleting bpd/upd cache");
-
-        // Migration: Wir haben als Key früher nur die Customer-ID verwendet. Daher basierend auf der ebenfalls löschen
-        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
-        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
-
         DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,scope);
         DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,scope);
         
-        // Versionsnummer Caches loeschen, um das Neubefuellen des Cache zu forcieren
+        // Versionsnummer der Caches loeschen, um das Neubefuellen des Cache zu forcieren
         Logger.info("deleting stored bpd/upd version numbers");
-        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + customerId);
-        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + customerId);
-        
         VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + scope);
         VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + scope);
       }
