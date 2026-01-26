@@ -203,6 +203,8 @@ public class BPDUtil
       if (blz == null || blz.isBlank())
         return null;
       
+      migrateCache(blz,kd);
+
       Support support = new Support();
       support.konto = konto;
       support.query = query;
@@ -431,6 +433,8 @@ public class BPDUtil
         return false;
       }
       
+      migrateCache(blz,user);
+      
       final String scope = createScope(blz,user);
 
       // Wir machen das Update nicht jedesmal sondern periodisch. Denn unter
@@ -538,8 +542,8 @@ public class BPDUtil
     {
       try
       {
+        migrateCache(blz,customerId);
         Logger.info("expire " + prefix.name() + " cache");
-        DBPropertyUtil.set(prefix,customerId,null,DBPropertyUtil.KEY_CACHE_UPDATE,null); // Alten Key ohne BLZ bei der Gelegenheit löschen
         DBPropertyUtil.set(prefix,createScope(blz,customerId),null,DBPropertyUtil.KEY_CACHE_UPDATE,"0");
       }
       catch (Exception e)
@@ -594,6 +598,39 @@ public class BPDUtil
     Logger.info("mark upd/bpd caches expired");
     expireCache(passport,Prefix.BPD);
     expireCache(passport,Prefix.UPD);
+  }
+  
+  /**
+   * Migriert den Cache auf die neuen Keys mit BLZ.
+   * @param String blz.
+   * @param String kd
+   */
+  private static void migrateCache(String blz, String kd)
+  {
+    try
+    {
+      if (kd == null || kd.isBlank())
+        return;
+      
+      if (blz == null || blz.isBlank())
+        return;
+
+      final String scope = createScope(blz,kd);
+      final String migrated = DBPropertyUtil.get(Prefix.BPD,scope,null,DBPropertyUtil.KEY_CACHE_UPDATE,null);
+      if (migrated != null)
+        return;
+      
+      // Migrieren
+      final HBCIDBService service = Settings.getDBService();
+      Logger.info("migrating BPD/UPD cache from key=customer to key=blz.customer");
+      int bpdCount = service.executeUpdate("update property set name = REPLACE(name,?,?) where name like ?",Prefix.BPD.value() + DBPropertyUtil.SEP + kd,Prefix.BPD.value() + DBPropertyUtil.SEP + blz + DBPropertyUtil.SEP + kd,Prefix.BPD.value() + DBPropertyUtil.SEP + kd + DBPropertyUtil.SEP + "%");
+      int updCount = service.executeUpdate("update property set name = REPLACE(name,?,?) where name like ?",Prefix.UPD.value() + DBPropertyUtil.SEP + kd,Prefix.UPD.value() + DBPropertyUtil.SEP + blz + DBPropertyUtil.SEP + kd,Prefix.UPD.value() + DBPropertyUtil.SEP + kd + DBPropertyUtil.SEP + "%");
+      Logger.info("BPD/UPD cache migrated [bpd entries: " + bpdCount + ", upd entries: " + updCount + "]");
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while migrating BPD/UPD cache",e);
+    }
   }
   
   /**
