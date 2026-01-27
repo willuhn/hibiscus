@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1172 Update auf HBCI4Java 4.1.7 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.7
   * NEW: 1171 Automatische Migration des internen BPD-Cache
 
 2026-01-16 Version 2.12.2
