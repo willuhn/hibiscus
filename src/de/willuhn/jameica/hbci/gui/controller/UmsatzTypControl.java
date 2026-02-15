@@ -11,34 +11,44 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+
+import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypListDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
-import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -57,7 +67,7 @@ public class UmsatzTypControl extends AbstractControl
   private TextInput pattern         = null;
   private CheckboxInput regex       = null;
   private SelectInput art           = null;
-  private UmsatzTypInput parent     = null;
+  private Input parent              = null;
   private TextInput kommentar       = null;
   private KontoInput konto          = null;
   private CheckboxInput skipReport  = null;
@@ -270,14 +280,86 @@ public class UmsatzTypControl extends AbstractControl
    * @return Auswahlbox.
    * @throws RemoteException
    */
-  public UmsatzTypInput getParent() throws RemoteException
+  public Input getParent() throws RemoteException
   {
     if (this.parent != null)
       return this.parent;
     
-    this.parent = new UmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp(),UmsatzTyp.TYP_EGAL, false);
+    this.parent = new ParentUmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp());
     this.parent.setComment("");
     return this.parent;
+  }
+  
+  /**
+   * Liefert den anzuzeigenden Parent-Text.
+   * @param typ die Kategorie.
+   * @return der anzuzeigende Text.
+   */
+  private String getParentDisplayText(UmsatzTyp typ)
+  {
+    if (typ == null)
+      return i18n.tr("<Keine Kategorie>");
+
+    try
+    {
+      return abbreviateLeading(getParentPath(typ),60);
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to resolve parent path",e);
+      try
+      {
+        return typ.getName();
+      }
+      catch (Exception ex)
+      {
+        Logger.error("unable to resolve parent name",ex);
+        return "";
+      }
+    }
+  }
+  
+  /**
+   * Liefert den vollstaendigen Parent-Pfad.
+   * @param typ die Kategorie.
+   * @return der Parent-Pfad.
+   * @throws RemoteException
+   */
+  private String getParentPath(UmsatzTyp typ) throws RemoteException
+  {
+    if (typ == null)
+      return "";
+    
+    List<String> names = new LinkedList<String>();
+    UmsatzTyp current = typ;
+    
+    for (int i=0;i<100;++i)
+    {
+      if (current == null)
+        break;
+      
+      names.add(0,current.getName());
+      current = (UmsatzTyp) current.getParent();
+    }
+    
+    return StringUtils.join(names,"/");
+  }
+  
+  /**
+   * Kuerzt einen String am Anfang, damit das Ende sichtbar bleibt.
+   * @param value der Text.
+   * @param maxLength die max. Laenge.
+   * @return der gekuerzte Text.
+   */
+  private String abbreviateLeading(String value, int maxLength)
+  {
+    if (value == null)
+      return "";
+    
+    if (maxLength < 4 || value.length() <= maxLength)
+      return value;
+    
+    return "..." + value.substring(value.length() - maxLength + 3);
   }
   
   /**
@@ -399,6 +481,85 @@ public class UmsatzTypControl extends AbstractControl
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Umsatz-Kategorie"), StatusBarMessage.TYPE_ERROR));
     }
     return false;
+  }
+  
+  /**
+   * Read-only Input fuer die Auswahl der uebergeordneten Kategorie via Dialog.
+   */
+  private class ParentUmsatzTypInput extends ButtonInput
+  {
+    private Text text = null;
+    private UmsatzTyp value = null;
+    private UmsatzTyp skip = null;
+    
+    /**
+     * ct.
+     * @param preselected der vorausgewaehlte Parent.
+     * @param skip Kategorie, die nicht als Parent gesetzt werden darf.
+     */
+    private ParentUmsatzTypInput(UmsatzTyp preselected, UmsatzTyp skip)
+    {
+      this.value = preselected;
+      this.skip = skip;
+      
+      this.addButtonListener(new Listener()
+      {
+        @Override
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            UmsatzTypListDialog d = new UmsatzTypListDialog(UmsatzTypListDialog.POSITION_CENTER,value,UmsatzTyp.TYP_EGAL);
+            UmsatzTyp selected = (UmsatzTyp) d.open();
+            setValue(selected);
+          }
+          catch (OperationCanceledException oce)
+          {
+            Logger.debug("operation cancelled");
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to choose parent",e);
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Auswählen der Umsatz-Kategorie"),StatusBarMessage.TYPE_ERROR));
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    public Control getClientControl(Composite parent)
+    {
+      if (this.text != null)
+        return this.text;
+      
+      this.text = GUI.getStyleFactory().createText(parent);
+      this.text.setEditable(false);
+      this.text.setText(getParentDisplayText(this.value));
+      return this.text;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#getValue()
+     */
+    @Override
+    public Object getValue()
+    {
+      return this.value;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
+     */
+    @Override
+    public void setValue(Object value)
+    {
+      this.value = (UmsatzTyp) value;
+      if (this.text != null && !this.text.isDisposed())
+        this.text.setText(getParentDisplayText(this.value));
+    }
   }
   
   /**
