@@ -24,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.hbci.tests.CanTermDelRestriction;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -86,7 +87,15 @@ public class HBCISepaDauerauftragDeleteJob extends AbstractHBCIJob
 
       setJobParam("btg",dauerauftrag.getBetrag(),curr);
 
-      setJobParamUsage(dauerauftrag);
+      // Hier finden keine Platzhalter Anwendung, weil es sich ja um
+      // einen bereits ausgeführten Auftrag handelt, in dem die Platzhalter
+      // bereits ersetzt wurden. Wir machen die Ersetzung sicherheitshalber
+      // dennoch, weil es einen Uebergangszeitraum gab, in dem die Ersetzungen
+      // in den ausgeführten Aufträgen noch nicht gespeichert wurden
+      final String zweck = dauerauftrag.getZweck();
+      if (zweck != null && zweck.length() > 0)
+        setJobParam("usage",VerwendungszweckUtil.evaluate(zweck));
+      
       setJobParam("firstdate",dauerauftrag.getErsteZahlung());
 
       Date letzteZahlung = dauerauftrag.getLetzteZahlung();

@@ -12,6 +12,7 @@ package de.willuhn.jameica.hbci.server;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -67,7 +68,7 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
     u.setGegenkontoName(getGegenkontoName());
     u.setGegenkontoBLZ(getGegenkontoBLZ());
     u.setKonto(getKonto());
-    u.setZweck(getZweck());
+    u.setZweck(Optional.ofNullable(MetaKey.TRANSFER_USAGE_TEMPLATE.get(this)).orElse(this.getZweck())); // Verwendungszweck aus dem Template verwenden, falls vorhanden
     u.setEndtoEndId(getEndtoEndId());
     u.setPmtInfId(getPmtInfId());
     u.setMandateId(getMandateId());

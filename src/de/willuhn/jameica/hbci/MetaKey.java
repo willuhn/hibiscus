@@ -123,6 +123,10 @@ public enum MetaKey
    */
   UEBERWEISUNG_TYP("ueberweisung.typ","Vorauswahl des Auftragstyps",AuslandsUeberweisungTyp.INSTANT.name()),
 
+  /**
+   * Vorlage für den Verwendungszweck.
+   */
+  TRANSFER_USAGE_TEMPLATE("transfer.usage.tpl","Vorlage für Verwendungszweck",null),
 
   ;
 

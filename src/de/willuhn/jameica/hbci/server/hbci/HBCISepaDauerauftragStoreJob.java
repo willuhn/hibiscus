@@ -21,6 +21,7 @@ import org.kapott.hbci.GV_Result.HBCIJobResult;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.BaseDauerauftrag;
@@ -30,6 +31,7 @@ import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.hbci.server.hbci.tests.TurnusRestriction;
 import de.willuhn.jameica.system.Application;
@@ -106,7 +108,19 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
 
 			setJobParam("btg",dauerauftrag.getBetrag(),curr);
 			
-      setJobParamUsage(dauerauftrag);
+      final String zweck = dauerauftrag.getZweck();
+      if (zweck != null && zweck.length() > 0)
+      {
+        final String replaced = VerwendungszweckUtil.evaluate(zweck);
+        setJobParam("usage",replaced);
+        
+        // Wir ersetzen auch in der lokal gespeicherten Kopie die Platzhalter
+        // gegen die finalen Werte. Wir speichern zusätzlich den Verwendungszweck mit den Platzhaltern in den Meta-Daten,
+        // damit wir die originalen Platzhalter beim Duplizieren des Auftrages noch haben und die Ersetzung da erneut stattfinden kann.
+        dauerauftrag.setZweck(replaced); // Das Speichern passiert, sobald der Auftrag als ausgeführt markiert wird
+        MetaKey.TRANSFER_USAGE_TEMPLATE.set(dauerauftrag,zweck);
+      }
+
 			setJobParam("firstdate",dauerauftrag.getErsteZahlung());
 
 			String purp = dauerauftrag.getPurposeCode();

@@ -108,9 +108,18 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
         setJobParam("dst", idx, k);
         setJobParam("btg", idx, b.getBetrag(),curr);
         
-        String zweck = b.getZweck();
+        final String zweck = b.getZweck();
         if (zweck != null && zweck.length() > 0)
-          setJobParam("usage", idx ,VerwendungszweckUtil.evaluate(zweck));
+        {
+          final String replaced = VerwendungszweckUtil.evaluate(zweck);
+          setJobParam("usage", idx ,replaced);
+          
+          // Wir ersetzen auch in der lokal gespeicherten Kopie die Platzhalter
+          // gegen die finalen Werte. Wir speichern zusätzlich den Verwendungszweck mit den Platzhaltern in den Meta-Daten,
+          // damit wir die originalen Platzhalter beim Duplizieren des Auftrages noch haben und die Ersetzung da erneut stattfinden kann.
+          b.setZweck(replaced); // Das Speichern passiert, sobald der Auftrag als ausgeführt markiert wird
+          MetaKey.TRANSFER_USAGE_TEMPLATE.set(b,zweck);
+        }
         
         String endToEndId = b.getEndtoEndId();
         if (endToEndId != null && endToEndId.trim().length() > 0)
@@ -157,6 +166,15 @@ public abstract class AbstractHBCISepaSammelTransferJob<T extends SepaSammelTran
   protected void markExecuted() throws RemoteException, ApplicationException
   {
     transfer.setAusgefuehrt(true);
+    
+    // Die enthalteten Buchungen auch alle einmal speichern, damit der
+    // aktualisierte Verwendungszweck mit den evaluierten Platzhaltern
+    // übernommen wird
+    List<SepaSammelTransferBuchung> buchungen = this.transfer.getBuchungen();
+    for (SepaSammelTransferBuchung b:buchungen)
+    {
+      b.store();
+    }
 
     Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(transfer)); // BUGZILLA 545
     konto.addToProtokoll(i18n.tr("SEPA-Sammelauftrag [Bezeichnung: {0}] ausgeführt",transfer.getBezeichnung()),Protokoll.TYP_SUCCESS);

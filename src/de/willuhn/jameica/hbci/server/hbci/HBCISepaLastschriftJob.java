@@ -88,10 +88,19 @@ public class HBCISepaLastschriftJob extends AbstractHBCIJob
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
       setJobParam("btg",lastschrift.getBetrag(),curr);
       
-      String zweck = lastschrift.getZweck();
+      final String zweck = lastschrift.getZweck();
       if (zweck != null && zweck.length() > 0)
-			  setJobParam("usage",VerwendungszweckUtil.evaluate(zweck));
-			
+      {
+        final String replaced = VerwendungszweckUtil.evaluate(zweck);
+        setJobParam("usage",replaced);
+        
+        // Wir ersetzen auch in der lokal gespeicherten Kopie die Platzhalter
+        // gegen die finalen Werte. Wir speichern zusätzlich den Verwendungszweck mit den Platzhaltern in den Meta-Daten,
+        // damit wir die originalen Platzhalter beim Duplizieren des Auftrages noch haben und die Ersetzung da erneut stattfinden kann.
+        lastschrift.setZweck(replaced); // Das Speichern passiert, sobald der Auftrag als ausgeführt markiert wird
+        MetaKey.TRANSFER_USAGE_TEMPLATE.set(lastschrift,zweck);
+      }
+      
       String endToEndId = lastschrift.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)
         setJobParam("endtoendid",endToEndId);
