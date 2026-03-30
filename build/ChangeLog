@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1175 Update auf HBCI4Java 4.1.8 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.8
   * NEW: 1174 Beim Ausführen eines Auftrages die Platzhalter auch in der lokalen Kopie ersetzen, originalen Verwendungszweck aber in Meta-Daten speichern, damit die Platzhalter beim Duplizieren des Auftrages wieder vorhanden sind
   * NEW: 1173 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.03.2026
   * NEW: 1172 Update auf HBCI4Java 4.1.7 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.7
