@@ -120,7 +120,26 @@ public class UmsatzTypListDialog extends AbstractDialog
     ////////////////
     // geht erst nach dem Paint
     if (this.choosen != null)
-      this.getTable().select(new UmsatzTypBean(this.choosen));
+    {
+      UmsatzTypBean bean = new UmsatzTypBean(this.choosen);
+      this.getTable().select(bean);
+      int index = -1;
+      List items = this.getTable().getItems();
+      for (int i=0;i<items.size();++i)
+      {
+        Object o = items.get(i);
+        if (!(o instanceof UmsatzTypBean))
+          continue;
+        UmsatzTypBean b = (UmsatzTypBean) o;
+        if (b.getTyp().equals(bean.getTyp()))
+        {
+          index = i;
+          break;
+        }
+      }
+      if (index >= 0)
+        this.getTable().setTopIndex(Math.max(0,index - 5));
+    }
     
     
     text.getControl().addKeyListener(new DelayedAdapter());
