@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.internal.parts.PanelButtonPrint;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.hbci.gui.action.AuslandsUeberweisungNew;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerAdd;
 import de.willuhn.jameica.hbci.gui.action.UmsatzMarkChecked;
 import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
@@ -56,6 +57,8 @@ public class UmsatzDetail extends AbstractUmsatzDetail
     },u,false,"emblem-default.png");
     checked.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED) && !u.hasFlag(Umsatz.FLAG_CHECKED));
     buttons.addButton(checked);
+    
+    buttons.addButton(i18n.tr("Als neue Überweisung anlegen..."),new AuslandsUeberweisungNew(),u,false,"ueberweisung.png");
     
     Button ab = null;
     final Address found = getControl().getAddressbookEntry();

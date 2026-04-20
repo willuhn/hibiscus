@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1176 Button "Als neue Überweisung anlegen..." auch in Detailansicht von Umsatzbuchungen - siehe https://homebanking-hilfe.de/forum/topic.php?t=28237
   * NEW: 1175 Update auf HBCI4Java 4.1.8 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.8
   * NEW: 1174 Beim Ausführen eines Auftrages die Platzhalter auch in der lokalen Kopie ersetzen, originalen Verwendungszweck aber in Meta-Daten speichern, damit die Platzhalter beim Duplizieren des Auftrages wieder vorhanden sind
   * NEW: 1173 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 09.03.2026
