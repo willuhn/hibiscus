@@ -56,6 +56,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypListDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
@@ -65,7 +66,6 @@ import de.willuhn.jameica.hbci.gui.input.DateToInput;
 import de.willuhn.jameica.hbci.gui.input.InputCompat;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.RangeInput;
-import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.gui.parts.columns.KontoColumn;
 import de.willuhn.jameica.hbci.io.Exporter;
 import de.willuhn.jameica.hbci.rmi.Address;
@@ -107,7 +107,7 @@ public class KontoauszugList extends UmsatzList
   private DateInput start              = null;
   private DateInput end                = null;
   private RangeInput range             = null;
-  private UmsatzTypInput kategorie     = null;
+  private KategorieInput kategorie     = null;
   private CheckboxInput subKategorien  = null;
 
   // Gegenkonto/Betrag
@@ -388,16 +388,15 @@ public class KontoauszugList extends UmsatzList
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public UmsatzTypInput getKategorie() throws RemoteException
+  public Input getKategorie() throws RemoteException
   {
     if (this.kategorie != null)
       return this.kategorie;
     
     UmsatzTyp preset = (UmsatzTyp) cache.get("kontoauszug.list.kategorie");
     if (preset == null || (preset.getID() == null && preset != UmsatzTypUtil.UNASSIGNED)) // // ID ist NULL, wenn sie zwischenzeitlich geloescht wurde
-      preset = null; 
-    this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL, true);
-    this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
+      preset = null;
+    this.kategorie = new KategorieInput(preset);
     this.kategorie.setComment("");
     this.kategorie.addListener(this.listener);
 
@@ -406,18 +405,100 @@ public class KontoauszugList extends UmsatzList
     {
       public void handleEvent(Event event)
       {
-        try
-        {
-          getSubKategorien().setEnabled(kategorie.getValue() != null);
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to update checkbox",e);
-        }
+        updateSubKategorienEnabled();
       }
     });
     
     return this.kategorie;
+  }
+  
+  /**
+   * Aktualisiert den Enabled-Status der Unterkategorien-Checkbox.
+   */
+  private void updateSubKategorienEnabled()
+  {
+    try
+    {
+      getSubKategorien().setEnabled(getKategorie().getValue() != null);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to update checkbox",e);
+    }
+  }
+  
+  /**
+   * Liefert den anzuzeigenden Kategorie-Text.
+   * @param typ die Kategorie.
+   * @return der anzuzeigende Text.
+   */
+  private String getKategorieDisplayText(UmsatzTyp typ)
+  {
+    if (typ == null)
+      return i18n.tr("<Alle Kategorien>");
+    
+    try
+    {
+      if (typ == UmsatzTypUtil.UNASSIGNED)
+        return i18n.tr("<{0}>",typ.getName());
+      return abbreviateLeading(getKategoriePath(typ),60);
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to resolve category path",e);
+      try
+      {
+        return typ.getName();
+      }
+      catch (Exception ex)
+      {
+        Logger.error("unable to resolve category name",ex);
+        return "";
+      }
+    }
+  }
+
+  /**
+   * Liefert den vollstaendigen Kategorie-Pfad.
+   * @param typ die Kategorie.
+   * @return der vollstaendige Kategorie-Pfad.
+   * @throws RemoteException
+   */
+  private String getKategoriePath(UmsatzTyp typ) throws RemoteException
+  {
+    if (typ == null)
+      return "";
+
+    List<String> names = new LinkedList<String>();
+    UmsatzTyp current = typ;
+
+    for (int i=0;i<100;++i)
+    {
+      if (current == null)
+        break;
+
+      names.add(0,current.getName());
+      current = (UmsatzTyp) current.getParent();
+    }
+
+    return StringUtils.join(names,"/");
+  }
+
+  /**
+   * Kuerzt einen String am Anfang, so dass das Ende sichtbar bleibt.
+   * @param value der Text.
+   * @param maxLength die maximale Laenge.
+   * @return der gekuerzte Text.
+   */
+  private String abbreviateLeading(String value, int maxLength)
+  {
+    if (value == null)
+      return "";
+    
+    if (maxLength < 4 || value.length() <= maxLength)
+      return value;
+    
+    return "..." + value.substring(value.length() - maxLength + 3);
   }
   
   /**
@@ -805,6 +886,7 @@ public class KontoauszugList extends UmsatzList
       getKontoAuswahl().setValue(null);
       getKategorie().setValue(null);
       getSubKategorien().setValue(Boolean.FALSE);
+      updateSubKategorienEnabled();
       getGegenkontoNummer().setText("");
       getGegenkontoBLZ().setValue(null);
       getGegenkontoName().setValue(null);
@@ -938,6 +1020,133 @@ public class KontoauszugList extends UmsatzList
         Logger.error("error while choosing gegenkonto",er);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler bei der Auswahl des Gegenkontos"), StatusBarMessage.TYPE_ERROR));
       }
+    }
+  }
+  
+  /**
+   * Input fuer die Auswahl einer Kategorie via Dialog.
+   */
+  private class KategorieInput extends ButtonInput
+  {
+    private Text text = null;
+    private UmsatzTyp value = null;
+    
+    /**
+     * ct.
+     * @param preselected optional vorausgewaehlte Kategorie.
+     */
+    private KategorieInput(UmsatzTyp preselected)
+    {
+      this.value = preselected;
+      this.addButtonListener(new Listener()
+      {
+        @Override
+        public void handleEvent(Event event)
+        {
+          showSelectionMenu(event);
+        }
+      });
+    }
+    
+    /**
+     * Zeigt ein Auswahlmenue mit Pseudokategorien und Dialog-Einstieg.
+     * @param event das Event.
+     */
+    private void showSelectionMenu(Event event)
+    {
+      Menu menu = new Menu(GUI.getShell(),SWT.POP_UP);
+      MenuItem all = new MenuItem(menu, SWT.PUSH);
+      all.setText(i18n.tr("<Alle Kategorien>"));
+      all.addListener(SWT.Selection, e -> applySelection(null,e));
+      
+      MenuItem unassigned = new MenuItem(menu, SWT.PUSH);
+      unassigned.setText(getKategorieDisplayText(UmsatzTypUtil.UNASSIGNED));
+      unassigned.addListener(SWT.Selection, e -> applySelection(UmsatzTypUtil.UNASSIGNED,e));
+
+      new MenuItem(menu, SWT.SEPARATOR);
+      
+      MenuItem choose = new MenuItem(menu, SWT.PUSH);
+      choose.setText(i18n.tr("Auswahl..."));
+      choose.addListener(SWT.Selection, e -> openDialog(e));
+
+      menu.setLocation(GUI.getDisplay().getCursorLocation());
+      menu.setVisible(true);
+      while (!menu.isDisposed() && menu.isVisible())
+      {
+        if (!GUI.getDisplay().readAndDispatch())
+          GUI.getDisplay().sleep();
+      }
+      menu.dispose();
+    }
+    
+    /**
+     * Wendet die Auswahl an.
+     * @param selected die gewaehlte Kategorie.
+     * @param event das Event.
+     */
+    private void applySelection(UmsatzTyp selected, Event event)
+    {
+      setValue(selected);
+      updateSubKategorienEnabled();
+      listener.handleEvent(event);
+    }
+    
+    /**
+     * Oeffnet den Dialog zur Kategorieauswahl.
+     * @param event das Event.
+     */
+    private void openDialog(Event event)
+    {
+      try
+      {
+        UmsatzTypListDialog d = new UmsatzTypListDialog(UmsatzTypListDialog.POSITION_CENTER,value,UmsatzTyp.TYP_EGAL);
+        UmsatzTyp selected = (UmsatzTyp) d.open();
+        applySelection(selected,event);
+      }
+      catch (OperationCanceledException oce)
+      {
+        Logger.debug("operation cancelled");
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to choose category",e);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Auswählen der Umsatz-Kategorie"));
+      }
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    public Control getClientControl(Composite parent)
+    {
+      if (this.text != null)
+        return this.text;
+      
+      this.text = GUI.getStyleFactory().createText(parent);
+      this.text.setEditable(false);
+      this.text.setText(getKategorieDisplayText(this.value));
+      return this.text;
+    }
+    
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#getValue()
+     */
+    @Override
+    public Object getValue()
+    {
+      return this.value;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
+     */
+    @Override
+    public void setValue(Object value)
+    {
+      this.value = (UmsatzTyp) value;
+      if (this.text != null && !this.text.isDisposed())
+        this.text.setText(getKategorieDisplayText(this.value));
     }
   }
 
