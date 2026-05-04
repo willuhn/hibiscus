@@ -846,18 +846,23 @@ public class HBCIProperties
    */
   public static Set<String> getCustomerIDs(HBCIPassport passport)
   {
-    Konto[] accounts = passport.getAccounts();
+    final Konto[] accounts = passport.getAccounts();
 
     // Zum Vermeiden von Doppeln
-    Set<String> set = new HashSet<String>();
+    final Set<String> set = new HashSet<String>();
     
-    set.add(passport.getCustomerId()); // Die Customer-ID des Passport selbst auf jeden Fall auch
+    final String c = passport.getCustomerId();
+    if (c != null && !c.isBlank())
+      set.add(c.trim()); // Die Customer-ID des Passport selbst auf jeden Fall auch
 
     // Das macht HBCI4Java in passport.getCustomerId() genauso
     // Wenn keine Customer-IDs vorhanden sind, wird die User-ID genommen
     if (accounts == null || accounts.length == 0)
     {
-      set.add(passport.getUserId());
+      final String u = passport.getUserId();
+      if (u != null && !u.isBlank())
+        set.add(u.trim());
+      
       return set;
     }
 
@@ -865,8 +870,8 @@ public class HBCIProperties
     for (int i=0;i<accounts.length;++i)
     {
       String value = accounts[i].customerid;
-      if (value != null)
-        set.add(value);
+      if (value != null && !value.isBlank())
+        set.add(value.trim());
     }
     return set;
   }

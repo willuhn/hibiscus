@@ -11,12 +11,14 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.Optional;
 import java.util.zip.CRC32;
 
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
@@ -61,7 +63,7 @@ public class SepaDauerauftragImpl extends AbstractBaseDauerauftragImpl implement
     u.setGegenkontoName(getGegenkontoName());
     u.setGegenkontoBLZ(getGegenkontoBLZ());
     u.setKonto(getKonto());
-    u.setZweck(getZweck());
+    u.setZweck(Optional.ofNullable(MetaKey.TRANSFER_USAGE_TEMPLATE.get(this)).orElse(this.getZweck())); // Verwendungszweck aus dem Template verwenden, falls vorhanden
     u.setEndtoEndId(getEndtoEndId());
     u.setPmtInfId(getPmtInfId());
     u.setPurposeCode(getPurposeCode());

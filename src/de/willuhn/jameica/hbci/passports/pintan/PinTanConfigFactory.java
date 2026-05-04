@@ -13,7 +13,6 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Set;
 
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
@@ -22,13 +21,11 @@ import org.kapott.hbci.passport.HBCIPassport;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.PassportLoader;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.passports.pintan.server.PinTanConfigImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil;
-import de.willuhn.jameica.hbci.server.VersionUtil;
+import de.willuhn.jameica.hbci.server.BPDUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -145,37 +142,8 @@ public class PinTanConfigFactory
       
       // sowie die Caches
       Logger.info("deleting BPD/UPD caches");
-      try
-      {
-        HBCIPassport passport = config.getPassport();
-        Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
-        for (String customerId:customerIds)
-        {
-          try
-          {
-            DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
-            DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
-          }
-          catch (Exception e)
-          {
-            // Auch wenn das fehlschlaegt, soll der Rest trotzdem durchgefuehrt werden
-            Logger.error("error while clearing BPD/UPD cache",e);
-          }
-        }
-        
-        // Versionsnummer der Caches loeschen, um das Neubefuellen des Cache zu forcieren
-        String user = passport.getUserId();
-        if (user != null && user.length() > 0)
-        {
-          Logger.info("deleting BPD/UPD cache versions");
-          VersionUtil.delete(de.willuhn.jameica.hbci.Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + user);
-          VersionUtil.delete(de.willuhn.jameica.hbci.Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + user);
-        }
-      }
-      catch (Exception e)
-      {
-        // Das kann passieren, wenn der Passport unvollstaendig ist
-      }
+      HBCIPassport passport = config.getPassport();
+      BPDUtil.deleteCache(passport);
     }
     catch (ApplicationException | OperationCanceledException e)
     {

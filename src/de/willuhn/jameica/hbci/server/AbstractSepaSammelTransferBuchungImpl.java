@@ -10,11 +10,13 @@
 package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
@@ -218,7 +220,7 @@ public abstract class AbstractSepaSammelTransferBuchungImpl<T extends SepaSammel
     b.setGegenkontoNummer(getGegenkontoNummer());
     b.setGegenkontoName(getGegenkontoName());
     b.setSammelTransfer(getSammelTransfer());
-    b.setZweck(getZweck());
+    b.setZweck(Optional.ofNullable(MetaKey.TRANSFER_USAGE_TEMPLATE.get(this)).orElse(this.getZweck())); // Verwendungszweck aus dem Template verwenden, falls vorhanden
     b.setEndtoEndId(getEndtoEndId());
     b.setPurposeCode(getPurposeCode());
     return (Duplicatable) b;

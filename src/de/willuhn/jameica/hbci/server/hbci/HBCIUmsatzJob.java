@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRKUms;
+import org.kapott.hbci.GV_Result.GVRKUms.BTag;
 import org.kapott.hbci.GV_Result.GVRKUms.UmsLine;
 import org.kapott.hbci.comm.Comm;
 
@@ -313,6 +314,13 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
           umsatz.setFlags(Umsatz.FLAG_NOTBOOKED);
           umsatz.setSaldo(0d); // Muss gemacht werden, weil der Saldo beim naechsten Mal anders lauten koennte
           umsatz.setKonto(konto);
+          
+          final Date fallbackDate = (umsatz.getDatum() == null || umsatz.getValuta() == null) ? this.findUnbookedDate(result) : new Date();
+          if (umsatz.getDatum() == null)
+            umsatz.setDatum(fallbackDate);
+          if (umsatz.getValuta() == null)
+            umsatz.setValuta(fallbackDate);
+          
           fetched.add(umsatz);
 
           Umsatz fromDB = null;
@@ -325,7 +333,7 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
             if (dbObject.equals(umsatz))
             {
               counter++;
-              fromDB = (Umsatz) dbObject; //wir merken uns immer den letzten Umsatz
+              fromDB = (Umsatz) dbObject; // wir merken uns immer den letzten Umsatz
             }
           }
           
@@ -437,6 +445,25 @@ public class HBCIUmsatzJob extends AbstractHBCIJob
     ////////////////////////////////////////////////////////////////////////////
 
     Logger.info("umsatz list fetched successfully");
+  }
+  
+  /**
+   * Versucht ein Datum für die Vormerkbuchungen zu ermitteln.
+   * @param result der Umsatzabruf.
+   * @return das Datum. Nie NULL. In dem Fall wird das aktuelle Datum verwendet.
+   */
+  private Date findUnbookedDate(GVRKUms result)
+  {
+    for (BTag tag:result.getDataPerDayUnbooked())
+    {
+      if (tag.start != null && tag.start.timestamp != null)
+        return tag.start.timestamp;
+      
+      if (tag.end != null && tag.end.timestamp != null)
+        return tag.end.timestamp;
+    }
+    
+    return new Date();
   }
   
   /**

@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.kapott.hbci.GV_Result.HBCIJobResult;
-import org.kapott.hbci.manager.HBCIUtilsInternal;
 import org.kapott.hbci.status.HBCIRetVal;
 import org.kapott.hbci.status.HBCIStatus;
 import org.kapott.hbci.structures.Konto;
@@ -29,8 +28,6 @@ import org.kapott.hbci.structures.Value;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.HibiscusDBObject;
-import de.willuhn.jameica.hbci.rmi.Transfer;
-import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
 import de.willuhn.jameica.services.BeanService;
@@ -617,26 +614,6 @@ public abstract class AbstractHBCIJob
     params.put(new AbstractMap.SimpleEntry(name,index),date);
   }
 
-	/**
-	 * Setzt die Job-Parameter fuer die Verwendungszweck-Zeilen.
-	 * Sie werden auf die Job-Parameter usage, usage_2, usage_3,...
-	 * verteilt. Wenn zwischendrin welche fehlen, werden die hinteren
-	 * nach vorn geschoben.
-	 * @param t der Auftrag.
-	 * @throws RemoteException
-	 */
-	protected void setJobParamUsage(Transfer t) throws RemoteException
-	{
-	  if (t == null)
-	    return;
-	  
-	  String[] lines = VerwendungszweckUtil.toArray(t);
-	  for (int i=0;i<lines.length;++i)
-	  {
-	    setJobParam(HBCIUtilsInternal.withCounter("usage",i),VerwendungszweckUtil.evaluate(lines[i]));
-	  }
-	}
-  
   /**
    * Legt fest, ob der HBCI-Job exclusive (also in einer einzelnen HBCI-Nachricht) gesendet werden soll.
    * Standardmaessig ist ein Job nicht exclusiv.

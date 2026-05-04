@@ -10,20 +10,13 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
-import java.rmi.RemoteException;
 import java.util.Properties;
-import java.util.Set;
 
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.server.BPDUtil;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil;
-import de.willuhn.jameica.hbci.server.DBPropertyUtil.Prefix;
-import de.willuhn.jameica.hbci.server.VersionUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -72,51 +65,6 @@ public class PassportDeleteBPD implements Action
     passport.saveChanges();
 
     // Caches loeschen
-    Logger.info("deleting bpd/upd caches for user ids");
-    Set<String> customerIds = HBCIProperties.getCustomerIDs(passport);
-    for (String customerId:customerIds)
-    {
-      try
-      {
-        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.BPD,customerId);
-        DBPropertyUtil.deleteScope(DBPropertyUtil.Prefix.UPD,customerId);
-      }
-      catch (Exception e)
-      {
-        // Auch wenn das fehlschlaegt, soll der Rest trotzdem durchgefuehrt werden
-        Logger.error("error while clearing BPD/UPD cache",e);
-      }
-    }
-
-    // Versionsnummer Caches loeschen, um das Neubefuellen des Cache zu forcieren
-    Logger.info("deleting stored bpd/upd version numbers");
-    String user = passport.getUserId();
-    if (user != null && user.length() > 0)
-    {
-      try
-      {
-        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.BPD.value() + "." + user);
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("error while deleting bpd cache",re);
-      }
-      try
-      {
-        VersionUtil.delete(Settings.getDBService(),DBPropertyUtil.Prefix.UPD.value() + "." + user);
-      }
-      catch (RemoteException re)
-      {
-        Logger.error("error while deleting upd cache",re);
-      }
-      
-      // Wir markieren ausserdem auch noch den Cache als expired
-      Logger.info("mark upd/bpd caches expired");
-      BPDUtil.expireCache(passport,Prefix.BPD);
-      BPDUtil.expireCache(passport,Prefix.UPD);
-    }
+    BPDUtil.deleteCache(passport);
   }
-
 }
-
-

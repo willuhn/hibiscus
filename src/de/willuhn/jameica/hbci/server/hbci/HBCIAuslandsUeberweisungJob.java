@@ -19,6 +19,7 @@ import org.kapott.hbci.GV_Result.HBCIJobResult;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
@@ -44,7 +45,7 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
   private boolean isUmb                     = false;
   private boolean isInstant                 = false;
 	private Konto konto                       = null;
-
+	
   /**
 	 * ct.
    * @param ueberweisung die auszufuehrende Ueberweisung.
@@ -92,9 +93,18 @@ public class HBCIAuslandsUeberweisungJob extends AbstractHBCIJob
         curr = HBCIProperties.CURRENCY_DEFAULT_DE;
       setJobParam("btg",ueberweisung.getBetrag(),curr);
       
-      String zweck = ueberweisung.getZweck();
+      final String zweck = ueberweisung.getZweck();
       if (zweck != null && zweck.length() > 0)
-			  setJobParam("usage",VerwendungszweckUtil.evaluate(zweck));
+      {
+        final String replaced = VerwendungszweckUtil.evaluate(zweck);
+        setJobParam("usage",replaced);
+        
+        // Wir ersetzen auch in der lokal gespeicherten Kopie die Platzhalter
+        // gegen die finalen Werte. Wir speichern zusätzlich den Verwendungszweck mit den Platzhaltern in den Meta-Daten,
+        // damit wir die originalen Platzhalter beim Duplizieren des Auftrages noch haben und die Ersetzung da erneut stattfinden kann.
+        ueberweisung.setZweck(replaced); // Das Speichern passiert, sobald der Auftrag als ausgeführt markiert wird
+        MetaKey.TRANSFER_USAGE_TEMPLATE.set(ueberweisung,zweck);
+      }
 			
       String endToEndId = ueberweisung.getEndtoEndId();
       if (endToEndId != null && endToEndId.trim().length() > 0)
