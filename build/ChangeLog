@@ -1,5 +1,7 @@
 HEAD 2.13 (nightly)
 
+  * BUG: 1178 Update auf HBCI4Java 4.1.10 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.10
+
 2026-05-04 Version 2.12.3
 
   * NEW: 1177 Update auf HBCI4Java 4.1.9 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.9
