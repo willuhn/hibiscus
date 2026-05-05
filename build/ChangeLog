@@ -1,5 +1,7 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1179 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.06.2026
+
 2026-05-05 Version 2.12.4
 
   * BUG: 1178 Update auf HBCI4Java 4.1.10 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.10
