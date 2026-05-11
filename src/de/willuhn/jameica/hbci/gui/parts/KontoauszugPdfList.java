@@ -40,7 +40,6 @@ import de.willuhn.jameica.gui.parts.table.FeatureShortcut;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Font;
-import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
@@ -114,17 +113,11 @@ public class KontoauszugPdfList extends TablePart
         try
         {
           Kontoauszug k = (Kontoauszug) item.getData();
-          
-          if (k.getGelesenAm() != null)
-          {
-            item.setFont(Font.DEFAULT.getSWTFont());
-            item.setImage(0,SWTUtil.getImage("emblem-default.png"));
-          }
-          else
-          {
-            item.setFont(Font.BOLD.getSWTFont());
-            item.setImage(0,null); // Image wieder entfernen. Noetig, weil wir auch bei Updates aufgerufen werden
-          }
+          final boolean read = (k.getGelesenAm() != null);
+          final Font f = read ? Font.DEFAULT : Font.BOLD;
+          item.setFont(f.getSWTFont());
+          item.setText(0,read ? "\u2705" : "");
+
         }
         catch (RemoteException re)
         {
@@ -134,6 +127,7 @@ public class KontoauszugPdfList extends TablePart
     });
     
     final DateFormatter df = new DateFormatter();
+    this.addColumn(i18n.tr("Gelesen"),null);
     this.addColumn(new KontoColumn());
     this.addColumn(i18n.tr("Jahr"),"jahr");
     this.addColumn(i18n.tr("Nummer"),"nummer");

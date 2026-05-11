@@ -49,7 +49,6 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.Font;
-import de.willuhn.jameica.gui.util.SWTUtil;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -162,11 +161,7 @@ public class UmsatzList extends TablePart implements Extendable
             item.setForeground(7,Color.FOREGROUND.getSWTColor());
           }
 
-          item.setText(1,""); // Kein Text in den Flags - wir wollen nur das Bild
-          if (u.hasFlag(Umsatz.FLAG_CHECKED))
-            item.setImage(1,SWTUtil.getImage("emblem-default.png"));
-          else
-            item.setImage(1,null); // Image wieder entfernen. Noetig, weil wir auch bei Updates aufgerufen werden
+          item.setText(1,u.hasFlag(Umsatz.FLAG_CHECKED) ? "\u2705" : "");
         
         }
         catch (RemoteException e)
