@@ -16,7 +16,7 @@ import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
-import de.willuhn.jameica.hbci.gui.action.DBObjectDelete;
+import de.willuhn.jameica.hbci.gui.action.UmsatzTypDelete;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypExport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypImport;
 import de.willuhn.jameica.hbci.gui.action.UmsatzTypNew;
@@ -41,7 +41,7 @@ public class UmsatzTypList extends ContextMenu implements Extendable
 	{
 		addItem(new OpenItem());
     addItem(new ContextMenuItem(i18n.tr("Neue Umsatz-Kategorie..."), new UNeu(),"text-x-generic.png"));
-    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
+    addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new UmsatzTypDelete(),"user-trash-full.png"));
     addItem(ContextMenuItem.SEPARATOR);
     addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new UmsatzTypExport(),"document-save.png"));
     addItem(new ContextMenuItem(i18n.tr("Importieren..."),new UmsatzTypImport(),"document-open.png"));
