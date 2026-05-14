@@ -15,6 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -237,12 +240,17 @@ public class UmsatzDetailControl extends AbstractControl
    */
   private String getUmsatzTypDisplayText(UmsatzTyp typ)
   {
+    return this.getUmsatzTypDisplayText(typ,null);
+  }
+
+  private String getUmsatzTypDisplayText(UmsatzTyp typ, Text text)
+  {
     if (typ == null)
       return i18n.tr("<Keine Kategorie>");
 
     try
     {
-      return abbreviateLeading(getUmsatzTypPath(typ),60);
+      return abbreviateLeading(getUmsatzTypPath(typ),text);
     }
     catch (RemoteException e)
     {
@@ -283,6 +291,48 @@ public class UmsatzDetailControl extends AbstractControl
     }
 
     return StringUtils.join(names,"/");
+  }
+
+  private String abbreviateLeading(String value, Text text)
+  {
+    if (value == null)
+      return "";
+
+    if (text == null || text.isDisposed())
+      return abbreviateLeading(value,60);
+
+    int width = text.getClientArea().width;
+    if (width <= 0)
+      return abbreviateLeading(value,60);
+
+    GC gc = new GC(text);
+    try
+    {
+      if (gc.textExtent(value).x <= width)
+        return value;
+
+      String prefix = "...";
+      if (gc.textExtent(prefix).x >= width)
+        return prefix;
+
+      int low = 0;
+      int high = value.length();
+      while (low < high)
+      {
+        int mid = (low + high + 1) / 2;
+        String candidate = prefix + value.substring(value.length() - mid);
+        if (gc.textExtent(candidate).x <= width)
+          low = mid;
+        else
+          high = mid - 1;
+      }
+
+      return prefix + value.substring(value.length() - low);
+    }
+    finally
+    {
+      gc.dispose();
+    }
   }
 
   /**
@@ -689,10 +739,23 @@ public class UmsatzDetailControl extends AbstractControl
 
       this.text = GUI.getStyleFactory().createText(parent);
       this.text.setEditable(false);
-      this.text.setText(getUmsatzTypDisplayText(this.value));
+      this.text.addControlListener(new ControlAdapter()
+      {
+        
+        public void controlResized(ControlEvent e)
+        {
+          refreshText();
+        }
+      });
+      refreshText();
       return this.text;
     }
 
+    private void refreshText()
+    {
+      if (this.text != null && !this.text.isDisposed())
+        this.text.setText(getUmsatzTypDisplayText(this.value,this.text));
+    }
     /**
      * @see de.willuhn.jameica.gui.input.Input#getValue()
      */
@@ -709,8 +772,7 @@ public class UmsatzDetailControl extends AbstractControl
     public void setValue(Object value)
     {
       this.value = (UmsatzTyp) value;
-      if (this.text != null && !this.text.isDisposed())
-        this.text.setText(getUmsatzTypDisplayText(this.value));
+      refreshText();
     }
   }
 
