@@ -224,7 +224,7 @@ public class UmsatzDetailControl extends AbstractControl
     // Ansonsten alle - damit die zugeordnete Kategorie auch dann noch
     // noch angeboten wird, der User nachtraeglich den Kat-Typ geaendert hat.
     this.umsatzTyp = new UmsatzTypDetailInput(ut,typ);
-    this.umsatzTyp.setComment("");
+    this.umsatzTyp.setComment(null);
     
     this.umsatzTyp.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED));
     return this.umsatzTyp;
