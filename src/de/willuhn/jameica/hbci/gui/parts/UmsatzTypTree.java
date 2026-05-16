@@ -148,15 +148,6 @@ public class UmsatzTypTree extends TreePart
     this.refreshView();
   }
 
-  public void expandAll()
-  {
-    this.setAllExpanded(true);
-  }
-
-  public void collapseAll()
-  {
-    this.setAllExpanded(false);
-  }
 
   public void refreshView()
   {
@@ -198,7 +189,7 @@ public class UmsatzTypTree extends TreePart
     return filtered;
   }
 
-  private void setAllExpanded(boolean expanded)
+  public void setAllExpanded(boolean expanded)
   {
     try
     {

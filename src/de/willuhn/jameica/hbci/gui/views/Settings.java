@@ -127,17 +127,15 @@ public class Settings extends AbstractView implements Extendable
 
     umsatzTypTree.paint(umsatztypes.getComposite()); // BUGZILLA 410
     ButtonArea umsatzButtons = new ButtonArea();
-    final boolean[] expanded = new boolean[] {true};
     umsatzButtons.addButton(i18n.tr("Alle aufklappen/zuklappen"),new Action()
     {
+      private boolean expanded = true;
+
       public void handleAction(Object context) throws ApplicationException
       {
-        if (expanded[0])
-          umsatzTypTree.collapseAll();
-        else
-          umsatzTypTree.expandAll();
+        umsatzTypTree.setAllExpanded(!this.expanded);
 
-        expanded[0] = !expanded[0];
+        this.expanded = !this.expanded;
       }
     },null,false,"folder-open.png");
     umsatzButtons.addButton(i18n.tr("Neue Umsatz-Kategorie..."),new UmsatzTypNew(),null,false,"text-x-generic.png");
