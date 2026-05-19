@@ -10,6 +10,7 @@
 package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.logging.Logger;
@@ -35,78 +36,65 @@ public class UmsatzTypDelete extends DBObjectDelete
    */
   protected boolean confirmDelete(DBObject[] list) throws ApplicationException
   {
-    if (!this.isUmsatzTypSelection(list))
+    if (list == null || list.length == 0)
       return super.confirmDelete(list);
 
-    boolean hasAssignments = false;
     try
     {
-      hasAssignments = this.hasAssignedUmsaetze(list);
+      if (!this.hasAssignedUmsaetze(list))
+        return super.confirmDelete(list);
+
+      final String text = i18n.tr(list.length > 1 ? "Es existieren Umsätze zu mindestens einer der ausgewählten Kategorien. Wirklich löschen?" : "Es existieren Umsätze zu dieser Kategorie. Wirklich löschen?");
+      return this.showConfirmationDialog(text);
     }
     catch (Exception e)
     {
       Logger.error("unable to detect assignment count for delete warning",e);
-      hasAssignments = false;
-    }
-
-    if (!hasAssignments)
       return super.confirmDelete(list);
-
-    String title = this.getI18N().tr("Daten l\u00F6schen");
-    String text = null;
-    if (list.length > 1)
-      text = this.getI18N().tr("Es existieren Umsaetze zu mindestens einer der ausgewaehlten Kategorien. Wirklich loeschen?");
-    else
-      text = this.getI18N().tr("Es existieren Umsaetze zu {0}. Wirklich loeschen?",this.getUmsatzTypName((UmsatzTyp)list[0]));
-
-    return this.showConfirmationDialog(title,text);
-  }
-
-  private boolean isUmsatzTypSelection(DBObject[] objects)
-  {
-    if (objects == null || objects.length == 0)
-      return false;
-
-    for (DBObject o:objects)
-    {
-      if (!(o instanceof UmsatzTyp))
-        return false;
     }
-
-    return true;
   }
 
+  /**
+   * Liefert true, wenn für mindestens eine der Kategorien Umsätze existieren.
+   * Das schliesst auch die Suche in untergeordneten Kategorien ein.
+   * @param objects die Kategorien.
+   * @return true, wenn Umsätze existieren.
+   * @throws RemoteException
+   */
   private boolean hasAssignedUmsaetze(DBObject[] objects) throws RemoteException
   {
-    if (objects == null)
-      return false;
-
+    final List<UmsatzTyp> list = new ArrayList<>();
+    
     // Fast-path: direkt markierte Kategorie hat Umsaetze.
     for (DBObject o:objects)
     {
-      UmsatzTyp typ = (UmsatzTyp) o;
+      if (!(o instanceof UmsatzTyp))
+        continue;
+      
+      final UmsatzTyp typ = (UmsatzTyp) o;
       if (this.hasAssignedUmsaetze(typ))
         return true;
+      
+      list.add(typ);
     }
 
     // Danach rekursiv auf Unterkategorien der Auswahl pruefen.
-    Set<String> ids = this.collectAffectedKategorieIds(objects);
-    for (String id:ids)
+    final Set<UmsatzTyp> affected = this.getAffected(list);
+    for (UmsatzTyp t:affected)
     {
-      if (id == null)
-        continue;
-
-      UmsatzTyp typ = this.resolveUmsatzTyp(id);
-      if (typ == null)
-        continue;
-
-      if (this.hasAssignedUmsaetze(typ))
+      if (this.hasAssignedUmsaetze(t))
         return true;
     }
 
     return false;
   }
 
+  /**
+   * Liefert true, wenn der Umsatztyp Umsaetze enthaelt.
+   * @param typ der Typ.
+   * @return true, wenn er Umsaetze enthaelt.
+   * @throws RemoteException
+   */
   private boolean hasAssignedUmsaetze(UmsatzTyp typ) throws RemoteException
   {
     if (typ == null || typ.isNewObject())
@@ -115,84 +103,45 @@ public class UmsatzTypDelete extends DBObjectDelete
     return typ.getUmsaetze().hasNext();
   }
 
-  private UmsatzTyp resolveUmsatzTyp(String id) throws RemoteException
+  /**
+   * Liefert alle übergebenen sowie alle direkt und indirekten Kind-Kategorien, die von
+   * der Löschaktion betroffen sind. 
+   * @param list die Liste der zu löschenden Kategorien.
+   * @return die Liste der zu löschenden sowie aller Kind-Kategorien.
+   * @throws RemoteException
+   */
+  private Set<UmsatzTyp> getAffected(List<UmsatzTyp> list) throws RemoteException
   {
-    if (id == null)
-      return null;
-
-    UmsatzTyp typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,id);
-    if (typ == null || typ.isNewObject())
-      return null;
-
-    return typ;
-  }
-
-  private Set<String> collectAffectedKategorieIds(DBObject[] objects) throws RemoteException
-  {
-    Set<String> selected = new HashSet<String>();
-    for (DBObject o:objects)
-    {
-      UmsatzTyp typ = (UmsatzTyp) o;
-      String id = typ.getID();
-      if (id != null)
-        selected.add(id);
-    }
-
-    if (selected.isEmpty())
-      return selected;
-
-    DBIterator<UmsatzTyp> all = Settings.getDBService().createList(UmsatzTyp.class);
-    Map<String,List<String>> childrenByParent = new HashMap<String,List<String>>();
+    final DBIterator<UmsatzTyp> all = Settings.getDBService().createList(UmsatzTyp.class);
+    final Map<String,List<UmsatzTyp>> childrenByParent = new HashMap<>();
     while (all.hasNext())
     {
-      UmsatzTyp t = all.next();
-      String id = t.getID();
-      Object parent = t.getAttribute("parent_id");
-      if (id == null || parent == null)
+      final UmsatzTyp t = all.next();
+      final Object parent = t.getAttribute("parent_id");
+      if (parent == null)
         continue;
 
-      String parentId = String.valueOf(parent);
-      List<String> children = childrenByParent.get(parentId);
-      if (children == null)
-      {
-        children = new LinkedList<String>();
-        childrenByParent.put(parentId,children);
-      }
-      children.add(id);
+      final String parentId = String.valueOf(parent);
+      final List<UmsatzTyp> children = childrenByParent.computeIfAbsent(parentId, k -> new LinkedList<>());
+      children.add(t);
     }
 
-    LinkedList<String> queue = new LinkedList<String>(selected);
+    final Set<UmsatzTyp> result = new HashSet<>();
+    final LinkedList<UmsatzTyp> queue = new LinkedList<>(list);
     while (!queue.isEmpty())
     {
-      String current = queue.removeFirst();
-      List<String> children = childrenByParent.get(current);
+      final UmsatzTyp current = queue.removeFirst();
+      List<UmsatzTyp> children = childrenByParent.get(current.getID());
       if (children == null)
         continue;
 
-      for (String child:children)
+      for (UmsatzTyp child:children)
       {
-        if (selected.add(child))
+        if (result.add(child))
           queue.add(child);
       }
     }
 
-    return selected;
-  }
-  
-  private String getUmsatzTypName(UmsatzTyp typ)
-  {
-    if (typ == null)
-      return "";
-
-    try
-    {
-      String name = typ.getName();
-      return name != null ? name : "";
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to resolve category name for delete warning",e);
-      return "";
-    }
+    return result;
   }
 }

@@ -16,8 +16,8 @@ import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.gui.dialogs.DeleteDialog;
 import de.willuhn.jameica.hbci.messaging.ObjectDeletedMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -33,16 +33,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBObjectDelete implements Action
 {
-  private I18N i18n = null;
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
-  /**
-   * ct.
-   */
-  public DBObjectDelete()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-  }
-
   /**
    * Erwartet ein Objekt vom Typ <code>DBObject</code> oder <code>DBObject[]</code> im Context.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -50,7 +42,7 @@ public class DBObjectDelete implements Action
   public void handleAction(Object context) throws ApplicationException
   {
     if (context == null)
-      throw new ApplicationException(i18n.tr("Keine zu l\u00F6schenden Daten ausgew\u00E4hlt"));
+      throw new ApplicationException(i18n.tr("Keine zu löschenden Daten ausgewählt"));
 
     if (!(context instanceof DBObject) && !(context instanceof DBObject[]))
     {
@@ -58,13 +50,7 @@ public class DBObjectDelete implements Action
       return;
     }
 
-    boolean array = (context instanceof DBObject[]);
-    DBObject[] list = null;
-    if (array)
-      list = (DBObject[]) context;
-    else
-      list = new DBObject[]{(DBObject)context}; // Array mit einem Element
-
+    final DBObject[] list = (context instanceof DBObject[]) ? (DBObject[]) context : new DBObject[]{(DBObject)context}; // Array mit einem Element
     if (!this.confirmDelete(list))
       return;
 
@@ -78,15 +64,6 @@ public class DBObjectDelete implements Action
   }
 
   /**
-   * Liefert die i18n-Instanz fuer abgeleitete Actions.
-   * @return i18n-Instanz.
-   */
-  protected I18N getI18N()
-  {
-    return this.i18n;
-  }
-
-  /**
    * Fragt nach, ob das Loeschen durchgefuehrt werden soll.
    * @param list Liste der zu loeschenden Objekte.
    * @return true, wenn geloescht werden soll.
@@ -97,24 +74,19 @@ public class DBObjectDelete implements Action
     if (list == null || list.length == 0)
       return false;
 
-    String title = i18n.tr("Daten l\u00F6schen");
-    String text = i18n.tr("Wollen Sie diesen Datensatz wirklich l\u00F6schen?");
-    if (list.length > 1)
-      text = i18n.tr("Wollen Sie diese {0} Datens\u00E4tze wirklich l\u00F6schen?",""+list.length);
-    return this.showConfirmationDialog(title,text);
+    final String text = list.length > 1 ? i18n.tr("Wollen Sie diese {0} Datensätze wirklich löschen?",Integer.toString(list.length)) : i18n.tr("Wollen Sie diesen Datensatz wirklich löschen?");
+    return this.showConfirmationDialog(text);
   }
 
   /**
    * Zeigt einen Ja/Nein-Dialog an.
-   * @param title Titel des Dialogs.
    * @param text Text des Dialogs.
    * @return true, wenn bestaetigt wurde.
    * @throws ApplicationException bei Fehlern.
    */
-  protected boolean showConfirmationDialog(String title, String text) throws ApplicationException
+  protected boolean showConfirmationDialog(String text) throws ApplicationException
   {
-    YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-    d.setTitle(title);
+    final DeleteDialog d = new DeleteDialog(text);
     d.setText(text);
     try
     {
@@ -129,7 +101,7 @@ public class DBObjectDelete implements Action
     catch (Exception e)
     {
       Logger.error("error while deleting objects",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim L\u00F6schen des Datensatzes"));
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Datensatzes"));
       return false;
     }
   }
@@ -175,13 +147,13 @@ public class DBObjectDelete implements Action
       try
       {
         if (monitor != null)
-          monitor.setStatusText(i18n.tr("L\u00F6sche {0} Datens\u00E4tze",""+list.length));
+          monitor.setStatusText(i18n.tr("Lösche {0} Datensätze",""+list.length));
 
         double factor = 100d / list.length;
         
         // Wenn es eine Liste von Node-Objekten ist, sortieren wir sie nach
-        // Einrueckungstiefe - unten beginnend. Das stellt sicher, dass wir
-        // zuerst die Kinder loeschen, bevor die Eltern geloescht werden.
+        // Einrückungstiefe - unten beginnend. Das stellt sicher, dass wir
+        // zuerst die Kinder löschen, bevor die Eltern gelöscht werden.
         if (list instanceof DBObjectNode[])
         {
           Arrays.sort((DBObjectNode[])list,(o1,o2) -> {
@@ -213,9 +185,9 @@ public class DBObjectDelete implements Action
         if (monitor != null)
           monitor.setPercentComplete(100);
         
-        String text = i18n.tr("Datensatz gel\u00F6scht.");
+        String text = i18n.tr("Datensatz gelöscht.");
         if (list.length > 1)
-          text = i18n.tr("{0} Datens\u00E4tze gel\u00F6scht.",""+list.length);
+          text = i18n.tr("{0} Datensätze gelöscht.",""+list.length);
         
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
         if (monitor != null)
@@ -228,12 +200,12 @@ public class DBObjectDelete implements Action
       catch (RemoteException e)
       {
         Logger.error("error while deleting objects",e);
-        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim L\u00F6schen der Datens\u00E4tze."), StatusBarMessage.TYPE_ERROR));
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Löschen der Datensätze."), StatusBarMessage.TYPE_ERROR));
 
         if (monitor != null)
         {
           monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-          monitor.setStatusText(i18n.tr("Fehler beim L\u00F6schen der Daten"));
+          monitor.setStatusText(i18n.tr("Fehler beim Löschen der Daten"));
           monitor.log(e.toString());
         }
       }
