@@ -11,18 +11,27 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.Color;
@@ -30,11 +39,11 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypListDialog;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.hbci.gui.input.IBANInput;
-import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -45,6 +54,7 @@ import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -83,7 +93,7 @@ public class UmsatzDetailControl extends AbstractControl
   
   private Input kommentar       = null;
   
-  private SelectInput umsatzTyp = null;
+  private Input umsatzTyp = null;
   
   private CheckboxInput zweckSwitch = null;
 
@@ -200,7 +210,7 @@ public class UmsatzDetailControl extends AbstractControl
    * @return Umsatz-Kategorie.
    * @throws RemoteException
    */
-  public SelectInput getUmsatzTyp() throws RemoteException
+  public Input getUmsatzTyp() throws RemoteException
   {
     if (this.umsatzTyp != null)
       return this.umsatzTyp;
@@ -216,11 +226,130 @@ public class UmsatzDetailControl extends AbstractControl
     
     // Ansonsten alle - damit die zugeordnete Kategorie auch dann noch
     // noch angeboten wird, der User nachtraeglich den Kat-Typ geaendert hat.
-    this.umsatzTyp = new UmsatzTypInput(ut,typ, false);
-    this.umsatzTyp.setComment("");
+    this.umsatzTyp = new UmsatzTypDetailInput(ut,typ);
+    this.umsatzTyp.setComment(null);
     
     this.umsatzTyp.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED));
     return this.umsatzTyp;
+  }
+
+  /**
+   * Liefert den anzuzeigenden Kategorie-Text.
+   * @param typ die Kategorie.
+   * @return der anzuzeigende Text.
+   */
+  private String getUmsatzTypDisplayText(UmsatzTyp typ)
+  {
+    return this.getUmsatzTypDisplayText(typ,null);
+  }
+
+  private String getUmsatzTypDisplayText(UmsatzTyp typ, Text text)
+  {
+    if (typ == null)
+      return i18n.tr("<Keine Kategorie>");
+
+    try
+    {
+      return abbreviateLeading(getUmsatzTypPath(typ),text);
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to resolve category path",e);
+      try
+      {
+        return typ.getName();
+      }
+      catch (Exception ex)
+      {
+        Logger.error("unable to resolve category name",ex);
+        return "";
+      }
+    }
+  }
+
+  /**
+   * Liefert den vollstaendigen Kategorie-Pfad.
+   * @param typ die Kategorie.
+   * @return der vollstaendige Kategorie-Pfad.
+   * @throws RemoteException
+   */
+  private String getUmsatzTypPath(UmsatzTyp typ) throws RemoteException
+  {
+    if (typ == null)
+      return "";
+
+    List<String> names = new LinkedList<String>();
+    UmsatzTyp current = typ;
+
+    for (int i=0;i<100;++i)
+    {
+      if (current == null)
+        break;
+
+      names.add(0,current.getName());
+      current = (UmsatzTyp) current.getParent();
+    }
+
+    return StringUtils.join(names,"/");
+  }
+
+  private String abbreviateLeading(String value, Text text)
+  {
+    if (value == null)
+      return "";
+
+    if (text == null || text.isDisposed())
+      return abbreviateLeading(value,60);
+
+    int width = text.getClientArea().width;
+    if (width <= 0)
+      return abbreviateLeading(value,60);
+
+    GC gc = new GC(text);
+    try
+    {
+      if (gc.textExtent(value).x <= width)
+        return value;
+
+      String prefix = "...";
+      if (gc.textExtent(prefix).x >= width)
+        return prefix;
+
+      int low = 0;
+      int high = value.length();
+      while (low < high)
+      {
+        int mid = (low + high + 1) / 2;
+        String candidate = prefix + value.substring(value.length() - mid);
+        if (gc.textExtent(candidate).x <= width)
+          low = mid;
+        else
+          high = mid - 1;
+      }
+
+      return prefix + value.substring(value.length() - low);
+    }
+    finally
+    {
+      gc.dispose();
+    }
+  }
+
+  /**
+   * Kuerzt einen String am Anfang, so dass das Ende sichtbar bleibt.
+   * @param value der Text.
+   * @param maxLength die maximale Laenge.
+   * @return der gekuerzte Text.
+   */
+  private String abbreviateLeading(String value, int maxLength)
+  {
+    if (value == null)
+      return "";
+
+    if (maxLength < 4 || value.length() <= maxLength)
+      return value;
+
+    return "..." + value.substring(value.length() - maxLength + 3);
   }
 
   /**
@@ -555,6 +684,97 @@ public class UmsatzDetailControl extends AbstractControl
     
     return "";
 	}
+
+  /**
+   * Read-only Input fuer die Auswahl einer Umsatz-Kategorie via Dialog.
+   */
+  private class UmsatzTypDetailInput extends ButtonInput
+  {
+    private Text text = null;
+    private UmsatzTyp value = null;
+    private int typ = UmsatzTyp.TYP_EGAL;
+
+    /**
+     * ct.
+     * @param preselected optional vorausgewaehlte Kategorie.
+     * @param typ Filter auf Kategorie-Typen.
+     */
+    private UmsatzTypDetailInput(UmsatzTyp preselected, int typ)
+    {
+      this.value = preselected;
+      this.typ = typ;
+
+      this.addButtonListener(new Listener()
+      {
+        @Override
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            UmsatzTypListDialog d = new UmsatzTypListDialog(UmsatzTypListDialog.POSITION_CENTER,value,UmsatzTypDetailInput.this.typ);
+            UmsatzTyp selected = (UmsatzTyp) d.open();
+            setValue(selected);
+          }
+          catch (OperationCanceledException oce)
+          {
+            Logger.debug("operation cancelled");
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to choose category",e);
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Auswählen der Umsatz-Kategorie"),StatusBarMessage.TYPE_ERROR));
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    public Control getClientControl(Composite parent)
+    {
+      if (this.text != null)
+        return this.text;
+
+      this.text = GUI.getStyleFactory().createText(parent);
+      this.text.setEditable(false);
+      this.text.addControlListener(new ControlAdapter()
+      {
+        
+        public void controlResized(ControlEvent e)
+        {
+          refreshText();
+        }
+      });
+      refreshText();
+      return this.text;
+    }
+
+    private void refreshText()
+    {
+      if (this.text != null && !this.text.isDisposed())
+        this.text.setText(getUmsatzTypDisplayText(this.value,this.text));
+    }
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#getValue()
+     */
+    @Override
+    public Object getValue()
+    {
+      return this.value;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
+     */
+    @Override
+    public void setValue(Object value)
+    {
+      this.value = (UmsatzTyp) value;
+      refreshText();
+    }
+  }
 
   /**
    * Speichert die editierbaren Properties.
