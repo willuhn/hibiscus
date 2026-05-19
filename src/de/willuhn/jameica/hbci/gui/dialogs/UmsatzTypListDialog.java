@@ -123,22 +123,31 @@ public class UmsatzTypListDialog extends AbstractDialog
     {
       UmsatzTypBean bean = new UmsatzTypBean(this.choosen);
       this.getTable().select(bean);
-      int index = -1;
-      List items = this.getTable().getItems();
-      for (int i=0;i<items.size();++i)
+      
+      try
       {
-        Object o = items.get(i);
-        if (!(o instanceof UmsatzTypBean))
-          continue;
-        UmsatzTypBean b = (UmsatzTypBean) o;
-        if (b.getTyp().equals(bean.getTyp()))
+        // Runterscrollen, falls möglich
+        int index = -1;
+        List items = this.getTable().getItems();
+        for (int i=0;i<items.size();++i)
         {
-          index = i;
-          break;
+          Object o = items.get(i);
+          if (!(o instanceof UmsatzTypBean))
+            continue;
+          UmsatzTypBean b = (UmsatzTypBean) o;
+          if (b.getTyp().equals(bean.getTyp()))
+          {
+            index = i;
+            break;
+          }
         }
+        if (index >= 0)
+          this.getTable().setTopIndex(Math.max(0,index - 5));
       }
-      if (index >= 0)
-        this.getTable().setTopIndex(Math.max(0,index - 5));
+      catch (Exception e)
+      {
+        Logger.error("unable to scroll to element",e);
+      }
     }
     
     
