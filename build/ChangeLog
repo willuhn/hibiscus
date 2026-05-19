@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1182 PR #149, #153, #154
   * CHG: 1181 VoP-Hinweis auf der Startseite entfernt
   * NEW: 1180 Symbol der Geprüft-Markierung bei Umsätzen und Gelesen-Markierung bei Kontoauszügen statt Bild jetzt UTF-Symbol
   * NEW: 1179 Neue obantoo-Version mit aktualisierter BLZ-Datei gültig ab 08.06.2026
