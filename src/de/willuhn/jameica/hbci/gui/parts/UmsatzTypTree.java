@@ -24,6 +24,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -36,8 +38,12 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TreeFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TreePart;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -61,8 +67,9 @@ public class UmsatzTypTree extends TreePart
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
 
   private DelayedListener delayed = new DelayedListener(new UpdateListener());
-  private String filterText = null;
-  private boolean includeChildren = true;
+  private CheckboxInput includeChildren = null;
+  private TextInput filterText = null;
+  
   private Set<String> visibleIDs = null;
 
   /**
@@ -135,21 +142,40 @@ public class UmsatzTypTree extends TreePart
     this.setRememberState(true);
     this.setContextMenu(new de.willuhn.jameica.hbci.gui.menus.UmsatzTypList());
   }
-
-  public void setFilterText(String text)
+  
+  /**
+   * Liefert die Checkbox, mit der eingestellt werden kann, ob die Kind-Elemente von Treffern angezeigt werden sollen.
+   * @return die Checkbox.
+   */
+  private CheckboxInput getIncludeChildren()
   {
-    this.filterText = StringUtils.trimToNull(text);
-    this.refreshView();
+    if (this.includeChildren != null)
+      return this.includeChildren;
+    
+    this.includeChildren = new CheckboxInput(Boolean.TRUE);
+    this.includeChildren.setName(i18n.tr("Unterkategorien von Treffern anzeigen"));
+    this.includeChildren.addListener(e -> this.refreshView());
+    return this.includeChildren;
+  }
+  
+  /**
+   * Liefert ein Eingabefeld für einen Suchbegriff.
+   * @return Eingabefeld.
+   */
+  private TextInput getFilterText()
+  {
+    if (this.filterText != null)
+      return this.filterText;
+    
+    this.filterText = new TextInput("",50,i18n.tr("Suchbegriff"));
+    this.filterText.addListener(e -> this.refreshView());
+    return this.filterText;
   }
 
-  public void setIncludeChildren(boolean include)
-  {
-    this.includeChildren = include;
-    this.refreshView();
-  }
-
-
-  public void refreshView()
+  /**
+   * Aktualisiert die Anzeige.
+   */
+  private void refreshView()
   {
     try
     {
@@ -163,13 +189,17 @@ public class UmsatzTypTree extends TreePart
   }
 
 
+  /**
+   * Überschrieben, um die Liste zu filtern.
+   * @see de.willuhn.jameica.gui.parts.TreePart#getChildren(java.lang.Object)
+   */
   protected List getChildren(Object o)
   {
-    List children = super.getChildren(o);
+    final List children = super.getChildren(o);
     if (children == null || this.visibleIDs == null)
       return children;
 
-    List filtered = new LinkedList();
+    final List filtered = new LinkedList();
     for (Object child:children)
     {
       if (!(child instanceof UmsatzTyp))
@@ -177,7 +207,7 @@ public class UmsatzTypTree extends TreePart
 
       try
       {
-        String id = ((UmsatzTyp) child).getID();
+        final String id = ((UmsatzTyp) child).getID();
         if (id != null && this.visibleIDs.contains(id))
           filtered.add(child);
       }
@@ -189,12 +219,16 @@ public class UmsatzTypTree extends TreePart
     return filtered;
   }
 
+  /**
+   * Klappt alle Elemente auf oder zu.
+   * @param expanded true, wenn alle Elemente aufgeklappt sein sollen.
+   */
   public void setAllExpanded(boolean expanded)
   {
     try
     {
-      List items = this.getItems();
-      if (items == null)
+      final List items = this.getItems();
+      if (items == null || items.isEmpty())
         return;
 
       for (Object item:items)
@@ -209,46 +243,58 @@ public class UmsatzTypTree extends TreePart
     }
   }
 
+  /**
+   * Liefert die gefilterte Liste der Root-Elemente.
+   * @return die gefilterte Liste der Root-Elemente.
+   * @throws RemoteException
+   */
   private List getFilteredRootElements() throws RemoteException
   {
-    List all = PseudoIterator.asList(init());
+    final List all = PseudoIterator.asList(init());
     if (this.visibleIDs == null)
       return all;
 
-    List result = new LinkedList();
+    final List result = new LinkedList();
     for (Object o:all)
     {
       if (!(o instanceof UmsatzTyp))
         continue;
 
-      String id = ((UmsatzTyp)o).getID();
+      final String id = ((UmsatzTyp)o).getID();
       if (id != null && this.visibleIDs.contains(id))
         result.add(o);
     }
     return result;
   }
 
+  /**
+   * Liefert das Set von IDs mit den anzuzeigenden Elementen.
+   * @return das Set mit den anzuzeigenden Elementen oder NULL, wenn nichts gefiltert werden soll.
+   * @throws RemoteException
+   */
   private Set<String> createVisibleIDs() throws RemoteException
   {
-    if (this.filterText == null)
+    String query = (String) this.getFilterText().getValue();
+    if (StringUtils.trimToNull(query) == null)
       return null;
+    
+    query = query.toLowerCase();
 
-    String query = this.filterText.toLowerCase();
-    List<UmsatzTyp> all = new ArrayList<UmsatzTyp>();
-    Map<String,String> parentByChildID = new HashMap<String,String>();
-    Map<String,List<String>> childrenByParentID = new HashMap<String,List<String>>();
+    final List<UmsatzTyp> all = new ArrayList<UmsatzTyp>();
+    final Map<String,String> parentByChildID = new HashMap<>();
+    final Map<String,List<String>> childrenByParentID = new HashMap<>();
 
-    GenericIterator it = UmsatzTypUtil.getAll();
+    final GenericIterator<UmsatzTyp> it = UmsatzTypUtil.getAll();
     while (it.hasNext())
     {
-      UmsatzTyp t = (UmsatzTyp) it.next();
-      String id = t.getID();
+      final UmsatzTyp t = it.next();
+      final String id = t.getID();
       if (id == null)
         continue;
 
       all.add(t);
 
-      Object p = t.getAttribute("parent_id");
+      final Object p = t.getAttribute("parent_id");
       String parentID = null;
       if (p instanceof GenericObject)
         parentID = ((GenericObject)p).getID();
@@ -268,7 +314,8 @@ public class UmsatzTypTree extends TreePart
       }
     }
 
-    Set<String> visible = new HashSet<String>();
+    final Set<String> visible = new HashSet<String>();
+    final boolean b = ((Boolean)this.getIncludeChildren().getValue()).booleanValue();
     for (UmsatzTyp t:all)
     {
       String name = t.getName();
@@ -281,13 +328,19 @@ public class UmsatzTypTree extends TreePart
 
       visible.add(id);
       this.addParents(id,parentByChildID,visible);
-      if (this.includeChildren)
+      if (b)
         this.addChildren(id,childrenByParentID,visible);
     }
 
     return visible;
   }
 
+  /**
+   * Fügt die Eltern-Elemente hinzu.
+   * @param id die ID des Kind-Elements.
+   * @param parentByChildID die Lookup-Map für die Eltern.
+   * @param target das Ziel-Set.
+   */
   private void addParents(String id, Map<String,String> parentByChildID, Set<String> target)
   {
     String parent = parentByChildID.get(id);
@@ -300,6 +353,12 @@ public class UmsatzTypTree extends TreePart
     }
   }
 
+  /**
+   * Fügt die Kind-Elemente hinzu.
+   * @param id die ID des Eltern-Elements.
+   * @param childrenByParentID die Lookup-Map für die Kinder.
+   * @param target das Ziel-Set.
+   */
   private void addChildren(String id, Map<String,List<String>> childrenByParentID, Set<String> target)
   {
     Queue<String> queue = new ArrayDeque<String>();
@@ -321,14 +380,27 @@ public class UmsatzTypTree extends TreePart
     }
   }
 
-
-
-
   /**
    * @see de.willuhn.jameica.gui.parts.TreePart#paint(org.eclipse.swt.widgets.Composite)
    */
   public void paint(Composite parent) throws RemoteException
   {
+    final Container c = new SimpleContainer(parent);
+    final TextInput t = this.getFilterText();
+    c.addPart(t);
+    
+    t.getControl().addKeyListener(new KeyAdapter() {
+      /**
+       * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+       */
+      @Override
+      public void keyReleased(KeyEvent e)
+      {
+        delayed.handleEvent(null);
+      }
+    });
+    c.addInput(this.getIncludeChildren());
+
     super.paint(parent);
     final MessageConsumer mc = new MyMessageConsumer();
     Application.getMessagingFactory().registerMessageConsumer(mc);

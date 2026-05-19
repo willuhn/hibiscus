@@ -10,11 +10,7 @@
 package de.willuhn.jameica.hbci.gui.views;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.willuhn.jameica.gui.AbstractView;
@@ -22,10 +18,8 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.input.CheckboxInput;
-import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.action.CustomRangeEdit;
@@ -85,56 +79,21 @@ public class Settings extends AbstractView implements Extendable
     ui.addCheckbox(control.getBoldValues(),i18n.tr("Geld-Beträge fett gedruckt anzeigen"));
 
     // Umsatz-Kategorien
-    TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"));
+    TabGroup umsatztypes = new TabGroup(getTabFolder(),i18n.tr("Umsatz-Kategorien"),true,1);
     final UmsatzTypTree umsatzTypTree = control.getUmsatzTypTree();
-
-    umsatztypes.addText(i18n.tr("Suchbegriff"),false);
-    final TextInput filter = new TextInput("");
-    filter.paint(umsatztypes.getComposite());
-
-    final CheckboxInput includeChildren = new CheckboxInput(Boolean.TRUE);
-    includeChildren.setName(i18n.tr("Unterkategorien von Treffern anzeigen"));
-    includeChildren.addListener(new Listener()
-    {
-
-      public void handleEvent(Event event)
-      {
-        umsatzTypTree.setIncludeChildren(((Boolean) includeChildren.getValue()).booleanValue());
-      }
-    });
-    umsatztypes.addInput(includeChildren);
-
-    final Listener applyFilter = new Listener()
-    {
-
-      public void handleEvent(Event event)
-      {
-        umsatzTypTree.setFilterText((String) filter.getValue());
-      }
-    };
-
-    filter.addListener(applyFilter);
-    filter.getControl().addKeyListener(new KeyAdapter()
-    {
-      private Listener delayed = new DelayedListener(150,applyFilter);
-
-
-      public void keyReleased(KeyEvent e)
-      {
-        delayed.handleEvent(null);
-      }
-    });
-
-    umsatzTypTree.paint(umsatztypes.getComposite()); // BUGZILLA 410
+    umsatztypes.addPart(umsatzTypTree);
+    
     ButtonArea umsatzButtons = new ButtonArea();
     umsatzButtons.addButton(i18n.tr("Alle aufklappen/zuklappen"),new Action()
     {
       private boolean expanded = true;
 
+      /**
+       * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+       */
       public void handleAction(Object context) throws ApplicationException
       {
         umsatzTypTree.setAllExpanded(!this.expanded);
-
         this.expanded = !this.expanded;
       }
     },null,false,"folder-open.png");
