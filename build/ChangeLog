@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * BUG: 1183 Update auf HBCI4Java 4.1.11 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.11 - aktualisierte Prüfziffern-Verfahren bei einigen Banken
   * NEW: 1182 PR #149, #153, #154
   * CHG: 1181 VoP-Hinweis auf der Startseite entfernt
   * NEW: 1180 Symbol der Geprüft-Markierung bei Umsätzen und Gelesen-Markierung bei Kontoauszügen statt Bild jetzt UTF-Symbol
