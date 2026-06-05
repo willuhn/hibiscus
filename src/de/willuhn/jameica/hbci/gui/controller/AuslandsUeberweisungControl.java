@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -674,7 +675,7 @@ public class AuslandsUeberweisungControl extends AbstractControl
           if (list.hasNext())
           {
             HibiscusTransfer t = (HibiscusTransfer) list.next();
-            getZweck().setValue(t.getZweck());
+            getZweck().setValue(Optional.ofNullable(MetaKey.TRANSFER_USAGE_TEMPLATE.get(t)).orElse(t.getZweck())); // Verwendungszweck aus dem Template verwenden, falls vorhanden)
           }
         }
         catch (Exception e)
