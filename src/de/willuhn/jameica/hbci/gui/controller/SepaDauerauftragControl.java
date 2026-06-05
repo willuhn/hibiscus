@@ -11,6 +11,7 @@ package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.Optional;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -28,6 +29,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.HibiscusAddressUpdate;
 import de.willuhn.jameica.hbci.gui.action.SepaDauerauftragExecute;
@@ -711,7 +713,7 @@ public class SepaDauerauftragControl extends AbstractControl
           if (list.hasNext())
           {
             HibiscusTransfer t = (HibiscusTransfer) list.next();
-            getZweck().setValue(t.getZweck());
+            getZweck().setValue(Optional.ofNullable(MetaKey.TRANSFER_USAGE_TEMPLATE.get(t)).orElse(t.getZweck())); // Verwendungszweck aus dem Template verwenden, falls vorhanden)
           }
         }
         catch (Exception e)

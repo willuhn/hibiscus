@@ -10,6 +10,7 @@
 package de.willuhn.jameica.hbci.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
@@ -371,7 +372,7 @@ public abstract class AbstractSepaSammelTransferBuchungControl<T extends SepaSam
             if (list.hasNext())
             {
               SepaSammelTransferBuchung t = (SepaSammelTransferBuchung) list.next();
-              getZweck().setValue(t.getZweck());
+              getZweck().setValue(Optional.ofNullable(MetaKey.TRANSFER_USAGE_TEMPLATE.get(t)).orElse(t.getZweck())); // Verwendungszweck aus dem Template verwenden, falls vorhanden)
             }
           }
         }
