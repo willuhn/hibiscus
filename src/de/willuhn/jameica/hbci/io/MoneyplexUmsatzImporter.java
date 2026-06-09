@@ -191,7 +191,13 @@ public class MoneyplexUmsatzImporter implements Importer
     
     IXMLElement empfaenger = line.getFirstChildNamed("EMPFAENGER");
     if (empfaenger != null)
+    {
       umsatz.setGegenkontoName(getContent(empfaenger.getFirstChildNamed("NAME")));
+      umsatz.setGegenkontoName2(getContent(empfaenger.getFirstChildNamed("ZUSATZ")));
+      umsatz.setGegenkontoBLZ(getContent(empfaenger.getFirstChildNamed("BIC")));
+      umsatz.setGegenkontoNummer(getContent(empfaenger.getFirstChildNamed("IBAN")));
+    }
+    
     //
     ////////////////////////////////////////////////////////////////////////////
     
