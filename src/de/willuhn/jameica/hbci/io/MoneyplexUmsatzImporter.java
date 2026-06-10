@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
@@ -194,8 +196,17 @@ public class MoneyplexUmsatzImporter implements Importer
     {
       umsatz.setGegenkontoName(getContent(empfaenger.getFirstChildNamed("NAME")));
       umsatz.setGegenkontoName2(getContent(empfaenger.getFirstChildNamed("ZUSATZ")));
-      umsatz.setGegenkontoBLZ(getContent(empfaenger.getFirstChildNamed("BIC")));
-      umsatz.setGegenkontoNummer(getContent(empfaenger.getFirstChildNamed("IBAN")));
+      
+      String kto = getContent(empfaenger.getFirstChildNamed("IBAN"));
+      if (StringUtils.trimToNull(kto) == null)
+        kto = getContent(empfaenger.getFirstChildNamed("KONTONR"));
+      
+      String bnk = getContent(empfaenger.getFirstChildNamed("BIC"));
+      if (StringUtils.trimToNull(bnk) == null)
+        bnk = getContent(empfaenger.getFirstChildNamed("BLZ"));
+      
+      umsatz.setGegenkontoBLZ(bnk);
+      umsatz.setGegenkontoNummer(kto);
     }
     
     //
