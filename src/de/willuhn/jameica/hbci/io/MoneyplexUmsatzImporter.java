@@ -278,13 +278,13 @@ public class MoneyplexUmsatzImporter implements Importer
   /**
    * Parst den Betrag.
    * @param e das XML-Element, aus dessen PCDATA der Wert gelesen werden soll.
-   * @return der geparste Betrag oder NaN, wenn der Betrag nicht geparst werden konnte.
+   * @return der geparste Betrag oder 0.0, wenn der Betrag nicht geparst werden konnte.
    */
   private double parseBetrag(IXMLElement e)
   {
     String s = getContent(e);
     if (s == null)
-      return Double.NaN;
+      return 0.0d;
     
     try
     {
@@ -294,7 +294,7 @@ public class MoneyplexUmsatzImporter implements Importer
     {
       Logger.warn("unable to parse value " + s + ": " + ex.getMessage());
     }
-    return Double.NaN;
+    return 0.0d;
   }
   
   /**

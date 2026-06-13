@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1186 Beim Import im Moneyplex-Format fehlende Beträge tolerieren und gegen 0.0 ersetzen
   * NEW: 1185 Beim Import im Moneyplex-Format auch die Gegenkonten und den Namenszusatz mit importieren
   * NEW: 1184 Beim Vervollständigen des Verwendungszweck nach Adressbuchauswahl Platzhalter im Zweck erhalten, wenn im letzten Auftrag welche enthalten waren
   * BUG: 1183 Update auf HBCI4Java 4.1.11 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.11 - aktualisierte Prüfziffern-Verfahren bei einigen Banken
