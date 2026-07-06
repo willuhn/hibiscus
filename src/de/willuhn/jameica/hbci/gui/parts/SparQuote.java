@@ -60,6 +60,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.Range.Category;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -415,10 +416,47 @@ public class SparQuote implements Part
     final Date end     = (Date) this.getTo().getValue();
     final int monate   = ((Integer) this.getMonatAuswahl().getValue()).intValue();
     final int stichtag = ((Integer) this.getTagAuswahl().getValue()).intValue();
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Relevante Umsaetze laden. Ignorierte Kategorien duerfen auch die
+    // automatische Ermittlung des Auswertungsbeginns nicht beeinflussen.
+    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
+    Object o = getKontoAuswahl().getValue();
+    if (o != null && (o instanceof Konto))
+      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
+    else if (o != null && (o instanceof String))
+      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
+
+    if (start != null)
+      umsaetze.addFilter("datum >= ?", new java.sql.Date(start.getTime()));
+
+    final List<Umsatz> umsatzList = new ArrayList<Umsatz>();
+    while (umsaetze.hasNext())
+    {
+      Umsatz u = (Umsatz) umsaetze.next();
+      Date date = u.getDatum();
+      if (date == null)
+      {
+        Logger.debug("no date found for umsatz, skipping record");
+        continue;
+      }
+      if (end != null && date.after(end))
+        // Keine Umsaetze nach dem gewuenschten Zeitraum verarbeiten
+        break;
+      if (UmsatzTypUtil.isExcludedFromReports(u.getUmsatzTyp()))
+        // Keine Umsaetze, wenn die Kategorie von der Auswertung ausgeschlossen ist
+        continue;
+
+      umsatzList.add(u);
+    }
+    ////////////////////////////////////////////////////////////////////////////
     
     ////////////////////////////////////////////////////////////////////////////
     // Wir iterieren erstmal ueber den Zeitraum und erzeugen die passenden Time-Boxen
-    Date from = start != null ? start : UmsatzUtil.getOldest(getKontoAuswahl().getValue());
+    Date from = start;
+    if (from == null && !umsatzList.isEmpty())
+      from = umsatzList.get(0).getDatum();
+
     from          = DateUtil.startOfDay(from != null ? from : new Date());
     final Date to = DateUtil.endOfDay(end != null ? end : new Date());
     
@@ -474,30 +512,9 @@ public class SparQuote implements Part
     ////////////////////////////////////////////////////////////////////////////
     // Iterieren ueber die Umsaetze und einsortieren in die passende Timebox
 
-    DBIterator umsaetze = UmsatzUtil.getUmsaetze();
-    Object o = getKontoAuswahl().getValue();
-    if (o != null && (o instanceof Konto))
-      umsaetze.addFilter("konto_id = " + ((Konto) o).getID());
-    else if (o != null && (o instanceof String))
-      umsaetze.addFilter("konto_id in (select id from konto where kategorie = ?)", (String) o);
-
-    if (start != null)
-      umsaetze.addFilter("datum >= ?", new java.sql.Date(start.getTime()));
-
-    while (umsaetze.hasNext())
+    for (Umsatz u:umsatzList)
     {
-      Umsatz u = (Umsatz) umsaetze.next();
       Date date = u.getDatum();
-      if (date == null)
-      {
-        Logger.debug("no date found for umsatz, skipping record");
-        continue;
-      } else if (end != null && date.after(end))
-      {
-        //keine Umsätze nach dem gwünschten Zeitraum verarbeiten
-        break;
-      }
-      
       UmsatzEntry e = this.getEntry(date);
       if (e == null)
       {
