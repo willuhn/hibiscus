@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1187 Umsatzkategorie-Option "[x] In Auswertungen ignorieren" auch in den Auswertungen Sparquote und Einnahme/Ausgabe berücksichtigen - https://github.com/willuhn/hibiscus/pull/156
   * NEW: 1186 Beim Import im Moneyplex-Format fehlende Beträge tolerieren und gegen 0.0 ersetzen
   * NEW: 1185 Beim Import im Moneyplex-Format auch die Gegenkonten und den Namenszusatz mit importieren
   * NEW: 1184 Beim Vervollständigen des Verwendungszweck nach Adressbuchauswahl Platzhalter im Zweck erhalten, wenn im letzten Auftrag welche enthalten waren
