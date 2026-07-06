@@ -57,6 +57,7 @@ import de.willuhn.jameica.hbci.server.EinnahmeAusgabe;
 import de.willuhn.jameica.hbci.server.EinnahmeAusgabeTreeNode;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Range.Category;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
 import de.willuhn.jameica.hbci.server.Value;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -416,6 +417,8 @@ public class EinnahmeAusgabeControl extends AbstractControl
     {
       final Umsatz u = (Umsatz) umsaetze.next();
       if (u.hasFlag(Umsatz.FLAG_NOTBOOKED))
+        continue;
+      if (UmsatzTypUtil.isExcludedFromReports(u.getUmsatzTyp()))
         continue;
 
       umsatzList.add(u);

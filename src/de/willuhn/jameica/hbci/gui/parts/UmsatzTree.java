@@ -45,6 +45,7 @@ import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTreeNode;
+import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -224,14 +225,12 @@ public class UmsatzTree extends TreePart
    */
   private UmsatzTreeNode getNode(Map<String,UmsatzTreeNode> lookup,UmsatzTyp ut) throws RemoteException
   {
+    if (UmsatzTypUtil.isExcludedFromReports(ut))
+      return null;
+
     UmsatzTreeNode node = lookup.get(ut != null ? ut.getID() : null);
     if (node != null)
       return node; // haben wir schon.
-    
-    // "ut" null gibt es. Das ist der Fall, wenn ein Umsatz keiner Kategorie zugeordnet ist.
-    // Wir wollen hier aber geziehlt die raus haben, die nicht in den Auswertungen erscheinen sollen.
-    if (ut != null && ut.hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS))
-      return null;
     
     // Neu anlegen
     node = new UmsatzTreeNode(ut);

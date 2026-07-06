@@ -82,6 +82,26 @@ public class UmsatzTypUtil
     }
     return i18n.tr("egal");
   }
+
+  /**
+   * Prueft, ob die Umsatz-Kategorie oder eine ihrer uebergeordneten Kategorien
+   * von Auswertungen ausgeschlossen ist.
+   * @param type die zu pruefende Umsatz-Kategorie oder NULL fuer nicht zugeordnete Umsaetze.
+   * @return true, wenn die Kategorie von Auswertungen ausgeschlossen ist.
+   * @throws RemoteException
+   */
+  public static boolean isExcludedFromReports(UmsatzTyp type) throws RemoteException
+  {
+    UmsatzTyp current = type;
+    for (int i=0;i<100 && current != null;++i)
+    {
+      if (current.hasFlag(UmsatzTyp.FLAG_SKIP_REPORTS))
+        return true;
+
+      current = (UmsatzTyp) current.getParent();
+    }
+    return false;
+  }
   
   /**
    * Liefert eine Liste aller Umsatz-Kategorien, sortiert nach Nummer und Name.
