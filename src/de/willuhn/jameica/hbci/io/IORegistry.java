@@ -13,7 +13,6 @@ package de.willuhn.jameica.hbci.io;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -50,7 +49,7 @@ public class IORegistry
     List<T> l = new ArrayList<T>();
     try
     {
-      ClassFinder finder = Application.getPluginLoader().getPlugin(HBCI.class).getManifest().getClassLoader().getClassFinder();
+      ClassFinder finder = Application.getClassLoader().getClassFinder();
       Class<T>[] list = finder.findImplementors(type);
       if (list == null || list.length == 0)
         throw new ClassNotFoundException();
