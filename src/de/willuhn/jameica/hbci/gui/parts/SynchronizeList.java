@@ -472,19 +472,22 @@ public class SynchronizeList extends TablePart
       }
       
       selectedCache.clear();
-      final Object o = this.getSelection();
-      if (o != null)
+      final Object sel = this.getSelection();
+      if (sel != null)
       {
-        if (o instanceof SynchronizeJob[])
+        if (sel instanceof Object[])
         {
-          for (SynchronizeJob j:(SynchronizeJob[])o)
+          for (Object o:(Object[])sel)
           {
-            selectedCache.add(j.getName());
+            if (!(o instanceof SynchronizeJob))
+              continue;
+            
+            selectedCache.add(((SynchronizeJob)o).getName());
           }
         }
-        else
+        else if (sel instanceof SynchronizeJob)
         {
-          selectedCache.add(((SynchronizeJob)o).getName());
+          selectedCache.add(((SynchronizeJob)sel).getName());
         }
       }
 
