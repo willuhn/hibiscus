@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.ColorUtil;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypListDialog;
 import de.willuhn.jameica.hbci.gui.input.AddressInput;
 import de.willuhn.jameica.hbci.gui.input.BICInput;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
@@ -84,6 +85,7 @@ public class UmsatzDetailControl extends AbstractControl
   private Input kommentar       = null;
   
   private SelectInput umsatzTyp = null;
+  private Input umsatzTypField  = null;
   
   private CheckboxInput zweckSwitch = null;
 
@@ -217,10 +219,27 @@ public class UmsatzDetailControl extends AbstractControl
     // Ansonsten alle - damit die zugeordnete Kategorie auch dann noch
     // noch angeboten wird, der User nachtraeglich den Kat-Typ geaendert hat.
     this.umsatzTyp = new UmsatzTypInput(ut,typ, false);
+    ((UmsatzTypInput) this.umsatzTyp).setShowPathName(true);
     this.umsatzTyp.setComment("");
     
     this.umsatzTyp.setEnabled(!u.hasFlag(Umsatz.FLAG_NOTBOOKED));
     return this.umsatzTyp;
+  }
+
+  /**
+   * Liefert das Kategorie-Eingabefeld als Dropdown mit zusaetzlichem Dialog-Button.
+   * @return Umsatz-Kategorie als Eingabefeld.
+   * @throws RemoteException
+   */
+  public Input getUmsatzTypField() throws RemoteException
+  {
+    if (this.umsatzTypField != null)
+      return this.umsatzTypField;
+
+    UmsatzTypInput input = (UmsatzTypInput) this.getUmsatzTyp();
+    this.umsatzTypField = input.getSelectionWithDialogButton(UmsatzTypListDialog.POSITION_CENTER,UmsatzTyp.TYP_EGAL);
+    this.umsatzTypField.setEnabled(input.isEnabled());
+    return this.umsatzTypField;
   }
 
   /**
