@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * BUG: 1188 Update auf HBCI4Java 4.1.12 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.12 - HKSAL8 und Ergänzung bei Echtzeitüberweisungen
   * NEW: 1187 Umsatzkategorie-Option "[x] In Auswertungen ignorieren" auch in den Auswertungen Sparquote und Einnahme/Ausgabe berücksichtigen - https://github.com/willuhn/hibiscus/pull/156
   * NEW: 1186 Beim Import im Moneyplex-Format fehlende Beträge tolerieren und gegen 0.0 ersetzen
   * NEW: 1185 Beim Import im Moneyplex-Format auch die Gegenkonten und den Namenszusatz mit importieren
