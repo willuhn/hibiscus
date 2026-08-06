@@ -11,7 +11,6 @@
 package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.List;
 
 import de.willuhn.jameica.gui.Action;
@@ -61,7 +60,7 @@ public class PassportList extends TablePart implements Part
   {
     try
     {
-      return Arrays.asList(PassportRegistry.getPassports());
+      return PassportRegistry.getPassports();
     }
     catch (RemoteException re)
     {
@@ -74,13 +73,3 @@ public class PassportList extends TablePart implements Part
     }
   }
 }
-
-
-/**********************************************************************
- * $Log: PassportList.java,v $
- * Revision 1.9  2011/04/28 07:34:01  willuhn
- * @C Code-Cleanup
- *
- * Revision 1.8  2010/04/14 16:53:01  willuhn
- * @N BUGZILLA 471
- **********************************************************************/

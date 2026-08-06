@@ -14,9 +14,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.util.ApplicationException;
 
-
-
-
 /**
  * Interface fuer eine einzelne Passport-Konfiguration.
  */
@@ -27,6 +24,12 @@ public interface Configuration
    * @return Beschreibungstext.
    */
   public String getDescription();
+  
+  /**
+   * Liefert einen Identifier für die Konfiguration.
+   * @return der Identifier.
+   */
+  public String getIdentifier();
 
   /**
    * Liefert die Klasse des Konfigurationsdialogs.
@@ -48,17 +51,3 @@ public interface Configuration
   public void delete() throws ApplicationException;
 
 }
-
-
-
-/**********************************************************************
- * $Log: Configuration.java,v $
- * Revision 1.2  2011/06/17 08:49:18  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.1  2011-04-29 09:17:34  willuhn
- * @N Neues Standard-Interface "Configuration" fuer eine gemeinsame API ueber alle Arten von HBCI-Konfigurationen
- * @R Passports sind keine UnicastRemote-Objekte mehr
- *
- **********************************************************************/

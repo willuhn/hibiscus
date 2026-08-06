@@ -98,7 +98,8 @@ public class PinTanMigrationService
         }
         catch (Exception e)
         {
-          Logger.error("unable to load passport",e);
+          Logger.warn("unable to load passport " + conf.getIdentifier() + ": " + e.getMessage() + " - skipping");
+          Logger.write(Level.DEBUG,"stacktrace for debugging purpose",e);
         }
       }
     }

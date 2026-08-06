@@ -30,6 +30,7 @@ import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -89,6 +90,15 @@ public class PinTanConfigImpl implements PinTanConfig
       return getTanMedias();
     return null;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#getIdentifier()
+   */
+  @Override
+  public String getIdentifier()
+  {
+    return this.file.getAbsolutePath();
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
@@ -120,15 +130,16 @@ public class PinTanConfigImpl implements PinTanConfig
     }
     catch (Exception e)
     {
-      Logger.error("unable to determine name",e);
+      Logger.error("unable to determine name for passport " + this.getIdentifier() + ": " + e.getMessage());
+      Logger.write(Level.DEBUG,"stacktrace for debugging purpose",e);
       try
       {
         return this.getPassport().getHost();
       }
-      catch (RemoteException re)
+      catch (Exception e2)
       {
-        Logger.error("unable to determine host",re);
-        return "<unknown> (" + re.getMessage() + ")";
+        Logger.error("unable to determine host",e2);
+        return "<unknown> (" + e2.getMessage() + ")";
       }
     }
   }

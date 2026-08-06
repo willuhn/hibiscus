@@ -36,6 +36,7 @@ import de.willuhn.jameica.hbci.passport.Configuration;
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -187,8 +188,8 @@ public class PassportTree extends TreePart
   {
     try
     {
-      Passport[] passports = PassportRegistry.getPassports();
-      List<PassportObject> list = new ArrayList<PassportObject>();
+      final List<Passport> passports = PassportRegistry.getPassports();
+      final List<PassportObject> list = new ArrayList<PassportObject>();
       for (Passport p:passports)
       {
         list.add(new PassportObject(p));
@@ -273,11 +274,21 @@ public class PassportTree extends TreePart
       if (this.children != null)
         return this.children;
       
-      List<? extends Configuration> configs = this.passport.getConfigurations();
-      List<ConfigObject> list = new ArrayList<ConfigObject>();
+      final List<? extends Configuration> configs = this.passport.getConfigurations();
+      final List<ConfigObject> list = new ArrayList<ConfigObject>();
       for (Configuration c:configs)
       {
-        list.add(new ConfigObject(this.passport, c));
+        try
+        {
+          c.getDescription(); // Einmal aufrufen, um zu checken, dass sich der Passport lesen lässt. Wenn die Datei kaputt ist, sollte das eine Exception triggern 
+          final ConfigObject co = new ConfigObject(this.passport, c);
+          list.add(co);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to load passport " + this.passport.getName() + ": " + c.getIdentifier() + ": " + e.getMessage() + " - skipping");
+          Logger.write(Level.DEBUG,"stacktrace for debugging purpose",e);
+        }
       }
       this.children = PseudoIterator.fromArray(list.toArray(new ConfigObject[0]));
       return this.children;
@@ -387,16 +398,3 @@ public class PassportTree extends TreePart
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: PassportTree.java,v $
- * Revision 1.2  2011/06/17 08:49:18  willuhn
- * @N Contextmenu im Tree mit den Bank-Zugaengen
- * @N Loeschen von Bank-Zugaengen direkt im Tree
- *
- * Revision 1.1  2011-04-29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- **********************************************************************/

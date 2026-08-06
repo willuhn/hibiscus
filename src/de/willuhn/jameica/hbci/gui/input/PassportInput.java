@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.gui.input;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -110,7 +109,7 @@ public class PassportInput extends SelectInput
     {
       try
       {
-        passports = Arrays.asList(PassportRegistry.getPassports());
+        passports = PassportRegistry.getPassports();
       }
       catch (ApplicationException ae)
       {
@@ -129,27 +128,3 @@ public class PassportInput extends SelectInput
     return passports;
   }
 }
-
-
-/*********************************************************************
- * $Log: PassportInput.java,v $
- * Revision 1.6  2011/04/29 11:38:58  willuhn
- * @N Konfiguration der HBCI-Medien ueberarbeitet. Es gibt nun direkt in der Navi einen Punkt "Bank-Zugaenge", in der alle Medien angezeigt werden.
- *
- * Revision 1.5  2010/04/22 12:42:03  willuhn
- * @N Erste Version des Supports fuer Offline-Konten
- *
- * Revision 1.4  2009/05/07 13:36:57  willuhn
- * @R Hilfsobjekt "PassportObject" entfernt
- * @C Cleanup in PassportInput (insb. der weisse Hintergrund hinter dem "Konfigurieren..."-Button hat gestoert
- *
- * Revision 1.3  2009/01/04 17:43:29  willuhn
- * @N BUGZILLA 532
- *
- * Revision 1.2  2006/06/19 10:57:04  willuhn
- * @N neue Methode setEnabled(boolean) in Input
- *
- * Revision 1.1  2006/03/21 00:43:14  willuhn
- * @B bug 209
- *
- **********************************************************************/

@@ -9,8 +9,10 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.willuhn.jameica.hbci.passport.Passport;
 import de.willuhn.jameica.services.BeanService;
@@ -23,8 +25,8 @@ import de.willuhn.util.ClassFinder;
  */
 public class PassportRegistry {
 
-	private static Hashtable passportsByName  = null;
-	private static Hashtable passportsByClass = null;
+	private static Map<String,Class<Passport>> passportsByName = null;
+	private static Map<String,Class<Passport>> passportsByClass = null;
 
 	/**
    * Initialisiert die Passport-Registry.
@@ -34,18 +36,18 @@ public class PassportRegistry {
     if (passportsByClass != null || passportsByName != null)
       return;
     
-    passportsByClass = new Hashtable();
-    passportsByName  = new Hashtable();
+    passportsByClass = new HashMap<>();
+    passportsByName  = new HashMap<>();
 
     try {
 			Logger.info("searching for available passports");
-	    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-			ClassFinder finder = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder();
-			Class[] found = finder.findImplementors(Passport.class);
+	    final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+	    final ClassFinder finder = Application.getPluginLoader().getManifest(HBCI.class).getClassLoader().getClassFinder();
+	    final Class[] found = finder.findImplementors(Passport.class);
 			for (Class c:found)
 			{
 				try {
-					Passport p = (Passport) service.get(c);
+				  final Passport p = (Passport) service.get(c);
 					Application.getCallback().getStartupMonitor().setStatusText("init passport " + p.getName());
  				  passportsByName.put(p.getName(),c);
 					passportsByClass.put(c.getName(),c);
@@ -73,13 +75,13 @@ public class PassportRegistry {
    * @return die Instanz.
    * @throws Exception
    */
-  private static Passport load(Class c) throws Exception
+  private static Passport load(Class<Passport> c) throws Exception
   {
     if (c == null)
       return null;
     
-    BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-    Passport p = (Passport) service.get(c);
+    final BeanService service = Application.getBootLoader().getBootable(BeanService.class);
+    final Passport p = service.get(c);
     Logger.debug("[" + c.getName() + "][" + p.getName() + "] instantiated successfully");
     return p;
   }
@@ -95,7 +97,8 @@ public class PassportRegistry {
 		if (name == null)
 			return null;
     init();
-		return (Passport) load((Class) passportsByName.get(name));
+    
+		return load(passportsByName.get(name));
 	}
 
 	/**
@@ -109,7 +112,7 @@ public class PassportRegistry {
 		if (classname == null)
 			return null;
     init();
-		return (Passport) load((Class) passportsByClass.get(classname));
+		return load(passportsByClass.get(classname));
 	}
 
 	/**
@@ -117,67 +120,14 @@ public class PassportRegistry {
    * @return Liste der Passports.
    * @throws Exception
    */
-  public static Passport[] getPassports() throws Exception
+  public static List<Passport> getPassports() throws Exception
 	{
     init();
-		Enumeration e = passportsByName.elements();
-		Passport[] passports = new Passport[passportsByName.size()];
-		int i=0;
-		while (e.hasMoreElements())
+		final List<Passport> result = new ArrayList<>();
+		for (Class<Passport> c:passportsByClass.values())
 		{
-			passports[i++] = (Passport) load((Class)e.nextElement());
+			result.add(load(c));
 		}
-		return passports;
+		return result;
 	}
 }
-
-
-/**********************************************************************
- * $Log: PassportRegistry.java,v $
- * Revision 1.15  2010/07/22 11:48:55  willuhn
- * @C Logging
- *
- * Revision 1.14  2007/05/20 23:45:10  willuhn
- * @N HBCI-Jobausfuehrung Servertauglich gemacht
- *
- * Revision 1.13  2005/12/05 10:35:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2005/07/04 21:57:08  web0
- * @B bug 80
- *
- * Revision 1.11  2005/05/19 23:31:07  web0
- * @B RMI over SSL support
- * @N added handbook
- *
- * Revision 1.10  2005/01/30 20:45:35  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2005/01/09 18:48:40  willuhn
- * @N native lib for sizrdh
- *
- * Revision 1.8  2004/11/12 18:25:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/07/21 23:54:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/06/30 20:58:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/05/11 21:11:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/05/05 22:14:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/05/04 23:30:53  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/05/04 23:07:23  willuhn
- * @C refactored Passport stuff
- *
- **********************************************************************/

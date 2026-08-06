@@ -63,6 +63,15 @@ public class DDVConfig implements Configuration
   {
     return this.getReaderPreset().getName() + " (" + this.getName() + ")";
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#getIdentifier()
+   */
+  @Override
+  public String getIdentifier()
+  {
+    return this.id;
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.passport.Configuration#getConfigDialog()

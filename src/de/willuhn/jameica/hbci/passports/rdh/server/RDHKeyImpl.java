@@ -67,6 +67,15 @@ public class RDHKeyImpl implements RDHKey
       return getFormat().getName();
     return null;
   }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.passport.Configuration#getIdentifier()
+   */
+  @Override
+  public String getIdentifier()
+  {
+    return this.file.getAbsolutePath();
+  }
 
   /**
    * @see de.willuhn.jameica.hbci.passport.Configuration#getDescription()
