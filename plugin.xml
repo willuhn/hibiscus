@@ -21,6 +21,7 @@
         <item id="hibiscus.menu.transfer.sepasammelueb"  name="Neue Sammelüberweisung..." shortcut="ALT+W"    icon="sueberweisung.png"               action="de.willuhn.jameica.hbci.gui.action.SepaSammelUeberweisungNew" />
         <item id="hibiscus.menu.transfer.sepasammellast" name="Neue Sammellastschrift..." shortcut="ALT+F"    icon="slastschrift.png"                action="de.willuhn.jameica.hbci.gui.action.SepaSammelLastschriftNew" />
       </item>
+      <item id="hibiscus.menu.synchronize"               name="S&amp;ynchronisierung starten"                  icon="mail-send-receive.png"           action="de.willuhn.jameica.hbci.gui.action.SynchronizeStart" />
       <item id="hibiscus.menu.ibancalculator"            name="IBAN-Rechner"                                  icon="accessories-calculator.png"      action="de.willuhn.jameica.hbci.gui.action.IbanCalc" />
       <item id="hibiscus.menu.messages"                  name="&amp;Bank-Nachrichten"                         icon="dialog-information.png"          action="de.willuhn.jameica.hbci.gui.action.NachrichtList" />
       <item id="hibiscus.menu.settings"                  name="&amp;Einstellungen"                            icon="document-properties.png"         action="de.willuhn.jameica.hbci.gui.action.Settings" />
