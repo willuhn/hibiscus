@@ -45,6 +45,7 @@ import de.willuhn.util.ProgressMonitor;
 public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
 {
   private DBSupport driver = null;
+  private boolean fallback = false;
   
   /**
    * @throws RemoteException
@@ -151,8 +152,11 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
       
       Logger.warn("unable to determine database version - database probably empty, recreating");
       Logger.write(Level.DEBUG,"stacktrace for debugging purpose",re);
+      
+      
       try
       {
+        this.fallback = true;
         this.install();
         
         // Jetzt sollte sich die Version laden lassen
@@ -164,6 +168,10 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
         Logger.error("unable to recreate database",re2);
         // Wir werfen die originale Exception
         throw re;
+      }
+      finally
+      {
+        this.fallback = false;
       }
     }
     
@@ -338,12 +346,17 @@ public class HBCIDBServiceImpl extends DBServiceImpl implements HBCIDBService
    */
   public void install() throws RemoteException
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
-    ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
-    monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
-    
     // Bei Neu-Installationen verwenden wir jetzt AES statt XTEA
-    HBCIDBService.SETTINGS.setAttribute("database.driver.h2.encryption.algorithm","AES");
+    // "fallback" heisst: Die normale Verbindung schlug fehl.
+    // Wir haben eine existierende Installation, aber vermutlich mit
+    // einer leeren Datenbnk
+    if (!this.fallback)
+    {
+      I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+      ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
+      monitor.setStatusText(i18n.tr("Installiere Hibiscus"));
+      HBCIDBService.SETTINGS.setAttribute("database.driver.h2.encryption.algorithm","AES");
+    }
     
     Manifest mf = Application.getPluginLoader().getPlugin(HBCI.class).getManifest();
     File file = new File(mf.getPluginDir() + File.separator + "sql","create.sql");
