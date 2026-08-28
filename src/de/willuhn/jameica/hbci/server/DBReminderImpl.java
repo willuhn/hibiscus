@@ -10,9 +10,7 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.rmi.RemoteException;
 
@@ -95,9 +93,9 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
     if (serialized == null || serialized.length() == 0)
       return null;
 
-    try (XMLDecoder decoder = new XMLDecoder(new ByteArrayInputStream(serialized.getBytes("UTF-8"))))
+    try
     {
-      return (Reminder) decoder.readObject();
+      return ReminderXmlDecoder.decode(serialized);
     }
     catch (Exception e)
     {
