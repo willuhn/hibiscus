@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -39,6 +40,7 @@ import org.apache.pdfbox.pdmodel.common.PDNameTreeNode;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification;
 import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
@@ -363,48 +365,7 @@ public class XRechnungImporter implements Importer
         return this.parse(data);
       }
       
-      final PDDocumentCatalog root = doc != null ? doc.getDocumentCatalog() : null;
-      final PDDocumentNameDictionary names = root != null ? new PDDocumentNameDictionary(root) : null;
-      final PDEmbeddedFilesNameTreeNode files = names != null ? names.getEmbeddedFiles() : null;
-
-      if (files == null)
-      {
-        Logger.info("pdf does not contain embedded files");
-        return null;
-      }
-
-      final List<PDComplexFileSpecification> list = new ArrayList<>();
-      final Map<String, PDComplexFileSpecification> map = files.getNames();
-      if (map != null)
-        list.addAll(map.values());
-      
-      // Die Dateien stecken unter Umständen auch in den Kindern
-      final List<PDNameTreeNode<PDComplexFileSpecification>> kids = files.getKids();
-      if (kids != null && !kids.isEmpty())
-      {
-        for (PDNameTreeNode<PDComplexFileSpecification> kid:kids)
-        {
-          final Map<String, PDComplexFileSpecification> kidMap = kid.getNames();
-          list.addAll(kidMap.values());
-        }
-      }
-      
-      for (PDComplexFileSpecification spec:list)
-      {
-        final String filename = spec.getFilename();
-        
-        // Wir nehmen daher jede Datei, deren Name auf XML endet.
-        if (filename == null || filename.isBlank())
-          continue;
-        
-        if (!filename.toLowerCase().endsWith(".xml"))
-          continue;
-        
-        final PDEmbeddedFile f = spec.getEmbeddedFile();
-        final byte[] bytes = f.toByteArray();
-        return this.parse(bytes);
-      }
-      return null;
+      return XRechnungParser.parse(doc);
     }
     finally
     {
@@ -431,14 +392,95 @@ public class XRechnungImporter implements Importer
    */
   private Document parse(byte[] bytes) throws Exception
   {
-    final String s = new String(bytes,StandardCharsets.UTF_8);
-    Logger.trace("XML for debugging purpose: " + s);
-    
-    final DocumentBuilderFactory xmlFact = DocumentBuilderFactory.newInstance();
-    xmlFact.setNamespaceAware(true);
-    final DocumentBuilder builder = xmlFact.newDocumentBuilder();
-    return builder.parse(new ByteArrayInputStream(bytes));
+    return XRechnungParser.parse(bytes);
   }
 }
 
+/**
+ * Sicherer XML-Parser fuer XRechnungen.
+ */
+final class XRechnungParser
+{
+  /** Keine Instanzen. */
+  private XRechnungParser()
+  {
+  }
 
+  /**
+   * Extrahiert und parst die erste XML-Datei aus einem PDF-Dokument.
+   * @param doc das PDF-Dokument.
+   * @return das XML-Dokument oder {@code null}, wenn keine XML-Datei enthalten ist.
+   * @throws Exception
+   */
+  static Document parse(PDDocument doc) throws Exception
+  {
+    final PDDocumentCatalog root = doc != null ? doc.getDocumentCatalog() : null;
+    final PDDocumentNameDictionary names = root != null ? new PDDocumentNameDictionary(root) : null;
+    final PDEmbeddedFilesNameTreeNode files = names != null ? names.getEmbeddedFiles() : null;
+
+    if (files == null)
+    {
+      Logger.info("pdf does not contain embedded files");
+      return null;
+    }
+
+    final List<PDComplexFileSpecification> list = new ArrayList<>();
+    final Map<String, PDComplexFileSpecification> map = files.getNames();
+    if (map != null)
+      list.addAll(map.values());
+
+    // Die Dateien stecken unter Umständen auch in den Kindern
+    final List<PDNameTreeNode<PDComplexFileSpecification>> kids = files.getKids();
+    if (kids != null && !kids.isEmpty())
+    {
+      for (PDNameTreeNode<PDComplexFileSpecification> kid:kids)
+      {
+        final Map<String, PDComplexFileSpecification> kidMap = kid.getNames();
+        list.addAll(kidMap.values());
+      }
+    }
+
+    for (PDComplexFileSpecification spec:list)
+    {
+      final String filename = spec.getFilename();
+
+      // Wir nehmen daher jede Datei, deren Name auf XML endet.
+      if (filename == null || filename.isBlank())
+        continue;
+
+      if (!filename.toLowerCase().endsWith(".xml"))
+        continue;
+
+      final PDEmbeddedFile file = spec.getEmbeddedFile();
+      return parse(file.toByteArray());
+    }
+    return null;
+  }
+
+  /**
+   * Parst eine XRechnung ohne externe Ressourcen.
+   * @param bytes die XML-Daten.
+   * @return das XML-Dokument.
+   * @throws Exception
+   */
+  static Document parse(byte[] bytes) throws Exception
+  {
+    final String xml = new String(bytes,StandardCharsets.UTF_8);
+    Logger.trace("XML for debugging purpose: " + xml);
+
+    final DocumentBuilderFactory xmlFact = DocumentBuilderFactory.newInstance();
+    xmlFact.setNamespaceAware(true);
+    xmlFact.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING,true);
+    xmlFact.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+    xmlFact.setFeature("http://xml.org/sax/features/external-general-entities",false);
+    xmlFact.setFeature("http://xml.org/sax/features/external-parameter-entities",false);
+    xmlFact.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+    xmlFact.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD,"");
+    xmlFact.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA,"");
+    xmlFact.setExpandEntityReferences(false);
+    xmlFact.setXIncludeAware(false);
+    final DocumentBuilder builder = xmlFact.newDocumentBuilder();
+    builder.setEntityResolver((publicId,systemId) -> { throw new SAXException("external entity resolution disabled"); });
+    return builder.parse(new ByteArrayInputStream(bytes));
+  }
+}
