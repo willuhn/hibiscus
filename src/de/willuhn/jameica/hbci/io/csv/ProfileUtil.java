@@ -11,7 +11,6 @@
 package de.willuhn.jameica.hbci.io.csv;
 
 import java.beans.ExceptionListener;
-import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -68,40 +67,21 @@ public class ProfileUtil
       return result;
     
     Logger.info("reading csv profile " + file);
-    try (XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file))))
+    try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file)))
     {
-      decoder.setExceptionListener(new ExceptionListener()
+      for (Profile p:ProfileXmlDecoder.decode(input))
       {
-        public void exceptionThrown(Exception e)
+        // Migration aus der Zeit vor dem Support mulitpler Profile:
+        // Da konnte der User nur das eine existierende Profil aendern, es wurde automatisch gespeichert
+        // Das hatte gar keinen Namen. Falls also ein Profil ohne Name existiert (inzwischen koennen keine
+        // mehr ohne Name gespeichert werden), dann ist es das vom User geaenderte Profil. Das machen wir
+        // automatisch zum ersten User-spezifischen Profil
+        if (StringUtils.trimToNull(p.getName()) == null)
         {
-          throw new RuntimeException(e);
+          p.setName(dp.getName() + " 2");
+          p.setSystem(false);
         }
-      });
-      
-      
-      // Es ist tatsaechlich so, dass "readObject()" nicht etwa NULL liefert, wenn keine Objekte mehr in der
-      // Datei sind sondern eine ArrayIndexOutOfBoundsException wirft.
-      try
-      {
-        for (int i=0;i<1000;++i)
-        {
-          Profile p = (Profile) decoder.readObject();
-          // Migration aus der Zeit vor dem Support mulitpler Profile:
-          // Da konnte der User nur das eine existierende Profil aendern, es wurde automatisch gespeichert
-          // Das hatte gar keinen Namen. Falls also ein Profil ohne Name existiert (inzwischen koennen keine
-          // mehr ohne Name gespeichert werden), dann ist es das vom User geaenderte Profil. Das machen wir
-          // automatisch zum ersten User-spezifischen Profil
-          if (StringUtils.trimToNull(p.getName()) == null)
-          {
-            p.setName(dp.getName() + " 2");
-            p.setSystem(false);
-          }
-          result.add(p);
-        }
-      }
-      catch (ArrayIndexOutOfBoundsException e)
-      {
-        // EOF
+        result.add(p);
       }
       
       Logger.info("read " + (result.size() - 1) + " profiles from " + file);
@@ -266,5 +246,4 @@ public class ProfileUtil
     return false;
   }
 }
-
 
