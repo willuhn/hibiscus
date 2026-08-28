@@ -21,7 +21,6 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.serialize.ObjectFactory;
 import de.willuhn.datasource.serialize.Reader;
-import de.willuhn.datasource.serialize.XmlReader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
@@ -54,7 +53,7 @@ public class XMLSepaSammelTransferImporter extends XMLImporter
     Reader reader = null;
     try
     {
-      reader = new XmlReader(is, new ObjectFactory() {
+      reader = new SafeXmlReader(is, new ObjectFactory() {
         @Override
         public GenericObject create(String type, String id, Map values) throws Exception
         {

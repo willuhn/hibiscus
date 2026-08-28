@@ -22,7 +22,6 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
 import de.willuhn.datasource.serialize.ObjectFactory;
 import de.willuhn.datasource.serialize.Reader;
-import de.willuhn.datasource.serialize.XmlReader;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
@@ -58,7 +57,7 @@ public class XMLUmsatzTypImporter implements Importer
     Reader reader = null;
     try
     {
-      reader = new XmlReader(is, new ObjectFactory() {
+      reader = new SafeXmlReader(is, new ObjectFactory() {
         public GenericObject create(String type, String id, Map values) throws Exception
         {
           AbstractDBObjectNode object = (AbstractDBObjectNode) Settings.getDBService().createObject((Class<AbstractDBObject>)loader.loadClass(type),null);
