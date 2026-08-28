@@ -75,7 +75,12 @@ public class BPDUtil
     /**
      * Query fuer Abruf der Umsaetze im CAMT-Format.
      */
-    UmsatzCamt("KUmsZeitCamt","HKCAZ")
+    UmsatzCamt("KUmsZeitCamt","HKCAZ"),
+
+    /**
+     * Query fuer den Abruf von Kreditkartenumsaetzen per DKKKU.
+     */
+    KreditkartenUmsatz("KreditkartenUmsatz","DKKKU")
     
     ;
     
