@@ -38,4 +38,3 @@ public class SynchronizeJobKontoauszug extends AbstractSynchronizeJob
   }
 }
 
-
