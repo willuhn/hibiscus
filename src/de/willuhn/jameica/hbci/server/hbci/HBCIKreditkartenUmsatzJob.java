@@ -40,68 +40,37 @@ public class HBCIKreditkartenUmsatzJob extends HBCIUmsatzJob
   public HBCIKreditkartenUmsatzJob(Konto konto, int timeRange, Integer maxEntries)
       throws ApplicationException, RemoteException
   {
-    this(konto,null,null,timeRange,maxEntries);
-  }
-
-  /**
-   * ct.
-   * @param konto das Kreditkartenkonto.
-   * @param dateFrom Beginn des expliziten Abrufzeitraums oder NULL.
-   * @param dateTo Ende des expliziten Abrufzeitraums oder NULL.
-   * @param timeRange maximaler Umsatzzeitraum laut BPD.
-   * @param maxEntries maximale Anzahl Eintraege oder NULL, wenn der Parameter
-   * von der Bank nicht unterstuetzt wird.
-   * @throws ApplicationException
-   * @throws RemoteException
-   */
-  public HBCIKreditkartenUmsatzJob(Konto konto, LocalDate dateFrom, LocalDate dateTo,
-                                   int timeRange, Integer maxEntries)
-      throws ApplicationException, RemoteException
-  {
     super(konto);
 
-    if ((dateFrom == null) != (dateTo == null))
-      throw new ApplicationException("Start- und Enddatum m\u00fcssen gemeinsam angegeben werden");
-
     final LocalDate today = LocalDate.now();
-    if (dateTo != null && dateTo.isAfter(today))
-      throw new ApplicationException("Das Enddatum darf nicht in der Zukunft liegen");
-
-    if (dateFrom != null && dateFrom.isAfter(dateTo))
-      throw new ApplicationException("Das Startdatum liegt nach dem Enddatum");
-
     if (maxEntries != null && (maxEntries.intValue() < 1 || maxEntries.intValue() > 9999))
-      throw new ApplicationException("Ung\u00fcltige maximale Anzahl Eintr\u00e4ge: " + maxEntries);
+      throw new ApplicationException(i18n.tr("Ung\u00fcltige maximale Anzahl Eintr\u00e4ge: {0}",maxEntries.toString()));
 
     String cardNumber = konto.getKontonummer();
     if (cardNumber == null || cardNumber.isBlank())
-      throw new ApplicationException("Das Kreditkartenkonto besitzt keine Kartennummer");
+      throw new ApplicationException(i18n.tr("Das Kreditkartenkonto besitzt keine Kartennummer"));
 
     setJobParam("cardnumber",cardNumber);
     String cardSubNumber = konto.getUnterkonto();
     if (cardSubNumber != null && !cardSubNumber.isBlank())
       setJobParam("cardsubnumber",cardSubNumber);
 
-    LocalDate effectiveFrom = dateFrom;
-    if (effectiveFrom == null)
-    {
-      java.util.Date saldoDate = konto.getSaldoDatum();
-      if (saldoDate != null)
-        effectiveFrom = new Date(saldoDate.getTime()).toLocalDate();
+    LocalDate effectiveFrom = null;
+    java.util.Date saldoDate = konto.getSaldoDatum();
+    if (saldoDate != null)
+      effectiveFrom = new Date(saldoDate.getTime()).toLocalDate();
 
-      int days = timeRange > 0 ? timeRange : HBCIProperties.UMSATZ_DEFAULT_DAYS;
-      LocalDate earliest = today.minusDays(days);
-      if (effectiveFrom == null || effectiveFrom.isBefore(earliest))
-        effectiveFrom = earliest;
-      if (effectiveFrom.isAfter(today))
-        effectiveFrom = today;
-      dateTo = today;
-    }
+    int days = timeRange > 0 ? timeRange : HBCIProperties.UMSATZ_DEFAULT_DAYS;
+    LocalDate earliest = today.minusDays(days);
+    if (effectiveFrom == null || effectiveFrom.isBefore(earliest))
+      effectiveFrom = earliest;
+    if (effectiveFrom.isAfter(today))
+      effectiveFrom = today;
 
     // DKKKU uses these fields in the actual bank request. Filtering the
     // Hibiscus database after the request would not trigger a backfill.
     setJobParam("startdate",Date.valueOf(effectiveFrom));
-    setJobParam("enddate",Date.valueOf(dateTo));
+    setJobParam("enddate",Date.valueOf(today));
     if (maxEntries != null)
       setJobParam("maxentries",maxEntries);
   }

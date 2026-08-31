@@ -11,7 +11,6 @@
 package de.willuhn.jameica.hbci.synchronize.hbci;
 
 import java.rmi.RemoteException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,18 +42,6 @@ public class HBCISynchronizeJobKontoauszug extends SynchronizeJobKontoauszug imp
     Konto k              = (Konto) this.getContext(CTX_ENTITY);
     Boolean forceSaldo   = (Boolean) this.getContext(CTX_FORCE_SALDO);
     Boolean forceUmsatz  = (Boolean) this.getContext(CTX_FORCE_UMSATZ);
-    LocalDate dateFrom   = (LocalDate) this.getContext(CTX_DATE_FROM);
-    LocalDate dateTo     = (LocalDate) this.getContext(CTX_DATE_TO);
-    Integer maxEntries   = (Integer) this.getContext(CTX_MAX_ENTRIES);
-
-    if ((dateFrom == null) != (dateTo == null))
-      throw new ApplicationException("Start- und Enddatum m\u00fcssen gemeinsam angegeben werden");
-
-    if (dateFrom != null && dateFrom.isAfter(dateTo))
-      throw new ApplicationException("Das Startdatum liegt nach dem Enddatum");
-
-    if (dateTo != null && dateTo.isAfter(LocalDate.now()))
-      throw new ApplicationException("Das Enddatum darf nicht in der Zukunft liegen");
     
     SynchronizeOptions o = new SynchronizeOptions(k);
     
@@ -67,59 +54,17 @@ public class HBCISynchronizeJobKontoauszug extends SynchronizeJobKontoauszug imp
       {
         TypedProperties bpd = support.getBpd();
         int timeRange = bpd != null ? bpd.getInt("timerange",0) : 0;
-        boolean canRange = bpd == null || bpd.getBoolean("canrange",true);
         boolean canMaxEntries = bpd != null && bpd.getBoolean("canmaxentries",false);
-
-        if (dateFrom != null && !canRange)
-          throw new ApplicationException("Die Bank unterst\u00fctzt keinen DKKKU-Zeitraum");
-
-        if (maxEntries != null && !canMaxEntries)
-          throw new ApplicationException("Die Bank unterst\u00fctzt keine maximale DKKKU-Anzahl");
-
-        Integer effectiveMaxEntries = maxEntries;
-        if (effectiveMaxEntries == null && canMaxEntries)
-          effectiveMaxEntries = Integer.valueOf(HBCIKreditkartenUmsatzJob.DEFAULT_MAX_ENTRIES);
-
-        if (dateFrom == null)
-        {
-          jobs.add(new HBCIKreditkartenUmsatzJob(k,timeRange,effectiveMaxEntries));
-        }
-        else
-        {
-          // Groessere Backfills werden anhand des von der Bank gemeldeten
-          // Zeitfensters in mehrere echte DKKKU-Auftraege zerlegt.
-          LocalDate cursor = dateFrom;
-          while (!cursor.isAfter(dateTo))
-          {
-            LocalDate sliceEnd = timeRange > 0 ? cursor.plusDays(timeRange - 1L) : dateTo;
-            if (sliceEnd.isAfter(dateTo))
-              sliceEnd = dateTo;
-
-            jobs.add(new HBCIKreditkartenUmsatzJob(k,cursor,sliceEnd,timeRange,effectiveMaxEntries));
-            cursor = sliceEnd.plusDays(1L);
-          }
-        }
+        Integer maxEntries = canMaxEntries ? Integer.valueOf(HBCIKreditkartenUmsatzJob.DEFAULT_MAX_ENTRIES) : null;
+        jobs.add(new HBCIKreditkartenUmsatzJob(k,timeRange,maxEntries));
       }
       else
       {
-        if (dateFrom != null || maxEntries != null)
-          throw new ApplicationException("Ein expliziter Umsatzzeitraum ist nur f\u00fcr DKKKU verf\u00fcgbar");
         jobs.add(new HBCIUmsatzJob(k));
       }
     }
 
     return jobs.toArray(new AbstractHBCIJob[0]);
-  }
-
-  /**
-   * Prueft kontobezogen anhand von BPD und UPD, ob DKKKU angeboten wird.
-   * @param konto das zu pruefende Konto.
-   * @return true, wenn der Geschaeftsvorfall fuer das Konto angeboten wird.
-   * @throws RemoteException
-   */
-  public static boolean supportsDkkku(Konto konto) throws RemoteException
-  {
-    return getDkkkuSupport(konto) != null;
   }
 
   private static Support getDkkkuSupport(Konto konto) throws RemoteException
