@@ -49,7 +49,7 @@ public class UmsatzTypDetail extends AbstractView
     
     left.addHeadline(i18n.tr("Eigenschaften"));
     left.addLabelPair(i18n.tr("Bezeichnung"), control.getName());
-    left.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParent());
+    left.addLabelPair(i18n.tr("Übergeordnete Kategorie"), control.getParentField());
     
     left.addHeadline(i18n.tr("Zuordnung der Umsätze"));
     left.addInput(control.getKonto());
