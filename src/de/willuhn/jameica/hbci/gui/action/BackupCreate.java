@@ -59,6 +59,7 @@ import de.willuhn.jameica.hbci.server.UmsatzImpl;
 import de.willuhn.jameica.hbci.server.UmsatzTypImpl;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -81,12 +82,30 @@ public class BackupCreate implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    final String note = i18n.tr("Verwenden Sie diese XML-Datei nicht als Backup. Sie dient eher zu Diagnose-Zwecken und enthält nur den Inhalt der integrierten Datenbank, nicht die Bank-Zugänge.\n\nNutzen Sie als Datensicherung stattdessen das integrierte Backup unter \"Datei->Backups verwalten\".");
+    try
+    {
+      Application.getCallback().notifyUser(note);
+    }
+    catch (OperationCanceledException oce)
+    {
+      throw oce;
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to notify user",e);
+    }
+
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setFilterPath(System.getProperty("user.home"));
     fd.setOverwrite(true);
-    fd.setFileName("hibiscus-backup-" + DATEFORMAT.format(new Date()) + ".xml");
+    fd.setFileName("hibiscus-export-" + DATEFORMAT.format(new Date()) + ".xml");
     fd.setFilterExtensions(new String[]{"*.xml"});
-    fd.setText("Bitte wählen Sie die Datei, in der das Backup gespeichert wird");
+    fd.setText(i18n.tr("Bitte wählen Sie die Datei, in der der XML-Export gespeichert wird."));
     String f = fd.open();
     if (f == null || f.length() == 0)
       return;
