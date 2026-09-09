@@ -9,12 +9,8 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,10 +19,6 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.structures.Konto;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
-import de.jost_net.OBanToo.SEPA.IBANCode;
-import de.jost_net.OBanToo.SEPA.SEPAException;
-import de.jost_net.OBanToo.SEPA.SEPAException.Fehler;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
 import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
 import de.willuhn.datasource.rmi.DBService;
@@ -257,26 +249,6 @@ public class HBCIProperties
   public final static String[][] TEXT_REPLACEMENTS_UMSATZ = new String[][] {new String[]{"\n","\r"},
                                                                             new String[]{""  ,""}};
   
-  private final static Map<Fehler,String> obantooCodes = new HashMap<Fehler,String>()
-  {{
-    put(Fehler.BLZ_LEER,                                    i18n.tr("Keine BLZ angegeben"));
-    put(Fehler.BLZ_UNGUELTIGE_LAENGE,                       i18n.tr("BLZ nicht achtstellig"));
-    put(Fehler.BLZ_UNGUELTIG,                               i18n.tr("BLZ unbekannt"));
-    put(Fehler.KONTO_LEER,                                  i18n.tr("Keine Kontonummer angegeben"));
-    put(Fehler.KONTO_UNGUELTIGE_LAENGE,                     i18n.tr("Länge der Kontonummer ungültig"));
-    put(Fehler.KONTO_PRUEFZIFFER_FALSCH,                    i18n.tr("Prüfziffer der Kontonummer falsch"));
-    put(Fehler.KONTO_PRUEFZIFFERNREGEL_NICHT_IMPLEMENTIERT, i18n.tr("Prüfziffern-Verfahren der Kontonummer unbekannt"));
-    put(Fehler.IBANREGEL_NICHT_IMPLEMENTIERT,               i18n.tr("IBAN-Regel unbekannt"));
-    put(Fehler.UNGUELTIGES_LAND,                            i18n.tr("Land unbekannt"));
-  }};
-  
-  private final static List<Fehler> ignoredErrors = new ArrayList<Fehler>()
-  {{
-    // Siehe BUGZILLA 1569
-    add(Fehler.UNGUELTIGES_LAND);
-  }};
-
-
   /**
    * Bereinigt einen Text um die nicht erlaubten Zeichen.
    * @param text zu bereinigender Text.
@@ -600,170 +572,16 @@ public class HBCIProperties
   }
 
   /**
-   * Erzeugt eine IBAN aus dem String und fuehrt diverse Pruefungen auf dieser durch.
-   * @param iban die IBAN.
-   * @return die gepruefte IBAN.
-   * @throws ApplicationException die Fehlermeldung, wenn die IBAN nicht korrekt ist.
-   */
-  public final static IBAN getIBAN(String iban) throws ApplicationException
-  {
-    if (StringUtils.trimToNull(iban) == null)
-      return null;
-    
-    iban = StringUtils.deleteWhitespace(iban);
-    
-    if (iban == null || iban.length() == 0)
-      return null;
-    
-    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
-      return null;
-
-    try
-    {
-      return new IBAN(iban);
-    }
-    catch (SEPAException se)
-    {
-      Fehler f = se.getFehler();
-      if (f != null && ignoredErrors.contains(f))
-      {
-        Logger.warn("unable to verify IBAN, got error " + f + ", will be tolerated");
-        return null;
-      }
-      
-      throw new ApplicationException(se.getMessage());
-    }
-  }
-
-
-  /**
    * Prueft die IBAN auf Gueltigkeit.
    * @param iban die IBAN.
    * @throws ApplicationException die Fehlermeldung, wenn die IBAN nicht korrekt ist.
+   * @see IbanCommonsProperties#checkIBAN(String)
    */
   public final static void checkIBAN(String iban) throws ApplicationException
   {
-    if (StringUtils.trimToNull(iban) == null)
-      throw new ApplicationException(i18n.tr("Bitte geben Sie eine IBAN ein"));
-    
-    iban = StringUtils.deleteWhitespace(iban);
-    
-    if (iban == null || iban.length() == 0)
-      throw new ApplicationException(i18n.tr("Bitte geben Sie eine IBAN ein"));
-
-    if (!de.willuhn.jameica.hbci.Settings.getKontoCheck())
-      return;
-
-    // Wenn die IBAN auch im Adressbuch steht, dann auch mit ungültiger Länge tolerieren
-    if (de.willuhn.jameica.hbci.Settings.getKontoCheckExcludeAddressbook())
-    {
-      try
-      {
-        // OK, wir schauen im Adressbuch
-        DBService db = de.willuhn.jameica.hbci.Settings.getDBService();
-        HibiscusAddress address = (HibiscusAddress) db.createObject(HibiscusAddress.class,null);
-        address.setIban(iban);
-        AddressbookService service = (AddressbookService) Application.getServiceFactory().lookup(HBCI.class,"addressbook");
-        if (service.contains(address) != null)
-          return;
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to validate iban",e);
-      }
-    }
-
-    try
-    {
-      final IBAN i = new IBAN(iban);
-      
-      // Rückgabe-Code checken
-      IBANCode code = i.getCode();
-      if (code == null || code == IBANCode.GUELTIG)
-        return;
-      
-      // Tolerieren wir ebenfalls
-      if (code == IBANCode.KONTONUMMERERSETZT || 
-          code == IBANCode.GEMELDETEBLZZURLOESCHUNGVORGEMERKT ||
-          code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
-        return;
-
-      throw new ApplicationException(code.getMessage());
-    }
-    catch (SEPAException e)
-    {
-      // Haben wir einen Fehlercode?
-      Fehler f = e.getFehler();
-      if (f != null)
-      {
-        String msg = obantooCodes.get(f);
-        if (msg != null)
-          throw new ApplicationException(i18n.tr("IBAN \"{0}\": {1}",iban,msg));
-      }
-
-      // Oder alternativ einen Fehlertext?
-      String msg = e.getMessage();
-      if (msg != null)
-        throw new ApplicationException(i18n.tr("IBAN \"{0}\": {1}",iban,msg));
-    }
-    
-    throw new ApplicationException(i18n.tr("IBAN ungültig: \"{0}\"",iban));
+    IbanCommonsProperties.checkIBAN(iban);
   }
 
-
-  /**
-   * Erzeugt die IBAN aus der uebergebenen Bankverbindung.
-   * @param blz die BLZ.
-   * @param konto die Kontonummer.
-   * @return die IBAN.
-   * @throws ApplicationException
-   */
-  public final static IBAN getIBAN(String blz, String konto) throws ApplicationException
-  {
-    try
-    {
-      IBAN iban = new IBAN(konto, blz, "DE");
-      
-      // Rückgabe-Code checken
-      IBANCode code = iban.getCode();
-      if (code == null || code == IBANCode.GUELTIG)
-        return iban;
-      
-      // Tolerieren wir ebenfalls
-      if (code == IBANCode.KONTONUMMERERSETZT || 
-          code == IBANCode.GEMELDETEBLZZURLOESCHUNGVORGEMERKT ||
-          code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
-        return iban;
-
-      // Fehler werfen
-      throw new ApplicationException(code.getMessage());
-    }
-    catch (SEPAException e)
-    {
-      // Haben wir einen Fehlercode?
-      Fehler f = e.getFehler();
-      if (f != null)
-      {
-        String msg = obantooCodes.get(f);
-        if (msg != null)
-          throw new ApplicationException(msg);
-      }
-
-      // Oder alternativ einen Fehlertext?
-      String msg = e.getMessage();
-      if (msg != null)
-        throw new ApplicationException(msg);
-
-      Logger.error("unable to generate IBAN",e);
-      throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
-    }
-    catch (Throwable e2) // BUGZILLA-1405 auch "ExceptionInInitializerError" in obantoo mit fangen
-    {
-      Logger.error("unable to generate IBAN",e2);
-      throw new ApplicationException(i18n.tr("IBAN konnte nicht ermittelt werden"));
-    }
-  }
-  
   /**
    * Laeuft den Stack der Exceptions bis zur urspruenglichen hoch und liefert sie zurueck.
    * HBCI4Java verpackt Exceptions oft tief ineinander. Sie werden gefangen, in eine

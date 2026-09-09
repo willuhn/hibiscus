@@ -16,8 +16,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
-import de.jost_net.OBanToo.SEPA.IBANCode;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -28,6 +26,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.gui.input.BLZInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -240,12 +239,11 @@ public class IbanCalcDialog extends AbstractDialog
         
         try
         {
-          IBAN newIban = HBCIProperties.getIBAN(blz,kto);
-          iban = newIban.getIBAN();
-          bic = newIban.getBIC();
-          
-          IBANCode code = newIban.getCode();
-          if (code != null && code == IBANCode.PRUEFZIFFERNMETHODEFEHLT)
+          IbanCommonsProperties.IbanAndBic newIban = IbanCommonsProperties.getIBAN(blz,kto);
+          iban = newIban.getIban();
+          bic = newIban.getBic();
+
+          if (!newIban.isChecked())
           {
             msg.setColor(Color.COMMENT);
             msg.setValue(i18n.tr("IBAN ermittelt, Prüfziffer jedoch nicht kontrolliert"));

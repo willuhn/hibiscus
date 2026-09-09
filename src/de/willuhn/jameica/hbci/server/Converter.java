@@ -19,13 +19,15 @@ import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
+import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
+import de.speedbanking.iban.Iban;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -192,16 +194,16 @@ public class Converter
       String iban = tags.get(Tag.IBAN);
       String bic  = tags.get(Tag.BIC);
 
-      IBAN i = null;
+      Iban i = null;
 
       if (!haveIban && StringUtils.trimToNull(iban) != null)
       {
         // Nur uebernehmen, wenn es eine gueltige IBAN ist
         try
         {
-          i = HBCIProperties.getIBAN(iban);
+          i = IbanCommonsProperties.getIBAN(iban);
           if (i != null)
-            umsatz.setGegenkontoNummer(i.getIBAN());
+            umsatz.setGegenkontoNummer(i.toString());
         }
         catch (Exception e)
         {
@@ -225,9 +227,10 @@ public class Converter
             Logger.error("invalid BIC - ignoring: " + bic,e);
           }
         }
-        else if (i != null)
+        else if (i != null && "DE".equals(i.getCountryCode()))
         {
-          umsatz.setGegenkontoBLZ(i.getBIC());
+          // BIC nur fuer deutsche IBANs ermittelbar (keine europaweite Bankstammdaten-Datenbank)
+          umsatz.setGegenkontoBLZ(HBCIUtils.getBICForBLZ(i.getBankCode()));
         }
       }
     }
