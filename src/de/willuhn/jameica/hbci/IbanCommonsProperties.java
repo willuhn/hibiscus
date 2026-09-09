@@ -53,11 +53,13 @@ public class IbanCommonsProperties
   {
     private final String iban;
     private final String bic;
+    private final boolean checked;
 
-    private IbanAndBic(String iban, String bic)
+    private IbanAndBic(String iban, String bic, boolean checked)
     {
       this.iban = iban;
       this.bic  = bic;
+      this.checked = checked;
     }
 
     /**
@@ -76,6 +78,17 @@ public class IbanCommonsProperties
     public String getBic()
     {
       return this.bic;
+    }
+
+    /**
+     * Ob die Kontonummer-Pruefziffer tatsaechlich kontrolliert werden konnte.
+     * @return true, wenn ein bekanntes Pruefzifferverfahren angewendet wurde. false, wenn das
+     * Verfahren fuer diese BLZ unbekannt oder in iban-commons-de-checkdigit nicht implementiert
+     * ist - die IBAN wurde dann zwar strukturell erzeugt, die Pruefziffer aber nicht kontrolliert.
+     */
+    public boolean isChecked()
+    {
+      return this.checked;
     }
   }
 
@@ -191,9 +204,9 @@ public class IbanCommonsProperties
       .accountNumber(konto)
       .build();
 
-    checkGermanNationalCheckDigit(blz, konto, iban.toString());
+    boolean checked = checkGermanNationalCheckDigit(blz, konto, iban.toString());
 
-    return new IbanAndBic(iban.toString(), HBCIUtils.getBICForBLZ(blz));
+    return new IbanAndBic(iban.toString(), HBCIUtils.getBICForBLZ(blz), checked);
   }
 
   /**
@@ -203,15 +216,17 @@ public class IbanCommonsProperties
    * @param blz die BLZ.
    * @param konto die Kontonummer.
    * @param iban die zugehoerige IBAN, nur fuer die Fehlermeldung.
+   * @return true, wenn die Pruefziffer tatsaechlich kontrolliert werden konnte; false, wenn das
+   * Verfahren unbekannt oder nicht implementiert ist und deshalb toleriert wurde.
    * @throws ApplicationException wenn die Pruefziffer nachweislich falsch ist.
    */
-  private static void checkGermanNationalCheckDigit(String blz, String konto, String iban) throws ApplicationException
+  private static boolean checkGermanNationalCheckDigit(String blz, String konto, String iban) throws ApplicationException
   {
     BankInfo info = HBCIUtils.getBankInfo(blz);
     String method = info != null ? StringUtils.trimToNull(info.getChecksumMethod()) : null;
 
     if (method == null)
-      return; // Verfahren unbekannt - wie bisher IBANCode.PRUEFZIFFERNMETHODEFEHLT tolerieren
+      return false; // Verfahren unbekannt - wie bisher IBANCode.PRUEFZIFFERNMETHODEFEHLT tolerieren
 
     CheckDigitResult result;
     try
@@ -222,11 +237,13 @@ public class IbanCommonsProperties
     {
       // Verfahren in iban-commons-de-checkdigit nicht implementiert - ebenfalls tolerieren
       Logger.warn("unable to verify check digit, method " + method + " not implemented, will be tolerated");
-      return;
+      return false;
     }
 
     if (result.isChecked() && !result.isValid())
       throw new ApplicationException(i18n.tr("IBAN \"{0}\": {1}",iban,i18n.tr("Pr\u00fcfziffer der Kontonummer falsch")));
+
+    return result.isChecked();
   }
 
   /**
