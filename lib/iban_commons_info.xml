@@ -1,0 +1,6 @@
+<info>
+  <name>iban-commons</name>
+  <description>Java-Bibliothek zur Validierung und Erzeugung von IBAN/BIC, inkl. deutscher Kontonummer-Pruefziffernverfahren</description>
+  <url>https://github.com/SpeedBankingDe/iban-commons</url>
+  <license>Apache 2.0 - https://www.apache.org/licenses/LICENSE-2.0</license>
+</info>

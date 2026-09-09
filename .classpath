@@ -13,6 +13,8 @@
 	<classpathentry kind="lib" path="lib/super-csv-2.4.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/obantoo-bin-2.1.12.jar"/>
+	<classpathentry kind="lib" path="lib/iban_commons/iban-commons-1.8.10.jar"/>
+	<classpathentry kind="lib" path="lib/iban_commons/iban-commons-de-checkdigit-1.8.10.jar"/>
 	<classpathentry kind="lib" path="lib/guava-31.1-jre.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/itext-pdfa-5.5.13.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/itextpdf-5.5.13.4.jar"/>
