@@ -1,5 +1,6 @@
 HEAD 2.13 (nightly)
 
+  * NEW: 1193 Update auf HBCI4Java 4.1.17 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.17 - Neue HBCI4Java API
   * CHG: 1192 Unterstützung für den Import/Export von DTAUS-Dateien entfernt - stammt aus der Vor-SEPA-Zeit
   * NEW: 1191 Hinweis-Text anzeigen, dass der XML-Export kein Backup ist
   * BUG: 1190 Update auf HBCI4Java 4.1.13 - https://github.com/hbci4j/hbci4java/releases/tag/hbci4j-core-4.1.13 - Support für den Abruf von Kreditkartenumsätzen per DKKKU
