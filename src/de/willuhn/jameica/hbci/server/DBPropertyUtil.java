@@ -77,7 +77,7 @@ public class DBPropertyUtil
     /**
      * Prefix fuer BPDs.
      */
-    BPD("bpd",new HashSet(Arrays.asList("DauerSEPAEditPar","KontoauszugPar","KontoauszugPdfPar","KUmsZeitCamtPar"))),
+    BPD("bpd",new HashSet(Arrays.asList("DauerSEPAEditPar","KontoauszugPar","KontoauszugPdfPar","KUmsZeitCamtPar","KreditkartenUmsatzPar"))),
     
     /**
      * Prefix fuer UPDs.
