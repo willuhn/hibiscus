@@ -23,9 +23,12 @@ import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
+import de.speedbanking.iban.Iban;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
@@ -192,16 +195,16 @@ public class Converter
       String iban = tags.get(Tag.IBAN);
       String bic  = tags.get(Tag.BIC);
 
-      IBAN i = null;
+      Iban i = null;
 
       if (!haveIban && StringUtils.trimToNull(iban) != null)
       {
         // Nur uebernehmen, wenn es eine gueltige IBAN ist
         try
         {
-          i = HBCIProperties.getIBAN(iban);
+          i = IbanCommonsProperties.getIBAN(iban);
           if (i != null)
-            umsatz.setGegenkontoNummer(i.getIBAN());
+            umsatz.setGegenkontoNummer(i.toString());
         }
         catch (Exception e)
         {
@@ -227,7 +230,11 @@ public class Converter
         }
         else if (i != null)
         {
-          umsatz.setGegenkontoBLZ(i.getBIC());
+          // BIC länderübergreifend ermitteln, soweit iban-commons-bankdata die IBAN
+          // auflösen kann (siehe BankDataLookup#getSupportedCountryCodes())
+          String bicByIban = BankDataLookup.byIban(i).map(BankData::getBic).map(Object::toString).orElse(null);
+          if (bicByIban != null)
+            umsatz.setGegenkontoBLZ(bicByIban);
         }
       }
     }

@@ -14,10 +14,13 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
+import de.speedbanking.iban.Iban;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -78,20 +81,23 @@ public class IBANInput extends TextInput
     try
     {
       // 1. IBAN sofort checken
-      IBAN iban = HBCIProperties.getIBAN(s);
-      
+      Iban iban = IbanCommonsProperties.getIBAN(s);
+
       if (iban == null) // Keine IBAN
         return;
 
       if (this.bicInput == null || !Settings.getBicAutocomplete())
         return;
-      
+
       // 2. Wenn wir ein BICInput haben, dann gleich noch die BIC ermitteln und
       // vervollstaendigen. Aber nur, wenn nicht schon eine BIC eingetragen ist.
       if (StringUtils.trimToNull((String)this.bicInput.getValue()) != null)
         return;
-      
-      String bic = StringUtils.trimToNull(iban.getBIC());
+
+      // BIC länderübergreifend ermitteln, soweit iban-commons-bankdata die IBAN
+      // auflösen kann (siehe BankDataLookup#getSupportedCountryCodes()). Für alle
+      // anderen Länder bleibt das Feld leer.
+      String bic = BankDataLookup.byIban(iban).map(BankData::getBic).map(Object::toString).orElse(null);
       if (bic == null)
         return;
 

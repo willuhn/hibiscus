@@ -10,8 +10,7 @@
 
 package de.willuhn.jameica.hbci.messaging;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
-import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
@@ -58,8 +57,8 @@ public class QueryIBANCalcMessageConsumer implements MessageConsumer
     }
     try
     {
-      IBAN iban=HBCIProperties.getIBAN(s[0],s[1]);
-      String[] result=new String[]{iban.getIBAN(), iban.getBIC()};
+      IbanCommonsProperties.IbanAndBic iban=IbanCommonsProperties.getIBAN(s[0],s[1]);
+      String[] result=new String[]{iban.getIban(), iban.getBic()};
       qm.setData(result);
     }
     catch(Exception e)

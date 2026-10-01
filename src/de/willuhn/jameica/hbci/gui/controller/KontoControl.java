@@ -13,16 +13,15 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
-import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
-import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
-import de.jost_net.OBanToo.SEPA.Land.SEPALand;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
+import de.speedbanking.iban.Iban;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -39,6 +38,7 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.KontoDelete;
 import de.willuhn.jameica.hbci.gui.action.KontoNew;
@@ -565,21 +565,20 @@ public class KontoControl extends AbstractControl
           
           if (haveIban && (!haveKto || !haveBlz))
           {
-            IBAN i = new IBAN(iban);
-            SEPALand land = i.getLand();
-            if (land.getBankIdentifierLength() == null)
+            Iban i = Iban.of(iban);
+            if (StringUtils.trimToNull(i.getBankCode()) == null)
             {
               Logger.info("length of bank identifier unknown for this country");
               return;
             }
-            
+
             // Kontonummer vervollstaendigen
             if (!haveKto)
-              getKontonummer().setValue(i.getKonto());
-            
+              getKontonummer().setValue(i.getAccountNumber());
+
             // BLZ vervollstaendigen
             if (!haveBlz)
-              getBlz().setValue(i.getBLZ());
+              getBlz().setValue(i.getBankCode());
           }
         }
         catch (Exception e)
@@ -614,13 +613,13 @@ public class KontoControl extends AbstractControl
           
           if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
           {
-            Bank bank = Banken.getBankByBIC(bic);
-            if (bank == null)
+            Optional<BankData> bankData = BankDataLookup.byBic(bic);
+            if (!bankData.isPresent())
             {
               Logger.info("blz unknown for bic " + bic);
               return;
             }
-            getBlz().setValue(bank.getBLZ());
+            getBlz().setValue(bankData.get().getBankCode());
           }
         }
         catch (Exception e)
@@ -703,16 +702,16 @@ public class KontoControl extends AbstractControl
         {
           if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
           {
-            IBAN newIban = HBCIProperties.getIBAN(blz,kto);
-            getIban().setValue(newIban.getIBAN());
-            newBic = newIban.getBIC();
+            IbanCommonsProperties.IbanAndBic newIban = IbanCommonsProperties.getIBAN(blz,kto);
+            getIban().setValue(newIban.getIban());
+            newBic = newIban.getBic();
             txt = i18n.tr("IBAN/BIC vervollständigt. Zum Übernehmen \"Speichern\" drücken.");
           }
           
           if (bic == null)
           {
             if (newBic == null)
-              newBic = HBCIUtils.getBICForBLZ(blz);
+              newBic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
             if (StringUtils.trimToNull(newBic) != null)
             {
               getBic().setValue(newBic);

@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIUtils;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
@@ -190,16 +190,16 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       
       if (HBCI.COMPLETE_IBAN && StringUtils.trimToNull(address.getIban()) == null)
       {
-        IBAN iban = HBCIProperties.getIBAN(blz,konto);
-        bic = iban.getBIC();
-        address.setIban(iban.getIBAN());
+        IbanCommonsProperties.IbanAndBic iban = IbanCommonsProperties.getIBAN(blz,konto);
+        bic = iban.getBic();
+        address.setIban(iban.getIban());
         haveChanged = true;
       }
-      
+
       if (StringUtils.trimToNull(address.getBic()) == null)
       {
-        if (bic == null) // nur wenn sie nicht schon von obantoo ermittelt wurde
-          bic = HBCIUtils.getBICForBLZ(blz);
+        if (bic == null) // nur wenn sie nicht schon ermittelt wurde
+          bic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
         if (StringUtils.trimToNull(bic) != null)
         {
           address.setBic(bic);

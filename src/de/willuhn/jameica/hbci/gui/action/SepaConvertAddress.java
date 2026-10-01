@@ -15,12 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIUtils;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -98,15 +99,15 @@ public class SepaConvertAddress implements Action
 
         if (kto != null && iban == null) // Wenn wir eine Kontonummer und noch keine IBAN haben, dann errechnen
         {
-          IBAN newIban = HBCIProperties.getIBAN(blz,kto);
-          newBic = newIban.getBIC();
-          a.setIban(newIban.getIBAN());
+          IbanCommonsProperties.IbanAndBic newIban = IbanCommonsProperties.getIBAN(blz,kto);
+          newBic = newIban.getBic();
+          a.setIban(newIban.getIban());
         }
-        
+
         if (bic == null) // Wenn wir noch keine BIC haben, dann errechnen
         {
-          if (newBic == null) // nur wenn sie nicht schon von obantoo ermittelt wurde
-            newBic = HBCIUtils.getBICForBLZ(blz);
+          if (newBic == null) // nur wenn sie nicht schon ermittelt wurde
+            newBic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
           a.setBic(newBic);
         }
         

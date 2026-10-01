@@ -15,17 +15,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
-import de.jost_net.OBanToo.SEPA.SEPAException;
-import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
-import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
-import de.jost_net.OBanToo.SEPA.Land.SEPALand;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
+import de.speedbanking.iban.Iban;
+import de.speedbanking.iban.InvalidIbanException;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
@@ -39,6 +38,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.EmpfaengerNew;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
@@ -366,29 +366,36 @@ public class EmpfaengerControl extends AbstractControl
             boolean haveIban = StringUtils.trimToNull(iban) != null;
             boolean haveKto  = StringUtils.trimToNull((String) getKontonummer().getValue()) != null;
             boolean haveBlz  = StringUtils.trimToNull((String) getBlz().getValue()) != null;
-            
-            if (haveIban && (!haveKto || !haveBlz))
+            boolean haveBank = StringUtils.trimToNull((String) getBank().getValue()) != null;
+
+            if (!haveIban)
+              return;
+
+            Iban i = Iban.of(iban);
+
+            if ((!haveKto || !haveBlz) && Objects.equals(i.getCountryCode(),"DE"))
             {
-              IBAN i = new IBAN(iban);
-              SEPALand land = i.getLand();
-              if (land == null || !Objects.equals(land.getKennzeichen(),"DE"))
-              {
-                Logger.info("no auto completion of national account information for this country");
-                return;
-              }
-              
               // Kontonummer vervollstaendigen
               if (!haveKto)
-                getKontonummer().setValue(i.getKonto());
-              
+                getKontonummer().setValue(i.getAccountNumber());
+
               // BLZ vervollstaendigen
               if (!haveBlz)
-                getBlz().setValue(i.getBLZ());
+                getBlz().setValue(i.getBankCode());
+            }
+
+            // Bankname vervollständigen, länderübergreifend soweit iban-commons-bankdata die
+            // IBAN auflösen kann (siehe BankDataLookup#getSupportedCountryCodes())
+            if (!haveBank)
+            {
+              Optional<BankData> bankData = BankDataLookup.byIban(i);
+              if (bankData.isPresent())
+                getBank().setValue(bankData.get().getBankName());
             }
           }
-          catch (SEPAException se)
+          catch (InvalidIbanException ie)
           {
-            Logger.debug(se.getMessage());
+            Logger.debug(ie.getMessage());
           }
           catch (Exception e)
           {
@@ -428,13 +435,13 @@ public class EmpfaengerControl extends AbstractControl
             
             if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
             {
-              Bank bank = Banken.getBankByBIC(bic);
-              if (bank == null)
+              Optional<BankData> bankData = BankDataLookup.byBic(bic);
+              if (!bankData.isPresent())
               {
                 Logger.info("blz unknown for bic " + bic);
                 return;
               }
-              getBlz().setValue(bank.getBLZ());
+              getBlz().setValue(bankData.get().getBankCode());
             }
           }
           catch (Exception e)
@@ -506,15 +513,15 @@ public class EmpfaengerControl extends AbstractControl
 	        
 	        if (HBCI.COMPLETE_IBAN && kto != null && iban == null)
 	        {
-	          IBAN newIban = HBCIProperties.getIBAN(blz,kto);
-	          newBic = newIban.getBIC();
-            getIban().setValue(newIban.getIBAN());
+	          IbanCommonsProperties.IbanAndBic newIban = IbanCommonsProperties.getIBAN(blz,kto);
+	          newBic = newIban.getBic();
+            getIban().setValue(newIban.getIban());
 	        }
-	        
+
           if (bic == null)
           {
-            if (newBic == null) // nur wenn sie nicht schon von obantoo ermittelt wurde
-              newBic = HBCIUtils.getBICForBLZ(blz);
+            if (newBic == null) // nur wenn sie nicht schon ermittelt wurde
+              newBic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
             getBic().setValue(newBic);
           }
 	      }

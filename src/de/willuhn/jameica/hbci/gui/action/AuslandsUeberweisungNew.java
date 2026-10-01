@@ -15,11 +15,14 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.jost_net.OBanToo.SEPA.IBAN;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
+import de.speedbanking.iban.Iban;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.IbanCommonsProperties;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.io.ClipboardSepaUeberweisungImporter;
@@ -102,9 +105,11 @@ public class AuslandsUeberweisungNew implements Action
         // Ansonsten ermitteln wir die BIC aus der IBAN
         if (blz == null || blz.length() != HBCIProperties.HBCI_BIC_MAXLENGTH)
         {
-          IBAN iban = HBCIProperties.getIBAN(kto);
+          Iban iban = IbanCommonsProperties.getIBAN(kto);
+          // BIC länderübergreifend ermitteln, soweit iban-commons-bankdata die IBAN
+          // auflösen kann (siehe BankDataLookup#getSupportedCountryCodes())
           if (iban != null)
-            blz = iban.getBIC();
+            blz = BankDataLookup.byIban(iban).map(BankData::getBic).map(Object::toString).orElse(null);
         }
         u.setGegenkontoBLZ(blz);
         u.setGegenkontoNummer(kto);
