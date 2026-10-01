@@ -13,14 +13,14 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
-import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
-import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.speedbanking.iban.Iban;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -613,13 +613,13 @@ public class KontoControl extends AbstractControl
           
           if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
           {
-            Bank bank = Banken.getBankByBIC(bic);
-            if (bank == null)
+            Optional<BankData> bankData = BankDataLookup.byBic(bic);
+            if (!bankData.isPresent())
             {
               Logger.info("blz unknown for bic " + bic);
               return;
             }
-            getBlz().setValue(bank.getBLZ());
+            getBlz().setValue(bankData.get().getBankCode());
           }
         }
         catch (Exception e)
@@ -711,7 +711,7 @@ public class KontoControl extends AbstractControl
           if (bic == null)
           {
             if (newBic == null)
-              newBic = HBCIUtils.getBICForBLZ(blz);
+              newBic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
             if (StringUtils.trimToNull(newBic) != null)
             {
               getBic().setValue(newBic);

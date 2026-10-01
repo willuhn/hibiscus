@@ -14,8 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import org.kapott.hbci.manager.HBCIUtils;
-
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.speedbanking.iban.Iban;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -94,11 +94,10 @@ public class IBANInput extends TextInput
       if (StringUtils.trimToNull((String)this.bicInput.getValue()) != null)
         return;
 
-      // BIC-Ermittlung ist nur fuer deutsche IBANs moeglich (iban-commons/HBCI4Java haben keine
-      // europaweite Bankstammdaten-Datenbank); bei auslaendischen IBANs bleibt das Feld leer.
-      String bic = "DE".equals(iban.getCountryCode())
-          ? StringUtils.trimToNull(HBCIUtils.getBICForBLZ(iban.getBankCode()))
-          : null;
+      // BIC länderübergreifend ermitteln, soweit iban-commons-bankdata die IBAN
+      // auflösen kann (siehe BankDataLookup#getSupportedCountryCodes()). Für alle
+      // anderen Länder bleibt das Feld leer.
+      String bic = BankDataLookup.byIban(iban).map(BankData::getBic).map(Object::toString).orElse(null);
       if (bic == null)
         return;
 

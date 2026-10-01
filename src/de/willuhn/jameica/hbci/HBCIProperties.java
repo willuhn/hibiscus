@@ -19,11 +19,10 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.HBCIPassport;
 import org.kapott.hbci.structures.Konto;
 
-import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
-import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.util.BankNameResolver;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.jameica.util.DateUtil;
@@ -369,30 +368,11 @@ public class HBCIProperties
    * @param bic die BIC oder BLZ.
    * @return der Name der Bank oder ein Leerstring, wenn nicht ermittelbar.
    * Niemals NULL sondern hoechstens ein Leerstring.
+   * @see BankNameResolver#getNameForBank(String)
    */
   public final static String getNameForBank(String bic)
   {
-    bic = StringUtils.trimToNull(bic);
-    if (bic == null)
-      return null;
-    
-    Bank bank = null;
-    
-    // Wenn sie 8 Zeichen lang ist, gehen wir davon aus, dass es eine BLZ ist.
-    // Sonst versuchen wir es als BIC zu interpretieren.
-    if (bic.length() == HBCI_BLZ_LENGTH)
-      bank = Banken.getBankByBLZ(bic);
-    else
-      bank = Banken.getBankByBIC(bic);
-    
-    if (bank == null)
-      return null;
-
-    // Text einkuerzen, wenn er zu lang ist.
-    // Normalerweise nicht noetig. Es gibt aber einige Banken, die z.Bsp. folgenden
-    // Namen haben: "Landesbank Baden-Württemberg/Baden-Württembergische Bank"
-    // Das verzerrt sonst die Layouts an einigen Stellen
-    return StringUtils.abbreviateMiddle(bank.getBezeichnung(),"...",24);
+    return BankNameResolver.getNameForBank(bic);
   }
   
   /**

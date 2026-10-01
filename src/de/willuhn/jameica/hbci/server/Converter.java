@@ -19,11 +19,12 @@ import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.GVRKontoauszugEntry;
-import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.speedbanking.iban.Iban;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -227,10 +228,13 @@ public class Converter
             Logger.error("invalid BIC - ignoring: " + bic,e);
           }
         }
-        else if (i != null && "DE".equals(i.getCountryCode()))
+        else if (i != null)
         {
-          // BIC nur fuer deutsche IBANs ermittelbar (keine europaweite Bankstammdaten-Datenbank)
-          umsatz.setGegenkontoBLZ(HBCIUtils.getBICForBLZ(i.getBankCode()));
+          // BIC länderübergreifend ermitteln, soweit iban-commons-bankdata die IBAN
+          // auflösen kann (siehe BankDataLookup#getSupportedCountryCodes())
+          String bicByIban = BankDataLookup.byIban(i).map(BankData::getBic).map(Object::toString).orElse(null);
+          if (bicByIban != null)
+            umsatz.setGegenkontoBLZ(bicByIban);
         }
       }
     }

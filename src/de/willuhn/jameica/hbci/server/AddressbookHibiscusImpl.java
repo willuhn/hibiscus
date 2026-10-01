@@ -16,8 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIUtils;
 
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.HBCI;
@@ -198,7 +199,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       if (StringUtils.trimToNull(address.getBic()) == null)
       {
         if (bic == null) // nur wenn sie nicht schon ermittelt wurde
-          bic = HBCIUtils.getBICForBLZ(blz);
+          bic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
         if (StringUtils.trimToNull(bic) != null)
         {
           address.setBic(bic);

@@ -13,6 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.manager.HBCIUtils;
 
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.speedbanking.checkdigit.de.CheckDigitResult;
 import de.speedbanking.checkdigit.de.GermanAccountCheckDigit;
 import de.speedbanking.iban.Iban;
@@ -206,7 +208,9 @@ public class IbanCommonsProperties
 
     boolean checked = checkGermanNationalCheckDigit(blz, konto, iban.toString());
 
-    return new IbanAndBic(iban.toString(), HBCIUtils.getBICForBLZ(blz), checked);
+    String bic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
+
+    return new IbanAndBic(iban.toString(), bic, checked);
   }
 
   /**

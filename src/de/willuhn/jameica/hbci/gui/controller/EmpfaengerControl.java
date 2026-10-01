@@ -15,14 +15,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.kapott.hbci.manager.HBCIUtils;
 
-import de.jost_net.OBanToo.SEPA.BankenDaten.Bank;
-import de.jost_net.OBanToo.SEPA.BankenDaten.Banken;
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.speedbanking.iban.Iban;
 import de.speedbanking.iban.InvalidIbanException;
 import de.willuhn.datasource.pseudo.PseudoIterator;
@@ -366,16 +366,15 @@ public class EmpfaengerControl extends AbstractControl
             boolean haveIban = StringUtils.trimToNull(iban) != null;
             boolean haveKto  = StringUtils.trimToNull((String) getKontonummer().getValue()) != null;
             boolean haveBlz  = StringUtils.trimToNull((String) getBlz().getValue()) != null;
-            
-            if (haveIban && (!haveKto || !haveBlz))
-            {
-              Iban i = Iban.of(iban);
-              if (!Objects.equals(i.getCountryCode(),"DE"))
-              {
-                Logger.info("no auto completion of national account information for this country");
-                return;
-              }
+            boolean haveBank = StringUtils.trimToNull((String) getBank().getValue()) != null;
 
+            if (!haveIban)
+              return;
+
+            Iban i = Iban.of(iban);
+
+            if ((!haveKto || !haveBlz) && Objects.equals(i.getCountryCode(),"DE"))
+            {
               // Kontonummer vervollstaendigen
               if (!haveKto)
                 getKontonummer().setValue(i.getAccountNumber());
@@ -383,6 +382,15 @@ public class EmpfaengerControl extends AbstractControl
               // BLZ vervollstaendigen
               if (!haveBlz)
                 getBlz().setValue(i.getBankCode());
+            }
+
+            // Bankname vervollständigen, länderübergreifend soweit iban-commons-bankdata die
+            // IBAN auflösen kann (siehe BankDataLookup#getSupportedCountryCodes())
+            if (!haveBank)
+            {
+              Optional<BankData> bankData = BankDataLookup.byIban(i);
+              if (bankData.isPresent())
+                getBank().setValue(bankData.get().getBankName());
             }
           }
           catch (InvalidIbanException ie)
@@ -427,13 +435,13 @@ public class EmpfaengerControl extends AbstractControl
             
             if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
             {
-              Bank bank = Banken.getBankByBIC(bic);
-              if (bank == null)
+              Optional<BankData> bankData = BankDataLookup.byBic(bic);
+              if (!bankData.isPresent())
               {
                 Logger.info("blz unknown for bic " + bic);
                 return;
               }
-              getBlz().setValue(bank.getBLZ());
+              getBlz().setValue(bankData.get().getBankCode());
             }
           }
           catch (Exception e)
@@ -513,7 +521,7 @@ public class EmpfaengerControl extends AbstractControl
           if (bic == null)
           {
             if (newBic == null) // nur wenn sie nicht schon ermittelt wurde
-              newBic = HBCIUtils.getBICForBLZ(blz);
+              newBic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
             getBic().setValue(newBic);
           }
 	      }

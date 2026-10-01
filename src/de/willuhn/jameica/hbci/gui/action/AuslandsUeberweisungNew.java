@@ -14,8 +14,9 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIUtils;
 
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.speedbanking.iban.Iban;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -105,9 +106,10 @@ public class AuslandsUeberweisungNew implements Action
         if (blz == null || blz.length() != HBCIProperties.HBCI_BIC_MAXLENGTH)
         {
           Iban iban = IbanCommonsProperties.getIBAN(kto);
-          // BIC nur fuer deutsche IBANs ermittelbar (keine europaweite Bankstammdaten-Datenbank)
-          if (iban != null && "DE".equals(iban.getCountryCode()))
-            blz = HBCIUtils.getBICForBLZ(iban.getBankCode());
+          // BIC länderübergreifend ermitteln, soweit iban-commons-bankdata die IBAN
+          // auflösen kann (siehe BankDataLookup#getSupportedCountryCodes())
+          if (iban != null)
+            blz = BankDataLookup.byIban(iban).map(BankData::getBic).map(Object::toString).orElse(null);
         }
         u.setGegenkontoBLZ(blz);
         u.setGegenkontoNummer(kto);

@@ -15,8 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.kapott.hbci.manager.HBCIUtils;
 
+import de.speedbanking.bankdata.BankData;
+import de.speedbanking.bankdata.BankDataLookup;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -106,7 +107,7 @@ public class SepaConvertAddress implements Action
         if (bic == null) // Wenn wir noch keine BIC haben, dann errechnen
         {
           if (newBic == null) // nur wenn sie nicht schon ermittelt wurde
-            newBic = HBCIUtils.getBICForBLZ(blz);
+            newBic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
           a.setBic(newBic);
         }
         
