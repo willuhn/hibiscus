@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,9 +40,6 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 import net.n3.nanoxml.IXMLElement;
-import net.n3.nanoxml.IXMLParser;
-import net.n3.nanoxml.StdXMLReader;
-import net.n3.nanoxml.XMLParserFactory;
 
 /**
  * Importer fuer Umsaetze im Moneyplex XML-Format.
@@ -88,9 +84,7 @@ public class MoneyplexUmsatzImporter implements Importer
 
       String encoding = settings.getString("moneyplex.encoding","ISO-8859-1");
       Logger.info("moneyplex encoding: " + encoding);
-      IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
-      parser.setReader(new StdXMLReader(new InputStreamReader(is,encoding)));
-      IXMLElement root = (IXMLElement) parser.parse();
+      IXMLElement root = MoneyplexParser.parse(is,encoding);
       Vector<IXMLElement> lines = root.getChildrenNamed("BUCHUNG");
       
       if (lines == null || lines.size() == 0)
