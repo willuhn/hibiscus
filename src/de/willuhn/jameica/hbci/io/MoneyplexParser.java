@@ -13,9 +13,13 @@ package de.willuhn.jameica.hbci.io;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import de.willuhn.jameica.util.SafeXMLParser;
 import net.n3.nanoxml.IXMLElement;
+import net.n3.nanoxml.IXMLReader;
+import net.n3.nanoxml.NonValidator;
+import net.n3.nanoxml.StdXMLBuilder;
+import net.n3.nanoxml.StdXMLParser;
 import net.n3.nanoxml.StdXMLReader;
+import net.n3.nanoxml.XMLParseException;
 
 /**
  * Data-only XML boundary for Moneyplex imports.
@@ -36,8 +40,27 @@ final class MoneyplexParser
    */
   static IXMLElement parse(InputStream input, String encoding) throws Exception
   {
-    SafeXMLParser parser = new SafeXMLParser();
+    DtdRejectingParser parser = new DtdRejectingParser();
     parser.setReader(new StdXMLReader(new InputStreamReader(input,encoding)));
     return (IXMLElement) parser.parse();
+  }
+
+  /** Keep the import independent of the Jameica version installed by the user. */
+  private static final class DtdRejectingParser extends StdXMLParser
+  {
+    private DtdRejectingParser()
+    {
+      setBuilder(new StdXMLBuilder());
+      setValidator(new NonValidator());
+    }
+
+    @Override
+    protected void processDocType() throws Exception
+    {
+      IXMLReader reader = getReader();
+      String systemID = reader == null ? null : reader.getSystemID();
+      int line = reader == null ? 0 : reader.getLineNr();
+      throw new XMLParseException(systemID,line,"DOCTYPE declarations are not allowed");
+    }
   }
 }
