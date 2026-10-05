@@ -1,0 +1,33 @@
+<form>
+	<p>
+		<span color="header" font="header">Umsatz-Kategorie</span>
+	</p>
+	
+	<p>
+	  Geben Sie eine beliebige Bezeichnung für die Kategorie an und wählen Sie optional
+	  eine übergeordnete Kategorie. Im Absatz <b>Zuordnung der Umsätze</b> können Sie die Kriterien für die automatische
+	  Zuordnung festlegen:
+	</p>
+	
+	<li>
+	  Wenn Sie in &quot;Nur für Konto/Gruppe&quot; eine Auswahl treffen, dann
+	  werden Umsätze nur dann anhand des Suchbegriffs automatisch dieser Kategorie zugeordnet,
+	  wenn diese auf dem angebenen Konto bzw. der Kontogruppe gebucht wurden.
+	</li>
+	
+	<li>
+	  Geben Sie in &quot;Reihenfolge&quot; optional eine Zahl ein, falls Sie Kategorien mit überschneidenden
+	  Suchbegriffen haben. Sie können dadurch die Reihenfolge festlegen, in der die Kategorien
+	  auf die Umsätze angewendet werden.
+	</li>
+	
+	<li>
+	  Mit &quot;Art des Umsatzes&quot; können Sie optional festlegen, ob die Kategorie nur für Soll-
+	  oder nur für Habenbuchungen angewendet werden soll.
+	</li>
+
+	<p>
+		<b>Tipp:</b> Sie können im Feld <b>Suchbegriff</b> kommagetrennt auch mehrere
+		Suchbegriffe eingeben. Z.B.: &quot;REWE,Lidl,Aldi&quot;
+  </p>
+</form>
