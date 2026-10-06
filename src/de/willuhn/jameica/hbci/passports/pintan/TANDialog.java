@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.passports.pintan;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
@@ -44,6 +43,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.hbci.HBCIContext;
 import de.willuhn.jameica.hbci.synchronize.SynchronizeSession;
 import de.willuhn.jameica.hbci.synchronize.hbci.HBCISynchronizeBackend;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -216,7 +216,7 @@ public class TANDialog extends AbstractDialog
         setInfoText(Type.INFO,i18n.tr("Bitte geben Sie den Auftrag erst auf Ihrem Smartphone frei."));
       
       final String auftrag = this.context != null ? HBCIContext.toString(this.context) : null;
-      final boolean haveAuftrag = StringUtils.trimToNull(auftrag) != null;
+      final boolean haveAuftrag = StringUtils.isNotBlank(auftrag);
       
       if (this.konto != null || haveAuftrag)
         c.addHeadline(i18n.tr("Konto und Auftrag"));
@@ -255,7 +255,7 @@ public class TANDialog extends AbstractDialog
         @Override
         public void keyReleased(KeyEvent e)
         {
-          getOkButton().setEnabled(StringUtils.trimToNull((String) tan.getValue()) != null);
+          getOkButton().setEnabled(StringUtils.isNotBlank((String) tan.getValue()));
         }
       });
     }
@@ -314,7 +314,7 @@ public class TANDialog extends AbstractDialog
   {
     this.tan = tan;
     getTANInput().setValue(tan);
-    getOkButton().setEnabled(StringUtils.trimToNull(tan) != null || !this.needTan);
+    getOkButton().setEnabled(StringUtils.isNotBlank(tan) || !this.needTan);
   }
   
   /**

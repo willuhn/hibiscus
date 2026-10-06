@@ -13,7 +13,6 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -29,6 +28,7 @@ import de.willuhn.jameica.hbci.gui.input.UmsatzDaysInput;
 import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.Range.CustomRange;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -133,7 +133,7 @@ public class CustomRangeDialog extends AbstractDialog
     this.name.setName(i18n.tr("Bezeichnung"));
     this.name.setMaxLength(100);
     this.name.setValue(this.range.toString());
-    this.name.addListener(e -> this.getApply().setEnabled(StringUtils.trimToNull((String)this.getName().getValue()) != null));
+    this.name.addListener(e -> this.getApply().setEnabled(StringUtils.isNotBlank((String)this.getName().getValue())));
     return this.name;
   }
   

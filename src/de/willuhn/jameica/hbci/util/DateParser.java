@@ -19,8 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.util.DateParser.DatePattern.Flag;
 import de.willuhn.logging.Logger;
 

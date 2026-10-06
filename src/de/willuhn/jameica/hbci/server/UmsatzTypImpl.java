@@ -20,8 +20,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.db.AbstractDBObjectNode;
@@ -34,6 +32,7 @@ import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
@@ -889,6 +888,6 @@ public class UmsatzTypImpl extends AbstractDBObjectNode implements UmsatzTyp, Du
       sep = "|";
     
     Collections.reverse(names);
-    return StringUtils.join(names,sep);
+    return String.join(sep,names);
   }
 }

@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.MetaKey;
@@ -25,6 +23,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.reminder.Reminder;
 import de.willuhn.jameica.reminder.ReminderInterval;
 import de.willuhn.jameica.reminder.ReminderStorageProvider;
@@ -156,12 +155,12 @@ public class SepaLastschriftImpl extends AbstractBaseUeberweisungImpl implements
       HBCIProperties.checkLength(s, HBCIProperties.HBCI_IBAN_MAXLENGTH);
       HBCIProperties.checkIBAN(s);
 
-      if (StringUtils.trimToNull(getGegenkontoBLZ()) != null)
+      if (StringUtils.isNotBlank(getGegenkontoBLZ()))
         HBCIProperties.checkBIC(getGegenkontoBLZ());
       //
       //////////////////////////////////////
 
-      if (StringUtils.trimToNull(getGegenkontoName()) == null)
+      if (StringUtils.isBlank(getGegenkontoName()))
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS);

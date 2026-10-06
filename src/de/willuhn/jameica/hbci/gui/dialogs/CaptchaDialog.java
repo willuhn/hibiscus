@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -39,6 +38,7 @@ import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.services.TransportService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.ConsoleMonitor;
@@ -142,7 +142,7 @@ public class CaptchaDialog extends AbstractDialog
       public void keyReleased(KeyEvent e)
       {
         String s = (String) getSolution().getValue();
-        getApplyButton().setEnabled(StringUtils.trimToNull(s) != null);
+        getApplyButton().setEnabled(StringUtils.isNotBlank(s));
       }
     });
 
@@ -230,7 +230,7 @@ public class CaptchaDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
         data = (String) getSolution().getValue();
-        if (StringUtils.trimToNull(data) != null)
+        if (StringUtils.isNotBlank(data))
           close();
       }
     },null,true,"ok.png");

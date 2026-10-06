@@ -13,8 +13,6 @@ package de.willuhn.jameica.hbci.gui.action;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passport.PassportChangeRequest;
@@ -22,6 +20,7 @@ import de.willuhn.jameica.hbci.passports.pintan.server.PassportImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -58,8 +57,8 @@ public class PassportChange implements Action
     String custOld = pcr.passport.getCustomerId();
     String userOld = pcr.passport.getUserId();
     
-    boolean changeCustId = StringUtils.trimToNull(pcr.custId) != null && !StringUtils.trimToEmpty(custOld).equals(StringUtils.trimToEmpty(pcr.custId));
-    boolean changeUserId = StringUtils.trimToNull(pcr.userId) != null && !StringUtils.trimToEmpty(userOld).equals(StringUtils.trimToEmpty(pcr.userId));
+    boolean changeCustId = StringUtils.isNotBlank(pcr.custId) && !StringUtils.trimToEmpty(custOld).equals(StringUtils.trimToEmpty(pcr.custId));
+    boolean changeUserId = StringUtils.isNotBlank(pcr.userId) && !StringUtils.trimToEmpty(userOld).equals(StringUtils.trimToEmpty(pcr.userId));
     
     if (!changeCustId && !changeUserId)
       return;

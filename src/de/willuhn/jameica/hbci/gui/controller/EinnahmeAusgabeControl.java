@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
@@ -409,7 +408,7 @@ public class EinnahmeAusgabeControl extends AbstractControl
       {
         kontoIds.add(konto.getID());
       }
-      umsaetze.addFilter("konto_id in (" + StringUtils.join(kontoIds,",") + ")");
+      umsaetze.addFilter("konto_id in (" + String.join(",",kontoIds) + ")");
     }
 
     final List<Umsatz> umsatzList = new ArrayList<Umsatz>();

@@ -13,9 +13,8 @@ package de.willuhn.jameica.hbci.rmi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -137,7 +136,7 @@ public enum PurposeCode
    */
   public static PurposeCode find(String code)
   {
-    if (StringUtils.trimToNull(code) == null)
+    if (StringUtils.isBlank(code))
       return null;
 
     for (PurposeCode pc:values())

@@ -11,13 +11,12 @@ package de.willuhn.jameica.hbci.gui.action;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -47,7 +46,7 @@ public class SepaSammelLastschriftNew implements Action
 			try {
 				Konto k = (Konto) context;
 				u = (SepaSammelLastschrift) Settings.getDBService().createObject(SepaSammelLastschrift.class,null);
-				if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.trimToNull(k.getIban()) != null)
+				if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.isNotBlank(k.getIban()))
   				u.setKonto(k);
 			}
 			catch (RemoteException e)

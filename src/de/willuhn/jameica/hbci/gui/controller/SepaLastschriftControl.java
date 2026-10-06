@@ -14,7 +14,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -58,6 +57,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.Terminable;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaLastschrift;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.MessageBus;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.reminder.ReminderInterval;

@@ -17,8 +17,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -520,7 +520,7 @@ public class CSVImportDialog extends AbstractDialog
     {
       for (Profile pr:list)
       {
-        if (StringUtils.equals(pr.getName(),name))
+        if (Objects.equals(pr.getName(),name))
         {
           p = pr;
           break;

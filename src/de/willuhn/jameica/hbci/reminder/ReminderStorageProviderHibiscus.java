@@ -16,8 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -26,6 +24,7 @@ import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.DBReminder;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.reminder.AbstractReminderStorageProvider;
 import de.willuhn.jameica.reminder.Reminder;
 import de.willuhn.jameica.system.JameicaException;
@@ -73,7 +72,7 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
   @Override
   public void update(String uuid, Reminder reminder) throws Exception
   {
-    if (StringUtils.trimToNull(uuid) == null)
+    if (StringUtils.isBlank(uuid))
       throw new JameicaException("no uuid given");
     
     if (reminder == null)
@@ -92,7 +91,7 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
   @Override
   public Reminder delete(String uuid) throws Exception
   {
-    if (StringUtils.trimToNull(uuid) == null)
+    if (StringUtils.isBlank(uuid))
       throw new JameicaException("no uuid given");
     
     DBReminder r = this.getDBReminder(uuid);
@@ -132,7 +131,7 @@ public class ReminderStorageProviderHibiscus extends AbstractReminderStorageProv
    */
   private DBReminder getDBReminder(String uuid) throws Exception
   {
-    if (StringUtils.trimToNull(uuid) == null)
+    if (StringUtils.isBlank(uuid))
       throw new JameicaException("no uuid given");
     
     DBService service = Settings.getDBService();

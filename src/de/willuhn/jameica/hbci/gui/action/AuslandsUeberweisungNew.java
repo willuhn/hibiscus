@@ -13,8 +13,6 @@ package de.willuhn.jameica.hbci.gui.action;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.speedbanking.bankdata.BankData;
 import de.speedbanking.bankdata.BankDataLookup;
 import de.speedbanking.iban.Iban;
@@ -35,6 +33,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -62,7 +61,7 @@ public class AuslandsUeberweisungNew implements Action
       {
         Konto k = (Konto) context;
         u = (AuslandsUeberweisung) Settings.getDBService().createObject(AuslandsUeberweisung.class,null);
-        if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.trimToNull(k.getIban()) != null)
+        if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.isNotBlank(k.getIban()))
           u.setKonto(k);
       }
       else if (context instanceof Address)

@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.gui.input;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -23,6 +22,7 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -57,7 +57,7 @@ public class ZweckInput extends TextInput
         try
         {
           final String text = (String) this.getValue();
-          if (StringUtils.trimToNull(text) == null)
+          if (StringUtils.isBlank(text))
           {
             this.preview.setValue(i18n.tr("Platzhalter im Verwendungszweck: $jahr, $monat, $tag, $quartal"));
             return;

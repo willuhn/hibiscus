@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
 
 import de.willuhn.datasource.GenericIterator;
@@ -43,6 +41,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.BPDUtil.Support;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.VelocityService;
@@ -121,7 +120,7 @@ public class KontoauszugPdfUtil
       }
       Logger.info("got " + data.length + " bytes from messaging for uuid: " + uuid);
       
-      File file = File.createTempFile("kontoauszug-" + RandomStringUtils.randomAlphanumeric(5),".pdf");
+      File file = File.createTempFile("kontoauszug-" + StringUtils.randomAlphanumeric(5),".pdf");
       file.deleteOnExit();
       
       OutputStream os = null;

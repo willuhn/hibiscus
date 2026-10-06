@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -76,6 +75,7 @@ import de.willuhn.jameica.hbci.server.Range;
 import de.willuhn.jameica.hbci.server.Range.Category;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;

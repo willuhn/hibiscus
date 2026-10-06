@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.SepaUtil;
 import org.kapott.hbci.GV.parsers.ISEPAParser;
 import org.kapott.hbci.sepa.SepaVersion;
@@ -32,6 +31,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 
 /**

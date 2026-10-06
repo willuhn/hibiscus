@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIVersion;
 import org.kapott.hbci.passport.HBCIPassport;
 
@@ -29,6 +28,7 @@ import de.willuhn.jameica.hbci.passports.pintan.PinTanConfigFactory;
 import de.willuhn.jameica.hbci.passports.pintan.PtSecMech;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;

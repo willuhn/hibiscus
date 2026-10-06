@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -32,6 +31,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -131,7 +131,7 @@ public class SepaSammelLastBuchungControl extends AbstractSepaSammelTransferBuch
     String creditorId       = s.getCreditorId();
     
     // Checken, ob wir im Konto eine Glaeubiger-ID haben
-    if (StringUtils.trimToNull(creditorId) == null)
+    if (StringUtils.isBlank(creditorId))
       creditorId = StringUtils.trimToNull(MetaKey.SEPA_CREDITOR_ID.get(s.getSammelTransfer().getKonto()));
     
     this.creditorId = new TextInput(creditorId,HBCIProperties.HBCI_SEPA_CREDITORID_MAXLENGTH);

@@ -13,7 +13,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.HBCIJob;
 import org.kapott.hbci.GV_Result.GVRDauerEdit;
 import org.kapott.hbci.GV_Result.GVRDauerNew;
@@ -34,6 +33,7 @@ import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.hbci.tests.PreTimeRestriction;
 import de.willuhn.jameica.hbci.server.hbci.tests.TurnusRestriction;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -211,7 +211,7 @@ public class HBCISepaDauerauftragStoreJob extends AbstractHBCIJob
     else
       orderID = ((GVRDauerEdit)result).getOrderId();
     
-    if (StringUtils.trimToNull(orderID) == null)
+    if (StringUtils.isBlank(orderID))
     {
       Logger.warn("got no order id for this job, using placeholder id " + BaseDauerauftrag.ORDERID_PLACEHOLDER);
       konto.addToProtokoll(i18n.tr("Keine Order-ID für SEPA-Dauerauftrag von Bank erhalten",empfName),Protokoll.TYP_ERROR);

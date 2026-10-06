@@ -10,11 +10,10 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.passports.pintan.ChipTANDialog;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;

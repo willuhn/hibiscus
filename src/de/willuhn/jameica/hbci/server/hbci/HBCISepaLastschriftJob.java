@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.server.hbci;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.AbstractGVRLastSEPA;
 
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
@@ -30,6 +29,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;

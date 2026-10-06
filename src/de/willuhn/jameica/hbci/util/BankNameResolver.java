@@ -12,8 +12,6 @@ package de.willuhn.jameica.hbci.util;
 
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.speedbanking.bankdata.BankData;
 import de.speedbanking.bankdata.BankDataLookup;
 

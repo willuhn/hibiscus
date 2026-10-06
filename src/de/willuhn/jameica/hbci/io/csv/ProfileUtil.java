@@ -21,11 +21,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVProfileStoreDialog;
 import de.willuhn.jameica.hbci.io.JAXBUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -153,7 +152,7 @@ public class ProfileUtil
         continue;
       
       // Ebenso Profile ohne Namen.
-      if (StringUtils.trimToNull(p.getName()) == null)
+      if (StringUtils.isBlank(p.getName()))
         continue;
 
       conf.getProfiles().add(p);

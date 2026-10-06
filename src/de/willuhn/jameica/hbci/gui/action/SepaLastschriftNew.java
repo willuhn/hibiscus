@@ -13,8 +13,6 @@ package de.willuhn.jameica.hbci.gui.action;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.hbci.Settings;
@@ -25,6 +23,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -51,7 +50,7 @@ public class SepaLastschriftNew implements Action
       {
         Konto k = (Konto) context;
         u = (SepaLastschrift) Settings.getDBService().createObject(SepaLastschrift.class,null);
-        if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.trimToNull(k.getIban()) != null)
+        if (!k.hasFlag(Konto.FLAG_DISABLED) && !k.hasFlag(Konto.FLAG_OFFLINE) && StringUtils.isNotBlank(k.getIban()))
           u.setKonto(k);
       }
       else if (context instanceof Address)

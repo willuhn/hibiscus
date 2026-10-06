@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
@@ -28,6 +26,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.Transfer;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -183,7 +182,7 @@ public class VerwendungszweckUtil
     // Sprich: Das Tag ist zwar da, aber leer. Macht die "S-Bahn Berlin GmbH".
     // In dem Fall liefern wir ebenfalls den kompletten Text
     String value = result.get(tag);
-    if (tag == Tag.SVWZ && StringUtils.trimToNull(value) == null)
+    if (tag == Tag.SVWZ && StringUtils.isBlank(value))
       return toString(t);
     
     return value;
@@ -221,7 +220,7 @@ public class VerwendungszweckUtil
     
     // Jetzt schauen wir, ob wir den Verwendungszweck per ":" noch weiter zerlegen koennen
     String svwz = result.get(Tag.SVWZ);
-    if (StringUtils.trimToNull(svwz) != null)
+    if (StringUtils.isNotBlank(svwz))
       result.putAll(parse(':',svwz));
     
     return result;
@@ -363,7 +362,7 @@ public class VerwendungszweckUtil
     List<String> l = clean(true,lines);
     
     // Wir werfen alles in einen String und verteilen es dann ohne weitere Trennungen auf die Zeilen
-    String all = StringUtils.join(l,"");
+    String all = String.join("",l);
 
     // 1. Passt alles in Zeile 1?
     if (all.length() <= 255)

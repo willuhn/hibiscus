@@ -10,9 +10,8 @@
 
 package de.willuhn.jameica.hbci.gui.action;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;

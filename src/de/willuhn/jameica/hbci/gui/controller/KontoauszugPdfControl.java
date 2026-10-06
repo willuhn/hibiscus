@@ -14,7 +14,6 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
@@ -37,6 +36,7 @@ import de.willuhn.jameica.hbci.gui.parts.KontoauszugPdfList;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -321,7 +321,7 @@ public class KontoauszugPdfControl extends AbstractControl
       return this.datei;
     
     Kontoauszug k = this.getKontoauszug();
-    if (StringUtils.trimToNull(k.getUUID()) != null)
+    if (StringUtils.isNotBlank(k.getUUID()))
     {
       this.datei = new LabelInput(i18n.tr("In Archiv-Server gespeichert"));
     }
