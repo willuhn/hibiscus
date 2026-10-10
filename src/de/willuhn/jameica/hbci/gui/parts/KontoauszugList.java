@@ -56,6 +56,7 @@ import de.willuhn.jameica.hbci.gui.action.KontoFetchUmsaetze;
 import de.willuhn.jameica.hbci.gui.action.UmsatzDetail;
 import de.willuhn.jameica.hbci.gui.action.UmsatzExport;
 import de.willuhn.jameica.hbci.gui.dialogs.AdresseAuswahlDialog;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypListDialog;
 import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypNewDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.formatter.IbanFormatter;
@@ -108,6 +109,7 @@ public class KontoauszugList extends UmsatzList
   private DateInput end                = null;
   private RangeInput range             = null;
   private UmsatzTypInput kategorie     = null;
+  private Input kategorieAuswahl       = null;
   private CheckboxInput subKategorien  = null;
 
   // Gegenkonto/Betrag
@@ -177,7 +179,7 @@ public class KontoauszugList extends UmsatzList
       
       Container left = new SimpleContainer(columns.getComposite());
       left.addLabelPair(i18n.tr("Konto"),                   this.getKontoAuswahl());
-      left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorie());
+      left.addLabelPair(i18n.tr("Kategorie"),               this.getKategorieAuswahl());
       left.addCheckbox(this.getSubKategorien(),i18n.tr("Untergeordnete Kategorien einbeziehen"));
       
       Container right = new SimpleContainer(columns.getComposite());
@@ -397,6 +399,7 @@ public class KontoauszugList extends UmsatzList
     if (preset == null || (preset.getID() == null && preset != UmsatzTypUtil.UNASSIGNED)) // // ID ist NULL, wenn sie zwischenzeitlich geloescht wurde
       preset = null; 
     this.kategorie = new UmsatzTypInput(preset,UmsatzTyp.TYP_EGAL, true);
+    this.kategorie.setShowPathName(true);
     this.kategorie.setPleaseChoose(i18n.tr("<Alle Kategorien>"));
     this.kategorie.setComment("");
     this.kategorie.addListener(this.listener);
@@ -406,20 +409,42 @@ public class KontoauszugList extends UmsatzList
     {
       public void handleEvent(Event event)
       {
-        try
-        {
-          getSubKategorien().setEnabled(kategorie.getValue() != null);
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to update checkbox",e);
-        }
+        updateSubKategorienEnabled();
       }
     });
     
     return this.kategorie;
   }
   
+
+  /**
+   * Liefert die Kategorie-Auswahl als Dropdown mit zusaetzlichem Dialog-Button.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  private Input getKategorieAuswahl() throws RemoteException
+  {
+    if (this.kategorieAuswahl != null)
+      return this.kategorieAuswahl;
+
+    this.kategorieAuswahl = this.getKategorie().getSelectionWithDialogButton(UmsatzTypListDialog.POSITION_CENTER,UmsatzTyp.TYP_EGAL);
+    return this.kategorieAuswahl;
+  }
+
+  /**
+   * Aktualisiert den Enabled-Status der Unterkategorien-Checkbox.
+   */
+  private void updateSubKategorienEnabled()
+  {
+    try
+    {
+      getSubKategorien().setEnabled(getKategorie().getValue() != null);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to update checkbox",e);
+    }
+  }
   /**
    * Liefert eine Checkbox die angibt ob Unterkategorien ermittelt werden sollen.
    * @return Checkbox.
@@ -805,6 +830,7 @@ public class KontoauszugList extends UmsatzList
       getKontoAuswahl().setValue(null);
       getKategorie().setValue(null);
       getSubKategorien().setValue(Boolean.FALSE);
+      updateSubKategorienEnabled();
       getGegenkontoNummer().setText("");
       getGegenkontoBLZ().setValue(null);
       getGegenkontoName().setValue(null);

@@ -98,7 +98,7 @@ public abstract class AbstractUmsatzDetail extends AbstractView
 
     SimpleContainer bottom = new SimpleContainer(getParent(),true);
     bottom.addSeparator();
-    bottom.addLabelPair(i18n.tr("Kategorie"),                   control.getUmsatzTyp());
+    bottom.addLabelPair(i18n.tr("Kategorie"),                   control.getUmsatzTypField());
     bottom.addHeadline(i18n.tr("Verwendungszweck"));
     bottom.addPart(control.getZweck());
     bottom.addInput(control.getZweckSwitch());

@@ -26,11 +26,13 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.ColorInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.Settings;
+import de.willuhn.jameica.hbci.gui.dialogs.UmsatzTypListDialog;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.gui.input.KontoInput;
 import de.willuhn.jameica.hbci.gui.input.UmsatzTypInput;
@@ -58,6 +60,7 @@ public class UmsatzTypControl extends AbstractControl
   private CheckboxInput regex       = null;
   private SelectInput art           = null;
   private UmsatzTypInput parent     = null;
+  private Input parentField          = null;
   private TextInput kommentar       = null;
   private KontoInput konto          = null;
   private CheckboxInput skipReport  = null;
@@ -276,10 +279,27 @@ public class UmsatzTypControl extends AbstractControl
       return this.parent;
     
     this.parent = new UmsatzTypInput((UmsatzTyp)getUmsatzTyp().getParent(),getUmsatzTyp(),UmsatzTyp.TYP_EGAL, false);
+    this.parent.setShowPathName(true);
     this.parent.setComment("");
     return this.parent;
   }
   
+  /**
+   * Liefert die Eltern-Kategorie als Dropdown mit zusaetzlichem Dialog-Button.
+   * @return Auswahlfeld.
+   * @throws RemoteException
+   */
+  public Input getParentField() throws RemoteException
+  {
+    if (this.parentField != null)
+      return this.parentField;
+
+    UmsatzTypInput input = this.getParent();
+    this.parentField = input.getSelectionWithDialogButton(UmsatzTypListDialog.POSITION_CENTER,UmsatzTyp.TYP_EGAL);
+    this.parentField.setEnabled(input.isEnabled());
+    return this.parentField;
+  }
+
   /**
    * Liefert ein Auswahlfeld fuer das Konto.
    * @return Auswahl-Feld.
