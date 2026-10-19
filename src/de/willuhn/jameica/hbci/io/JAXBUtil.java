@@ -59,6 +59,8 @@ public class JAXBUtil
     {
       JAXBContext ctx = JAXBContext.newInstance(type);
       Unmarshaller u = ctx.createUnmarshaller();
+      u.setProperty(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      u.setEventHandler(v -> false);
       return u;
     }
     catch (JAXBException e)
