@@ -59,13 +59,13 @@ public class JAXBUtil
     {
       JAXBContext ctx = JAXBContext.newInstance(type);
       Unmarshaller u = ctx.createUnmarshaller();
-      u.setProperty(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
       u.setEventHandler(v -> false);
       u.setSchema(null);
       return u;
     }
     catch (JAXBException e)
     {
+      Logger.error("unable to load unmarshaller",e);
       throw new ApplicationException(Application.getI18n().tr("Laden der Daten fehlgeschlagen: {0}",e.getMessage()));
     }
   }
