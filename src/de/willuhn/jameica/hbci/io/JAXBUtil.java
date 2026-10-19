@@ -61,6 +61,7 @@ public class JAXBUtil
       Unmarshaller u = ctx.createUnmarshaller();
       u.setProperty(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
       u.setEventHandler(v -> false);
+      u.setSchema(null);
       return u;
     }
     catch (JAXBException e)
