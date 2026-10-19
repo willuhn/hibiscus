@@ -59,8 +59,9 @@ public class CSVProfileStoreDialog extends AbstractDialog
 	 * @param profile das Profil.
 	 * @see AbstractDialog#POSITION_MOUSE
 	 * @see AbstractDialog#POSITION_CENTER
+	 * @throws ApplicationException
 	 */
-  public CSVProfileStoreDialog(Format format, Profile profile)
+  public CSVProfileStoreDialog(Format format, Profile profile) throws ApplicationException
   {
     super(CSVProfileStoreDialog.POSITION_CENTER);
     this.setSize(WINDOW_WIDTH,SWT.DEFAULT);

@@ -33,19 +33,18 @@ import de.willuhn.jameica.hbci.io.ser.BooleanSerializer;
 import de.willuhn.jameica.hbci.io.ser.DateSerializer;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
 import de.willuhn.jameica.hbci.io.ser.ExtendedUsageSerializer;
-import de.willuhn.jameica.hbci.io.ser.Serializer;
 import de.willuhn.jameica.hbci.io.ser.UmsatzTypSerializer;
 import de.willuhn.jameica.hbci.io.ser.ValueSerializer;
 
 /**
  * Data-only reader for CSV profiles written by {@link java.beans.XMLEncoder}.
  */
-final class ProfileXmlDecoder
+final class LegacyProfileXmlDecoder
 {
   private static final int MAX_PROFILES = 1000;
   private static final int MAX_COLUMNS = 1000;
 
-  private ProfileXmlDecoder()
+  private LegacyProfileXmlDecoder()
   {
   }
 
@@ -80,13 +79,13 @@ final class ProfileXmlDecoder
       throw invalid("too many profiles");
 
     List<Profile> profiles = new ArrayList<Profile>();
-    Map<String,Serializer> serializers = new HashMap<String,Serializer>();
+    Map<String,String> serializers = new HashMap<String,String>();
     for (Element element:encoded)
       profiles.add(parseProfile(element,serializers));
     return profiles;
   }
 
-  private static Profile parseProfile(Element object, Map<String,Serializer> serializers) throws Exception
+  private static Profile parseProfile(Element object, Map<String,String> serializers) throws Exception
   {
     requireName(object,"object");
     requireAttributes(object,"class","id");
@@ -126,7 +125,7 @@ final class ProfileXmlDecoder
     return profile;
   }
 
-  private static List<Column> parseColumns(Element property, Map<String,Serializer> serializers) throws Exception
+  private static List<Column> parseColumns(Element property, Map<String,String> serializers) throws Exception
   {
     List<Element> encoded = children(property);
     if (encoded.size() > MAX_COLUMNS)
@@ -143,7 +142,7 @@ final class ProfileXmlDecoder
     return columns;
   }
 
-  private static Column parseColumn(Element object, Map<String,Serializer> serializers) throws Exception
+  private static Column parseColumn(Element object, Map<String,String> serializers) throws Exception
   {
     requireName(object,"object");
     requireAttributes(object,"class","id");
@@ -173,40 +172,42 @@ final class ProfileXmlDecoder
     return column;
   }
 
-  private static Serializer parseSerializer(Element object, Map<String,Serializer> serializers) throws Exception
+  private static String parseSerializer(Element object, Map<String,String> serializers) throws Exception
   {
     requireName(object,"object");
     if (object.hasAttribute("idref"))
     {
       requireAttributes(object,"idref");
       requireNoChildren(object);
-      Serializer serializer = serializers.get(requiredAttribute(object,"idref"));
+      String serializer = serializers.get(requiredAttribute(object,"idref"));
       if (serializer == null)
-        throw invalid("unknown serializer reference");
+        return DefaultSerializer.ID;
+      
       return serializer;
     }
 
     requireAttributes(object,"class","id");
     requireNoChildren(object);
     String type = requiredAttribute(object,"class");
-    Serializer serializer;
+    String serializer;
     if (BooleanSerializer.class.getName().equals(type))
-      serializer = new BooleanSerializer();
+      serializer = BooleanSerializer.ID;
     else if (DateSerializer.class.getName().equals(type))
-      serializer = new DateSerializer();
+      serializer = DateSerializer.ID;
     else if (DefaultSerializer.class.getName().equals(type))
-      serializer = new DefaultSerializer();
+      serializer = DefaultSerializer.ID;
     else if (ExtendedUsageSerializer.class.getName().equals(type))
-      serializer = new ExtendedUsageSerializer();
+      serializer = ExtendedUsageSerializer.ID;
     else if (UmsatzTypSerializer.class.getName().equals(type))
-      serializer = new UmsatzTypSerializer();
+      serializer = UmsatzTypSerializer.ID;
     else if (ValueSerializer.class.getName().equals(type))
-      serializer = new ValueSerializer();
+      serializer = ValueSerializer.ID;
     else
-      throw invalid("unsupported serializer: " + type);
+      serializer = DefaultSerializer.ID;
 
-    if (object.hasAttribute("id") && serializers.put(requiredAttribute(object,"id"),serializer) != null)
-      throw invalid("duplicate serializer id");
+    if (object.hasAttribute("id"))
+      serializers.put(requiredAttribute(object,"id"),serializer);
+    
     return serializer;
   }
 

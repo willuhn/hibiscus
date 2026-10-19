@@ -49,6 +49,7 @@ import de.willuhn.jameica.hbci.io.csv.Column;
 import de.willuhn.jameica.hbci.io.csv.Format;
 import de.willuhn.jameica.hbci.io.csv.Profile;
 import de.willuhn.jameica.hbci.io.csv.ProfileUtil;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -396,8 +397,9 @@ public class CSVImportDialog extends AbstractDialog
   /**
    * Liefert ein Eingabe-Feld fuer das Trennzeichen.
    * @return Eingabe-Feld.
+   * @throws ApplicationException
    */
-  private TextInput getSeparatorChar()
+  private TextInput getSeparatorChar() throws ApplicationException
   {
     if (this.sepChar != null)
       return this.sepChar;
@@ -427,8 +429,9 @@ public class CSVImportDialog extends AbstractDialog
   /**
    * Liefert eine Checkbox zum Umkehren der Vorzeichen.
    * @return Checkbox zum Umkehren der Vorzeichen.
+   * @throws ApplicationException
    */
-  private CheckboxInput getInvert()
+  private CheckboxInput getInvert() throws ApplicationException
   {
     if (this.invert != null)
       return this.invert;
@@ -441,8 +444,9 @@ public class CSVImportDialog extends AbstractDialog
   /**
    * Liefert ein Eingabe-Feld fuer das Quoting-Zeichen.
    * @return Eingabe-Feld.
+   * @throws ApplicationException
    */
-  private TextInput getQuoteChar()
+  private TextInput getQuoteChar() throws ApplicationException
   {
     if (this.quoteChar != null)
       return this.quoteChar;
@@ -457,8 +461,9 @@ public class CSVImportDialog extends AbstractDialog
   /**
    * Liefert ein Eingabe-Feld fuer den Zeichensatz.
    * @return Eingabe
+   * @throws ApplicationException
    */
-  private SelectInput getFileEncoding()
+  private SelectInput getFileEncoding() throws ApplicationException
   {
     if (this.encoding != null)
       return this.encoding;
@@ -476,7 +481,7 @@ public class CSVImportDialog extends AbstractDialog
    * Zeilen am Anfang uebersprungen werden sollen.
    * @return
    */
-  private SpinnerInput getSkipLines()
+  private SpinnerInput getSkipLines() throws ApplicationException
   {
     if (this.skipLines != null)
       return this.skipLines;
@@ -491,8 +496,9 @@ public class CSVImportDialog extends AbstractDialog
   /**
    * Liefert das aktuelle Profil.
    * @return das aktuelle Profil.
+   * @throws ApplicationException
    */
-  private Profile getProfile()
+  private Profile getProfile() throws ApplicationException
   {
     return (Profile) this.getProfiles().getValue();
   }
@@ -502,7 +508,7 @@ public class CSVImportDialog extends AbstractDialog
    * @return eine Auswahlbox mit den verfuegbaren Profilen.
    * @throws ApplicationException
    */
-  private SelectInput getProfiles()
+  private SelectInput getProfiles() throws ApplicationException
   {
     if (this.profiles != null)
       return this.profiles;
@@ -543,17 +549,24 @@ public class CSVImportDialog extends AbstractDialog
    */
   private void update()
   {
-    Profile p = getProfile();
-    Logger.info("changing profile to: " + p);
-    
-    // Einstellungen in die Eingabefelder uebernehmen
-    this.getFileEncoding().setValue(p.getFileEncoding());
-    this.getQuoteChar().setValue(p.getQuotingChar());
-    this.getSeparatorChar().setValue(p.getSeparatorChar());
-    this.getSkipLines().setValue(Integer.valueOf(p.getSkipLines()));
-    this.getInvert().setValue(Boolean.valueOf(p.isInvert()));
-    
-    // Datei mit den neuen Einstellungen laden
-    reload();
+    try
+    {
+      Profile p = getProfile();
+      Logger.info("changing profile to: " + p);
+      
+      // Einstellungen in die Eingabefelder uebernehmen
+      this.getFileEncoding().setValue(p.getFileEncoding());
+      this.getQuoteChar().setValue(p.getQuotingChar());
+      this.getSeparatorChar().setValue(p.getSeparatorChar());
+      this.getSkipLines().setValue(Integer.valueOf(p.getSkipLines()));
+      this.getInvert().setValue(Boolean.valueOf(p.isInvert()));
+      
+      // Datei mit den neuen Einstellungen laden
+      reload();
+    }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
   }
 }

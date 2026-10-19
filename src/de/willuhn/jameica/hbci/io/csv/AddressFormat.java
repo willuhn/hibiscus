@@ -14,7 +14,6 @@ import java.util.List;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
-import de.willuhn.jameica.hbci.io.ser.Serializer;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.system.Application;
@@ -43,7 +42,7 @@ public class AddressFormat implements Format<HibiscusAddress>
       this.profile.setSkipLines(1);
       this.profile.setSystem(true);
       
-      Serializer s = new DefaultSerializer();
+      final String s = DefaultSerializer.ID;
       List<Column> list = this.profile.getColumns();
       int i = 0;
       list.add(new Column("name",i18n.tr("Name des Kontoinhabers"),i++,s));

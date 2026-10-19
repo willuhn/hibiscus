@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2024 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -12,18 +12,42 @@ package de.willuhn.jameica.hbci.io.ser;
 
 import java.io.IOException;
 
+import de.willuhn.annotation.Lifecycle;
+import de.willuhn.annotation.Lifecycle.Type;
+
 /**
  * Default-Implementierung eines Serializers.
  * @param <T> Typ, von und zu dem serialisiert wird.
  */
+@Lifecycle(Type.CONTEXT)
 public class DefaultSerializer<T> implements Serializer<T>
 {
+  /**
+   * Die ID.
+   */
+  public final static String ID = "default";
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.ser.Serializer#getIdentifier()
+   */
+  @Override
+  public String getIdentifier()
+  {
+    return ID;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.ser.Serializer#serialize(java.lang.Object, java.lang.Object)
+   */
   @Override
   public String serialize(Object context, T value) throws IOException
   {
     return value != null ? value.toString() : "";
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.io.ser.Serializer#unserialize(java.lang.Object, java.lang.String)
+   */
   @Override
   public T unserialize(Object context, String value) throws IOException
   {
@@ -33,19 +57,3 @@ public class DefaultSerializer<T> implements Serializer<T>
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: DefaultSerializer.java,v $
- * Revision 1.1  2010/03/16 00:44:18  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- **********************************************************************/

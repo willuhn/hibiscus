@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import de.willuhn.annotation.Lifecycle;
+import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
@@ -23,13 +25,29 @@ import de.willuhn.logging.Logger;
 
 /**
  * Implementierung eines Serializers fuer Umsatz-Kategorien.
+ * Pro Request eine neue Instanz, weil wir intern einen Status halten.
  */
+@Lifecycle(Type.REQUEST)
 public class UmsatzTypSerializer extends DefaultSerializer<UmsatzTyp>
 {
+  /**
+   * Die ID.
+   */
+  public final static String ID = "umsatztyp";
+
   private final static String SEP = "/";
   
   private Map<String,UmsatzTyp> cache = null;
 
+  /**
+   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#getIdentifier()
+   */
+  @Override
+  public String getIdentifier()
+  {
+    return ID;
+  }
+  
   /**
    * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#serialize(java.lang.Object, java.lang.Object)
    */

@@ -17,7 +17,6 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.ser.DateSerializer;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
 import de.willuhn.jameica.hbci.io.ser.ExtendedUsageSerializer;
-import de.willuhn.jameica.hbci.io.ser.Serializer;
 import de.willuhn.jameica.hbci.io.ser.UmsatzTypSerializer;
 import de.willuhn.jameica.hbci.io.ser.ValueSerializer;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -46,9 +45,9 @@ public class UmsatzFormat implements Format<Umsatz>
       this.profile.setSkipLines(1);
       this.profile.setSystem(true);
       
-      Serializer ts = new DefaultSerializer();
-      Serializer vs = new ValueSerializer();
-      Serializer ds = new DateSerializer();
+      String ts = DefaultSerializer.ID;
+      String vs = ValueSerializer.ID;
+      String ds = DateSerializer.ID;
       
       List<Column> list = this.profile.getColumns();
       int i = 4; // wir fangen bei Spalte 4 an, weil die ersten 3 Spalten von Hibiscus
@@ -70,9 +69,9 @@ public class UmsatzFormat implements Format<Umsatz>
       list.add(new Column("saldo",i18n.tr("Saldo"),i++,vs));
       list.add(new Column("primanota",i18n.tr("Primanota"),i++,ts));
       list.add(new Column("customerRef",i18n.tr("Kundenreferenz"),i++,ts));
-      list.add(new Column("umsatzTyp",i18n.tr("Kategorie"),i++,new UmsatzTypSerializer()));
+      list.add(new Column("umsatzTyp",i18n.tr("Kategorie"),i++,UmsatzTypSerializer.ID));
       list.add(new Column("kommentar",i18n.tr("Notiz"),i++,ts));
-      list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,new ExtendedUsageSerializer()));
+      list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,ExtendedUsageSerializer.ID));
       list.add(new Column("art",i18n.tr("Art der Buchung"),i++,ts));
       list.add(new Column("endToEndId",i18n.tr("End-to-End ID"),i++,ts));
       list.add(new Column("mandateId",i18n.tr("Kunden-/Mandatsreferenz"),i++,ts));

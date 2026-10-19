@@ -12,17 +12,18 @@ package de.willuhn.jameica.hbci.io.csv;
 
 import java.io.Serializable;
 
-import de.willuhn.jameica.hbci.io.ser.Serializer;
-
 /**
  * Bean fuer eine CSV-Spalte.
  */
 public class Column implements Serializable, Cloneable
 {
+  private static final long serialVersionUID = 1L;
+
   private String property       = null;
   private String name           = null;
   private int column            = -1;
-  private Serializer serializer = null;
+  
+  private String serializer     = null;
   
   /**
    * ct.
@@ -37,9 +38,9 @@ public class Column implements Serializable, Cloneable
    * @param property Name des Bean-Attributes.
    * @param name Sprechender Name der Spalte.
    * @param column Nummer der Spalte.
-   * @param s Serializer.
+   * @param s ID des Serializers.
    */
-  public Column(String property, String name, int column, Serializer s)
+  public Column(String property, String name, int column, String s)
   {
     this.property   = property;
     this.name       = name;
@@ -102,23 +103,23 @@ public class Column implements Serializable, Cloneable
   }
   
   /**
-   * Liefert den Serializer fuer den Wert.
-   * @return serializer der Serializer.
+   * Liefert die ID des Serializers fuer den Wert.
+   * @return serializer die ID des Serializers.
    */
-  public Serializer getSerializer()
+  public String getSerializer()
   {
-    return serializer;
+    return this.serializer;
   }
   
   /**
-   * Speichert den Serializer fuer den Wert.
+   * Speichert die ID des Serializers fuer den Wert.
    * @param serializer der Serializer.
    */
-  public void setSerializer(Serializer serializer)
+  public void setSerializer(String serializer)
   {
     this.serializer = serializer;
   }
-
+  
   @Override
   public String toString()
   {

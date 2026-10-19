@@ -12,6 +12,8 @@ package de.willuhn.jameica.hbci.io.ser;
 
 import java.io.IOException;
 
+import de.willuhn.annotation.Lifecycle;
+import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.system.Application;
@@ -21,10 +23,28 @@ import de.willuhn.util.I18N;
 /**
  * Implementierung eines Serializers fuer Geld-Betraege.
  */
+@Lifecycle(Type.CONTEXT)
 public class ValueSerializer extends DefaultSerializer<Double>
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+
+  /**
+   * Die ID.
+   */
+  public final static String ID = "value";
   
+  /**
+   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#getIdentifier()
+   */
+  @Override
+  public String getIdentifier()
+  {
+    return ID;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#serialize(java.lang.Object, java.lang.Object)
+   */
   @Override
   public String serialize(Object context, Double value) throws IOException
   {
@@ -34,6 +54,9 @@ public class ValueSerializer extends DefaultSerializer<Double>
     return HBCI.DECIMALFORMAT.format(value) + " " + HBCIProperties.CURRENCY_DEFAULT_DE;
   }
 
+  /**
+   * @see de.willuhn.jameica.hbci.io.ser.DefaultSerializer#unserialize(java.lang.Object, java.lang.String)
+   */
   @Override
   public Double unserialize(Object context, String value) throws IOException
   {
@@ -73,19 +96,3 @@ public class ValueSerializer extends DefaultSerializer<Double>
   }
 
 }
-
-
-
-/**********************************************************************
- * $Log: ValueSerializer.java,v $
- * Revision 1.1  2010/03/16 00:44:18  willuhn
- * @N Komplettes Redesign des CSV-Imports.
- *   - Kann nun erheblich einfacher auch fuer andere Datentypen (z.Bsp.Ueberweisungen) verwendet werden
- *   - Fehlertoleranter
- *   - Mehrfachzuordnung von Spalten (z.Bsp. bei erweitertem Verwendungszweck) moeglich
- *   - modulare Deserialisierung der Werte
- *   - CSV-Exports von Hibiscus koennen nun 1:1 auch wieder importiert werden (Import-Preset identisch mit Export-Format)
- *   - Import-Preset wird nun im XML-Format nach ~/.jameica/hibiscus/csv serialisiert. Damit wird es kuenftig moeglich sein,
- *     CSV-Import-Profile vorzukonfigurieren und anschliessend zu exportieren, um sie mit anderen Usern teilen zu koennen
- *
- **********************************************************************/

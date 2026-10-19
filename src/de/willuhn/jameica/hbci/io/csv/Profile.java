@@ -22,6 +22,8 @@ import org.supercsv.prefs.CsvPreference.Builder;
  */
 public class Profile implements Serializable, Comparable
 {
+  private static final long serialVersionUID = 1L;
+
   private String name          = null;
   private boolean system       = false;
   private List<Column> columns = new ArrayList<Column>();

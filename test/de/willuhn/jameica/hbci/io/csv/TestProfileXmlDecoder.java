@@ -16,7 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -40,7 +39,7 @@ public class TestProfileXmlDecoder
   @Test
   public void decodeProfiles() throws Exception
   {
-    DefaultSerializer serializer = new DefaultSerializer();
+    String  serializer = DefaultSerializer.ID;
     Profile first = new Profile();
     first.setName("First");
     first.setFileEncoding("ISO-8859-1");
@@ -120,7 +119,7 @@ public class TestProfileXmlDecoder
 
   private static List<Profile> decode(String xml) throws Exception
   {
-    return ProfileXmlDecoder.decode(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+    return LegacyProfileXmlDecoder.decode(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
   }
 
   private static String encode(Profile... profiles) throws Exception

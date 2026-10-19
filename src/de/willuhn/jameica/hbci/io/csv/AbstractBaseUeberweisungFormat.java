@@ -19,7 +19,6 @@ import de.willuhn.jameica.hbci.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.hbci.io.ser.DateSerializer;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
 import de.willuhn.jameica.hbci.io.ser.ExtendedUsageSerializer;
-import de.willuhn.jameica.hbci.io.ser.Serializer;
 import de.willuhn.jameica.hbci.io.ser.ValueSerializer;
 import de.willuhn.jameica.hbci.rmi.BaseUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Konto;
@@ -53,22 +52,20 @@ public abstract class AbstractBaseUeberweisungFormat<T extends BaseUeberweisung>
       this.profile.setSkipLines(1);
       this.profile.setSystem(true);
       
-      Serializer ts = new DefaultSerializer();
-      
       List<Column> list = this.profile.getColumns();
       int i = 0;
 
-      list.add(new Column("_konto",i18n.tr("Eigene Kontonummer"),i++,ts));
-      list.add(new Column("_blz",i18n.tr("Eigene BLZ"),i++,ts));
+      list.add(new Column("_konto",i18n.tr("Eigene Kontonummer"),i++,DefaultSerializer.ID));
+      list.add(new Column("_blz",i18n.tr("Eigene BLZ"),i++,DefaultSerializer.ID));
       i++; // Das ist im Hibiscus CSV-Export der Name des eigenen Kontos. Die brauchen wir nicht
-      list.add(new Column("gegenkontoNummer",i18n.tr("Gegenkonto"),i++,ts));
-      list.add(new Column("gegenkontoBLZ",   i18n.tr("Gegenkonto BLZ"),i++,ts));
-      list.add(new Column("gegenkontoName",  i18n.tr("Gegenkonto Inhaber"),i++,ts));
-      list.add(new Column("betrag",i18n.tr("Betrag"),i++,new ValueSerializer()));
-      list.add(new Column("termin",i18n.tr("Erinnerungstermin"),i++,new DateSerializer()));
-      list.add(new Column("zweck",i18n.tr("Verwendungszweck"),i++,ts));
-      list.add(new Column("zweck2",i18n.tr("Verwendungszweck 2"),i++,ts));
-      list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,new ExtendedUsageSerializer()));
+      list.add(new Column("gegenkontoNummer",i18n.tr("Gegenkonto"),i++,DefaultSerializer.ID));
+      list.add(new Column("gegenkontoBLZ",   i18n.tr("Gegenkonto BLZ"),i++,DefaultSerializer.ID));
+      list.add(new Column("gegenkontoName",  i18n.tr("Gegenkonto Inhaber"),i++,DefaultSerializer.ID));
+      list.add(new Column("betrag",i18n.tr("Betrag"),i++,ValueSerializer.ID));
+      list.add(new Column("termin",i18n.tr("Erinnerungstermin"),i++,DateSerializer.ID));
+      list.add(new Column("zweck",i18n.tr("Verwendungszweck"),i++,DefaultSerializer.ID));
+      list.add(new Column("zweck2",i18n.tr("Verwendungszweck 2"),i++,DefaultSerializer.ID));
+      list.add(new Column("weitereVerwendungszwecke",i18n.tr("Weitere Verwendungszwecke"),i++,ExtendedUsageSerializer.ID));
     }
     return this.profile;
   }

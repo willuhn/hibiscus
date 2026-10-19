@@ -10,25 +10,31 @@
 
 package de.willuhn.jameica.hbci.io.csv;
 
-import java.beans.ExceptionListener;
-import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang.StringUtils;
 
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVProfileStoreDialog;
+import de.willuhn.jameica.hbci.io.JAXBUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -36,14 +42,16 @@ import de.willuhn.util.I18N;
  */
 public class ProfileUtil
 {
+  private final static Settings settings = new Settings(ProfileUtil.class);
   private final static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
   
   /**
    * Laedt die vorhandenen Profile fuer das Format.
    * @param format das Format.
    * @return die Liste der Profile.
+   * @throws ApplicationException
    */
-  public static List<Profile> read(Format format)
+  public static List<Profile> read(Format format) throws ApplicationException
   {
     List<Profile> result = new ArrayList<Profile>();
 
@@ -62,34 +70,36 @@ public class ProfileUtil
     if (!dir.exists())
       return result;
     
-    File file = new File(dir,format.getClass().getName() + ".xml");
+    final String name = format.getClass().getName();
+    File file = new File(dir,name + ".xml");
     if (!file.exists() || !file.canRead())
       return result;
     
     Logger.info("reading csv profile " + file);
+    
     try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file)))
     {
-      for (Profile p:ProfileXmlDecoder.decode(input))
+      // Checken, ob wir die Daten schon migriert haben
+      if (settings.getString("profile-migration." + name,null) != null)
       {
-        // Migration aus der Zeit vor dem Support mulitpler Profile:
-        // Da konnte der User nur das eine existierende Profil aendern, es wurde automatisch gespeichert
-        // Das hatte gar keinen Namen. Falls also ein Profil ohne Name existiert (inzwischen koennen keine
-        // mehr ohne Name gespeichert werden), dann ist es das vom User geaenderte Profil. Das machen wir
-        // automatisch zum ersten User-spezifischen Profil
-        if (StringUtils.trimToNull(p.getName()) == null)
-        {
-          p.setName(dp.getName() + " 2");
-          p.setSystem(false);
-        }
-        result.add(p);
+        Logger.info("reading in new format");
+        // Ist bereits migriert. Wir können per JAXB deserialisieren
+        final Unmarshaller u = JAXBUtil.createUnmarshaller(ProfileConfig.class);
+        final ProfileConfig c = (ProfileConfig) u.unmarshal(input);
+        result.addAll(c.getProfiles());
       }
-      
+      else
+      {
+        // Ansonsten per Decoder.
+        Logger.info("reading in old format");
+        for (Profile p:LegacyProfileXmlDecoder.decode(input))
+        {
+          result.add(p);
+        }
+      }
+
       Logger.info("read " + (result.size() - 1) + " profiles from " + file);
       Collections.sort(result);
-      
-      // Der User hat beim letzten Mal eventuell nicht alle Spalten zugeordnet.
-      // Die wuerden jetzt hier in dem Objekt fehlen. Daher nehmen wir
-      // noch die Spalten aus dem Default-Profil und haengen die fehlenden noch an.
     }
     catch (Exception e)
     {
@@ -103,8 +113,9 @@ public class ProfileUtil
    * Speichert die Profile.
    * @param format das Format.
    * @param profiles die zu speichernden Profile.
+   * @throws ApplicationException 
    */
-  public static void store(Format format, List<Profile> profiles)
+  public static void store(Format format, List<Profile> profiles) throws ApplicationException
   {
     if (format == null)
     {
@@ -129,36 +140,40 @@ public class ProfileUtil
         return;
       }
     }
-    
-    File file = new File(dir,format.getClass().getName() + ".xml");
+
+    final String name = format.getClass().getName();
+    final File file = new File(dir,name + ".xml");
     
     Logger.info("writing csv profile " + file);
-    try (XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file))))
+    
+    final ProfileConfig conf = new ProfileConfig();
+    for (Profile p:profiles)
     {
-      encoder.setExceptionListener(new ExceptionListener()
-      {
-        public void exceptionThrown(Exception e)
-        {
-          throw new RuntimeException(e);
-        }
-      });
+      // Das System-Profil wird nicht mit gespeichert
+      if (p.isSystem())
+        continue;
       
-      for (Profile p:profiles)
-      {
-        // Das System-Profil wird nicht mit gespeichert
-        if (p.isSystem())
-          continue;
-        
-        // Ebenso Profile ohne Namen.
-        if (StringUtils.trimToNull(p.getName()) == null)
-          continue;
-        
-        encoder.writeObject(p);
-      }
+      // Ebenso Profile ohne Namen.
+      if (StringUtils.trimToNull(p.getName()) == null)
+        continue;
+
+      conf.getProfiles().add(p);
+    }
+    
+    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file)))
+    {
+      final Marshaller m = JAXBUtil.createMarshaller(ProfileConfig.class);
+      m.marshal(conf,os);
+      settings.setAttribute("profile-migration." + name,HBCI.LONGDATEFORMAT.format(new Date()));
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
     }
     catch (Exception e)
     {
       Logger.error("unable to store profile " + file, e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Speichern des Profils fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
   }
   
@@ -198,8 +213,9 @@ public class ProfileUtil
    * @param format das Format.
    * @param profile das zu speichernde Profil.
    * @return true, wenn das Profil geloescht wurde.
+   * @throws ApplicationException 
    */
-  public static boolean delete(Format format, Profile profile)
+  public static boolean delete(Format format, Profile profile) throws ApplicationException
   {
     if (profile == null || format == null)
       return false;

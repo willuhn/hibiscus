@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.eclipse.swt.SWTException;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
@@ -38,6 +40,9 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.dialogs.CSVImportDialog;
 import de.willuhn.jameica.hbci.io.IOFormat;
 import de.willuhn.jameica.hbci.io.Importer;
+import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
+import de.willuhn.jameica.hbci.io.ser.Serializer;
+import de.willuhn.jameica.hbci.io.ser.SerializerRegistry;
 import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
@@ -55,6 +60,8 @@ import de.willuhn.util.ProgressMonitor;
 public class CsvImporter implements Importer
 {
   private static I18N i18n = Application.getPluginLoader().getPlugin(HBCI.class).getResources().getI18N();
+  
+  @Resource private BeanService bs;
 
   @Override
   public void doImport(Object context, IOFormat format, InputStream is, ProgressMonitor monitor, BackgroundTask t) throws RemoteException, ApplicationException
@@ -126,6 +133,27 @@ public class CsvImporter implements Importer
       List<Column> cols = p.getColumns();
       ImportListener l  = f.getImportListener();
 
+      /////////////////////////////////////////
+      // Lookup für die Serializer erzeugen
+      // Wir machen eine Instanz pro Import
+      final SerializerRegistry sr = bs.get(SerializerRegistry.class);
+      final Map<String,Serializer> serializers = new HashMap<>();
+      for (Column col:cols)
+      {
+        String id = col.getSerializer();
+        if (id == null || id.length() == 0)
+          id = DefaultSerializer.ID;
+        
+        Serializer s = sr.getSerializer(id);
+        if (s == null)
+          s = new DefaultSerializer();
+        
+        serializers.put(id,s);
+      }
+      //
+      /////////////////////////////////////////
+      
+
       DBService service = (DBService) Application.getServiceFactory().lookup(HBCI.class,"database");
       do
       {
@@ -168,7 +196,7 @@ public class CsvImporter implements Importer
             {
               // Werte zwischenspeichern
               Object prev = values.get(column.getProperty());
-              values.put(column.getProperty(),column.getSerializer().unserialize(prev,value));
+              values.put(column.getProperty(),serializers.get(column.getSerializer()).unserialize(prev,value));
             }
             catch (Exception e)
             {
