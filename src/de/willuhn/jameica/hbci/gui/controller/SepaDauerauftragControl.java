@@ -28,7 +28,6 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.hbci.HBCI;
-import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.gui.action.HibiscusAddressUpdate;
@@ -333,7 +332,6 @@ public class SepaDauerauftragControl extends AbstractControl
     SepaDauerauftrag t = getTransfer();
 
     empfName = new AddressInput(t.getGegenkontoName(), AddressFilter.FOREIGN);
-    empfName.setValidChars(HBCIProperties.HBCI_SEPA_VALIDCHARS);
     empfName.setMandatory(true);
     empfName.addListener(new EmpfaengerListener());
     if (t.isActive())
