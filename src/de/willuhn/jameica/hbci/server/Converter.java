@@ -14,7 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV_Result.GVRDauerList;
 import org.kapott.hbci.GV_Result.GVRKUms;
 import org.kapott.hbci.GV_Result.GVRKontoauszug.Format;
@@ -36,6 +35,7 @@ import de.willuhn.jameica.hbci.rmi.Kontoauszug;
 import de.willuhn.jameica.hbci.rmi.SepaDauerauftrag;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -181,9 +181,9 @@ public class Converter
 
     // Wenn wir noch keine Gegenkonto-Infos haben, versuchen wir mal, sie aus
     // dem Verwendungszweck zu extrahieren
-    boolean haveIban = StringUtils.trimToNull(umsatz.getGegenkontoNummer()) != null;
-    boolean haveBic  = StringUtils.trimToNull(umsatz.getGegenkontoBLZ()) != null;
-    boolean haveName = StringUtils.trimToNull(umsatz.getGegenkontoName()) != null;
+    boolean haveIban = StringUtils.isNotBlank(umsatz.getGegenkontoNummer());
+    boolean haveBic  = StringUtils.isNotBlank(umsatz.getGegenkontoBLZ());
+    boolean haveName = StringUtils.isNotBlank(umsatz.getGegenkontoName());
 
     if (!haveIban || !haveBic || !haveName)
     {
@@ -197,7 +197,7 @@ public class Converter
 
       Iban i = null;
 
-      if (!haveIban && StringUtils.trimToNull(iban) != null)
+      if (!haveIban && StringUtils.isNotBlank(iban))
       {
         // Nur uebernehmen, wenn es eine gueltige IBAN ist
         try

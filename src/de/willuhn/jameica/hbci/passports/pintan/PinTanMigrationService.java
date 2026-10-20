@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -23,6 +22,7 @@ import de.willuhn.annotation.Lifecycle;
 import de.willuhn.annotation.Lifecycle.Type;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 
@@ -73,7 +73,7 @@ public class PinTanMigrationService
         {
           final String url = prepareUrl(conf.getURL());
           final String blz = conf.getBLZ();
-          if (StringUtils.trimToNull(url) == null || StringUtils.trimToNull(blz) == null)
+          if (StringUtils.isBlank(url) || StringUtils.isBlank(blz))
           {
             Logger.warn("missing url/blz in pin/tan config - skipping " + conf.getFilename());
             continue;
@@ -85,7 +85,7 @@ public class PinTanMigrationService
             continue;
           
           final String newUrl = prepareUrl(info.getPinTanAddress());
-          if (StringUtils.trimToNull(newUrl) == null)
+          if (StringUtils.isBlank(newUrl))
             continue; // Wir haben keine URL für die Bank
           
           if (!url.equals(newUrl))

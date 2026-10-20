@@ -14,8 +14,6 @@ import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
@@ -118,7 +116,7 @@ public class UmsatzTypBean implements GenericObjectNode
    */
   public String getIndented() throws RemoteException
   {
-    return StringUtils.repeat("    ",this.getLevel()) + this.typ.getName();
+    return "    ".repeat(this.getLevel()) + this.typ.getName();
   }
   
   /**

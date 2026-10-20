@@ -11,8 +11,6 @@ package de.willuhn.jameica.hbci.gui.menus;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -40,6 +38,7 @@ import de.willuhn.jameica.hbci.gui.action.UmsatzDetailEdit;
 import de.willuhn.jameica.hbci.gui.action.UmsatzImport;
 import de.willuhn.jameica.hbci.rmi.Flaggable;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;

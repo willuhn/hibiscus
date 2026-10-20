@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.HBCI;
@@ -37,6 +35,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -153,7 +152,7 @@ public class MT940UmsatzExporter implements Exporter
     		
       	// Fallback, wenn wir keinen GV-Code haben. Das trifft u.a. bei Alt-Umsaetzen
     		// auf, als Hibiscus das Feld noch nicht unterstuetzte.
-    		if (StringUtils.trimToNull(gvcode) == null)
+    		if (StringUtils.isBlank(gvcode))
       		gvcode = betrag >= 0.0d? "051" : "020";
     		
     		out.write(":86:" + gvcode + "?00" + StringUtils.trimToEmpty(u.getArt()) + "?10" + StringUtils.trimToEmpty(u.getPrimanota()));

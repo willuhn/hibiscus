@@ -11,7 +11,6 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -33,6 +32,7 @@ import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.io.csv.Format;
 import de.willuhn.jameica.hbci.io.csv.Profile;
 import de.willuhn.jameica.hbci.io.csv.ProfileUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;

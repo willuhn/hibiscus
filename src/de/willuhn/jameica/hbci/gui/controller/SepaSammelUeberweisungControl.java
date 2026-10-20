@@ -16,7 +16,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -40,6 +39,7 @@ import de.willuhn.jameica.hbci.gui.parts.SepaSammelUeberweisungList;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaSammelUeberweisung;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -82,7 +82,7 @@ public class SepaSammelUeberweisungControl extends AbstractSepaSammelTransferCon
       return this.name;
     
     this.name = super.getName();
-    if (StringUtils.trimToNull((String)this.name.getValue()) == null)
+    if (StringUtils.isBlank((String)this.name.getValue()))
       this.name.setValue(i18n.tr("SEPA-Sammelüberweisung vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
     return this.name;
   }

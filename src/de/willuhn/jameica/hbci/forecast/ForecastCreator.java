@@ -18,8 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.gui.filter.KontoFilter;
 import de.willuhn.jameica.hbci.messaging.SaldoLimitsMessage;
@@ -29,6 +27,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.Value;
 import de.willuhn.jameica.hbci.util.SaldoFinder;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;

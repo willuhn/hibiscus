@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -57,6 +56,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastschrift;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
 import de.willuhn.jameica.hbci.server.UmsatzUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -363,10 +363,10 @@ public class EmpfaengerControl extends AbstractControl
           try
           {
             String iban      = (String) getIban().getValue();
-            boolean haveIban = StringUtils.trimToNull(iban) != null;
-            boolean haveKto  = StringUtils.trimToNull((String) getKontonummer().getValue()) != null;
-            boolean haveBlz  = StringUtils.trimToNull((String) getBlz().getValue()) != null;
-            boolean haveBank = StringUtils.trimToNull((String) getBank().getValue()) != null;
+            boolean haveIban = StringUtils.isNotBlank(iban);
+            boolean haveKto  = StringUtils.isNotBlank((String) getKontonummer().getValue());
+            boolean haveBlz  = StringUtils.isNotBlank((String) getBlz().getValue());
+            boolean haveBank = StringUtils.isNotBlank((String) getBank().getValue());
 
             if (!haveIban)
               return;
@@ -433,7 +433,7 @@ public class EmpfaengerControl extends AbstractControl
             String bic = (String) getBic().getValue();
             String blz = (String) getBlz().getValue();
             
-            if (StringUtils.trimToNull(bic) != null && StringUtils.trimToNull(blz) == null)
+            if (StringUtils.isNotBlank(bic) && StringUtils.isBlank(blz))
             {
               Optional<BankData> bankData = BankDataLookup.byBic(bic);
               if (!bankData.isPresent())

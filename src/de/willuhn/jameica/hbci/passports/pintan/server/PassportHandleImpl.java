@@ -13,7 +13,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.callback.HBCICallback;
 import org.kapott.hbci.manager.HBCIHandler;
 import org.kapott.hbci.manager.HBCIVersion;
@@ -42,6 +41,7 @@ import de.willuhn.jameica.hbci.passports.pintan.TanMediaDialog;
 import de.willuhn.jameica.hbci.passports.pintan.rmi.PinTanConfig;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.server.Converter;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;

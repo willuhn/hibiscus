@@ -20,7 +20,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -138,7 +137,7 @@ public class NeueUmsaetze implements MessageConsumer
       return PseudoIterator.fromArray(new Umsatz[0]);
     
     DBIterator list = UmsatzUtil.getUmsaetzeBackwards();
-    list.addFilter("id in (" + StringUtils.join(unread,",") + ")");
+    list.addFilter("id in (" + String.join(",",unread) + ")");
     if (list.size() == 0)
       unread.clear(); // Wenn nichts gefunden wurde, resetten wir uns
     return list;
@@ -290,7 +289,7 @@ public class NeueUmsaetze implements MessageConsumer
       try
       {
         Logger.info("store umsatz unread count");
-        DBPropertyUtil.set(Prefix.UNREAD,"umsatz",null,"count",StringUtils.join(unread,","));
+        DBPropertyUtil.set(Prefix.UNREAD,"umsatz",null,"count",String.join(",",unread));
         Logger.info("umsatz unread count: " + unread.size());
       }
       catch (Throwable t)
@@ -316,7 +315,8 @@ public class NeueUmsaetze implements MessageConsumer
         Logger.write(level,"load umsatz unread count");
         
         // Die neuen IDs laden
-        final String[] ids = StringUtils.split(DBPropertyUtil.get(Prefix.UNREAD,"umsatz",null,"count",""),",");
+        final String idsStr = DBPropertyUtil.get(Prefix.UNREAD,"umsatz",null,"count","");
+        final String[] ids = idsStr.isEmpty() ? new String[0] : idsStr.split(",");
         unread.clear();
         unread.addAll(Arrays.asList(ids));
         
@@ -335,7 +335,7 @@ public class NeueUmsaetze implements MessageConsumer
         // Wenn jetzt noch welche in unread drin sind, dann sind das genau die,
         // die inzwischen nicht mehr existieren
         if (unread.size() > 0)
-          Logger.info("removed unread entries that no longer exist in database: " + StringUtils.join(unread,","));
+          Logger.info("removed unread entries that no longer exist in database: " + String.join(",",unread));
         
         unread = existing;
         Logger.write(level,"umsatz unread count: " + unread.size());

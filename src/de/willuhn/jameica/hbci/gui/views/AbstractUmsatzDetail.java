@@ -12,8 +12,6 @@ package de.willuhn.jameica.hbci.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.MultiInput;
@@ -24,6 +22,7 @@ import de.willuhn.jameica.hbci.gui.controller.UmsatzDetailControl;
 import de.willuhn.jameica.hbci.messaging.NeueUmsaetze;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 

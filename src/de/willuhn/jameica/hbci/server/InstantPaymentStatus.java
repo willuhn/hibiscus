@@ -10,9 +10,8 @@
 
 package de.willuhn.jameica.hbci.server;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -88,7 +87,7 @@ public enum InstantPaymentStatus
    */
   public static InstantPaymentStatus determine(String status)
   {
-    if (StringUtils.trimToNull(status) == null)
+    if (StringUtils.isBlank(status))
       return null;
 
     try

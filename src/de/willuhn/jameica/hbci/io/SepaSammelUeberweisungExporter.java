@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.SepaUtil;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.sepa.SepaVersion.Type;
@@ -24,6 +23,7 @@ import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisungBuchung;
+import de.willuhn.jameica.hbci.util.StringUtils;
 
 /**
  * Exporter fuer SEPA-Sammel-Ueberweisungen.

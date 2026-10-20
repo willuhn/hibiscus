@@ -12,7 +12,6 @@ package de.willuhn.jameica.hbci.gui.parts;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +33,7 @@ import de.willuhn.jameica.hbci.messaging.ImportMessage;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.SammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -109,7 +109,7 @@ public class SammelTransferBuchungList extends TablePart
       public void format(TableItem item) {
         try {
           SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
-          if (StringUtils.trimToNull(b.getWarnung()) != null)
+          if (StringUtils.isNotBlank(b.getWarnung()))
             item.setForeground(Color.ERROR.getSWTColor());
           else if (b.getSammelTransfer().ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());
@@ -160,7 +160,7 @@ public class SammelTransferBuchungList extends TablePart
       public void format(TableItem item) {
         try {
           SammelTransferBuchung b = (SammelTransferBuchung) item.getData();
-          if (StringUtils.trimToNull(b.getWarnung()) != null)
+          if (StringUtils.isNotBlank(b.getWarnung()))
             item.setForeground(Color.ERROR.getSWTColor());
           else if (a.ausgefuehrt())
             item.setForeground(Color.COMMENT.getSWTColor());

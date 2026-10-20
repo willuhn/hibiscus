@@ -14,10 +14,9 @@ import java.beans.XMLEncoder;
 import java.io.ByteArrayOutputStream;
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.rmi.DBReminder;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.reminder.Reminder;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -47,7 +46,7 @@ public class DBReminderImpl extends AbstractHibiscusDBObject implements DBRemind
   {
     try
     {
-      if (StringUtils.trimToNull(this.getUUID()) == null)
+      if (StringUtils.isBlank(this.getUUID()))
         throw new ApplicationException(i18n.tr("Keine UUID angegeben."));
 
       if (this.getReminder() == null)

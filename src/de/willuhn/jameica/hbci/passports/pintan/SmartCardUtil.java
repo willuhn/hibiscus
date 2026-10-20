@@ -10,6 +10,8 @@
 
 package de.willuhn.jameica.hbci.passports.pintan;
 
+import de.willuhn.jameica.hbci.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,6 @@ import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.smartcardio.ChipTanCardService;
 import org.kapott.hbci.smartcardio.SmartCardService;
 

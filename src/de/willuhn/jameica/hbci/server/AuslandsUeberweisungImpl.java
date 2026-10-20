@@ -13,14 +13,13 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.rmi.AuslandsUeberweisung;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -101,12 +100,12 @@ public class AuslandsUeberweisungImpl extends AbstractBaseUeberweisungImpl imple
       HBCIProperties.checkLength(s, HBCIProperties.HBCI_IBAN_MAXLENGTH);
       HBCIProperties.checkIBAN(s);
 
-      if (StringUtils.trimToNull(getGegenkontoBLZ()) != null)
+      if (StringUtils.isNotBlank(getGegenkontoBLZ()))
         HBCIProperties.checkBIC(getGegenkontoBLZ());
       //
       //////////////////////////////////////
 
-      if (StringUtils.trimToNull(getGegenkontoName()) == null)
+      if (StringUtils.isBlank(getGegenkontoName()))
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
       HBCIProperties.checkLength(getGegenkontoName(), HBCIProperties.HBCI_SEPATRANSFER_USAGE_MAXLENGTH);
       HBCIProperties.checkChars(getGegenkontoName(), HBCIProperties.HBCI_SEPA_VALIDCHARS);

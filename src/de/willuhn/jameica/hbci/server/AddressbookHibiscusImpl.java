@@ -15,8 +15,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.speedbanking.bankdata.BankData;
 import de.speedbanking.bankdata.BankDataLookup;
 import de.willuhn.datasource.GenericObject;
@@ -28,6 +26,7 @@ import de.willuhn.jameica.hbci.rmi.Address;
 import de.willuhn.jameica.hbci.rmi.Addressbook;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -188,7 +187,7 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
       
       String bic = null;
       
-      if (HBCI.COMPLETE_IBAN && StringUtils.trimToNull(address.getIban()) == null)
+      if (HBCI.COMPLETE_IBAN && StringUtils.isBlank(address.getIban()))
       {
         IbanCommonsProperties.IbanAndBic iban = IbanCommonsProperties.getIBAN(blz,konto);
         bic = iban.getBic();
@@ -196,11 +195,11 @@ public class AddressbookHibiscusImpl extends UnicastRemoteObject implements Addr
         haveChanged = true;
       }
 
-      if (StringUtils.trimToNull(address.getBic()) == null)
+      if (StringUtils.isBlank(address.getBic()))
       {
         if (bic == null) // nur wenn sie nicht schon ermittelt wurde
           bic = BankDataLookup.byBankCode("DE",blz).map(BankData::getBic).map(Object::toString).orElse(null);
-        if (StringUtils.trimToNull(bic) != null)
+        if (StringUtils.isNotBlank(bic))
         {
           address.setBic(bic);
           haveChanged = true;

@@ -13,7 +13,6 @@ package de.willuhn.jameica.hbci.gui.input;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -22,6 +21,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -139,7 +139,7 @@ public class BLZInput extends AccountInput
           {
             String name = HBCIProperties.getNameForBank(b);
             setComment(name);
-            if (StringUtils.trimToNull(name) != null)
+            if (StringUtils.isNotBlank(name))
             {
               arg0.data = b;
               for (Listener l:blzListener)

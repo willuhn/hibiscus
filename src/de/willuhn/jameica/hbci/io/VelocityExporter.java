@@ -22,13 +22,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import de.willuhn.io.FileFinder;
 import de.willuhn.jameica.hbci.HBCI;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;

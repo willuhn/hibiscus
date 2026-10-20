@@ -10,10 +10,9 @@
 
 package de.willuhn.jameica.hbci.gui.formatter;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.hbci.HBCIProperties;
+import de.willuhn.jameica.hbci.util.StringUtils;
 
 /**
  * Formatiert eine IBAN.

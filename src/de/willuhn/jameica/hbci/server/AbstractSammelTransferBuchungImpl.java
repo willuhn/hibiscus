@@ -11,12 +11,11 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
 import de.willuhn.jameica.hbci.rmi.Duplicatable;
 import de.willuhn.jameica.hbci.rmi.SammelTransferBuchung;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -70,7 +69,7 @@ public abstract class AbstractSammelTransferBuchungImpl extends AbstractHibiscus
       HBCIProperties.checkChars(getGegenkontoBLZ(), HBCIProperties.HBCI_BLZ_VALIDCHARS);
       HBCIProperties.checkLength(getGegenkontoNummer(), HBCIProperties.HBCI_KTO_MAXLENGTH_HARD);
 
-      if (StringUtils.trimToNull(getGegenkontoName()) == null)
+      if (StringUtils.isBlank(getGegenkontoName()))
         throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
 
       int blzLen = getGegenkontoBLZ().length();

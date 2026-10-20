@@ -19,8 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.hbci.HBCI;
@@ -28,6 +26,7 @@ import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.HBCIDBService;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.util.ApplicationException;
@@ -135,7 +134,7 @@ public class UmsatzUtil
     
     if (konto != null)
       list.addFilter("konto_id = " + konto.getID());
-    else if (StringUtils.trimToNull(kategorie) != null)
+    else if (StringUtils.isNotBlank(kategorie))
       list.addFilter("konto_id in (select id from konto where kategorie = ?)", kategorie);
     
     if (from != null)
@@ -143,7 +142,7 @@ public class UmsatzUtil
     if (to != null)
       list.addFilter("datum <= ?", new java.sql.Date(DateUtil.endOfDay(to).getTime()));
     
-    if (StringUtils.trimToNull(query) != null)
+    if (StringUtils.isNotBlank(query))
     {
       final String text = "%" + query.toLowerCase() + "%";
       String search = "(LOWER(CONCAT(COALESCE(zweck,''),COALESCE(zweck2,''),COALESCE(zweck3,''))) LIKE ? OR " +

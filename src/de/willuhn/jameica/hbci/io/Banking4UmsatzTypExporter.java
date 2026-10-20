@@ -17,13 +17,12 @@ import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -119,7 +118,7 @@ public class Banking4UmsatzTypExporter extends AbstractBanking4UmsatzTypIO imple
       monitor.setPercentComplete((int)((i.get()+1) * factor));
     
     final StringBuilder sb = new StringBuilder();
-    sb.append(StringUtils.repeat("\t",indent));
+    sb.append("\t".repeat(indent));
     sb.append(ut.getName().replace(SEP,""));
     sb.append(SEP);
     sb.append(StringUtils.trimToEmpty(ut.getKommentar()));

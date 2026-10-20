@@ -13,8 +13,6 @@ package de.willuhn.jameica.hbci.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.input.DateInput;
@@ -36,6 +34,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJob;
 import de.willuhn.jameica.hbci.synchronize.jobs.SynchronizeJobSepaSammelLastschrift;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
@@ -93,7 +92,7 @@ public class SepaSammelLastschriftControl extends AbstractSepaSammelTransferCont
       return this.name;
     
     this.name = super.getName();
-    if (StringUtils.trimToNull((String)this.name.getValue()) == null)
+    if (StringUtils.isBlank((String)this.name.getValue()))
       this.name.setValue(i18n.tr("SEPA-Sammellastschrift vom {0}",HBCI.LONGDATEFORMAT.format(new Date())));
     return this.name;
   }

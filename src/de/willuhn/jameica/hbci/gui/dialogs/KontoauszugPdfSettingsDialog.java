@@ -13,7 +13,6 @@ package de.willuhn.jameica.hbci.gui.dialogs;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -50,6 +49,7 @@ import de.willuhn.jameica.hbci.server.BPDUtil;
 import de.willuhn.jameica.hbci.server.BPDUtil.Query;
 import de.willuhn.jameica.hbci.server.BPDUtil.Support;
 import de.willuhn.jameica.hbci.server.KontoauszugPdfUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;

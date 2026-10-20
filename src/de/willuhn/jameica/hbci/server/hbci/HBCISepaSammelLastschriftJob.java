@@ -14,8 +14,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.hbci.MetaKey;
 import de.willuhn.jameica.hbci.Settings;
@@ -24,6 +22,7 @@ import de.willuhn.jameica.hbci.rmi.SepaLastSequenceType;
 import de.willuhn.jameica.hbci.rmi.SepaLastType;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelLastschrift;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 

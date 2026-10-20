@@ -13,7 +13,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.GV.HBCIJob;
 
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -26,6 +25,7 @@ import de.willuhn.jameica.hbci.rmi.Turnus;
 import de.willuhn.jameica.hbci.server.Converter;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
 import de.willuhn.jameica.hbci.server.hbci.tests.CanTermDelRestriction;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 

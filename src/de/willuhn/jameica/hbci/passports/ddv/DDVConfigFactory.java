@@ -22,7 +22,6 @@ import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.passport.AbstractHBCIPassport;
 import org.kapott.hbci.passport.HBCIPassportChipcard;
@@ -34,6 +33,7 @@ import de.willuhn.jameica.hbci.passports.ddv.rmi.Reader.Type;
 import de.willuhn.jameica.hbci.passports.ddv.server.CustomReader;
 import de.willuhn.jameica.hbci.passports.ddv.server.PassportHandleImpl;
 import de.willuhn.jameica.hbci.rmi.Konto;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.services.BeanService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -464,7 +464,7 @@ public class DDVConfigFactory
     {
       String pcscName = config.getPCSCName();
       Logger.info("  pcsc name: " + pcscName);
-      if (StringUtils.trimToNull(pcscName) != null)
+      if (StringUtils.isNotBlank(pcscName))
       {
         HBCIUtils.setParam(PassportParameter.get(type,PassportParameter.NAME),pcscName);
       }

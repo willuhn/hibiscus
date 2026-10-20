@@ -11,8 +11,6 @@ package de.willuhn.jameica.hbci.server;
 
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.hbci.HBCI;
 import de.willuhn.jameica.hbci.HBCIProperties;
@@ -21,6 +19,7 @@ import de.willuhn.jameica.hbci.rmi.HibiscusTransfer;
 import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.Protokoll;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -103,7 +102,7 @@ public abstract class AbstractHibiscusTransferImpl extends AbstractHibiscusDBObj
       if (betrag == 0.0 || Double.isNaN(betrag))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag ein."));
 
-      if (StringUtils.trimToNull(getGegenkontoName()) == null)
+      if (StringUtils.isBlank(getGegenkontoName()))
 				throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen des Kontoinhabers des Gegenkontos ein"));
 
       int blzLen = getGegenkontoBLZ().length();

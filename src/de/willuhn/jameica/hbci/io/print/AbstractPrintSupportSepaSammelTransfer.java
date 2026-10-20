@@ -14,7 +14,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.RGB;
 
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -25,6 +24,7 @@ import de.willuhn.jameica.hbci.rmi.SepaSammelTransfer;
 import de.willuhn.jameica.hbci.rmi.SepaSammelTransferBuchung;
 import de.willuhn.jameica.hbci.rmi.SepaSammelUeberweisung;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import net.sf.paperclips.DefaultGridLook;
@@ -102,9 +102,9 @@ public abstract class AbstractPrintSupportSepaSammelTransfer<T extends SepaSamme
           final String bic   = b.getGegenkontoBLZ();
           final String bank  = HBCIProperties.getNameForBank(bic);
           String text = b.getGegenkontoName() + ", IBAN " + HBCIProperties.formatIban(b.getGegenkontoNummer());
-          if (StringUtils.trimToNull(bic) != null)
+          if (StringUtils.isNotBlank(bic))
             text += ", BIC " + bic;
-          if (StringUtils.trimToNull(bank) != null)
+          if (StringUtils.isNotBlank(bank))
             text += " (" + bank + ")";
           
           children.add(new TextPrint(text,fontTiny));

@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -53,6 +52,7 @@ import de.willuhn.jameica.hbci.rmi.Konto;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.KontoUtil;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -275,7 +275,7 @@ public class UmsatzTypTree extends TreePart
   private Set<String> createVisibleIDs() throws RemoteException
   {
     String query = (String) this.getFilterText().getValue();
-    if (StringUtils.trimToNull(query) == null)
+    if (StringUtils.isBlank(query))
       return null;
     
     query = query.toLowerCase();

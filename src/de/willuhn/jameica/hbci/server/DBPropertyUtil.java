@@ -17,12 +17,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang.ObjectUtils;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -517,7 +516,7 @@ public class DBPropertyUtil
       if (oldValue != null)
       {
         // Unveraendert: nichts zu tun
-        if (ObjectUtils.equals(oldValue.getValue(),updateValue))
+        if (Objects.equals(oldValue.getValue(),updateValue))
           continue;
         
         // Geaendert: Wert aktualisieren

@@ -9,7 +9,6 @@
  **********************************************************************/
 package de.willuhn.jameica.hbci;
 
-import org.apache.commons.lang.StringUtils;
 import org.kapott.hbci.manager.BankInfo;
 import org.kapott.hbci.manager.HBCIUtils;
 
@@ -24,6 +23,7 @@ import de.speedbanking.iban.InvalidIbanException;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.hbci.rmi.AddressbookService;
 import de.willuhn.jameica.hbci.rmi.HibiscusAddress;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -102,7 +102,7 @@ public class IbanCommonsProperties
    */
   public final static void checkIBAN(String iban) throws ApplicationException
   {
-    if (StringUtils.trimToNull(iban) == null)
+    if (StringUtils.isBlank(iban))
       throw new ApplicationException(i18n.tr("Bitte geben Sie eine IBAN ein"));
 
     iban = StringUtils.deleteWhitespace(iban);
@@ -159,7 +159,7 @@ public class IbanCommonsProperties
    */
   public final static Iban getIBAN(String iban) throws ApplicationException
   {
-    if (StringUtils.trimToNull(iban) == null)
+    if (StringUtils.isBlank(iban))
       return null;
 
     iban = StringUtils.deleteWhitespace(iban);

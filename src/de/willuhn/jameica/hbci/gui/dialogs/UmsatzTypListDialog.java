@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -46,6 +45,7 @@ import de.willuhn.jameica.hbci.gui.ColorUtil;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.UmsatzTypBean;
 import de.willuhn.jameica.hbci.server.UmsatzTypUtil;
+import de.willuhn.jameica.hbci.util.StringUtils;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -277,7 +277,7 @@ public class UmsatzTypListDialog extends AbstractDialog
           
           // Uebergeordnete Kategorie nur anzeigen, wenn sie derzeit aufgrund eines Filters nicht angezeigt wird
           String q = (String) getSearch().getValue();
-          if (StringUtils.trimToNull(q) != null) // Wenn nichts in der Suche steht, muss die Eltern-Kategorie da sein
+          if (StringUtils.isNotBlank(q)) // Wenn nichts in der Suche steht, muss die Eltern-Kategorie da sein
           {
             // Nur dann etwas eintragen, wenn sie ein Parent hat und wenn dieses derzeit nicht angezeigt wird
             UmsatzTypBean parent = b.getParent();
