@@ -10,12 +10,11 @@
 
 package de.willuhn.jameica.hbci.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * Testet den Date-Parser.
