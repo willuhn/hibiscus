@@ -510,6 +510,12 @@ public class Converter
     k.setIban(konto.iban);
     k.setAccountType(accType);
     k.setBic(konto.bic);
+
+    // Manche Banken (z.B. DKB) liefern in den UPD keine BIC. Dann wie in der
+    // Konto-Maske aus der BLZ ermitteln, sonst scheitert der erste Abruf.
+    if (StringUtils.isBlank(konto.bic) && konto.blz != null && konto.blz.length() == HBCIProperties.HBCI_BLZ_LENGTH)
+      k.setBic(BankDataLookup.byBankCode("DE",konto.blz).map(BankData::getBic).map(Object::toString).orElse(null));
+
     if (passportClass != null)
       k.setPassportClass(passportClass.getName());
     return k;  	
