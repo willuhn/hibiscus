@@ -23,8 +23,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
-
 /**
  * Tests the data-only CSV profile decoder.
  */
@@ -35,33 +33,65 @@ public class TestProfileXmlDecoder
 
   /**
    * Existing XMLEncoder profiles and shared serializers remain readable.
+   * @throws Exception
    */
   @Test
-  public void decodeProfiles() throws Exception
+  public void decodeLecagyProfiles() throws Exception
   {
-    String  serializer = DefaultSerializer.ID;
-    Profile first = new Profile();
-    first.setName("First");
-    first.setFileEncoding("ISO-8859-1");
-    first.setInvert(true);
-    first.setQuotingChar("'");
-    first.setSeparatorChar(",");
-    first.setSkipLines(2);
-    first.getColumns().add(new Column("name","Name",0,serializer));
-    first.getColumns().add(new Column("iban","IBAN",1,serializer));
-    Profile second = new Profile();
-    second.setName("Second");
-    second.getColumns().add(new Column("name","Name",0,serializer));
-
-    List<Profile> decoded = decode(encode(first,second));
+    final String xml = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <java version="17.0.17" class="java.beans.XMLDecoder">
+     <object class="de.willuhn.jameica.hbci.io.csv.Profile" id="Profile0">
+      <void property="columns">
+       <void method="add">
+        <object class="de.willuhn.jameica.hbci.io.csv.Column">
+         <void property="column"><int>0</int></void>
+         <void property="name"><string>Name</string></void>
+         <void property="property"><string>name</string></void>
+         <void property="serializer"><object class="de.willuhn.jameica.hbci.io.ser.DefaultSerializer" id="DefaultSerializer0"/></void>
+        </object>
+       </void>
+       <void method="add">
+        <object class="de.willuhn.jameica.hbci.io.csv.Column">
+         <void property="column"><int>1</int></void>
+         <void property="name"><string>IBAN</string></void>
+         <void property="property"><string>iban</string></void>
+         <void property="serializer"><object idref="DefaultSerializer0"/></void>
+        </object>
+       </void>
+      </void>
+      <void property="fileEncoding"><string>ISO-8859-1</string></void>
+      <void property="invert"><boolean>true</boolean></void>
+      <void property="name"><string>First</string></void>
+      <void property="quotingChar"><string>&apos;</string></void>
+      <void property="separatorChar"><string>,</string></void>
+      <void property="skipLines"><int>2</int></void>
+     </object>
+     <object class="de.willuhn.jameica.hbci.io.csv.Profile" id="Profile1">
+      <void property="columns">
+       <void method="add">
+        <object class="de.willuhn.jameica.hbci.io.csv.Column">
+         <void property="column"><int>0</int></void>
+         <void property="name"><string>Name</string></void>
+         <void property="property"><string>name</string></void>
+         <void property="serializer"><object idref="DefaultSerializer0"/></void>
+        </object>
+       </void>
+      </void>
+      <void property="name"><string>Second</string></void>
+     </object>
+    </java>
+    """;
+    
+    List<Profile> decoded = decode(xml);
     Assert.assertEquals(2,decoded.size());
     Profile actual = decoded.get(0);
-    Assert.assertEquals(first.getName(),actual.getName());
-    Assert.assertEquals(first.getFileEncoding(),actual.getFileEncoding());
-    Assert.assertEquals(first.isInvert(),actual.isInvert());
-    Assert.assertEquals(first.getQuotingChar(),actual.getQuotingChar());
-    Assert.assertEquals(first.getSeparatorChar(),actual.getSeparatorChar());
-    Assert.assertEquals(first.getSkipLines(),actual.getSkipLines());
+    Assert.assertEquals("First",actual.getName());
+    Assert.assertEquals("ISO-8859-1",actual.getFileEncoding());
+    Assert.assertEquals(true,actual.isInvert());
+    Assert.assertEquals("'",actual.getQuotingChar());
+    Assert.assertEquals(",",actual.getSeparatorChar());
+    Assert.assertEquals(2,actual.getSkipLines());
     Assert.assertEquals(2,actual.getColumns().size());
     Assert.assertEquals("iban",actual.getColumns().get(1).getProperty());
     Assert.assertSame(actual.getColumns().get(0).getSerializer(),actual.getColumns().get(1).getSerializer());
@@ -117,11 +147,23 @@ public class TestProfileXmlDecoder
     }
   }
 
+  /**
+   * Decodiert die Profile explizit im alten Format.
+   * @param xml das XML.
+   * @return die Profile.
+   * @throws Exception
+   */
   private static List<Profile> decode(String xml) throws Exception
   {
     return LegacyProfileXmlDecoder.decode(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
   }
 
+  /**
+   * Schreibt Profile explizit im alten Format.
+   * @param profiles die Profile.
+   * @return die serialisierten Profile.
+   * @throws Exception
+   */
   private static String encode(Profile... profiles) throws Exception
   {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
