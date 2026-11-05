@@ -36,7 +36,10 @@ public class KontoCopyIBAN extends CopyClipboard
     
     try
     {
-      super.handleAction(StringUtils.deleteWhitespace(k.getIban()));
+      final String s = StringUtils.deleteWhitespace(k.getIban());
+      if (StringUtils.isEmpty(s))
+        return;
+      super.handleAction(s);
     }
     catch (Exception e)
     {
