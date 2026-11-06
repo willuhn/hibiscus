@@ -132,10 +132,13 @@ public class HBCICallbackSWT extends AbstractHibiscusHBCICallback
     if (mon && session != null)
     {
       ProgressMonitor monitor = session.getProgressMonitor();
-      if (type != null)
-        monitor.log("    [" + type + "] " + msg);
-      else
-        monitor.log("    " + msg);
+      if (monitor != null)
+      {
+        if (type != null)
+          monitor.log("    [" + type + "] " + msg);
+        else
+          monitor.log("    " + msg);
+      }
     }
   }
 
