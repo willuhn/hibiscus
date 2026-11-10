@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -468,17 +467,17 @@ final class XRechnungParser
     final String xml = new String(bytes,StandardCharsets.UTF_8);
     Logger.trace("XML for debugging purpose: " + xml);
 
-    final DocumentBuilderFactory xmlFact = DocumentBuilderFactory.newInstance();
-    xmlFact.setNamespaceAware(true);
-    xmlFact.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING,true);
-    xmlFact.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
-    xmlFact.setFeature("http://xml.org/sax/features/external-general-entities",false);
-    xmlFact.setFeature("http://xml.org/sax/features/external-parameter-entities",false);
-    xmlFact.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-    xmlFact.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD,"");
-    xmlFact.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA,"");
-    xmlFact.setExpandEntityReferences(false);
-    xmlFact.setXIncludeAware(false);
+    final DocumentBuilderFactory xmlFact = XMLUtil.createDocumentBuilderFactory();
+    
+    try
+    {
+      xmlFact.setNamespaceAware(true);
+    }
+    catch (Exception ex)
+    {
+      Logger.write(Level.WARN,"xml feature not supported: " + ex.getMessage(),ex);
+    }
+    
     final DocumentBuilder builder = xmlFact.newDocumentBuilder();
     builder.setEntityResolver((publicId,systemId) -> { throw new SAXException("external entity resolution disabled"); });
     return builder.parse(new ByteArrayInputStream(bytes));

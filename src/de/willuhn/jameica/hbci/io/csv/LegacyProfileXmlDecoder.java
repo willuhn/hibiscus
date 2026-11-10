@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -29,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import de.willuhn.jameica.hbci.io.XMLUtil;
 import de.willuhn.jameica.hbci.io.ser.BooleanSerializer;
 import de.willuhn.jameica.hbci.io.ser.DateSerializer;
 import de.willuhn.jameica.hbci.io.ser.DefaultSerializer;
@@ -56,16 +56,7 @@ final class LegacyProfileXmlDecoder
    */
   static List<Profile> decode(InputStream input) throws Exception
   {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING,true);
-    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
-    factory.setFeature("http://xml.org/sax/features/external-general-entities",false);
-    factory.setFeature("http://xml.org/sax/features/external-parameter-entities",false);
-    factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD,"");
-    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA,"");
-    factory.setExpandEntityReferences(false);
-    factory.setXIncludeAware(false);
+    DocumentBuilderFactory factory = XMLUtil.createDocumentBuilderFactory();
 
     DocumentBuilder builder = factory.newDocumentBuilder();
     builder.setEntityResolver((publicId,systemId) -> { throw new SAXException("external entities are disabled"); });

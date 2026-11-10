@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -51,16 +50,8 @@ public final class SafeXmlReader extends AbstractXmlIO implements Reader
     this.input = input;
     this.factory = factory;
 
-    DocumentBuilderFactory builder = DocumentBuilderFactory.newInstance();
-    builder.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING,true);
-    builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
-    builder.setFeature("http://xml.org/sax/features/external-general-entities",false);
-    builder.setFeature("http://xml.org/sax/features/external-parameter-entities",false);
-    builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-    builder.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD,"");
-    builder.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA,"");
-    builder.setExpandEntityReferences(false);
-    builder.setXIncludeAware(false);
+    DocumentBuilderFactory builder = XMLUtil.createDocumentBuilderFactory();
+    
     DocumentBuilder parser = builder.newDocumentBuilder();
     parser.setEntityResolver((publicId,systemId) -> { throw new SAXException("external entities are disabled"); });
     this.document = parser.parse(input);
