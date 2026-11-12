@@ -214,7 +214,8 @@ public class PinTanConfigFactory
     if (!i.hasNext())
       throw new ApplicationException(i18n.tr("Bitte legen Sie zuerst eine PIN/TAN-Konfiguration an"));
 
-    Logger.info("searching config for konto " + konto.getKontonummer() + ", blz: " + konto.getBLZ());
+    Logger.info("searching config for konto [id: " + konto.getID() + "]");
+    Logger.debug("searching config for konto " + konto.getKontonummer() + ", blz: " + konto.getBLZ());
     PinTanConfig config = null;
 
     ArrayList found = new ArrayList();
